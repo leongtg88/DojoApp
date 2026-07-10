@@ -30,6 +30,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import GalleryLightbox from './GalleryLightbox';
+import Hero5 from './Hero5';
 
 interface HomeViewProps {
   onOpenEnrollment: (program?: string) => void;
@@ -58,91 +59,8 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
     <div className="space-y-0 min-h-screen bg-brand-bg text-[#dee2f0]">
       
       {/* 1. Hero Banner */}
-      <header className="relative w-full h-[90vh] md:h-[95vh] flex flex-col justify-end px-4 md:px-12 pb-16 md:pb-24 overflow-hidden">
-        {/* Cinematic Dojo Background */}
-        <div className="absolute inset-0 z-0">
-          <img 
-            className="w-full h-full object-cover scale-102" 
-            src="https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=1600"
-            alt="Tosei Gusoku Traditional Dojo" 
-            referrerPolicy="no-referrer"
-          />
-          {/* High-contrast vignettes */}
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-bg via-brand-bg/50 to-transparent" />
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
-
-        {/* Hero Info */}
-        <div className="relative z-10 max-w-4xl mx-auto w-full space-y-6 text-left">
-          {/* Branch Badge tag */}
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-accent/10 border border-brand-accent/20 text-brand-accent block w-fit"
-          >
-            <span className="w-2.5 h-2.5 rounded-full bg-brand-accent animate-pulse" />
-            <span className="font-display font-bold text-xs tracking-wider">AFILIADO INOUE HA SHITO-RYU</span>
-          </motion.div>
-
-          {/* Title */}
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="font-display forest-title text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-none capitalize"
-          >
-            Tosei Gusoku <br />
-            <span className="text-gradient font-black">Dojo Karate</span>
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="text-base sm:text-xl text-white/80 max-w-2xl leading-relaxed font-sans"
-          >
-            Forjando guerreros modernos a través del rigor, la técnica depurada y los valores del karate tradicional. Disciplina pura dirigida por instructores certificados a nivel mundial.
-          </motion.p>
-
-          {/* Main CTA & Social Links row */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4"
-          >
-            <button 
-              onClick={() => onOpenEnrollment('adult')}
-              className="bg-brand-accent hover:bg-brand-accent-hover text-white font-bold px-8 py-4.5 rounded-xl text-base transition-all belt-glow tracking-wide text-center cursor-pointer active:scale-95"
-            >
-              ¡INCRÍBETE AHORA! — CLASE GRATIS
-            </button>
-            
-            <button 
-              onClick={onNavigateToAbout}
-              className="px-6 py-4 rounded-xl text-white border border-white/20 hover:bg-white/5 transition-colors font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer"
-            >
-              Conocer el Linaje
-              <ArrowRight className="w-4 h-4 text-brand-accent" />
-            </button>
-          </motion.div>
-        </div>
-
-        {/* Floating Social Media Panel under the Hero */}
-        <div className="absolute top-1/3 right-6 hidden lg:flex flex-col gap-4 z-20">
-          <a href="#" className="w-11 h-11 rounded-full bg-brand-card hover:bg-brand-accent hover:text-black flex items-center justify-center border border-white/10 transition-all shadow-md group">
-            <Camera className="w-5 h-5 group-hover:scale-110" />
-          </a>
-          <a href="#" className="w-11 h-11 rounded-full bg-brand-card hover:bg-brand-accent hover:text-black flex items-center justify-center border border-white/10 transition-all shadow-md group">
-            <MessagesSquare className="w-5 h-5 group-hover:scale-110" />
-          </a>
-          <a href="#" className="w-11 h-11 rounded-full bg-brand-card hover:bg-brand-accent hover:text-black flex items-center justify-center border border-white/10 transition-all shadow-md group">
-            <Play className="w-5 h-5 group-hover:scale-110" />
-          </a>
-        </div>
-      </header>
+      <Hero5 />
+  
 
 
       {/* 2. Beneficios del Karate */}

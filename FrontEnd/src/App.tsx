@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+
+import logoRectangularNegro from './assets/LogoRecatangularNegro.svg';
 import { 
   Menu, 
   X, 
@@ -42,37 +44,30 @@ export default function App() {
     <div className="min-h-screen bg-brand-bg text-[#dee2f0] flex flex-col font-sans relative antialiased selection:bg-brand-accent selection:text-white">
       
       {/* 1. Header Navigation Bar */}
-      <nav className="fixed top-0 w-full h-20 bg-brand-bg/85 backdrop-blur-xl border-b border-white/10 z-50 flex items-center justify-between px-4 sm:px-8 md:px-12">
+      <nav className="fixed top-0 w-full h-20 bg-white/70 backdrop-blur-xl border-b border-white/60 shadow-lg z-50 flex items-center justify-between px-4 sm:px-8 md:px-12">
         {/* Logo click returns to home */}
         <button 
           onClick={() => handleNavigate('home')}
           className="flex items-center gap-3 cursor-pointer focus:outline-none text-left"
         >
-          <div className="w-10 h-10 bg-brand-accent rounded-full flex items-center justify-center font-extrabold font-display text-lg text-white">
-            TG
+          <div className="w-[220px] h-[50px] flex items-center justify-center font-extrabold font-display text-lg text-white">
+            <img src={logoRectangularNegro} alt="Logo Tosei Gusoku" />
           </div>
-          <div className="leading-none text-left">
-            <span className="font-display font-extrabold text-base sm:text-lg block tracking-tighter uppercase text-white">
-              Tosei Gusoku
-            </span>
-            <span className="text-[9px] block text-zinc-500 uppercase tracking-widest font-bold">
-              Dojo Shito Ryu
-            </span>
-          </div>
+
         </button>
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-8 text-sm font-semibold">
           <button 
             onClick={() => handleNavigate('home')}
-            className={`cursor-pointer transition-colors hover:text-brand-accent ${view === 'home' ? 'text-brand-accent font-bold' : 'text-white/70'}`}
+            className={`cursor-pointer transition-colors hover:text-brand-accent ${view === 'home' ? 'text-brand-accent font-bold' : 'text-gray-700'}`}
           >
             Inicio
           </button>
           
           <button 
             onClick={() => handleNavigate('about')}
-            className={`cursor-pointer transition-colors hover:text-brand-accent ${view === 'about' ? 'text-brand-accent font-bold' : 'text-white/70'}`}
+            className={`cursor-pointer transition-colors hover:text-brand-accent ${view === 'about' ? 'text-brand-accent font-bold' : 'text-gray-700'}`}
           >
             Sobre Nosotros
           </button>
@@ -87,7 +82,7 @@ export default function App() {
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }, 100);
             }}
-            className="text-white/70 hover:text-brand-accent transition-colors"
+            className="text-gray-700 hover:text-brand-accent transition-colors"
           >
             Horarios
           </a>
@@ -102,7 +97,7 @@ export default function App() {
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }, 100);
             }} 
-            className="text-white/70 hover:text-brand-accent transition-colors"
+            className="text-gray-700 hover:text-brand-accent transition-colors"
           >
             Sucursal y Contacto
           </a>
