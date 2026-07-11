@@ -34,9 +34,9 @@ export default function GalleryLightbox() {
             onClick={() => setActiveIdx(idx)}
           >
             {/* Background Image */}
-            <img 
-              src={item.imageUrl} 
-              alt={item.title} 
+            <img
+              src={item.imageUrl}
+              alt={item.title}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               referrerPolicy="no-referrer"
             />
@@ -48,8 +48,8 @@ export default function GalleryLightbox() {
               <span className="text-[10px] font-bold tracking-wider uppercase text-brand-accent flex items-center gap-1">
                 <Eye className="w-3 h-3" /> Ver Imagen
               </span>
-              <h4 className="font-bold text-base font-display text-white">{item.title}</h4>
-              <p className="text-xs text-white/70 line-clamp-2">{item.description}</p>
+              <h4 className="font-bold text-base font-display text-gray-700">{item.title}</h4>
+              <p className="text-xs text-gray-700/70 line-clamp-2">{item.description}</p>
             </div>
 
             {/* Maximize Icon Overlay */}
@@ -74,13 +74,13 @@ export default function GalleryLightbox() {
             />
 
             {/* Top stats counter & controller */}
-            <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-10 text-white/70">
+            <div className="absolute top-6 left-6 right-6 flex justify-between items-center z-10 text-gray-700/70">
               <p className="text-xs font-mono font-bold">
                 GALERÍA TOSEI GUSOKU — {activeIdx + 1} / {MOCK_GALLERY.length}
               </p>
-              <button 
+              <button
                 onClick={() => setActiveIdx(null)}
-                className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-[#ff4b62] hover:text-white transition-colors cursor-pointer"
+                className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-[#ff4b62] hover:text-gray-700 transition-colors cursor-pointer"
                 aria-label="Cerrar modal"
               >
                 <X className="w-5 h-5" />
@@ -90,9 +90,9 @@ export default function GalleryLightbox() {
             {/* Centered Image display */}
             <div className="relative max-w-4xl w-full flex items-center justify-center max-h-[70vh] z-10">
               {/* Navigation Left */}
-              <button 
+              <button
                 onClick={handlePrev}
-                className="absolute left-2 md:-left-16 w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-brand-accent hover:text-black transition-all cursor-pointer z-20 shadow-lg"
+                className="absolute left-2 md:-left-16 w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-700 hover:bg-brand-accent hover:text-black transition-all cursor-pointer z-20 shadow-lg"
                 aria-label="Anterior imagen"
               >
                 <ChevronLeft className="w-6 h-6" />
@@ -112,9 +112,9 @@ export default function GalleryLightbox() {
               />
 
               {/* Navigation Right */}
-              <button 
+              <button
                 onClick={handleNext}
-                className="absolute right-2 md:-right-16 w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-brand-accent hover:text-black transition-all cursor-pointer z-20 shadow-lg"
+                className="absolute right-2 md:-right-16 w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-700 hover:bg-brand-accent hover:text-black transition-all cursor-pointer z-20 shadow-lg"
                 aria-label="Siguiente imagen"
               >
                 <ChevronRight className="w-6 h-6" />
@@ -122,14 +122,14 @@ export default function GalleryLightbox() {
             </div>
 
             {/* Bottom descriptions */}
-            <motion.div 
+            <motion.div
               key={`caption-${currentItem.id}`}
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className="text-center max-w-xl z-10 mt-6 space-y-1 px-4 text-white"
+              className="text-center max-w-xl z-10 mt-6 space-y-1 px-4 text-gray-700"
             >
               <h3 className="font-bold text-lg font-display text-brand-accent">{currentItem.title}</h3>
-              <p className="text-xs text-white/70">{currentItem.description}</p>
+              <p className="text-xs text-gray-700/70">{currentItem.description}</p>
             </motion.div>
           </div>
         )}

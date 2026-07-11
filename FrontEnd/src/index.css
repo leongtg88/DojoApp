@@ -5,7 +5,7 @@
   --font-sans: "Open Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-display: "Montserrat", sans-serif;
   
-  --color-brand-bg: #0a0a0a;
+  --color-brand-bg: white;
   --color-brand-card: rgba(20, 20, 20, 0.7);
   --color-brand-accent: #a0cbffff;
   --color-brand-accent-hover: #b91c1c;
