@@ -6,12 +6,12 @@
   --font-display: "Montserrat", sans-serif;
   
   --color-brand-bg: white;
-  --color-brand-card: rgba(20, 20, 20, 0.7);
-  --color-brand-accent: #a0cbffff;
-  --color-brand-accent-hover: #b91c1c;
+  --color-brand-card: #ef476fff;
+  --color-brand-accent: #b8b070ff;
+  --color-brand-accent-hover: #118ab2ff;
   --color-brand-red: #dc2626;
-  --color-brand-purple: #71717a;
-  --color-brand-secondary: #a1a1aa;
+  --color-brand-purple: #6fffe9ff;
+  --color-brand-secondary: #a0cbffff;
 
   --animate-marquee: marquee 30s linear infinite;
 
@@ -411,6 +411,8 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateX(0px) translateY(0px);
   }
 }
+
+
 
 
 @custom-media --cr-3xl (min-width: 1536px) and (max-width: 1730px);

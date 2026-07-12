@@ -1,4 +1,4 @@
-import heroImageDesktop from '../assets/Desktop Full.svg';
+import heroImageDesktop from '../assets/BannerbgHero19080x1080.webp';
 import LogoIskia from '../assets/LogoIskia.svg';
 import BannerHero from '../assets/BannerHero.svg';
 

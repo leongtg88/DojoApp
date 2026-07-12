@@ -40,6 +40,7 @@ export interface GalleryItem {
 export interface DojoClass {
   category: string;
   age: string;
+  description?: string;
   schedule: {
     days: string;
     hours: string;
@@ -197,18 +198,21 @@ export const MOCK_GALLERY: GalleryItem[] = [
 export const DOJO_CLASSES: DojoClass[] = [
   {
     category: "LITTLE WARRIORS (Pre-Karate)",
-    age: "Edades 4 a 7 años",
+    age: "Edades 5 a 7 años",
+    description: "Programa especializado para niños en edad preescolar y primeros años de primaria, enfocado en la coordinación motora, disciplina y respeto. Las clases Pre-Karate tienen una duración de 45 minutos, pueden aplicar ciertas expciones dependiendo de la autorización del instructor.",
     schedule: [
-      { days: "Lunes / Miércoles / Viernes", hours: "4:00 PM - 5:00 PM" },
-      { days: "Sábado", hours: "9:00 AM - 10:30 AM" }
+      { days: "Martes / Jueves", hours: "4:00 PM - 5:00 PM " },
+      { days: "Sábados", hours: "9:00 AM - 10:00 AM / 10:00 AM - 11:00 AM" }
     ]
   },
   {
     category: "YOUTH & ADULTS (Juvenil y Adultos)",
     age: "Edades 8 años en adelante",
+    description: "Programa para jóvenes y adultos, enfocado en el desarrollo de habilidades técnicas y físicas. Las clases se imparten en horarios flexibles para adaptarse a las necesidades de los participantes.", 
     schedule: [
-      { days: "Lunes a Jueves", hours: "6:30 PM - 8:30 PM" },
-      { days: "Sábado (Entrenamiento Especial de Selección)", hours: "10:30 AM - 12:30 PM" }
+      { days: "Martes / Jueves", hours: "5:00 PM - 6:00 PM" },
+      { days: "Lunes / Miércoles (Adultos)", hours: "8:20 PM - 9:20 PM" },
+      { days: "Sábado (Niños y adultos)", hours: "10:30 AM - 12:30 PM" }
     ]
   }
 ];
