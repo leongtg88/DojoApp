@@ -94,7 +94,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
         
         <div className=" text-left">
         <span className="inline-block px-3 py-1 bg-brand-accent/10 text-brand-accent rounded-full text-xs font-bold font-display uppercase">Sede Santo Domingo</span>
-        <h3 className="text-3xl  sm:text-5xl  pb-8 font-extrabold font-display text-gray-700">
+        <h3 className="text-3xl  sm:text-4xl  pb-8 font-extrabold font-display text-gray-700">
               Sucursal 27 de Feb.
         </h3>
         </div>
@@ -113,7 +113,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                 <MapPin className="w-5 h-5 text-brand-accent shrink-0 mt-1" />
                 <div>
                   <h4 className="font-bold text-sm text-gray-700">Dirección de la Escuela</h4>
-                  <p className="text-xs text-gray-700/70 mt-0.5">Av. 27 de Febrero #204, Sector Bella Vista, Santo Domingo.</p>
+                  <p className="text-xs text-gray-700/70 mt-0.5">Plaza Lulie 3era planta, esquina Av. 27 de Febrero con C. Carmen Mendoza, Ensache Quisquella, Los Millones, Santo Domingo.</p>
                 </div>
               </div>
 
@@ -121,21 +121,21 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                 <Phone className="w-5 h-5 text-brand-accent shrink-0 mt-1" />
                 <div>
                   <h4 className="font-bold text-sm text-gray-700">Llama Directamente / WhatsApp</h4>
-                  <p className="text-xs text-gray-700/70 mt-0.5">+1 (809) 555-0192</p>
+                  <p className="text-xs text-gray-700/70 mt-0.5">+1 (829) 6378733</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-brand-secondary shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-bold text-sm text-gray-700">Horario de Secretaría</h4>
-                  <p className="text-xs text-gray-700/70 mt-0.5">Lunes a Viernes: 2:30 PM - 8:30 PM</p>
-                  <p className="text-[10px] text-gray-700/50">Sábados: 8:30 AM - 1:00 PM</p>
+                  <h4 className="font-bold text-sm text-gray-700">Horario de Atención</h4>
+                  <p className="text-xs text-gray-700/70 mt-0.5">Lunes a Viernes: 2:30 PM - 7:30 PM</p>
+   
                 </div>
               </div>
             </div>
-            {/*End  Left info box */}
-
+           
+             {/*Button Map */}
             <div className="pt-2">
               <a
                 href="https://www.google.com/maps/place/Karate+Do+Tosei+Gusoku+Dojo+Shito+Ryu+Inoue+Ha/@18.4574589,-69.9520022,825m/data=!3m2!1e3!4b1!4m6!3m5!1s0x8ea563c15898befd:0x386c75f4f249964f!8m2!3d18.4574538!4d-69.9494273!16s%2Fg%2F11rckyjhp1?entry=ttu&g_ep=EgoyMDI2MDcwOC4wIKXMDSoASAFQAw%3D%3D"
@@ -148,9 +148,12 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
               </a>
             </div>
           </div>
-          
-         {/* Right Map Placeholder visual */}
-          <div className="lg:col-span-7 h-96 w-full rounded-2xl overflow-hidden relative border border-white/10 group  flex items-center justify-center shadow-lg backdrop-blur-xl">
+
+           {/*End  Left info box */}
+
+        
+         {/* Right Side Map Placeholder visual */}
+          <div className="lg:col-span-7 h-[28rem] w-full rounded-2xl overflow-hidden relative border border-white/10 group  flex items-center justify-center shadow-lg backdrop-blur-xl">
             {/* Visual satellite stylized map background representation */}
             <div className="absolute inset-0  bg-brand-bg flex flex-col justify-between p-4 ">
 
@@ -220,7 +223,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
             <div className="inline-flex items-center gap-2 bg-white border border-brand-accent/20 px-3 py-1 rounded-full text-brand-accent text-xs font-bold font-display uppercase tracking-wider">
               <CalendarDays className="w-3.5 h-3.5" /> Clases Semanales
             </div>
-            <h2 className="text-3xl text-left sm:text-5xl font-extrabold font-display uppercase tracking-tight text-gray-700">
+            <h2 className="text-3xl text-left sm:text-4xl font-extrabold font-display  tracking-tight text-gray-700">
               Horarios de Entrenamiento
             </h2>
             <p className="text-sm text-left sm:text-base text-gray-700/60 max-w-2xl ">
@@ -251,7 +254,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                   </p>
                 </div>
 
-                <div className="space-y-4 pt-4 border-t border-white/10">
+                <div className="space-y-4 pt-4 shadow-md border-t border-white/10 rounded-xl">
                   {cls.schedule.map((sch, sIdx) => (
                     <div
                       key={sIdx}
@@ -291,16 +294,17 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
         <div className="absolute left-0 bottom-0 w-96 h-96 bg-brand-red/5 rounded-full blur-3xl -z-10" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="inline-flex items-center gap-2 text-brand-secondary bg-brand-secondary/10 border border-brand-secondary/20 px-3 py-1 rounded-full text-xs font-bold font-display uppercase tracking-wider">
+                <Users className="w-3.5 h-3.5" /> Comunidad Familiar
+              </div>
+              <h3 className="text-3xl  sm:text-4xl font-extrabold font-display text-gray-700 leading-tight">
+                Karate para Toda la Familia
+              </h3>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
 
             {/* Promo Left Content */}
             <div className="lg:col-span-7 space-y-6 text-left">
-              <div className="inline-flex items-center gap-2 text-brand-secondary bg-brand-secondary/10 border border-brand-secondary/20 px-3 py-1 rounded-full text-xs font-bold font-display uppercase tracking-wider">
-                <Users className="w-3.5 h-3.5" /> Comunidad Familiar
-              </div>
-              <h3 className="text-3xl  sm:text-5xl font-extrabold font-display text-gray-700 leading-tight">
-                Karate para Toda la Familia
-              </h3>
+
               <p className="text-sm sm:text-base text-gray-700/70 leading-relaxed">
                 El Karate es una de las pocas disciplinas integrales donde padres e hijos pueden entrenar y crecer en la misma academia. Ofrecemos clases con programas pedagógicos a la medida de los pequeños desde los 4 años y clases de adultos que re-establecen su salud y confianza.
               </p>
@@ -347,14 +351,14 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
       {/* 5. Beneficios del Karate */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        <div className="text-center space-y-3">
+        <div className="text-left space-y-3">
           <div className="inline-flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-brand-accent text-xs font-bold font-display uppercase tracking-wider">
             <Award className="w-3.5 h-3.5" /> Estilo de Vida Marcial
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight text-gray-700">
+          <h2 className="text-3xl sm:text-4xl font-extrabold font-display  tracking-tight text-gray-700">
             Beneficios del Karate
           </h2>
-          <p className="text-sm sm:text-base text-gray-700/60 max-w-2xl mx-auto">
+          <p className="text-sm text-left  sm:text-base text-gray-700/60  ">
             Por qué entrenar en Escuela Tosei Gusoku va mucho más allá de aprender a golpear o patear.
           </p>
         </div>
@@ -386,19 +390,16 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
       </section>
 
 
-
-
-
       {/* 4. Instructores Banner / Grid */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        <div className="text-center space-y-3">
+        <div className="text-left space-y-3">
           <div className="inline-flex items-center gap-2 bg-brand-purple/10 border border-brand-purple/20 px-3 py-1 rounded-full text-brand-purple text-xs font-bold font-display uppercase tracking-wider">
             <Award className="w-3.5 h-3.5" /> Linaje Oficial Keishin Kai
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight text-gray-700">
+          <h2 className="text-3xl sm:text-4xl font-extrabold font-display  tracking-tight text-gray-700">
             Nuestros Instructores
           </h2>
-          <p className="text-sm sm:text-base text-gray-700/60 max-w-2xl mx-auto">
+          <p className="text-sm text-left sm:text-base text-gray-700/60 max-w-2xl ">
             Aprende de cinturones negros de alto rango, con certificación oficial internacional de la organización Inoue Ha de Japón.
           </p>
         </div>
@@ -464,23 +465,18 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
       </section>
 
 
-
-
- 
-
-
       {/* 7. Testimonios */}
       <section className="py-20 ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
 
-          <div className="text-center space-y-3">
+          <div className="text-left space-y-3">
             <div className="inline-flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-brand-accent text-xs font-bold font-display uppercase tracking-wider">
               <Smile className="w-3.5 h-3.5" /> Voces de Familia
             </div>
-            <h2 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight text-gray-700 animate-pulse">
+            <h2 className="text-3xl sm:text-4xl font-extrabold font-display  tracking-tight text-gray-700 animate-pulse">
               Testimonios Reales
             </h2>
-            <p className="text-sm sm:text-base text-gray-700/60 max-w-2xl mx-auto">
+            <p className="text-sm text-left sm:text-base text-gray-700/60 max-w-2xl ">
               Lee la opinión honesta de los padres de familia y alumnos adultos que entrenan en nuestro dojo.
             </p>
           </div>
@@ -563,12 +559,12 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
       {/* 9. Galería con Lightbox */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        <div className="text-center space-y-3">
+        <div className="text-left space-y-3">
           <span className="inline-block px-3 py-1 bg-brand-accent/10 text-brand-accent rounded-full text-xs font-bold font-display uppercase">Sinergia en Fotos</span>
-          <h2 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight text-gray-700">
+          <h2 className="text-3xl sm:text-4xl font-extrabold font-display  tracking-tight text-gray-700">
             Nuestra Galería
           </h2>
-          <p className="text-sm sm:text-base text-gray-700/60 max-w-2xl mx-auto">
+          <p className="text-sm text-left  sm:text-base text-gray-700/60  ">
             Explora las posturas, los exámenes, la camaradería y la intensidad de las clases diarias. Haz clic en cualquier imagen para abrir el lightbox interactivo.
           </p>
         </div>
@@ -581,12 +577,13 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
       <section className="py-20  border-t border-white/5">
         <div className="max-w-4xl mx-auto px-4 space-y-12 text-left">
 
-          <div className="text-center space-y-3">
+          <div className="text-left space-y-3">
             <span className="inline-block px-3 py-1 bg-brand-secondary/10 text-brand-secondary rounded-full text-xs font-bold font-display uppercase">Preguntas Comunes</span>
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-center font-display uppercase tracking-tight text-gray-700">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-left font-display uppercase tracking-tight text-gray-700">
               Preguntas Frecuentes
             </h2>
-            <p className="text-sm sm:text-base text-gray-700/60 max-w-2xl mx-auto text-center">
+            <p className="text-sm text-left sm:text-base text-gray-700/60 max-w-2xl ">
+
               Aclaramos tus dudas para que puedas ingresar al tatami con absoluta tranquilidad y seguridad.
             </p>
           </div>

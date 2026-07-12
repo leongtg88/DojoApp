@@ -94,7 +94,7 @@ const Hero5 = () => {
                             <br />
                             <span className="text-gray-700">TU TEMPLO</span>
                         </h1>
-                        <p className="mt-4 text-sm font-light tracking-wide text-gray-700">
+                        <p className="mt-4 text-sm  tracking-wide text-gray-700">
                             "El dolor que sientes hoy es la fuerza que sentirás mañana. Cada repetición, cada gota de sudor, te acerca a la mejor versión de ti mismo. ¡No te rindas!"
                         </p>
 

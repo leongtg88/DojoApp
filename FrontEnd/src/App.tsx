@@ -256,7 +256,7 @@ export default function App() {
 
 
       {/* 3. Global Footer Component */}
-      <footer className="bg-[#050505] pt-16 pb-32 md:pb-16 px-6 md:px-12 border-t border-white/5 relative z-10 text-left">
+      <footer className="bg-white pt-16 pb-32 md:pb-16 px-6 md:px-12 border-t border-white/5 relative z-10 text-left">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10">
 
           {/* Logo description block */}
