@@ -33,6 +33,7 @@ import GalleryLightbox from './GalleryLightbox';
 import Hero5 from './Hero5';
 import Mawashi from '../assets/Mawashiguericintorunnegro2026.svg';
 import LetrasIkia from '../assets/letrasIkia.png';
+import Karafamilia from '../assets/20250830_110023.jpg';
 
 interface HomeViewProps {
   onOpenEnrollment: (program?: string) => void;
@@ -130,11 +131,10 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                 <div>
                   <h4 className="font-bold text-sm text-gray-700">Horario de Atención</h4>
                   <p className="text-xs text-gray-700/70 mt-0.5">Lunes a Viernes: 2:30 PM - 7:30 PM</p>
-   
                 </div>
               </div>
             </div>
-           
+
              {/*Button Map */}
             <div className="pt-2">
               <a
@@ -300,20 +300,20 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
               <h3 className="text-3xl  sm:text-4xl font-extrabold font-display text-gray-700 leading-tight">
                 Karate para Toda la Familia
               </h3>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start pt-6">
 
             {/* Promo Left Content */}
-            <div className="lg:col-span-7 space-y-6 text-left">
+            <div className="lg:col-span-6 space-y-6 text-left">
 
               <p className="text-sm sm:text-base text-gray-700/70 leading-relaxed">
-                El Karate es una de las pocas disciplinas integrales donde padres e hijos pueden entrenar y crecer en la misma academia. Ofrecemos clases con programas pedagógicos a la medida de los pequeños desde los 4 años y clases de adultos que re-establecen su salud y confianza.
+                El Karate es una de las pocas disciplinas integrales donde padres e hijos pueden entrenar y crecer en la misma academia. Ofrecemos clases con programas para pequeños desde los 5 años y clases de adultos que re-establecen su salud y confianza.
               </p>
-              <div className="p-4 shadow-xl ring-1 ring-white/10 rounded-xl space-y-2">
+              <div className="p-4 shadow-xl ring-1 ring-white/10 rounded-xl space-y-2 max-w-md">
                 <p className="font-bold text-brand-accent text-sm sm:text-base flex items-center gap-2">
                   <Sparkles className="w-4 h-4" /> Descuentos Especiales para Familias
                 </p>
                 <p className="text-xs text-gray-700/60">
-                  Inscribe a dos miembros de la familia y obtén un <span className="text-gray-700 font-bold">15% de descuento mensual</span> en la mensualidad del tercero. Queremos que el camino del cinturón negro sea un recorrido conjunto.
+                  Inscribe a dos miembros de la familia y obtén un <span className="text-gray-700 font-bold">2 x 1 en la inscripción y/u otras condiciones especiales</span> . Queremos que el camino del cinturón negro sea un recorrido conjunto.
                 </p>
               </div>
 
@@ -329,18 +329,18 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
             </div>
 
             {/* Promo Right Illustration image */}
-            <div className="lg:col-span-5 relative h-80 sm:h-96 w-full rounded-2xl overflow-hidden  border border-white/10">
+            <div className="lg:col-span-6 relative h-80 sm:h-96 w-full rounded-2xl overflow-hidden  border border-white/10">
               <img
-                src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=900"
+                src={Karafamilia}
                 alt="Familia de karate entrenando"
-                className="w-full h-full object-cover "
+                className="w-full h-full object-cover scale-130 "
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
               <div className="absolute bottom-4 left-4 right-4 text-left">
                 <span className="text-[10px] bg-brand-accent text-black font-bold px-2 py-0.5 rounded uppercase">Crecimiento en Equipo</span>
-                <h4 className="font-bold font-display text-base text-gray-700 mt-1">Sinergia y respeto mutuo</h4>
-                <p className="text-xs text-gray-700/70">Unidos en el sendero del Bushido.</p>
+                <h4 className="font-bold font-display text-base text-white mt-1">Sinergia y respeto mutuo</h4>
+                <p className="text-xs text-white">Unidos en el sendero del Bushido.</p>
               </div>
             </div>
 
