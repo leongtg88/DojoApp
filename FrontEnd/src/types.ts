@@ -1,3 +1,5 @@
+import senseiLeonImage from "./assets/SenseiLeon.jpeg";
+
 export interface Benefit {
   id: string;
   title: string;
@@ -85,7 +87,7 @@ export const MOCK_INSTRUCTORS: Instructor[] = [
     name: "Sensei León",
     role: "Director Tecnico / Head of Dojo",
     bio: "Campeón Nacional e Internacional. Experto en la disciplina de Kata y Kumite, dedicado al perfeccionamiento técnico de niños y adultos de Tosei Gusoku.",
-    imageUrl: "https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=600",
+    imageUrl: senseiLeonImage,
     curriculum: [
       "Representante oficial de Shito Ryu Inoue Ha en Santo Domingo.",
       "Aprendiz directo de Shihan Manuel Balbuena y Kyoshi Julio Martínez.",
@@ -197,7 +199,7 @@ export const MOCK_GALLERY: GalleryItem[] = [
 
 export const DOJO_CLASSES: DojoClass[] = [
   {
-    category: "LITTLE WARRIORS (Pre-Karate)",
+    category: "LITTLE WARRIORS\n(Pre-Karate)",
     age: "Edades 5 a 7 años",
     description: "Programa especializado para niños en edad preescolar y primeros años de primaria, enfocado en la coordinación motora, disciplina y respeto. Las clases Pre-Karate tienen una duración de 45 minutos, pueden aplicar ciertas expciones dependiendo de la autorización del instructor.",
     schedule: [
@@ -206,7 +208,7 @@ export const DOJO_CLASSES: DojoClass[] = [
     ]
   },
   {
-    category: "YOUTH & ADULTS (Juvenil y Adultos)",
+    category: "YOUTH & ADULTS\n(Juvenil y Adultos)",
     age: "Edades 8 años en adelante",
     description: "Programa para jóvenes y adultos, enfocado en el desarrollo de habilidades técnicas y físicas. Las clases se imparten en horarios flexibles para adaptarse a las necesidades de los participantes.", 
     schedule: [

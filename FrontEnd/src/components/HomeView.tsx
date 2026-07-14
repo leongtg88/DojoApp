@@ -35,6 +35,7 @@ import Mawashi from '../assets/Mawashiguericintorunnegro2026.svg';
 import LetrasIkia from '../assets/letrasIkia.png';
 import Karafamilia from '../assets/20250830_110023.jpg';
 
+
 interface HomeViewProps {
   onOpenEnrollment: (program?: string) => void;
   onNavigateToAbout: () => void;
@@ -106,7 +107,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
           <div className="lg:col-span-5 space-y-6 text-left backdrop-blur-xs">
 
             <p className="text-sm sm:text-base text-gray-700 leading-relaxed font-sans">
-            Visítanos en nuestras instalaciones principales. Ofrecemos áreas de entrenamiento climatizadas con vestidores y baños, secretaría de atención personalizada y zona de espera para padres de familia.
+            Visítanos en nuestras instalaciones principales. Ofrecemos <span className="font-semibold">áreas de entrenamiento climatizadas con vestidores y baños, </span> secretaría de atención personalizada y zona de espera para padres de familia.
             </p>
 
             <div className="space-y-4  shadow-lg backdrop-blur-xl p-5 rounded-2xl">
@@ -246,10 +247,10 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                     </span>
                     <Clock className="w-5 h-5 text-gray-700/40" />
                   </div>
-                  <h3 className="text-2xl font-extrabold text-gray-700 font-display uppercase tracking-wide">
+                  <h3 className="text-2xl font-extrabold text-gray-700 font-display uppercase tracking-wide  whitespace-pre-line">
                     {cls.category}
                   </h3>
-                  <p className="text-xs text-gray-700/50">
+                  <p className="text-sm text-gray-700">
                     {cls.description}
                   </p>
                 </div>
@@ -305,8 +306,8 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
             {/* Promo Left Content */}
             <div className="lg:col-span-6 space-y-6 text-left">
 
-              <p className="text-sm sm:text-base text-gray-700/70 leading-relaxed">
-                El Karate es una de las pocas disciplinas integrales donde padres e hijos pueden entrenar y crecer en la misma academia. Ofrecemos clases con programas para pequeños desde los 5 años y clases de adultos que re-establecen su salud y confianza.
+              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                El Karate es una de las pocas disciplinas integrales donde <span className="font-semibold">padres e hijos pueden entrenar y crecer en la mismo espacio. </span>Ofrecemos clases con programas para pequeños desde los 5 años y clases de adultos que re-establecen su salud y confianza.
               </p>
               <div className="p-4 shadow-xl ring-1 ring-white/10 rounded-xl space-y-2 max-w-md">
                 <p className="font-bold text-brand-accent text-sm sm:text-base flex items-center gap-2">
@@ -329,7 +330,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
             </div>
 
             {/* Promo Right Illustration image */}
-            <div className="lg:col-span-6 relative h-80 sm:h-96 w-full rounded-2xl overflow-hidden  border border-white/10">
+            <div className="lg:col-span-6 relative h-80 sm:h-96 w-full rounded-2xl overflow-hidden    shadow-xl shadow-black/40">
               <img
                 src={Karafamilia}
                 alt="Familia de karate entrenando"
@@ -358,17 +359,19 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
           <h2 className="text-3xl sm:text-4xl font-extrabold font-display  tracking-tight text-gray-700">
             Beneficios del Karate
           </h2>
-          <p className="text-sm text-left  sm:text-base text-gray-700/60  ">
+          <p className="text-sm text-left  sm:text-base text-gray-700  ">
             Por qué entrenar en Escuela Tosei Gusoku va mucho más allá de aprender a golpear o patear.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" >
           {MOCK_BENEFITS.map((benefit) => (
-            <div
-              key={benefit.id}
-              className=" p-6 rounded-2xl flex flex-col space-y-4 glass-card-hover border border-white/5 relative overflow-hidden group"
-            >
+          <div
+            key={benefit.id}
+            className="p-6 rounded-2xl flex flex-col space-y-4 glass-card-hover border border-white/5 relative overflow-hidden group"
+            style={{ animation: "border-color-change 8s infinite linear" }}
+          > 
+            
               {/* Subtle top horizontal color indicator bar */}
               <div className={`absolute top-0 inset-x-0 h-1 bg-gradient-to-r opacity-50 group-hover:opacity-100 transition-opacity`} />
 
@@ -380,7 +383,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                 <h3 className="font-bold text-xl font-display text-gray-700 group-hover:text-brand-accent transition-colors">
                   {benefit.title}
                 </h3>
-                <p className="text-sm text-gray-700/70 leading-relaxed font-sans">
+                <p className="text-sm text-gray-700 leading-relaxed font-sans">
                   {benefit.description}
                 </p>
               </div>
@@ -413,11 +416,12 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                 }`}
             >
               {/* Image banner frame */}
-              <div className="h-64 sm:h-72 w-full relative overflow-hidden bg-slate-900 border-b border-white/10">
+              <div className="h-64 sm:h-72 w-full relative overflow-hidden bg-slate-900 border-b border-white/10 ">
                 <img
                   src={inst.imageUrl}
                   alt={inst.name}
-                  className="w-full h-full object-cover transition-transform duration-750 group-hover:scale-104"
+                  className="w-full h-full object-contain object-cover transition-transform duration-750 group-hover:scale-[1.03] "
+                  style={{ objectPosition: 'center 20%' }}
                   referrerPolicy="no-referrer"
                 />
 
