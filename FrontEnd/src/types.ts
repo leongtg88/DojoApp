@@ -1,4 +1,11 @@
 import senseiLeonImage from "./assets/SenseiLeon.jpeg";
+import Kyoshi from "./assets/FotoKyoshi.svg";
+import German from "./assets/german.svg";
+import Adultos from "./assets/adultos.jpeg"
+import Adulyninos from "./assets/adultosyninos.jpeg"
+import Jose from "./assets/joseig.jpeg"
+import Soto from "./assets/soto.jpeg"
+
 
 export interface Benefit {
   id: string;
@@ -84,15 +91,15 @@ export const MOCK_BENEFITS: Benefit[] = [
 export const MOCK_INSTRUCTORS: Instructor[] = [
   {
     id: "sensei-leon",
-    name: "Sensei León",
+    name: "Sensei León\n Gustavo",
     role: "Director Tecnico / Head of Dojo",
-    bio: "Campeón Nacional e Internacional. Experto en la disciplina de Kata y Kumite, dedicado al perfeccionamiento técnico de niños y adultos de Tosei Gusoku.",
+    bio: "Fundador del Dojo dedicado a la enseñanza del perfeccionamiento técnico de niños y adultos de Tosei Gusoku.",
     imageUrl: senseiLeonImage,
     curriculum: [
+      "Cinturón Negro 2do Dan  Inoue Ha Shito-Ryu Keishin Kai",
       "Representante oficial de Shito Ryu Inoue Ha en Santo Domingo.",
       "Aprendiz directo de Shihan Manuel Balbuena y Kyoshi Julio Martínez.",
-      "Múltiple medallista en torneos de rango internacional y panamericano.",
-      "Especialista en metodología de enseñanza psicopedagógica para infantes (Little Warriors)."
+      "Especialista en metodología de enseñanza psicopedagógica para niños y adultos."
     ]
   },
   {
@@ -100,24 +107,24 @@ export const MOCK_INSTRUCTORS: Instructor[] = [
     name: "Kyoshi Julio Martínez",
     role: "Gran Maestro de la Organización",
     bio: "Linaje directo de Inoue Ha Shito-Ryu con más de 40 años de trayectoria impecable formando campeones mundiales.",
-    imageUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=600",
+    imageUrl: Kyoshi,
     curriculum: [
       "Cinturón Negro 8vo Dan - Certificación Internacional de Japón.",
       "Asesor Técnico de la Federación Dominicana de Karate.",
-      "Entrenador mentor de múltiples selecciones nacionales del Caribe.",
+      "Entrenador mentor de múltiples selecciones nacionales de las Américas.",
       "Líder de seminarios y Gasshuku en América Latina y Europa oriental."
     ]
   },
   {
-    id: "shihan-manuel",
-    name: "Shihan Manuel Balbuena",
-    role: "Maestro Precursor",
+    id: "German Lizardo",
+    name: "Sensei German Lizardo",
+    role: "Instructor Oficial",
     bio: "Columna vital de la tradición y el rigor marcial, responsable de la tecnificación constante en las filiales nacionales.",
-    imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600",
+    imageUrl: German,
     curriculum: [
-      "Cinturón Negro 7mo Dan - Inoue Ha Shito-Ryu Keishin Kai.",
-      "Co-fundador de la enseñanza estructurada de Shito-Ryu en República Dominicana.",
-      "Evaluador oficial de grados cinto negro a nivel de federación."
+      "Cinturón Negro 1er Dan - Inoue Ha Shito-Ryu Keishin Kai.",
+      "Instructor adjunto de Tosei Gusoku Dojo.",
+      "Campeón Centro Americano y el Caribe con varios títulos en camponatos internacionales."
     ]
   },
   {
@@ -173,27 +180,27 @@ export const MOCK_FAQS: FaqItem[] = [
 export const MOCK_GALLERY: GalleryItem[] = [
   {
     id: "gal-1",
-    title: "Entrenamiento de Kata",
-    description: "Sensei León corrigiendo la postura Heian Shodan con los Little Warriors en el tatami.",
-    imageUrl: "https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=800"
+    title: "Entrenamiento nocturno",
+    description: "Un momento exlusivo para conocer el karate para adultos",
+    imageUrl: Adultos
   },
   {
     id: "gal-2",
-    title: "Exámenes de Grado",
-    description: "Nuestros alumnos mostrando fortaleza técnica y mental ante el comité de Kyoshi Julio Martínez.",
-    imageUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=800"
+    title: "Coraje y energía",
+    description: "Nuestros alumnos mostrando fortaleza técnica y mental.",
+    imageUrl: Jose
   },
   {
     id: "gal-3",
     title: "Karate en Familia",
     description: "Sesiones especiales de fin de semana donde padres e hijos compiten y entrenan en sintonía.",
-    imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=800"
+    imageUrl: Adulyninos
   },
   {
     id: "gal-4",
-    title: "Seminarios Internacionales",
-    description: "Nuestras delegaciones en seminarios técnicos internacionales y copas panamericanas.",
-    imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800"
+    title: "Pequeños pero poderosos",
+    description: "Nuestros jovenes subiendo de nivel.",
+    imageUrl: Soto
   }
 ];
 

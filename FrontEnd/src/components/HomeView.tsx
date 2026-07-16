@@ -34,6 +34,7 @@ import Hero5 from './Hero5';
 import Mawashi from '../assets/Mawashiguericintorunnegro2026.svg';
 import LetrasIkia from '../assets/letrasIkia.png';
 import Karafamilia from '../assets/20250830_110023.jpg';
+import  Logosolo  from '../assets/LogoSolo.svg' 
 
 
 interface HomeViewProps {
@@ -408,44 +409,46 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
         </div>
 
         {/* Dynamic Grid showing the core instructors for home */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
           {MOCK_INSTRUCTORS.slice(0, 3).map((inst) => (
             <div
               key={inst.id}
-              className={` rounded-2xl overflow-hidden border border-white/5 flex flex-col relative group h-full ${inst.id === 'sensei-leon' ? 'ring-1 ring-brand-accent/50 group-hover:ring-brand-accent' : ''
-                }`}
+              className={` rounded-2xl overflow-hidden border border-white/5 flex flex-col relative group h-full ring-1 ring-brand-accent/50 group-hover:ring-brand-accent shadow-xl shadow-black/40 }`}
             >
               {/* Image banner frame */}
-              <div className="h-64 sm:h-72 w-full relative overflow-hidden bg-slate-900 border-b border-white/10 ">
+              <div className="h-64 sm:h-[30rem] w-full relative overflow-hidden bg-slate-900 border-b border-white/10 ">
                 <img
                   src={inst.imageUrl}
                   alt={inst.name}
-                  className="w-full h-full object-contain object-cover transition-transform duration-750 group-hover:scale-[1.03] "
-                  style={{ objectPosition: 'center 20%' }}
+                  className="w-full h-full object-cover transition-transform duration-750 group-hover:scale-[1.03]"
+                  style={{
+                    objectPosition:  'center 45%',
+                    transform: inst.id === 'kyoshi-julio' ? 'translateY(5px)' : undefined
+                  }}
                   referrerPolicy="no-referrer"
                 />
 
                 {/* Specific overlay tag badge */}
-                <div className="absolute top-4 left-4 z-10 bg-black/75 backdrop-blur-md px-3 py-1 rounded-full border border-white/15">
+                <div className="absolute top-2 left-2 z-10 bg-black/75 backdrop-blur-md px-3 py-1 rounded-full border border-white/15">
                   <p className="font-display font-medium text-[10px] text-brand-accent tracking-wider font-semibold uppercase">{inst.role}</p>
                 </div>
               </div>
 
               {/* Bio & Details */}
-              <div className="p-6 space-y-4 text-left flex-1 flex flex-col justify-between">
+              <div className="p-6 space-y-4 text-left flex-1 flex flex-col ">
                 <div className="space-y-2">
-                  <h4 className="font-extrabold text-2xl text-gray-700 font-display uppercase tracking-tight group-hover:text-brand-accent transition-colors">
+                  <h4 className="font-extrabold text-2xl text-gray-700 font-display uppercase tracking-tight group-hover:text-brand-accent transition-colors  whitespace-pre-line">
                     {inst.name}
                   </h4>
-                  <p className="text-sm text-gray-700/70 font-sans leading-relaxed">
+                  <p className="text-sm text-gray-700 font-sans leading-relaxed">
                     {inst.bio}
                   </p>
                 </div>
 
                 {inst.curriculum && (
-                  <ul className="space-y-1 bg-white/5 p-3 rounded-lg border border-white/5 mt-4">
+                  <ul className="bg-white/5 rounded-lg border border-white/5 mt-1">
                     {inst.curriculum.slice(0, 2).map((item, idx) => (
-                      <li key={idx} className="text-xs text-gray-700/80 flex items-start gap-1">
+                      <li key={idx} className="text-xs text-gray-700 flex items-start gap-1">
                         <span className="text-brand-accent mt-0.5 shrink-0">•</span>
                         <span>{item}</span>
                       </li>
@@ -460,10 +463,10 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
         <div className="text-center pt-4">
           <button
             onClick={onNavigateToAbout}
-            className="px-6 py-3.5 bg-brand-card hover:bg-white/5 text-gray-700 font-bold rounded-xl text-sm border border-white/15 transition-all inline-flex items-center gap-2 cursor-pointer"
+            className="px-6 py-3.5 bg-brand-accent hover:bg-white/5 text-gray-700 font-bold rounded-xl text-sm border border-white/15 transition-all inline-flex items-center gap-2 cursor-pointer"
           >
             Ver biografías completas y currículo de maestros
-            <ArrowRight className="w-4 h-4 text-brand-accent" />
+            <ArrowRight className="w-4 h-4 text-black" />
           </button>
         </div>
       </section>
@@ -566,11 +569,9 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
         <div className="text-left space-y-3">
           <span className="inline-block px-3 py-1 bg-brand-accent/10 text-brand-accent rounded-full text-xs font-bold font-display uppercase">Sinergia en Fotos</span>
           <h2 className="text-3xl sm:text-4xl font-extrabold font-display  tracking-tight text-gray-700">
-            Nuestra Galería
+            Algunos Momentos
           </h2>
-          <p className="text-sm text-left  sm:text-base text-gray-700/60  ">
-            Explora las posturas, los exámenes, la camaradería y la intensidad de las clases diarias. Haz clic en cualquier imagen para abrir el lightbox interactivo.
-          </p>
+   
         </div>
 
         <GalleryLightbox />
@@ -634,7 +635,18 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
         <div className="relative z-10 max-w-3xl mx-auto space-y-6">
           <span className="inline-block px-3.5 py-1 bg-brand-accent/10 border border-brand-accent/25 text-brand-accent rounded-full text-xs font-bold font-display uppercase tracking-wider animate-pulse">¿Listo para empezar tu viaje?</span>
-          <h2 className="text-4xl sm:text-6xl font-extrabold font-display uppercase tracking-tight text-gray-700 leading-tight">
+          <div>
+
+          
+          <img src={Logosolo} alt="Tosei Gusoku Logo" className="w-28 h-28 mx-auto drop-shadow-lg inset-0 rounded-r rounded-l"   style={{
+                                animation: "color-change 10s infinite linear",
+                                backgroundImage: "radial-gradient(closest-side, currentColor, transparent)"
+                            }}></img>  
+
+          </div>
+          <h2 className="text-4xl sm:text-6xl font-extrabold font-display uppercase tracking-tight text-gray-700 leading-tight " >                      
+                          
+                          
             El camino del cinturón negro comienza aquí
           </h2>
           <p className="text-sm sm:text-base text-gray-700/70 max-w-xl mx-auto font-sans leading-relaxed">

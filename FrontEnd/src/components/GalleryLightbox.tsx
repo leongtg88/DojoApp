@@ -48,8 +48,8 @@ export default function GalleryLightbox() {
               <span className="text-[10px] font-bold tracking-wider uppercase text-brand-accent flex items-center gap-1">
                 <Eye className="w-3 h-3" /> Ver Imagen
               </span>
-              <h4 className="font-bold text-base font-display text-gray-700">{item.title}</h4>
-              <p className="text-xs text-gray-700/70 line-clamp-2">{item.description}</p>
+              <h4 className="font-semi  bold text-base font-display text-white">{item.title}</h4>
+              <p className="text-xs text-white line-clamp-2">{item.description}</p>
             </div>
 
             {/* Maximize Icon Overlay */}
