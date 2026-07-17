@@ -34,7 +34,7 @@ import Hero5 from './Hero5';
 import Mawashi from '../assets/Mawashiguericintorunnegro2026.svg';
 import LetrasIkia from '../assets/letrasIkia.png';
 import Karafamilia from '../assets/20250830_110023.jpg';
-import  Logosolo  from '../assets/LogoSolo.svg' 
+import Logosolo from '../assets/LogoSolo.svg'
 
 
 interface HomeViewProps {
@@ -76,39 +76,39 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
             Shito Ryu Inoue-Ha
           </h3>
           <p className="text-sm text-right sm:text-base text-gray-700 max-w-5xl mx-auto">
-            Tenemos como finalidad darle a cada <span className="font-semibold">niño, joven y adulto, la posibilidad de evolucionar y alcanzar las metas que se propongan </span> dentro de sus capacidades, siempre teniendo en <span className="font-semibold"> alto el espíritu y trabajando para desarrollar la voluntad para lograrlo</span>. Acompañamos y apoyamos a los practicantes en entender que <span className="font-semibold">los obstáculos son desafíos que deben atravesar</span>, que a veces <span className="font-semibold">la disciplina puede ser  frustrante a pesar de amar lo que hacemos, a través de la motivación al logro por merito personal, sin caer en comparación con otros, venciendose así mismos, volvemos éstos, fines últimos del verdadero sentido de la victoria.</span><br /> <br /> 
+            Tenemos como finalidad darle a cada <span className="font-semibold">niño, joven y adulto, la posibilidad de evolucionar y alcanzar las metas que se propongan </span> dentro de sus capacidades, siempre teniendo en <span className="font-semibold"> alto el espíritu y trabajando para desarrollar la voluntad para lograrlo</span>. Acompañamos y apoyamos a los practicantes en entender que <span className="font-semibold">los obstáculos son desafíos que deben atravesar</span>, que a veces <span className="font-semibold">la disciplina puede ser  frustrante a pesar de amar lo que hacemos, a través de la motivación al logro por merito personal, sin caer en comparación con otros, venciendose así mismos, volvemos éstos, fines últimos del verdadero sentido de la victoria.</span><br /> <br />
 
             Sabemos que podemos <span className="font-semibold"> promover la preparación de nuevas generaciones </span> colabornado en aumentar las  posibilidades de  mantener los objetivos que se propongan, a pesar de los obstáculos que se les presenten ahora y siempre, <span className="font-semibold">no darse por vencidos fácilmente y mantener el espíritu de un guerrero son las herramientas con las que lograrán superarse por medio de la practica del karate.</span>
-            <br /> <br />  
+            <br /> <br />
             <span className="font-bold">León Gustavo</span>
             <br />
             <span className="font-bold">Sensei</span>          </p>
-            <div className="flex flex-row items-center justify-center pt-6">
+          <div className="flex flex-row items-center justify-center pt-6">
             <img src={LetrasIkia} alt="Letras Iskia" className="w-[16em]  h-auto   " />
             <img src={Mawashi} alt="Logo Iskia" className="w-[16em]  h-auto   " />
-            </div>
+          </div>
         </div>
 
       </section>
-      
 
-     {/* 3. Sucursal 27 de Febrero */}
+
+      {/* 3. Sucursal 27 de Febrero */}
       <section className="py-15 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         <div className=" text-left">
-        <span className="inline-block px-3 py-1 bg-brand-accent/10 text-brand-accent rounded-full text-xs font-bold font-display uppercase">Sede Santo Domingo</span>
-        <h3 className="text-3xl  sm:text-4xl  pb-8 font-extrabold font-display text-gray-700">
-              Sucursal 27 de Feb.
-        </h3>
+          <span className="inline-block px-3 py-1 bg-brand-accent/10 text-brand-accent rounded-full text-xs font-bold font-display uppercase">Sede Santo Domingo</span>
+          <h3 className="text-3xl  sm:text-4xl  pb-8 font-extrabold font-display text-gray-700">
+            Sucursal 27 de Feb.
+          </h3>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          
+
 
           {/* Left info box */}
           <div className="lg:col-span-5 space-y-6 text-left backdrop-blur-xs">
 
             <p className="text-sm sm:text-base text-gray-700 leading-relaxed font-sans">
-            Visítanos en nuestras instalaciones principales. Ofrecemos <span className="font-semibold">áreas de entrenamiento climatizadas con vestidores y baños, </span> secretaría de atención personalizada y zona de espera para padres de familia.
+              Visítanos en nuestras instalaciones principales. Ofrecemos <span className="font-semibold">áreas de entrenamiento climatizadas con vestidores y baños, </span> secretaría de atención personalizada y zona de espera para padres de familia.
             </p>
 
             <div className="space-y-4  shadow-lg backdrop-blur-xl p-5 rounded-2xl">
@@ -137,13 +137,13 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
               </div>
             </div>
 
-             {/*Button Map */}
+            {/*Button Map */}
             <div className="pt-2">
               <a
                 href="https://www.google.com/maps/place/Karate+Do+Tosei+Gusoku+Dojo+Shito+Ryu+Inoue+Ha/@18.4574589,-69.9520022,825m/data=!3m2!1e3!4b1!4m6!3m5!1s0x8ea563c15898befd:0x386c75f4f249964f!8m2!3d18.4574538!4d-69.9494273!16s%2Fg%2F11rckyjhp1?entry=ttu&g_ep=EgoyMDI2MDcwOC4wIKXMDSoASAFQAw%3D%3D"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto bg-brand-accent hover:bg-brand-accent-hover text-gray-700 font-bold px-6 py-4 rounded-xl text-xs transition-all tracking-wider font-display uppercase inline-flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                className="hero-button w-full sm:w-auto"
               >
                 ¿CÓMO LLEGAR AL DOJO?
                 <Navigation className="w-4 h-4 shrink-0" />
@@ -151,15 +151,15 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
             </div>
           </div>
 
-           {/*End  Left info box */}
+          {/*End  Left info box */}
 
-        
-         {/* Right Side Map Placeholder visual */}
+
+          {/* Right Side Map Placeholder visual */}
           <div className="lg:col-span-7 h-[28rem] w-full rounded-2xl overflow-hidden relative border border-white/10 group  flex items-center justify-center shadow-lg backdrop-blur-xl">
             {/* Visual satellite stylized map background representation */}
             <div className="absolute inset-0  bg-brand-bg flex flex-col justify-between p-4 ">
 
-                <iframe
+              <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3592.39242156863!2d-69.95200222512133!3d18.45745887109965!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ea563c15898befd%3A0x386c75f4f249964f!2sKarate%20Do%20Tosei%20Gusoku%20Dojo%20Shito%20Ryu%20Inoue%20Ha!5e1!3m2!1ses!2sdo!4v1783807868699!5m2!1ses!2sdo"
                 width="100%"
                 height="100%"
@@ -188,7 +188,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                 <span className="relative flex h-6 w-6">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-red opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-6 w-6 bg-brand-red border-2 border-white flex items-center justify-center shadow-lg">
-                  <span className="w-2 h-2 rounded-full bg-black"></span>
+                    <span className="w-2 h-2 rounded-full bg-black"></span>
                   </span>
                 </span>
                 <p className="bg-black/90 text-[10px] font-bold text-white px-2 py-1 rounded-md border border-brand-accent uppercase tracking-wider whitespace-nowrap">
@@ -216,7 +216,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
       </section>
 
 
-            {/* 4. Horarios del Dojo */}
+      {/* 4. Horarios del Dojo */}
       <section className="py-20 bg-white
         border-y border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-1">
@@ -229,7 +229,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
               Horarios de Entrenamiento
             </h2>
             <p className="text-sm text-left sm:text-base text-gray-700/60 max-w-2xl ">
-              
+
             </p>
           </div>
 
@@ -296,12 +296,12 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
         <div className="absolute left-0 bottom-0 w-96 h-96 bg-brand-red/5 rounded-full blur-3xl -z-10" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="inline-flex items-center gap-2 text-brand-secondary bg-brand-secondary/10 border border-brand-secondary/20 px-3 py-1 rounded-full text-xs font-bold font-display uppercase tracking-wider">
-                <Users className="w-3.5 h-3.5" /> Comunidad Familiar
-              </div>
-              <h3 className="text-3xl  sm:text-4xl font-extrabold font-display text-gray-700 leading-tight">
-                Karate para Toda la Familia
-              </h3>
+          <div className="inline-flex items-center gap-2 text-brand-secondary bg-brand-secondary/10 border border-brand-secondary/20 px-3 py-1 rounded-full text-xs font-bold font-display uppercase tracking-wider">
+            <Users className="w-3.5 h-3.5" /> Comunidad Familiar
+          </div>
+          <h3 className="text-3xl  sm:text-4xl font-extrabold font-display text-gray-700 leading-tight">
+            Karate para Toda la Familia
+          </h3>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start pt-6">
 
             {/* Promo Left Content */}
@@ -367,12 +367,12 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" >
           {MOCK_BENEFITS.map((benefit) => (
-          <div
-            key={benefit.id}
-            className="p-6 rounded-2xl flex flex-col space-y-4 glass-card-hover border border-white/5 relative overflow-hidden group"
-            style={{ animation: "border-color-change 8s infinite linear" }}
-          > 
-            
+            <div
+              key={benefit.id}
+              className="p-6 rounded-2xl flex flex-col space-y-4 glass-card-hover border border-white/5 relative overflow-hidden group"
+              style={{ animation: "border-color-change 8s infinite linear" }}
+            >
+
               {/* Subtle top horizontal color indicator bar */}
               <div className={`absolute top-0 inset-x-0 h-1 bg-gradient-to-r opacity-50 group-hover:opacity-100 transition-opacity`} />
 
@@ -422,7 +422,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                   alt={inst.name}
                   className="w-full h-full object-cover transition-transform duration-750 group-hover:scale-[1.03]"
                   style={{
-                    objectPosition:  'center 45%',
+                    objectPosition: 'center 45%',
                     transform: inst.id === 'kyoshi-julio' ? 'translateY(5px)' : undefined
                   }}
                   referrerPolicy="no-referrer"
@@ -547,17 +547,17 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
         <div className="w-full overflow-hidden relative">
           <div className="flex whitespace-nowrap animate-marquee gap-10 text-gray-700/40 text-xs md:text-sm font-bold uppercase tracking-widest py-2">
             <div className="flex gap-12 shrink-0 items-center">
-              <span className="flex items-center gap-2"><Award className="w-4 h-4 text-brand-accent" /> INOUE HA SHITO-RYU KEISHIN KAI JAPÓN</span>
+              <span className="flex items-center gap-2"><Award className="w-4 h-4 text-brand-accent" /> INOUE HA SHITO-RYU KENSHIN KAI JAPÓN</span>
               <span className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-brand-secondary" /> FEDERACIÓN DOMINICANA DE KARATE (FEDOKARATE)</span>
               <span className="flex items-center gap-2"><Award className="w-4 h-4 text-brand-accent" /> WORLD KARATE FEDERATION (WKF) CERTIFIED</span>
-              <span className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-brand-purple" /> RECONOCIMIENTO PANAMERICANO PKF</span>
+              <span className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-brand-purple" /> INOUE HA SHITO-RYU KARATE DO INTERNATIONAL OF AMERICA (ISKIA) </span>
             </div>
             {/* Duplicate list to build continuous marquee loop effect */}
             <div className="flex gap-12 shrink-0 items-center select-none" aria-hidden="true">
               <span className="flex items-center gap-2"><Award className="w-4 h-4 text-brand-accent" /> INOUE HA SHITO-RYU KEISHIN KAI JAPÓN</span>
               <span className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-brand-secondary" /> FEDERACIÓN DOMINICANA DE KARATE (FEDOKARATE)</span>
               <span className="flex items-center gap-2"><Award className="w-4 h-4 text-brand-accent" /> WORLD KARATE FEDERATION (WKF) CERTIFIED</span>
-              <span className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-brand-purple" /> RECONOCIMIENTO PANAMERICANO PKF</span>
+              <span className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-brand-purple" /> INOUE HA SHITO-RYU KARATE DO INTERNATIONAL OF AMERICA (ISKIA) </span>
             </div>
           </div>
         </div>
@@ -571,7 +571,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
           <h2 className="text-3xl sm:text-4xl font-extrabold font-display  tracking-tight text-gray-700">
             Algunos Momentos
           </h2>
-   
+
         </div>
 
         <GalleryLightbox />
@@ -637,16 +637,16 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
           <span className="inline-block px-3.5 py-1 bg-brand-accent/10 border border-brand-accent/25 text-brand-accent rounded-full text-xs font-bold font-display uppercase tracking-wider animate-pulse">¿Listo para empezar tu viaje?</span>
           <div>
 
-          
-          <img src={Logosolo} alt="Tosei Gusoku Logo" className="w-28 h-28 mx-auto drop-shadow-lg inset-0 rounded-r rounded-l"   style={{
-                                animation: "color-change 10s infinite linear",
-                                backgroundImage: "radial-gradient(closest-side, currentColor, transparent)"
-                            }}></img>  
+
+            <img src={Logosolo} alt="Tosei Gusoku Logo" className="w-28 h-28 mx-auto drop-shadow-lg inset-0 rounded-r rounded-l" style={{
+              animation: "color-change 10s infinite linear",
+              backgroundImage: "radial-gradient(closest-side, currentColor, transparent)"
+            }}></img>
 
           </div>
-          <h2 className="text-4xl sm:text-6xl font-extrabold font-display uppercase tracking-tight text-gray-700 leading-tight " >                      
-                          
-                          
+          <h2 className="text-4xl sm:text-6xl font-extrabold font-display uppercase tracking-tight text-gray-700 leading-tight " >
+
+
             El camino del cinturón negro comienza aquí
           </h2>
           <p className="text-sm sm:text-base text-gray-700/70 max-w-xl mx-auto font-sans leading-relaxed">

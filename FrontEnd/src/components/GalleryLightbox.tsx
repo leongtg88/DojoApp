@@ -129,7 +129,7 @@ export default function GalleryLightbox() {
               className="text-center max-w-xl z-10 mt-6 space-y-1 px-4 text-gray-700"
             >
               <h3 className="font-bold text-lg font-display text-brand-accent">{currentItem.title}</h3>
-              <p className="text-xs text-gray-700/70">{currentItem.description}</p>
+              <p className="text-xs text-white">{currentItem.description}</p>
             </motion.div>
           </div>
         )}

@@ -163,12 +163,12 @@ export const MOCK_FAQS: FaqItem[] = [
   {
     id: "faq-1",
     question: "¿A qué edad pueden comenzar los niños?",
-    answer: "Nuestro programa especializado de 'Little Warriors' acepta niños desde los 4 años de edad. En estas etapas nos enfocamos en el desarrollo psicomotor, el equilibrio, la coordinación de movimientos y, sobre todo, la asimilación del respeto y la disciplina básica en formato lúdico pero con estructura."
+    answer: "Nuestro programa de Pre-Karate acepta niños desde los 5 años de edad previa evaluación. En estas etapas nos enfocamos en el desarrollo psicomotor, el equilibrio, la coordinación de movimientos y, sobre todo, la asimilación del respeto y la disciplina básica en formato lúdico pero con estructura."
   },
   {
     id: "faq-2",
     question: "¿Es necesario adquirir el uniforme (karategi) inmediatamente?",
-    answer: "No. Para las primeras clases gratuitas de prueba o iniciación, el alumno puede asistir con ropa deportiva cómoda de gimnasia (pantalla corta/larga y camiseta). Una vez formalice su inscripción de manera definitiva, le suministramos su uniforme oficial completo (Gi y cinta blanca)."
+    answer: "No. Para la clase gratis de prueba puede realizarla con pantalones deportivos sin cierres en los tobillos, t-shirt comodo, crocs o sandalias, una toallita y termo de agua. Una vez formalice su inscripción de manera definitiva, puede adquirir el uniforme oficial completo (Gi y cinta blanca)."
   },
   {
     id: "faq-3",

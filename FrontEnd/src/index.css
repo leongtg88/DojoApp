@@ -413,6 +413,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+.hero-button {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-4 text-xs font-bold uppercase tracking-wider transition-all duration-300 border shadow-xl/30 cursor-pointer text-gray-700 backdrop-blur-sm;
+  background-color: transparent;
+  background-image: radial-gradient(closest-side, rgba(255,255,255,0.25), transparent);
+  animation: bg-color-change 10s infinite linear, border-color-change 10s infinite linear;
+  border-color: currentColor;
+}
+
+.hero-button:hover {
+  @apply border-white;
+  background-color: var(--color-brand-accent-hover);
+}
 
 
 @custom-media --cr-3xl (min-width: 1536px) and (max-width: 1730px);
