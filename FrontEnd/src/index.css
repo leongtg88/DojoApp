@@ -30,13 +30,37 @@
   
   .glass-card-hover {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
   }
   
   .glass-card-hover:hover {
     border-color: rgba(220, 38, 38, 0.35);
-    box-shadow: 0 10px 30px -10px rgba(220, 38, 38, 0.25);
-    transform: translateY(-2px);
+    box-shadow:  0 24px 40px -18px rgba(228, 62, 11, 0.25);
+    transform: translateY(-3px);
+    z-index: 1;
+    
   }
+  @keyframes shadow-color-change {
+  0%, 100% {
+    box-shadow: 0 10px 30px -10px rgba(220, 38, 38, 0.25);
+  }
+  20% {
+    box-shadow: 0 10px 30px -10px rgba(184, 176, 112, 0.25);
+  }
+  40% {
+    box-shadow: 0 10px 30px -10px rgba(111, 255, 233, 0.25);
+  }
+  60% {
+    box-shadow: 0 10px 30px -10px rgba(17, 138, 178, 0.25);
+  }
+  80% {
+    box-shadow: 0 10px 30px -10px rgba(160, 203, 255, 0.25);
+  }
+}
+
+
+
+
 
   .belt-glow {
     box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
@@ -414,16 +438,17 @@ h1, h2, h3, h4, h5, h6 {
 
 
 .hero-button {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-4 text-xs font-bold uppercase tracking-wider transition-all duration-300 border shadow-xl/30 cursor-pointer text-gray-700 backdrop-blur-sm;
-  background-color: transparent;
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-4 text-xs font-bold uppercase tracking-wider transition-all duration-300 border shadow-lg/30 cursor-pointer text-gray-700 backdrop-blur-sm;
+ 
   background-image: radial-gradient(closest-side, rgba(255,255,255,0.25), transparent);
-  animation: bg-color-change 10s infinite linear, border-color-change 10s infinite linear;
+  animation: 10s infinite linear, border-color-change 10s infinite linear;
   border-color: currentColor;
 }
 
 .hero-button:hover {
-  @apply border-white;
-  background-color: var(--color-brand-accent-hover);
+ 
+  
+  animation: bg-color-change 10s infinite linear, 10s infinite linear;
 }
 
 

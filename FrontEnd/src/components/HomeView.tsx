@@ -143,7 +143,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                 href="https://www.google.com/maps/place/Karate+Do+Tosei+Gusoku+Dojo+Shito+Ryu+Inoue+Ha/@18.4574589,-69.9520022,825m/data=!3m2!1e3!4b1!4m6!3m5!1s0x8ea563c15898befd:0x386c75f4f249964f!8m2!3d18.4574538!4d-69.9494273!16s%2Fg%2F11rckyjhp1?entry=ttu&g_ep=EgoyMDI2MDcwOC4wIKXMDSoASAFQAw%3D%3D"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hero-button w-full sm:w-auto"
+                className="hero-button glass-card-hover  w-full sm:w-auto"
               >
                 ¿CÓMO LLEGAR AL DOJO?
                 <Navigation className="w-4 h-4 shrink-0" />
@@ -276,7 +276,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                 <div className="pt-6">
                   <button
                     onClick={() => onOpenEnrollment(idx === 0 ? 'kid' : 'adult')}
-                    className="w-full bg-white/5 hover:bg-white/10 text-gray-700 font-semibold py-3 rounded-xl text-xs border border-white/10 tracking-wider font-display uppercase cursor-pointer"
+                    className="hero-button uppercase cursor-pointer"
                   >
                     AGENDAR CLASE DE PRUEBA DE ESTE GRUPO
                   </button>
@@ -322,7 +322,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
               <div className="pt-2">
                 <button
                   onClick={() => onOpenEnrollment('kid')}
-                  className="bg-brand-accent hover:bg-brand-accent-hover text-gray-700 font-bold px-8 py-3.5 rounded-xl text-sm transition-all text-center flex items-center gap-2 cursor-pointer active:scale-95"
+                  className=" hero-button"
                 >
                   Consultar sobre Promociones Familiares
                   <ArrowRight className="w-4 h-4" />
@@ -369,7 +369,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
           {MOCK_BENEFITS.map((benefit) => (
             <div
               key={benefit.id}
-              className="p-6 rounded-2xl flex flex-col space-y-4 glass-card-hover border border-white/5 relative overflow-hidden group"
+              className="p-6 rounded-2xl flex flex-col space-y-4 glass-card-hover border border-white/5 relative overflow-hidden group shadow-md shadow-black/40"
               style={{ animation: "border-color-change 8s infinite linear" }}
             >
 
@@ -413,7 +413,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
           {MOCK_INSTRUCTORS.slice(0, 3).map((inst) => (
             <div
               key={inst.id}
-              className={` rounded-2xl overflow-hidden border border-white/5 flex flex-col relative group h-full ring-1 ring-brand-accent/50 group-hover:ring-brand-accent shadow-xl shadow-black/40 }`}
+              className={` rounded-2xl overflow-hidden border border-white/5 flex flex-col relative group h-full ring-1 ring-brand-accent/50 group-hover:ring-brand-accent shadow-md shadow-black/40 }`}
             >
               {/* Image banner frame */}
               <div className="h-64 sm:h-[30rem] w-full relative overflow-hidden bg-slate-900 border-b border-white/10 ">
@@ -463,7 +463,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
         <div className="text-center pt-4">
           <button
             onClick={onNavigateToAbout}
-            className="px-6 py-3.5 bg-brand-accent hover:bg-white/5 text-gray-700 font-bold rounded-xl text-sm border border-white/15 transition-all inline-flex items-center gap-2 cursor-pointer"
+            className="hero-button"
           >
             Ver biografías completas y currículo de maestros
             <ArrowRight className="w-4 h-4 text-black" />
@@ -656,7 +656,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
           <div className="pt-4">
             <button
               onClick={() => onOpenEnrollment('adult')}
-              className="w-full sm:w-auto bg-brand-accent hover:bg-brand-accent-hover text-gray-700 font-extrabold px-10 py-5 rounded-xl text-base transition-all belt-glow tracking-wider font-display uppercase cursor-pointer"
+              className="hero-button"
             >
               RESERVAR CLASE DEMO GRATUITA
             </button>
