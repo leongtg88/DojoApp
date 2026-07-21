@@ -276,7 +276,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                 <div className="pt-6">
                   <button
                     onClick={() => onOpenEnrollment(idx === 0 ? 'kid' : 'adult')}
-                    className="hero-button uppercase cursor-pointer"
+                    className="hero-button glass-card-hover  cursor-pointer"
                   >
                     AGENDAR CLASE DE PRUEBA DE ESTE GRUPO
                   </button>
@@ -322,7 +322,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
               <div className="pt-2">
                 <button
                   onClick={() => onOpenEnrollment('kid')}
-                  className=" hero-button"
+                  className=" hero-button glass-card-hover "
                 >
                   Consultar sobre Promociones Familiares
                   <ArrowRight className="w-4 h-4" />
@@ -463,7 +463,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
         <div className="text-center pt-4">
           <button
             onClick={onNavigateToAbout}
-            className="hero-button"
+            className="hero-button glass-card-hover "
           >
             Ver biografías completas y currículo de maestros
             <ArrowRight className="w-4 h-4 text-black" />
@@ -603,12 +603,12 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                 >
                   <button
                     onClick={() => toggleFaq(faq.id)}
-                    className="w-full text-left p-5 md:p-6 flex justify-between items-center bg-[#18181b]/30 hover:bg-[#18181b]/60 transition-colors cursor-pointer"
+                    className="w-full text-left p-5 md:p-6 flex justify-between items-center bg-brand-accent hover:bg-[#18181b]/60   transition-colors cursor-pointer"
                   >
-                    <span className="font-bold text-base sm:text-lg font-display text-gray-700 pr-4">
+                    <span className="font-bold text-base sm:text-lg font-display text-gray-700 hover:text-white pr-4">
                       {faq.question}
                     </span>
-                    <ChevronDown className={`w-5 h-5 text-brand-accent shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-5 h-5 text-black   shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   {isOpen && (
@@ -656,7 +656,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
           <div className="pt-4">
             <button
               onClick={() => onOpenEnrollment('adult')}
-              className="hero-button"
+              className="hero-button  glass-card-hover "
             >
               RESERVAR CLASE DEMO GRATUITA
             </button>

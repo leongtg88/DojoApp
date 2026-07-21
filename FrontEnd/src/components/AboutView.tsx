@@ -1,6 +1,8 @@
 import { MOCK_INSTRUCTORS } from '../types';
-import { ArrowLeft } from 'lucide-react';
 
+import MawashiYodan from '../assets/Mawashiguericintorunnegro2026.svg'
+import LogoIskia from '../assets/LogoIskia.svg';
+import negrosInoue from '../assets/NegrosInoue.svg'
 interface AboutViewProps {
   onOpenEnrollment: (program?: string) => void;
   onNavigateToHome: () => void;
@@ -17,32 +19,16 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
     <div className="space-y-0 min-h-screen bg-brand-bg text-[#dee2f0]">
 
       {/* 1. Banner Hero (similar to Home, but text "Sobre Nosotros") */}
-      <header className="relative w-full h-[60vh] flex flex-col justify-end px-4 md:px-12 pb-16 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img
-            className="w-full h-full object-cover scale-102 filter contrast-110 brightness-75"
-            src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=1600"
-            alt="Sobre Nosotros Dojo"
-            referrerPolicy="no-referrer"
-          />
-          {/* Subtle dark overlays */}
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-bg via-brand-bg/60 to-transparent" />
-          <div className="absolute inset-0 bg-black/50" />
-        </div>
-
-        <div className="relative z-10 max-w-4xl mx-auto w-full space-y-4 text-left">
-          <button
-            onClick={onNavigateToHome}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-accent tracking-wider uppercase hover:text-gray-700 transition-colors cursor-pointer group"
-          >
-            <ArrowLeft className="w-4 h-4 group-hover:translate-x-[-2px] transition-transform" />
-            Volver al inicio
-          </button>
-
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-accent/10 border border-brand-accent/20 text-brand-accent">
-            <span className="w-2 h-2 rounded-full bg-brand-accent animate-pulse" />
-            <span className="font-display font-bold text-xs tracking-wider">NUESTRA TRADICIÓN</span>
-          </div>
+      <header
+        className="relative w-full h-[60vh] flex items-center justify-center px-4 md:px-12 overflow-hidden bg-no-repeat bg-contain bg-start bg-fixed"
+        style={{
+          backgroundImage: `url(${MawashiYodan})`,
+          backgroundSize: '30%',
+          backgroundPosition: '20% 40%',
+        }}
+      >
+        {/* title  and p*/}
+        <div className="relative z-10 flex flex-col items-center justify-center max-w-4xl mx-auto w-full space-y-6 text-center">
 
           <h1 className="font-display text-4xl sm:text-6xl font-extrabold tracking-tight text-gray-700 leading-none capitalize">
             Sobre Nosotros
@@ -51,6 +37,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
           <p className="text-base sm:text-lg text-gray-700/80 max-w-2xl leading-relaxed font-sans">
             Preservamos las bases puras y la rigurosidad técnica de Shito-Ryu Inoue Ha, fundado por Soke Yoshimi Inoue en Japón.
           </p>
+          <p className="text-base sm:text-lg  pt-12 text-gray-700/80">Sensei León Gustavo</p>
         </div>
       </header>
 
@@ -59,20 +46,9 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       <section className="py-16 max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-6">
 
         {/* Beautiful high-end Organization Emblem Placeholder (Japanese Mon style) */}
-        <div className="mx-auto w-32 h-32 rounded-full bg-gradient-to-tr from-[#162235] to-[#0e131d] border-2 border-brand-accent flex items-center justify-center p-1.5 relative shadow-lg belt-glow">
-          <div className="w-full h-full rounded-full border border-white/10 flex items-center justify-center bg-black relative overflow-hidden">
-            {/* Traditional Japan red sun circle & white crane vector placeholder */}
-            <div className="absolute w-14 h-14 rounded-full bg-brand-red opacity-80" />
-            {/* Elegant SVG Cross Kanji symbol for Inoue Ha */}
-            <svg className="w-16 h-16 text-gray-700 relative z-10" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-4H7v-2h4V7h2v4h4v2h-4v4z" />
-            </svg>
-          </div>
-          {/* Tiny bottom ribbon badge */}
-          <span className="absolute -bottom-2 bg-brand-accent text-black font-display font-extrabold text-[9px] px-2 py-0.5 rounded shadow">
-            KEISHIN KAI
-          </span>
-        </div>
+
+        <img src={LogoIskia} alt="Logo ISKIA" className="w-62  object-contain mx-auto items-center justify-center" />
+
 
         <div className="space-y-4 max-w-3xl mx-auto">
           <h3 className="text-2xl font-bold font-display uppercase tracking-wide text-gray-700">
@@ -85,7 +61,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       </section>
 
 
-      {/* 3. Banner de instructores (resumen visual) */}
+      {/* 3. Banner de instructores (resumen visual) 
       <section className="py-12 bg-[#101725] border-y border-white/5">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-xs font-bold tracking-widest text-brand-accent font-display uppercase mb-6">LINAJE ININTERRUMPIDO DE MAESTROS JAPONESES Y NACIONALES</p>
@@ -112,7 +88,24 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
           </div>
         </div>
       </section>
+*/}
+      {/*<section 
+  className="relative h-screen w-full pt-[1500px] bg-no-repeat bg-center"
+  style={{ 
+    backgroundImage: `url(${negrosInoue})`,
+    backgroundAttachment: 'fixed',
+    backgroundSize: '100% 100%' // o dimensiones específicas
+  }}
+></section>*/}
 
+      <section
+        className="relative h-screen w-full bg- bg-right bg-fixed overflow-hidden bg-no-repeat"
+        style={{ backgroundImage: `url(${negrosInoue})`, backgroundPosition: ' center 10%' }}
+      >
+        <div className="relative z-10 h-full flex items-center justify-center">
+          {/* contenido superpuesto si hace falta */}
+        </div>
+      </section>
 
       {/* 4. Historia: imagen y texto */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
