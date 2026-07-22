@@ -3,6 +3,8 @@ import { MOCK_INSTRUCTORS } from '../types';
 import MawashiYodan from '../assets/Mawashiguericintorunnegro2026.svg'
 import LogoIskia from '../assets/LogoIskia.svg';
 import negrosInoue from '../assets/NegrosInoue.svg'
+import letrasIKIA from '../assets/letrasIKSKiatradu.svg'
+import LeonMar from '../assets/LeonMar.svg'
 interface AboutViewProps {
   onOpenEnrollment: (program?: string) => void;
   onNavigateToHome: () => void;
@@ -27,6 +29,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
           backgroundPosition: '20% 40%',
         }}
       >
+        <div className=" absolute inset-0 bg-gradient-to-t from-white via-white/30 via-30% to-transparent" />
         {/* title  and p*/}
         <div className="relative z-10 flex flex-col items-center justify-center max-w-4xl mx-auto w-full space-y-6 text-center">
 
@@ -45,7 +48,6 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       {/* 2. Logo de la organización con texto debajo */}
       <section className="py-16 max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-6">
 
-        {/* Beautiful high-end Organization Emblem Placeholder (Japanese Mon style) */}
 
         <img src={LogoIskia} alt="Logo ISKIA" className="w-62  object-contain mx-auto items-center justify-center" />
 
@@ -61,69 +63,36 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       </section>
 
 
-      {/* 3. Banner de instructores (resumen visual) 
-      <section className="py-12 bg-[#101725] border-y border-white/5">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-xs font-bold tracking-widest text-brand-accent font-display uppercase mb-6">LINAJE ININTERRUMPIDO DE MAESTROS JAPONESES Y NACIONALES</p>
-          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12 opacity-80">
-            <div className="text-center">
-              <h5 className="font-bold text-gray-700 font-display text-sm tracking-wide">SOKE YOSHIMI INOUE</h5>
-              <p className="text-[10px] text-gray-700/50">Fundador de Inoue Ha Japón</p>
-            </div>
-            <div className="text-gray-700/20 select-none">/</div>
-            <div className="text-center">
-              <h5 className="font-bold text-gray-700 font-display text-sm tracking-wide">SHIHAN MUNEO KANO</h5>
-              <p className="text-[10px] text-gray-700/50">Maestro Guía Internacional</p>
-            </div>
-            <div className="text-gray-700/20 select-none">/</div>
-            <div className="text-center">
-              <h5 className="font-bold text-gray-700 font-display text-sm tracking-wide">KYOSHI JULIO MARTÍNEZ</h5>
-              <p className="text-[10px] text-gray-700/50">8vo Dan - Asesor Técnico</p>
-            </div>
-            <div className="text-gray-700/20 select-none">/</div>
-            <div className="text-center">
-              <h5 className="font-bold text-gray-700 font-display text-sm tracking-wide">SENSEI LEÓN</h5>
-              <p className="text-[10px] text-gray-700/50">Director Técnico Dojo</p>
-            </div>
-          </div>
-        </div>
-      </section>
-*/}
-      {/*<section 
-  className="relative h-screen w-full pt-[1500px] bg-no-repeat bg-center"
-  style={{ 
-    backgroundImage: `url(${negrosInoue})`,
-    backgroundAttachment: 'fixed',
-    backgroundSize: '100% 100%' // o dimensiones específicas
-  }}
-></section>*/}
 
+      {/* 3 Beautiful high-end Organization */}
       <section
-        className="relative h-screen w-full bg- bg-right bg-fixed overflow-hidden bg-no-repeat"
-        style={{ backgroundImage: `url(${negrosInoue})`, backgroundPosition: ' center 10%' }}
+        className="relative h-[1200px] w-full bg- bg-right bg-fixed overflow-hidden bg-no-repeat"
+        style={{ backgroundImage: `url(${negrosInoue})`, backgroundPosition: ' center  50px' }}
       >
+        {/* High-contrast vignettes */}
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/30 via-30% to-transparent" />
+
         <div className="relative z-10 h-full flex items-center justify-center">
           {/* contenido superpuesto si hace falta */}
         </div>
       </section>
 
       {/* 4. Historia: imagen y texto */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section className="py-40 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
           {/* History Image block */}
-          <div className="lg:col-span-5 relative h-96 w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+          <div className="lg:col-span-5 relative h-full w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10">
             <img
-              src="https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=900"
+              src={letrasIKIA}
               alt="Clase tradicional en el dojo antiguo"
-              className="w-full h-full object-cover filter contrast-105"
+              className="w-full h-full object-contain filter contrast-105"
               referrerPolicy="no-referrer"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+
             <div className="absolute bottom-6 left-6 text-left">
-              <span className="text-xs bg-brand-red text-gray-700 py-1 px-2.5 rounded font-bold font-display uppercase tracking-widest">TRADICIÓN</span>
-              <h4 className="font-bold text-lg font-display text-gray-700 mt-2">Dedicación Continua</h4>
-              <p className="text-xs text-gray-700/70">Formando campeones con humildad.</p>
+
+
             </div>
           </div>
 
@@ -133,7 +102,12 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
               Nuestra Historia
             </h3>
             <p className="text-sm sm:text-base text-gray-700/70 leading-relaxed font-sans">
-              La Escuela de Karate Tosei Gusoku nació con el ferviente anhelo de infundir en Santo Domingo la verdadera filosofía del Shito-Ryu, uno de los cuatro estilos base tradicionales de Japón. Tosei Gusoku significa literalmente "armadura moderna", haciendo referencia a que el karate actúa como un caparazón psicológico y físico protector para la persona en su desenvolvimiento diario en la urbe.
+              Tosei Gusoku es una escuela que nació en tiempos de grandes desafíos, ha logrado cumplir su objetivo de enseñar karate a personas de todas las edades. Pertenciendo a Organización Inoue-Ha Internacional y con el apoyo de nuestros alumnos, padres y representantes, quienes comprenden el profundo valor de contar con un Dojo que transmite el karate más allá de un deporte, podemos compartir nuestra esencia marcial, siguiendo la tradición japonesa y fomentando valores como la humildad, la ausencia de ego, la motivación por el logro basado en el mérito personal, sin comparaciones con los demás, además de muchos otros principios positivos para cualquier practicante. <br /> <br />
+
+              Una parte importante de nuestra labor es fomentar una nueva generación de hábitos positivos que construyan, paso a paso, nuevas estructuras de pensamiento y, en consecuencia, nuevas formas de actuar y de vivir el día a día. El karate no se queda en el dojo. Tanto para los adultos como para los niños, promovemos junto a los padres y representantes la importancia de motivar, apoyar y desarrollar gradualmente en el hogar la autodisciplina, tanto en la práctica del karate como en el cumplimiento de las tareas domésticas que les correspondan. <br /> <br />
+
+              Asimismo, incentivamos hábitos de alimentación e hidratación saludables, momentos adecuados de recreación y descanso, promoviendo valores como la responsabilidad de cuidar de uno mismo. Del mismo modo, fomentamos la constancia y el compromiso de mantener en el tiempo la práctica, ya sea directa o indirecta, mediante los entrenamientos, las tareas y las responsabilidades asumidas con la escuela y con los Senseis.
+
             </p>
             <p className="text-sm sm:text-base text-gray-700/70 leading-relaxed font-sans">
               Bajo la tutela directa del Kyoshi Julio Martínez y la rigurosidad heredada del Shihan Manuel Balbuena, entrenamos arduamente para que cada Kata sea la expresión viva de la fuerza interna. Llevamos más de una década destacando en campeonatos selectivos nacionales, y enviando atletas de alto rendimiento a representar con honor e hidalguía la patria caribeña.
@@ -144,62 +118,45 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       </section>
 
 
+
+      <div className=" bg-gray-900  text-left  w-full pl-[20rem] space-y-4 py-10">
+        <span className="text-xs font-bold text-brand-accent tracking-widest font-display uppercase block">LÍDER TÉCNICO </span>
+        <h3 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight">
+          Sensei de Tosei Gusoku Dojo
+        </h3>
+        <p className="text-sm sm:text-lg text-white italic leading-relaxed max-w-3xl  font-sans">
+          "Representante oficial de Shito Ryu Inoue Ha Santo Domingo y aprendiz de Shihan Manuel Balbuena y Kyoshi Julio Martínez."
+        </p>
+      </div>
+
+
+
       {/* 5. Sección "Sensei de Tosei Gusoku Dojo" (Fondo Negro, foto Sensei y card) */}
-      <section className="py-20 bg-black text-gray-700 border-y border-white/5 relative overflow-hidden">
-        {/* Glow accent */}
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-brand-accent/5 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative w-full h-[900px] flex items-center justify-end overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed"
+        style={{
+          backgroundImage: `url(${LeonMar})`,
+          backgroundPosition: ' center 10px'
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        }}
+      >
 
-          <div className="text-center max-w-4xl mx-auto space-y-4">
-            <span className="text-xs font-bold text-brand-accent tracking-widest font-display uppercase block">LÍDER TÉCNICO VIVO</span>
-            <h3 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight">
-              Sensei de Tosei Gusoku Dojo
-            </h3>
-            <p className="text-sm sm:text-lg text-gray-700/70 italic leading-relaxed max-w-3xl mx-auto font-sans">
-              "Representante oficial de Shito Ryu Inoue Ha Santo Domingo y aprendiz de Shihan Manuel Balbuena y Kyoshi Julio Martínez."
-            </p>
+        {/* Overlaid Float Biographic Card */}
+        <div className=" p-6 bg-gray   backdrop-blur-2xl border border-blue-700  max-w-2xl   mr-40 rounded-2xl space-y-4 shadow-2xl text-left">
+          <div>
+            <span className="text-[10px] font-bold text-brand-accent uppercase tracking-wider font-display">DIRECTOR GENERAL DEL DOJO</span>
+            <h4 className="font-extrabold text-2xl font-display text-gray-700 mt-1 uppercase">{senseiLeon.name}</h4>
+            <p className="text-xs text-gray-700/60">Cinturón Negro 2do Dan - Inoue Ha </p>
           </div>
 
-          {/* Large image with card overlay */}
-          <div className="relative rounded-2xl overflow-hidden h-[500px] w-full border border-white/10 shadow-2xl">
-            {/* Wide artistic render picture of Sensei León */}
-            <img
-              src="https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&q=80&w=1200"
-              alt="Sensei León ejecutando Kata"
-              className="w-full h-full object-cover object-top"
-              referrerPolicy="no-referrer"
-            />
-            {/* Contrast veil */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent sm:bg-gradient-to-r sm:from-black/90 sm:ton-transparent" />
+          <p className="text-xs text-gray-700/80 leading-relaxed font-sans">
+            <p>Inició karate a la temprana edad de <strong>4 años gracias a su abuelo</strong>, quien lo inscribió al ver su inquietud por hacer movimientos de puños y patadas inspirados en las películas de artes marciales de los 80. <strong>Su primera escuela fue en el estilo Shotokan en Caracas, Venezuela.</strong></p><p>Por cambios en la escuela, debió pausar sus prácticas hasta los 14 años, cuando<strong> se incorporó a la escuela de Miyagiken bajo la tutela del Maestro Luis Alberte en la Organización Shito Kai, donde logró el oro dominando las categorías a nivel nacional en kata y kumite.</strong></p><p>Una vez iniciados sus estudios universitarios y de maestría en el exterior, retomó sus prácticas en la escuela de Dimitrova Dojo, en Santo Domingo, República Dominicana, bajo la tutela de la Maestra María Dimitrova. Allí<strong> continuó entrenando y compitiendo en categorías intermedias, alcanzando oro en kata y kumite en diversas competencias nacionales e internacionales en República Dominicana, y comenzó a dar clases de karate a niños.</strong></p><p>Al alcanzar el grado de Marrón Primero, <strong>Sensei León decidió fundar su propia escuela e incorporarse a la Organización Inoue Ha Dominicana, gracias a su Sensei Manuel Valbuena</strong>, quien lo orientó durante los procesos de cambio y <strong>lo refirió ante Kyoshi Julio Martínez.</strong></p><p>El Sensei León posee conocimientos en <strong>otras artes marciales como Jujutsu, Aikido e Iaido,</strong> complementando así su <strong>formación en diferentes aspectos tradicionales y de combate de estas disciplinas japonesas.</strong></p>
+          </p>
 
-            {/* Overlaid Float Biographic Card */}
-            <div className="absolute inset-x-4 bottom-4 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:left-8 sm:max-w-md p-6 bg-brand-card backdrop-blur-xl border border-white/10 rounded-2xl space-y-4 shadow-2xl text-left">
-              <div>
-                <span className="text-[10px] font-bold text-brand-accent uppercase tracking-wider font-display">DIRECTOR GENERAL DEL DOJO</span>
-                <h4 className="font-extrabold text-2xl font-display text-gray-700 mt-1 uppercase">{senseiLeon.name}</h4>
-                <p className="text-xs text-gray-700/60">Cinturón Negro 4to Dan - Inoue Ha Brach</p>
-              </div>
-
-              <p className="text-xs text-gray-700/80 leading-relaxed font-sans">
-                El Sensei León ha consagrado su juventud al desarrollo técnico del karate infantil y juvenil. Cree en la disciplina positiva: forjar mentes firmes y alegres, capaces de canalizar las frustraciones cotidianas a través del rigor del ejercicio físico y el autoconocimiento marcial.
-              </p>
-
-              {senseiLeon.curriculum && (
-                <div className="space-y-1.5 pt-2 border-t border-white/10">
-                  <p className="text-[10px] font-extrabold text-brand-secondary uppercase">Méritos e Instrucción:</p>
-                  {senseiLeon.curriculum.map((c, i) => (
-                    <div key={i} className="flex gap-2 text-[11px] text-gray-700/70">
-                      <span className="text-brand-accent font-bold">•</span>
-                      <span>{c}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
 
         </div>
+
+
+
       </section>
 
 
