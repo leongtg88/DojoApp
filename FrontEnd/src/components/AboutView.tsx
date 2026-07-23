@@ -5,6 +5,7 @@ import LogoIskia from '../assets/LogoIskia.svg';
 import negrosInoue from '../assets/NegrosInoue.svg'
 import letrasIKIA from '../assets/letrasIKSKiatradu.svg'
 import LeonMar from '../assets/LeonMar.svg'
+import kyoshi from '../assets/kyoshiSeiza.svg'
 interface AboutViewProps {
   onOpenEnrollment: (program?: string) => void;
   onNavigateToHome: () => void;
@@ -118,7 +119,9 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       </section>
 
 
+    {/* 5. Sección "Sensei de Tosei Gusoku Dojo"  */}
 
+        {/*  Banner titulo  */}
       <div className=" bg-gray-900  text-left  w-full pl-[20rem] space-y-4 py-10">
         <span className="text-xs font-bold text-brand-accent tracking-widest font-display uppercase block">LÍDER TÉCNICO </span>
         <h3 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight">
@@ -131,7 +134,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
 
 
 
-      {/* 5. Sección "Sensei de Tosei Gusoku Dojo" (Fondo Negro, foto Sensei y card) */}
+      {/* Bakground Imag + Descripcion */}
       <section className="relative w-full h-[900px] flex items-center justify-end overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed"
         style={{
           backgroundImage: `url(${LeonMar})`,
@@ -140,7 +143,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
         }}
       >
 
-        {/* Overlaid Float Biographic Card */}
+          {/* Overlaid Float Biographic Card */}
         <div className=" p-6 bg-gray   backdrop-blur-2xl border border-blue-700  max-w-2xl   mr-40 rounded-2xl space-y-4 shadow-2xl text-left">
           <div>
             <span className="text-[10px] font-bold text-brand-accent uppercase tracking-wider font-display">DIRECTOR GENERAL DEL DOJO</span>
@@ -161,23 +164,28 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
 
 
       {/* 6. Sección "Kyoshi Julio Martínez" (Foto, intro, card negro con currículo) */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 text-left">
+
+        {/* Banner titulo  */}
+        <div className=" bg-white text-left  w-full pl-[20rem] space-y-4 py-10">
+       
+        <h3 className="text-3xl sm:text-5xl font-extrabold font-display  text-gray-700 uppercase tracking-tight">
+          Maestros Guías de Tosei Gusoku Dojo 
+        </h3>
+        <p className="text-sm sm:text-lg text-gray-700 italic leading-relaxed max-w-3xl  font-sans">
+          Karate Do Shito Ryu Inoue Ha Santo Domingo
+        </p>
+      </div>
+
+      <section className="relative w-full h-[900px] flex items-center justify-end overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed"
+        style={{
+          backgroundImage: `url(${kyoshi})`,
+          backgroundPosition: ' center 10px'
+
+        }}
+      >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
-          {/* Left Large picture of Kyoshi */}
-          <div className="lg:col-span-5 relative h-[500px] w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-brand-card">
-            <img
-              src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=900"
-              alt="Kyoshi Julio Martínez"
-              className="w-full h-full object-cover filter contrast-102"
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-bg via-transparent to-transparent" />
-            <div className="absolute bottom-6 left-6 block bg-black/60 px-4 py-2 border border-brand-red rounded backdrop-blur-md">
-              <p className="font-display font-extrabold text-sm text-brand-red tracking-wider uppercase">KYOSHI JULIO MARTÍNEZ</p>
-              <p className="text-[10px] text-gray-700/60">Cinto Negro 8vo Dan - Inoue Ha Keishin Kai</p>
-            </div>
-          </div>
+
 
           {/* Right Text details and Black Card with Curriculum */}
           <div className="lg:col-span-7 space-y-6">

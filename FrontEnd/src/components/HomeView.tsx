@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion } from 'motion/react';
 import {
   MOCK_BENEFITS,
   MOCK_TESTIMONIALS,
@@ -20,9 +19,6 @@ import {
   Navigation,
   ArrowRight,
   Sparkles,
-  Camera,
-  MessagesSquare,
-  Play,
   Users,
   Award,
   CalendarDays,
