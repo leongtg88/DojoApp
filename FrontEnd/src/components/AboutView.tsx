@@ -6,6 +6,8 @@ import negrosInoue from '../assets/NegrosInoue.svg'
 import letrasIKIA from '../assets/letrasIKSKiatradu.svg'
 import LeonMar from '../assets/LeonMar.svg'
 import kyoshi from '../assets/kyoshiSeiza.svg'
+import SenseiManuel from '../assets/SenseiManuel.svg'
+import SenseiKano from '../assets/SenseiMuneoKano.svg'
 interface AboutViewProps {
   onOpenEnrollment: (program?: string) => void;
   onNavigateToHome: () => void;
@@ -119,9 +121,9 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       </section>
 
 
-    {/* 5. Sección "Sensei de Tosei Gusoku Dojo"  */}
+      {/* 5. Sección "Sensei de Tosei Gusoku Dojo"  */}
 
-        {/*  Banner titulo  */}
+      {/*  Banner titulo  */}
       <div className=" bg-gray-900  text-left  w-full pl-[20rem] space-y-4 py-10">
         <span className="text-xs font-bold text-brand-accent tracking-widest font-display uppercase block">LÍDER TÉCNICO </span>
         <h3 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight">
@@ -143,7 +145,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
         }}
       >
 
-          {/* Overlaid Float Biographic Card */}
+        {/* Overlaid Float Biographic Card */}
         <div className=" p-6 bg-gray   backdrop-blur-2xl border border-blue-700  max-w-2xl   mr-40 rounded-2xl space-y-4 shadow-2xl text-left">
           <div>
             <span className="text-[10px] font-bold text-brand-accent uppercase tracking-wider font-display">DIRECTOR GENERAL DEL DOJO</span>
@@ -165,11 +167,11 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
 
       {/* 6. Sección "Kyoshi Julio Martínez" (Foto, intro, card negro con currículo) */}
 
-        {/* Banner titulo  */}
-        <div className=" bg-white text-left  w-full pl-[20rem] space-y-4 py-10">
-       
+      {/* Banner titulo  */}
+      <div className=" bg-white text-left  w-full pl-[20rem] space-y-4 py-10">
+
         <h3 className="text-3xl sm:text-5xl font-extrabold font-display  text-gray-700 uppercase tracking-tight">
-          Maestros Guías de Tosei Gusoku Dojo 
+          Maestros Guías de Tosei Gusoku Dojo
         </h3>
         <p className="text-sm sm:text-lg text-gray-700 italic leading-relaxed max-w-3xl  font-sans">
           Karate Do Shito Ryu Inoue Ha Santo Domingo
@@ -179,45 +181,87 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       <section className="relative w-full h-[900px] flex items-center justify-end overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed"
         style={{
           backgroundImage: `url(${kyoshi})`,
-          backgroundPosition: ' center 10px'
+          backgroundPosition: ' center 80px'
 
         }}
       >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className=" gap-12 items-center max-w-2xl mr-40">
 
 
 
           {/* Right Text details and Black Card with Curriculum */}
-          <div className="lg:col-span-7 space-y-6">
-            <span className="text-xs bg-brand-red/10 border border-brand-red/20 px-3 py-1 rounded-full text-brand-red font-bold font-display uppercase tracking-widest inline-block">MÁXIMA AUTORIDAD TÉCNICA</span>
-            <h3 className="text-3xl sm:text-5xl font-extrabold font-display uppercase text-gray-700 leading-tight">
+          <div className=" space-y-6 pt-60 pb-60">
+            <span className="text-xs  border border-brand-accent text-brand-accent px-3 py-1 rounded-full  font-bold font-display uppercase tracking-widest inline-block">MÁXIMA AUTORIDAD TÉCNICA</span>
+            <h3 className="text-3xl sm:text-5xl font-extrabold font-display uppercase text-brand-accent leading-tight">
               Kyoshi Julio Martínez
             </h3>
 
-            <p className="text-sm sm:text-base text-gray-700/70 leading-relaxed font-sans">
-              Es una eminencia del karate en el área del Caribe. Su experiencia de más de cuatro décadas en el tatami lo ha llevado a supervisar miles de graduaciones y examinar personalmente los cinturones negros que lideran actualmente la escuela de Tosei Gusoku. Es el consultor técnico que valida las metodologías de entrenamiento implementadas en nuestro dojo.
+            <p className="text-sm sm:text-base text-white leading-relaxed font-sans">
+              Es una eminencia del karate en el karate Moderno. Su experiencia de más de cinco décadas en el tatami lo ha llevado a supervisar miles de graduaciones y examinar personalmente a cientos de cinturones negros que lideran en karate en diferentes partes del mundo. Más allá de ser nuestro Director Técnico que valida las metodologías de entrenamiento implementadas en nuestro dojo, es una figura fraterna que nos orienta.
             </p>
 
             {/* Black Curriculum Card */}
-            <div className={`glass-card p-6 rounded-2xl border border-brand-accent/20 relative overflow-hidden belt-glow-red bg-black/40`}>
+            <div className={`glass-card p-6 rounded-2xl border border-brand-accent relative overflow-hidden belt-color-change bg-black/40`}>
               {/* Little design mark */}
               <div className="absolute right-0 top-0 w-24 h-24 bg-brand-red/5 rounded-full blur-xl" />
 
-              <h4 className="font-extrabold text-lg text-gray-700 font-display uppercase tracking-wide border-b border-white/10 pb-3 mb-4 flex items-center justify-between">
+              <h4 className="font-extrabold text-lg text-brand-accent font-display uppercase tracking-wide border-b border-white/10 pb-3 mb-4 flex items-center justify-between">
                 <span>CURRÍCULO DE KYOSHI JULIO</span>
-                <span className="text-xs text-brand-red uppercase font-semibold tracking-widest font-mono">8º Dan</span>
+                
               </h4>
 
-              <ul className="space-y-3">
-                {kyoshiJulio.curriculum?.map((c, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <span className="w-5 h-5 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold font-mono">
-                      {i + 1}
-                    </span>
-                    <span className="text-xs sm:text-sm text-gray-700/80 leading-relaxed">{c}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="space-y-4 flex gap-8">
+                <div >
+                    <ul className="space-y-3 text-xs sm:text-sm text-white leading-relaxed">
+                        <li>
+                          <strong>7th Degree Black Belt</strong><br />
+                          Karate-Do Hayashi-ha Shito-Ryu (1999).
+                        </li>
+                        <li>
+                          <strong>7th Degree Black Belt</strong><br />
+                          Karate-Do Inoue-ha Shito-Ryu (2008).
+                        </li>
+                        <li>
+                          <strong>6th Degree Black Belt</strong><br />
+                          Okinawa Goju-Ryu (2009).
+                        </li>
+                        <li>
+                          <strong>5th Degree Black Belt</strong><br />
+                          Okinawa Karate-Do Ryu El-Ryu (1992).
+                        </li>
+                        <li>
+                          <strong>5th Degree Black Belt</strong><br />
+                          Okinawa Kobudo (Weapons) (1992).
+                        </li>
+                    </ul>
+                </div> 
+                <div>
+
+                
+                      <ul className="space-y-3 text-xs sm:text-sm text-white leading-relaxed">
+                        <li>
+                          <strong>5th Degree Black Belt</strong><br />
+                          SKIF Shotokan (1990).
+                        </li>
+
+                        <li>
+                          <strong>5th Degree Black Belt</strong><br />
+                          Eishin Ryu Iaido (2007).
+                        </li>
+                        <li>
+                          <strong>National Class "A" Referee.</strong>
+                        </li>
+                        <li>
+                          <strong>Member</strong><br />
+                          World Karate Federation (WKF), 160 countries.
+                        </li>
+                        <li>
+                          <strong>Member</strong><br />
+                          Dominican Karate Federation (FEDOKA).
+                        </li>
+                    </ul>
+                </div>
+              </div>
             </div>
           </div>
 
