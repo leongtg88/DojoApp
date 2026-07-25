@@ -8,6 +8,7 @@ import LeonMar from '../assets/LeonMar.svg'
 import kyoshi from '../assets/kyoshiSeiza.svg'
 import SenseiManuel from '../assets/SenseiManuel.svg'
 import SenseiKano from '../assets/SenseiMuneoKano.svg'
+import Germanbg from '../assets/germanBG.svg'
 interface AboutViewProps {
   onOpenEnrollment: (program?: string) => void;
   onNavigateToHome: () => void;
@@ -137,9 +138,54 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
 
 
       {/* Bakground Imag + Descripcion */}
-      <section className="relative w-full h-[900px] flex items-center justify-end overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed"
+      <section className="relative w-full h-[900px] flex items-center justify-end overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed py-20"
         style={{
           backgroundImage: `url(${LeonMar})`,
+          backgroundPosition: ' center 50px',
+          backgroundSize: 'contain'
+
+        }}
+      >
+
+        {/* Overlaid Float Biographic Card */}
+        <div className=" p-6 bg-gray   backdrop-blur-2xl border border-blue-700  max-w-2xl   mr-40 rounded-2xl space-y-4 shadow-2xl text-left ">
+          <div>
+            <span className="text-[10px] font-bold text-brand-accent uppercase tracking-wider font-display">DIRECTOR GENERAL DEL DOJO</span>
+            <h4 className="font-extrabold text-2xl font-display text-gray-700 mt-1 uppercase">{senseiLeon.name}</h4>
+            <p className="text-xs text-gray-700/60">Cinturón Negro 2do Dan - Inoue Ha </p>
+          </div>
+
+          <p className="text-xs text-gray-700/80 leading-relaxed font-sans ">
+            <p>Inició karate a la temprana edad de <strong>4 años gracias a su abuelo</strong>, quien lo inscribió al ver su inquietud por hacer movimientos de puños y patadas inspirados en las películas de artes marciales de los 80. <strong>Su primera escuela fue en el estilo Shotokan en Caracas, Venezuela.</strong></p><p>Por cambios en la escuela, debió pausar sus prácticas hasta los 14 años, cuando<strong> se incorporó a la escuela de Miyagiken bajo la tutela del Maestro Luis Alberte en la Organización Shito Kai, donde logró el oro dominando las categorías a nivel nacional en kata y kumite.</strong></p><p>Una vez iniciados sus estudios universitarios y de maestría en el exterior, retomó sus prácticas en la escuela de Dimitrova Dojo, en Santo Domingo, República Dominicana, bajo la tutela de la Maestra María Dimitrova. Allí<strong> continuó entrenando y compitiendo en categorías intermedias, alcanzando oro en kata y kumite en diversas competencias nacionales e internacionales en República Dominicana, y comenzó a dar clases de karate a niños.</strong></p><p>Al alcanzar el grado de Marrón Primero, <strong>Sensei León decidió fundar su propia escuela e incorporarse a la Organización Inoue Ha Dominicana, gracias a su Sensei Manuel Valbuena</strong>, quien lo orientó durante los procesos de cambio y <strong>lo refirió ante Kyoshi Julio Martínez.</strong></p><p>El Sensei León posee conocimientos en <strong>otras artes marciales como Jujutsu, Aikido e Iaido,</strong> complementando así su <strong>formación en diferentes aspectos tradicionales y de combate de estas disciplinas japonesas.</strong></p>
+          </p>
+
+
+        </div>
+
+
+
+      </section>
+
+
+{/* 6. Sección "Sensei de Tosei Gusoku Dojo"  */}
+
+      {/*  Banner titulo  */}
+      <div className=" bg-gray-900  text-left  w-full pl-[20rem] space-y-4 py-10">
+        <span className="text-xs font-bold text-brand-accent tracking-widest font-display uppercase block">LÍDER TÉCNICO </span>
+        <h3 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight">
+          Sensei de Tosei Gusoku Dojo
+        </h3>
+        <p className="text-sm sm:text-lg text-white italic leading-relaxed max-w-3xl  font-sans">
+          "Representante oficial de Shito Ryu Inoue Ha Santo Domingo y aprendiz de Shihan Manuel Balbuena y Kyoshi Julio Martínez."
+        </p>
+      </div>
+
+
+
+      {/* Bakground Imag + Descripcion */}
+      <section className="relative w-full h-[900px] flex items-center justify-end overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed"
+        style={{
+          backgroundImage: `url(${Germanbg})`,
           backgroundPosition: ' center 10px'
 
         }}
@@ -163,7 +209,6 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
 
 
       </section>
-
 
       {/* 6. Sección "Kyoshi Julio Martínez" (Foto, intro, card negro con currículo) */}
 
