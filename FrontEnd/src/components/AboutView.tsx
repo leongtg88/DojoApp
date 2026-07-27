@@ -4,11 +4,13 @@ import MawashiYodan from '../assets/Mawashiguericintorunnegro2026.svg'
 import LogoIskia from '../assets/LogoIskia.svg';
 import negrosInoue from '../assets/NegrosInoue.svg'
 import letrasIKIA from '../assets/letrasIKSKiatradu.svg'
-import LeonMar from '../assets/LeonMar.svg'
 import kyoshi from '../assets/kyoshiSeiza.svg'
-import SenseiManuel from '../assets/SenseiManuel.svg'
-import SenseiKano from '../assets/SenseiMuneoKano.svg'
-import Germanbg from '../assets/germanBG.svg'
+import BannerHero from '../assets/BannerHeroMar.svg' 
+import Germangris from '../assets/germanGris.svg'
+import LeonSuto from '../assets/leonshutouke.svg'
+import SenseiManuel from '../assets/SenseiManuelSolo.svg'
+import SenseiMuneo from '../assets/muneoKanoSolo.svg'
+
 interface AboutViewProps {
   onOpenEnrollment: (program?: string) => void;
   onNavigateToHome: () => void;
@@ -122,11 +124,11 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       </section>
 
 
-      {/* 5. Sección "Sensei de Tosei Gusoku Dojo"  */}
+      {/* 5. Sección "Sensei de Tosei Gusoku Dojo Leon"  */}
 
       {/*  Banner titulo  */}
       <div className=" bg-gray-900  text-left  w-full pl-[20rem] space-y-4 py-10">
-        <span className="text-xs font-bold text-brand-accent tracking-widest font-display uppercase block">LÍDER TÉCNICO </span>
+        <span className="text-xs font-bold text-brand-accent tracking-widest font-display uppercase block">FUNDADOR DEL DOJO </span>
         <h3 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight">
           Sensei de Tosei Gusoku Dojo
         </h3>
@@ -138,28 +140,49 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
 
 
       {/* Bakground Imag + Descripcion */}
-      <section className="relative w-full h-[900px] flex items-center justify-end overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed py-20"
+      <section className="relative w-full h-[950px] flex flex-row  gap-8 items-center justify-center overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed py-20"
         style={{
-          backgroundImage: `url(${LeonMar})`,
-          backgroundPosition: ' center 50px',
-          backgroundSize: 'contain'
+          backgroundImage: `url(${BannerHero})`,
+     
+        
 
         }}
       >
+       <div className='flex  grow-1 justify-end '>
+        
+
+        <img className='pt-[150px] pb-[40px] h-[1000px] z-10 ' src={LeonSuto} alt="" />
+               {/* Blur effect - detrás de la imagen */}
+                        <div
+                            className="absolute inset-0 rounded-r rounded-l"
+                            style={{
+                                animation: "color-change 10s infinite linear",
+                                backgroundImage: "radial-gradient(closest-side, currentColor, transparent)"
+                            }}
+                        />
+                             {/* Blur effect at the bottom */}
+                        <div className="absolute bottom-1 left-1/3 -translate-x-[420px] rounded-full opacity-90 pointer-events-none
+            h-[30px] w-full min-w-[330px] max-w-[600px] z-10
+            2xl:max-w-[740px] 4xl:max-w-[900px]"
+                            style={{
+                                animation: "color-change 10s infinite linear",
+                                backgroundImage: "radial-gradient(closest-side, currentColor 45%, transparent )"
+                            }} />
+       </div>
 
         {/* Overlaid Float Biographic Card */}
-        <div className=" p-6 bg-gray   backdrop-blur-2xl border border-blue-700  max-w-2xl   mr-40 rounded-2xl space-y-4 shadow-2xl text-left ">
-          <div>
-            <span className="text-[10px] font-bold text-brand-accent uppercase tracking-wider font-display">DIRECTOR GENERAL DEL DOJO</span>
-            <h4 className="font-extrabold text-2xl font-display text-gray-700 mt-1 uppercase">{senseiLeon.name}</h4>
-            <p className="text-xs text-gray-700/60">Cinturón Negro 2do Dan - Inoue Ha </p>
+        <div className='flex grow-1 justify-center'>
+          <div className=" p-6 bg-gray   backdrop-blur-2xl border border-blue-700  max-w-2xl   rounded-2xl space-y-4 shadow-2xl text-left ">
+            <div>
+              <span className="text-[10px] font-bold text-brand-accent uppercase tracking-wider font-display">DIRECTOR GENERAL DEL DOJO</span>
+              <h4 className="font-extrabold text-2xl font-display text-gray-700 mt-1 uppercase">{senseiLeon.name}</h4>
+              <p className="text-xs text-gray-700/60">Cinturón Negro 2do Dan - Inoue Ha </p>
+            </div>
+
+            <p className="text-xs text-gray-900 leading-relaxed font-sans ">
+              <p>Inició karate a la temprana edad de <strong>4 años gracias a su abuelo</strong>, quien lo inscribió al ver su inquietud por hacer movimientos de puños y patadas inspirados en las películas de artes marciales de los 80. <strong>Su primera escuela fue en el estilo Shotokan en Caracas, Venezuela.</strong></p><p>Por cambios en la escuela, debió pausar sus prácticas hasta los 14 años, cuando<strong> se incorporó a la escuela de Miyagiken bajo la tutela del Maestro Luis Alberte en la Organización Shito Kai, donde logró el oro dominando las categorías a nivel nacional en kata y kumite.</strong></p><p>Una vez iniciados sus estudios universitarios y de maestría en el exterior, retomó sus prácticas en la escuela de Dimitrova Dojo, en Santo Domingo, República Dominicana, bajo la tutela de la Maestra María Dimitrova. Allí<strong> continuó entrenando y compitiendo en categorías intermedias, alcanzando oro en kata y kumite en diversas competencias nacionales e internacionales en República Dominicana, y comenzó a dar clases de karate a niños.</strong></p><p>Al alcanzar el grado de Marrón Primero, <strong>Sensei León decidió fundar su propia escuela e incorporarse a la Organización Inoue Ha Dominicana, gracias a su Sensei Manuel Valbuena</strong>, quien lo orientó durante los procesos de cambio y <strong>lo refirió ante Kyoshi Julio Martínez.</strong></p><p>El Sensei León posee conocimientos en <strong>otras artes marciales como Jujutsu, Aikido e Iaido,</strong> complementando así su <strong>formación en diferentes aspectos tradicionales y de combate de estas disciplinas japonesas.</strong></p>
+            </p>
           </div>
-
-          <p className="text-xs text-gray-700/80 leading-relaxed font-sans ">
-            <p>Inició karate a la temprana edad de <strong>4 años gracias a su abuelo</strong>, quien lo inscribió al ver su inquietud por hacer movimientos de puños y patadas inspirados en las películas de artes marciales de los 80. <strong>Su primera escuela fue en el estilo Shotokan en Caracas, Venezuela.</strong></p><p>Por cambios en la escuela, debió pausar sus prácticas hasta los 14 años, cuando<strong> se incorporó a la escuela de Miyagiken bajo la tutela del Maestro Luis Alberte en la Organización Shito Kai, donde logró el oro dominando las categorías a nivel nacional en kata y kumite.</strong></p><p>Una vez iniciados sus estudios universitarios y de maestría en el exterior, retomó sus prácticas en la escuela de Dimitrova Dojo, en Santo Domingo, República Dominicana, bajo la tutela de la Maestra María Dimitrova. Allí<strong> continuó entrenando y compitiendo en categorías intermedias, alcanzando oro en kata y kumite en diversas competencias nacionales e internacionales en República Dominicana, y comenzó a dar clases de karate a niños.</strong></p><p>Al alcanzar el grado de Marrón Primero, <strong>Sensei León decidió fundar su propia escuela e incorporarse a la Organización Inoue Ha Dominicana, gracias a su Sensei Manuel Valbuena</strong>, quien lo orientó durante los procesos de cambio y <strong>lo refirió ante Kyoshi Julio Martínez.</strong></p><p>El Sensei León posee conocimientos en <strong>otras artes marciales como Jujutsu, Aikido e Iaido,</strong> complementando así su <strong>formación en diferentes aspectos tradicionales y de combate de estas disciplinas japonesas.</strong></p>
-          </p>
-
-
         </div>
 
 
@@ -167,53 +190,49 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       </section>
 
 
-{/* 6. Sección "Sensei de Tosei Gusoku Dojo"  */}
+      {/* 6. Sección "Sensei German"/}
 
-      {/*  Banner titulo  */}
-      <div className=" bg-gray-900  text-left  w-full pl-[20rem] space-y-4 py-10">
-        <span className="text-xs font-bold text-brand-accent tracking-widest font-display uppercase block">LÍDER TÉCNICO </span>
-        <h3 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight">
-          Sensei de Tosei Gusoku Dojo
-        </h3>
-        <p className="text-sm sm:text-lg text-white italic leading-relaxed max-w-3xl  font-sans">
-          "Representante oficial de Shito Ryu Inoue Ha Santo Domingo y aprendiz de Shihan Manuel Balbuena y Kyoshi Julio Martínez."
-        </p>
-      </div>
 
 
 
       {/* Bakground Imag + Descripcion */}
-      <section className="relative w-full h-[900px] flex items-center justify-end overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed"
+      <section className="relative w-full h-[750px] flex flex-row  gap-8 items-center justify-center overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed py-20"
         style={{
-          backgroundImage: `url(${Germanbg})`,
-          backgroundPosition: ' center 10px'
-
+          backgroundImage: `url(${BannerHero})`
         }}
       >
+       {/* Overlaid Float Biographic Card */}
+        <div className='flex grow-1 justify-end'>
+          <div className=" p-6 bg-gray backdrop-blur-[80px] border border-blue-700  max-w-2xl   rounded-2xl space-y-4 shadow-2xl text-left ">
+            <div>
+              <span className="text-[10px] font-bold text-brand-accent uppercase tracking-wider font-display">Instructor</span>
+              <h4 className="font-extrabold text-2xl font-display text-gray-900 mt-1 uppercase">SENSEI GERMAN LIZARDO</h4>
+              <p className="text-xs text-gray-700">Cinturón Negro 1er Dan - Inoue Ha </p>
+            </div>
 
-        {/* Overlaid Float Biographic Card */}
-        <div className=" p-6 bg-gray   backdrop-blur-2xl border border-blue-700  max-w-2xl   mr-40 rounded-2xl space-y-4 shadow-2xl text-left">
-          <div>
-            <span className="text-[10px] font-bold text-brand-accent uppercase tracking-wider font-display">DIRECTOR GENERAL DEL DOJO</span>
-            <h4 className="font-extrabold text-2xl font-display text-gray-700 mt-1 uppercase">{senseiLeon.name}</h4>
-            <p className="text-xs text-gray-700/60">Cinturón Negro 2do Dan - Inoue Ha </p>
+            <p className="text-xs text-gray-900 leading-relaxed font-sans ">
+              <p>Inició karate a la temprana edad de <strong>4 años gracias a su abuelo</strong>, quien lo inscribió al ver su inquietud por hacer movimientos de puños y patadas inspirados en las películas de artes marciales de los 80. <strong>Su primera escuela fue en el estilo Shotokan en Caracas, Venezuela.</strong></p><p>Por cambios en la escuela, debió pausar sus prácticas hasta los 14 años, cuando<strong> se incorporó a la escuela de Miyagiken bajo la tutela del Maestro Luis Alberte en la Organización Shito Kai, donde logró el oro dominando las categorías a nivel nacional en kata y kumite.</strong></p><p>Una vez iniciados sus estudios universitarios y de maestría en el exterior, retomó sus prácticas en la escuela de Dimitrova Dojo, en Santo Domingo, República Dominicana, bajo la tutela de la Maestra María Dimitrova. Allí<strong> continuó entrenando y compitiendo en categorías intermedias, alcanzando oro en kata y kumite en diversas competencias nacionales e internacionales en República Dominicana, y comenzó a dar clases de karate a niños.</strong></p><p>Al alcanzar el grado de Marrón Primero, <strong>Sensei León decidió fundar su propia escuela e incorporarse a la Organización Inoue Ha Dominicana, gracias a su Sensei Manuel Valbuena</strong>, quien lo orientó durante los procesos de cambio y <strong>lo refirió ante Kyoshi Julio Martínez.</strong></p><p>El Sensei León posee conocimientos en <strong>otras artes marciales como Jujutsu, Aikido e Iaido,</strong> complementando así su <strong>formación en diferentes aspectos tradicionales y de combate de estas disciplinas japonesas.</strong></p>
+            </p>
           </div>
-
-          <p className="text-xs text-gray-700/80 leading-relaxed font-sans">
-            <p>Inició karate a la temprana edad de <strong>4 años gracias a su abuelo</strong>, quien lo inscribió al ver su inquietud por hacer movimientos de puños y patadas inspirados en las películas de artes marciales de los 80. <strong>Su primera escuela fue en el estilo Shotokan en Caracas, Venezuela.</strong></p><p>Por cambios en la escuela, debió pausar sus prácticas hasta los 14 años, cuando<strong> se incorporó a la escuela de Miyagiken bajo la tutela del Maestro Luis Alberte en la Organización Shito Kai, donde logró el oro dominando las categorías a nivel nacional en kata y kumite.</strong></p><p>Una vez iniciados sus estudios universitarios y de maestría en el exterior, retomó sus prácticas en la escuela de Dimitrova Dojo, en Santo Domingo, República Dominicana, bajo la tutela de la Maestra María Dimitrova. Allí<strong> continuó entrenando y compitiendo en categorías intermedias, alcanzando oro en kata y kumite en diversas competencias nacionales e internacionales en República Dominicana, y comenzó a dar clases de karate a niños.</strong></p><p>Al alcanzar el grado de Marrón Primero, <strong>Sensei León decidió fundar su propia escuela e incorporarse a la Organización Inoue Ha Dominicana, gracias a su Sensei Manuel Valbuena</strong>, quien lo orientó durante los procesos de cambio y <strong>lo refirió ante Kyoshi Julio Martínez.</strong></p><p>El Sensei León posee conocimientos en <strong>otras artes marciales como Jujutsu, Aikido e Iaido,</strong> complementando así su <strong>formación en diferentes aspectos tradicionales y de combate de estas disciplinas japonesas.</strong></p>
-          </p>
-
-
         </div>
+
+       <div className='flex  grow-1 justify-start '>
+
+        <img className='pt-[150px] h-[1000px] ' src={Germangris} alt="" />
+       </div>
+
 
 
 
       </section>
+
+
+
 
       {/* 6. Sección "Kyoshi Julio Martínez" (Foto, intro, card negro con currículo) */}
 
       {/* Banner titulo  */}
-      <div className=" bg-white text-left  w-full pl-[20rem] space-y-4 py-10">
+      <div className=" bg-white text-left  w-full pl-[20rem] space-y-4 py-15">
 
         <h3 className="text-3xl sm:text-5xl font-extrabold font-display  text-gray-700 uppercase tracking-tight">
           Maestros Guías de Tosei Gusoku Dojo
@@ -232,7 +251,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       >
         <div className=" gap-12 items-center max-w-2xl mr-40">
 
-
+  <div className="absolute inset-0 bg-gradient-to-t from-black via-white/10 via-30% to-transparent" />
 
           {/* Right Text details and Black Card with Curriculum */}
           <div className=" space-y-6 pt-60 pb-60">
@@ -246,9 +265,9 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
             </p>
 
             {/* Black Curriculum Card */}
-            <div className={`glass-card p-6 rounded-2xl border border-brand-accent relative overflow-hidden belt-color-change bg-black/40`}>
+            <div className={`p-6 rounded-2xl border border-brand-accent relative overflow-hidden bg-white/20 backdrop-blur-[80px] border border-brand-accent`}>
               {/* Little design mark */}
-              <div className="absolute right-0 top-0 w-24 h-24 bg-brand-red/5 rounded-full blur-xl" />
+              <div className="absolute right-0 top-0 w-24 h-24 rounded-full blur-xl" />
 
               <h4 className="font-extrabold text-lg text-brand-accent font-display uppercase tracking-wide border-b border-white/10 pb-3 mb-4 flex items-center justify-between">
                 <span>CURRÍCULO DE KYOSHI JULIO</span>
@@ -314,30 +333,32 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       </section>
 
 
-      {/* 7. Sección "Shihan Muneo Kano" (Título con box shadow, foto circular, texto breve) */}
-      <section className="py-16 bg-[#101725] border-t border-white/5 relative overflow-hidden">
-        <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
+      {/* 7. Sección "Shihan Muneo Kano" (Título con box shadow, foto circular, texto breve) bg-[#020202]  */}
+      <section className="h-auto py-16 bg-[#020202]  relative overflow-hidden flex flex-col lg:flex-row items-start justify-center gap-12">
 
-          {/* Title styled with a nice background shadow / border visual */}
-          <div className="inline-block bg-black px-8 py-4.5 rounded-2xl border border-white/10 shadow-xl relative">
+        {/* Shihan Muneo Kano*/}
+        <div className="w-full max-w-4xl mx-auto px-4 text-center space-y-6 flex flex-col items-center">
+
+          
+          <div className="inline-block px-8 py-4.5 rounded-2xl border border-brand-accent shadow-xl relative">
             <h4 className="font-extrabold text-xl sm:text-2xl font-display uppercase tracking-tight text-brand-accent">
               Shihan Muneo Kano
             </h4>
-            <p className="text-[10px] text-gray-700/60 tracking-wider font-semibold uppercase mt-0.5">Asesor Honorario de la Organización</p>
+            <p className="text-[10px] text-white tracking-wider font-semibold uppercase mt-0.5">5th Degree Black Belt</p>
           </div>
 
           {/* Circular Photo */}
-          <div className="w-40 h-40 rounded-full overflow-hidden mx-auto border-4 border-brand-accent/25 shadow-2xl relative">
+          <div className="w-full flex justify-center items-center">
             <img
-              src={shihanMuneo.imageUrl}
+              src={SenseiMuneo}
               alt={shihanMuneo.name}
-              className="w-full h-full object-cover"
+              className="max-h-[500px] w-auto object-contain"
               referrerPolicy="no-referrer"
             />
           </div>
 
           <div className="max-w-2xl mx-auto space-y-3">
-            <p className="text-xs sm:text-sm text-gray-700/70 leading-relaxed font-sans font-medium italic">
+            <p className="text-xs sm:text-sm text-gray-white leading-relaxed font-sans font-medium italic">
               "{shihanMuneo.bio}"
             </p>
             {shihanMuneo.curriculum && (
@@ -348,37 +369,36 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
           </div>
 
         </div>
-      </section>
 
 
-      {/* 8. Sección "Shihan Manuel Balbuena" (Mismo formato circular) */}
-      <section className="py-16 bg-brand-bg border-t border-white/10 relative overflow-hidden">
-        <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
 
-          {/* Title with box shadow / border visual */}
-          <div className="inline-block bg-black px-8 py-4.5 rounded-2xl border border-white/10 shadow-xl">
-            <h4 className="font-extrabold text-xl sm:text-2xl font-display uppercase tracking-tight text-brand-secondary">
+  {/* Shihan Manuel Valbuena*/}
+          <div className="w-full max-w-4xl mx-auto px-4 text-center space-y-6 flex flex-col items-center">
+
+        
+          <div className="  inline-block px-8 py-4.5 rounded-2xl border border-brand-accent shadow-xl">
+            <h4 className="font-extrabold text-xl sm:text-2xl font-display uppercase tracking-tight text-brand-accent">
               Shihan Manuel Balbuena
             </h4>
-            <p className="text-[10px] text-gray-700/60 tracking-wider font-semibold uppercase mt-0.5">Cimiento de la Tecnicidad Nacional</p>
+            <p className="text-[10px] text-white tracking-wider font-semibold uppercase mt-0.5">5th Dan Shito Ryu Inoue Ha.</p>
           </div>
 
           {/* Circular Photo */}
-          <div className="w-40 h-40 rounded-full overflow-hidden mx-auto border-4 border-brand-secondary/25 shadow-2xl">
+          <div className="w-full flex justify-center items-center">
             <img
-              src={shihanManuel.imageUrl}
+              src={SenseiManuel}
               alt={shihanManuel.name}
-              className="w-full h-full object-cover"
+              className="max-h-[500px] w-auto object-contain"
               referrerPolicy="no-referrer"
             />
           </div>
 
           <div className="max-w-2xl mx-auto space-y-3">
-            <p className="text-xs sm:text-sm text-gray-700/70 leading-relaxed font-sans font-medium italic">
+            <p className="text-xs sm:text-sm text-white leading-relaxed font-sans font-medium italic">
               "{shihanManuel.bio}"
             </p>
             {shihanManuel.curriculum && (
-              <p className="text-xs text-brand-secondary font-semibold tracking-wider font-display uppercase">
+              <p className="text-xs text-brand-accent font-semibold tracking-wider font-display uppercase">
                 {shihanManuel.curriculum.join(' • ')}
               </p>
             )}
@@ -388,8 +408,10 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       </section>
 
 
+ 
+
       {/* Final Trial Trigger banner */}
-      <section className="py-20 bg-[#101725] text-center border-t border-white/5">
+      <section className="py-20 bg-white text-center border-t border-white/5">
         <div className="max-w-4xl mx-auto px-4 space-y-6">
           <h2 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight text-gray-700">
             Descubre tu fuerza hoy mismo

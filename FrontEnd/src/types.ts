@@ -131,11 +131,29 @@ export const MOCK_INSTRUCTORS: Instructor[] = [
     id: "shihan-muneo",
     name: "Shihan Muneo Kano",
     role: "Guía Honorario de Inoue Ha",
-    bio: "Aportó la visión global del Maestro Soke Yoshimi Inoue, supervisando periódicamente la pureza y rigurosidad técnica de los dojos.",
+    bio: "Superviso junto a Shihan Manuel Balbuena periódicamente a Sensei León para su incorporación a Inoue Ha.",
     imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=600",
     curriculum: [
-      "Maestro Emérito Internacional con sede en Japón.",
-      "Difusor de los principios dinámicos de movimiento de potencia del estilo Inoue Ha."
+      "Maestro con conexión directa con sede en Japón.",
+      "Degree Black Belt Iaido Seitei.",
+      "Miembro de FEDOKEN"
+  
+    ]
+  },
+  {
+    id: "shihan-manuel",
+    name: "Shihan Manuel Balbuena",
+    role: "Sensei de León Gustavo",
+    bio: "Miembro de la Armada Dominicana, 6th Dan Shindo Ryu, 5th Dan Shito Ryu Inoue Ha, 2th Dan Jujutsu, con una trayectoria de más de 21 años como entrenador y múltiples logros nacionales e internacionales.",
+    imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=600",
+    curriculum: [
+      "Miembro de la Armada Dominicana.",
+      "6th Dan Shindo Ryu.",
+      "5th Dan Shito Ryu Inoue Ha.",
+      "2th Dan Jujutsu.",
+      "21 años como entrenador de la Armada Dominicana.",
+      "12 campeonatos consecutivos con 2 records en los Juegos Militares.",
+      "Integrante del Primer Equipo de Kata Internacional de República Dominicana."
     ]
   }
 ];
