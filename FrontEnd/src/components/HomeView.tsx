@@ -33,6 +33,7 @@ import Karafamilia from '../assets/20250830_110023.jpg';
 import Logosolo from '../assets/LogoSolo.svg'
 
 
+
 interface HomeViewProps {
   onOpenEnrollment: (program?: string) => void;
   onNavigateToAbout: () => void;
@@ -89,7 +90,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
 
       {/* 3. Sucursal 27 de Febrero */}
-      <section className="py-15 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="contacto" className="py-15 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className=" text-left">
           <span className="inline-block px-3 py-1 bg-brand-accent/10 text-brand-accent rounded-full text-xs font-bold font-display uppercase">Sede Santo Domingo</span>
@@ -213,7 +214,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
 
       {/* 4. Horarios del Dojo */}
-      <section className="py-20 bg-white
+      <section id="horarios" className="py-20 bg-white
         border-y border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-1">
 

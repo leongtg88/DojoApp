@@ -15,6 +15,7 @@ const Hero5 = () => {
                 {/* Overlay - Cubre todo el Hero Section */}
                 {/* High-contrast vignettes */}
                 <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-transparent" />
+                <div className="absolute inset-x-0 -bottom-px top-0 bg-gradient-to-t from-white via-white/50 to-transparent" />
                 <div className="absolute inset-0 bg-white/40" />
 
                 {/* Lado1 */}

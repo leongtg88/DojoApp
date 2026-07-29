@@ -152,14 +152,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
         
 
         <img className='pt-[150px] pb-[40px] h-[1000px] z-10 ' src={LeonSuto} alt="" />
-               {/* Blur effect - detrás de la imagen */}
-                        <div
-                            className="absolute inset-0 rounded-r rounded-l"
-                            style={{
-                                animation: "color-change 10s infinite linear",
-                                backgroundImage: "radial-gradient(closest-side, currentColor, transparent)"
-                            }}
-                        />
+    
                              {/* Blur effect at the bottom */}
                         <div className="absolute bottom-1 left-1/3 -translate-x-[420px] rounded-full opacity-90 pointer-events-none
             h-[30px] w-full min-w-[330px] max-w-[600px] z-10

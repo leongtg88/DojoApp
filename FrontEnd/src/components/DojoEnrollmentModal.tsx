@@ -37,11 +37,11 @@ export default function DojoEnrollmentModal({
   const [error, setError] = useState('');
 
   const programs = [
-    { id: 'kid', name: 'Little Warriors (4 a 7 años)' },
+    { id: 'kid', name: 'Little Warriors (5 a 7 años)' },
     { id: 'adult', name: 'Youth & Adults (8 años en adelante)' }
   ];
 
-  const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  const days = ['Lunes 8:20pm', 'Martes 4:00pm','Martes 5:00pm', 'Miércoles 8:20pm', 'Jueves 4:00pm', 'Jueves 5:00pm', 'Sábado 9:00am', 'Sábado 10:00 am'];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,10 +90,10 @@ export default function DojoEnrollmentModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', duration: 0.5 }}
-            className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-[#0e131d] border border-white/10 text-gray-700 shadow-2xl z-10"
+            className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white border border-white/10 text-gray-700 shadow-2xl z-10"
           >
             {/* Top red sash decoration */}
-            <div className="h-2 bg-gradient-to-r from-brand-red via-brand-accent to-brand-red w-full" />
+            <div className="h-2 bg-gradient-to-r from-blue-500  via-brand-accent to-blue-500 w-full" />
 
             {/* Close Button */}
             <button
@@ -105,7 +105,7 @@ export default function DojoEnrollmentModal({
             </button>
 
             {!isSuccess ? (
-              <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
+              <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6"> 
                 <div>
                   <div className="flex items-center gap-2 text-brand-accent mb-1">
                     <Sparkles className="w-4 h-4" />
@@ -127,6 +127,26 @@ export default function DojoEnrollmentModal({
                 )}
 
                 <div className="space-y-4">
+
+                        
+                  {/* Participant Name */}
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-gray-700/80 block">
+                      Nombre del Padre / Representante (En caso de ser menor de edad)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ej. Rodrigo González"
+                      value={formData.name}
+                      onChange={e => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full bg-white/5 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-brand-accent transition-colors focus:ring-1 focus:ring-brand-accent"
+                      required
+                    />
+                  </div>
+
+
+
+
                   {/* Participant Name */}
                   <div className="space-y-1">
                     <label className="text-xs font-semibold text-gray-700/80 block">
@@ -137,7 +157,7 @@ export default function DojoEnrollmentModal({
                       placeholder="Ej. Rodrigo González"
                       value={formData.name}
                       onChange={e => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-brand-accent transition-colors focus:ring-1 focus:ring-brand-accent"
+                      className="w-full bg-white/5 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-brand-accent transition-colors focus:ring-1 focus:ring-brand-accent"
                       required
                     />
                   </div>
@@ -175,7 +195,7 @@ export default function DojoEnrollmentModal({
                         placeholder="correo@ejemplo.com"
                         value={formData.email}
                         onChange={e => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-brand-accent transition-colors focus:ring-1 focus:ring-brand-accent"
+                        className="w-full bg-white/5 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-brand-accent transition-colors focus:ring-1 focus:ring-brand-accent"
                         required
                       />
                     </div>
@@ -189,7 +209,7 @@ export default function DojoEnrollmentModal({
                         placeholder="+1 (---) --- ----"
                         value={formData.phone}
                         onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-brand-accent transition-colors focus:ring-1 focus:ring-brand-accent"
+                        className="w-full bg-white/5 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-brand-accent transition-colors focus:ring-1 focus:ring-brand-accent"
                         required
                       />
                     </div>
@@ -204,10 +224,10 @@ export default function DojoEnrollmentModal({
                       <select
                         value={formData.trialDay}
                         onChange={e => setFormData({ ...formData, trialDay: e.target.value })}
-                        className="w-full bg-[#161d2b] border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-brand-accent transition-colors"
+                        className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-brand-accent transition-colors"
                       >
                         {days.map(d => (
-                          <option key={d} value={d} className="bg-[#0e131d]">{d}</option>
+                          <option key={d} value={d} className="bg-white text-xs">{d}</option>
                         ))}
                       </select>
                     </div>
@@ -221,7 +241,7 @@ export default function DojoEnrollmentModal({
                         placeholder="Ej. Redes sociales, amigo, cartel"
                         value={formData.message}
                         onChange={e => setFormData({ ...formData, message: e.target.value })}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-brand-accent transition-colors"
+                        className="w-full bg-white/5 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:border-brand-accent transition-colors"
                       />
                     </div>
                   </div>
@@ -243,7 +263,7 @@ export default function DojoEnrollmentModal({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-brand-accent hover:bg-brand-accent-hover text-gray-700 font-bold py-4 rounded-xl text-sm transition-all focus:outline-none belt-glow cursor-pointer relative flex items-center justify-center gap-2"
+                  className="w-full bg-brand-accent hover:bg-brand-accent-hover text-gray-700 font-bold py-4 rounded-xl text-sm transition-all focus:outline-none  cursor-pointer relative flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>

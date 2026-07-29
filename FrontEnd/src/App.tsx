@@ -12,21 +12,37 @@ import {
   MessagesSquare,
   Play,
   Home,
-  UserCheck
+  UserCheck,
+  ClipboardList
 } from 'lucide-react';
 import HomeView from './components/HomeView';
 import AboutView from './components/AboutView';
 import DojoEnrollmentModal from './components/DojoEnrollmentModal';
+import ToseiGusokuForm from './components/ToseiGusokuForm';
 
 export default function App() {
-  const [view, setView] = useState<'home' | 'about'>('home');
+  const [view, setView] = useState<'home' | 'about' | 'registro'>('home');
   const [isEnrollmentModalOpen, setIsEnrollmentModalOpen] = useState(false);
   const [preSelectedProgram, setPreSelectedProgram] = useState<'kid' | 'adult'>('adult');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [pendingScroll, setPendingScroll] = useState<string | null>(null);
 
-  // Scroll to top when view changes
+  // Scroll to top on view change, or scroll to section after home renders
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (pendingScroll) {
+      // Wait for AnimatePresence (300ms) + layout paint to finish
+      const timer = setTimeout(() => {
+        const section = document.getElementById(pendingScroll);
+        if (section) {
+          const top = section.getBoundingClientRect().top + window.pageYOffset - 80;
+          window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+        }
+        setPendingScroll(null);
+      }, 350);
+      return () => clearTimeout(timer);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }, [view]);
 
   const handleOpenEnrollment = (program: string = 'adult') => {
@@ -35,9 +51,35 @@ export default function App() {
     setIsMobileMenuOpen(false);
   };
 
-  const handleNavigate = (targetView: 'home' | 'about') => {
+  const handleNavigate = (targetView: 'home' | 'about' | 'registro') => {
     setView(targetView);
     setIsMobileMenuOpen(false);
+  };
+
+  const handleNavigateToRegistro = () => {
+    setIsMobileMenuOpen(false);
+    setView('registro');
+  };
+
+  const handleNavigateToSection = (id: string) => {
+    setIsMobileMenuOpen(false);
+    if (view === 'home') {
+      const section = document.getElementById(id);
+      if (section) {
+        const top = section.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      }
+    } else {
+      setPendingScroll(id);
+      setView('home');
+    }
+  };
+
+  const scrollToSection = (id: string) => {
+    const section = document.getElementById(id);
+    if (!section) return;
+    const top = section.getBoundingClientRect().top + window.pageYOffset - 80;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
   };
 
   return (
@@ -72,35 +114,28 @@ export default function App() {
             Sobre Nosotros
           </button>
 
-          <a
-            href="#horarios"
-            onClick={(e) => {
-              e.preventDefault();
-              handleNavigate('home');
-              setTimeout(() => {
-                const el = document.getElementById('horarios');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }, 100);
-            }}
+          <button
+            onClick={() => handleNavigateToSection('horarios')}
             className="text-gray-700 hover:text-brand-accent transition-colors"
           >
             Horarios
-          </a>
+          </button>
 
-          <a
-            href="#contacto"
-            onClick={(e) => {
-              e.preventDefault();
-              handleNavigate('home');
-              setTimeout(() => {
-                const el = document.getElementById('contacto');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }, 100);
-            }}
+          <button
+            onClick={() => handleNavigateToSection('contacto')}
             className="text-gray-700 hover:text-brand-accent transition-colors"
           >
             Sucursal y Contacto
-          </a>
+          </button>
+
+          <button
+            onClick={handleNavigateToRegistro}
+            className={`cursor-pointer transition-colors hover:text-brand-accent ${view === 'registro' ? 'text-brand-accent font-bold' : 'text-gray-700'}`}
+          >
+            Inscripción
+          </button>
+
+
         </div>
 
         {/* Desktop CTA actions */}
@@ -142,7 +177,7 @@ export default function App() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'tween', ease: 'easeOut', duration: 0.3 }}
-              className="absolute top-20 right-0 w-72 h-[calc(100vh-80px)] bg-[#0e0e0e] border-l border-white/10 p-6 flex flex-col justify-between z-10"
+              className="absolute top-20 right-0 w-72 h-[calc(100vh-80px)] bg-white border-l border-white/10 p-6 flex flex-col justify-between z-10"
             >
               <div className="space-y-6 text-left">
                 <p className="text-[10px] font-bold tracking-widest text-brand-accent uppercase font-display">SECCIONES DE TOSEI GUSOKU</p>
@@ -163,37 +198,29 @@ export default function App() {
                     <span>Sobre Nosotros</span>
                   </button>
 
-                  <a
-                    href="#horarios"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleNavigate('home');
-                      setTimeout(() => {
-                        const el = document.getElementById('horarios');
-                        if (el) el.scrollIntoView({ behavior: 'smooth' });
-                      }, 200);
-                    }}
+                  <button
+                    onClick={() => handleNavigateToSection('horarios')}
                     className="text-left text-gray-700/80 hover:text-brand-accent transition-colors flex items-center gap-3 py-1"
                   >
                     <Calendar className="w-4 h-4 shrink-0" />
                     <span>Horarios Semanales</span>
-                  </a>
+                  </button>
 
-                  <a
-                    href="#contacto"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleNavigate('home');
-                      setTimeout(() => {
-                        const el = document.getElementById('contacto');
-                        if (el) el.scrollIntoView({ behavior: 'smooth' });
-                      }, 200);
-                    }}
+                  <button
+                    onClick={() => handleNavigateToSection('contacto')}
                     className="text-left text-gray-700/80 hover:text-brand-accent transition-colors flex items-center gap-3 py-1"
                   >
                     <MapPin className="w-4 h-4 shrink-0" />
                     <span>Ubicación y Contacto</span>
-                  </a>
+                  </button>
+
+                  <button
+                    onClick={handleNavigateToRegistro}
+                    className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${view === 'registro' ? 'text-brand-accent' : 'text-gray-700/80'}`}
+                  >
+                    <ClipboardList className="w-4 h-4 shrink-0" />
+                    <span>Formulario de Inscripción</span>
+                  </button>
                 </div>
               </div>
 
@@ -233,26 +260,32 @@ export default function App() {
                 />
               </div>
             </motion.div>
-          ) : (
+          ) : view === 'registro' ? (
             <motion.div
-              key="about-screen"
+              key="registro-screen"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
             >
-              <AboutView
-                onOpenEnrollment={handleOpenEnrollment}
-                onNavigateToHome={() => handleNavigate('home')}
-              />
+              <ToseiGusokuForm onNavigateToHome={() => handleNavigate('home')} />
             </motion.div>
-          )}
+          ) : (
+              <motion.div
+                key="about-screen"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.3 }}
+              >
+                <AboutView
+                  onOpenEnrollment={handleOpenEnrollment}
+                  onNavigateToHome={() => handleNavigate('home')}
+                />
+              </motion.div>
+            )}
         </AnimatePresence>
       </main>
-
-      {/* Target points for scroll linkages in parent App */}
-      <div id="horarios" className="absolute top-[3150px] pointer-events-none w-1 h-1" />
-      <div id="contacto" className="absolute top-[3950px] pointer-events-none w-1 h-1" />
 
 
       {/* 3. Global Footer Component */}
@@ -301,22 +334,13 @@ export default function App() {
                 <button onClick={() => handleNavigate('about')} className="hover:text-brand-accent cursor-pointer">Sobre Nosotros (Nuestros Maestros)</button>
               </li>
               <li>
-                <a href="#horarios" onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate('home');
-                  setTimeout(() => {
-                    document.getElementById('horarios')?.scrollIntoView({ behavior: 'smooth' });
-                  }, 100);
-                }} className="hover:text-brand-accent">Horarios de Práctica</a>
+                <button onClick={() => handleNavigateToSection('horarios')} className="hover:text-brand-accent cursor-pointer">Horarios de Práctica</button>
               </li>
               <li>
-                <a href="#contacto" onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate('home');
-                  setTimeout(() => {
-                    document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' });
-                  }, 100);
-                }} className="hover:text-brand-accent">Sucursal Bella Vista</a>
+                <button onClick={() => handleNavigateToSection('contacto')} className="hover:text-brand-accent cursor-pointer">Sucursal Bella Vista</button>
+              </li>
+              <li>
+                <button onClick={handleNavigateToRegistro} className="hover:text-brand-accent cursor-pointer">Formulario de Inscripción</button>
               </li>
             </ul>
           </div>
@@ -366,13 +390,7 @@ export default function App() {
         </button>
 
         <button
-          onClick={() => {
-            handleNavigate('home');
-            setTimeout(() => {
-              const el = document.getElementById('horarios');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
-          }}
+          onClick={() => handleNavigateToSection('horarios')}
           className="flex flex-col items-center justify-center p-2 text-xs text-gray-700/60 cursor-pointer"
         >
           <Calendar className="w-5 h-5 mb-1" />
@@ -380,11 +398,11 @@ export default function App() {
         </button>
 
         <button
-          onClick={() => handleOpenEnrollment('adult')}
-          className="flex flex-col items-center justify-center p-2 text-xs text-brand-secondary cursor-pointer"
+          onClick={handleNavigateToRegistro}
+          className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${view === 'registro' ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}
         >
-          <UserCheck className="w-5 h-5 mb-1 text-brand-secondary shrink-0" />
-          <span className="font-display text-[9px] uppercase tracking-wider font-bold">Matrícula</span>
+          <ClipboardList className="w-5 h-5 mb-1" />
+          <span className="font-display text-[9px] uppercase tracking-wider font-bold">Inscripción</span>
         </button>
       </nav>
 
