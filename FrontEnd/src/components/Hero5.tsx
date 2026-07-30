@@ -5,19 +5,17 @@ import BannerHero from '../assets/BannerHero.svg';
 const Hero5 = () => {
     return (
         <>
-            {/* Hero Section - Contenedor principal */}
-            <div className="relative h-[900px] w-full mx-auto bg-no-repeat bg-cover bg-center bg-fixed
+             {/* Hero Section - Contenedor principal */}
+            <div className="relative h-[900px] w-full mx-auto bg-no-repeat bg-cover bg-center bg-fixed md:bg-scroll
                 sm:h-[1100px] 
                 md:flex md:flex-row md:h-[700px]
-                2xl:h-[1000px] 2xl:max-w-[1940px] 2xl:pb-[100px] "
+                2xl:h-[1000px] 2xl:max-w-[2040px] 2xl:pb-[100px] "
                 style={{ backgroundImage: `url(${heroImageDesktop})` }}
             >
                 {/* Overlay - Cubre todo el Hero Section */}
                 {/* High-contrast vignettes */}
-                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-transparent" />
-                <div className="absolute inset-x-0 -bottom-px top-0 bg-gradient-to-t from-white via-white/50 to-transparent" />
-                <div className="absolute inset-0 bg-white/40" />
-
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-transparent " />
+                
                 {/* Lado1 */}
                 <div className="hijo flex items-center justify-center
             xl:grow-1 xl:justify-end

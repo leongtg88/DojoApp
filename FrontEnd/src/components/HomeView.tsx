@@ -64,9 +64,9 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
       <Hero5 />
 
       {/* 2. Karate en Santo Domingo */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section className="py-5 max-w-7xl mx-auto px-8 sm:px-6 lg:px-8 space-y-12">
         <div className=" space-y-3">
-          <h2 className="text-right   max-w-5xl mx-auto text-3xl sm:text-4xl font-extrabold font-display uppercase tracking-tight leading-4 text-gray-700">
+          <h2 className="text-right max-w-5xl mx-auto text-3xl sm:text-4xl font-extrabold font-display uppercase tracking-tight md:leading-4 text-gray-700">
             Karate Do en Santo Domingo
           </h2>
           <h3 className="text-right   max-w-5xl mx-auto text-xl sm:text-2xl font-bold text-gray-700">
@@ -80,9 +80,9 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
             <span className="font-bold">León Gustavo</span>
             <br />
             <span className="font-bold">Sensei</span>          </p>
-          <div className="flex flex-row items-center justify-center pt-6">
-            <img src={LetrasIkia} alt="Letras Iskia" className="w-[16em]  h-auto   " />
-            <img src={Mawashi} alt="Logo Iskia" className="w-[16em]  h-auto   " />
+          <div className="flex flex-row items-center justify-center pt-6 px-8">
+            <img src={LetrasIkia} alt="Letras Iskia" className="w-[10em]  md:w-[16em]  h-auto   " />
+            <img src={Mawashi} alt="Logo Iskia" className="w-[10em]  md:w-[16em]  h-auto   " />
           </div>
         </div>
 
@@ -90,7 +90,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
 
       {/* 3. Sucursal 27 de Febrero */}
-      <section id="contacto" className="py-15 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="contacto" className="py-15 max-w-7xl mx-auto px-8 sm:px-6 lg:px-8">
 
         <div className=" text-left">
           <span className="inline-block px-3 py-1 bg-brand-accent/10 text-brand-accent rounded-full text-xs font-bold font-display uppercase">Sede Santo Domingo</span>
@@ -105,7 +105,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
           <div className="lg:col-span-5 space-y-6 text-left backdrop-blur-xs">
 
             <p className="text-sm sm:text-base text-gray-700 leading-relaxed font-sans">
-              Visítanos en nuestras instalaciones principales. Ofrecemos <span className="font-semibold">áreas de entrenamiento climatizadas con vestidores y baños, </span> secretaría de atención personalizada y zona de espera para padres de familia.
+              Visítanos en nuestras instalaciones principales. Ofrecemos <span className="font-semibold">un área de entrenamiento climatizada con vestidores y baños, </span> secretaría de atención personalizada y zona de espera para padres.
             </p>
 
             <div className="space-y-4  shadow-lg backdrop-blur-xl p-5 rounded-2xl">
@@ -134,13 +134,13 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
               </div>
             </div>
 
-            {/*Button Map */}
-            <div className="pt-2">
+            {/*Button Map - solo desktop */}
+            <div className="pt-2 hidden lg:block">
               <a
                 href="https://www.google.com/maps/place/Karate+Do+Tosei+Gusoku+Dojo+Shito+Ryu+Inoue+Ha/@18.4574589,-69.9520022,825m/data=!3m2!1e3!4b1!4m6!3m5!1s0x8ea563c15898befd:0x386c75f4f249964f!8m2!3d18.4574538!4d-69.9494273!16s%2Fg%2F11rckyjhp1?entry=ttu&g_ep=EgoyMDI2MDcwOC4wIKXMDSoASAFQAw%3D%3D"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hero-button glass-card-hover  w-full sm:w-auto"
+                className="hero-button glass-card-hover w-full sm:w-auto"
               >
                 ¿CÓMO LLEGAR AL DOJO?
                 <Navigation className="w-4 h-4 shrink-0" />
@@ -209,6 +209,19 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
             </a>*/}
           </div>
 
+        </div>
+
+        {/* Button Map - solo mobile, después del mapa */}
+        <div className="pt-4 lg:hidden">
+          <a
+            href="https://www.google.com/maps/place/Karate+Do+Tosei+Gusoku+Dojo+Shito+Ryu+Inoue+Ha/@18.4574589,-69.9520022,825m/data=!3m2!1e3!4b1!4m6!3m5!1s0x8ea563c15898befd:0x386c75f4f249964f!8m2!3d18.4574538!4d-69.9494273!16s%2Fg%2F11rckyjhp1?entry=ttu&g_ep=EgoyMDI2MDcwOC4wIKXMDSoASAFQAw%3D%3D"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hero-button glass-card-hover w-full"
+          >
+            ¿CÓMO LLEGAR AL DOJO?
+            <Navigation className="w-4 h-4 shrink-0" />
+          </a>
         </div>
       </section>
 
