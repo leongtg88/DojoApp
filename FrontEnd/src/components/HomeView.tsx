@@ -90,7 +90,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
 
       {/* 3. Sucursal 27 de Febrero */}
-      <section id="contacto" className="py-15 max-w-7xl mx-auto px-8 sm:px-6 lg:px-8">
+      <section id="contacto" className="py-15 max-w-7xl mx-auto px-8 sm:px-6 md:px-[50px]">
 
         <div className=" text-left">
           <span className="inline-block px-3 py-1 bg-brand-accent/10 text-brand-accent rounded-full text-xs font-bold font-display uppercase">Sede Santo Domingo</span>
@@ -104,7 +104,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
           {/* Left info box */}
           <div className="lg:col-span-5 space-y-6 text-left backdrop-blur-xs">
 
-            <p className="text-sm sm:text-base text-gray-700 leading-relaxed font-sans">
+            <p className="text-sm sm:text-base text-gray-700 leading-5  md:leading-relaxed font-sans ">
               Visítanos en nuestras instalaciones principales. Ofrecemos <span className="font-semibold">un área de entrenamiento climatizada con vestidores y baños, </span> secretaría de atención personalizada y zona de espera para padres.
             </p>
 
@@ -227,12 +227,12 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
 
       {/* 4. Horarios del Dojo */}
-      <section id="horarios" className="py-20 bg-white
+      <section id="horarios" className="md:py-20 px-8  md:px-[50px] bg-white
         border-y border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-1">
+        <div className="max-w-7xl mx-auto    space-y-1">
 
           <div className="text-left ">
-            <div className="inline-flex items-center gap-2 bg-white border border-brand-accent/20 px-3 py-1 rounded-full text-brand-accent text-xs font-bold font-display uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 bg-white border border-brand-accent/20  py-1 rounded-full text-brand-accent text-xs font-bold font-display uppercase tracking-wider">
               <CalendarDays className="w-3.5 h-3.5" /> Clases Semanales
             </div>
             <h2 className="text-3xl text-left sm:text-4xl font-extrabold font-display  tracking-tight text-gray-700">
@@ -300,13 +300,13 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
 
       {/* 6. Karate para la Familia (Sección Promocional) */}
-      <section className="py-16 bg-white relative overflow-hidden">
+      <section className="py-16 bg-white relative overflow-hidden px-8 md:px-[50px]">
         {/* Ambient glow container */}
         <div className="absolute right-0 top-0 w-96 h-96 bg-brand-accent/5 rounded-full blur-3xl -z-10" />
         <div className="absolute left-0 bottom-0 w-96 h-96 bg-brand-red/5 rounded-full blur-3xl -z-10" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="inline-flex items-center gap-2 text-brand-secondary bg-brand-secondary/10 border border-brand-secondary/20 px-3 py-1 rounded-full text-xs font-bold font-display uppercase tracking-wider">
+        <div className="max-w-7xl mx-auto ">
+          <div className="inline-flex items-center gap-2 text-brand-secondary bg-brand-secondary/10 border border-brand-secondary/20  py-1 rounded-full text-xs font-bold font-display uppercase tracking-wider">
             <Users className="w-3.5 h-3.5" /> Comunidad Familiar
           </div>
           <h3 className="text-3xl  sm:text-4xl font-extrabold font-display text-gray-700 leading-tight">
@@ -317,7 +317,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
             {/* Promo Left Content */}
             <div className="lg:col-span-6 space-y-6 text-left">
 
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+              <p className="text-sm sm:text-base text-gray-700  tracking-tight md:leading-relaxed  leading-5 ">
                 El Karate es una de las pocas disciplinas integrales donde <span className="font-semibold">padres e hijos pueden entrenar y crecer en la mismo espacio. </span>Ofrecemos clases con programas para pequeños desde los 5 años y clases de adultos que re-establecen su salud y confianza.
               </p>
               <div className="p-4 shadow-xl ring-1 ring-white/10 rounded-xl space-y-2 max-w-md">
@@ -362,7 +362,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
 
       {/* 5. Beneficios del Karate */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section className="md:py-20 max-w-7xl mx-auto px-8 md:px-[50px]  space-y-6  md:space-y-12">
         <div className="text-left space-y-3">
           <div className="inline-flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-brand-accent text-xs font-bold font-display uppercase tracking-wider">
             <Award className="w-3.5 h-3.5" /> Estilo de Vida Marcial
@@ -379,7 +379,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
           {MOCK_BENEFITS.map((benefit) => (
             <div
               key={benefit.id}
-              className="p-6 rounded-2xl flex flex-col space-y-4 glass-card-hover border border-white/5 relative overflow-hidden group shadow-md shadow-black/40"
+              className="p-6 rounded-2xl flex flex-col space-y-4 glass-card-hover border border-white/5 relative overflow-hidden group shadow-md shadow-black/40  tracking-tight md:leading-5 "
               style={{ animation: "border-color-change 8s infinite linear" }}
             >
 
@@ -405,7 +405,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
 
       {/* 4. Instructores Banner / Grid */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section className="md:py-20 py-15 max-w-7xl mx-auto px-8 md:px-[50px]  space-y-5  md:space-y-12">
         <div className="text-left space-y-3">
           <div className="inline-flex items-center gap-2 bg-brand-purple/10 border border-brand-purple/20 px-3 py-1 rounded-full text-brand-purple text-xs font-bold font-display uppercase tracking-wider">
             <Award className="w-3.5 h-3.5" /> Linaje Oficial Keishin Kai
@@ -432,7 +432,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                   alt={inst.name}
                   className="w-full h-full object-cover transition-transform duration-750 group-hover:scale-[1.03]"
                   style={{
-                    objectPosition: 'center 45%',
+                    objectPosition: inst.imagePosition ?? 'center 45%',
                     transform: inst.id === 'kyoshi-julio' ? 'translateY(5px)' : undefined
                   }}
                   referrerPolicy="no-referrer"
@@ -483,8 +483,8 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
 
       {/* 7. Testimonios */}
-      <section className="py-20 ">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section className="md:py-20 px-8  md:px-[50px] ">
+        <div className="max-w-7xl mx-auto  sm:px-6 lg:px-8  md:space-y-12">
 
           <div className="text-left space-y-3">
             <div className="inline-flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-brand-accent text-xs font-bold font-display uppercase tracking-wider">
@@ -548,7 +548,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
 
       {/* 8. Avales Internacionales */}
-      <section className="py-12  border-y border-white/10 font-display overflow-hidden">
+      <section className="py-14  md:py-12  border-y border-white/10 font-display overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 text-center space-y-2 mb-6">
           <p className="text-[10px] font-bold text-gray-700/50 tracking-widest uppercase">RECONOCIMIENTO Y CERTIFICACIONES OFICIALES</p>
         </div>
@@ -575,7 +575,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
 
       {/* 9. Galería con Lightbox */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <section className="md:py-20 max-w-7xl mx-auto px-8 md:px-[50px] sm:px-6  space-y-12">
         <div className="text-left space-y-3">
           <span className="inline-block px-3 py-1 bg-brand-accent/10 text-brand-accent rounded-full text-xs font-bold font-display uppercase">Sinergia en Fotos</span>
           <h2 className="text-3xl sm:text-4xl font-extrabold font-display  tracking-tight text-gray-700">
@@ -589,8 +589,8 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
 
       {/* 10. FAQ Accordion */}
-      <section className="py-20  border-t border-white/5">
-        <div className="max-w-4xl mx-auto px-4 space-y-12 text-left">
+      <section className="px-8 py-14 md:py-16  border-t border-white/5">
+        <div className="max-w-4xl mx-auto  space-y-8  md:space-y-12 text-left">
 
           <div className="text-left space-y-3">
             <span className="inline-block px-3 py-1 bg-brand-secondary/10 text-brand-secondary rounded-full text-xs font-bold font-display uppercase">Preguntas Comunes</span>
@@ -603,7 +603,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
             </p>
           </div>
 
-          <div className="space-y-4 pt-4">
+          <div className="space-y-4 md:pt-4">
             {MOCK_FAQS.map((faq) => {
               const isOpen = openFaq === faq.id;
               return (
@@ -636,7 +636,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
 
       {/* 11. CTA final */}
-      <section className="relative py-24 px-4 text-center overflow-hidden bg-brand-bg">
+      <section className="relative md:py-24 pt-10 pb-20 px-8 text-center overflow-hidden bg-brand-bg">
         {/* Background decorative images or meshes */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-brand-accent/5 mix-blend-color-dodge rounded-full blur-3xl scale-125 translate-y-12" />

@@ -14,7 +14,7 @@ const Hero5 = () => {
             >
                 {/* Overlay - Cubre todo el Hero Section */}
                 {/* High-contrast vignettes */}
-                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-transparent " />
+                <div className="absolute inset-x-0 top-0 -bottom-[2px] bg-gradient-to-t from-white via-white/50 to-transparent" />
                 
                 {/* Lado1 */}
                 <div className="hijo flex items-center justify-center
@@ -35,8 +35,8 @@ const Hero5 = () => {
                             src={BannerHero}
                             alt="Banner Hero"
                             className="relative z-10 block
-                            mx-auto  w-[340px] max-w-[340px] max-h-[400px] px-2 
-                            sm:min-w-[400px] sm:min-h-[400px]
+                            mx-auto pt-6 w-[340px] max-w-[340px] max-h-[400px] px-2 
+                            sm:min-w-[400px] sm:pt-0 sm:min-h-[400px]
                             xl:min-w-[500px] xl:min-h-[500px]
                             2xl:min-w-[600px] 2xl:min-h-[600px]
                 "
@@ -84,21 +84,21 @@ const Hero5 = () => {
                     text-left text-gray-700  ">
 
                     {/*Contenedor  titulos */}
-                    <div className="bg-transparent backdrop-blur-xs px-4 py-4  border-[1px] hover:backdrop-blur-lg border-current  rounded-lg shadow-xl/50 transition-[backdrop-filter] duration-500
+                    <div className="bg-transparent backdrop-blur-sm px-4 py-4  border-[1px] hover:backdrop-blur-lg border-current  rounded-lg shadow-xl/50 transition-[backdrop-filter] duration-500
                     xl:max-w-[600px]"
                         style={{ animation: " color-change 10s infinite linear" }}>
 
-                        <h1 className=" text-3xl lg:text-5xl font-bold lg:text-leading-tight">
+                        <h1 className=" text-3xl md:p-4  lg:text-5xl font-bold lg:text-leading-tight">
                             TU CUERPO ES
                             <br />
                             <span className="text-gray-700">TU TEMPLO</span>
                         </h1>
-                        <p className="mt-4 text-sm  tracking-wide text-gray-700">
+                        <p className="mt-4 text-sm md:text-base  md:px-4 tracking-wide text-gray-900">
                             "El dolor que sientes hoy es la fuerza que sentirás mañana. Cada repetición, cada gota de sudor, te acerca a la mejor versión de ti mismo. ¡No te rindas!"
                         </p>
 
                         {/*Boton */}
-                        <div className="mt-8   py-2 px-6 inline-block bg-current  backdrop-blur-sm shadow-xl/30 border hover-border-white   hover:bg-color-change  hover:text-gray-700 font-regular  rounded-lg "
+                        <div className="mt-8  md:ml-4 py-2 px-6 inline-block bg-current  backdrop-blur-sm shadow-xl/30 border hover-border-white   hover:bg-color-change  hover:text-gray-700 font-regular  rounded-lg "
                             style={{ animation: "border-color-change  10s infinite linear" }}>
                             <a
                                 href="#"
@@ -111,7 +111,7 @@ const Hero5 = () => {
 
 
                         {/* Redes sociales y logo Padre*/}
-                        <div className="mt-4  w-full justify-between flex flex-row items-center lg:items-start">
+                        <div className="mt-4 md:mb-4  w-full justify-between flex flex-row items-center lg:items-start">
 
                             {/*Contenedor  Logo IKIA*/}
                             <div className=" relative flex justify-start ">

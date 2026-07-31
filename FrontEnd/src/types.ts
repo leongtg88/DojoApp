@@ -21,6 +21,7 @@ export interface Instructor {
   role: string;
   bio: string;
   imageUrl: string;
+  imagePosition?: string;
   curriculum?: string[];
 }
 
@@ -95,6 +96,7 @@ export const MOCK_INSTRUCTORS: Instructor[] = [
     role: "Director Tecnico / Head of Dojo",
     bio: "Fundador del Dojo dedicado a la enseñanza del perfeccionamiento técnico de niños y adultos de Tosei Gusoku.",
     imageUrl: senseiLeonImage,
+    imagePosition: "center 20%",
     curriculum: [
       "Cinturón Negro 2do Dan  Inoue Ha Shito-Ryu Keishin Kai",
       "Representante oficial de Shito Ryu Inoue Ha en Santo Domingo.",
@@ -108,6 +110,7 @@ export const MOCK_INSTRUCTORS: Instructor[] = [
     role: "Gran Maestro de la Organización",
     bio: "Linaje directo de Inoue Ha Shito-Ryu con más de 40 años de trayectoria impecable formando campeones mundiales.",
     imageUrl: Kyoshi,
+    imagePosition: "center 1%",
     curriculum: [
       "Cinturón Negro 8vo Dan - Certificación Internacional de Japón.",
       "Asesor Técnico de la Federación Dominicana de Karate.",
@@ -121,6 +124,7 @@ export const MOCK_INSTRUCTORS: Instructor[] = [
     role: "Instructor Oficial",
     bio: "Columna vital de la tradición y el rigor marcial, responsable de la tecnificación constante en las filiales nacionales.",
     imageUrl: German,
+    imagePosition: "center 10%",
     curriculum: [
       "Cinturón Negro 1er Dan - Inoue Ha Shito-Ryu Keishin Kai.",
       "Instructor adjunto de Tosei Gusoku Dojo.",
