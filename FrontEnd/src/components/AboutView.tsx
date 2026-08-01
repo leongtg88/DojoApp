@@ -5,7 +5,7 @@ import LogoIskia from '../assets/LogoIskia.svg';
 import negrosInoue from '../assets/NegrosInoue.svg'
 import letrasIKIA from '../assets/letrasIKSKiatradu.svg'
 import kyoshi from '../assets/kyoshiSeiza.svg'
-import BannerHero from '../assets/BannerHeroMar.svg' 
+import BannerHero from '../assets/BannerHeroMar.svg'
 import Germangris from '../assets/germanGris.svg'
 import LeonSuto from '../assets/leonshutouke.svg'
 import SenseiManuel from '../assets/SenseiManuelSolo.svg'
@@ -26,24 +26,56 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
   return (
     <div className="space-y-0 min-h-screen bg-brand-bg text-[#dee2f0]">
 
-      {/* 1. Banner Hero (similar to Home, but text "Sobre Nosotros") */}
+      
+            {/* 1. Banner Hero Mobile  ") */}
       <header
-        className="relative w-full h-[60vh] flex items-center justify-center px-4 md:px-12 overflow-hidden bg-no-repeat bg-contain bg-start bg-fixed"
+        className="relative md:hidden  w-full h-[60vh] flex items-center justify-center px-4 md:px-12 overflow-hidden bg-no-repeat bg-contain bg-start bg-fixed"
+        style={{
+          backgroundImage: `url(${MawashiYodan})`,
+          backgroundSize: '35%',
+          backgroundPosition: '10% 60%',
+        }}
+
+        
+      >
+   <div className=" absolute inset-0 bg-gradient-to-t from-white via-white/30 via-30% to-transparent" />
+        <div className="relative z-10 flex flex-col items-center justify-start pt-16 h-full max-w-4xl mx-auto w-full space-y-6 text-center">
+
+          <h1 className="font-display text-4xl sm:text-4xl font-extrabold tracking-tight text-gray-700 leading-none capitalize">
+            Sobre Nosotros
+          </h1>
+
+          <p className="text-sm    sm:text-md text-gray-700/80   max-w-xs  sm:max-w-sm leading-relaxed font-sans">
+            Preservamos las bases puras y la rigurosidad técnica de Shito-Ryu Inoue Ha, fundado por Soke Yoshimi Inoue en Japón.
+          </p>
+          
+          <p className="text-base sm:text-lg pt-12 pl-6   text-gray-700/80">Sensei León Gustavo</p>
+        </div>
+
+      </header>
+      
+      
+      {/* 1. Banner Hero desktop */}
+      <header
+        className="relative hidden md:flex md:flex-col w-full h-[60vh] md:items-center justify-center px-4 md:px-12 overflow-hidden bg-no-repeat bg-contain bg-start bg-fixed"
         style={{
           backgroundImage: `url(${MawashiYodan})`,
           backgroundSize: '30%',
           backgroundPosition: '20% 40%',
         }}
       >
+
+
+
         <div className=" absolute inset-0 bg-gradient-to-t from-white via-white/30 via-30% to-transparent" />
         {/* title  and p*/}
         <div className="relative z-10 flex flex-col items-center justify-center max-w-4xl mx-auto w-full space-y-6 text-center">
 
-          <h1 className="font-display text-4xl sm:text-6xl font-extrabold tracking-tight text-gray-700 leading-none capitalize">
+          <h1 className="font-display text-4xl sm:text-4xl font-extrabold tracking-tight text-gray-700 leading-none capitalize">
             Sobre Nosotros
           </h1>
 
-          <p className="text-base sm:text-lg text-gray-700/80 max-w-2xl leading-relaxed font-sans">
+          <p className="text-sm    sm:text-md text-gray-700/80   max-w-xs  sm:max-w-sm leading-relaxed font-sans">
             Preservamos las bases puras y la rigurosidad técnica de Shito-Ryu Inoue Ha, fundado por Soke Yoshimi Inoue en Japón.
           </p>
           <p className="text-base sm:text-lg  pt-12 text-gray-700/80">Sensei León Gustavo</p>
@@ -52,15 +84,15 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
 
 
       {/* 2. Logo de la organización con texto debajo */}
-      <section className="py-16 max-w-5xl mx-auto px-4 sm:px-6 text-center space-y-6">
+      <section className="md:py-16 max-w-5xl mx-auto px-8 sm:px-6 text-center space-y-6">
 
 
         <img src={LogoIskia} alt="Logo ISKIA" className="w-62  object-contain mx-auto items-center justify-center" />
 
 
         <div className="space-y-4 max-w-3xl mx-auto">
-          <h3 className="text-2xl font-bold font-display uppercase tracking-wide text-gray-700">
-            Filial Nacional Shito Ryu Inoue Ha Keishin Kai
+          <h3 className="md:text-2xl text-xl font-bold font-display uppercase tracking-wide text-gray-700">
+            International  Shito Ryu Inoue Ha Karate Do of the Americas
           </h3>
           <p className="text-sm sm:text-base text-gray-700/70 leading-relaxed font-sans">
             Nuestra institución está debidamente acreditada ante los organismos mundiales de Karate. Fomentamos la práctica del Karate-Do como método de perfeccionamiento del carácter, la biomecánica corporal saludable y el combate deportivo certificado. No somos solo un gimnasio; somos guardianes del linaje del Maestro Yoshimi Inoue.
@@ -72,27 +104,25 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
 
       {/* 3 Beautiful high-end Organization */}
       <section
-        className="relative h-[1200px] w-full bg- bg-right bg-fixed overflow-hidden bg-no-repeat"
-        style={{ backgroundImage: `url(${negrosInoue})`, backgroundPosition: ' center  50px' }}
+        className="relative h-[300px]  md:h-[1200px] w-full bg-center bg-contain   md:bg-cover md:bg-right md:bg-fixed  bg-no-repeat"
+        style={{ backgroundImage: `url(${negrosInoue})`, backgroundPosition: 'center 90px' }}
       >
         {/* High-contrast vignettes */}
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/30 via-30% to-transparent" />
+        <div className="absolute inset-0 -bottom-[2px] bg-gradient-to-t from-white via-white/30 via-20% to-transparent" />
 
-        <div className="relative z-10 h-full flex items-center justify-center">
-          {/* contenido superpuesto si hace falta */}
-        </div>
+
       </section>
 
       {/* 4. Historia: imagen y texto */}
-      <section className="py-40 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <section className="md:py-40 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:space-y-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center py-8 px-8">
 
           {/* History Image block */}
           <div className="lg:col-span-5 relative h-full w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10">
             <img
               src={letrasIKIA}
               alt="Clase tradicional en el dojo antiguo"
-              className="w-full h-full object-contain filter contrast-105"
+              className="w-full h-full object-contain filter contrast-105 px-8 py-8"
               referrerPolicy="no-referrer"
             />
 
@@ -127,7 +157,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       {/* 5. Sección "Sensei de Tosei Gusoku Dojo Leon"  */}
 
       {/*  Banner titulo  */}
-      <div className=" bg-gray-900  text-left  w-full pl-[20rem] space-y-4 py-10">
+      <div className=" bg-black  text-left  w-full lg:pl-20  2xl:pl-[20rem] space-y-4 py-10">
         <span className="text-xs font-bold text-brand-accent tracking-widest font-display uppercase block">FUNDADOR DEL DOJO </span>
         <h3 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight">
           Sensei de Tosei Gusoku Dojo
@@ -143,25 +173,17 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       <section className="relative w-full h-[950px] flex flex-row  gap-8 items-center justify-center overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed py-20"
         style={{
           backgroundImage: `url(${BannerHero})`,
-     
-        
+
+
 
         }}
       >
-       <div className='flex  grow-1 justify-end '>
-        
+        <div className='flex  grow-1 justify-end '>
 
-        <img className='pt-[150px] pb-[40px] h-[1000px] z-10 ' src={LeonSuto} alt="" />
-    
-                             {/* Blur effect at the bottom */}
-                        <div className="absolute bottom-1 left-1/3 -translate-x-[420px] rounded-full opacity-90 pointer-events-none
-            h-[30px] w-full min-w-[330px] max-w-[600px] z-10
-            2xl:max-w-[740px] 4xl:max-w-[900px]"
-                            style={{
-                                animation: "color-change 10s infinite linear",
-                                backgroundImage: "radial-gradient(closest-side, currentColor 45%, transparent )"
-                            }} />
-       </div>
+
+          <img className='pt-[150px]  h-[1000px] z-10 ' src={LeonSuto} alt="" />
+
+        </div>
 
         {/* Overlaid Float Biographic Card */}
         <div className='flex grow-1 justify-center'>
@@ -186,7 +208,16 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       {/* 6. Sección "Sensei German"/}
 
 
-
+      {/*  Banner titulo German */}
+      <div className=" bg-black text-left  w-full lg:pl-20 2xl:pl-[20rem] space-y-2 py-4">
+        <span className="text-xs font-bold text-brand-accent tracking-widest font-display uppercase block">INSTRUCTOR</span>
+        <h3 className="text-3xl sm:text-4xl font-extrabold font-display uppercase tracking-tight">
+          Sensei de Tosei Gusoku Dojo
+        </h3>
+        <p className="text-sm sm:text-lg text-white italic leading-relaxed max-w-3xl  font-sans">
+          "Representante oficial de Shito Ryu Inoue Ha Santo Domingo y aprendiz de Shihan Ramón Percinal y Kyoshi Julio Martínez."
+        </p>
+      </div>
 
       {/* Bakground Imag + Descripcion */}
       <section className="relative w-full h-[750px] flex flex-row  gap-8 items-center justify-center overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed py-20"
@@ -194,7 +225,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
           backgroundImage: `url(${BannerHero})`
         }}
       >
-       {/* Overlaid Float Biographic Card */}
+        {/* Overlaid Float Biographic Card */}
         <div className='flex grow-1 justify-end'>
           <div className=" p-6 bg-gray backdrop-blur-[80px] border border-blue-700  max-w-2xl   rounded-2xl space-y-4 shadow-2xl text-left ">
             <div>
@@ -209,10 +240,10 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
           </div>
         </div>
 
-       <div className='flex  grow-1 justify-start '>
+        <div className='flex  grow-1 justify-start '>
 
-        <img className='pt-[150px] h-[1000px] ' src={Germangris} alt="" />
-       </div>
+          <img className='pt-[150px] h-[1000px] ' src={Germangris} alt="" />
+        </div>
 
 
 
@@ -244,7 +275,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       >
         <div className=" gap-12 items-center max-w-2xl mr-40">
 
-  <div className="absolute inset-0 bg-gradient-to-t from-black via-white/10 via-30% to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-white/10 via-30% to-transparent" />
 
           {/* Right Text details and Black Card with Curriculum */}
           <div className=" space-y-6 pt-60 pb-60">
@@ -264,59 +295,59 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
 
               <h4 className="font-extrabold text-lg text-brand-accent font-display uppercase tracking-wide border-b border-white/10 pb-3 mb-4 flex items-center justify-between">
                 <span>CURRÍCULO DE KYOSHI JULIO</span>
-                
+
               </h4>
 
               <div className="space-y-4 flex gap-8">
                 <div >
-                    <ul className="space-y-3 text-xs sm:text-sm text-white leading-relaxed">
-                        <li>
-                          <strong>7th Degree Black Belt</strong><br />
-                          Karate-Do Hayashi-ha Shito-Ryu (1999).
-                        </li>
-                        <li>
-                          <strong>7th Degree Black Belt</strong><br />
-                          Karate-Do Inoue-ha Shito-Ryu (2008).
-                        </li>
-                        <li>
-                          <strong>6th Degree Black Belt</strong><br />
-                          Okinawa Goju-Ryu (2009).
-                        </li>
-                        <li>
-                          <strong>5th Degree Black Belt</strong><br />
-                          Okinawa Karate-Do Ryu El-Ryu (1992).
-                        </li>
-                        <li>
-                          <strong>5th Degree Black Belt</strong><br />
-                          Okinawa Kobudo (Weapons) (1992).
-                        </li>
-                    </ul>
-                </div> 
+                  <ul className="space-y-3 text-xs sm:text-sm text-white leading-relaxed">
+                    <li>
+                      <strong>7th Degree Black Belt</strong><br />
+                      Karate-Do Hayashi-ha Shito-Ryu (1999).
+                    </li>
+                    <li>
+                      <strong>7th Degree Black Belt</strong><br />
+                      Karate-Do Inoue-ha Shito-Ryu (2008).
+                    </li>
+                    <li>
+                      <strong>6th Degree Black Belt</strong><br />
+                      Okinawa Goju-Ryu (2009).
+                    </li>
+                    <li>
+                      <strong>5th Degree Black Belt</strong><br />
+                      Okinawa Karate-Do Ryu El-Ryu (1992).
+                    </li>
+                    <li>
+                      <strong>5th Degree Black Belt</strong><br />
+                      Okinawa Kobudo (Weapons) (1992).
+                    </li>
+                  </ul>
+                </div>
                 <div>
 
-                
-                      <ul className="space-y-3 text-xs sm:text-sm text-white leading-relaxed">
-                        <li>
-                          <strong>5th Degree Black Belt</strong><br />
-                          SKIF Shotokan (1990).
-                        </li>
 
-                        <li>
-                          <strong>5th Degree Black Belt</strong><br />
-                          Eishin Ryu Iaido (2007).
-                        </li>
-                        <li>
-                          <strong>National Class "A" Referee.</strong>
-                        </li>
-                        <li>
-                          <strong>Member</strong><br />
-                          World Karate Federation (WKF), 160 countries.
-                        </li>
-                        <li>
-                          <strong>Member</strong><br />
-                          Dominican Karate Federation (FEDOKA).
-                        </li>
-                    </ul>
+                  <ul className="space-y-3 text-xs sm:text-sm text-white leading-relaxed">
+                    <li>
+                      <strong>5th Degree Black Belt</strong><br />
+                      SKIF Shotokan (1990).
+                    </li>
+
+                    <li>
+                      <strong>5th Degree Black Belt</strong><br />
+                      Eishin Ryu Iaido (2007).
+                    </li>
+                    <li>
+                      <strong>National Class "A" Referee.</strong>
+                    </li>
+                    <li>
+                      <strong>Member</strong><br />
+                      World Karate Federation (WKF), 160 countries.
+                    </li>
+                    <li>
+                      <strong>Member</strong><br />
+                      Dominican Karate Federation (FEDOKA).
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -332,7 +363,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
         {/* Shihan Muneo Kano*/}
         <div className="w-full max-w-4xl mx-auto px-4 text-center space-y-6 flex flex-col items-center">
 
-          
+
           <div className="inline-block px-8 py-4.5 rounded-2xl border border-brand-accent shadow-xl relative">
             <h4 className="font-extrabold text-xl sm:text-2xl font-display uppercase tracking-tight text-brand-accent">
               Shihan Muneo Kano
@@ -365,10 +396,10 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
 
 
 
-  {/* Shihan Manuel Valbuena*/}
-          <div className="w-full max-w-4xl mx-auto px-4 text-center space-y-6 flex flex-col items-center">
+        {/* Shihan Manuel Valbuena*/}
+        <div className="w-full max-w-4xl mx-auto px-4 text-center space-y-6 flex flex-col items-center">
 
-        
+
           <div className="  inline-block px-8 py-4.5 rounded-2xl border border-brand-accent shadow-xl">
             <h4 className="font-extrabold text-xl sm:text-2xl font-display uppercase tracking-tight text-brand-accent">
               Shihan Manuel Balbuena
@@ -401,7 +432,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       </section>
 
 
- 
+
 
       {/* Final Trial Trigger banner */}
       <section className="py-20 bg-white text-center border-t border-white/5">
