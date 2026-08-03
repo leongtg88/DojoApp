@@ -1,16 +1,17 @@
 import { MOCK_INSTRUCTORS } from '../types';
-
 import MawashiYodan from '../assets/Mawashiguericintorunnegro2026.svg'
 import LogoIskia from '../assets/LogoIskia.svg';
 import negrosInoue from '../assets/NegrosInoue.svg'
 import letrasIKIA from '../assets/letrasIKSKiatradu.svg'
-import kyoshi from '../assets/kyoshiSeiza.svg'
+
 import BannerHero from '../assets/BannerHeroMar.svg'
 import Germangris from '../assets/germanGris.svg'
 import LeonSuto from '../assets/leonshutouke.svg'
 import SenseiManuel from '../assets/SenseiManuelSolo.svg'
 import SenseiMuneo from '../assets/muneoKanoSolo.svg'
-
+import { useState } from 'react';
+import Bannerblack from '../assets/bannerheroblack.svg'
+import Kyoshi from '../assets/kyoshiSeizafondoTransp.svg'
 interface AboutViewProps {
   onOpenEnrollment: (program?: string) => void;
   onNavigateToHome: () => void;
@@ -19,15 +20,43 @@ interface AboutViewProps {
 export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutViewProps) {
   // Grab specific instructors from list
   const senseiLeon = MOCK_INSTRUCTORS.find(i => i.id === 'sensei-leon') || MOCK_INSTRUCTORS[0];
-  const kyoshiJulio = MOCK_INSTRUCTORS.find(i => i.id === 'kyoshi-julio') || MOCK_INSTRUCTORS[1];
   const shihanManuel = MOCK_INSTRUCTORS.find(i => i.id === 'shihan-manuel') || MOCK_INSTRUCTORS[2];
   const shihanMuneo = MOCK_INSTRUCTORS.find(i => i.id === 'shihan-muneo') || MOCK_INSTRUCTORS[3];
+  const [expandedHistory, setExpandedHistory] = useState(false);
+  const [expandedLeon, setExpandedLeon] = useState(false);
+  const [expandedGerman, setExpandedGerman] = useState(false);
+
+  const historiaParrafos = [
+    'Tosei Gusoku es una escuela que nació en tiempos de grandes desafíos, ha logrado cumplir su objetivo de enseñar karate a personas de todas las edades. Pertenciendo a Organización Inoue-Ha Internacional y con el apoyo de nuestros alumnos, padres y representantes, quienes comprenden el profundo valor de contar con un Dojo que transmite el karate más allá de un deporte, podemos compartir nuestra esencia marcial, siguiendo la tradición japonesa y fomentando valores como la humildad, la ausencia de ego, la motivación por el logro basado en el mérito personal, sin comparaciones con los demás, además de muchos otros principios positivos para cualquier practicante.',
+    'Una parte importante de nuestra labor es fomentar una nueva generación de hábitos positivos que construyan, paso a paso, nuevas estructuras de pensamiento y, en consecuencia, nuevas formas de actuar y de vivir el día a día. El karate no se queda en el dojo. Tanto para los adultos como para los niños, promovemos junto a los padres y representantes la importancia de motivar, apoyar y desarrollar gradualmente en el hogar la autodisciplina, tanto en la práctica del karate como en el cumplimiento de las tareas domésticas que les correspondan.',
+    'Asimismo, incentivamos hábitos de alimentación e hidratación saludables, momentos adecuados de recreación y descanso, promoviendo valores como la responsabilidad de cuidar de uno mismo. Del mismo modo, fomentamos la constancia y el compromiso de mantener en el tiempo la práctica, ya sea directa o indirecta, mediante los entrenamientos, las tareas y las responsabilidades asumidas con la escuela y con los Senseis.'
+  ];
+
+  const leonBioParrafos = [
+    'Inició karate a la temprana edad de 4 años gracias a su abuelo, quien lo inscribió al ver su inquietud por hacer movimientos de puños y patadas inspirados en las películas de artes marciales de los 80. Su primera escuela fue en el estilo Shotokan en Caracas, Venezuela.',
+    'Por cambios en la escuela, debió pausar sus prácticas hasta los 14 años, cuando se incorporó a la escuela de Miyagiken bajo la tutela del Maestro Luis Alberte en la Organización Shito Kai, donde logró el oro dominando las categorías a nivel nacional en kata y kumite.',
+    'Una vez iniciados sus estudios universitarios y de maestría en el exterior, retomó sus prácticas en la escuela de Dimitrova Dojo, en Santo Domingo, República Dominicana, bajo la tutela de la Maestra María Dimitrova. Allí continuó entrenando y compitiendo en categorías intermedias, alcanzando oro en kata y kumite en diversas competencias nacionales e internacionales en República Dominicana, y comenzó a dar clases de karate a niños.',
+    'Al alcanzar el grado de Marrón Primero, Sensei León decidió fundar su propia escuela e incorporarse a la Organización Inoue Ha Dominicana, gracias a su Sensei Manuel Valbuena, quien lo orientó durante los procesos de cambio y lo refirió ante Kyoshi Julio Martínez.',
+    'El Sensei León posee conocimientos en otras artes marciales como Jujutsu, Aikido e Iaido, complementando así su formación en diferentes aspectos tradicionales y de combate de estas disciplinas japonesas.'
+  ];
+
+  const germanBioParrafos = [
+    'Inició karate a la temprana edad de 4 años gracias a su abuelo, quien lo inscribió al ver su inquietud por hacer movimientos de puños y patadas inspirados en las películas de artes marciales de los 80. Su primera escuela fue en el estilo Shotokan en Caracas, Venezuela.',
+    'Por cambios en la escuela, debió pausar sus prácticas hasta los 14 años, cuando se incorporó a la escuela de Miyagiken bajo la tutela del Maestro Luis Alberte en la Organización Shito Kai, donde logró el oro dominando las categorías a nivel nacional en kata y kumite.',
+    'Una vez iniciados sus estudios universitarios y de maestría en el exterior, retomó sus prácticas en la escuela de Dimitrova Dojo, en Santo Domingo, República Dominicana, bajo la tutela de la Maestra María Dimitrova. Allí continuó entrenando y compitiendo en categorías intermedias, alcanzando oro en kata y kumite en diversas competencias nacionales e internacionales en República Dominicana, y comenzó a dar clases de karate a niños.',
+    'Al alcanzar el grado de Marrón Primero, Sensei Germán decidió fundar su propia escuela e incorporarse a la Organización Inoue Ha Dominicana, gracias a su Sensei Manuel Valbuena, quien lo orientó durante los procesos de cambio y lo refirió ante Kyoshi Julio Martínez.',
+    'El Sensei Germán posee conocimientos en otras artes marciales como Jujutsu, Aikido e Iaido, complementando así su formación en diferentes aspectos tradicionales y de combate de estas disciplinas japonesas.'
+  ];
+
+  const preview = historiaParrafos[0].slice(0, 200);
+  const leonPreview = leonBioParrafos[0].slice(0, 180) + '...';
+  const germanPreview = germanBioParrafos[0].slice(0, 180) + '...';
 
   return (
     <div className="space-y-0 min-h-screen bg-brand-bg text-[#dee2f0]">
 
-      
-            {/* 1. Banner Hero Mobile  ") */}
+
+      {/* 1. Banner Hero Mobile  ") */}
       <header
         className="relative md:hidden  w-full h-[60vh] flex items-center justify-center px-4 md:px-12 overflow-hidden bg-no-repeat bg-contain bg-start bg-fixed"
         style={{
@@ -36,9 +65,9 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
           backgroundPosition: '10% 60%',
         }}
 
-        
+
       >
-   <div className=" absolute inset-0 bg-gradient-to-t from-white via-white/30 via-30% to-transparent" />
+        <div className=" absolute inset-0 bg-gradient-to-t from-white via-white/30 via-30% to-transparent" />
         <div className="relative z-10 flex flex-col items-center justify-start pt-16 h-full max-w-4xl mx-auto w-full space-y-6 text-center">
 
           <h1 className="font-display text-4xl sm:text-4xl font-extrabold tracking-tight text-gray-700 leading-none capitalize">
@@ -48,13 +77,13 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
           <p className="text-sm    sm:text-md text-gray-700/80   max-w-xs  sm:max-w-sm leading-relaxed font-sans">
             Preservamos las bases puras y la rigurosidad técnica de Shito-Ryu Inoue Ha, fundado por Soke Yoshimi Inoue en Japón.
           </p>
-          
+
           <p className="text-base sm:text-lg pt-12 pl-6   text-gray-700/80">Sensei León Gustavo</p>
         </div>
 
       </header>
-      
-      
+
+
       {/* 1. Banner Hero desktop */}
       <header
         className="relative hidden md:flex md:flex-col w-full h-[60vh] md:items-center justify-center px-4 md:px-12 overflow-hidden bg-no-repeat bg-contain bg-start bg-fixed"
@@ -137,17 +166,39 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
             <h3 className="text-3xl sm:text-5xl font-extrabold font-display uppercase text-gray-700 leading-tight">
               Nuestra Historia
             </h3>
-            <p className="text-sm sm:text-base text-gray-700/70 leading-relaxed font-sans">
-              Tosei Gusoku es una escuela que nació en tiempos de grandes desafíos, ha logrado cumplir su objetivo de enseñar karate a personas de todas las edades. Pertenciendo a Organización Inoue-Ha Internacional y con el apoyo de nuestros alumnos, padres y representantes, quienes comprenden el profundo valor de contar con un Dojo que transmite el karate más allá de un deporte, podemos compartir nuestra esencia marcial, siguiendo la tradición japonesa y fomentando valores como la humildad, la ausencia de ego, la motivación por el logro basado en el mérito personal, sin comparaciones con los demás, además de muchos otros principios positivos para cualquier practicante. <br /> <br />
+            <div className="text-sm sm:text-base text-gray-700/70 leading-relaxed font-sans">
+              <div className="hidden md:block">
+                <>
+                  <p>{historiaParrafos[0]}</p>
+                  <br />
+                  <p>{historiaParrafos[1]}</p>
+                  <br />
+                  <p>{historiaParrafos[2]}</p>
+                </>
+              </div>
 
-              Una parte importante de nuestra labor es fomentar una nueva generación de hábitos positivos que construyan, paso a paso, nuevas estructuras de pensamiento y, en consecuencia, nuevas formas de actuar y de vivir el día a día. El karate no se queda en el dojo. Tanto para los adultos como para los niños, promovemos junto a los padres y representantes la importancia de motivar, apoyar y desarrollar gradualmente en el hogar la autodisciplina, tanto en la práctica del karate como en el cumplimiento de las tareas domésticas que les correspondan. <br /> <br />
+              <div className="md:hidden">
+                {expandedHistory ? (
+                  <>
+                    <p>{historiaParrafos[0]}</p>
+                    <br />
+                    <p>{historiaParrafos[1]}</p>
+                    <br />
+                    <p>{historiaParrafos[2]}</p>
+                  </>
+                ) : (
+                  <p>{preview}...</p>
+                )}
+              </div>
+            </div>
 
-              Asimismo, incentivamos hábitos de alimentación e hidratación saludables, momentos adecuados de recreación y descanso, promoviendo valores como la responsabilidad de cuidar de uno mismo. Del mismo modo, fomentamos la constancia y el compromiso de mantener en el tiempo la práctica, ya sea directa o indirecta, mediante los entrenamientos, las tareas y las responsabilidades asumidas con la escuela y con los Senseis.
+            <button
+              onClick={() => setExpandedHistory(!expandedHistory)}
+              className="text-sm md:hidden font-bold text-brand-accent hover:text-brand-accent-hover underline"
+            >
+              {expandedHistory ? 'Ver menos' : 'Ver más'}
+            </button>
 
-            </p>
-            <p className="text-sm sm:text-base text-gray-700/70 leading-relaxed font-sans">
-              Bajo la tutela directa del Kyoshi Julio Martínez y la rigurosidad heredada del Shihan Manuel Balbuena, entrenamos arduamente para que cada Kata sea la expresión viva de la fuerza interna. Llevamos más de una década destacando en campeonatos selectivos nacionales, y enviando atletas de alto rendimiento a representar con honor e hidalguía la patria caribeña.
-            </p>
           </div>
 
         </div>
@@ -156,8 +207,8 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
 
       {/* 5. Sección "Sensei de Tosei Gusoku Dojo Leon"  */}
 
-      {/*  Banner titulo  */}
-      <div className=" bg-black  text-left  w-full lg:pl-20  2xl:pl-[20rem] space-y-4 py-10">
+      {/*  Banner titulo Leon */}
+      <div className=" bg-black px-8  text-left  w-full lg:pl-20  2xl:pl-[20rem] space-y-4 py-10">
         <span className="text-xs font-bold text-brand-accent tracking-widest font-display uppercase block">FUNDADOR DEL DOJO </span>
         <h3 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight">
           Sensei de Tosei Gusoku Dojo
@@ -170,38 +221,54 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
 
 
       {/* Bakground Imag + Descripcion */}
-      <section className="relative w-full h-[950px] flex flex-row  gap-8 items-center justify-center overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed py-20"
+      <section className="relative w-full h-auto md:h-[950px] px-8 overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed py-20"
         style={{
           backgroundImage: `url(${BannerHero})`,
-
-
-
         }}
       >
-        <div className='flex  grow-1 justify-end '>
+        <div className="flex h-full flex-col md:flex-row items-center justify-center ">
+          <div className="flex-1  flex justify-center md:justify-end">
+            <img className='h-[400px] md:pt-[150px] md:h-[1000px] z-10' src={LeonSuto} alt="" />
+          </div>
 
+          {/* Overlaid Float Biographic Card */}
+          <div className="flex-1 flex justify-center">
+            <div className="p-6 bg-gray backdrop-blur-2xl border border-blue-700 max-w-2xl rounded-2xl space-y-4 shadow-2xl text-left">
+              <div>
+                <span className="text-[10px] font-bold text-brand-accent uppercase tracking-wider font-display">DIRECTOR GENERAL DEL DOJO</span>
+                <h4 className="font-extrabold text-2xl font-display text-gray-700 mt-1 uppercase">{senseiLeon.name}</h4>
+                <p className="text-xs text-gray-700/60">Cinturón Negro 2do Dan - Inoue Ha </p>
+              </div>
 
-          <img className='pt-[150px]  h-[1000px] z-10 ' src={LeonSuto} alt="" />
+              <div className="space-y-3 text-xs text-gray-900 leading-relaxed font-sans">
+                <div className="hidden md:block">
+                  {leonBioParrafos.map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))}
+                </div>
 
-        </div>
+                <div className="md:hidden">
+                  {expandedLeon ? (
+                    <>
+                      {leonBioParrafos.map((paragraph, index) => (
+                        <p key={index}>{paragraph}</p>
+                      ))}
+                    </>
+                  ) : (
+                    <p>{leonPreview}</p>
+                  )}
+                </div>
 
-        {/* Overlaid Float Biographic Card */}
-        <div className='flex grow-1 justify-center'>
-          <div className=" p-6 bg-gray   backdrop-blur-2xl border border-blue-700  max-w-2xl   rounded-2xl space-y-4 shadow-2xl text-left ">
-            <div>
-              <span className="text-[10px] font-bold text-brand-accent uppercase tracking-wider font-display">DIRECTOR GENERAL DEL DOJO</span>
-              <h4 className="font-extrabold text-2xl font-display text-gray-700 mt-1 uppercase">{senseiLeon.name}</h4>
-              <p className="text-xs text-gray-700/60">Cinturón Negro 2do Dan - Inoue Ha </p>
+                <button
+                  onClick={() => setExpandedLeon(!expandedLeon)}
+                  className="text-sm md:hidden font-bold text-brand-accent hover:text-brand-accent-hover underline"
+                >
+                  {expandedLeon ? 'Ver menos' : 'Ver más'}
+                </button>
+              </div>
             </div>
-
-            <p className="text-xs text-gray-900 leading-relaxed font-sans ">
-              <p>Inició karate a la temprana edad de <strong>4 años gracias a su abuelo</strong>, quien lo inscribió al ver su inquietud por hacer movimientos de puños y patadas inspirados en las películas de artes marciales de los 80. <strong>Su primera escuela fue en el estilo Shotokan en Caracas, Venezuela.</strong></p><p>Por cambios en la escuela, debió pausar sus prácticas hasta los 14 años, cuando<strong> se incorporó a la escuela de Miyagiken bajo la tutela del Maestro Luis Alberte en la Organización Shito Kai, donde logró el oro dominando las categorías a nivel nacional en kata y kumite.</strong></p><p>Una vez iniciados sus estudios universitarios y de maestría en el exterior, retomó sus prácticas en la escuela de Dimitrova Dojo, en Santo Domingo, República Dominicana, bajo la tutela de la Maestra María Dimitrova. Allí<strong> continuó entrenando y compitiendo en categorías intermedias, alcanzando oro en kata y kumite en diversas competencias nacionales e internacionales en República Dominicana, y comenzó a dar clases de karate a niños.</strong></p><p>Al alcanzar el grado de Marrón Primero, <strong>Sensei León decidió fundar su propia escuela e incorporarse a la Organización Inoue Ha Dominicana, gracias a su Sensei Manuel Valbuena</strong>, quien lo orientó durante los procesos de cambio y <strong>lo refirió ante Kyoshi Julio Martínez.</strong></p><p>El Sensei León posee conocimientos en <strong>otras artes marciales como Jujutsu, Aikido e Iaido,</strong> complementando así su <strong>formación en diferentes aspectos tradicionales y de combate de estas disciplinas japonesas.</strong></p>
-            </p>
           </div>
         </div>
-
-
-
       </section>
 
 
@@ -209,7 +276,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
 
 
       {/*  Banner titulo German */}
-      <div className=" bg-black text-left  w-full lg:pl-20 2xl:pl-[20rem] space-y-2 py-4">
+      <div className=" bg-black text-left  px-8 w-full lg:pl-20 2xl:pl-[20rem] space-y-2 py-4">
         <span className="text-xs font-bold text-brand-accent tracking-widest font-display uppercase block">INSTRUCTOR</span>
         <h3 className="text-3xl sm:text-4xl font-extrabold font-display uppercase tracking-tight">
           Sensei de Tosei Gusoku Dojo
@@ -220,34 +287,54 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       </div>
 
       {/* Bakground Imag + Descripcion */}
-      <section className="relative w-full h-[750px] flex flex-row  gap-8 items-center justify-center overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed py-20"
+      <section className="relative w-full h-auto  md:h-[750px] px-8 overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed py-20"
         style={{
           backgroundImage: `url(${BannerHero})`
         }}
       >
-        {/* Overlaid Float Biographic Card */}
-        <div className='flex grow-1 justify-end'>
-          <div className=" p-6 bg-gray backdrop-blur-[80px] border border-blue-700  max-w-2xl   rounded-2xl space-y-4 shadow-2xl text-left ">
-            <div>
-              <span className="text-[10px] font-bold text-brand-accent uppercase tracking-wider font-display">Instructor</span>
-              <h4 className="font-extrabold text-2xl font-display text-gray-900 mt-1 uppercase">SENSEI GERMAN LIZARDO</h4>
-              <p className="text-xs text-gray-700">Cinturón Negro 1er Dan - Inoue Ha </p>
-            </div>
+        <div className="flex h-full flex-col md:flex-row items-center justify-center md:gap-8">
+          <div className="flex-1 flex justify-center md:justify-end">
+            <img className=' h-[360px] md:pt-[150px] md:h-[1000px] z-10' src={Germangris} alt="" />
+          </div>
 
-            <p className="text-xs text-gray-900 leading-relaxed font-sans ">
-              <p>Inició karate a la temprana edad de <strong>4 años gracias a su abuelo</strong>, quien lo inscribió al ver su inquietud por hacer movimientos de puños y patadas inspirados en las películas de artes marciales de los 80. <strong>Su primera escuela fue en el estilo Shotokan en Caracas, Venezuela.</strong></p><p>Por cambios en la escuela, debió pausar sus prácticas hasta los 14 años, cuando<strong> se incorporó a la escuela de Miyagiken bajo la tutela del Maestro Luis Alberte en la Organización Shito Kai, donde logró el oro dominando las categorías a nivel nacional en kata y kumite.</strong></p><p>Una vez iniciados sus estudios universitarios y de maestría en el exterior, retomó sus prácticas en la escuela de Dimitrova Dojo, en Santo Domingo, República Dominicana, bajo la tutela de la Maestra María Dimitrova. Allí<strong> continuó entrenando y compitiendo en categorías intermedias, alcanzando oro en kata y kumite en diversas competencias nacionales e internacionales en República Dominicana, y comenzó a dar clases de karate a niños.</strong></p><p>Al alcanzar el grado de Marrón Primero, <strong>Sensei León decidió fundar su propia escuela e incorporarse a la Organización Inoue Ha Dominicana, gracias a su Sensei Manuel Valbuena</strong>, quien lo orientó durante los procesos de cambio y <strong>lo refirió ante Kyoshi Julio Martínez.</strong></p><p>El Sensei León posee conocimientos en <strong>otras artes marciales como Jujutsu, Aikido e Iaido,</strong> complementando así su <strong>formación en diferentes aspectos tradicionales y de combate de estas disciplinas japonesas.</strong></p>
-            </p>
+          {/* Overlaid Float Biographic Card */}
+          <div className="flex-1 flex justify-center">
+            <div className="p-6 bg-gray backdrop-blur-[80px] border border-blue-700 max-w-2xl rounded-2xl space-y-4 shadow-2xl text-left ">
+              <div>
+                <span className="text-[10px] font-bold text-brand-accent uppercase tracking-wider font-display">Instructor</span>
+                <h4 className="font-extrabold text-2xl font-display text-gray-900 mt-1 uppercase">SENSEI GERMAN LIZARDO</h4>
+                <p className="text-xs text-gray-700">Cinturón Negro 1er Dan - Inoue Ha </p>
+              </div>
+
+              <div className="space-y-3 text-xs text-gray-900 leading-relaxed font-sans">
+                <div className="hidden md:block">
+                  {germanBioParrafos.map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))}
+                </div>
+
+                <div className="md:hidden">
+                  {expandedGerman ? (
+                    <>
+                      {germanBioParrafos.map((paragraph, index) => (
+                        <p key={index}>{paragraph}</p>
+                      ))}
+                    </>
+                  ) : (
+                    <p>{germanPreview}</p>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => setExpandedGerman(!expandedGerman)}
+                  className="text-sm md:hidden font-bold text-brand-accent hover:text-brand-accent-hover underline"
+                >
+                  {expandedGerman ? 'Ver menos' : 'Ver más'}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div className='flex  grow-1 justify-start '>
-
-          <img className='pt-[150px] h-[1000px] ' src={Germangris} alt="" />
-        </div>
-
-
-
-
       </section>
 
 
@@ -256,7 +343,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       {/* 6. Sección "Kyoshi Julio Martínez" (Foto, intro, card negro con currículo) */}
 
       {/* Banner titulo  */}
-      <div className=" bg-white text-left  w-full pl-[20rem] space-y-4 py-15">
+      <div className=" bg-white text-left  px-8 w-full  2xl:pl-[20rem] space-y-4 py-15">
 
         <h3 className="text-3xl sm:text-5xl font-extrabold font-display  text-gray-700 uppercase tracking-tight">
           Maestros Guías de Tosei Gusoku Dojo
@@ -266,20 +353,27 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
         </p>
       </div>
 
-      <section className="relative w-full h-[900px] flex items-center justify-end overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed"
+      <section className="relative w-full h-auto flex flex-col md:flex-row items-center justify-end overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed"
         style={{
-          backgroundImage: `url(${kyoshi})`,
-          backgroundPosition: ' center 80px'
+          backgroundImage: `url(${Bannerblack})`,
+          
 
         }}
       >
-        <div className=" gap-12 items-center max-w-2xl mr-40">
+        <div className="flex w-full md:flex-1">
+
+        <img src={Kyoshi} alt="Banner" className=" w-full h-full " />
+        </div>
+
+        <div className=" gap-12  flex md:flex-1 items-center  ">
 
           <div className="absolute inset-0 bg-gradient-to-t from-black via-white/10 via-30% to-transparent" />
 
           {/* Right Text details and Black Card with Curriculum */}
-          <div className=" space-y-6 pt-60 pb-60">
-            <span className="text-xs  border border-brand-accent text-brand-accent px-3 py-1 rounded-full  font-bold font-display uppercase tracking-widest inline-block">MÁXIMA AUTORIDAD TÉCNICA</span>
+          <div className="space-y-6 md:pt-20 px-8 pb-60 text-center md:text-left">
+            <span className="text-xs border border-brand-accent text-brand-accent px-6 py-1 rounded-full font-bold font-display uppercase tracking-widest inline-block">
+              MÁXIMA AUTORIDAD TÉCNICA
+            </span>
             <h3 className="text-3xl sm:text-5xl font-extrabold font-display uppercase text-brand-accent leading-tight">
               Kyoshi Julio Martínez
             </h3>
@@ -357,11 +451,15 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       </section>
 
 
-      {/* 7. Sección "Shihan Muneo Kano" (Título con box shadow, foto circular, texto breve) bg-[#020202]  */}
-      <section className="h-auto py-16 bg-[#020202]  relative overflow-hidden flex flex-col lg:flex-row items-start justify-center gap-12">
-
-        {/* Shihan Muneo Kano*/}
-        <div className="w-full max-w-4xl mx-auto px-4 text-center space-y-6 flex flex-col items-center">
+      {/* 7. Sección "Shihan Muneo Kano" y Manuel Balbuena */}
+      <section className="h-auto py-16 bg-no-repeat bg-scroll bg-cover bg-center relative isolate overflow-hidden flex flex-col lg:flex-row items-start justify-center gap-12" style={{
+          backgroundImage: `url(${Bannerblack})`
+        }}
+      >
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black via-white/10 via-30% to-transparent" />
+      <div className="absolute inset-0 z-0 bg-gradient-to-t from-black via-50% to-transparent" />
+              {/* Shihan Muneo Kano*/}
+        <div className="w-full max-w-4xl mx-auto px-4 text-center space-y-6 flex flex-col items-center z-10 relative">
 
 
           <div className="inline-block px-8 py-4.5 rounded-2xl border border-brand-accent shadow-xl relative">
@@ -397,7 +495,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
 
 
         {/* Shihan Manuel Valbuena*/}
-        <div className="w-full max-w-4xl mx-auto px-4 text-center space-y-6 flex flex-col items-center">
+        <div className="w-full max-w-4xl mx-auto px-4 text-center space-y-6 flex flex-col items-center z-10">
 
 
           <div className="  inline-block px-8 py-4.5 rounded-2xl border border-brand-accent shadow-xl">

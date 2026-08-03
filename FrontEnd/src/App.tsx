@@ -12,7 +12,7 @@ import {
   MessagesSquare,
   Play,
   Home,
-  UserCheck,
+   
   ClipboardList
 } from 'lucide-react';
 import HomeView from './components/HomeView';
@@ -75,12 +75,9 @@ export default function App() {
     }
   };
 
-  const scrollToSection = (id: string) => {
-    const section = document.getElementById(id);
-    if (!section) return;
-    const top = section.getBoundingClientRect().top + window.pageYOffset - 80;
-    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-  };
+
+
+
 
   return (
     <div className="min-h-screen bg-white text-[#dee2f0] flex flex-col font-sans relative antialiased selection:bg-brand-accent selection:text-gray-700">
@@ -271,19 +268,19 @@ export default function App() {
               <ToseiGusokuForm onNavigateToHome={() => handleNavigate('home')} />
             </motion.div>
           ) : (
-              <motion.div
-                key="about-screen"
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.3 }}
-              >
-                <AboutView
-                  onOpenEnrollment={handleOpenEnrollment}
-                  onNavigateToHome={() => handleNavigate('home')}
-                />
-              </motion.div>
-            )}
+            <motion.div
+              key="about-screen"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3 }}
+            >
+              <AboutView
+                onOpenEnrollment={handleOpenEnrollment}
+                onNavigateToHome={() => handleNavigate('home')}
+              />
+            </motion.div>
+          )}
         </AnimatePresence>
       </main>
 
