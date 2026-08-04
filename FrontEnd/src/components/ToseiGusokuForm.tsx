@@ -1,5 +1,24 @@
 import React, { useState } from 'react';
+import LogoCuadradoBlanco from '../assets/LogoCuadradoBlanco.svg';
 
+ import {MOCK_BENEFITS}    from '../types';
+
+ import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake } from 'lucide-react';
+
+const getBenefitIcon = (iconName: string) => {
+  switch (iconName) {
+    case 'BrainCircuit':
+      return <BrainCircuit className="w-8 h-8" />;
+    case 'Flame':
+      return <Flame className="w-8 h-8" />;
+    case 'ShieldAlert':
+      return <ShieldAlert className="w-8 h-8" />;
+    case 'HeartHandshake':
+      return <HeartHandshake className="w-8 h-8" />;
+    default:
+      return <BrainCircuit className="w-8 h-8" />;
+  }
+};
 interface ToseiGusokuFormProps {
   onNavigateToHome: () => void;
 }
@@ -36,7 +55,114 @@ type FormData = {
 
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
+const WelcomeScreen = ({ onStart, onNavigateToHome }: { onStart: () => void; onNavigateToHome: () => void }) => (
+  <div className="min-h-screen bg-gradient-to-br from-stone-900 via-blue-950 to-blue-900 flex items-center justify-center px-4">
+    <div className="max-w-7xl w-full text-center">
+      <div className="relative mb-8">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-64 h-64 rounded-full border-4 border-brand-accent/30 animate-pulse"></div>
+        </div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-48 h-48 rounded-full border-2 border-brand-accent/50"></div>
+        </div>
+        <div className="relative z-10 flex flex-col items-center pt-12 pb-12">
+          <div className="w-40 h-40 flex items-center justify-center hover:scale-105 transition-transform duration-300">
+            <img src={LogoCuadradoBlanco} alt="Logo Tosei Gusoku" className="w-full h-full object-contain" />
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-4 ">
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">Sección de Inscripción</h1>
+        <h2 className="text-2xl md:text-3xl font-semibold text-brand-accent">Bienvenido(a)</h2>
+        <div className="w-24 h-1 bg-brand-accent mx-auto"></div>
+        
+      </div>
+      {/* 5. Beneficios del Karate */}
+      <section className="md:py-20 max-w-7xl mx-auto px-8 md:px-[50px]  space-y-6  md:space-y-12">
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-brand-accent text-xs font-bold font-display uppercase tracking-wider">
+            <Award className="w-3.5 h-3.5" /> Estilo de Vida Marcial
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-extrabold font-display  tracking-tight text-white">
+            Beneficios del Karate
+          </h2>
+          <p className="text-sm text-center  sm:text-base text-gray-300  ">
+            Por qué entrenar en Escuela Tosei Gusoku va mucho más allá de aprender a golpear o patear.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" >
+          {MOCK_BENEFITS.map((benefit) => (
+            <div
+              key={benefit.id}
+              className="p-6 rounded-2xl flex flex-col space-y-4 glass-card-hover border border-white/5 relative overflow-hidden group shadow-md shadow-black/40  tracking-tight md:leading-5 "
+              style={{ animation: "border-color-change 8s infinite linear" }}
+            >
+
+              {/* Subtle top horizontal color indicator bar */}
+              <div className={`absolute top-0 inset-x-0 h-1 bg-gradient-to-r opacity-50 group-hover:opacity-100 transition-opacity`} />
+
+              <div className={`w-14 h-14 rounded-xl flex items-center justify-center border ${benefit.colorClass}`}>
+                {getBenefitIcon(benefit.iconName)}
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="font-bold text-xl font-display text-white group-hover:text-brand-accent transition-colors">
+                  {benefit.title}
+                </h3>
+                <p className="text-sm text-gray-300 leading-relaxed font-sans">
+                  {benefit.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      <div className="bg-amber-900/30 border border-amber-700/50 rounded-xl p-6 mb-8 text-left">
+        <h4 className="text-amber-400 font-semibold mb-3 flex items-center">
+          <span className="text-xl mr-2">📋</span>
+          Antes de comenzar, ten en cuenta:
+        </h4>
+        <ul className="space-y-2 text-stone-300 text-sm">
+          <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>El formulario consta de 3 secciones y toma aproximadamente 10 minutos completarlo</li>
+          <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Necesitarás tener a mano los datos personales del alumno y contacto de padres/tutores</li>
+          <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Al finalizar, deberás aceptar las políticas y reglamentos del Dojo</li>
+          <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Los campos marcados con <span className="text-red-400 mx-1">*</span> son obligatorios</li>
+        </ul>
+      </div>
+      </section>
+
+
+      <button
+        onClick={onStart}
+        className="group relative inline-flex items-center justify-center px-10 py-4 overflow-hidden font-bold text-white rounded-full shadow-2xl bg-brand-accent from-blue-700 to-blue-900 hover:from-blue-600 hover:to-blue-800 transition-all duration-300 hover:scale-105"
+      >
+        <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-blue-600 to-blue-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+        <span className="relative flex items-center text-lg">
+          Comenzar Inscripción
+          <svg className="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </span>
+      </button>
+
+      <div className="mt-8 text-stone-500 text-sm">
+        <p>¿Tienes dudas? Contáctanos por WhatsApp o email</p>
+        <div className="flex justify-center space-x-4 mt-2">
+          <span className="hover:text-stone-300 cursor-pointer transition">📱 +XX XXX XXXXX</span>
+          <span className="text-stone-600">|</span>
+          <span className="hover:text-stone-300 cursor-pointer transition">✉️ info@toseigusoku.com</span>
+        </div>
+        <button onClick={onNavigateToHome} className="mt-4 text-xs text-stone-600 hover:text-stone-300 transition underline">
+          ← Volver al Inicio
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
 const ToseiGusokuForm = ({ onNavigateToHome }: ToseiGusokuFormProps) => {
+  const [showForm, setShowForm] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     nombreAlumno: '',
@@ -164,6 +290,10 @@ const ToseiGusokuForm = ({ onNavigateToHome }: ToseiGusokuFormProps) => {
   };
 
   return (
+    <>
+      {!showForm ? (
+        <WelcomeScreen onStart={() => setShowForm(true)} onNavigateToHome={onNavigateToHome} />
+      ) : (
     <div className="min-h-screen bg-white py-8 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
@@ -623,10 +753,10 @@ const ToseiGusokuForm = ({ onNavigateToHome }: ToseiGusokuFormProps) => {
               ) : (
                 <button
                   type="button"
-                  onClick={onNavigateToHome}
+                  onClick={() => setShowForm(false)}
                   className="px-6 py-2 bg-stone-200 text-stone-700 rounded-lg hover:bg-stone-300 transition font-medium"
                 >
-                  ← Volver al Inicio
+                  ← Volver
                 </button>
               )}
               
@@ -656,6 +786,8 @@ const ToseiGusokuForm = ({ onNavigateToHome }: ToseiGusokuFormProps) => {
         </p>
       </div>
     </div>
+      )}
+    </>
   );
 };
 

@@ -356,21 +356,21 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       <section className="relative w-full h-auto flex flex-col md:flex-row items-center justify-end overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed"
         style={{
           backgroundImage: `url(${Bannerblack})`,
-          
-
         }}
       >
-        <div className="flex w-full md:flex-1">
+        {/* Layer 2: Gradient */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black via-white/10 via-30% to-transparent" />
 
-        <img src={Kyoshi} alt="Banner" className=" w-full h-full " />
+        {/* Layer 1: Image */}
+        <div className="flex w-full   md:flex-1 pt-10">
+          <img src={Kyoshi} alt="Banner" className="w-full h-full " />
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black via-white/1 via-60% to-transparent" />
         </div>
 
-        <div className=" gap-12  flex md:flex-1 items-center  ">
-
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-white/10 via-30% to-transparent" />
-
+        {/* Layer 3: Text content */}
+        <div className="relative z-20  flex md:flex-1 items-center  ">
           {/* Right Text details and Black Card with Curriculum */}
-          <div className="space-y-6 md:pt-20 px-8 pb-60 text-center md:text-left">
+          <div className="space-y-6 md:pt- px-8  text-center md:text-left  md:pt-10">
             <span className="text-xs border border-brand-accent text-brand-accent px-6 py-1 rounded-full font-bold font-display uppercase tracking-widest inline-block">
               MÁXIMA AUTORIDAD TÉCNICA
             </span>
@@ -446,7 +446,6 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
@@ -479,7 +478,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
             />
           </div>
 
-          <div className="max-w-2xl mx-auto space-y-3">
+          <div className="max-w-2xl px-8 mx-auto space-y-3">
             <p className="text-xs sm:text-sm text-gray-white leading-relaxed font-sans font-medium italic">
               "{shihanMuneo.bio}"
             </p>
@@ -515,7 +514,7 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
             />
           </div>
 
-          <div className="max-w-2xl mx-auto space-y-3">
+          <div className="max-w-2xl px-8 mx-auto space-y-3">
             <p className="text-xs sm:text-sm text-white leading-relaxed font-sans font-medium italic">
               "{shihanManuel.bio}"
             </p>
