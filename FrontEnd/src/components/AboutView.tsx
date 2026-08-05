@@ -287,12 +287,12 @@ export default function AboutView({ onOpenEnrollment, onNavigateToHome }: AboutV
       </div>
 
       {/* Bakground Imag + Descripcion */}
-      <section className="relative w-full h-auto  md:h-[750px] px-8 overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed py-20"
+      <section className="relative w-full h-auto  md:h-[750px] px-8  overflow-hidden bg-no-repeat bg-cover bg-center bg-fixed py-20"
         style={{
           backgroundImage: `url(${BannerHero})`
         }}
       >
-        <div className="flex h-full flex-col md:flex-row items-center justify-center md:gap-8">
+        <div className="flex h-full flex-col md:flex-row items-center justify-center md:gap-12">
           <div className="flex-1 flex justify-center md:justify-end">
             <img className=' h-[360px] md:pt-[150px] md:h-[1000px] z-10' src={Germangris} alt="" />
           </div>

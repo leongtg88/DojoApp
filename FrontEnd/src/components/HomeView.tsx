@@ -75,7 +75,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
           <p className="text-sm text-right sm:text-base text-gray-700 max-w-5xl mx-auto">
             Tenemos como finalidad darle a cada <span className="font-semibold">niño, joven y adulto, la posibilidad de evolucionar y alcanzar las metas que se propongan </span> dentro de sus capacidades, siempre teniendo en <span className="font-semibold"> alto el espíritu y trabajando para desarrollar la voluntad para lograrlo</span>. Acompañamos y apoyamos a los practicantes en entender que <span className="font-semibold">los obstáculos son desafíos que deben atravesar</span>, que a veces <span className="font-semibold">la disciplina puede ser  frustrante a pesar de amar lo que hacemos, a través de la motivación al logro por merito personal, sin caer en comparación con otros, venciendose así mismos, volvemos éstos, fines últimos del verdadero sentido de la victoria.</span><br /> <br />
 
-            Sabemos que podemos <span className="font-semibold"> promover la preparación de nuevas generaciones </span> colabornado en aumentar las  posibilidades de  mantener los objetivos que se propongan, a pesar de los obstáculos que se les presenten ahora y siempre, <span className="font-semibold">no darse por vencidos fácilmente y mantener el espíritu de un guerrero son las herramientas con las que lograrán superarse por medio de la practica del karate.</span>
+            Sabemos que podemos <span className="font-semibold"> promover la preparación de nuevas generaciones </span> colabornado en aumentar las  posibilidades de  mantener los objetivos que se propongan, a pesar de los obstáculos que se les presenten ahora y siempre, <span className="font-semibold">no darse por vencidos fácilmente y mantener el espíritu de un guerrero son las herramientas con las que lograrán superarse por medio de la práctica del karate.</span>
             <br /> <br />
             <span className="font-bold">León Gustavo</span>
             <br />
@@ -94,7 +94,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
 
         <div className=" text-left">
           <span className="inline-block px-3 py-1 bg-brand-accent/10 text-brand-accent rounded-full text-xs font-bold font-display uppercase">Sede Santo Domingo</span>
-          <h3 className="text-3xl  sm:text-4xl  pb-8 font-extrabold font-display text-gray-700">
+          <h3 className="text-3xl  sm:text-4xl  pb-8 font-extrabold font-display text-gray-900">
             Sucursal 27 de Feb.
           </h3>
         </div>
@@ -104,7 +104,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
           {/* Left info box */}
           <div className="lg:col-span-5 space-y-6 text-left backdrop-blur-xs">
 
-            <p className="text-sm sm:text-base text-gray-700 leading-5  md:leading-relaxed font-sans ">
+            <p className="text-sm sm:text-base text-gray-900 leading-5  md:leading-relaxed font-sans ">
               Visítanos en nuestras instalaciones principales. Ofrecemos <span className="font-semibold">un área de entrenamiento climatizada con vestidores y baños, </span> secretaría de atención personalizada y zona de espera para padres.
             </p>
 
@@ -112,24 +112,24 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-brand-accent shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-bold text-sm text-gray-700">Dirección de la Escuela</h4>
-                  <p className="text-xs text-gray-700/70 mt-0.5">Plaza Lulie 3era planta, esquina Av. 27 de Febrero con C. Carmen Mendoza, Ensache Quisquella, Los Millones, Santo Domingo.</p>
+                  <h4 className="font-bold text-sm text-gray-900">Dirección de la Escuela</h4>
+                  <p className="text-xs text-gray-900 mt-0.5">Plaza Lulie 3era planta, esquina Av. 27 de Febrero con C. Carmen Mendoza, Ensache Quisquella, Los Millones, Santo Domingo.</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
                 <Phone className="w-5 h-5 text-brand-accent shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-bold text-sm text-gray-700">Llama Directamente / WhatsApp</h4>
-                  <p className="text-xs text-gray-700/70 mt-0.5">+1 (829) 6378733</p>
+                  <h4 className="font-bold text-sm text-gray-900">Llama Directamente / WhatsApp</h4>
+                  <p className="text-xs text-gray-900 mt-0.5">+1 (829) 6378733</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-brand-secondary shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-bold text-sm text-gray-700">Horario de Atención</h4>
-                  <p className="text-xs text-gray-700/70 mt-0.5">Lunes a Viernes: 2:30 PM - 7:30 PM</p>
+                  <h4 className="font-bold text-sm text-gray-900">Horario de Atención</h4>
+                  <p className="text-xs text-gray-900 mt-0.5">Lunes a Viernes: 2:30 PM - 7:30 PM</p>
                 </div>
               </div>
             </div>

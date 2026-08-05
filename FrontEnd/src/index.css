@@ -42,10 +42,10 @@
   }
   @keyframes shadow-color-change {
   0%, 100% {
-    box-shadow: 0 10px 30px -10px rgba(220, 38, 38, 0.25);
+    box-shadow: 0 10px 30px -10px rgba(184, 176, 112, 0.25);
   }
   20% {
-    box-shadow: 0 10px 30px -10px rgba(184, 176, 112, 0.25);
+    box-shadow: 0 10px 30px -10px rgba(220, 38, 38, 0.25);
   }
   40% {
     box-shadow: 0 10px 30px -10px rgba(111, 255, 233, 0.25);
@@ -268,19 +268,19 @@ h1, h2, h3, h4, h5, h6 {
 
 
 @keyframes border-color-change {
-    0%, 100%{border-color: var(--bubblegum-pink);}
-    20%{border-color: var(--sand);}
-    40%{border-color: var(--emerald); }
-    60%{border-color: var(--ocean-blue);}
-    80%{border-color: var(--baby-blue-ice);}
+    0%, 100% { border-color: var(--sand); }
+    25% { border-color: var(--emerald); }
+    50% { border-color: var(--bubblegum-pink); }
+    75% { border-color: var(--ocean-blue); }
+    90% { border-color: var(--baby-blue-ice); }
 }
 
 @keyframes bg-color-change {
-    0%, 100%{background-color: var(--bubblegum-pink);}
-    20%{background-color: var(--sand);}
-    40%{background-color: var(--emerald); }
-    60%{background-color: var(--ocean-blue);}
-    80%{background-color: var(--baby-blue-ice);}
+    20%, 100% { background-color: var(--sand); }
+    25% { background-color: var(--emerald); }
+    50% { background-color: var(--bubblegum-pink); }
+    75% { background-color: var(--ocean-blue); }
+    90% { background-color: var(--baby-blue-ice); }
 }
 
 
@@ -292,11 +292,12 @@ h1, h2, h3, h4, h5, h6 {
 
   0%,
   100% {
-    color: var(--bubblegum-pink);
+    color: var(--sand);
+    
   }
 
   20% {
-    color: var(--sand);
+    color: var(--bubblegum-pink);
   }
 
   40% {
@@ -351,17 +352,17 @@ h1, h2, h3, h4, h5, h6 {
 
 @keyframes wave {
   0% {
-    background: radial-gradient(ellipse at top center, var(--bubblegum-pink) 0%, transparent 30%);
+    background: radial-gradient(ellipse at top center, var(--sand) 0%, transparent 30%);
     transform: translateX(0px) translateY(0px);
   }
 
   8.33% {
-    background: radial-gradient(ellipse at top center, var(--bubblegum-pink) 0%, transparent 30%);
+    background: radial-gradient(ellipse at top center, var(--sand) 0%, transparent 30%);
     transform: translateX(1px) translateY(2px);
   }
 
   12.5% {
-    background: radial-gradient(ellipse at top center, var(--sand) 0%, transparent 30%);
+    background: radial-gradient(ellipse at top center, var(--bubblegum-pink)0%, transparent 30%);
     transform: translateX(2px) translateY(0px);
   }
 
@@ -446,9 +447,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hero-button:hover {
- 
-  
-  animation: bg-color-change 10s infinite linear, 10s infinite linear;
+  animation: bg-color-change 10s infinite linear;
 }
 
 

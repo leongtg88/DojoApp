@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import LogoCuadradoBlanco from '../assets/LogoCuadradoBlanco.svg';
 
+import heroImageDesktop from '../assets/BannerbgHero19080x1080.webp';
+
  import {MOCK_BENEFITS}    from '../types';
 
  import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake } from 'lucide-react';
@@ -56,8 +58,11 @@ type FormData = {
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
 const WelcomeScreen = ({ onStart, onNavigateToHome }: { onStart: () => void; onNavigateToHome: () => void }) => (
-  <div className="min-h-screen bg-gradient-to-br from-stone-900 via-blue-950 to-blue-900 flex items-center justify-center px-4">
-    <div className="max-w-7xl w-full text-center">
+  <div className="min-h-screen relative bg-fixed flex items-center justify-center px-4" style={{ backgroundImage: `url(${heroImageDesktop})`, backgroundSize: 'fixed', backgroundPosition: 'center' }}>
+
+  <div className="absolute inset-x-0 top-0 -bottom-[2px] z-0 pointer-events-none bg-gradient-to-br from-stone-900/95 via-blue-950/50 to-blue-900 bg-opacity-80 backdrop-blur-md to-transparent" />
+ 
+    <div className="max-w-7xl w-full text-center relative z-10 pt-8">
       <div className="relative mb-8">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-64 h-64 rounded-full border-4 border-brand-accent/30 animate-pulse"></div>
@@ -79,13 +84,13 @@ const WelcomeScreen = ({ onStart, onNavigateToHome }: { onStart: () => void; onN
         
       </div>
       {/* 5. Beneficios del Karate */}
-      <section className="md:py-20 max-w-7xl mx-auto px-8 md:px-[50px]  space-y-6  md:space-y-12">
+      <section className=" max-w-7xl mx-auto px-8 md:px-[50px]  space-y-6  md:space-y-12">
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-brand-accent text-xs font-bold font-display uppercase tracking-wider">
             <Award className="w-3.5 h-3.5" /> Estilo de Vida Marcial
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold font-display  tracking-tight text-white">
-            Beneficios del Karate
+            Visualiza tu futuro
           </h2>
           <p className="text-sm text-center  sm:text-base text-gray-300  ">
             Por qué entrenar en Escuela Tosei Gusoku va mucho más allá de aprender a golpear o patear.
@@ -96,7 +101,7 @@ const WelcomeScreen = ({ onStart, onNavigateToHome }: { onStart: () => void; onN
           {MOCK_BENEFITS.map((benefit) => (
             <div
               key={benefit.id}
-              className="p-6 rounded-2xl flex flex-col space-y-4 glass-card-hover border border-white/5 relative overflow-hidden group shadow-md shadow-black/40  tracking-tight md:leading-5 "
+              className="p-6 bg-black/40  rounded-2xl flex flex-col space-y-4 glass-card-hover border border-white/5 relative overflow-hidden group shadow-md shadow-black/40  tracking-tight md:leading-5 "
               style={{ animation: "border-color-change 8s infinite linear" }}
             >
 
@@ -118,7 +123,7 @@ const WelcomeScreen = ({ onStart, onNavigateToHome }: { onStart: () => void; onN
             </div>
           ))}
         </div>
-      <div className="bg-amber-900/30 border border-amber-700/50 rounded-xl p-6 mb-8 text-left">
+      <div className="bg-black/40 border border-amber-700/50 rounded-xl p-6 mb-8 text-left" style={{ animation: "border-color-change 8s infinite linear" }}>
         <h4 className="text-amber-400 font-semibold mb-3 flex items-center">
           <span className="text-xl mr-2">📋</span>
           Antes de comenzar, ten en cuenta:
@@ -132,13 +137,17 @@ const WelcomeScreen = ({ onStart, onNavigateToHome }: { onStart: () => void; onN
       </div>
       </section>
 
+      <div className="flex w-full items-center justify-between gap-4 py-6 md:px-[50px] md:pb-20">
 
+      <button onClick={onNavigateToHome} className="text-xs text-white hover:text-stone-300 transition underline">
+          ← Volver al Inicio
+        </button>
       <button
         onClick={onStart}
-        className="group relative inline-flex items-center justify-center px-10 py-4 overflow-hidden font-bold text-white rounded-full shadow-2xl bg-brand-accent from-blue-700 to-blue-900 hover:from-blue-600 hover:to-blue-800 transition-all duration-300 hover:scale-105"
+        className="group relative ml-auto inline-flex items-center justify-center px-10 py-4 overflow-hidden font-bold text-white rounded-full shadow-2xl bg-brand-accent from-blue-700 to-blue-900 hover:from-blue-600 hover:to-blue-800 transition-all duration-300 hover:scale-105 cursor-pointer"
       >
         <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-blue-600 to-blue-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-        <span className="relative flex items-center text-lg">
+        <span className="relative flex items-center text-lg ">
           Comenzar Inscripción
           <svg className="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -147,17 +156,19 @@ const WelcomeScreen = ({ onStart, onNavigateToHome }: { onStart: () => void; onN
       </button>
 
       <div className="mt-8 text-stone-500 text-sm">
+       
+       {/*}
         <p>¿Tienes dudas? Contáctanos por WhatsApp o email</p>
         <div className="flex justify-center space-x-4 mt-2">
           <span className="hover:text-stone-300 cursor-pointer transition">📱 +XX XXX XXXXX</span>
           <span className="text-stone-600">|</span>
           <span className="hover:text-stone-300 cursor-pointer transition">✉️ info@toseigusoku.com</span>
+        </div>*/}
+
         </div>
-        <button onClick={onNavigateToHome} className="mt-4 text-xs text-stone-600 hover:text-stone-300 transition underline">
-          ← Volver al Inicio
-        </button>
       </div>
     </div>
+  
   </div>
 );
 
@@ -294,11 +305,14 @@ const ToseiGusokuForm = ({ onNavigateToHome }: ToseiGusokuFormProps) => {
       {!showForm ? (
         <WelcomeScreen onStart={() => setShowForm(true)} onNavigateToHome={onNavigateToHome} />
       ) : (
-    <div className="min-h-screen bg-white py-8 px-4">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen bg-white py-8 px-4  " style={{ backgroundImage: `url(${heroImageDesktop})`, backgroundSize: 'fixed', backgroundPosition: 'center' }}>
+
+  <div className="absolute inset-x-0 top-0 -bottom-[2px] z-0 pointer-events-none bg-gradient-to-br from-stone-900/95 via-blue-950/50 to-blue-900 bg-opacity-80 backdrop-blur-md to-transparent" />
+      
+      <div className="max-w-3xl mx-auto z-10 relative">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-stone-800 mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
             Formulario de Inscripcíon
           </h1>
           
@@ -764,7 +778,7 @@ const ToseiGusokuForm = ({ onNavigateToHome }: ToseiGusokuFormProps) => {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="px-8 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium"
+                  className="px-8 py-2  text-white rounded-lg bg-brand-accent transition font-medium"
                 >
                   Siguiente →
                 </button>
@@ -781,7 +795,7 @@ const ToseiGusokuForm = ({ onNavigateToHome }: ToseiGusokuFormProps) => {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-stone-500 text-sm mt-6">
+        <p className="text-center text-white text-sm mt-6">
           * Indica que la pregunta es obligatoria
         </p>
       </div>
