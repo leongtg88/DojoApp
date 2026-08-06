@@ -274,7 +274,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                     >
                       <div className="text-left space-y-0.5">
                         <p className="text-sm font-bold text-gray-700">{sch.days}</p>
-                        <p className="text-xs text-gray-700/60">Días establecidos</p>
+                       
                       </div>
                       <div className="text-right">
                         <span className="text-brand-accent font-mono text-sm font-bold">{sch.hours}</span>
@@ -309,22 +309,22 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
           <div className="inline-flex items-center gap-2 text-brand-secondary bg-brand-secondary/10 border border-brand-secondary/20  py-1 rounded-full text-xs font-bold font-display uppercase tracking-wider">
             <Users className="w-3.5 h-3.5" /> Comunidad Familiar
           </div>
-          <h3 className="text-3xl  sm:text-4xl font-extrabold font-display text-gray-700 leading-tight">
+          <h3 className="text-3xl  sm:text-4xl font-extrabold font-display text-gray-700 leading-tight md:pb-8">
             Karate para Toda la Familia
           </h3>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start pt-6">
 
             {/* Promo Left Content */}
-            <div className="lg:col-span-6 space-y-6 text-left">
+            <div className="lg:col-span-6  space-y-6 text-left">
 
-              <p className="text-sm sm:text-base text-gray-700  tracking-tight md:leading-relaxed  leading-5 ">
+              <p className="text-sm sm:text-base text-gray-900  tracking-tight md:leading-relaxed  leading-5 ">
                 El Karate es una de las pocas disciplinas integrales donde <span className="font-semibold">padres e hijos pueden entrenar y crecer en la mismo espacio. </span>Ofrecemos clases con programas para pequeños desde los 5 años y clases de adultos que re-establecen su salud y confianza.
               </p>
               <div className="p-4 shadow-xl ring-1 ring-white/10 rounded-xl space-y-2 max-w-md">
-                <p className="font-bold text-brand-accent text-sm sm:text-base flex items-center gap-2">
+                <p className="font-bold text-brand-accent text-base sm:text-base flex items-center gap-2">
                   <Sparkles className="w-4 h-4" /> Descuentos Especiales para Familias
                 </p>
-                <p className="text-xs text-gray-700/60">
+                <p className="text-sm text-gray-900">
                   Inscribe a dos miembros de la familia y obtén un <span className="text-gray-700 font-bold">2 x 1 en la inscripción y/u otras condiciones especiales</span> . Queremos que el camino del cinturón negro sea un recorrido conjunto.
                 </p>
               </div>
@@ -341,7 +341,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
             </div>
 
             {/* Promo Right Illustration image */}
-            <div className="lg:col-span-6 relative h-80 sm:h-96 w-full rounded-2xl overflow-hidden    shadow-xl shadow-black/40">
+            <div className="lg:col-span-6 relative h-80 sm:h-96 w-full  rounded-2xl overflow-hidden    shadow-xl shadow-black/40">
               <img
                 src={Karafamilia}
                 alt="Familia de karate entrenando"
@@ -407,7 +407,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
       {/* 4. Instructores Banner / Grid */}
       <section className="md:py-20 py-15 max-w-7xl mx-auto px-8 md:px-[50px]  space-y-5  md:space-y-12">
         <div className="text-left space-y-3">
-          <div className="inline-flex items-center gap-2 bg-brand-purple/10 border border-brand-purple/20 px-3 py-1 rounded-full text-brand-purple text-xs font-bold font-display uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-brand-accent text-xs font-bold font-display uppercase tracking-wider">
             <Award className="w-3.5 h-3.5" /> Linaje Oficial Keishin Kai
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold font-display  tracking-tight text-gray-700">
@@ -487,7 +487,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
         <div className="max-w-7xl mx-auto  sm:px-6 lg:px-8  md:space-y-12">
 
           <div className="text-left space-y-3">
-            <div className="inline-flex items-center gap-2 bg-brand-accent/10 border border-brand-accent/20 px-3 py-1 rounded-full text-brand-accent text-xs font-bold font-display uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 bg-brand-secondary/10 text-brand-secondary px-3 py-1 rounded-full text-brand-accent text-xs font-bold font-display uppercase tracking-wider">
               <Smile className="w-3.5 h-3.5" /> Voces de Familia
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold font-display  tracking-tight text-gray-700 animate-pulse">

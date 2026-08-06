@@ -228,7 +228,7 @@ export const MOCK_GALLERY: GalleryItem[] = [
 
 export const DOJO_CLASSES: DojoClass[] = [
   {
-    category: "LITTLE WARRIORS\n(Pre-Karate)",
+    category: "Pequeños Guerreros\n(Pre-Karate)",
     age: "Edades 5 a 7 años",
     description: "Programa especializado para niños en edad preescolar y primeros años de primaria, enfocado en la coordinación motora, disciplina y respeto. Las clases Pre-Karate tienen una duración de 45 minutos, pueden aplicar ciertas expciones dependiendo de la autorización del instructor.",
     schedule: [
@@ -237,7 +237,7 @@ export const DOJO_CLASSES: DojoClass[] = [
     ]
   },
   {
-    category: "YOUTH & ADULTS\n(Juvenil y Adultos)",
+    category: "Jovenes y Adultos\n",
     age: "Edades 8 años en adelante",
     description: "Programa para jóvenes y adultos, enfocado en el desarrollo de habilidades técnicas y físicas. Las clases se imparten en horarios flexibles para adaptarse a las necesidades de los participantes.", 
     schedule: [
