@@ -274,7 +274,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                     >
                       <div className="text-left space-y-0.5">
                         <p className="text-sm font-bold text-gray-700">{sch.days}</p>
-                       
+
                       </div>
                       <div className="text-right">
                         <span className="text-brand-accent font-mono text-sm font-bold">{sch.hours}</span>
@@ -521,7 +521,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
                 </div>
 
                 <div className="flex items-center gap-4 pt-4 border-t border-white/5">
-                  <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-800 border-2 border-brand-accent/30 shrink-0">
+                  <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-800 border-2 border-brand-accent/60 shrink-0">
                     <img
                       src={test.avatarUrl}
                       alt={test.name}
