@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Open Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Montserrat", sans-serif;
+
+  --color-brand-bg: white;
+  --color-brand-card: #ef476fff;
+  --color-brand-accent: #b8b070ff;
+  --color-brand-accent-hover: #118ab2ff;
+  --color-brand-red: #dc2626;
+  --color-brand-purple: #6fffe9ff;
+  --color-brand-secondary: #a0cbffff;
+
+  --animate-marquee: marquee 30s linear infinite;
+
+  --bubblegum-pink: #ef476fff;
+  --sand: #b8b070ff;
+  --emerald: #6fffe9ff;
+  --ocean-blue: #118ab2ff;
+  --baby-blue-ice: #a0cbffff;
+
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    backdrop-filter: blur(16px);
+    background: rgba(15, 15, 15, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+
+  .glass-card-hover:hover {
+    border-color: rgba(220, 38, 38, 0.35);
+    box-shadow: 0 24px 40px -18px rgba(228, 62, 11, 0.25);
+    transform: translateY(-3px);
+    z-index: 1;
+  }
+
+  .belt-glow {
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+  }
+
+  .belt-glow-red {
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #ffffff 40%, #dc2626 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+@keyframes border-color-change {
+  0%, 100% { border-color: var(--sand); }
+  25% { border-color: var(--emerald); }
+  50% { border-color: var(--bubblegum-pink); }
+  75% { border-color: var(--ocean-blue); }
+  90% { border-color: var(--baby-blue-ice); }
+}
+
+@keyframes bg-color-change {
+  20%, 100% { background-color: var(--sand); }
+  25% { background-color: var(--emerald); }
+  50% { background-color: var(--bubblegum-pink); }
+  75% { background-color: var(--ocean-blue); }
+  90% { background-color: var(--baby-blue-ice); }
+}
+
+@keyframes color-change {
+  0%, 100% { color: var(--sand); }
+  20% { color: var(--bubblegum-pink); }
+  40% { color: var(--emerald); }
+  60% { color: var(--ocean-blue); }
+  80% { color: var(--baby-blue-ice); }
+}
+
+@keyframes shadow-color-change {
+  0%, 100% { box-shadow: 0 10px 30px -10px rgba(184, 176, 112, 0.25); }
+  20% { box-shadow: 0 10px 30px -10px rgba(220, 38, 38, 0.25); }
+  40% { box-shadow: 0 10px 30px -10px rgba(111, 255, 233, 0.25); }
+  60% { box-shadow: 0 10px 30px -10px rgba(17, 138, 178, 0.25); }
+  80% { box-shadow: 0 10px 30px -10px rgba(160, 203, 255, 0.25); }
+}
+
+@keyframes jumpLeft {
+  0% { transform: translate(0, 100px) scale(0); }
+  45% { transform: translate(0, 100px) scale(0); }
+  60% { transform: translate(-50px, 0) scale(1); }
+  100% { transform: translate(-60px, -100px) scale(0.1); }
+}
+
+@keyframes jumpRight {
+  0% { transform: translate(0, 100px) scale(0); }
+  45% { transform: translate(0, 100px) scale(0); }
+  60% { transform: translate(30px, 0) scale(1); }
+  100% { transform: translate(50px, -100px) scale(0.1); }
+}
+
+.hover-border-white:hover {
+  border-color: white !important;
+}
+
+.hero-button {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-4 text-xs font-bold uppercase tracking-wider transition-all duration-300 border shadow-lg/30 cursor-pointer text-gray-700 backdrop-blur-sm;
+  background-image: radial-gradient(closest-side, rgba(255,255,255,0.25), transparent);
+  animation: 10s infinite linear, border-color-change 10s infinite linear;
+  border-color: currentColor;
+}
+
+.hero-button:hover {
+  animation: bg-color-change 10s infinite linear;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
