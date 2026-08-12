@@ -35,19 +35,21 @@ export default function HomeView({ onOpenEnrollment }: HomeViewProps) {
 
       {/* Karate en Santo Domingo */}
       <section className="py-5 max-w-7xl mx-auto px-8 sm:px-6 lg:px-8 space-y-12">
-        <div className="space-y-3">
+        <div className=" space-y-3">
           <h2 className="text-right max-w-5xl mx-auto text-3xl sm:text-4xl font-extrabold font-display uppercase tracking-tight md:leading-4 text-gray-700">
             Karate Do en Santo Domingo
           </h2>
-          <h3 className="text-right max-w-5xl mx-auto text-xl sm:text-2xl font-bold text-gray-700">
+          <h3 className="text-right   max-w-5xl mx-auto text-xl sm:text-2xl font-bold text-gray-700">
             Shito Ryu Inoue-Ha
           </h3>
           <p className="text-sm text-right sm:text-base text-gray-700 max-w-5xl mx-auto">
-            Tenemos como finalidad darle a cada <span className="font-semibold">niño, joven y adulto, la posibilidad de evolucionar y alcanzar las metas que se propongan</span> dentro de sus capacidades, siempre teniendo en <span className="font-semibold">alto el espíritu y trabajando para desarrollar la voluntad para lograrlo</span>.
-            <br /><br />
-            <span className="font-bold">León Gustavo</span><br />
-            <span className="font-bold">Sensei</span>
-          </p>
+            Tenemos como finalidad darle a cada <span className="font-semibold">niño, joven y adulto, la posibilidad de evolucionar y alcanzar las metas que se propongan </span> dentro de sus capacidades, siempre teniendo en <span className="font-semibold"> alto el espíritu y trabajando para desarrollar la voluntad para lograrlo</span>. Acompañamos y apoyamos a los practicantes en entender que <span className="font-semibold">los obstáculos son desafíos que deben atravesar</span>, que a veces <span className="font-semibold">la disciplina puede ser  frustrante a pesar de amar lo que hacemos, a través de la motivación al logro por merito personal, sin caer en comparación con otros, venciendose así mismos, volvemos éstos, fines últimos del verdadero sentido de la victoria.</span><br /> <br />
+
+            Sabemos que podemos <span className="font-semibold"> promover la preparación de nuevas generaciones </span> colabornado en aumentar las  posibilidades de  mantener los objetivos que se propongan, a pesar de los obstáculos que se les presenten ahora y siempre, <span className="font-semibold">no darse por vencidos fácilmente y mantener el espíritu de un guerrero son las herramientas con las que lograrán superarse por medio de la práctica del karate.</span>
+            <br /> <br />
+            <span className="font-bold">León Gustavo</span>
+            <br />
+            <span className="font-bold">Sensei</span>          </p>
           <div className="flex flex-row items-center justify-center pt-6 px-8">
             <img src="/assets/letrasIkia.png" alt="Letras Iskia" className="w-[10em] md:w-[16em] h-auto" />
             <img src="/assets/Mawashiguericintorunnegro2026.svg" alt="Logo Iskia" className="w-[10em] md:w-[16em] h-auto" />
@@ -161,12 +163,14 @@ export default function HomeView({ onOpenEnrollment }: HomeViewProps) {
           <h3 className="text-3xl sm:text-4xl font-extrabold font-display text-gray-700 leading-tight md:pb-8">Karate para Toda la Familia</h3>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start pt-6">
             <div className="lg:col-span-6 space-y-6 text-left">
-              <p className="text-sm sm:text-base text-gray-900 tracking-tight md:leading-relaxed leading-5">
-                El Karate es una de las pocas disciplinas integrales donde <span className="font-semibold">padres e hijos pueden entrenar y crecer en el mismo espacio.</span>
+       <p className="text-sm sm:text-base text-gray-900  tracking-tight md:leading-relaxed  leading-5 ">
+                El Karate es una de las pocas disciplinas integrales donde <span className="font-semibold">padres e hijos pueden entrenar y crecer en la mismo espacio. </span>Ofrecemos clases con programas para pequeños desde los 5 años y clases de adultos que re-establecen su salud y confianza.
               </p>
               <div className="p-4 shadow-xl ring-1 ring-white/10 rounded-xl space-y-2 max-w-md">
                 <p className="font-bold text-brand-accent text-base flex items-center gap-2"><Sparkles className="w-4 h-4" /> Descuentos Especiales para Familias</p>
-                <p className="text-sm text-gray-900">Inscribe a dos miembros de la familia y obtén un <span className="text-gray-700 font-bold">2 x 1 en la inscripción</span>.</p>
+                <p className="text-sm text-gray-900">
+                  Inscribe a dos miembros de la familia y obtén un <span className="text-gray-700 font-bold">2 x 1 en la inscripción y/u otras condiciones especiales</span> . Queremos que el camino del cinturón negro sea un recorrido conjunto.
+                </p>
               </div>
               <button onClick={() => onOpenEnrollment('kid')} className="hero-button glass-card-hover">
                 Consultar sobre Promociones Familiares <ArrowRight className="w-4 h-4" />
@@ -320,13 +324,19 @@ export default function HomeView({ onOpenEnrollment }: HomeViewProps) {
             {MOCK_FAQS.map((faq) => {
               const isOpen = openFaq === faq.id;
               return (
-                <div key={faq.id} className="rounded-xl overflow-hidden border border-white/5 transition-all duration-300">
-                  <button onClick={() => setOpenFaq(isOpen ? null : faq.id)} className="w-full text-left p-5 md:p-6 flex justify-between items-center bg-brand-accent hover:bg-[#18181b]/60 transition-colors cursor-pointer">
+                <div key={faq.id} className="rounded-xl overflow-hidden border border-brand-accent/30 transition-all duration-300">
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : faq.id)}
+                    className="w-full text-left p-5 md:p-6 flex justify-between items-center bg-brand-accent hover:bg-[#18181b]/60 transition-colors cursor-pointer"
+                  >
                     <span className="font-bold text-base sm:text-lg font-display text-gray-700 hover:text-white pr-4">{faq.question}</span>
                     <ChevronDown className={`w-5 h-5 text-black shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
                   </button>
                   {isOpen && (
-                    <div className="p-5 md:p-6 text-sm text-gray-700/70 bg-black/10 border-t border-white/5 leading-relaxed font-sans">{faq.answer}</div>
+                    <div className="p-5 md:p-6 text-sm text-gray-700/70 bg-black/10 border-t border-white/5 leading-relaxed font-sans">
+                      {faq.answer}
+                    </div>
                   )}
                 </div>
               );

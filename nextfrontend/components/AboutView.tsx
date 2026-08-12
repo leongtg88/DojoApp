@@ -17,18 +17,19 @@ export default function AboutView({ onOpenEnrollment }: AboutViewProps) {
   const [expandedGerman, setExpandedGerman] = useState(false);
 
   const historiaParrafos = [
-    'Tosei Gusoku es una escuela que nació en tiempos de grandes desafíos, ha logrado cumplir su objetivo de enseñar karate a personas de todas las edades. Pertenciendo a Organización Inoue-Ha Internacional y con el apoyo de nuestros alumnos, padres y representantes, quienes comprenden el profundo valor de contar con un Dojo que transmite el karate más allá de un deporte, podemos compartir nuestra esencia marcial, siguiendo la tradición japonesa y fomentando valores como la humildad, la ausencia de ego, la motivación por el logro basado en el mérito personal.',
-    'Una parte importante de nuestra labor es fomentar una nueva generación de hábitos positivos que construyan, paso a paso, nuevas estructuras de pensamiento y, en consecuencia, nuevas formas de actuar y de vivir el día a día. El karate no se queda en el dojo.',
-    'Asimismo, incentivamos hábitos de alimentación e hidratación saludables, momentos adecuados de recreación y descanso, promoviendo valores como la responsabilidad de cuidar de uno mismo.'
+    'Tosei Gusoku es una escuela que nació en tiempos de grandes desafíos, ha logrado cumplir su objetivo de enseñar karate a personas de todas las edades. Pertenciendo a Organización Inoue-Ha Internacional y con el apoyo de nuestros alumnos, padres y representantes, quienes comprenden el profundo valor de contar con un Dojo que transmite el karate más allá de un deporte, podemos compartir nuestra esencia marcial, siguiendo la tradición japonesa y fomentando valores como la humildad, la ausencia de ego, la motivación por el logro basado en el mérito personal, sin comparaciones con los demás, además de muchos otros principios positivos para cualquier practicante.',
+    'Una parte importante de nuestra labor es fomentar una nueva generación de hábitos positivos que construyan, paso a paso, nuevas estructuras de pensamiento y, en consecuencia, nuevas formas de actuar y de vivir el día a día. El karate no se queda en el dojo. Tanto para los adultos como para los niños, promovemos junto a los padres y representantes la importancia de motivar, apoyar y desarrollar gradualmente en el hogar la autodisciplina, tanto en la práctica del karate como en el cumplimiento de las tareas domésticas que les correspondan.',
+    'Asimismo, incentivamos hábitos de alimentación e hidratación saludables, momentos adecuados de recreación y descanso, promoviendo valores como la responsabilidad de cuidar de uno mismo. Del mismo modo, fomentamos la constancia y el compromiso de mantener en el tiempo la práctica, ya sea directa o indirecta, mediante los entrenamientos, las tareas y las responsabilidades asumidas con la escuela y con los Senseis.'
   ];
 
   const leonBioParrafos = [
     'Inició karate a la temprana edad de 4 años gracias a su abuelo, quien lo inscribió al ver su inquietud por hacer movimientos de puños y patadas inspirados en las películas de artes marciales de los 80. Su primera escuela fue en el estilo Shotokan en Caracas, Venezuela.',
-    'Por cambios en la escuela, debió pausar sus prácticas hasta los 14 años, cuando se incorporó a la escuela de Miyagiken bajo la tutela del Maestro Luis Alberte en la Organización Shito Kai.',
-    'Una vez iniciados sus estudios universitarios y de maestría en el exterior, retomó sus prácticas en la escuela de Dimitrova Dojo, en Santo Domingo, República Dominicana.',
-    'Al alcanzar el grado de Marrón Primero, Sensei León decidió fundar su propia escuela e incorporarse a la Organización Inoue Ha Dominicana.',
-    'El Sensei León posee conocimientos en otras artes marciales como Jujutsu, Aikido e Iaido.'
+    'Por cambios en la escuela, debió pausar sus prácticas hasta los 14 años, cuando se incorporó a la escuela de Miyagiken bajo la tutela del Maestro Luis Alberte en la Organización Shito Kai, donde logró el oro dominando las categorías a nivel nacional en kata y kumite.',
+    'Una vez iniciados sus estudios universitarios y de maestría en el exterior, retomó sus prácticas en la escuela de Dimitrova Dojo, en Santo Domingo, República Dominicana, bajo la tutela de la Maestra María Dimitrova. Allí continuó entrenando y compitiendo en categorías intermedias, alcanzando oro en kata y kumite en diversas competencias nacionales e internacionales en República Dominicana, y comenzó a dar clases de karate a niños.',
+    'Al alcanzar el grado de Marrón Primero, Sensei León decidió fundar su propia escuela e incorporarse a la Organización Inoue Ha Dominicana, gracias a su Sensei Manuel Valbuena, quien lo orientó durante los procesos de cambio y lo refirió ante Kyoshi Julio Martínez.',
+    'El Sensei León posee conocimientos en otras artes marciales como Jujutsu, Aikido e Iaido, complementando así su formación en diferentes aspectos tradicionales y de combate de estas disciplinas japonesas.'
   ];
+
 
   const germanBioParrafos = [
     'Inició karate a la temprana edad de 4 años gracias a su abuelo, quien lo inscribió al ver su inquietud por hacer movimientos de puños y patadas inspirados en las películas de artes marciales de los 80.',
@@ -83,7 +84,7 @@ export default function AboutView({ onOpenEnrollment }: AboutViewProps) {
             International Shito Ryu Inoue Ha Karate Do of the Americas
           </h3>
           <p className="text-sm sm:text-base text-gray-700/70 leading-relaxed font-sans">
-            Nuestra institución está debidamente acreditada ante los organismos mundiales de Karate. No somos solo un gimnasio; somos guardianes del linaje del Maestro Yoshimi Inoue.
+            Nuestra institución está debidamente acreditada ante los organismos mundiales de Karate. Fomentamos la práctica del Karate-Do como método de perfeccionamiento del carácter, la biomecánica corporal saludable y el combate deportivo certificado. No somos solo un gimnasio; somos guardianes del linaje del Maestro Yoshimi Inoue.
           </p>
         </div>
       </section>

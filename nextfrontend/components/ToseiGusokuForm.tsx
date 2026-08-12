@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { MOCK_BENEFITS } from '@/lib/types';
-import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake } from 'lucide-react';
+import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake, FileText, ChevronDown } from 'lucide-react';
 
 const heroImageDesktop = '/assets/BannerbgHero19080x1080.webp';
 const LogoCuadradoBlanco = '/assets/LogoCuadradoBlanco.svg';
@@ -13,10 +13,11 @@ type Hijo = {
   id: string;
   nombre: string;
   fechaNacimiento: string;
+  tipoSangre: string;
   foto: File | null;
-  identificacion: File | null;
+  identificacion: File[];
   fotoPreview: string;
-  identPreview: string;
+  identPreview: string[];
 };
 
 type FormData = {
@@ -24,11 +25,13 @@ type FormData = {
   // Adulto
   nombreAdulto: string;
   fechaNacimientoAdulto: string;
+  tipoSangreAdulto: string;
+  direccionAdulto: string;
   cedula: string;
   fotoAdulto: File | null;
-  identAdulto: File | null;
+  identAdulto: File[];
   fotoAdultoPreview: string;
-  identAdultoPreview: string;
+  identAdultoPreview: string[];
   telefonoContacto: string;
   email: string;
   // Menor
@@ -37,6 +40,7 @@ type FormData = {
   telefonoMadre: string;
   nombrePadre: string;
   telefonoPadre: string;
+  direccionPadres: string;
   // Comunes (paso 2)
   condicionMedica: string;
   horasPractica: string;
@@ -75,13 +79,19 @@ const getBenefitIcon = (iconName: string) => {
 
 const generarId = () => Math.random().toString(36).substr(2, 9);
 
+const TIPOS_SANGRE = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+
 // ========== COMPONENTE DRAG & DROP ==========
-const FileDropZone = ({ label, preview, error, accept, onFile }: {
+const FileDropZone = ({ label, files, previews, error, accept, multiple, hint, onFiles, onRemove }: {
   label: string;
-  preview: string;
+  files: File[];
+  previews: string[];
   error?: string;
   accept?: string;
-  onFile: (file: File) => void;
+  multiple?: boolean;
+  hint?: string;
+  onFiles: (files: File[]) => void;
+  onRemove: (index: number) => void;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -89,9 +99,11 @@ const FileDropZone = ({ label, preview, error, accept, onFile }: {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) onFile(file);
+    const dropped = Array.from(e.dataTransfer.files ?? []);
+    if (dropped.length) onFiles(dropped);
   };
+
+  const isImage = (file: File) => file.type.startsWith('image/');
 
   return (
     <div>
@@ -104,18 +116,49 @@ const FileDropZone = ({ label, preview, error, accept, onFile }: {
         className={`flex flex-col items-center justify-center gap-1 border-2 border-dashed rounded-lg p-4 cursor-pointer transition text-center ${dragging ? 'border-brand-accent bg-brand-accent/10' : error ? 'border-red-400 bg-red-50' : 'border-brand-accent/50 hover:border-brand-accent hover:bg-brand-accent/5'
           }`}
       >
-        {preview ? (
-          <img src={preview} alt="Preview" className="w-20 h-20 object-cover rounded border" />
-        ) : (
+        {files.length === 0 ? (
           <>
             <svg className="w-8 h-8 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12V4m0 0L8 8m4-4l4 4" />
             </svg>
             <span className="text-xs text-stone-500">Arrastra aquí o <span className="text-brand-accent font-medium">selecciona archivo</span></span>
+            {hint && <span className="text-[11px] text-stone-400">{hint}</span>}
           </>
+        ) : (
+          <div className="w-full space-y-2">
+            {files.map((file, i) => (
+              <div key={i} className="flex items-center gap-2 border border-stone-200 rounded p-2 bg-white text-left">
+                {isImage(file) && previews[i] ? (
+                  <img src={previews[i]} alt={file.name} className="w-10 h-10 object-cover rounded border shrink-0" />
+                ) : (
+                  <FileText className="w-6 h-6 text-brand-accent shrink-0" />
+                )}
+                <span className="text-xs text-stone-600 truncate flex-1">{file.name}</span>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onRemove(i); }}
+                  className="text-red-500 hover:text-red-700 shrink-0 text-sm font-bold cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+            <span className="text-[11px] text-brand-accent font-medium block">Agregar otro archivo</span>
+          </div>
         )}
       </div>
-      <input ref={inputRef} type="file" accept={accept} className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); }} />
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        multiple={multiple}
+        className="hidden"
+        onChange={(e) => {
+          const selected = Array.from(e.target.files ?? []);
+          if (selected.length) onFiles(selected);
+          e.target.value = '';
+        }}
+      />
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
     </div>
   );
@@ -174,7 +217,8 @@ const WelcomeScreen = ({ onStart, onNavigateToHome }: { onStart: () => void; onN
           <ul className="space-y-2 text-stone-300 text-sm">
             <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>El formulario consta de 3 secciones y toma aproximadamente 10 minutos completarlo</li>
             <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Necesitarás tener a mano los datos personales del alumno y contacto de padres/tutores</li>
-            <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Necesitarás cargar una foto de la cara del alumno con fondo blanco y partida de nacimiento o cédula en caso de ser mayor de edad.</li>
+            <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Necesitarás cargar una foto de la cara del alumno con fondo blanco y su identificación (partida de nacimiento, cédula o pasaporte) en formato JPG, PNG o PDF.</li>
+            <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>En un mismo campo puedes subir la cédula y el pasaporte.</li>
             <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Al finalizar, deberás aceptar las políticas y reglamentos del Dojo</li>
             <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Los campos marcados con <span className="text-red-400 mx-1">*</span> son obligatorios</li>
           </ul>
@@ -217,18 +261,21 @@ const ToseiGusokuForm = () => {
     tipoRegistro: 'menor',
     nombreAdulto: '',
     fechaNacimientoAdulto: '',
+    tipoSangreAdulto: '',
+    direccionAdulto: '',
     cedula: '',
     fotoAdulto: null,
-    identAdulto: null,
+    identAdulto: [],
     fotoAdultoPreview: '',
-    identAdultoPreview: '',
+    identAdultoPreview: [],
     telefonoContacto: '',
     email: '',
-    hijos: [{ id: generarId(), nombre: '', fechaNacimiento: '', foto: null, identificacion: null, fotoPreview: '', identPreview: '' }],
+    hijos: [{ id: generarId(), nombre: '', fechaNacimiento: '', tipoSangre: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }],
     nombreMadre: '',
     telefonoMadre: '',
     nombrePadre: '',
     telefonoPadre: '',
+    direccionPadres: '',
     condicionMedica: '',
     horasPractica: '',
     espacioCasa: '',
@@ -278,11 +325,13 @@ const ToseiGusokuForm = () => {
       } : {
         nombreAdulto: '',
         fechaNacimientoAdulto: '',
+        tipoSangreAdulto: '',
+        direccionAdulto: '',
         cedula: '',
         fotoAdulto: null,
-        identAdulto: null,
+        identAdulto: [],
         fotoAdultoPreview: '',
-        identAdultoPreview: '',
+        identAdultoPreview: [],
         telefonoContacto: '',
       })
     }));
@@ -293,7 +342,7 @@ const ToseiGusokuForm = () => {
   const agregarHijo = () => {
     setFormData(prev => ({
       ...prev,
-      hijos: [...prev.hijos, { id: generarId(), nombre: '', fechaNacimiento: '', foto: null, identificacion: null, fotoPreview: '', identPreview: '' }]
+      hijos: [...prev.hijos, { id: generarId(), nombre: '', fechaNacimiento: '', tipoSangre: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }]
     }));
   };
 
@@ -312,31 +361,86 @@ const ToseiGusokuForm = () => {
     }));
   };
 
-  const handleHijoFile = (id: string, field: 'foto' | 'identificacion', file: File | null) => {
+  const handleHijoFoto = (id: string, file: File | null) => {
     if (!file) return;
     const preview = URL.createObjectURL(file);
     setFormData(prev => ({
       ...prev,
       hijos: prev.hijos.map(h =>
-        h.id === id ? {
-          ...h,
-          [field]: file,
-          [`${field}Preview`]: preview,
-        } : h
+        h.id === id ? { ...h, foto: file, fotoPreview: preview } : h
       )
     }));
   };
 
-  // Archivos para adulto
-  const handleAdultoFile = (field: 'fotoAdulto' | 'identAdulto', file: File | null) => {
-    if (!file) return;
-    const preview = URL.createObjectURL(file);
-    const previewField = field === 'fotoAdulto' ? 'fotoAdultoPreview' : 'identAdultoPreview';
+  const handleHijoFotoRemove = (id: string) => {
     setFormData(prev => ({
       ...prev,
-      [field]: file,
-      [previewField]: preview,
+      hijos: prev.hijos.map(h => h.id === id ? { ...h, foto: null, fotoPreview: '' } : h)
     }));
+  };
+
+  const handleHijoIdentFiles = (id: string, files: File[]) => {
+    if (!files.length) return;
+    setFormData(prev => ({
+      ...prev,
+      hijos: prev.hijos.map(h => {
+        if (h.id !== id) return h;
+        const previews = [...h.identPreview, ...files.map(f => f.type.startsWith('image/') ? URL.createObjectURL(f) : '')];
+        return { ...h, identificacion: [...h.identificacion, ...files], identPreview: previews };
+      })
+    }));
+  };
+
+  const handleHijoIdentRemove = (id: string, index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      hijos: prev.hijos.map(h => {
+        if (h.id !== id) return h;
+        const removed = h.identPreview[index];
+        if (removed) URL.revokeObjectURL(removed);
+        return {
+          ...h,
+          identificacion: h.identificacion.filter((_, i) => i !== index),
+          identPreview: h.identPreview.filter((_, i) => i !== index),
+        };
+      })
+    }));
+  };
+
+  // Archivos para adulto
+  const handleAdultoFoto = (file: File | null) => {
+    if (!file) return;
+    const preview = URL.createObjectURL(file);
+    setFormData(prev => ({
+      ...prev,
+      fotoAdulto: file,
+      fotoAdultoPreview: preview,
+    }));
+  };
+
+  const handleAdultoFotoRemove = () => {
+    setFormData(prev => ({ ...prev, fotoAdulto: null, fotoAdultoPreview: '' }));
+  };
+
+  const handleAdultoIdentFiles = (files: File[]) => {
+    if (!files.length) return;
+    setFormData(prev => ({
+      ...prev,
+      identAdulto: [...prev.identAdulto, ...files],
+      identAdultoPreview: [...prev.identAdultoPreview, ...files.map(f => f.type.startsWith('image/') ? URL.createObjectURL(f) : '')],
+    }));
+  };
+
+  const handleAdultoIdentRemove = (index: number) => {
+    setFormData(prev => {
+      const removed = prev.identAdultoPreview[index];
+      if (removed) URL.revokeObjectURL(removed);
+      return {
+        ...prev,
+        identAdulto: prev.identAdulto.filter((_, i) => i !== index),
+        identAdultoPreview: prev.identAdultoPreview.filter((_, i) => i !== index),
+      };
+    });
   };
 
   const handleMultiSelect = (name: 'metodoMotivacion' | 'razonesKarate', value: string) => {
@@ -358,10 +462,12 @@ const ToseiGusokuForm = () => {
     if (tipoRegistro === 'adulto') {
       if (!formData.nombreAdulto.trim()) newErrors.nombreAdulto = 'Campo requerido';
       if (!formData.fechaNacimientoAdulto) newErrors.fechaNacimientoAdulto = 'Campo requerido';
+      if (!formData.tipoSangreAdulto) newErrors.tipoSangreAdulto = 'Selecciona una opción';
+      if (!formData.direccionAdulto.trim()) newErrors.direccionAdulto = 'Campo requerido';
       if (!formData.cedula.trim()) newErrors.cedula = 'Campo requerido';
       else if (!/^\d{7,8}$/.test(formData.cedula.replace(/\D/g, ''))) newErrors.cedula = 'Cédula inválida (7-8 dígitos)';
       if (!formData.fotoAdulto) newErrors.fotoAdulto = 'Foto requerida';
-      if (!formData.identAdulto) newErrors.identAdulto = 'Identificación requerida';
+      if (formData.identAdulto.length === 0) newErrors.identAdulto = 'Identificación requerida';
       if (!formData.email.trim()) {
         newErrors.email = 'Campo requerido';
       } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
@@ -376,8 +482,9 @@ const ToseiGusokuForm = () => {
         const err: { [key: string]: string } = {};
         if (!hijo.nombre.trim()) { err.nombre = `Nombre del hijo ${index + 1} requerido`; hasError = true; }
         if (!hijo.fechaNacimiento) { err.fechaNacimiento = `Fecha de nacimiento del hijo ${index + 1} requerida`; hasError = true; }
+        if (!hijo.tipoSangre) { err.tipoSangre = `Tipo de sangre del hijo ${index + 1} requerido`; hasError = true; }
         if (!hijo.foto) { err.foto = `Foto del hijo ${index + 1} requerida`; hasError = true; }
-        if (!hijo.identificacion) { err.identificacion = `Identificación del hijo ${index + 1} requerida`; hasError = true; }
+        if (hijo.identificacion.length === 0) { err.identificacion = `Identificación del hijo ${index + 1} requerida`; hasError = true; }
         hijosErrores.push(err);
       });
       if (hasError) newErrors.hijos = hijosErrores;
@@ -386,6 +493,7 @@ const ToseiGusokuForm = () => {
       if (!formData.telefonoMadre.trim()) newErrors.telefonoMadre = 'Campo requerido';
       if (!formData.nombrePadre.trim()) newErrors.nombrePadre = 'Campo requerido';
       if (!formData.telefonoPadre.trim()) newErrors.telefonoPadre = 'Campo requerido';
+      if (!formData.direccionPadres.trim()) newErrors.direccionPadres = 'Campo requerido';
       if (!formData.email.trim()) {
         newErrors.email = 'Campo requerido';
       } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
@@ -506,22 +614,47 @@ const ToseiGusokuForm = () => {
                 className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.telefonoContacto ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="0412-1234567" />
               {errors.telefonoContacto && <p className="text-red-500 text-xs mt-1">{errors.telefonoContacto}</p>}
             </div>
+            <div>
+              <label className="block text-sm font-medium text-stone-500 mb-1">Tipo de Sangre <span className="text-red-500">*</span></label>
+              <div className="relative">
+                <select name="tipoSangreAdulto" value={formData.tipoSangreAdulto} onChange={handleChange}
+                  className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.tipoSangreAdulto ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                  <option value="">Selecciona...</option>
+                  {TIPOS_SANGRE.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+                <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
+              {errors.tipoSangreAdulto && <p className="text-red-500 text-xs mt-1">{errors.tipoSangreAdulto}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-stone-500 mb-1">Dirección <span className="text-red-500">*</span></label>
+              <input type="text" name="direccionAdulto" value={formData.direccionAdulto} onChange={handleChange}
+                className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.direccionAdulto ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="Calle, sector, ciudad" />
+              {errors.direccionAdulto && <p className="text-red-500 text-xs mt-1">{errors.direccionAdulto}</p>}
+            </div>
 
             {/* Archivos adulto */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FileDropZone
                 label="Foto (cara, fondo blanco) *"
-                preview={formData.fotoAdultoPreview}
+                files={formData.fotoAdulto ? [formData.fotoAdulto] : []}
+                previews={formData.fotoAdultoPreview ? [formData.fotoAdultoPreview] : []}
                 error={errors.fotoAdulto}
                 accept="image/*"
-                onFile={(f) => handleAdultoFile('fotoAdulto', f)}
+                hint="Formatos: JPG, PNG"
+                onFiles={(fs) => handleAdultoFoto(fs[0] ?? null)}
+                onRemove={handleAdultoFotoRemove}
               />
               <FileDropZone
-                label="Identificación (Cédula) *"
-                preview={formData.identAdultoPreview}
+                label="Identificación (Cédula y/o Pasaporte) *"
+                files={formData.identAdulto}
+                previews={formData.identAdultoPreview}
                 error={errors.identAdulto}
-                accept="image/*"
-                onFile={(f) => handleAdultoFile('identAdulto', f)}
+                accept="image/*,.pdf"
+                multiple
+                hint="Formatos: JPG, PNG, PDF. Puedes subir cédula y pasaporte."
+                onFiles={handleAdultoIdentFiles}
+                onRemove={handleAdultoIdentRemove}
               />
             </div>
           </div>
@@ -552,20 +685,39 @@ const ToseiGusokuForm = () => {
                     className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.hijos?.[index]?.fechaNacimiento ? 'border-red-500' : 'border-brand-accent/60'}`} />
                   {errors.hijos?.[index]?.fechaNacimiento && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.fechaNacimiento}</p>}
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-stone-500 mb-1">Tipo de Sangre <span className="text-red-500">*</span></label>
+                  <div className="relative">
+                    <select value={hijo.tipoSangre} onChange={(e) => handleHijoChange(hijo.id, 'tipoSangre', e.target.value)}
+                      className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.hijos?.[index]?.tipoSangre ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                      <option value="">Selecciona...</option>
+                      {TIPOS_SANGRE.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                    <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                  {errors.hijos?.[index]?.tipoSangre && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.tipoSangre}</p>}
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <FileDropZone
                     label="Foto (cara, fondo blanco) *"
-                    preview={hijo.fotoPreview}
+                    files={hijo.foto ? [hijo.foto] : []}
+                    previews={hijo.fotoPreview ? [hijo.fotoPreview] : []}
                     error={errors.hijos?.[index]?.foto}
                     accept="image/*"
-                    onFile={(f) => handleHijoFile(hijo.id, 'foto', f)}
+                     hint="Formatos: JPG, PNG"
+                    onFiles={(fs) => handleHijoFoto(hijo.id, fs[0] ?? null)}
+                    onRemove={() => handleHijoFotoRemove(hijo.id)}
                   />
                   <FileDropZone
-                    label="Identificación (Partida de Nac.) *"
-                    preview={hijo.identPreview}
+                    label="Identificación (Partida de Nac. y/o Pasaporte) *"
+                    files={hijo.identificacion}
+                    previews={hijo.identPreview}
                     error={errors.hijos?.[index]?.identificacion}
-                    accept="image/*"
-                    onFile={(f) => handleHijoFile(hijo.id, 'identificacion', f)}
+                    accept="image/*,.pdf"
+                    multiple
+                    hint="Formatos: JPG, PNG, PDF."
+                    onFiles={(fs) => handleHijoIdentFiles(hijo.id, fs)}
+                    onRemove={(i) => handleHijoIdentRemove(hijo.id, i)}
                   />
                 </div>
               </div>
@@ -603,6 +755,12 @@ const ToseiGusokuForm = () => {
                   <input type="tel" name="telefonoPadre" value={formData.telefonoPadre} onChange={handleChange}
                     className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.telefonoPadre ? 'border-red-500' : 'border-brand-accent/60'}`} />
                   {errors.telefonoPadre && <p className="text-red-500 text-xs mt-1">{errors.telefonoPadre}</p>}
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-stone-500 mb-1">Dirección de la Familia <span className="text-red-500">*</span></label>
+                  <input type="text" name="direccionPadres" value={formData.direccionPadres} onChange={handleChange}
+                    className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.direccionPadres ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="Calle, sector, ciudad" />
+                  {errors.direccionPadres && <p className="text-red-500 text-xs mt-1">{errors.direccionPadres}</p>}
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-stone-500 mb-1">Email <span className="text-red-500">*</span></label>

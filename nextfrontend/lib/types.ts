@@ -71,7 +71,7 @@ export const MOCK_INSTRUCTORS: Instructor[] = [
     id: "kyoshi-julio",
     name: "Kyoshi Julio Martínez",
     role: "Gran Maestro de la Organización",
-    bio: "Linaje directo de Inoue Ha Shito-Ryu con más de 40 años de trayectoria impecable formando campeones mundiales.",
+    bio: "Linaje directo de Inoue Ha Shito-Ryu con más de 50 años de trayectoria impecable formando campeones mundiales.",
     imageUrl: "/assets/FotoKyoshi.svg",
     imagePosition: "center 1%",
     curriculum: [
@@ -143,18 +143,21 @@ export const MOCK_GALLERY: GalleryItem[] = [
   { id: "gal-4", title: "Pequeños pero poderosos", description: "Nuestros jovenes subiendo de nivel.", imageUrl: "/assets/soto.jpeg" }
 ];
 
+
 export const DOJO_CLASSES: DojoClass[] = [
   {
-    category: "Pequeños Guerreros\n(Pre-Karate)", age: "Edades 5 a 7 años",
-    description: "Programa especializado para niños en edad preescolar y primeros años de primaria, enfocado en la coordinación motora, disciplina y respeto.",
+    category: "Pequeños Guerreros\n(Pre-Karate)",
+    age: "Edades 5 a 7 años",
+    description: "Programa especializado para niños en edad preescolar y primeros años de primaria, enfocado en la coordinación motora, disciplina y respeto. Las clases Pre-Karate tienen una duración de 45 minutos, pueden aplicar ciertas expciones dependiendo de la autorización del instructor.",
     schedule: [
-      { days: "Martes / Jueves", hours: "4:00 PM - 5:00 PM" },
+      { days: "Martes / Jueves", hours: "4:00 PM - 5:00 PM " },
       { days: "Sábados", hours: "9:00 AM - 10:00 AM / 10:00 AM - 11:00 AM" }
     ]
   },
   {
-    category: "Jovenes y Adultos\n", age: "Edades 8 años en adelante",
-    description: "Programa para jóvenes y adultos, enfocado en el desarrollo de habilidades técnicas y físicas.",
+    category: "Jovenes y Adultos\n",
+    age: "Edades 8 años en adelante",
+    description: "Programa para jóvenes y adultos, enfocado en el desarrollo de habilidades técnicas y físicas. Las clases se imparten en horarios flexibles para adaptarse a las necesidades de los participantes.", 
     schedule: [
       { days: "Martes / Jueves", hours: "5:00 PM - 6:00 PM" },
       { days: "Lunes / Miércoles (Adultos)", hours: "8:20 PM - 9:20 PM" },
