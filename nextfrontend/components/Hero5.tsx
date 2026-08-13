@@ -1,6 +1,6 @@
 'use client';
 
-const Hero5 = () => {
+const Hero5 = ({ onOpenAssistant }: { onOpenAssistant: () => void }) => {
   return (
     <>
       <div
@@ -46,9 +46,13 @@ const Hero5 = () => {
             </p>
             <div className="mt-8 md:ml-4 py-2 px-6 inline-block bg-current backdrop-blur-sm shadow-xl/30 border hover-border-white hover:bg-color-change hover:text-gray-700 font-regular rounded-lg"
               style={{ animation: "border-color-change 10s infinite linear" }}>
-              <a href="#" className="text-gray-700 hover:text-gray-700 text-sm font-semibold 2xl:text-base transition-colors duration-300">
+              <button
+                type="button"
+                onClick={onOpenAssistant}
+                className="text-gray-700 hover:text-gray-700 text-sm font-semibold 2xl:text-base transition-colors duration-300 cursor-pointer"
+              >
                 Empieza Hoy
-              </a>
+              </button>
             </div>
             <div className="mt-4 md:mb-4 w-full justify-between flex flex-row items-center lg:items-start">
               <div className="relative flex justify-start">

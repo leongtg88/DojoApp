@@ -13,9 +13,10 @@ import Link from 'next/link';
 
 interface HomeViewProps {
   onOpenEnrollment: (program?: string) => void;
+  onOpenAssistant: () => void;
 }
 
-export default function HomeView({ onOpenEnrollment }: HomeViewProps) {
+export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeViewProps) {
   const [openFaq, setOpenFaq] = useState<string | null>(null);
 
   const getBenefitIcon = (iconName: string) => {
@@ -31,7 +32,7 @@ export default function HomeView({ onOpenEnrollment }: HomeViewProps) {
   return (
     <div className="space-y-0 min-h-screen bg-brand-bg text-[#dee2f0]">
 
-      <Hero5 />
+      <Hero5 onOpenAssistant={onOpenAssistant} />
 
       {/* Karate en Santo Domingo */}
       <section className="py-5 max-w-7xl mx-auto px-8 sm:px-6 lg:px-8 space-y-12">
