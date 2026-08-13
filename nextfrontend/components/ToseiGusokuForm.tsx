@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { Fragment, useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { MOCK_BENEFITS } from '@/lib/types';
 import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake, FileText, ChevronDown } from 'lucide-react';
@@ -217,7 +217,7 @@ const WelcomeScreen = ({ onStart, onNavigateToHome }: { onStart: () => void; onN
           <ul className="space-y-2 text-stone-300 text-sm">
             <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>El formulario consta de 3 secciones y toma aproximadamente 10 minutos completarlo</li>
             <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Necesitarás tener a mano los datos personales del alumno y contacto de padres/tutores</li>
-            <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Necesitarás cargar una foto de la cara del alumno con fondo blanco y su identificación (partida de nacimiento, cédula o pasaporte) en formato JPG, PNG o PDF.</li>
+            <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Necesitarás cargar una foto de la cara del alumno con fondo blanco y su identificación (partida de nacimiento, cédula y pasaporte) en formato JPG, PNG o PDF.</li>
             <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>En un mismo campo puedes subir la cédula y el pasaporte.</li>
             <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Al finalizar, deberás aceptar las políticas y reglamentos del Dojo</li>
             <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Los campos marcados con <span className="text-red-400 mx-1">*</span> son obligatorios</li>
@@ -244,6 +244,7 @@ const ToseiGusokuForm = () => {
   const router = useRouter();
   const [showForm, setShowForm] = useState(false);
   const [step, setStep] = useState(1);
+  const [isSuccess, setIsSuccess] = useState(false);
   const formRef = useRef<HTMLDivElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
 
@@ -542,7 +543,7 @@ const ToseiGusokuForm = () => {
     e.preventDefault();
     if (validateStep3()) {
       console.log('Datos a enviar:', formData);
-      alert('Formulario enviado correctamente (simulado)');
+      setIsSuccess(true);
     }
   };
 
@@ -951,22 +952,23 @@ const ToseiGusokuForm = () => {
 
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
               {/* Barra de progreso */}
-              <div className="bg-gray-700 text-white p-6">
-                <p className="text-sm text-stone-300 mb-2">Bienvenido y gracias por estar aquí, por favor llenar los campos requeridos para completar el proceso de inscripción.</p>
-                <div className="flex items-center justify-between mt-4">
+              <div className="bg-white text-white p-6">
+                <div className="flex items-center mt-4">
                   {['Datos Personales', 'Compromiso', 'Políticas'].map((label, index) => (
-                    <div key={index} className="flex items-center">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step > index + 1 ? 'bg-green-500 text-white' : step === index + 1 ? 'bg-brand-accent text-white' : 'bg-stone-600 text-stone-300'}`}>
-                        {step > index + 1 ? '✓' : index + 1}
+                    <Fragment key={index}>
+                      <div className="flex items-center">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step > index + 1 ? 'bg-green-500 text-white' : step === index + 1 ? 'bg-brand-accent text-white' : 'bg-stone-600 text-stone-300'}`}>
+                          {step > index + 1 ? '✓' : index + 1}
+                        </div>
+                        <span className={`ml-2 text-sm hidden sm:inline ${step === index + 1 ? 'text-brand-accent' : 'text-gray-700'}`}>{label}</span>
                       </div>
-                      <span className={`ml-2 text-sm hidden sm:inline ${step === index + 1 ? 'text-white' : 'text-stone-400'}`}>{label}</span>
-                      {index < 2 && <div className="w-12 sm:w-24 h-0.5 mx-2 bg-stone-600"></div>}
-                    </div>
+                      {index < 2 && <div className="flex-1 h-px mx-2 bg-brand-accent"></div>}
+                    </Fragment>
                   ))}
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-6 md:p-8">
+              <form onSubmit={handleSubmit} className="p-6 md:px-8">
                 {step === 1 && renderStep1()}
                 {step === 2 && renderStep2()}
                 {step === 3 && renderStep3()}
@@ -986,6 +988,29 @@ const ToseiGusokuForm = () => {
               </form>
             </div>
             <p className="text-center text-white text-sm mt-6">* Indica que la pregunta es obligatoria</p>
+          </div>
+        </div>
+      )}
+
+      {isSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center space-y-6">
+            <div className="w-20 h-20 bg-brand-accent/15 border border-brand-accent/30 rounded-full flex items-center justify-center mx-auto">
+              <svg className="w-10 h-10 text-brand-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-gray-900 font-display">¡Inscripción Exitosa!</h2>
+              <p className="text-sm text-gray-600">Tu inscripción ha sido registrada correctamente. Un asesor del dojo se contactará contigo para confirmar los próximos pasos.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => router.push('/')}
+              className="w-full py-3.5 bg-brand-accent hover:bg-brand-accent-hover text-white font-bold rounded-xl text-sm transition-colors cursor-pointer"
+            >
+              Ir al Inicio
+            </button>
           </div>
         </div>
       )}

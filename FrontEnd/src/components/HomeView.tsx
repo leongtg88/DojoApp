@@ -298,7 +298,7 @@ export default function HomeView({ onOpenEnrollment, onNavigateToAbout }: HomeVi
         </div>
       </section>
 
-
+  
       {/* 6. Karate para la Familia (Sección Promocional) */}
       <section className="py-16 bg-white relative overflow-hidden px-8 md:px-[50px]">
         {/* Ambient glow container */}

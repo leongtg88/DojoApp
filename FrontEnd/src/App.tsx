@@ -29,7 +29,7 @@ export default function App() {
 
   // Scroll to top on view change, or scroll to section after home renders
   useEffect(() => {
-    if (pendingScroll) {
+    if (pendingScroll && view === 'home') {
       // Wait for AnimatePresence (300ms) + layout paint to finish
       const timer = setTimeout(() => {
         const section = document.getElementById(pendingScroll);
@@ -40,10 +40,10 @@ export default function App() {
         setPendingScroll(null);
       }, 350);
       return () => clearTimeout(timer);
-    } else {
+    } else if (!pendingScroll) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [view]);
+  }, [view, pendingScroll]);
 
   const handleOpenEnrollment = (program: string = 'adult') => {
     setPreSelectedProgram(program === 'kid' ? 'kid' : 'adult');
@@ -52,12 +52,14 @@ export default function App() {
   };
 
   const handleNavigate = (targetView: 'home' | 'about' | 'registro') => {
+    setPendingScroll(null);
     setView(targetView);
     setIsMobileMenuOpen(false);
   };
 
   const handleNavigateToRegistro = () => {
     setIsMobileMenuOpen(false);
+    setPendingScroll(null);
     setView('registro');
   };
 
