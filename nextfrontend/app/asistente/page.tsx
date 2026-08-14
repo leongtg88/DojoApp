@@ -1,16 +1,16 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { MessageCircle, X } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import useEnrollmentChat from '@/hooks/useEnrollmentChat';
-import MessageBubble from './MessageBubble';
-import QuickReplies from './QuickReplies';
-import ScheduleCard from './ScheduleCard';
-import SummaryCard from './SummaryCard';
-import TextInputForm from './TextInputForm';
+import MessageBubble from '@/components/assistant/MessageBubble';
+import QuickReplies from '@/components/assistant/QuickReplies';
+import ScheduleCard from '@/components/assistant/ScheduleCard';
+import SummaryCard from '@/components/assistant/SummaryCard';
+import TextInputForm from '@/components/assistant/TextInputForm';
 import type { ScheduleCard as ScheduleCardData } from '@/lib/flow';
 
-export default function AssistantModal({ onClose }: { onClose: () => void }) {
+export default function AssistantPage() {
   const chat = useEnrollmentChat();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -20,30 +20,23 @@ export default function AssistantModal({ onClose }: { onClose: () => void }) {
   }, [chat.messages, chat.quickReplies, chat.input]);
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col bg-gray-50">
-      <header className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-700 text-white">
+    <div className="min-h-[calc(100dvh-5rem)] bg-zinc-950 text-white md:-mb-20">
+      <header className="sticky top-20 z-10 border-b border-white/10 bg-zinc-950/90 px-4 py-4 backdrop-blur">
+        <div className="mx-auto flex w-full max-w-2xl items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-accent text-black">
             <MessageCircle className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="font-semibold text-gray-900">Asistente Tosei Gusoku</h2>
-            <p className="flex items-center gap-1.5 text-xs text-gray-500">
+            <h2 className="font-semibold text-white">Asistente Tosei Gusoku</h2>
+            <p className="flex items-center gap-1.5 text-xs text-gray-400">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500" />
               Sensei online · Lun-Vie 2:30 PM - 7:30 PM
             </p>
           </div>
         </div>
-        <button
-          onClick={onClose}
-          className="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:outline-none"
-          aria-label="Cerrar asistente"
-        >
-          <X className="h-5 w-5" />
-        </button>
       </header>
 
-      <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-6">
+      <div ref={scrollRef} className="mx-auto w-full max-w-2xl space-y-4 px-4 py-6">
         {chat.messages.map((m) =>
           m.role === 'user' ? (
             <MessageBubble key={m.id} role="user">

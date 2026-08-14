@@ -307,12 +307,35 @@ export const flow: Record<string, FlowNode> = {
 
   que_necesito: {
     message:
+      'Te sugerimos revisar las informaciones de los horarios, nuestra ubicación y las condiciones para la clase de prueba.',
+    quickReplies: ['Clase de prueba', 'Horarios', 'Ubicación', 'Volver al inicio'],
+    next: {
+      'Clase de prueba': 'que_necesito_clase_prueba',
+      Horarios: 'horarios',
+      'Ubicación': 'ubicacion',
+      'Volver al inicio': 'welcome',
+    },
+  },
+
+  que_necesito_clase_prueba: {
+    message:
       'Para tu clase de prueba solo necesitas:\n• Ropa deportiva sin cierres en el tobillo\n• T-shirt cómodo\n• Crocs o sandalias\n• Toalla\n• Termo de agua\n\nNo necesitas karategi.\n\nPara inscripción completa: foto del alumno, identificación (cédula/pasaporte/partida) y contacto de padres/tutores si es menor.',
     quickReplies: ['Reservar prueba', 'Ir a Inscripción completa', 'Chat con Sensei', 'Volver al inicio'],
     next: {
       'Reservar prueba': 'clase_prueba_confirm',
       'Ir a Inscripción completa': 'inscripcion_info',
       'Chat con Sensei': 'hablar_sensei',
+      'Volver al inicio': 'welcome',
+    },
+  },
+
+  ubicacion: {
+    message:
+      'Nos encontramos en Plaza Lulie, 3era planta, esquina Av. 27 de Febrero con C. Carmen Mendoza, Ensanche Quisqueya, Los Millones, Santo Domingo.\n\nHorario de atención: Lunes a Viernes 2:30 PM - 7:30 PM.',
+    quickReplies: ['Reservar clase de prueba', 'Horarios', 'Volver al inicio'],
+    next: {
+      'Reservar clase de prueba': 'clase_prueba_confirm',
+      Horarios: 'horarios',
       'Volver al inicio': 'welcome',
     },
   },

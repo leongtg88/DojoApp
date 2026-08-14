@@ -28,16 +28,16 @@ export default function TextInputForm({
           onChange={(e) => setValue(e.target.value)}
           placeholder={placeholder || 'Escribe aquí…'}
           autoFocus
-          className="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+          className="flex-1 rounded-full border border-white/10 bg-zinc-800 px-4 py-2 text-sm text-white placeholder-gray-500 focus:border-brand-accent focus:outline-none focus:ring-2 focus:ring-brand-accent"
         />
         <button
           type="submit"
-          className="rounded-full bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+          className="rounded-full bg-brand-accent px-4 py-2 text-sm font-medium text-black hover:bg-brand-accent/80 focus:outline-none focus:ring-2 focus:ring-brand-accent"
         >
           Enviar
         </button>
       </div>
-      {validationError && <p className="mt-1 text-xs text-red-600">{validationError}</p>}
+      {validationError && <p className="mt-1 text-xs text-brand-accent">{validationError}</p>}
     </form>
   );
 }

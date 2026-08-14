@@ -8,6 +8,8 @@ export default function Footer() {
   const pathname = usePathname();
   const router = useRouter();
 
+  if (pathname === '/asistente') return null;
+
   const scrollToSection = (id: string) => {
     if (pathname === '/') {
       const section = document.getElementById(id);

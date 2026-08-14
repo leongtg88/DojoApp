@@ -10,14 +10,14 @@ export default function ScheduleCard({
   onCta?: () => void;
 }) {
   return (
-    <div className="max-w-[85%] rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-      <h3 className="font-semibold text-gray-900">{title}</h3>
-      {subtitle && <p className="mt-2 text-sm text-gray-600">{subtitle}</p>}
+    <div className="max-w-[85%] rounded-2xl border border-white/10 bg-zinc-800 p-4 shadow-sm">
+      <h3 className="font-semibold text-white">{title}</h3>
+      {subtitle && <p className="mt-2 text-sm text-gray-300">{subtitle}</p>}
       {ctaLabel && onCta && (
         <button
           type="button"
           onClick={onCta}
-          className="mt-4 rounded-full bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+          className="mt-4 rounded-full bg-brand-accent px-4 py-2 text-sm font-medium text-black hover:bg-brand-accent/80 focus:outline-none focus:ring-2 focus:ring-brand-accent"
         >
           {ctaLabel}
         </button>
