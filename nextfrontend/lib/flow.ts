@@ -61,11 +61,20 @@ const KID_SCHEDULE_OPTIONS = [
   'Sábado 10:00 AM - 11:00 AM',
 ];
 
+const PEQUENOS_SCHEDULE_OPTIONS = [
+  'Martes/Jueves 4:00 PM - 4:45 PM',
+  'Sábado 9:00 AM - 9:45 AM',
+  'Sábado 10:00 AM - 10:45 AM',
+];
+
 const YOUTH_SCHEDULE_OPTIONS = [
   'Martes/Jueves 5:00 PM - 6:00 PM',
   'Lunes/Miércoles 8:20 PM - 9:20 PM',
-  'Sábado 10:30 AM - 12:30 PM',
+  'Sábado 9:00 AM - 10:00 AM / 10:00 AM - 11:00 AM',
 ];
+
+const TRIAL_CLASS_REQUIREMENTS =
+  'Para tu clase de prueba solo necesitas:\n• Ropa deportiva sin cierres en el tobillo\n• T-shirt cómodo\n• Crocs o sandalias\n• Toalla\n• Termo de agua\n\nNo necesitas karategi.\n\nPara inscripción completa: foto del alumno, identificación (cédula/pasaporte/partida) y contacto de padres/tutores si es menor.';
 
 function getProgramForDraft(draft: EnrollmentDraft): string {
   if (draft.tipo_alumno === 'Niño/a' && draft.edad === '5-7 años') return 'Pequeños Guerreros';
@@ -73,14 +82,22 @@ function getProgramForDraft(draft: EnrollmentDraft): string {
 }
 
 function getScheduleOptions(draft: EnrollmentDraft): string[] {
-  const options = draft.tipo_alumno === 'Niño/a' && draft.edad === '5-7 años' ? KID_SCHEDULE_OPTIONS : YOUTH_SCHEDULE_OPTIONS;
+  const options =
+    draft.tipo_alumno === 'Niño/a'
+      ? draft.edad === '5-7 años'
+        ? PEQUENOS_SCHEDULE_OPTIONS
+        : KID_SCHEDULE_OPTIONS
+      : YOUTH_SCHEDULE_OPTIONS;
   return [...options, 'Sin preferencia', 'Volver'];
 }
 
 const HORARIO_NEXT: Record<string, FlowNodeId> = Object.fromEntries(
-  [...KID_SCHEDULE_OPTIONS, ...YOUTH_SCHEDULE_OPTIONS, 'Sin preferencia'].map((o) => [o, 'clase_prueba_nombre']),
+  [...KID_SCHEDULE_OPTIONS, ...PEQUENOS_SCHEDULE_OPTIONS, ...YOUTH_SCHEDULE_OPTIONS, 'Sin preferencia'].map((o) => [
+    o,
+    'clase_prueba_nombre',
+  ]),
 );
-HORARIO_NEXT['Volver'] = 'clase_prueba_edad';
+HORARIO_NEXT['Volver'] = 'clase_prueba_tipo';
 
 export const flow: Record<string, FlowNode> = {
   welcome: {
@@ -100,7 +117,7 @@ export const flow: Record<string, FlowNode> = {
      FLUJO CLASE DE PRUEBA
   ─────────────────────────── */
   clase_prueba_confirm: {
-    message: '¡Perfecto! La primera clase de prueba es gratis y no necesitas karategi. Vamos a reservar tu espacio.',
+    message: TRIAL_CLASS_REQUIREMENTS,
     store: (draft) => ({ ...draft, tipo: 'clase_prueba' }),
     quickReplies: ['Reservar clase de prueba', 'Volver al inicio'],
     next: {
@@ -115,7 +132,7 @@ export const flow: Record<string, FlowNode> = {
     quickReplies: ['Niño/a', 'Adulto', 'Volver'],
     next: {
       'Niño/a': 'clase_prueba_edad',
-      Adulto: 'clase_prueba_edad',
+      Adulto: 'clase_prueba_horario',
       Volver: 'clase_prueba_confirm',
     },
   },
@@ -123,7 +140,11 @@ export const flow: Record<string, FlowNode> = {
   clase_prueba_edad: {
     message: '¿Qué edad tiene el alumno/a?',
     store: (draft, option) => (option === 'Volver' ? draft : { ...draft, edad: option, horario_pref: '', programa: '' }),
-    quickReplies: ['5-7 años', '8-12 años', '13-17 años', '18+', 'Volver'],
+    dynamicQuickReplies: (draft) => {
+      const base = ['5-7 años', '8-12 años', '13-17 años', '18+'];
+      const options = draft.tipo_alumno === 'Niño/a' ? base.filter((o) => o !== '18+') : base;
+      return [...options, 'Volver'];
+    },
     next: {
       '5-7 años': 'clase_prueba_horario',
       '8-12 años': 'clase_prueba_horario',
@@ -159,17 +180,7 @@ export const flow: Record<string, FlowNode> = {
   },
 
   clase_prueba_email: {
-    message: '¿Deseas dejarnos un email? (opcional)',
-    quickReplies: ['Omitir', 'Escribir email', 'Volver'],
-    next: {
-      Omitir: 'clase_prueba_nota',
-      'Escribir email': 'clase_prueba_email_input',
-      Volver: 'clase_prueba_whatsapp',
-    },
-  },
-
-  clase_prueba_email_input: {
-    message: 'Escribe tu email (opcional):',
+    message: 'Ingresa tu email',
     input: true,
     validation: 'email',
     placeholder: 'correo@ejemplo.com',
@@ -198,7 +209,7 @@ export const flow: Record<string, FlowNode> = {
   clase_prueba_resumen: {
     message: 'Revisa tu solicitud antes de enviar. Puedes confirmar internamente, enviar por WhatsApp o editar cualquier dato.',
     summary: true,
-    quickReplies: ['Confirmar y enviar (Interno)', 'Enviar por WhatsApp ahora', 'Editar', 'Volver'],
+    quickReplies: ['Enviar por WhatsApp ahora', 'Editar', 'Volver'],
     next: {
       'Confirmar y enviar (Interno)': 'confirmacion_interna',
       'Enviar por WhatsApp ahora': 'whatsapp_send',
@@ -258,7 +269,7 @@ export const flow: Record<string, FlowNode> = {
       {
         kind: 'schedule',
         title: 'Pequeños Guerreros (5-7 años)',
-        schedule: 'Martes/Jueves 4:00 PM - 5:00 PM · Sábados 9:00-10:00 & 10:00-11:00 AM',
+        schedule: 'Martes/Jueves 4:00 PM - 4:45 PM · Sábados 9:00-9:45 & 10:00-10:45 AM',
         cta: 'Agendar clase de prueba (este grupo)',
         next: 'clase_prueba_confirm',
         store: (draft) => ({ ...draft, programa: 'Pequeños Guerreros' }),
@@ -266,7 +277,7 @@ export const flow: Record<string, FlowNode> = {
       {
         kind: 'schedule',
         title: 'Jóvenes y Adultos (8+)',
-        schedule: 'Martes/Jueves 5:00 PM - 6:00 PM · Lunes/Miércoles (Adultos) 8:20 PM - 9:20 PM · Sábado 10:30 AM - 12:30 PM',
+        schedule: 'Martes/Jueves 5:00 PM - 6:00 PM · Lunes/Miércoles (Adultos) 8:20 PM - 9:20 PM · Sábado 9:00 AM - 11:00 AM',
         cta: 'Agendar clase de prueba (este grupo)',
         next: 'clase_prueba_confirm',
         store: (draft) => ({ ...draft, programa: 'Jóvenes y Adultos' }),
@@ -318,8 +329,7 @@ export const flow: Record<string, FlowNode> = {
   },
 
   que_necesito_clase_prueba: {
-    message:
-      'Para tu clase de prueba solo necesitas:\n• Ropa deportiva sin cierres en el tobillo\n• T-shirt cómodo\n• Crocs o sandalias\n• Toalla\n• Termo de agua\n\nNo necesitas karategi.\n\nPara inscripción completa: foto del alumno, identificación (cédula/pasaporte/partida) y contacto de padres/tutores si es menor.',
+    message: TRIAL_CLASS_REQUIREMENTS,
     quickReplies: ['Reservar prueba', 'Ir a Inscripción completa', 'Chat con Sensei', 'Volver al inicio'],
     next: {
       'Reservar prueba': 'clase_prueba_confirm',
@@ -387,8 +397,8 @@ export const flow: Record<string, FlowNode> = {
       const isKid = draft.edad === '5-7 años';
       const title = isKid ? 'Pequeños Guerreros (5-7 años)' : 'Jóvenes y Adultos (8+)';
       const schedule = isKid
-        ? 'Martes/Jueves 4:00 PM - 5:00 PM · Sábados 9:00-10:00 & 10:00-11:00 AM'
-        : 'Martes/Jueves 5:00 PM - 6:00 PM · Lunes/Miércoles (Adultos) 8:20 PM - 9:20 PM · Sábado 10:30 AM - 12:30 PM';
+        ? 'Martes/Jueves 4:00 PM - 4:45 PM · Sábados 9:00-9:45 & 10:00-10:45 AM'
+        : 'Martes/Jueves 4:00 PM - 5:00 PM · Sábados 9:00-10:00 & 10:00-11:00 AM';
       return [
         {
           kind: 'schedule' as const,
