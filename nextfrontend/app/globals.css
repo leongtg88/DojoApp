@@ -11,6 +11,10 @@
   --color-brand-red: #dc2626;
   --color-brand-purple: #6fffe9ff;
   --color-brand-secondary: #a0cbffff;
+  --color-asistent-bgpurple: #7B2FBE;
+  --color-asistent-bgaqua: #00B4D8;
+  --color-asistent-bgdark: #1A1A1A;
+  --color-asistent-bgsurface: #E2E8F0;
 
   --animate-marquee: marquee 30s linear infinite;
 
@@ -27,6 +31,24 @@
 }
 
 @layer utilities {
+
+    .glass {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .glass-dark {
+    background: rgba(26, 26, 26, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+
+
+
   .glass-card {
     backdrop-filter: blur(16px);
     background: rgba(15, 15, 15, 0.75);

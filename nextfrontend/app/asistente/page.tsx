@@ -20,8 +20,8 @@ export default function AssistantPage() {
   }, [chat.messages, chat.quickReplies, chat.input]);
 
   return (
-    <div className="min-h-[calc(100dvh-5rem)] bg-zinc-950 text-white md:-mb-20">
-      <header className="sticky top-20 z-10 border-b border-white/10 bg-zinc-950/90 px-4 py-4 backdrop-blur">
+    <div className="bg-asistent-bgdark min-h-[calc(100dvh-5rem)]  font-sans text-asistent-bgsurface antialiased selection:bg-asistent-bgpurple selection:text-white md:-mb-20">
+      <header className="sticky top-20 z-10 border-b border-white/10  px-4 py-4 backdrop-blur">
         <div className="mx-auto flex w-full max-w-2xl items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-accent text-black">
             <MessageCircle className="h-5 w-5" />
@@ -36,6 +36,8 @@ export default function AssistantPage() {
         </div>
       </header>
 
+      <div className="fixed top-[20%] left-[-15%] w-[600px] h-[600px] bg-asistent-bgpurple/20 rounded-full blur-[180px] pointer-events-none z-0" />
+      <div className="fixed bottom-[20%] right-[-15%] w-[600px] h-[600px] bg-asistent-bgaqua/20 rounded-full blur-[180px] pointer-events-none z-0" />
       <div ref={scrollRef} className="mx-auto w-full max-w-2xl space-y-4 px-4 py-6">
         {chat.messages.map((m) =>
           m.role === 'user' ? (
