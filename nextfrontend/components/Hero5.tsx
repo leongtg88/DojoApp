@@ -44,12 +44,12 @@ const Hero5 = ({ onOpenAssistant }: { onOpenAssistant: () => void }) => {
             <p className="mt-4 text-sm md:text-base md:px-4 tracking-wide text-gray-900">
               &quot;El dolor que sientes hoy es la fuerza que sentirás mañana. Cada repetición, cada gota de sudor, te acerca a la mejor versión de ti mismo. ¡No te rindas!&quot;
             </p>
-            <div className="mt-8 md:ml-4 py-2 px-6 inline-block bg-current backdrop-blur-sm shadow-xl/30 border hover-border-white hover:bg-color-change hover:text-gray-700 font-regular rounded-lg"
+            <div className="mt-8 md:ml-4 py-2 px-6 inline-block bg-current backdrop-blur-sm shadow-xl/30 border hover-color-change hover:bg-white hover:text-gray-700 font-regular rounded-lg"
               style={{ animation: "border-color-change 10s infinite linear" }}>
               <button
                 type="button"
                 onClick={onOpenAssistant}
-                className="text-gray-700 hover:text-gray-700 text-sm font-semibold 2xl:text-base transition-colors duration-300 cursor-pointer"
+                className="text-gray-700 hover:text-white hover:bg-white text-sm font-semibold 2xl:text-base transition-colors duration-300 cursor-pointer"
               >
                 Empieza Hoy
               </button>

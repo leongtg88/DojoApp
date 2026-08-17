@@ -8,7 +8,9 @@ import QuickReplies from '@/components/assistant/QuickReplies';
 import ScheduleCard from '@/components/assistant/ScheduleCard';
 import SummaryCard from '@/components/assistant/SummaryCard';
 import TextInputForm from '@/components/assistant/TextInputForm';
+import PriceCard from '@/components/assistant/PriceCard';
 import type { ScheduleCard as ScheduleCardData } from '@/lib/flow';
+import type { PriceCard as PriceCardData } from '@/lib/flow';
 
 export default function AssistantPage() {
   const chat = useEnrollmentChat();
@@ -59,7 +61,14 @@ export default function AssistantPage() {
                     onCta={() => chat.selectCard(card as ScheduleCardData)}
                   />
                 ) : (
-                  <ScheduleCard key={idx} title={card.title} subtitle={card.value} />
+                  <PriceCard
+                    key={idx}
+                    title={card.title}
+                    value={card.value}
+                    description={(card as PriceCardData).description}
+                    originalPrice={(card as PriceCardData).originalPrice}
+                    badge={(card as PriceCardData).badge}
+                  />
                 ),
               )}
               {m.summary && <SummaryCard data={chat.draft} />}

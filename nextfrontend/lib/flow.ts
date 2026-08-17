@@ -30,6 +30,9 @@ export interface PriceCard {
   kind: 'price';
   title: string;
   value: string;
+  description?: string;
+  originalPrice?: string;
+  badge?: string;
 }
 
 export type FlowCard = ScheduleCard | PriceCard;
@@ -292,17 +295,141 @@ export const flow: Record<string, FlowNode> = {
   },
 
   precios: {
-    message:
-      'Estos son los planes actuales. La primera clase de prueba es gratis. Promoción familiar: 2x1 en inscripción (aplican condiciones).',
-    cards: [
-      { kind: 'price', title: 'Plan mensual', value: '[Precio mensual]' },
-      { kind: 'price', title: 'Plan trimestral', value: '[Precio trimestral]' },
-      { kind: 'price', title: 'Promoción familiar', value: '2x1 en inscripción' },
+    message: 'Estos son los precios vigentes en Tosei Gusoku para 2026. ¿Qué categoría te interesa?',
+    quickReplies: [
+      'Planes base',
+      'Descuentos familiares',
+      'Clases a domicilio',
+      'Clases privadas',
+      'Alto rendimiento',
+      'Paquetes competición',
+      'Reservar clase de prueba',
+      'Volver al inicio',
     ],
-    quickReplies: ['Reservar clase de prueba', 'Solicitar cotización por WhatsApp', 'Volver al inicio'],
     next: {
+      'Planes base': 'precios_base',
+      'Descuentos familiares': 'precios_familia',
+      'Clases a domicilio': 'precios_domicilio',
+      'Clases privadas': 'precios_privadas',
+      'Alto rendimiento': 'precios_alto_rendimiento',
+      'Paquetes competición': 'precios_competicion',
       'Reservar clase de prueba': 'clase_prueba_confirm',
+      'Volver al inicio': 'welcome',
+    },
+  },
+
+  precios_base: {
+    message: 'Planes mensuales regulares — la clase de prueba es gratis:',
+    cards: [
+      { kind: 'price', title: 'Niños 5-7 años', value: 'RD$3,800/mes', description: '90 min/semana (2 clases de 45 min)' },
+      { kind: 'price', title: 'Niños 8+ y Adultos', value: 'RD$3,300/mes', description: '2 horas/semana' },
+      { kind: 'price', title: 'Inscripción', value: 'RD$3,000', description: 'Por persona, pago único' },
+      { kind: 'price', title: 'Uniforme (Karategi)', value: 'RD$3,000 – 12,000', description: 'Según modelo y talla' },
+      { kind: 'price', title: 'Carnet Federación', value: 'RD$1,200', description: 'Gestión administrativa' },
+    ],
+    quickReplies: ['Descuentos familiares', 'Clases a domicilio', 'Reservar clase de prueba', 'Volver a precios', 'Volver al inicio'],
+    next: {
+      'Descuentos familiares': 'precios_familia',
+      'Clases a domicilio': 'precios_domicilio',
+      'Reservar clase de prueba': 'clase_prueba_confirm',
+      'Volver a precios': 'precios',
+      'Volver al inicio': 'welcome',
+    },
+  },
+
+  precios_familia: {
+    message: 'Descuentos familiares — combinaciones y precios especiales. La inscripción familiar siempre es más barata:',
+    cards: [
+      { kind: 'price', title: 'Hermanos mixtos (5-7 + 8+)', value: 'RD$7,100/mes total', description: 'Cada uno paga tarifa regular. Inscripción 2x1.', badge: '2x1 INSCRIPCIÓN' },
+      { kind: 'price', title: '2 hermanos ambos 5-7 años', value: 'RD$7,000/mes total', description: 'RD$3,500 c/u (ahorro RD$600). Inscripción 2x1.', badge: '2x1 INSCRIPCIÓN' },
+      { kind: 'price', title: '3 hermanos ambos 5-7 años', value: 'RD$9,600/mes total', description: 'RD$3,200 c/u (ahorro RD$1,800). Inscripción: 1.5x.', badge: 'AHORRO RD$1,800' },
+      { kind: 'price', title: '2 hermanos 8+ / Padre+hijo 8+', value: 'RD$6,000/mes total', description: 'RD$3,000 c/u (ahorro RD$600). Inscripción 2x1.', badge: '2x1 INSCRIPCIÓN' },
+      { kind: 'price', title: '3 hermanos 8+', value: 'RD$9,000/mes total', description: 'RD$3,000 c/u (ahorro RD$900). Inscripción: 1.5x.', badge: 'AHORRO RD$900' },
+      { kind: 'price', title: 'Padre + hijo 5-7 años', value: 'RD$6,400/mes total', description: 'RD$3,200 c/u (ahorro RD$700). Inscripción 2x1.', badge: '2x1 INSCRIPCIÓN' },
+    ],
+    quickReplies: ['Planes base', 'Clases a domicilio', 'Solicitar cotización por WhatsApp', 'Volver a precios', 'Volver al inicio'],
+    next: {
+      'Planes base': 'precios_base',
+      'Clases a domicilio': 'precios_domicilio',
       'Solicitar cotización por WhatsApp': 'cotizacion_whatsapp',
+      'Volver a precios': 'precios',
+      'Volver al inicio': 'welcome',
+    },
+  },
+
+  precios_domicilio: {
+    message: 'Clases a domicilio — precios por paquete. La mensualidad se paga por adelantado:',
+    cards: [
+      { kind: 'price', title: 'Sesión suelta (1 alumno)', value: 'RD$1,500/sesión', description: '1 sesión individual a domicilio' },
+      { kind: 'price', title: '4 sesiones (1 alumno)', value: 'RD$4,800', description: 'RD$1,200/sesión · Ahorro vs. suelta' },
+      { kind: 'price', title: '8 sesiones (1 alumno)', value: 'RD$8,000', description: 'RD$1,000/sesión · Ahorro vs. suelta', badge: 'MEJOR VALOR' },
+      { kind: 'price', title: '8 sesiones grupo (2 alumnos)', value: 'RD$10,400/mes', description: 'RD$650/alumno/sesión · 8 sesiones' },
+      { kind: 'price', title: '8 sesiones grupo (4 alumnos)', value: 'RD$14,400/mes', description: 'RD$450/alumno/sesión · 8 sesiones', badge: 'GRUPO' },
+    ],
+    quickReplies: ['Planes base', 'Clases privadas', 'Solicitar cotización por WhatsApp', 'Volver a precios', 'Volver al inicio'],
+    next: {
+      'Planes base': 'precios_base',
+      'Clases privadas': 'precios_privadas',
+      'Solicitar cotización por WhatsApp': 'cotizacion_whatsapp',
+      'Volver a precios': 'precios',
+      'Volver al inicio': 'welcome',
+    },
+  },
+
+  precios_privadas: {
+    message: 'Clases privadas en el dojo — sesión individual con el Sensei:',
+    cards: [
+      { kind: 'price', title: 'Clase Privada en Dojo', value: 'RD$1,000/sesión', description: '45 min · Martes/Jueves 3:15-4:00 PM · Sábados 8:00-9:00 AM' },
+    ],
+    quickReplies: ['Alto rendimiento', 'Planes base', 'Volver a precios', 'Volver al inicio'],
+    next: {
+      'Alto rendimiento': 'precios_alto_rendimiento',
+      'Planes base': 'precios_base',
+      'Volver a precios': 'precios',
+      'Volver al inicio': 'welcome',
+    },
+  },
+
+  precios_alto_rendimiento: {
+    message: 'Entrenamiento de Alto Rendimiento — sábados y domingos 6:00-9:00 AM:',
+    cards: [
+      { kind: 'price', title: 'Por fin de semana', value: 'RD$2,000', description: 'Sábado + Domingo · 6 horas totales (3h c/u)' },
+      { kind: 'price', title: 'Paquete mensual', value: 'RD$8,000/mes', description: '4 fines de semana · Pago único', badge: 'MEJOR VALOR' },
+    ],
+    quickReplies: ['Paquetes competición', 'Clases privadas', 'Volver a precios', 'Volver al inicio'],
+    next: {
+      'Paquetes competición': 'precios_competicion',
+      'Clases privadas': 'precios_privadas',
+      'Volver a precios': 'precios',
+      'Volver al inicio': 'welcome',
+    },
+  },
+
+  precios_competicion: {
+    message: 'Paquetes para cinturones avanzados / competición — se suman al plan base regular (RD$3,300/mes):',
+    cards: [
+      {
+        kind: 'price', title: 'Programa Técnico', value: 'RD$6,800/mes',
+        description: '8 privadas/mes (Martes y Jueves, 45 min c/u). Trabajo técnico individualizado.',
+        originalPrice: 'RD$8,000', badge: '15% OFF',
+      },
+      {
+        kind: 'price', title: 'Programa Alto Rendimiento', value: 'RD$7,600/mes',
+        description: '4 fines de semana/mes (24h totales). Volumen y condición física.',
+        originalPrice: 'RD$8,000', badge: '5% OFF',
+      },
+      {
+        kind: 'price', title: 'Programa Integral', value: 'RD$12,800/mes',
+        description: 'Técnico + Alto Rendimiento completos. El paquete más completo.',
+        originalPrice: 'RD$16,000', badge: '20% OFF',
+      },
+    ],
+    quickReplies: ['Planes base', 'Alto rendimiento', 'Solicitar cotización por WhatsApp', 'Volver a precios', 'Volver al inicio'],
+    next: {
+      'Planes base': 'precios_base',
+      'Alto rendimiento': 'precios_alto_rendimiento',
+      'Solicitar cotización por WhatsApp': 'cotizacion_whatsapp',
+      'Volver a precios': 'precios',
       'Volver al inicio': 'welcome',
     },
   },
