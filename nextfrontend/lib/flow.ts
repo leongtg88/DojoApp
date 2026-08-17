@@ -1,6 +1,6 @@
 export type ValidationKind = 'name' | 'whatsapp' | 'email' | 'age';
 export type FlowNodeId = string;
-export type WaTextKind = 'auto' | 'enrollment' | 'quote' | 'generic';
+export type WaTextKind = 'auto' | 'enrollment' | 'quote' | 'generic' | 'cotizacion';
 
 export interface EnrollmentDraft {
   tipo: string;
@@ -13,6 +13,12 @@ export interface EnrollmentDraft {
   email: string;
   nota: string;
   utm: string;
+  plan_seleccionado: string;
+  plan_precio: string;
+  protecciones: string;
+  protecciones_precio: string;
+  descuento_seleccionado: string;
+  acuerdo_pago: boolean;
 }
 
 export type DraftStore = (draft: EnrollmentDraft, value: string) => EnrollmentDraft;
@@ -105,11 +111,12 @@ HORARIO_NEXT['Volver'] = 'clase_prueba_tipo';
 export const flow: Record<string, FlowNode> = {
   welcome: {
     message: 'Hola 👋, soy el asistente de Tosei Gusoku. ¿En qué puedo ayudarte hoy?',
-    quickReplies: ['Clase de prueba', 'Horarios', 'Precios', 'Qué necesito para empezar', 'Niños', 'Hablar con el Sensei'],
+    quickReplies: ['Clase de prueba', 'Horarios', 'Precios', 'Cotizar', 'Qué necesito para empezar', 'Niños', 'Hablar con el Sensei'],
     next: {
       'Clase de prueba': 'clase_prueba_confirm',
       Horarios: 'horarios',
       Precios: 'precios',
+      Cotizar: 'precio_nombre',
       'Qué necesito para empezar': 'que_necesito',
       Niños: 'ninos_edad',
       'Hablar con el Sensei': 'hablar_sensei',
@@ -302,7 +309,6 @@ export const flow: Record<string, FlowNode> = {
       'Clases a domicilio',
       'Clases privadas',
       'Alto rendimiento',
-      'Paquetes competición',
       'Reservar clase de prueba',
       'Volver al inicio',
     ],
@@ -312,7 +318,6 @@ export const flow: Record<string, FlowNode> = {
       'Clases a domicilio': 'precios_domicilio',
       'Clases privadas': 'precios_privadas',
       'Alto rendimiento': 'precios_alto_rendimiento',
-      'Paquetes competición': 'precios_competicion',
       'Reservar clase de prueba': 'clase_prueba_confirm',
       'Volver al inicio': 'welcome',
     },
@@ -326,11 +331,17 @@ export const flow: Record<string, FlowNode> = {
       { kind: 'price', title: 'Inscripción', value: 'RD$3,000', description: 'Por persona, pago único' },
       { kind: 'price', title: 'Uniforme (Karategi)', value: 'RD$3,000 – 12,000', description: 'Según modelo y talla' },
       { kind: 'price', title: 'Carnet Federación', value: 'RD$1,200', description: 'Gestión administrativa' },
+      { kind: 'price', title: 'Sello Uniforme', value: 'RD$800', description: 'Logo de Inoue-Ha' },
+      { kind: 'price', title: 'Guantines protectores manos', value: 'RD$2500', description: 'Guantines para manos' },
+      { kind: 'price', title: 'Guantines protectores pies', value: 'RD$2500', description: 'Guantines para pies' },
+
+
     ],
-    quickReplies: ['Descuentos familiares', 'Clases a domicilio', 'Reservar clase de prueba', 'Volver a precios', 'Volver al inicio'],
+    quickReplies: ['Descuentos familiares', 'Clases a domicilio', 'Quiero cotización', 'Reservar clase de prueba', 'Volver a precios', 'Volver al inicio'],
     next: {
       'Descuentos familiares': 'precios_familia',
       'Clases a domicilio': 'precios_domicilio',
+      'Quiero cotización': 'precio_nombre',
       'Reservar clase de prueba': 'clase_prueba_confirm',
       'Volver a precios': 'precios',
       'Volver al inicio': 'welcome',
@@ -362,7 +373,7 @@ export const flow: Record<string, FlowNode> = {
     cards: [
       { kind: 'price', title: 'Sesión suelta (1 alumno)', value: 'RD$1,500/sesión', description: '1 sesión individual a domicilio' },
       { kind: 'price', title: '4 sesiones (1 alumno)', value: 'RD$4,800', description: 'RD$1,200/sesión · Ahorro vs. suelta' },
-      { kind: 'price', title: '8 sesiones (1 alumno)', value: 'RD$8,000', description: 'RD$1,000/sesión · Ahorro vs. suelta', badge: 'MEJOR VALOR' },
+      { kind: 'price', title: '8 sesiones (1 alumno)', value: 'RD$7,000', description: 'RD$1,000/sesión · Ahorro vs. suelta', badge: 'MEJOR VALOR' },
       { kind: 'price', title: '8 sesiones grupo (2 alumnos)', value: 'RD$10,400/mes', description: 'RD$650/alumno/sesión · 8 sesiones' },
       { kind: 'price', title: '8 sesiones grupo (4 alumnos)', value: 'RD$14,400/mes', description: 'RD$450/alumno/sesión · 8 sesiones', badge: 'GRUPO' },
     ],
@@ -394,12 +405,12 @@ export const flow: Record<string, FlowNode> = {
     message: 'Entrenamiento de Alto Rendimiento — sábados y domingos 6:00-9:00 AM:',
     cards: [
       { kind: 'price', title: 'Por fin de semana', value: 'RD$2,000', description: 'Sábado + Domingo · 6 horas totales (3h c/u)' },
-      { kind: 'price', title: 'Paquete mensual', value: 'RD$8,000/mes', description: '4 fines de semana · Pago único', badge: 'MEJOR VALOR' },
+      { kind: 'price', title: 'Paquete mensual', value: 'RD$7,000/mes', description: '4 fines de semana · Pago único', badge: 'MEJOR VALOR' },
     ],
-    quickReplies: ['Paquetes competición', 'Clases privadas', 'Volver a precios', 'Volver al inicio'],
+    quickReplies: ['Clases privadas', 'Quiero cotización', 'Volver a precios', 'Volver al inicio'],
     next: {
-      'Paquetes competición': 'precios_competicion',
       'Clases privadas': 'precios_privadas',
+      'Quiero cotización': 'precio_nombre',
       'Volver a precios': 'precios',
       'Volver al inicio': 'welcome',
     },
@@ -424,11 +435,11 @@ export const flow: Record<string, FlowNode> = {
         originalPrice: 'RD$16,000', badge: '20% OFF',
       },
     ],
-    quickReplies: ['Planes base', 'Alto rendimiento', 'Solicitar cotización por WhatsApp', 'Volver a precios', 'Volver al inicio'],
+    quickReplies: ['Planes base', 'Alto rendimiento', 'Quiero cotización', 'Volver a precios', 'Volver al inicio'],
     next: {
       'Planes base': 'precios_base',
       'Alto rendimiento': 'precios_alto_rendimiento',
-      'Solicitar cotización por WhatsApp': 'cotizacion_whatsapp',
+      'Quiero cotización': 'precio_nombre',
       'Volver a precios': 'precios',
       'Volver al inicio': 'welcome',
     },
@@ -437,6 +448,155 @@ export const flow: Record<string, FlowNode> = {
   cotizacion_whatsapp: {
     message: 'Te estamos conectando con el equipo para enviarte una cotización personalizada.',
     effect: { openWhatsApp: true, waText: 'quote' },
+    quickReplies: ['Volver al inicio'],
+    next: {
+      'Volver al inicio': 'welcome',
+    },
+  },
+
+  /* ───────────────────────────
+     FLUJO COTIZACIÓN / SELECCIÓN DE PRECIO
+  ─────────────────────────── */
+  precio_nombre: {
+    message: 'Perfecto, vamos a armar tu cotización. Primero necesito algunos datos.\n\n¿Cuál es tu nombre completo?',
+    input: true,
+    validation: 'name',
+    placeholder: 'Ej. María Pérez',
+    store: (draft, value) => ({ ...draft, nombre: value, tipo: 'cotizacion' }),
+    next: 'precio_telefono',
+  },
+
+  precio_telefono: {
+    message: '¿Cuál es tu número de WhatsApp con prefijo internacional?',
+    input: true,
+    validation: 'whatsapp',
+    placeholder: '+1 829 637 8733',
+    store: (draft, value) => ({ ...draft, whatsapp: value }),
+    next: 'precio_email',
+  },
+
+  precio_email: {
+    message: '¿Cuál es tu email? Puedes omitirlo si prefieres.',
+    input: true,
+    validation: 'email',
+    placeholder: 'correo@ejemplo.com',
+    store: (draft, value) => ({ ...draft, email: value }),
+    next: 'precio_seleccion_plan',
+  },
+
+  precio_seleccion_plan: {
+    message: 'Ahora selecciona el plan mensual que se ajuste a tu caso:',
+    cards: [
+      { kind: 'price', title: 'Niños 5-7 años', value: 'RD$3,800/mes', description: '90 min/semana (2 clases de 45 min)' },
+      { kind: 'price', title: 'Niños 8+ y Adultos', value: 'RD$3,300/mes', description: '2 horas/semana' },
+    ],
+    quickReplies: ['Niños 5-7 años (RD$3,800/mes)', 'Niños 8+ / Adultos (RD$3,300/mes)', 'Volver'],
+    store: (draft, option) => {
+      if (option === 'Volver') return draft;
+      const isKid = option.includes('5-7');
+      return {
+        ...draft,
+        plan_seleccionado: isKid ? 'Niños 5-7 años' : 'Niños 8+ / Adultos',
+        plan_precio: isKid ? 'RD$3,800/mes' : 'RD$3,300/mes',
+        edad: isKid ? '5-7 años' : '8+',
+        tipo_alumno: isKid ? 'Niño/a' : 'Adulto',
+      };
+    },
+    next: {
+      'Niños 5-7 años (RD$3,800/mes)': 'precio_seleccion_protecciones',
+      'Niños 8+ / Adultos (RD$3,300/mes)': 'precio_seleccion_protecciones',
+      Volver: 'precio_email',
+    },
+  },
+
+  precio_seleccion_protecciones: {
+    message: '¿Necesitas guantines protectores? Puedes elegir uno, ambos o ninguno:',
+    quickReplies: [
+      'Guantines manos (RD$2,500)',
+      'Guantines pies (RD$2,500)',
+      'Ambos guantines (RD$5,000)',
+      'Sin protecciones',
+      'Volver',
+    ],
+    store: (draft, option) => {
+      if (option === 'Volver') return draft;
+      let precio = 'RD$0';
+      if (option.includes('Ambos')) precio = 'RD$5,000';
+      else if (option.includes('manos') || option.includes('pies')) precio = 'RD$2,500';
+      return { ...draft, protecciones: option, protecciones_precio: precio };
+    },
+    next: {
+      'Guantines manos (RD$2,500)': 'precio_seleccion_descuento',
+      'Guantines pies (RD$2,500)': 'precio_seleccion_descuento',
+      'Ambos guantines (RD$5,000)': 'precio_seleccion_descuento',
+      'Sin protecciones': 'precio_seleccion_descuento',
+      Volver: 'precio_seleccion_plan',
+    },
+  },
+
+  precio_seleccion_descuento: {
+    message: '¿Aplica algún descuento familiar? Selecciona el que corresponda o "Ninguno". Lo verificaremos al procesar tu solicitud.',
+    quickReplies: [
+      'Hermanos mixtos (5-7 + 8+)',
+      '2 hermanos ambos 5-7',
+      '3 hermanos ambos 5-7',
+      '2 hermanos 8+ / Padre+hijo 8+',
+      '3 hermanos 8+',
+      'Padre + hijo 5-7',
+      'Ninguno',
+      'Volver',
+    ],
+    store: (draft, option) => (option === 'Volver' ? draft : { ...draft, descuento_seleccionado: option }),
+    next: {
+      'Hermanos mixtos (5-7 + 8+)': 'precio_resumen',
+      '2 hermanos ambos 5-7': 'precio_resumen',
+      '3 hermanos ambos 5-7': 'precio_resumen',
+      '2 hermanos 8+ / Padre+hijo 8+': 'precio_resumen',
+      '3 hermanos 8+': 'precio_resumen',
+      'Padre + hijo 5-7': 'precio_resumen',
+      Ninguno: 'precio_resumen',
+      Volver: 'precio_seleccion_protecciones',
+    },
+  },
+
+  precio_resumen: {
+    message: 'Revisa tu cotización antes de enviar. Todo incluye carnet de federación, sello de uniforme y uniforme de principiante.',
+    summary: true,
+    quickReplies: ['Enviar por WhatsApp', 'Acuerdo de pago', 'Editar selección', 'Volver'],
+    next: {
+      'Enviar por WhatsApp': 'precio_whatsapp_send',
+      'Acuerdo de pago': 'precio_acuerdo_pago',
+      'Editar selección': 'precio_editar',
+      Volver: 'precio_seleccion_descuento',
+    },
+  },
+
+  precio_acuerdo_pago: {
+    message: 'Marcado ✓ — Necesitas un acuerdo de pago. El Sensei te contactará para definir las condiciones.',
+    store: (draft) => ({ ...draft, acuerdo_pago: true }),
+    quickReplies: ['Enviar por WhatsApp', 'Volver al resumen'],
+    next: {
+      'Enviar por WhatsApp': 'precio_whatsapp_send',
+      'Volver al resumen': 'precio_resumen',
+    },
+  },
+
+  precio_editar: {
+    message: '¿Qué dato quieres editar?',
+    quickReplies: ['Editar nombre', 'Editar teléfono', 'Editar plan', 'Editar protecciones', 'Editar descuento', 'Volver al resumen'],
+    next: {
+      'Editar nombre': 'precio_nombre',
+      'Editar teléfono': 'precio_telefono',
+      'Editar plan': 'precio_seleccion_plan',
+      'Editar protecciones': 'precio_seleccion_protecciones',
+      'Editar descuento': 'precio_seleccion_descuento',
+      'Volver al resumen': 'precio_resumen',
+    },
+  },
+
+  precio_whatsapp_send: {
+    message: 'Abriendo WhatsApp con tu cotización completa...',
+    effect: { openWhatsApp: true, waText: 'cotizacion' },
     quickReplies: ['Volver al inicio'],
     next: {
       'Volver al inicio': 'welcome',

@@ -13,7 +13,7 @@ import {
   type WaTextKind,
 } from '@/lib/flow';
 import { validateAge, validateEmail, validateName, validateWhatsApp } from '@/lib/validation';
-import { buildWhatsAppLink, buildWhatsAppTextLink, WA_GENERIC_TEXT, WA_QUOTE_TEXT } from '@/lib/whatsapp';
+import { buildWhatsAppLink, buildCotizacionLink, buildWhatsAppTextLink, WA_GENERIC_TEXT, WA_QUOTE_TEXT } from '@/lib/whatsapp';
 
 export const EMPTY_DRAFT: EnrollmentDraft = {
   tipo: '',
@@ -26,6 +26,12 @@ export const EMPTY_DRAFT: EnrollmentDraft = {
   email: '',
   nota: '',
   utm: 'asistente_web',
+  plan_seleccionado: '',
+  plan_precio: '',
+  protecciones: '',
+  protecciones_precio: '',
+  descuento_seleccionado: '',
+  acuerdo_pago: false,
 };
 
 export interface ChatMessage {
@@ -179,6 +185,18 @@ function buildWaUrl(kind: WaTextKind, draft: EnrollmentDraft): string {
   switch (kind) {
     case 'enrollment':
       return buildWhatsAppLink(payload);
+    case 'cotizacion':
+      return buildCotizacionLink({
+        nombre: draft.nombre,
+        whatsapp: draft.whatsapp,
+        email: draft.email,
+        plan_seleccionado: draft.plan_seleccionado,
+        plan_precio: draft.plan_precio,
+        protecciones: draft.protecciones,
+        protecciones_precio: draft.protecciones_precio,
+        descuento_seleccionado: draft.descuento_seleccionado,
+        acuerdo_pago: draft.acuerdo_pago,
+      });
     case 'quote':
       return buildWhatsAppTextLink(WA_QUOTE_TEXT);
     case 'generic':

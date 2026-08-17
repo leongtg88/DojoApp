@@ -7,6 +7,7 @@ import MessageBubble from '@/components/assistant/MessageBubble';
 import QuickReplies from '@/components/assistant/QuickReplies';
 import ScheduleCard from '@/components/assistant/ScheduleCard';
 import SummaryCard from '@/components/assistant/SummaryCard';
+import PricingSummaryCard from '@/components/assistant/PricingSummaryCard';
 import TextInputForm from '@/components/assistant/TextInputForm';
 import PriceCard from '@/components/assistant/PriceCard';
 import type { ScheduleCard as ScheduleCardData } from '@/lib/flow';
@@ -71,7 +72,8 @@ export default function AssistantPage() {
                   />
                 ),
               )}
-              {m.summary && <SummaryCard data={chat.draft} />}
+              {m.summary && chat.draft.tipo === 'cotizacion' && <PricingSummaryCard draft={chat.draft} />}
+              {m.summary && chat.draft.tipo !== 'cotizacion' && <SummaryCard data={chat.draft} />}
             </div>
           ),
         )}
