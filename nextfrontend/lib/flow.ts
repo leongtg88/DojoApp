@@ -111,12 +111,11 @@ HORARIO_NEXT['Volver'] = 'clase_prueba_tipo';
 export const flow: Record<string, FlowNode> = {
   welcome: {
     message: 'Hola 👋, soy el asistente de Tosei Gusoku. ¿En qué puedo ayudarte hoy?',
-    quickReplies: ['Clase de prueba', 'Horarios', 'Precios', 'Cotizar', 'Qué necesito para empezar', 'Niños', 'Hablar con el Sensei'],
+    quickReplies: ['Clase de prueba', 'Horarios', 'Precios & cotización', 'Qué necesito para empezar', 'Niños', 'Hablar con el Sensei'],
     next: {
       'Clase de prueba': 'clase_prueba_confirm',
       Horarios: 'horarios',
-      Precios: 'precios',
-      Cotizar: 'precio_nombre',
+      'Precios & cotización': 'precio_nombre',
       'Qué necesito para empezar': 'que_necesito',
       Niños: 'ninos_edad',
       'Hablar con el Sensei': 'hablar_sensei',
@@ -351,10 +350,10 @@ export const flow: Record<string, FlowNode> = {
   precios_familia: {
     message: 'Descuentos familiares — combinaciones y precios especiales. La inscripción familiar siempre es más barata:',
     cards: [
-      { kind: 'price', title: 'Hermanos mixtos (5-7 + 8+)', value: 'RD$7,100/mes total', description: 'Cada uno paga tarifa regular. Inscripción 2x1.', badge: '2x1 INSCRIPCIÓN' },
-      { kind: 'price', title: '2 hermanos ambos 5-7 años', value: 'RD$7,000/mes total', description: 'RD$3,500 c/u (ahorro RD$600). Inscripción 2x1.', badge: '2x1 INSCRIPCIÓN' },
+      { kind: 'price', title: 'Hermanos mixtos (5-7 + 8+)', value: 'RD$7,100/mes total', description: 'Un hermano de  5-7 años y otro de 8+ años. Cada uno paga tarifa regular. Inscripción 2x1.', badge: '2x1 INSCRIPCIÓN' },
+      { kind: 'price', title: '2 hermanos ambos 5-7 años', value: 'RD$7,000/mes total', description: ' RD$3,200 c/u (ahorro RD$600). Inscripción 2x1.', badge: '2x1 INSCRIPCIÓN' },
       { kind: 'price', title: '3 hermanos ambos 5-7 años', value: 'RD$9,600/mes total', description: 'RD$3,200 c/u (ahorro RD$1,800). Inscripción: 1.5x.', badge: 'AHORRO RD$1,800' },
-      { kind: 'price', title: '2 hermanos 8+ / Padre+hijo 8+', value: 'RD$6,000/mes total', description: 'RD$3,000 c/u (ahorro RD$600). Inscripción 2x1.', badge: '2x1 INSCRIPCIÓN' },
+      { kind: 'price', title: '2 hermanos 8+ ó Padre + hijo 8+', value: 'RD$6,000/mes total', description: 'Dos hermanos de 8+ años o Padre + hijo de 8+ años. RD$3,000 c/u (ahorro RD$600). Inscripción 2x1.', badge: '2x1 INSCRIPCIÓN' },
       { kind: 'price', title: '3 hermanos 8+', value: 'RD$9,000/mes total', description: 'RD$3,000 c/u (ahorro RD$900). Inscripción: 1.5x.', badge: 'AHORRO RD$900' },
       { kind: 'price', title: 'Padre + hijo 5-7 años', value: 'RD$6,400/mes total', description: 'RD$3,200 c/u (ahorro RD$700). Inscripción 2x1.', badge: '2x1 INSCRIPCIÓN' },
     ],
@@ -476,7 +475,7 @@ export const flow: Record<string, FlowNode> = {
   },
 
   precio_email: {
-    message: '¿Cuál es tu email? Puedes omitirlo si prefieres.',
+    message: '¿Cuál es tu email?',
     input: true,
     validation: 'email',
     placeholder: 'correo@ejemplo.com',
@@ -513,22 +512,22 @@ export const flow: Record<string, FlowNode> = {
     message: '¿Necesitas guantines protectores? Puedes elegir uno, ambos o ninguno:',
     quickReplies: [
       'Guantines manos (RD$2,500)',
-      'Guantines pies (RD$2,500)',
-      'Ambos guantines (RD$5,000)',
+      'Espinilleras pies (RD$2,900)',
+      'Ambas protecciones (RD$5,400)',
       'Sin protecciones',
       'Volver',
     ],
     store: (draft, option) => {
       if (option === 'Volver') return draft;
       let precio = 'RD$0';
-      if (option.includes('Ambos')) precio = 'RD$5,000';
+      if (option.includes('Ambos')) precio = 'RD$5,400';
       else if (option.includes('manos') || option.includes('pies')) precio = 'RD$2,500';
       return { ...draft, protecciones: option, protecciones_precio: precio };
     },
     next: {
       'Guantines manos (RD$2,500)': 'precio_seleccion_descuento',
-      'Guantines pies (RD$2,500)': 'precio_seleccion_descuento',
-      'Ambos guantines (RD$5,000)': 'precio_seleccion_descuento',
+      'Espinilleras pies (RD$2,900)': 'precio_seleccion_descuento',
+      'Ambas protecciones (RD$5,400)': 'precio_seleccion_descuento',
       'Sin protecciones': 'precio_seleccion_descuento',
       Volver: 'precio_seleccion_plan',
     },
@@ -540,7 +539,7 @@ export const flow: Record<string, FlowNode> = {
       'Hermanos mixtos (5-7 + 8+)',
       '2 hermanos ambos 5-7',
       '3 hermanos ambos 5-7',
-      '2 hermanos 8+ / Padre+hijo 8+',
+      '2 hermanos 8+ | Padre+hijo 8+',
       '3 hermanos 8+',
       'Padre + hijo 5-7',
       'Ninguno',
@@ -551,7 +550,7 @@ export const flow: Record<string, FlowNode> = {
       'Hermanos mixtos (5-7 + 8+)': 'precio_resumen',
       '2 hermanos ambos 5-7': 'precio_resumen',
       '3 hermanos ambos 5-7': 'precio_resumen',
-      '2 hermanos 8+ / Padre+hijo 8+': 'precio_resumen',
+      '2 hermanos 8+ | Padre+hijo 8+': 'precio_resumen',
       '3 hermanos 8+': 'precio_resumen',
       'Padre + hijo 5-7': 'precio_resumen',
       Ninguno: 'precio_resumen',
@@ -562,10 +561,11 @@ export const flow: Record<string, FlowNode> = {
   precio_resumen: {
     message: 'Revisa tu cotización antes de enviar. Todo incluye carnet de federación, sello de uniforme y uniforme de principiante.',
     summary: true,
-    quickReplies: ['Enviar por WhatsApp', 'Acuerdo de pago', 'Editar selección', 'Volver'],
+    quickReplies: ['Enviar por WhatsApp', 'Acuerdo de pago', 'Agendar clase de cortesía', 'Editar selección', 'Volver'],
     next: {
       'Enviar por WhatsApp': 'precio_whatsapp_send',
       'Acuerdo de pago': 'precio_acuerdo_pago',
+      'Agendar clase de cortesía': 'clase_prueba_confirm',
       'Editar selección': 'precio_editar',
       Volver: 'precio_seleccion_descuento',
     },

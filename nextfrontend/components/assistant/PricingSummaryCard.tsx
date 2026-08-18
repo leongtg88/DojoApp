@@ -1,14 +1,128 @@
+import { useState } from 'react';
 import type { EnrollmentDraft } from '@/lib/flow';
 
 function parsePrice(price: string): number {
   return Number(price.replace(/[^0-9]/g, '')) || 0;
 }
 
-export default function PricingSummaryCard({ draft }: { draft: EnrollmentDraft }) {
+interface BreakdownRow {
+  label: string;
+  regular: number;
+  discounted: number;
+}
+
+function getCarnetTotal(count: number): { regular: number; discounted: number } {
+  const base = 1200;
+  const half = 600;
+  const regular = base * count;
+  const discounted = base + half * (count - 1);
+  return { regular, discounted };
+}
+
+function getDiscountedBreakdown(draft: EnrollmentDraft, includeProtecciones: boolean): BreakdownRow[] | null {
+  const descuento = draft.descuento_seleccionado;
+  const protNum = parsePrice(draft.protecciones_precio);
+  const sello = 800;
+  const uniforme = 3000;
+  const inscripcionFull = 3000;
+
+  switch (descuento) {
+    case '2 hermanos ambos 5-7': {
+      const carnet = getCarnetTotal(2);
+      return [
+        { label: 'Plan mensual (2 hermanos 5-7)', regular: 3800 * 2, discounted: 3500 * 2 },
+        { label: 'Inscripción', regular: inscripcionFull * 2, discounted: inscripcionFull },
+        ...(includeProtecciones ? [{ label: 'Protecciones', regular: protNum * 2, discounted: protNum * 2 }] : []),
+        { label: 'Carnet Federación', regular: carnet.regular, discounted: carnet.discounted },
+        { label: 'Sello Uniforme', regular: sello * 2, discounted: sello * 2 },
+        { label: 'Uniforme Principiante', regular: uniforme * 2, discounted: uniforme * 2 },
+      ];
+    }
+    case '3 hermanos ambos 5-7': {
+      const carnet = getCarnetTotal(3);
+      return [
+        { label: 'Plan mensual (3 hermanos 5-7)', regular: 3800 * 3, discounted: 3200 * 3 },
+        { label: 'Inscripción', regular: inscripcionFull * 3, discounted: inscripcionFull * 1.5 },
+        ...(includeProtecciones ? [{ label: 'Protecciones', regular: protNum * 3, discounted: protNum * 3 }] : []),
+        { label: 'Carnet Federación', regular: carnet.regular, discounted: carnet.discounted },
+        { label: 'Sello Uniforme', regular: sello * 3, discounted: sello * 3 },
+        { label: 'Uniforme Principiante', regular: uniforme * 3, discounted: uniforme * 3 },
+      ];
+    }
+    case '2 hermanos 8+ / Padre+hijo 8+': {
+      const carnet = getCarnetTotal(2);
+      return [
+        { label: 'Plan mensual (2 hermanos/padre+hijo 8+)', regular: 3300 * 2, discounted: 3000 * 2 },
+        { label: 'Inscripción', regular: inscripcionFull * 2, discounted: inscripcionFull },
+        ...(includeProtecciones ? [{ label: 'Protecciones', regular: protNum * 2, discounted: protNum * 2 }] : []),
+        { label: 'Carnet Federación', regular: carnet.regular, discounted: carnet.discounted },
+        { label: 'Sello Uniforme', regular: sello * 2, discounted: sello * 2 },
+        { label: 'Uniforme Principiante', regular: uniforme * 2, discounted: uniforme * 2 },
+      ];
+    }
+    case '3 hermanos 8+': {
+      const carnet = getCarnetTotal(3);
+      return [
+        { label: 'Plan mensual (3 hermanos 8+)', regular: 3300 * 3, discounted: 3000 * 3 },
+        { label: 'Inscripción', regular: inscripcionFull * 3, discounted: inscripcionFull * 1.5 },
+        ...(includeProtecciones ? [{ label: 'Protecciones', regular: protNum * 3, discounted: protNum * 3 }] : []),
+        { label: 'Carnet Federación', regular: carnet.regular, discounted: carnet.discounted },
+        { label: 'Sello Uniforme', regular: sello * 3, discounted: sello * 3 },
+        { label: 'Uniforme Principiante', regular: uniforme * 3, discounted: uniforme * 3 },
+      ];
+    }
+    case 'Padre + hijo 5-7': {
+      const carnet = getCarnetTotal(2);
+      return [
+        { label: 'Plan mensual (padre 8+)', regular: 3300, discounted: 3200 },
+        { label: 'Plan mensual (hijo 5-7)', regular: 3800, discounted: 3200 },
+        { label: 'Inscripción', regular: inscripcionFull * 2, discounted: inscripcionFull },
+        ...(includeProtecciones ? [{ label: 'Protecciones', regular: protNum * 2, discounted: protNum * 2 }] : []),
+        { label: 'Carnet Federación', regular: carnet.regular, discounted: carnet.discounted },
+        { label: 'Sello Uniforme', regular: sello * 2, discounted: sello * 2 },
+        { label: 'Uniforme Principiante', regular: uniforme * 2, discounted: uniforme * 2 },
+      ];
+    }
+    case 'Hermanos mixtos (5-7 + 8+)': {
+      const carnet = getCarnetTotal(2);
+      return [
+        { label: 'Plan mensual (hermano 5-7)', regular: 3800, discounted: 3800 },
+        { label: 'Plan mensual (hermano 8+)', regular: 3300, discounted: 3300 },
+        { label: 'Inscripción', regular: inscripcionFull * 2, discounted: inscripcionFull },
+        ...(includeProtecciones ? [{ label: 'Protecciones', regular: protNum * 2, discounted: protNum * 2 }] : []),
+        { label: 'Carnet Federación', regular: carnet.regular, discounted: carnet.discounted },
+        { label: 'Sello Uniforme', regular: sello * 2, discounted: sello * 2 },
+        { label: 'Uniforme Principiante', regular: uniforme * 2, discounted: uniforme * 2 },
+      ];
+    }
+    default:
+      return null;
+  }
+}
+
+function getRegularBreakdown(draft: EnrollmentDraft, includeProtecciones: boolean): BreakdownRow[] {
   const planNum = parsePrice(draft.plan_precio);
   const protNum = parsePrice(draft.protecciones_precio);
-  const incluidos = 1200 + 800 + 3000;
-  const total = planNum + protNum + incluidos;
+
+  return [
+    { label: draft.plan_seleccionado, regular: planNum, discounted: planNum },
+    ...(includeProtecciones ? [{ label: draft.protecciones, regular: protNum, discounted: protNum }] : []),
+    { label: 'Carnet Federación', regular: 1200, discounted: 1200 },
+    { label: 'Sello Uniforme', regular: 800, discounted: 800 },
+    { label: 'Uniforme Principiante', regular: 3000, discounted: 3000 },
+  ];
+}
+
+export default function PricingSummaryCard({ draft }: { draft: EnrollmentDraft }) {
+  const [includeProtecciones, setIncludeProtecciones] = useState(true);
+  const hasDiscount = draft.descuento_seleccionado && draft.descuento_seleccionado !== 'Ninguno';
+  const rows = hasDiscount
+    ? getDiscountedBreakdown(draft, includeProtecciones)
+    : getRegularBreakdown(draft, includeProtecciones);
+
+  const totalRegular = rows?.reduce((sum, r) => sum + r.regular, 0) ?? 0;
+  const totalDiscounted = rows?.reduce((sum, r) => sum + r.discounted, 0) ?? 0;
+  const savings = totalRegular - totalDiscounted;
 
   return (
     <div className="max-w-[85%] rounded-2xl border border-white/10 bg-zinc-800 p-4 text-sm shadow-sm">
@@ -24,42 +138,81 @@ export default function PricingSummaryCard({ draft }: { draft: EnrollmentDraft }
           </dl>
         </section>
 
-        <section>
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">Plan seleccionado</p>
-          <dl className="space-y-1">
-            <Row label={draft.plan_seleccionado} value={draft.plan_precio} highlight />
-          </dl>
-        </section>
-
-        <section>
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">Protecciones</p>
-          <dl className="space-y-1">
-            <Row label={draft.protecciones} value={draft.protecciones_precio} />
-          </dl>
-        </section>
-
-        {draft.descuento_seleccionado && draft.descuento_seleccionado !== 'Ninguno' && (
+        {hasDiscount && (
           <section>
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">Descuento solicitado</p>
-            <p className="text-sm text-brand-accent">{draft.descuento_seleccionado}</p>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">Descuento aplicado</p>
+            <p className="text-sm text-green-400">{draft.descuento_seleccionado}</p>
             <p className="text-xs text-gray-500">Sujeto a verificación por el Sensei</p>
           </section>
         )}
 
         <section>
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">Incluido siempre</p>
-          <dl className="space-y-1">
-            <Row label="Carnet Federación" value="RD$1,200" />
-            <Row label="Sello Uniforme" value="RD$800" />
-            <Row label="Uniforme Principiante" value="RD$3,000" />
-          </dl>
+          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
+            {hasDiscount ? 'Desglose familiar' : 'Desglose'}
+          </p>
+
+          {hasDiscount ? (
+            <div className="overflow-hidden rounded-lg border border-white/10">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-white/10 bg-white/5 text-left text-gray-400">
+                    <th className="px-2 py-1.5 font-medium">Concepto</th>
+                    <th className="px-2 py-1.5 text-right font-medium">Original</th>
+                    <th className="px-2 py-1.5 text-right font-medium">Final</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows?.map((r) => (
+                    <tr key={r.label} className="border-b border-white/5">
+                      <td className="px-2 py-1.5 text-gray-300">{r.label}</td>
+                      <td className="px-2 py-1.5 text-right text-gray-500 line-through">
+                        {r.regular !== r.discounted ? `RD$${r.regular.toLocaleString('es-DO')}` : ''}
+                      </td>
+                      <td className="px-2 py-1.5 text-right font-medium text-white">
+                        RD$${r.discounted.toLocaleString('es-DO')}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <dl className="space-y-1">
+              {rows?.map((r) => (
+                <Row key={r.label} label={r.label} value={`RD$${r.discounted.toLocaleString('es-DO')}`} />
+              ))}
+            </dl>
+          )}
         </section>
 
-        <div className="border-t border-white/10 pt-2">
+        {draft.protecciones_precio && draft.protecciones_precio !== 'RD$0' && (
+          <button
+            onClick={() => setIncludeProtecciones(!includeProtecciones)}
+            className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-gray-300 transition hover:bg-white/10"
+          >
+            {includeProtecciones ? '✕ Quitar protecciones' : '+ Agregar protecciones'}
+          </button>
+        )}
+
+        <div className="border-t border-white/10 pt-2 space-y-1">
+          {hasDiscount && (
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-gray-500 line-through">Sin descuento</span>
+              <span className="text-xs text-gray-500 line-through">RD${totalRegular.toLocaleString('es-DO')}</span>
+            </div>
+          )}
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-white">Total estimado (primer mes)</span>
-            <span className="text-lg font-bold text-brand-accent">RD${total.toLocaleString('es-DO')}</span>
+            <span className="font-semibold text-white">Total (primer mes)</span>
+            <span className={`text-lg font-bold ${hasDiscount ? 'text-green-400' : 'text-brand-accent'}`}>
+              RD${totalDiscounted.toLocaleString('es-DO')}
+            </span>
           </div>
+          {hasDiscount && savings > 0 && (
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-green-400">Ahorras</span>
+              <span className="text-sm font-bold text-green-400">-RD${savings.toLocaleString('es-DO')}</span>
+            </div>
+          )}
         </div>
 
         {draft.acuerdo_pago && (
@@ -72,11 +225,11 @@ export default function PricingSummaryCard({ draft }: { draft: EnrollmentDraft }
   );
 }
 
-function Row({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
+function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between gap-4">
       <dt className="text-gray-400">{label}</dt>
-      <dd className={`text-right font-medium ${highlight ? 'text-brand-accent' : 'text-white'}`}>{value}</dd>
+      <dd className="text-right font-medium text-white">{value}</dd>
     </div>
   );
 }
