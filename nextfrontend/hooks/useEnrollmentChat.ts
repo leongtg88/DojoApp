@@ -13,7 +13,7 @@ import {
   type WaTextKind,
 } from '@/lib/flow';
 import { validateAge, validateEmail, validateName, validateWhatsApp } from '@/lib/validation';
-import { buildWhatsAppLink, buildCotizacionLink, buildWhatsAppTextLink, WA_GENERIC_TEXT, WA_QUOTE_TEXT } from '@/lib/whatsapp';
+import { buildWhatsAppLink, buildCotizacionLink, buildWhatsAppTextLink, buildEnrollmentWithCotizacionLink, WA_GENERIC_TEXT, WA_QUOTE_TEXT } from '@/lib/whatsapp';
 
 export const EMPTY_DRAFT: EnrollmentDraft = {
   tipo: '',
@@ -32,6 +32,8 @@ export const EMPTY_DRAFT: EnrollmentDraft = {
   protecciones_precio: '',
   descuento_seleccionado: '',
   acuerdo_pago: false,
+  from_cotizacion: false,
+  cotizacion_nombre: '',
 };
 
 export interface ChatMessage {
@@ -94,9 +96,10 @@ function getNodeQuickReplies(node: FlowNode, draft: EnrollmentDraft): string[] {
   return node.quickReplies ?? [];
 }
 
-function getTargetId(node: FlowNode, value: string): FlowNodeId {
-  if (typeof node.next === 'string') return node.next;
-  return node.next?.[value] ?? 'welcome';
+function getTargetId(node: FlowNode, value: string, draft: EnrollmentDraft): FlowNodeId {
+  const next = node.dynamicNext?.(draft) ?? node.next;
+  if (typeof next === 'string') return next;
+  return next?.[value] ?? 'welcome';
 }
 
 function buildAssistantMessage(target: FlowNode, draft: EnrollmentDraft, nodeId: FlowNodeId): ChatMessage {
@@ -105,7 +108,7 @@ function buildAssistantMessage(target: FlowNode, draft: EnrollmentDraft, nodeId:
     id: nextId('assistant'),
     role: 'assistant',
     nodeId,
-    text: target.message,
+    text: target.getMessage?.(draft) ?? target.message,
     cards: cards.length ? cards : undefined,
     summary: target.summary || undefined,
   };
@@ -141,13 +144,14 @@ function reducer(state: ChatState, action: Action): ChatState {
       return { ...state, validationError: ERROR_MESSAGES[state.validation ?? 'name'] };
     case 'SELECT': {
       const node = flow[state.currentNodeId];
-      const targetId = getTargetId(node, action.option);
+      const targetId = getTargetId(node, action.option, state.draft);
       const draft = node.store ? node.store(state.draft, action.option) : state.draft;
       return transition(state, action.option, targetId, draft);
     }
     case 'SUBMIT': {
       const node = flow[state.currentNodeId];
-      const targetId = typeof node.next === 'string' ? node.next : 'welcome';
+      const next = node.dynamicNext?.(state.draft) ?? node.next;
+      const targetId = typeof next === 'string' ? next : 'welcome';
       const draft = node.store ? node.store(state.draft, action.value) : state.draft;
       return transition(state, action.value, targetId, draft);
     }
@@ -184,6 +188,19 @@ function buildWaUrl(kind: WaTextKind, draft: EnrollmentDraft): string {
   };
   switch (kind) {
     case 'enrollment':
+      if (draft.from_cotizacion && draft.plan_seleccionado) {
+        return buildEnrollmentWithCotizacionLink(payload, {
+          nombre: draft.cotizacion_nombre || draft.nombre,
+          whatsapp: draft.whatsapp,
+          email: draft.email,
+          plan_seleccionado: draft.plan_seleccionado,
+          plan_precio: draft.plan_precio,
+          protecciones: draft.protecciones,
+          protecciones_precio: draft.protecciones_precio,
+          descuento_seleccionado: draft.descuento_seleccionado,
+          acuerdo_pago: draft.acuerdo_pago,
+        });
+      }
       return buildWhatsAppLink(payload);
     case 'cotizacion':
       return buildCotizacionLink({
@@ -228,7 +245,7 @@ export default function useEnrollmentChat() {
   const selectOption = useCallback(
     (option: string) => {
       const node = flow[state.currentNodeId];
-      const targetId = getTargetId(node, option);
+      const targetId = getTargetId(node, option, state.draft);
       const target = flow[targetId];
       const draft = node.store ? node.store(state.draft, option) : state.draft;
       if (target?.effect) applyEffects(target.effect, draft);
@@ -247,7 +264,8 @@ export default function useEnrollmentChat() {
           return false;
         }
       }
-      const targetId = typeof node.next === 'string' ? node.next : 'welcome';
+      const next = node.dynamicNext?.(state.draft) ?? node.next;
+      const targetId = typeof next === 'string' ? next : 'welcome';
       const target = flow[targetId];
       const draft = node.store ? node.store(state.draft, value) : state.draft;
       if (target?.effect) applyEffects(target.effect, draft);

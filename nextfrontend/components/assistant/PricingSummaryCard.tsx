@@ -71,8 +71,8 @@ function getDiscountedBreakdown(draft: EnrollmentDraft, counts: CountState): Bre
     case '2 hermanos ambos 5-7': {
       const rows: BreakdownRow[] = [];
       if (m > 0) {
-        const unitPrice = m >= 2 ? 3200 : 3800;
-        rows.push({ label: 'Plan mensual (2 hermanos 5-7)', regular: 3800 * m, discounted: unitPrice * m, units: m, category: 'mensualidad' });
+        const unitPrice = m >= 2 ? 3200 : 3500;
+        rows.push({ label: 'Plan mensual (2 hermanos 5-7)', regular: 3500 * m, discounted: unitPrice * m, units: m, category: 'mensualidad' });
       }
       if (m > 0) {
         const inscDisc = m >= 2 ? inscripcionFull : inscripcionFull * m;
@@ -96,8 +96,8 @@ function getDiscountedBreakdown(draft: EnrollmentDraft, counts: CountState): Bre
     case '3 hermanos ambos 5-7': {
       const rows: BreakdownRow[] = [];
       if (m > 0) {
-        const unitPrice = m >= 2 ? 3200 : 3800;
-        rows.push({ label: 'Plan mensual (3 hermanos 5-7)', regular: 3800 * m, discounted: unitPrice * m, units: m, category: 'mensualidad' });
+        const unitPrice = m >= 2 ? 3200 : 3500;
+        rows.push({ label: 'Plan mensual (3 hermanos 5-7)', regular: 3500 * m, discounted: unitPrice * m, units: m, category: 'mensualidad' });
       }
       if (m > 0) {
         const inscDisc = m >= 3 ? inscripcionFull * 1.5 : m === 2 ? inscripcionFull : inscripcionFull * m;
@@ -170,8 +170,8 @@ function getDiscountedBreakdown(draft: EnrollmentDraft, counts: CountState): Bre
     }
     case 'Padre + hijo 5-7': {
       const rows: BreakdownRow[] = [];
-      rows.push({ label: 'Plan mensual (padre 8+)', regular: 3300, discounted: 3200, units: 1, category: 'mensualidad' });
-      rows.push({ label: 'Plan mensual (hijo 5-7)', regular: 3800, discounted: 3200, units: 1, category: 'mensualidad' });
+      rows.push({ label: 'Plan mensual (padre 8+)', regular: 3300, discounted: 3000, units: 1, category: 'mensualidad' });
+      rows.push({ label: 'Plan mensual (hijo 5-7)', regular: 3500, discounted: 3200, units: 1, category: 'mensualidad' });
       rows.push({ label: 'Inscripción', regular: inscripcionFull * 2, discounted: inscripcionFull, units: 2, category: 'inscripcion' });
       if (counts.protecciones > 0) {
         rows.push({ label: 'Protecciones', regular: protNum * counts.protecciones, discounted: protNum * counts.protecciones, units: counts.protecciones, category: 'protecciones' });
@@ -186,8 +186,8 @@ function getDiscountedBreakdown(draft: EnrollmentDraft, counts: CountState): Bre
     }
     case 'Hermanos mixtos (5-7 + 8+)': {
       const rows: BreakdownRow[] = [];
-      rows.push({ label: 'Plan mensual (hermano 5-7)', regular: 3800, discounted: 3200, units: 1, category: 'mensualidad' });
-      rows.push({ label: 'Plan mensual (hermano 8+)', regular: 3300, discounted: 3200, units: 1, category: 'mensualidad' });
+      rows.push({ label: 'Plan mensual (hermano 5-7)', regular: 3500, discounted: 3200, units: 1, category: 'mensualidad' });
+      rows.push({ label: 'Plan mensual (hermano 8+)', regular: 3300, discounted: 3000, units: 1, category: 'mensualidad' });
       rows.push({ label: 'Inscripción', regular: inscripcionFull * 2, discounted: inscripcionFull, units: 2, category: 'inscripcion' });
       if (counts.protecciones > 0) {
         rows.push({ label: 'Protecciones', regular: protNum * counts.protecciones, discounted: protNum * counts.protecciones, units: counts.protecciones, category: 'protecciones' });
@@ -316,7 +316,9 @@ export default function PricingSummaryCard({ draft }: { draft: EnrollmentDraft }
 
   const totalRegular = rows?.reduce((sum, r) => sum + r.regular, 0) ?? 0;
   const totalDiscounted = rows?.reduce((sum, r) => sum + r.discounted, 0) ?? 0;
+  const totalSegundoMes = rows?.filter((r) => r.category === 'mensualidad').reduce((sum, r) => sum + r.discounted, 0) ?? 0;
   const savings = totalRegular - totalDiscounted;
+  const savingsSegundoMes = rows?.filter((r) => r.category === 'mensualidad').reduce((sum, r) => sum + (r.regular - r.discounted), 0) ?? 0;
 
   const hiddenMensualidadRows = multiRow
     ? (getDiscountedBreakdown(draft, { mensualidad: 2, uniforme: 0, protecciones: 0 }) ?? []).filter(
@@ -443,6 +445,20 @@ export default function PricingSummaryCard({ draft }: { draft: EnrollmentDraft }
               <span className="text-sm font-bold text-green-400">-RD${savings.toLocaleString('es-DO')}</span>
             </div>
           )}
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-400">Total (segundo mes)</span>
+            <span className="text-sm font-semibold text-white">
+              RD${totalSegundoMes.toLocaleString('es-DO')}
+            </span>
+          </div>
+            {hasDiscount && savingsSegundoMes > 0 && (
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-green-400">Ahorro mensual</span>
+              <span className="text-sm font-bold text-green-400">-RD${savingsSegundoMes.toLocaleString('es-DO')}</span>
+            </div>
+          )}
+
+
         </div>
 
         {draft.acuerdo_pago && (

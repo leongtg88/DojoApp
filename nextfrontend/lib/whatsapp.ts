@@ -28,6 +28,10 @@ export function buildWhatsAppLink(data: WhatsAppPayload): string {
 }
 
 export function buildCotizacionLink(data: CotizacionPayload): string {
+  return buildWhatsAppTextLink(buildCotizacionText(data));
+}
+
+export function buildCotizacionText(data: CotizacionPayload): string {
   const lines = [
     'Hola Sensei, quiero una cotización en Tosei Gusoku 🥋',
     '',
@@ -64,7 +68,15 @@ export function buildCotizacionLink(data: CotizacionPayload): string {
 
   if (data.acuerdo_pago) lines.push('📝 Necesito acuerdo de pago');
 
-  return buildWhatsAppTextLink(lines.join('\n'));
+  return lines.join('\n');
+}
+
+export function buildEnrollmentWithCotizacionLink(enrollment: WhatsAppPayload, cotizacion: CotizacionPayload): string {
+  const enrollmentText = `Hola Sensei, quiero reservar una clase de prueba en Tosei Gusoku.\nNombre: ${enrollment.nombre}.\nEdad: ${enrollment.edad}.\nHorario preferido: ${enrollment.horario_pref}.\nPrograma: ${enrollment.programa}.\nWhatsApp: ${enrollment.whatsapp}.\nNota: ${enrollment.nota || 'Sin notas'}`;
+
+  const cotizacionText = buildCotizacionText(cotizacion);
+
+  return buildWhatsAppTextLink(`${enrollmentText}\n\n---\n\nCotización previa:\n${cotizacionText}`);
 }
 
 export function buildWhatsAppTextLink(text: string): string {

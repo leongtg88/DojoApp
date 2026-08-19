@@ -19,6 +19,8 @@ export interface EnrollmentDraft {
   protecciones_precio: string;
   descuento_seleccionado: string;
   acuerdo_pago: boolean;
+  from_cotizacion: boolean;
+  cotizacion_nombre: string;
 }
 
 export type DraftStore = (draft: EnrollmentDraft, value: string) => EnrollmentDraft;
@@ -51,9 +53,11 @@ export interface FlowEffect {
 
 export interface FlowNode {
   message?: string;
+  getMessage?: (draft: EnrollmentDraft) => string;
   quickReplies?: string[];
   dynamicQuickReplies?: (draft: EnrollmentDraft) => string[];
   next?: Record<string, FlowNodeId> | FlowNodeId;
+  dynamicNext?: (draft: EnrollmentDraft) => Record<string, FlowNodeId> | FlowNodeId;
   input?: boolean;
   validation?: ValidationKind;
   placeholder?: string;
@@ -108,6 +112,14 @@ const HORARIO_NEXT: Record<string, FlowNodeId> = Object.fromEntries(
 );
 HORARIO_NEXT['Volver'] = 'clase_prueba_tipo';
 
+const HORARIO_NEXT_FROM_COTIZACION: Record<string, FlowNodeId> = Object.fromEntries(
+  [...KID_SCHEDULE_OPTIONS, ...PEQUENOS_SCHEDULE_OPTIONS, ...YOUTH_SCHEDULE_OPTIONS, 'Sin preferencia'].map((o) => [
+    o,
+    'clase_prueba_nombre',
+  ]),
+);
+HORARIO_NEXT_FROM_COTIZACION['Volver'] = 'clase_prueba_from_cotizacion';
+
 export const flow: Record<string, FlowNode> = {
   welcome: {
     message: 'Hola 👋, soy el asistente de Tosei Gusoku. ¿En qué puedo ayudarte hoy?',
@@ -135,15 +147,36 @@ export const flow: Record<string, FlowNode> = {
     },
   },
 
+  clase_prueba_from_cotizacion: {
+    getMessage: (draft) => {
+      const lines = ['Vamos a agendar tu clase de prueba. Usaremos estos datos de contacto de la cotización:'];
+      if (draft.whatsapp) lines.push(`\n📱 WhatsApp: ${draft.whatsapp}`);
+      if (draft.email) lines.push(`📧 Email: ${draft.email}`);
+      lines.push('\n¿Los usamos?');
+      return lines.join('\n');
+    },
+    store: (draft, option) => {
+      if (option === 'No, quiero actualizar') {
+        return { ...draft, from_cotizacion: false };
+      }
+      return draft;
+    },
+    quickReplies: ['Sí, usar mis datos', 'No, quiero actualizar'],
+    next: {
+      'Sí, usar mis datos': 'clase_prueba_horario',
+      'No, quiero actualizar': 'clase_prueba_tipo',
+    },
+  },
+
   clase_prueba_tipo: {
     message: '¿La clase es para un niño/a o adulto?',
     store: (draft, option) => (option === 'Volver' ? draft : { ...draft, tipo_alumno: option as EnrollmentDraft['tipo_alumno'] }),
     quickReplies: ['Niño/a', 'Adulto', 'Volver'],
-    next: {
+    dynamicNext: (draft) => ({
       'Niño/a': 'clase_prueba_edad',
       Adulto: 'clase_prueba_horario',
-      Volver: 'clase_prueba_confirm',
-    },
+      Volver: draft.from_cotizacion ? 'clase_prueba_from_cotizacion' : 'clase_prueba_confirm',
+    }),
   },
 
   clase_prueba_edad: {
@@ -167,7 +200,7 @@ export const flow: Record<string, FlowNode> = {
     message: 'Elige el horario que prefieras. También puedes decirme "sin preferencia".',
     dynamicQuickReplies: (draft) => getScheduleOptions(draft),
     store: (draft, option) => (option === 'Volver' ? draft : { ...draft, horario_pref: option, programa: getProgramForDraft(draft) }),
-    next: HORARIO_NEXT,
+    dynamicNext: (draft) => (draft.from_cotizacion ? HORARIO_NEXT_FROM_COTIZACION : HORARIO_NEXT),
   },
 
   clase_prueba_nombre: {
@@ -176,7 +209,7 @@ export const flow: Record<string, FlowNode> = {
     validation: 'name',
     placeholder: 'Ej. María Pérez',
     store: (draft, value) => ({ ...draft, nombre: value }),
-    next: 'clase_prueba_whatsapp',
+    dynamicNext: (draft) => (draft.from_cotizacion ? 'clase_prueba_nota' : 'clase_prueba_whatsapp'),
   },
 
   clase_prueba_whatsapp: {
@@ -200,11 +233,11 @@ export const flow: Record<string, FlowNode> = {
   clase_prueba_nota: {
     message: '¿Alguna nota o preferencia?',
     quickReplies: ['Sin nota', 'Escribir nota', 'Volver'],
-    next: {
+    dynamicNext: (draft) => ({
       'Sin nota': 'clase_prueba_resumen',
       'Escribir nota': 'clase_prueba_nota_input',
-      Volver: 'clase_prueba_email',
-    },
+      Volver: draft.from_cotizacion ? 'clase_prueba_nombre' : 'clase_prueba_email',
+    }),
   },
 
   clase_prueba_nota_input: {
@@ -561,11 +594,17 @@ export const flow: Record<string, FlowNode> = {
   precio_resumen: {
     message: 'Revisa tu cotización antes de enviar. Todo incluye carnet de federación, sello de uniforme y uniforme de principiante.',
     summary: true,
+    store: (draft, option) => {
+      if (option === 'Agendar clase de cortesía') {
+        return { ...draft, from_cotizacion: true, tipo: 'clase_prueba', cotizacion_nombre: draft.nombre };
+      }
+      return draft;
+    },
     quickReplies: ['Enviar por WhatsApp', 'Acuerdo de pago', 'Agendar clase de cortesía', 'Editar selección', 'Volver'],
     next: {
       'Enviar por WhatsApp': 'precio_whatsapp_send',
       'Acuerdo de pago': 'precio_acuerdo_pago',
-      'Agendar clase de cortesía': 'clase_prueba_confirm',
+      'Agendar clase de cortesía': 'clase_prueba_from_cotizacion',
       'Editar selección': 'precio_editar',
       Volver: 'precio_seleccion_descuento',
     },
