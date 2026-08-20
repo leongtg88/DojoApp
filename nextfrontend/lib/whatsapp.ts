@@ -45,9 +45,21 @@ export function buildCotizacionText(data: CotizacionPayload): string {
   lines.push(
     '',
     `🥋 Plan: ${data.plan_seleccionado} — ${data.plan_precio}`,
-    '',
-    `🥊 Protecciones: ${data.protecciones} — ${data.protecciones_precio}`,
   );
+
+  if (data.protecciones.includes('Ambas')) {
+    lines.push(
+      '',
+      '🥊 Protecciones:',
+      '  • Guantines manos — RD$2,500',
+      '  • Espinilleras pies — RD$2,900',
+    );
+  } else {
+    lines.push(
+      '',
+      `🥊 Protecciones: ${data.protecciones} — ${data.protecciones_precio}`,
+    );
+  }
 
   if (data.descuento_seleccionado && data.descuento_seleccionado !== 'Ninguno') {
     lines.push('', `🏷️ Descuento solicitado: ${data.descuento_seleccionado}`);

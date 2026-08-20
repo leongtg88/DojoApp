@@ -43,6 +43,7 @@ export interface ChatMessage {
   nodeId?: string;
   cards?: FlowCard[];
   summary?: boolean;
+  link?: { label: string; url: string };
 }
 
 interface ChatState {
@@ -111,6 +112,7 @@ function buildAssistantMessage(target: FlowNode, draft: EnrollmentDraft, nodeId:
     text: target.getMessage?.(draft) ?? target.message,
     cards: cards.length ? cards : undefined,
     summary: target.summary || undefined,
+    link: target.link,
   };
 }
 

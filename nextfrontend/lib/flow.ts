@@ -66,6 +66,7 @@ export interface FlowNode {
   summary?: boolean;
   store?: DraftStore;
   effect?: FlowEffect;
+  link?: { label: string; url: string };
 }
 
 const KID_SCHEDULE_OPTIONS = [
@@ -87,7 +88,7 @@ const YOUTH_SCHEDULE_OPTIONS = [
 ];
 
 const TRIAL_CLASS_REQUIREMENTS =
-  'Para tu clase de prueba solo necesitas:\n• Ropa deportiva sin cierres en el tobillo\n• T-shirt cómodo\n• Crocs o sandalias\n• Toalla\n• Termo de agua\n\nNo necesitas karategi.\n\nPara inscripción completa: foto del alumno, identificación (cédula/pasaporte/partida) y contacto de padres/tutores si es menor.';
+  'Para tu clase de prueba solo necesitas:\n• Ropa deportiva, pantalón sin cierres en el tobillo\n• T-shirt cómodo\n• Crocs o sandalias\n• Toalla\n• Termo de agua\n\nNo se permite short.\n\nPara inscripción completa: foto del alumno, identificación (cédula/pasaporte/partida) y contacto de padres/tutores si es menor.';
 
 function getProgramForDraft(draft: EnrollmentDraft): string {
   if (draft.tipo_alumno === 'Niño/a' && draft.edad === '5-7 años') return 'Pequeños Guerreros';
@@ -123,13 +124,12 @@ HORARIO_NEXT_FROM_COTIZACION['Volver'] = 'clase_prueba_from_cotizacion';
 export const flow: Record<string, FlowNode> = {
   welcome: {
     message: 'Hola 👋, soy el asistente de Tosei Gusoku. ¿En qué puedo ayudarte hoy?',
-    quickReplies: ['Clase de prueba', 'Horarios', 'Precios & cotización', 'Qué necesito para empezar', 'Niños', 'Hablar con el Sensei'],
+    quickReplies: ['Clase de prueba', 'Horarios', 'Precios & cotización', 'Qué necesito para empezar', 'Hablar con el Sensei'],
     next: {
       'Clase de prueba': 'clase_prueba_confirm',
       Horarios: 'horarios',
       'Precios & cotización': 'precio_nombre',
       'Qué necesito para empezar': 'que_necesito',
-      Niños: 'ninos_edad',
       'Hablar con el Sensei': 'hablar_sensei',
     },
   },
@@ -553,8 +553,9 @@ export const flow: Record<string, FlowNode> = {
     store: (draft, option) => {
       if (option === 'Volver') return draft;
       let precio = 'RD$0';
-      if (option.includes('Ambos')) precio = 'RD$5,400';
-      else if (option.includes('manos') || option.includes('pies')) precio = 'RD$2,500';
+      if (option.includes('Ambas')) precio = 'RD$5,400';
+      else if (option.includes('manos')) precio = 'RD$2,500';
+      else if (option.includes('pies')) precio = 'RD$2,900';
       return { ...draft, protecciones: option, protecciones_precio: precio };
     },
     next: {
@@ -668,6 +669,10 @@ export const flow: Record<string, FlowNode> = {
   ubicacion: {
     message:
       'Nos encontramos en Plaza Lulie, 3era planta, esquina Av. 27 de Febrero con C. Carmen Mendoza, Ensanche Quisqueya, Los Millones, Santo Domingo.\n\nHorario de atención: Lunes a Viernes 2:30 PM - 7:30 PM.',
+    link: {
+      label: '📍 Ver ubicación en Google Maps',
+      url: 'https://www.google.com/maps/place/Karate+Do+Tosei+Gusoku+Dojo+Shito+Ryu+Inoue+Ha/@18.4574589,-69.9520022,825m/data=!3m2!1e3!4b1!4m6!3m5!1s0x8ea563c15898befd:0x386c75f4f249964f!8m2!3d18.4574538!4d-69.9494273!16s%2Fg%2F11rckyjhp1?entry=ttu&g_ep=EgoyMDI2MDgxNy4wIKXMDSoASAFQAw%3D%3D',
+    },
     quickReplies: ['Reservar clase de prueba', 'Horarios', 'Volver al inicio'],
     next: {
       'Reservar clase de prueba': 'clase_prueba_confirm',

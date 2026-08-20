@@ -29,6 +29,10 @@ function isMultiRowMensualidad(descuento: string): boolean {
   return descuento === 'Padre + hijo 5-7' || descuento === 'Hermanos mixtos (5-7 + 8+)';
 }
 
+function isAmbasProtecciones(draft: EnrollmentDraft): boolean {
+  return draft.protecciones.includes('Ambas');
+}
+
 function getInitialCounts(draft: EnrollmentDraft, hasDiscount: boolean): CountState {
   if (!hasDiscount) {
     return {
@@ -59,7 +63,27 @@ function getMaxCounts(draft: EnrollmentDraft, hasDiscount: boolean): CountState 
   }
 }
 
-function getDiscountedBreakdown(draft: EnrollmentDraft, counts: CountState): BreakdownRow[] | null {
+function pushProteccionesRows(
+  rows: BreakdownRow[],
+  draft: EnrollmentDraft,
+  counts: CountState,
+  ambasCounts: { guantines: number; espinilleras: number } | undefined,
+  protNum: number,
+) {
+  if (counts.protecciones <= 0) return;
+  if (draft.protecciones.includes('Ambas') && ambasCounts) {
+    if (ambasCounts.guantines > 0) {
+      rows.push({ label: 'Guantines manos', regular: 2500 * ambasCounts.guantines, discounted: 2500 * ambasCounts.guantines, units: ambasCounts.guantines, category: 'protecciones' });
+    }
+    if (ambasCounts.espinilleras > 0) {
+      rows.push({ label: 'Espinilleras pies', regular: 2900 * ambasCounts.espinilleras, discounted: 2900 * ambasCounts.espinilleras, units: ambasCounts.espinilleras, category: 'protecciones' });
+    }
+  } else {
+    rows.push({ label: 'Protecciones', regular: protNum * counts.protecciones, discounted: protNum * counts.protecciones, units: counts.protecciones, category: 'protecciones' });
+  }
+}
+
+function getDiscountedBreakdown(draft: EnrollmentDraft, counts: CountState, ambasCounts?: { guantines: number; espinilleras: number }): BreakdownRow[] | null {
   const descuento = draft.descuento_seleccionado;
   const protNum = parsePrice(draft.protecciones_precio);
   const sello = 800;
@@ -78,9 +102,7 @@ function getDiscountedBreakdown(draft: EnrollmentDraft, counts: CountState): Bre
         const inscDisc = m >= 2 ? inscripcionFull : inscripcionFull * m;
         rows.push({ label: 'Inscripción', regular: inscripcionFull * m, discounted: inscDisc, units: m, category: 'inscripcion' });
       }
-      if (counts.protecciones > 0) {
-        rows.push({ label: 'Protecciones', regular: protNum * counts.protecciones, discounted: protNum * counts.protecciones, units: counts.protecciones, category: 'protecciones' });
-      }
+      pushProteccionesRows(rows, draft, counts, ambasCounts, protNum);
       if (m > 0) {
         const carnet = getCarnetTotal(m);
         rows.push({ label: 'Carnet Federación', regular: carnet.regular, discounted: carnet.discounted, units: m, category: 'carnet' });
@@ -97,15 +119,13 @@ function getDiscountedBreakdown(draft: EnrollmentDraft, counts: CountState): Bre
       const rows: BreakdownRow[] = [];
       if (m > 0) {
         const unitPrice = m >= 2 ? 3200 : 3500;
-        rows.push({ label: 'Plan mensual (3 hermanos 5-7)', regular: 3500 * m, discounted: unitPrice * m, units: m, category: 'mensualidad' });
+        rows.push({ label: 'Plan mensual (3 hermanos 5-7)', regular: 3500 * m, discounted: m >= 3 ? 7500 : unitPrice * m, units: m, category: 'mensualidad' });
       }
       if (m > 0) {
         const inscDisc = m >= 3 ? inscripcionFull * 1.5 : m === 2 ? inscripcionFull : inscripcionFull * m;
         rows.push({ label: 'Inscripción', regular: inscripcionFull * m, discounted: inscDisc, units: m, category: 'inscripcion' });
       }
-      if (counts.protecciones > 0) {
-        rows.push({ label: 'Protecciones', regular: protNum * counts.protecciones, discounted: protNum * counts.protecciones, units: counts.protecciones, category: 'protecciones' });
-      }
+      pushProteccionesRows(rows, draft, counts, ambasCounts, protNum);
       if (m > 0) {
         const carnet = getCarnetTotal(m);
         rows.push({ label: 'Carnet Federación', regular: carnet.regular, discounted: carnet.discounted, units: m, category: 'carnet' });
@@ -128,9 +148,7 @@ function getDiscountedBreakdown(draft: EnrollmentDraft, counts: CountState): Bre
         const inscDisc = m >= 2 ? inscripcionFull : inscripcionFull * m;
         rows.push({ label: 'Inscripción', regular: inscripcionFull * m, discounted: inscDisc, units: m, category: 'inscripcion' });
       }
-      if (counts.protecciones > 0) {
-        rows.push({ label: 'Protecciones', regular: protNum * counts.protecciones, discounted: protNum * counts.protecciones, units: counts.protecciones, category: 'protecciones' });
-      }
+      pushProteccionesRows(rows, draft, counts, ambasCounts, protNum);
       if (m > 0) {
         const carnet = getCarnetTotal(m);
         rows.push({ label: 'Carnet Federación', regular: carnet.regular, discounted: carnet.discounted, units: m, category: 'carnet' });
@@ -147,15 +165,13 @@ function getDiscountedBreakdown(draft: EnrollmentDraft, counts: CountState): Bre
       const rows: BreakdownRow[] = [];
       if (m > 0) {
         const unitPrice = m >= 2 ? 3000 : 3300;
-        rows.push({ label: 'Plan mensual (3 hermanos 8+)', regular: 3300 * m, discounted: unitPrice * m, units: m, category: 'mensualidad' });
+        rows.push({ label: 'Plan mensual (3 hermanos 8+)', regular: 3300 * m, discounted: m >= 3 ? 7500 : unitPrice * m, units: m, category: 'mensualidad' });
       }
       if (m > 0) {
         const inscDisc = m >= 3 ? inscripcionFull * 1.5 : m === 2 ? inscripcionFull : inscripcionFull * m;
         rows.push({ label: 'Inscripción', regular: inscripcionFull * m, discounted: inscDisc, units: m, category: 'inscripcion' });
       }
-      if (counts.protecciones > 0) {
-        rows.push({ label: 'Protecciones', regular: protNum * counts.protecciones, discounted: protNum * counts.protecciones, units: counts.protecciones, category: 'protecciones' });
-      }
+      pushProteccionesRows(rows, draft, counts, ambasCounts, protNum);
       if (m > 0) {
         const carnet = getCarnetTotal(m);
         rows.push({ label: 'Carnet Federación', regular: carnet.regular, discounted: carnet.discounted, units: m, category: 'carnet' });
@@ -173,9 +189,7 @@ function getDiscountedBreakdown(draft: EnrollmentDraft, counts: CountState): Bre
       rows.push({ label: 'Plan mensual (padre 8+)', regular: 3300, discounted: 3000, units: 1, category: 'mensualidad' });
       rows.push({ label: 'Plan mensual (hijo 5-7)', regular: 3500, discounted: 3200, units: 1, category: 'mensualidad' });
       rows.push({ label: 'Inscripción', regular: inscripcionFull * 2, discounted: inscripcionFull, units: 2, category: 'inscripcion' });
-      if (counts.protecciones > 0) {
-        rows.push({ label: 'Protecciones', regular: protNum * counts.protecciones, discounted: protNum * counts.protecciones, units: counts.protecciones, category: 'protecciones' });
-      }
+      pushProteccionesRows(rows, draft, counts, ambasCounts, protNum);
       const carnet = getCarnetTotal(2);
       rows.push({ label: 'Carnet Federación', regular: carnet.regular, discounted: carnet.discounted, units: 2, category: 'carnet' });
       rows.push({ label: 'Sello Uniforme', regular: sello * 2, discounted: sello * 2, units: 2, category: 'sello' });
@@ -189,9 +203,7 @@ function getDiscountedBreakdown(draft: EnrollmentDraft, counts: CountState): Bre
       rows.push({ label: 'Plan mensual (hermano 5-7)', regular: 3500, discounted: 3200, units: 1, category: 'mensualidad' });
       rows.push({ label: 'Plan mensual (hermano 8+)', regular: 3300, discounted: 3000, units: 1, category: 'mensualidad' });
       rows.push({ label: 'Inscripción', regular: inscripcionFull * 2, discounted: inscripcionFull, units: 2, category: 'inscripcion' });
-      if (counts.protecciones > 0) {
-        rows.push({ label: 'Protecciones', regular: protNum * counts.protecciones, discounted: protNum * counts.protecciones, units: counts.protecciones, category: 'protecciones' });
-      }
+      pushProteccionesRows(rows, draft, counts, ambasCounts, protNum);
       const carnet = getCarnetTotal(2);
       rows.push({ label: 'Carnet Federación', regular: carnet.regular, discounted: carnet.discounted, units: 2, category: 'carnet' });
       rows.push({ label: 'Sello Uniforme', regular: sello * 2, discounted: sello * 2, units: 2, category: 'sello' });
@@ -205,7 +217,7 @@ function getDiscountedBreakdown(draft: EnrollmentDraft, counts: CountState): Bre
   }
 }
 
-function getRegularBreakdown(draft: EnrollmentDraft, counts: CountState): BreakdownRow[] {
+function getRegularBreakdown(draft: EnrollmentDraft, counts: CountState, ambasCounts?: { guantines: number; espinilleras: number }): BreakdownRow[] {
   const planNum = parsePrice(draft.plan_precio);
   const protNum = parsePrice(draft.protecciones_precio);
   const rows: BreakdownRow[] = [];
@@ -214,7 +226,14 @@ function getRegularBreakdown(draft: EnrollmentDraft, counts: CountState): Breakd
     rows.push({ label: draft.plan_seleccionado, regular: planNum * counts.mensualidad, discounted: planNum * counts.mensualidad, units: counts.mensualidad, category: 'mensualidad' });
   }
   if (counts.protecciones > 0) {
-    rows.push({ label: draft.protecciones, regular: protNum * counts.protecciones, discounted: protNum * counts.protecciones, units: counts.protecciones, category: 'protecciones' });
+    if (draft.protecciones.includes('Ambas') && ambasCounts) {
+      const g = ambasCounts.guantines;
+      const e = ambasCounts.espinilleras;
+      if (g > 0) rows.push({ label: 'Guantines manos', regular: 2500 * g, discounted: 2500 * g, units: g, category: 'protecciones' });
+      if (e > 0) rows.push({ label: 'Espinilleras pies', regular: 2900 * e, discounted: 2900 * e, units: e, category: 'protecciones' });
+    } else {
+      rows.push({ label: draft.protecciones, regular: protNum * counts.protecciones, discounted: protNum * counts.protecciones, units: counts.protecciones, category: 'protecciones' });
+    }
   }
   if (counts.mensualidad > 0) {
     rows.push({ label: 'Carnet Federación', regular: 1200 * counts.mensualidad, discounted: 1200 * counts.mensualidad, units: counts.mensualidad, category: 'carnet' });
@@ -264,10 +283,13 @@ export default function PricingSummaryCard({ draft }: { draft: EnrollmentDraft }
   const maxCounts = getMaxCounts(draft, hasDiscount);
   const hasProtecciones = draft.protecciones_precio && draft.protecciones_precio !== 'RD$0';
   const multiRow = hasDiscount && isMultiRowMensualidad(descuento);
+  const isAmbas = isAmbasProtecciones(draft);
 
   const [mensualidadCount, setMensualidadCount] = useState(initialCounts.mensualidad);
   const [uniformeCount, setUniformeCount] = useState(initialCounts.uniforme);
   const [proteccionCount, setProteccionCount] = useState(initialCounts.protecciones);
+  const [guantinesCount, setGuantinesCount] = useState(1);
+  const [espinillerasCount, setEspinillerasCount] = useState(1);
   const [hiddenMensualidades, setHiddenMensualidades] = useState<Set<string>>(new Set());
 
   const toggleMensualidad = (label: string) => {
@@ -279,9 +301,11 @@ export default function PricingSummaryCard({ draft }: { draft: EnrollmentDraft }
     });
   };
 
+  const ambasCounts = isAmbas ? { guantines: guantinesCount, espinilleras: espinillerasCount } : undefined;
+
   let rows = hasDiscount
-    ? getDiscountedBreakdown(draft, { mensualidad: multiRow ? 2 : mensualidadCount, uniforme: uniformeCount, protecciones: proteccionCount })
-    : getRegularBreakdown(draft, { mensualidad: mensualidadCount, uniforme: uniformeCount, protecciones: proteccionCount });
+    ? getDiscountedBreakdown(draft, { mensualidad: multiRow ? 2 : mensualidadCount, uniforme: uniformeCount, protecciones: proteccionCount }, ambasCounts)
+    : getRegularBreakdown(draft, { mensualidad: mensualidadCount, uniforme: uniformeCount, protecciones: proteccionCount }, ambasCounts);
 
   if (multiRow && rows) {
     const visibleMensualidades = rows.filter((r) => r.category === 'mensualidad' && !hiddenMensualidades.has(r.label));
@@ -417,10 +441,18 @@ export default function PricingSummaryCard({ draft }: { draft: EnrollmentDraft }
               </>
             )}
             <Stepper label="Uniformes" count={uniformeCount} max={maxCounts.uniforme} onChange={setUniformeCount} />
-            {hasProtecciones && (
+            {hasProtecciones && !isAmbas && (
               <>
                 <div className="border-t border-white/5" />
                 <Stepper label="Protecciones" count={proteccionCount} max={maxCounts.protecciones} onChange={setProteccionCount} />
+              </>
+            )}
+            {isAmbas && (
+              <>
+                <div className="border-t border-white/5" />
+                <Stepper label="Guantines manos" count={guantinesCount} max={5} onChange={setGuantinesCount} />
+                <div className="border-t border-white/5" />
+                <Stepper label="Espinilleras pies" count={espinillerasCount} max={5} onChange={setEspinillerasCount} />
               </>
             )}
           </div>

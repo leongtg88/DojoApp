@@ -52,6 +52,16 @@ export default function AssistantPage() {
               {m.text && (
                 <MessageBubble role="assistant">{m.text}</MessageBubble>
               )}
+              {m.link && (
+                <a
+                  href={m.link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl border border-brand-accent/40 bg-brand-accent/10 px-4 py-2.5 text-sm font-semibold text-brand-accent transition hover:bg-brand-accent hover:text-black"
+                >
+                  {m.link.label}
+                </a>
+              )}
               {m.cards?.map((card, idx) =>
                 card.kind === 'schedule' ? (
                   <ScheduleCard
