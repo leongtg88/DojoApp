@@ -69,6 +69,19 @@ export interface FlowNode {
   link?: { label: string; url: string };
 }
 
+export const INPUT_FIELD: Partial<Record<FlowNodeId, keyof EnrollmentDraft>> = {
+  clase_prueba_nombre: 'nombre',
+  clase_prueba_whatsapp: 'whatsapp',
+  clase_prueba_email: 'email',
+  precio_nombre: 'nombre',
+  precio_telefono: 'whatsapp',
+  precio_email: 'email',
+  ninos_nombre: 'nombre',
+  ninos_tutor_contacto: 'whatsapp',
+  hablar_sensei_contacto: 'nombre',
+  hablar_sensei_whatsapp: 'whatsapp',
+};
+
 const KID_SCHEDULE_OPTIONS = [
   'Martes/Jueves 4:00 PM - 5:00 PM',
   'Sábado 9:00 AM - 10:00 AM',
@@ -251,7 +264,7 @@ export const flow: Record<string, FlowNode> = {
   clase_prueba_resumen: {
     message: 'Revisa tu solicitud antes de enviar. Puedes confirmar internamente, enviar por WhatsApp o editar cualquier dato.',
     summary: true,
-    quickReplies: ['Enviar por WhatsApp ahora', 'Editar', 'Volver'],
+    quickReplies: ['Enviar por WhatsApp ahora', 'Editar'],
     next: {
       'Confirmar y enviar (Interno)': 'confirmacion_interna',
       'Enviar por WhatsApp ahora': 'whatsapp_send',
@@ -325,11 +338,11 @@ export const flow: Record<string, FlowNode> = {
         store: (draft) => ({ ...draft, programa: 'Jóvenes y Adultos' }),
       },
     ],
-    quickReplies: ['Reservar clase de prueba', 'Hablar con el Sensei', 'Volver al inicio'],
+    quickReplies: ['Reservar clase de prueba', 'Hablar con el Sensei'],
     next: {
       'Reservar clase de prueba': 'clase_prueba_confirm',
       'Hablar con el Sensei': 'hablar_sensei',
-      'Volver al inicio': 'welcome',
+      
     },
   },
 
@@ -651,7 +664,7 @@ export const flow: Record<string, FlowNode> = {
       'Clase de prueba': 'que_necesito_clase_prueba',
       Horarios: 'horarios',
       'Ubicación': 'ubicacion',
-      'Volver al inicio': 'welcome',
+      
     },
   },
 
@@ -751,17 +764,16 @@ export const flow: Record<string, FlowNode> = {
   },
 
   hablar_sensei: {
-    message: 'Claro, ¿prefieres que el Sensei te contacte o abrir WhatsApp ahora?',
-    quickReplies: ['Solicitar llamada/WhatsApp', 'Abrir chat WhatsApp ahora', 'Volver al inicio'],
+    message: 'Claro, si quieres hablar con el Sensei envía este mensaje para abrir WhatsApp ahora',
+    quickReplies: [ 'Abrir chat WhatsApp ahora', 'Volver al inicio'],
     next: {
-      'Solicitar llamada/WhatsApp': 'hablar_sensei_contacto',
       'Abrir chat WhatsApp ahora': 'whatsapp_direct',
       'Volver al inicio': 'welcome',
     },
   },
 
   hablar_sensei_contacto: {
-    message: 'Déjame tu nombre para que el Sensei te contacte:',
+    message: 'Déjame tu nombre para que el Sensei sepa quien eres:',
     input: true,
     validation: 'name',
     placeholder: 'Tu nombre',
@@ -779,7 +791,7 @@ export const flow: Record<string, FlowNode> = {
   },
 
   hablar_sensei_confirmacion: {
-    message: 'Listo, el Sensei te contactará en breve. Si es urgente, abre WhatsApp directo.',
+    message: 'Listo, abre el WhatsApp para enviar tu mensaje al Sensei. Él te responderá pronto.',
     effect: { post: 'internal' },
     quickReplies: ['Abrir WhatsApp', 'Volver al inicio'],
     next: {

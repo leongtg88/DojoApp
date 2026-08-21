@@ -62,7 +62,7 @@ type FormData = {
   aceptoPoliticas: boolean;
 };
 
-type FormErrors = Partial<Record<keyof FormData, string>> & {
+type FormErrors = Partial<{ [K in Exclude<keyof FormData, 'hijos'>]: string }> & {
   hijos?: Array<Record<string, string>>;
 };
 
@@ -519,10 +519,10 @@ const ToseiGusokuForm = () => {
 
   const validateStep3 = () => {
     const newErrors: FormErrors = {};
-    const camposAceptacion: (keyof FormData)[] = [
+    const camposAceptacion = [
       'aceptoPago', 'aceptoMultas', 'aceptoPagosParciales',
       'aceptoPagoIninterrumpido', 'aceptoDerechoAdmision', 'aceptoPoliticas'
-    ];
+    ] as const;
     camposAceptacion.forEach(campo => {
       if (!formData[campo]) newErrors[campo] = 'Debes aceptar para continuar';
     });
@@ -928,7 +928,7 @@ const ToseiGusokuForm = () => {
               <input type="checkbox" name={name} checked={!!formData[name as keyof FormData]} onChange={handleChange} className="mt-1 mr-3 h-5 w-5 text-red-600 focus:ring-red-500 rounded" />
               <span className="text-stone-500 font-medium">{label}</span>
             </label>
-            {errors[name as keyof FormData] && <p className="text-red-500 text-xs mt-2 ml-8">{errors[name as keyof FormData]}</p>}
+            {errors[name as Exclude<keyof FormData, 'hijos'>] && <p className="text-red-500 text-xs mt-2 ml-8">{errors[name as Exclude<keyof FormData, 'hijos'>]}</p>}
           </div>
         ))}
       </div>

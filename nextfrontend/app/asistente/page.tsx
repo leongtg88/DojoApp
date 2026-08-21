@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { MessageCircle } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowLeft, MessageCircle, Trash2 } from 'lucide-react';
 import useEnrollmentChat from '@/hooks/useEnrollmentChat';
 import MessageBubble from '@/components/assistant/MessageBubble';
 import QuickReplies from '@/components/assistant/QuickReplies';
@@ -10,12 +10,14 @@ import SummaryCard from '@/components/assistant/SummaryCard';
 import PricingSummaryCard from '@/components/assistant/PricingSummaryCard';
 import TextInputForm from '@/components/assistant/TextInputForm';
 import PriceCard from '@/components/assistant/PriceCard';
+import ClearChatModal from '@/components/assistant/ClearChatModal';
 import type { ScheduleCard as ScheduleCardData } from '@/lib/flow';
 import type { PriceCard as PriceCardData } from '@/lib/flow';
 
 export default function AssistantPage() {
   const chat = useEnrollmentChat();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [showClearModal, setShowClearModal] = useState(false);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -26,6 +28,15 @@ export default function AssistantPage() {
     <div className="bg-asistent-bgdark min-h-[calc(100dvh-5rem)]  font-sans text-asistent-bgsurface antialiased selection:bg-asistent-bgpurple selection:text-white md:-mb-20">
       <header className="sticky top-20 z-10 border-b border-white/10  px-4 py-4 backdrop-blur">
         <div className="mx-auto flex w-full max-w-2xl items-center gap-3">
+          <button
+            type="button"
+            onClick={chat.goBack}
+            disabled={!chat.canGoBack}
+            aria-label="Volver"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 text-gray-300 transition hover:bg-white/10 hover:text-white disabled:pointer-events-none disabled:opacity-30 cursor-pointer disabled:cursor-default"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-accent text-black">
             <MessageCircle className="h-5 w-5" />
           </div>
@@ -36,6 +47,16 @@ export default function AssistantPage() {
               Sensei online · Lun-Vie 2:30 PM - 7:30 PM
             </p>
           </div>
+          <button
+            type="button"
+            onClick={() => setShowClearModal(true)}
+            disabled={!chat.canGoBack}
+            aria-label="Limpiar conversación"
+            title="Limpiar conversación"
+            className="ml-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 text-gray-300 transition hover:bg-white/10 hover:text-white disabled:pointer-events-none disabled:opacity-30 cursor-pointer disabled:cursor-default"
+          >
+            <Trash2 className="h-5 w-5" />
+          </button>
         </div>
       </header>
 
@@ -91,12 +112,23 @@ export default function AssistantPage() {
         {chat.quickReplies.length > 0 && <QuickReplies options={chat.quickReplies} onSelect={chat.selectOption} />}
         {chat.input && (
           <TextInputForm
+            key={chat.currentNodeId}
+            defaultValue={chat.inputValue}
             placeholder={chat.placeholder}
             onSubmit={chat.submitText}
             validationError={chat.validationError ?? undefined}
           />
         )}
       </div>
+
+      <ClearChatModal
+        isOpen={showClearModal}
+        onCancel={() => setShowClearModal(false)}
+        onConfirm={() => {
+          chat.reset();
+          setShowClearModal(false);
+        }}
+      />
     </div>
   );
 }

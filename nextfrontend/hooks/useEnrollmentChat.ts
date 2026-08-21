@@ -3,6 +3,7 @@
 import { useCallback, useReducer } from 'react';
 import {
   flow,
+  INPUT_FIELD,
   type EnrollmentDraft,
   type FlowCard,
   type FlowEffect,
@@ -46,6 +47,13 @@ export interface ChatMessage {
   link?: { label: string; url: string };
 }
 
+interface HistoryEntry {
+  nodeId: FlowNodeId;
+  draft: EnrollmentDraft;
+}
+
+const MAX_HISTORY = 50;
+
 interface ChatState {
   currentNodeId: FlowNodeId;
   messages: ChatMessage[];
@@ -55,6 +63,7 @@ interface ChatState {
   placeholder: string;
   validation: ValidationKind | null;
   validationError: string | null;
+  history: HistoryEntry[];
 }
 
 type Action =
@@ -62,6 +71,7 @@ type Action =
   | { type: 'SUBMIT'; value: string }
   | { type: 'CARD'; card: ScheduleCard }
   | { type: 'VALIDATION_ERROR' }
+  | { type: 'BACK' }
   | { type: 'RESET' };
 
 const ERROR_MESSAGES: Record<ValidationKind, string> = {
@@ -118,7 +128,10 @@ function buildAssistantMessage(target: FlowNode, draft: EnrollmentDraft, nodeId:
 
 function transition(state: ChatState, userText: string, targetId: FlowNodeId, draft: EnrollmentDraft): ChatState {
   const target = flow[targetId];
-  const nextDraft = targetId === 'welcome' ? { ...EMPTY_DRAFT } : draft;
+  const nextDraft =
+    targetId === 'welcome'
+      ? { ...EMPTY_DRAFT, nombre: draft.nombre, whatsapp: draft.whatsapp, email: draft.email }
+      : draft;
   const lastAssistant = [...state.messages].reverse().find((m) => m.role === 'assistant');
 
   const messages: ChatMessage[] = [...state.messages, { id: nextId('user'), role: 'user', text: userText }];
@@ -135,6 +148,7 @@ function transition(state: ChatState, userText: string, targetId: FlowNodeId, dr
     placeholder: target.placeholder ?? '',
     validation: target.validation ?? null,
     validationError: null,
+    history: [...state.history, { nodeId: state.currentNodeId, draft: state.draft }].slice(-MAX_HISTORY),
   };
 }
 
@@ -144,6 +158,28 @@ function reducer(state: ChatState, action: Action): ChatState {
       return init();
     case 'VALIDATION_ERROR':
       return { ...state, validationError: ERROR_MESSAGES[state.validation ?? 'name'] };
+    case 'BACK': {
+      if (!state.history.length) return state;
+      const history = [...state.history];
+      const prev = history.pop()!;
+      const node = flow[prev.nodeId];
+      const lastAssistant = [...state.messages].reverse().find((m) => m.role === 'assistant');
+      const messages: ChatMessage[] = [...state.messages, { id: nextId('user'), role: 'user', text: 'Volver' }];
+      if (lastAssistant?.nodeId !== prev.nodeId) {
+        messages.push(buildAssistantMessage(node, prev.draft, prev.nodeId));
+      }
+      return {
+        currentNodeId: prev.nodeId,
+        messages,
+        draft: prev.draft,
+        quickReplies: getNodeQuickReplies(node, prev.draft),
+        input: !!node.input,
+        placeholder: node.placeholder ?? '',
+        validation: node.validation ?? null,
+        validationError: null,
+        history,
+      };
+    }
     case 'SELECT': {
       const node = flow[state.currentNodeId];
       const targetId = getTargetId(node, action.option, state.draft);
@@ -176,6 +212,7 @@ function init(): ChatState {
     placeholder: '',
     validation: null,
     validationError: null,
+    history: [],
   };
 }
 
@@ -247,13 +284,17 @@ export default function useEnrollmentChat() {
   const selectOption = useCallback(
     (option: string) => {
       const node = flow[state.currentNodeId];
+      if (option === 'Volver' && state.history.length > 0) {
+        dispatch({ type: 'BACK' });
+        return;
+      }
       const targetId = getTargetId(node, option, state.draft);
       const target = flow[targetId];
       const draft = node.store ? node.store(state.draft, option) : state.draft;
       if (target?.effect) applyEffects(target.effect, draft);
       dispatch({ type: 'SELECT', option });
     },
-    [state.currentNodeId, state.draft, applyEffects],
+    [state.currentNodeId, state.draft, state.history.length, applyEffects],
   );
 
   const submitText = useCallback(
@@ -288,6 +329,10 @@ export default function useEnrollmentChat() {
   );
 
   const reset = useCallback(() => dispatch({ type: 'RESET' }), []);
+  const goBack = useCallback(() => dispatch({ type: 'BACK' }), []);
 
-  return { ...state, selectOption, submitText, selectCard, reset };
+  const inputField = INPUT_FIELD[state.currentNodeId];
+  const inputValue = inputField ? String(state.draft[inputField] ?? '') : '';
+
+  return { ...state, selectOption, submitText, selectCard, reset, goBack, canGoBack: state.history.length > 0, inputValue };
 }

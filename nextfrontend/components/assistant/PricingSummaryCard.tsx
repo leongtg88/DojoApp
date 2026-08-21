@@ -277,7 +277,7 @@ function Stepper({ label, count, max, onChange }: { label: string; count: number
 const BTN_CLS = 'flex h-6 w-6 items-center justify-center rounded border border-white/10 bg-white/5 text-xs font-medium text-gray-300 transition hover:bg-white/10 disabled:opacity-30';
 
 export default function PricingSummaryCard({ draft }: { draft: EnrollmentDraft }) {
-  const hasDiscount = draft.descuento_seleccionado && draft.descuento_seleccionado !== 'Ninguno';
+  const hasDiscount = Boolean(draft.descuento_seleccionado && draft.descuento_seleccionado !== 'Ninguno');
   const descuento = draft.descuento_seleccionado ?? '';
   const initialCounts = getInitialCounts(draft, hasDiscount);
   const maxCounts = getMaxCounts(draft, hasDiscount);

@@ -6,12 +6,14 @@ export default function TextInputForm({
   placeholder,
   onSubmit,
   validationError,
+  defaultValue,
 }: {
   placeholder: string;
   onSubmit: (value: string) => boolean;
   validationError?: string;
+  defaultValue?: string;
 }) {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(defaultValue ?? '');
 
   return (
     <form
