@@ -351,7 +351,7 @@ export default function PricingSummaryCard({ draft }: { draft: EnrollmentDraft }
     : [];
 
   return (
-    <div className="max-w-[85%] rounded-2xl border border-white/10 bg-zinc-800 p-4 text-sm shadow-sm">
+    <div className="max-w-[100%]  md:max-w-[85%] rounded-2xl border border-white/10 bg-zinc-800 p-3 text-sm shadow-sm">
       <h4 className="font-semibold text-white">Resumen de tu cotización</h4>
 
       <div className="mt-3 space-y-3 text-gray-300">
@@ -377,8 +377,9 @@ export default function PricingSummaryCard({ draft }: { draft: EnrollmentDraft }
             {hasDiscount ? 'Desglose familiar' : 'Desglose'}
           </p>
 
-          <div className="overflow-hidden rounded-lg border border-white/10">
-            <table className="w-full text-xs">
+          <div className="relative">
+            <div className="overflow-x-auto rounded-lg border border-white/10 pr-4">
+              <table className="w-full min-w-[420px] text-xs">
               <thead>
                 <tr className="border-b border-white/10 bg-white/5 text-left text-gray-400">
                   <th className="px-2 py-1.5 font-medium">Concepto</th>
@@ -412,7 +413,10 @@ export default function PricingSummaryCard({ draft }: { draft: EnrollmentDraft }
                 ))}
               </tbody>
             </table>
+            </div>
+            <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-4 rounded-r-lg bg-gradient-to-l from-zinc-800 to-transparent sm:hidden" />
           </div>
+          <p className="mt-1 text-[10px] text-gray-500 sm:hidden">Desliza para ver más →</p>
         </section>
 
         <section>
