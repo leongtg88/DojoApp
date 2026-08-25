@@ -27,15 +27,46 @@ export function buildWhatsAppLink(data: WhatsAppPayload): string {
   return buildWhatsAppTextLink(text);
 }
 
+export function buildTrialClassLink(data: {
+  parentName: string;
+  name: string;
+  email: string;
+  phone: string;
+  programName: string;
+  trialDay: string;
+  howFound?: string;
+}): string {
+  const lines = [
+    'Hola Sensei, quiero reservar mi clase de prueba gratuita en Tosei Gusoku ',
+    '',
+    ' Participante:',
+    `- Nombre: ${data.name}`,
+  ];
+
+  if (data.parentName) lines.push(`- Padre / Madre / Representante: ${data.parentName}`);
+
+  lines.push(
+    '',
+    ` Programa: ${data.programName}`,
+    ` Día sugerido para demo: ${data.trialDay}`,
+    `Email: ${data.email}`,
+    `WhatsApp: ${data.phone}`,
+  );
+
+  if (data.howFound) lines.push(` ¿Cómo nos conociste?: ${data.howFound}`);
+
+  return buildWhatsAppTextLink(lines.join('\n'));
+}
+
 export function buildCotizacionLink(data: CotizacionPayload): string {
   return buildWhatsAppTextLink(buildCotizacionText(data));
 }
 
 export function buildCotizacionText(data: CotizacionPayload): string {
   const lines = [
-    'Hola Sensei, quiero una cotización en Tosei Gusoku 🥋',
+    'Hola Sensei, quiero una cotización en Tosei Gusoku ',
     '',
-    '👤 Datos:',
+    ' Datos:',
     `- Nombre: ${data.nombre}`,
     `- WhatsApp: ${data.whatsapp}`,
   ];
@@ -44,30 +75,30 @@ export function buildCotizacionText(data: CotizacionPayload): string {
 
   lines.push(
     '',
-    `🥋 Plan: ${data.plan_seleccionado} — ${data.plan_precio}`,
+    ` Plan: ${data.plan_seleccionado} — ${data.plan_precio}`,
   );
 
   if (data.protecciones.includes('Ambas')) {
     lines.push(
       '',
-      '🥊 Protecciones:',
+      ' Protecciones:',
       '  • Guantines manos — RD$2,500',
       '  • Espinilleras pies — RD$2,900',
     );
   } else {
     lines.push(
       '',
-      `🥊 Protecciones: ${data.protecciones} — ${data.protecciones_precio}`,
+      ` Protecciones: ${data.protecciones} — ${data.protecciones_precio}`,
     );
   }
 
   if (data.descuento_seleccionado && data.descuento_seleccionado !== 'Ninguno') {
-    lines.push('', `🏷️ Descuento solicitado: ${data.descuento_seleccionado}`);
+    lines.push('', ` Descuento solicitado: ${data.descuento_seleccionado}`);
   }
 
   lines.push(
     '',
-    '📋 Incluido:',
+    'Incluido:',
     '• Carnet Federación: RD$1,200',
     '• Sello Uniforme: RD$800',
     '• Uniforme Principiante: RD$3,000',
@@ -76,9 +107,9 @@ export function buildCotizacionText(data: CotizacionPayload): string {
   const planNum = Number(data.plan_precio.replace(/[^0-9]/g, ''));
   const protNum = Number(data.protecciones_precio.replace(/[^0-9]/g, ''));
   const total = planNum + protNum + 1200 + 800 + 3000;
-  lines.push('', `💰 Total estimado primer mes: RD$${total.toLocaleString('es-DO')}`);
+  lines.push('', `Total estimado primer mes: RD$${total.toLocaleString('es-DO')}`);
 
-  if (data.acuerdo_pago) lines.push('📝 Necesito acuerdo de pago');
+  if (data.acuerdo_pago) lines.push(' Necesito acuerdo de pago');
 
   return lines.join('\n');
 }

@@ -13,7 +13,7 @@ import Link from 'next/link';
 
 interface HomeViewProps {
   onOpenEnrollment: (program?: string) => void;
-  onOpenAssistant: () => void;
+  onOpenAssistant: (target?: string) => void;
 }
 
 export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeViewProps) {
@@ -173,7 +173,7 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
                   Inscribe a dos miembros de la familia y obtén un <span className="text-gray-700 font-bold">2 x 1 en la inscripción y/u otras condiciones especiales</span> . Queremos que el camino del cinturón negro sea un recorrido conjunto.
                 </p>
               </div>
-              <button onClick={() => onOpenEnrollment('kid')} className="hero-button glass-card-hover">
+              <button onClick={() => onOpenAssistant('precio_nombre')} className="hero-button glass-card-hover">
                 Consultar sobre Promociones Familiares <ArrowRight className="w-4 h-4" />
               </button>
             </div>

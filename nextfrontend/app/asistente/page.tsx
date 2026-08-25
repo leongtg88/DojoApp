@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { ArrowLeft, MessageCircle, Trash2 } from 'lucide-react';
 import useEnrollmentChat from '@/hooks/useEnrollmentChat';
 import MessageBubble from '@/components/assistant/MessageBubble';
@@ -11,11 +12,15 @@ import PricingSummaryCard from '@/components/assistant/PricingSummaryCard';
 import TextInputForm from '@/components/assistant/TextInputForm';
 import PriceCard from '@/components/assistant/PriceCard';
 import ClearChatModal from '@/components/assistant/ClearChatModal';
-import type { ScheduleCard as ScheduleCardData } from '@/lib/flow';
-import type { PriceCard as PriceCardData } from '@/lib/flow';
+import { flow, type FlowNodeId, type ScheduleCard as ScheduleCardData, type PriceCard as PriceCardData } from '@/lib/flow';
 
-export default function AssistantPage() {
-  const chat = useEnrollmentChat();
+function AssistantChat() {
+  const searchParams = useSearchParams();
+  const startNode = useMemo<FlowNodeId | undefined>(() => {
+    const nodo = searchParams.get('nodo');
+    return nodo && nodo in flow ? (nodo as FlowNodeId) : undefined;
+  }, [searchParams]);
+  const chat = useEnrollmentChat(startNode);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showClearModal, setShowClearModal] = useState(false);
 
@@ -129,5 +134,13 @@ export default function AssistantPage() {
         }}
       />
     </div>
+  );
+}
+
+export default function AssistantPage() {
+  return (
+    <Suspense fallback={null}>
+      <AssistantChat />
+    </Suspense>
   );
 }

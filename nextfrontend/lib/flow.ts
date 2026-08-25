@@ -137,13 +137,12 @@ HORARIO_NEXT_FROM_COTIZACION['Volver'] = 'clase_prueba_from_cotizacion';
 export const flow: Record<string, FlowNode> = {
   welcome: {
     message: 'Hola 👋, soy el asistente de Tosei Gusoku. ¿En qué puedo ayudarte hoy?',
-    quickReplies: ['Clase de prueba', 'Horarios', 'Precios & cotización', 'Qué necesito para empezar', 'Hablar con el Sensei'],
+    quickReplies: ['Clase de prueba', 'Horarios', 'Precios & cotización', 'Qué necesito para empezar'],
     next: {
       'Clase de prueba': 'clase_prueba_confirm',
       Horarios: 'horarios',
       'Precios & cotización': 'precio_nombre',
       'Qué necesito para empezar': 'que_necesito',
-      'Hablar con el Sensei': 'hablar_sensei',
     },
   },
 

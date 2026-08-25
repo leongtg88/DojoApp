@@ -56,6 +56,7 @@ const MAX_HISTORY = 50;
 
 interface ChatState {
   currentNodeId: FlowNodeId;
+  startNodeId?: FlowNodeId;
   messages: ChatMessage[];
   draft: EnrollmentDraft;
   quickReplies: string[];
@@ -155,7 +156,7 @@ function transition(state: ChatState, userText: string, targetId: FlowNodeId, dr
 function reducer(state: ChatState, action: Action): ChatState {
   switch (action.type) {
     case 'RESET':
-      return init();
+      return init(state.startNodeId);
     case 'VALIDATION_ERROR':
       return { ...state, validationError: ERROR_MESSAGES[state.validation ?? 'name'] };
     case 'BACK': {
@@ -201,15 +202,17 @@ function reducer(state: ChatState, action: Action): ChatState {
   }
 }
 
-function init(): ChatState {
-  const welcome = flow.welcome;
+function init(startNodeId?: FlowNodeId): ChatState {
+  const start: FlowNodeId = startNodeId && flow[startNodeId] ? startNodeId : 'welcome';
+  const node = flow[start];
   return {
-    currentNodeId: 'welcome',
-    messages: [{ id: nextId('assistant'), role: 'assistant', nodeId: 'welcome', text: welcome.message }],
+    currentNodeId: start,
+    startNodeId: start === 'welcome' ? undefined : start,
+    messages: [buildAssistantMessage(node, { ...EMPTY_DRAFT }, start)],
     draft: { ...EMPTY_DRAFT },
-    quickReplies: welcome.quickReplies ?? [],
-    input: false,
-    placeholder: '',
+    quickReplies: getNodeQuickReplies(node, { ...EMPTY_DRAFT }),
+    input: !!node.input,
+    placeholder: node.placeholder ?? '',
     validation: null,
     validationError: null,
     history: [],
@@ -263,8 +266,8 @@ function buildWaUrl(kind: WaTextKind, draft: EnrollmentDraft): string {
   }
 }
 
-export default function useEnrollmentChat() {
-  const [state, dispatch] = useReducer(reducer, undefined, init);
+export default function useEnrollmentChat(startNodeId?: FlowNodeId) {
+  const [state, dispatch] = useReducer(reducer, startNodeId, init);
 
   const applyEffects = useCallback((effect: FlowEffect | undefined, draft: EnrollmentDraft) => {
     if (!effect) return;

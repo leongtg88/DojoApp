@@ -293,17 +293,13 @@ export default function AboutView({ onOpenEnrollment }: AboutViewProps) {
       {/* CTA Final */}
       <section className="py-20 bg-white text-center border-t border-white/5">
         <div className="max-w-4xl mx-auto px-4 space-y-6">
+                    <img src="/assets/LogoSolo.svg" alt="Tosei Gusoku Logo" className="w-28 h-28 mx-auto drop-shadow-lg" style={{ animation: "color-change 10s infinite linear" }} />
           <h2 className="text-3xl sm:text-5xl font-extrabold font-display uppercase tracking-tight text-gray-700">Descubre tu fuerza hoy mismo</h2>
           <p className="text-xs sm:text-sm text-gray-700/70 max-w-xl mx-auto font-sans leading-relaxed">
             Te invitamos a ver y participar en una clase presencial dirigida por el Sensei León.
           </p>
-          <div className="pt-4 flex flex-col sm:flex-row justify-center gap-4">
-            <button onClick={() => onOpenEnrollment('adult')} className="bg-brand-accent hover:bg-brand-accent-hover text-black font-extrabold px-8 py-4 rounded-xl text-xs transition-all belt-glow font-display uppercase cursor-pointer">
-              RESERVAR CLASE DEMO GRATIS
-            </button>
-            <Link href="/" className="bg-white/5 hover:bg-white/10 text-gray-700 font-semibold px-8 py-4 rounded-xl text-xs border border-white/10 transition-colors uppercase font-display cursor-pointer">
-              Regresar a la página principal
-            </Link>
+         <div className="pt-4">
+            <button onClick={() => onOpenEnrollment('adult')} className="hero-button glass-card-hover">RESERVAR CLASE DEMO GRATUITA</button>
           </div>
         </div>
       </section>

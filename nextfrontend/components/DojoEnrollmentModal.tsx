@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, CheckCircle2, Sparkles, Clock, MapPin, ShieldCheck, ChevronRight, AlertCircle } from 'lucide-react';
+import { buildTrialClassLink } from '@/lib/whatsapp';
 
 interface DojoEnrollmentModalProps {
   isOpen: boolean;
@@ -12,7 +13,6 @@ interface DojoEnrollmentModalProps {
 
 export default function DojoEnrollmentModal({ isOpen, onClose, preSelectedProgram = 'adult' }: DojoEnrollmentModalProps) {
   const [formData, setFormData] = useState({ parentName: '', name: '', email: '', phone: '', program: preSelectedProgram, trialDay: 'Lunes', message: '', acceptTerms: true });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
 
@@ -29,8 +29,20 @@ export default function DojoEnrollmentModal({ isOpen, onClose, preSelectedProgra
     if (!formData.name.trim()) { setError('Por favor indica el nombre completo del participante.'); return; }
     if (!formData.email.trim() || !formData.email.includes('@')) { setError('Por favor provee un correo electrónico válido.'); return; }
     if (!formData.phone.trim()) { setError('Por favor provee un número de contacto.'); return; }
-    setIsSubmitting(true);
-    setTimeout(() => { setIsSubmitting(false); setIsSuccess(true); }, 1500);
+    const programName = programs.find(p => p.id === formData.program)?.name ?? formData.program;
+    window.open(
+      buildTrialClassLink({
+        parentName: formData.parentName.trim(),
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        programName,
+        trialDay: formData.trialDay,
+        howFound: formData.message.trim() || undefined,
+      }),
+      '_blank',
+    );
+    setIsSuccess(true);
   };
 
   const selectedProgramDetails = programs.find(p => p.id === formData.program);
@@ -116,12 +128,8 @@ export default function DojoEnrollmentModal({ isOpen, onClose, preSelectedProgra
                   <label htmlFor="termsAccept" className="text-[11px] text-gray-700/60 cursor-pointer select-none">Acepto recibir recordatorios de mi clase muestra por WhatsApp / Correo.</label>
                 </div>
 
-                <button type="submit" disabled={isSubmitting} className="w-full bg-brand-accent hover:bg-brand-accent-hover text-gray-700 font-bold py-4 rounded-xl text-sm transition-all focus:outline-none cursor-pointer relative flex items-center justify-center gap-2">
-                  {isSubmitting ? (
-                    <><svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>Verificando Tatami libre...</>
-                  ) : (
-                    <>RESERVAR CLASE DE PRUEBA GRATIS<ChevronRight className="w-4 h-4" /></>
-                  )}
+                <button type="submit" className="w-full bg-brand-accent hover:bg-brand-accent-hover text-gray-700 font-bold py-4 rounded-xl text-sm transition-all focus:outline-none cursor-pointer relative flex items-center justify-center gap-2">
+                  RESERVAR CLASE DE PRUEBA GRATIS (WhatsApp)<ChevronRight className="w-4 h-4" />
                 </button>
               </form>
             ) : (
@@ -133,7 +141,7 @@ export default function DojoEnrollmentModal({ isOpen, onClose, preSelectedProgra
                   <h3 className="text-2xl font-bold font-display">¡Reserva de Clase Recibida!</h3>
                   <p className="text-sm text-gray-700/70">Hola <span className="text-brand-accent font-bold">{formData.name}</span>, hemos reservado un lugar de cortesía para ti.</p>
                 </div>
-                <div className="bg-[#141b29] border border-white/5 rounded-xl p-4 text-left space-y-3">
+                <div className="bg-white/5   border border-white/5 rounded-xl p-4 text-left space-y-3">
                   <div className="flex items-start gap-3">
                     <Clock className="w-5 h-5 text-brand-accent shrink-0 mt-0.5" />
                     <div><p className="font-bold text-xs">Fecha y Categoría Agendada</p><p className="text-xs text-gray-700/70">Próximo {formData.trialDay} en {selectedProgramDetails?.name}</p></div>
@@ -144,11 +152,11 @@ export default function DojoEnrollmentModal({ isOpen, onClose, preSelectedProgra
                   </div>
                   <div className="flex items-start gap-3">
                     <ShieldCheck className="w-5 h-5 text-brand-secondary shrink-0 mt-0.5" />
-                    <div><p className="font-bold text-xs">Recomendaciones del Dojo</p><p className="text-[11px] text-gray-700/60">• Favor de asistir 10 minutos antes.<br />• Usar ropa deportiva cómoda (sin botones ni cierres de metal).<br />• Traer termo con agua propia. Entrenamos descalzos.</p></div>
+                    <div><p className="font-bold text-xs">Recomendaciones del Dojo</p><p className="text-[11px] text-gray-700/60">• Favor de asistir 10 minutos antes.<br />• Usar pantalón deportivo cómodo (sin botones ni cierres de metal en los pies, se prohibe shorts).<br />• Traer termo con agua propia. Entrenamos descalzos.</p></div>
                   </div>
                 </div>
                 <div className="pt-2">
-                  <p className="text-xs text-gray-700/50">Un asesor técnico te contactará vía WhatsApp al <span className="text-brand-accent">{formData.phone}</span> para re-confirmar el horario exacto.</p>
+                  <p className="text-xs text-gray-700/50">Abrimos WhatsApp con tu reserva lista para enviar. Un asesor técnico te contactará al <span className="text-brand-accent">{formData.phone}</span> para re-confirmar el horario exacto.</p>
                 </div>
                 <button type="button" onClick={() => { setIsSuccess(false); onClose(); }} className="w-full bg-white/10 hover:bg-white/20 text-gray-700 font-bold py-3.5 rounded-xl text-sm transition-colors cursor-pointer">
                   Entendido, ¡allá estaré en la fecha!

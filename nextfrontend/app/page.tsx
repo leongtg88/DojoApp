@@ -16,7 +16,10 @@ export default function HomePage() {
 
   return (
     <>
-      <HomeView onOpenEnrollment={handleOpenEnrollment} onOpenAssistant={() => router.push('/asistente')} />
+      <HomeView
+        onOpenEnrollment={handleOpenEnrollment}
+        onOpenAssistant={(target) => router.push(target ? `/asistente?nodo=${target}` : '/asistente')}
+      />
       <DojoEnrollmentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} preSelectedProgram={preSelectedProgram} />
     </>
   );
