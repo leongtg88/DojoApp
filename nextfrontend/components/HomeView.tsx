@@ -252,7 +252,7 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
         </div>
       </section>
 
-      {/* Testimonios */}
+      {/* Testimonios 
       <section className="md:py-20 px-8 md:px-[50px]">
         <div className="max-w-7xl mx-auto md:space-y-12">
           <div className="text-left space-y-3">
@@ -285,6 +285,7 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
           </div>
         </div>
       </section>
+      */}
 
       {/* Avales */}
       <section className="py-14 md:py-12 border-y border-white/10 font-display overflow-hidden">
@@ -297,7 +298,7 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
               <div key={i} className="flex gap-12 shrink-0 items-center" aria-hidden={i === 1}>
                 <span className="flex items-center gap-2"><Award className="w-4 h-4 text-brand-accent" /> INOUE HA SHITO-RYU KEISHIN KAI JAPÓN</span>
                 <span className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-brand-secondary" /> FEDERACIÓN DOMINICANA DE KARATE (FEDOKARATE)</span>
-                <span className="flex items-center gap-2"><Award className="w-4 h-4 text-brand-accent" /> WORLD KARATE FEDERATION (WKF) CERTIFIED</span>
+               {/* <span className="flex items-center gap-2"><Award className="w-4 h-4 text-brand-accent" /> WORLD KARATE FEDERATION (WKF) CERTIFIED</span>*/}
                 <span className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-brand-purple" /> INOUE HA SHITO-RYU KARATE DO INTERNATIONAL OF AMERICA (ISKIA)</span>
               </div>
             ))}

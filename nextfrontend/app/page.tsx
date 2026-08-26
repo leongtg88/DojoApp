@@ -1,26 +1,34 @@
-'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import HomeView from '@/components/HomeView';
-import DojoEnrollmentModal from '@/components/DojoEnrollmentModal';
+import type { Metadata } from 'next';
+import HomeClient from '@/components/HomeClient';
+import JsonLd from '@/components/JsonLd';
+import { generateLocalBusinessSchema, generateFAQSchema, SITE } from '@/lib/seo';
+import { MOCK_FAQS } from '@/lib/types';
+
+export const metadata: Metadata = {
+  title: 'Karate Shito Ryu en Santo Domingo - Clases para Niños y Adultos',
+  description:
+    'Aprende Karate Shito Ryu Inoue Ha en Santo Domingo. Clases para niños desde 5 años y adultos. Disciplina, defensa personal, condición física. Primera clase de prueba gratis. Plaza Lulie, Av. 27 de Febrero.',
+  openGraph: {
+    title: 'Karate Shito Ryu en Santo Domingo | Tosei Gusoku Dojo',
+    description:
+      'Escuela de Karate Shito Ryu Inoue Ha en Santo Domingo. Clases para niños y adultos. Primera clase gratis.',
+    url: SITE.url,
+    images: [{ url: SITE.ogImage, width: 1200, height: 630 }],
+  },
+  alternates: {
+    canonical: SITE.url,
+  },
+};
 
 export default function HomePage() {
-  const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [preSelectedProgram, setPreSelectedProgram] = useState<'kid' | 'adult'>('adult');
-
-  const handleOpenEnrollment = (program: string = 'adult') => {
-    setPreSelectedProgram(program === 'kid' ? 'kid' : 'adult');
-    setIsModalOpen(true);
-  };
-
   return (
     <>
-      <HomeView
-        onOpenEnrollment={handleOpenEnrollment}
-        onOpenAssistant={(target) => router.push(target ? `/asistente?nodo=${target}` : '/asistente')}
+      <JsonLd id="local-business" data={generateLocalBusinessSchema()} />
+      <JsonLd
+        id="faq-schema"
+        data={generateFAQSchema(MOCK_FAQS.map((f) => ({ question: f.question, answer: f.answer })))}
       />
-      <DojoEnrollmentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} preSelectedProgram={preSelectedProgram} />
+      <HomeClient />
     </>
   );
 }

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+const logoSolo = '/assets/LogoSolo.svg';
 
 export default function Footer() {
   const pathname = usePathname();
@@ -25,7 +26,7 @@ export default function Footer() {
 
         <div className="md:col-span-4 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-brand-accent rounded-full flex items-center justify-center font-extrabold font-display text-lg text-gray-700">TG</div>
+            <img src={logoSolo} alt="Tosei Gusoku Dojo Logo" className="w-12 h-12 object-contain" />
             <div className="leading-none text-left">
               <span className="font-display font-extrabold text-base block tracking-tighter uppercase text-gray-700">Tosei Gusoku</span>
               <span className="text-[9px] block text-zinc-500 uppercase tracking-widest font-bold">Dojo Shito Ryu</span>
@@ -61,19 +62,19 @@ export default function Footer() {
         <div className="md:col-span-3 space-y-3">
           <h5 className="font-bold text-xs uppercase tracking-widest text-brand-accent font-display">Organización</h5>
           <div className="text-xs text-gray-700/60 space-y-1">
-            <p>• Shito Ryu Inoue Ha branch</p>
+            <p>• Shito Ryu Inoue Ha ISKIA</p>
             <p>• Keishin Kai International</p>
             <p>• Reconocidos por FEDOKARATE</p>
-            <p>• Miembro WKF Olímpico</p>
+            
           </div>
         </div>
 
         <div className="md:col-span-2 space-y-3">
           <h5 className="font-bold text-xs uppercase tracking-widest text-brand-accent font-display">Soporte</h5>
           <div className="text-xs text-gray-700/60 space-y-1.5">
-            <a href="#" className="hover:text-brand-accent block">Términos Legales</a>
-            <a href="#" className="hover:text-brand-accent block">Privacidad de Datos</a>
-            <p className="pt-2 text-[10px] text-gray-700/40">© {new Date().getFullYear()} Escuela Tosei Gusoku. Modern Bushido Excellence.</p>
+            <Link href="/terminos" className="hover:text-brand-accent block">Términos Legales</Link>
+            <Link href="/privacidad" className="hover:text-brand-accent block">Privacidad de Datos</Link>
+            <p className="pt-2 text-[10px] text-gray-700/40">© {new Date().getFullYear()} Web Developed by León Gustavo Sensei.</p>
           </div>
         </div>
 

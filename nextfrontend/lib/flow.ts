@@ -370,7 +370,7 @@ export const flow: Record<string, FlowNode> = {
   precios_base: {
     message: 'Planes mensuales regulares — la clase de prueba es gratis:',
     cards: [
-      { kind: 'price', title: 'Niños 5-7 años', value: 'RD$3,800/mes', description: '90 min/semana (2 clases de 45 min)' },
+      { kind: 'price', title: 'Niños 5-7 años', value: 'RD$3,500/mes', description: '90 min/semana (2 clases de 45 min)' },
       { kind: 'price', title: 'Niños 8+ y Adultos', value: 'RD$3,300/mes', description: '2 horas/semana' },
       { kind: 'price', title: 'Inscripción', value: 'RD$3,000', description: 'Por persona, pago único' },
       { kind: 'price', title: 'Uniforme (Karategi)', value: 'RD$3,000 – 12,000', description: 'Según modelo y talla' },
@@ -531,23 +531,23 @@ export const flow: Record<string, FlowNode> = {
   precio_seleccion_plan: {
     message: 'Ahora selecciona el plan mensual que se ajuste a tu caso:',
     cards: [
-      { kind: 'price', title: 'Niños 5-7 años', value: 'RD$3,800/mes', description: '90 min/semana (2 clases de 45 min)' },
+      { kind: 'price', title: 'Niños 5-7 años', value: 'RD$3,500/mes', description: '90 min/semana (2 clases de 45 min)' },
       { kind: 'price', title: 'Niños 8+ y Adultos', value: 'RD$3,300/mes', description: '2 horas/semana' },
     ],
-    quickReplies: ['Niños 5-7 años (RD$3,800/mes)', 'Niños 8+ / Adultos (RD$3,300/mes)', 'Volver'],
+    quickReplies: ['Niños 5-7 años (RD$3,500/mes)', 'Niños 8+ / Adultos (RD$3,300/mes)', 'Volver'],
     store: (draft, option) => {
       if (option === 'Volver') return draft;
       const isKid = option.includes('5-7');
       return {
         ...draft,
         plan_seleccionado: isKid ? 'Niños 5-7 años' : 'Niños 8+ / Adultos',
-        plan_precio: isKid ? 'RD$3,800/mes' : 'RD$3,300/mes',
+        plan_precio: isKid ? 'RD$3,500/mes' : 'RD$3,300/mes',
         edad: isKid ? '5-7 años' : '8+',
         tipo_alumno: isKid ? 'Niño/a' : 'Adulto',
       };
     },
     next: {
-      'Niños 5-7 años (RD$3,800/mes)': 'precio_seleccion_protecciones',
+      'Niños 5-7 años (RD$3,500/mes)': 'precio_seleccion_protecciones',
       'Niños 8+ / Adultos (RD$3,300/mes)': 'precio_seleccion_protecciones',
       Volver: 'precio_email',
     },
