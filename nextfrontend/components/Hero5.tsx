@@ -4,11 +4,12 @@ const Hero5 = ({ onOpenAssistant }: { onOpenAssistant: () => void }) => {
   return (
     <>
       <div
-        className="relative h-[900px] w-full mx-auto bg-no-repeat bg-cover bg-center bg-fixed md:bg-scroll sm:h-[1100px] md:flex md:flex-row md:h-[700px] 2xl:h-[1000px] 2xl:max-w-[2040px] 2xl:pb-[100px]"
+        className="relative w-full bg-no-repeat bg-cover bg-center bg-fixed md:bg-scroll"
         style={{ backgroundImage: `url(/assets/BannerbgHero19080x1080.webp)` }}
       >
         <div className="absolute inset-x-0 top-0 -bottom-[2px] bg-gradient-to-t from-white via-white/50 to-transparent" />
 
+        <div className="relative h-[900px] w-full mx-auto sm:h-[1100px] md:flex md:flex-row md:h-[700px] 2xl:h-[1000px] 2xl:max-w-[2040px] 2xl:pb-[100px]">
         {/* Lado 1 */}
         <div className="hijo flex items-center justify-center xl:grow-1 xl:justify-end">
           <div className="relative inline-block">
@@ -71,6 +72,7 @@ const Hero5 = ({ onOpenAssistant }: { onOpenAssistant: () => void }) => {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </>
