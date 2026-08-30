@@ -32,11 +32,22 @@ export default function AboutView({ onOpenEnrollment }: AboutViewProps) {
 
 
   const germanBioParrafos = [
-    'Inició karate a la temprana edad de 4 años gracias a su abuelo, quien lo inscribió al ver su inquietud por hacer movimientos de puños y patadas inspirados en las películas de artes marciales de los 80.',
-    'Por cambios en la escuela, debió pausar sus prácticas hasta los 14 años, cuando se incorporó a la escuela de Miyagiken bajo la tutela del Maestro Luis Alberte en la Organización Shito Kai.',
-    'Una vez iniciados sus estudios universitarios, retomó sus prácticas en la escuela de Dimitrova Dojo, en Santo Domingo, República Dominicana.',
-    'Al alcanzar el grado de Marrón Primero, Sensei Germán decidió fundar su propia escuela e incorporarse a la Organización Inoue Ha Dominicana.',
-    'El Sensei Germán posee conocimientos en otras artes marciales como Jujutsu, Aikido e Iaido.'
+    
+'Cinturón Negro 1er Dan – SKIF Shotokan | Cinturón Negro 1er Dan – Inoue-Ha Shito-Ryu | Selección Nacional de Karate',
+
+'Inició su camino en el karate a los 5 años de edad, comenzando su formación en SKIF Shotokan donde se destacó especialmente en Kata y alcanzó el grado de Cinturón Negro 1er Dan. Posteriormente continuó su desarrollo en Inoue-Ha Shito-Ryu, manteniéndose como especialista en Kata y alcanzando importantes resultados a nivel nacional e internacional.',
+
+'Actualmente es atleta de la Selección Nacional de Karate de la República Dominicana, con una trayectoria de más de 100 medallas de oro.',
+
+'Entre sus principales logros destacan: 2 veces Atleta del Año Infantil y Juvenil, 2 veces Campeón del Caribe, 2 veces Subcampeón Centroamericano y del Caribe, 8 veces Campeón Nacional, Campeón Universitario, Campeón de los Juegos Escolares, medallista de bronce en los Juegos Centroamericanos y del Caribe Escolares y haber disputado medalla de bronce en el Campeonato Panamericano.',
+
+'Es miembro del Ejército de la República Dominicana y en 2026 se proclamó Subcampeón de los Juegos Militares, representando al Ejército.',
+
+'Continúa su preparación como competidor de alto rendimiento y comparte sus conocimientos como instructor de karate, transmitiendo a las nuevas generaciones los valores de disciplina, respeto, constancia y pasión por este arte marcial.',
+
+'Su objetivo no es solamente ganar competencias, sino dejar una huella dentro del karate, seguir elevando su nivel como atleta e instructor y contribuir al crecimiento de las nuevas generaciones.',
+
+'Una trayectoria construida basada por disciplina, sacrificio y constancia. Orgullosamente representando a la República Dominicana por más de 14 años.'
   ];
 
   const preview = historiaParrafos[0].slice(0, 200);
