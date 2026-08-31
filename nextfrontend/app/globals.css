@@ -157,3 +157,11 @@ html {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
 }
+
+ @media (max-width: 768px) {
+ 
+  .hero-button {
+    @apply px-4 py-2 text-[0.60rem];
+  }
+}
+ 

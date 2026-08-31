@@ -64,31 +64,25 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
           <span className="inline-block px-3 py-1 bg-brand-accent/10 text-brand-accent rounded-full text-xs font-bold font-display uppercase">Sede Santo Domingo</span>
           <h3 className="text-3xl sm:text-4xl pb-8 font-extrabold font-display text-gray-900">Sucursal 27 de Feb.</h3>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           <div id="contacto" className="lg:col-span-5 space-y-6 text-left backdrop-blur-xs scroll-mt-24">
             <p className="text-sm sm:text-base text-gray-900 leading-5 md:leading-relaxed font-sans">
               Visítanos en nuestras instalaciones principales. Ofrecemos <span className="font-semibold">un área de entrenamiento climatizada con vestidores y baños,</span> secretaría de atención personalizada y zona de espera para padres.
             </p>
-            <div className="space-y-4 shadow-lg backdrop-blur-xl p-5 rounded-2xl">
+            <div className="space-y-4 shadow-lg backdrop-blur-xl p-4 rounded-2xl">
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-brand-accent shrink-0 mt-1" />
                 <div>
                   <h4 className="font-bold text-sm text-gray-900">Dirección de la Escuela</h4>
-                  <p className="text-xs text-gray-900 mt-0.5">Plaza Lulie 3era planta, esquina Av. 27 de Febrero con C. Carmen Mendoza, Ensache Quisquella, Los Millones, Santo Domingo.</p>
+                  <p className="text-sm text-gray-900 mt-0.5">Plaza Lulie 3era planta, esquina Av. 27 de Febrero con C. Carmen Mendoza, Ensache Quisquella, Los Millones, Santo Domingo.</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-brand-accent shrink-0 mt-1" />
-                <div>
-                  <h4 className="font-bold text-sm text-gray-900">Llama Directamente / WhatsApp</h4>
-                  <p className="text-xs text-gray-900 mt-0.5">+1 (829) 6378733</p>
-                </div>
-              </div>
+
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-brand-secondary shrink-0 mt-1" />
                 <div>
                   <h4 className="font-bold text-sm text-gray-900">Horario de Atención</h4>
-                  <p className="text-xs text-gray-900 mt-0.5">Lunes a Viernes: 2:30 PM - 7:30 PM</p>
+                  <p className="text-sm text-gray-900 mt-0.5">Lunes a Viernes: 2:30 PM - 7:30 PM</p>
                 </div>
               </div>
             </div>
@@ -127,7 +121,7 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch pt-4">
             {DOJO_CLASSES.map((cls, idx) => (
-              <div key={idx} className={`p-6 md:p-8 shadow-xl rounded-2xl border ${idx === 0 ? 'border-brand-accent/10' : 'border-brand-secondary/10'} space-y-6 flex flex-col justify-between`}>
+              <div key={idx} className={`px-4 pb-6 mb-6  md:p-8 shadow-xl rounded-2xl border ${idx === 0 ? 'border-brand-accent/10' : 'border-brand-secondary/10'} space-y-6 flex flex-col justify-between`}>
                 <div className="space-y-2 text-left">
                   <div className="flex items-center justify-between">
                     <span className={`text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded ${idx === 0 ? 'bg-brand-accent/10 text-brand-accent' : 'bg-brand-secondary/10 text-brand-secondary'}`}>{cls.age}</span>
@@ -136,17 +130,24 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
                   <h3 className="text-2xl font-extrabold text-gray-700 font-display uppercase tracking-wide whitespace-pre-line">{cls.category}</h3>
                   <p className="text-sm text-gray-700">{cls.description}</p>
                 </div>
-                <div className="space-y-4 pt-4 shadow-md border-t border-white/10 rounded-xl">
+                <div className="  shadow-md border-t border-white/10 rounded-xl">
                   {cls.schedule.map((sch, sIdx) => (
-                    <div key={sIdx} className="flex justify-between items-center bg-brand-bg p-4 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
+                    <div key={sIdx} className="flex flex-col justify-between items-start  bg-brand-bg px-4 pb-6 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
                       <p className="text-sm font-bold text-gray-700">{sch.days}</p>
-                      <span className="text-brand-accent font-mono text-sm font-bold">{sch.hours}</span>
+                      <span className="text-brand-accent font-mono text-sm font-bold">
+                        {sch.hours.split('/').map((part, i) => (
+                          <span key={i} className={i > 0 ? 'sm:inline-block block' : ''}>
+                            {i > 0 && <span className="hidden sm:inline"> / </span>}
+                            {part}
+                          </span>
+                        ))}
+                      </span>
                     </div>
                   ))}
                 </div>
-                <div className="pt-6">
+                <div className="pt-2 mx-auto ">
                   <button onClick={() => onOpenEnrollment(idx === 0 ? 'kid' : 'adult')} className="hero-button glass-card-hover cursor-pointer">
-                    AGENDAR CLASE DE PRUEBA DE ESTE GRUPO
+                    AGENDAR CLASE GRATIS DE PRUEBA 
                   </button>
                 </div>
               </div>
@@ -173,9 +174,11 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
                   Inscribe a dos miembros de la familia y obtén un <span className="text-gray-700 font-bold">2 x 1 en la inscripción y/u otras condiciones especiales</span> . Queremos que el camino del cinturón negro sea un recorrido conjunto.
                 </p>
               </div>
-              <button onClick={() => onOpenAssistant('precio_nombre')} className="hero-button glass-card-hover">
-                Consultar sobre Promociones Familiares <ArrowRight className="w-4 h-4" />
-              </button>
+              <div className="flex justify-center sm:justify-start w-full">
+                <button onClick={() => onOpenAssistant('precio_nombre')} className="hero-button glass-card-hover">
+                  Promociones Familiares <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
             <div className="lg:col-span-6 relative h-80 sm:h-96 w-full rounded-2xl overflow-hidden shadow-xl shadow-black/40">
               <img src="/assets/20250830_110023.jpg" alt="Familia de karate entrenando" className="w-full h-full object-cover scale-130" />
@@ -247,7 +250,7 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
         </div>
         <div className="text-center pt-4">
           <Link href="/nosotros" className="hero-button glass-card-hover">
-            Ver biografías completas y currículo de maestros <ArrowRight className="w-4 h-4 text-black" />
+            Biografías de maestros <ArrowRight className="w-4 h-4 text-black" />
           </Link>
         </div>
       </section>
@@ -355,7 +358,7 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
           <h2 className="text-4xl sm:text-6xl font-extrabold font-display uppercase tracking-tight text-gray-700 leading-tight">El camino del cinturón negro comienza aquí</h2>
           <p className="text-sm sm:text-base text-gray-700/70 max-w-xl mx-auto font-sans leading-relaxed">Te regalamos tu primera sesión completa de cortesía. Sin compromisos.</p>
           <div className="pt-4">
-            <button onClick={() => onOpenEnrollment('adult')} className="hero-button glass-card-hover">RESERVAR CLASE DEMO GRATUITA</button>
+            <button onClick={() => onOpenEnrollment('adult')} className="hero-button glass-card-hover">RESERVAR CLASE GRATIS DE PRUEBA</button>
           </div>
         </div>
       </section>

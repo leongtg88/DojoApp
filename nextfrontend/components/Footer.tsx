@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-const logoSolo = '/assets/LogoSolo.svg';
+const logoRectangular = '/assets/LogoRectangularNegro.svg';
 
 export default function Footer() {
   const pathname = usePathname();
@@ -26,11 +26,8 @@ export default function Footer() {
 
         <div className="md:col-span-4 space-y-4">
           <div className="flex items-center gap-3">
-            <img src={logoSolo} alt="Tosei Gusoku Dojo Logo" className="w-12 h-12 object-contain" />
-            <div className="leading-none text-left">
-              <span className="font-display font-extrabold text-base block tracking-tighter uppercase text-gray-700">Tosei Gusoku</span>
-              <span className="text-[9px] block text-zinc-500 uppercase tracking-widest font-bold">Dojo Shito Ryu</span>
-            </div>
+            <img src={logoRectangular} alt="Tosei Gusoku Dojo Logo" className="w-38 h-22 object-contain" />
+   
           </div>
           <p className="text-xs text-gray-700/50 leading-relaxed font-sans max-w-sm">
             Escuela de Karate de primer nivel enfocada en el desarrollo integral humano de niños, jóvenes y adultos. Representantes de Inoue Ha Shito-Ryu Keishin Kai.
