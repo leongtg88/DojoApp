@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { Montserrat, Open_Sans } from 'next/font/google';
 import './globals.css';
@@ -87,7 +88,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es" suppressHydrationWarning>
       <body suppressHydrationWarning className={`${montserrat.variable} ${openSans.variable} min-h-screen bg-white text-[#dee2f0] flex flex-col font-sans relative antialiased selection:bg-brand-accent selection:text-gray-700`}>
         <Navbar />
-        <ScrollToTop />
+        <Suspense>
+          <ScrollToTop />
+        </Suspense>
         <main className="flex-grow pt-20 md:pb-20">{children}</main>
         <ConditionalFooter />
       </body>
