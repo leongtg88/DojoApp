@@ -69,7 +69,7 @@ export default function Navbar() {
       </nav>
 
       {/* Mobile bottom tab bar */}
-      <nav className="fixed bottom-0 left-0 w-full md:hidden h-20 bg-brand-bg/95 backdrop-blur-xl border-t border-white/10 z-40 flex items-center justify-around px-4 pb-4">
+      <nav className="fixed bottom-0 left-0 w-full md:hidden h-14 bg-brand-bg/95 backdrop-blur-xl border-t border-white/10 z-40 flex items-center justify-around px-4 ">
         <Link href="/" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${pathname === '/' ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
           <Home className="w-5 h-5 mb-1" />
           <span className="font-display text-[9px] uppercase tracking-wider">Dojo Home</span>
@@ -103,8 +103,8 @@ export default function Navbar() {
               className="absolute top-20 right-0 w-72 h-[calc(100vh-80px)] bg-white border-l border-white/10 p-6 flex flex-col justify-between z-10"
             >
               <div className="space-y-6 text-left">
-                <p className="text-[10px] font-bold tracking-widest text-brand-accent uppercase font-display">SECCIONES DE TOSEI GUSOKU</p>
-                <div className="flex flex-col gap-4 text-base font-bold">
+                <p className="text-xs font-bold tracking-widest text-brand-accent uppercase font-display">SECCIONES DE TOSEI GUSOKU</p>
+                <div className="flex flex-col gap-4 text-base font-regular">
                   <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname === '/' ? 'text-brand-accent' : 'text-gray-700/80'}`}>
                     <Home className="w-4 h-4 shrink-0" /><span>Inicio (Dojo Home)</span>
                   </Link>
@@ -122,15 +122,14 @@ export default function Navbar() {
                   </Link>
                 </div>
               </div>
-              <div className="space-y-4 pt-6 border-t border-white/10">
+              <div className="py-2 px-6 inline-block bg-current backdrop-blur-sm shadow-xl/30 border hover-color-change hover:bg-white hover:text-gray-700 font-regular rounded-lg mt-auto" style={{ animation: "border-color-change 10s infinite linear" }}>
                 <button
                   onClick={() => handleOpenEnrollment('adult')}
-                  className="w-full bg-brand-accent hover:bg-brand-accent-hover text-black font-extrabold py-3.5 rounded-xl text-xs block text-center belt-glow uppercase tracking-wider cursor-pointer"
-                >
+                  className="block w-full text-center text-gray-700 hover:text-white hover:bg-white text-sm text-center font-semibold 2xl:text-base transition-colors duration-300 cursor-pointer">
                   RESERVAR CLASE DEMO
                 </button>
-                <p className="text-[10px] text-gray-700/40 text-center">Primer entrenamiento gratuito sin compromiso de pago.</p>
               </div>
+                <p className="text-[10px] pt-4 text-gray-700/40 text-center">Primer entrenamiento gratuito sin compromiso de pago.</p>
             </motion.div>
           </div>
         )}

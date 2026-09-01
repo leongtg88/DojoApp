@@ -14,6 +14,9 @@ type Hijo = {
   nombre: string;
   fechaNacimiento: string;
   tipoSangre: string;
+  altura: string;
+  tallaPantalon: string;
+  tallaCamiseta: string;
   foto: File | null;
   identificacion: File[];
   fotoPreview: string;
@@ -21,11 +24,14 @@ type Hijo = {
 };
 
 type FormData = {
-  tipoRegistro: 'adulto' | 'menor';
+  tipoRegistro: 'ninguno' | 'adulto' | 'menor';
   // Adulto
   nombreAdulto: string;
   fechaNacimientoAdulto: string;
   tipoSangreAdulto: string;
+  alturaAdulto: string;
+  tallaPantalonAdulto: string;
+  tallaCamisetaAdulto: string;
   direccionAdulto: string;
   cedula: string;
   fotoAdulto: File | null;
@@ -80,6 +86,7 @@ const getBenefitIcon = (iconName: string) => {
 const generarId = () => Math.random().toString(36).substr(2, 9);
 
 const TIPOS_SANGRE = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+const TALLAS_ROPA = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 // ========== COMPONENTE DRAG & DROP ==========
 const FileDropZone = ({ label, files, previews, error, accept, multiple, hint, onFiles, onRemove }: {
@@ -225,14 +232,12 @@ const WelcomeScreen = ({ onStart, onNavigateToHome }: { onStart: () => void; onN
         </div>
       </section>
       <div className="flex w-full items-center justify-between gap-4 py-6 md:px-[50px] md:pb-20">
-        <button onClick={onNavigateToHome} className="text-xs text-white hover:text-stone-300 transition underline">← Volver al Inicio</button>
-        <button onClick={onStart} className="group relative ml-auto inline-flex items-center justify-center px-10 py-4 overflow-hidden font-bold text-white rounded-full shadow-2xl bg-brand-accent from-blue-700 to-blue-900 hover:from-blue-600 hover:to-blue-800 transition-all duration-300 hover:scale-105 cursor-pointer">
-          <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-blue-600 to-blue-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-          <span className="relative flex items-center text-lg">Comenzar Inscripción
-            <svg className="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </span>
+        <button onClick={onNavigateToHome} className="text-xs text-white hover:text-stone-300 transition underline"> Regresar </button>
+        <button onClick={onStart} className="hero-button glass-card-hover cursor-pointer">
+          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+          Comenzar Inscripción
         </button>
       </div>
     </div>
@@ -259,10 +264,13 @@ const ToseiGusokuForm = () => {
 
   // ===== ESTADO INICIAL =====
   const createInitialFormData = (): FormData => ({
-    tipoRegistro: 'menor',
+    tipoRegistro: 'ninguno',
     nombreAdulto: '',
     fechaNacimientoAdulto: '',
     tipoSangreAdulto: '',
+    alturaAdulto: '',
+    tallaPantalonAdulto: '',
+    tallaCamisetaAdulto: '',
     direccionAdulto: '',
     cedula: '',
     fotoAdulto: null,
@@ -271,7 +279,7 @@ const ToseiGusokuForm = () => {
     identAdultoPreview: [],
     telefonoContacto: '',
     email: '',
-    hijos: [{ id: generarId(), nombre: '', fechaNacimiento: '', tipoSangre: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }],
+    hijos: [{ id: generarId(), nombre: '', fechaNacimiento: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }],
     nombreMadre: '',
     telefonoMadre: '',
     nombrePadre: '',
@@ -327,6 +335,9 @@ const ToseiGusokuForm = () => {
         nombreAdulto: '',
         fechaNacimientoAdulto: '',
         tipoSangreAdulto: '',
+        alturaAdulto: '',
+        tallaPantalonAdulto: '',
+        tallaCamisetaAdulto: '',
         direccionAdulto: '',
         cedula: '',
         fotoAdulto: null,
@@ -343,7 +354,7 @@ const ToseiGusokuForm = () => {
   const agregarHijo = () => {
     setFormData(prev => ({
       ...prev,
-      hijos: [...prev.hijos, { id: generarId(), nombre: '', fechaNacimiento: '', tipoSangre: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }]
+      hijos: [...prev.hijos, { id: generarId(), nombre: '', fechaNacimiento: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }]
     }));
   };
 
@@ -459,6 +470,12 @@ const ToseiGusokuForm = () => {
   const validateStep1 = () => {
     const newErrors: FormErrors = {};
     const { tipoRegistro } = formData;
+
+    if (tipoRegistro === 'ninguno') {
+      newErrors.tipoRegistro = 'Debes seleccionar quién se inscribe';
+      setErrors(newErrors);
+      return false;
+    }
 
     if (tipoRegistro === 'adulto') {
       if (!formData.nombreAdulto.trim()) newErrors.nombreAdulto = 'Campo requerido';
@@ -580,9 +597,12 @@ const ToseiGusokuForm = () => {
               Adulto (mayor de edad)
             </button>
           </div>
+          {errors.tipoRegistro && <p className="text-red-500 text-sm text-center mt-2">{errors.tipoRegistro}</p>}
         </div>
 
-        {tipoRegistro === 'adulto' ? (
+        {tipoRegistro === 'ninguno' ? (
+          <p className="text-center text-stone-400 text-sm pt-2">Selecciona una opción para completar tus datos.</p>
+        ) : tipoRegistro === 'adulto' ? (
           // ===== ADULTO =====
           <div className="space-y-4">
             <div>
@@ -626,6 +646,35 @@ const ToseiGusokuForm = () => {
                 <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
               {errors.tipoSangreAdulto && <p className="text-red-500 text-xs mt-1">{errors.tipoSangreAdulto}</p>}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-1">Altura (cm)</label>
+                <input type="number" min="50" max="250" name="alturaAdulto" value={formData.alturaAdulto} onChange={handleChange}
+                  className="w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" placeholder="Ej: 170" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-1">Talla de Pantalón</label>
+                <div className="relative">
+                  <select name="tallaPantalonAdulto" value={formData.tallaPantalonAdulto} onChange={handleChange}
+                    className="w-full px-4 py-2 pr-10 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none">
+                    <option value="">Selecciona...</option>
+                    {TALLAS_ROPA.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-1">Talla de T-shirt</label>
+                <div className="relative">
+                  <select name="tallaCamisetaAdulto" value={formData.tallaCamisetaAdulto} onChange={handleChange}
+                    className="w-full px-4 py-2 pr-10 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none">
+                    <option value="">Selecciona...</option>
+                    {TALLAS_ROPA.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+              </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-stone-500 mb-1">Dirección <span className="text-red-500">*</span></label>
@@ -697,6 +746,35 @@ const ToseiGusokuForm = () => {
                     <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   </div>
                   {errors.hijos?.[index]?.tipoSangre && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.tipoSangre}</p>}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-stone-500 mb-1">Altura (cm)</label>
+                    <input type="number" min="50" max="250" value={hijo.altura} onChange={(e) => handleHijoChange(hijo.id, 'altura', e.target.value)}
+                      className="w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" placeholder="Ej: 130" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-stone-500 mb-1">Talla de Pantalón</label>
+                    <div className="relative">
+                      <select value={hijo.tallaPantalon} onChange={(e) => handleHijoChange(hijo.id, 'tallaPantalon', e.target.value)}
+                        className="w-full px-4 py-2 pr-10 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none">
+                        <option value="">Selecciona...</option>
+                        {TALLAS_ROPA.map(t => <option key={t} value={t}>{t}</option>)}
+                      </select>
+                      <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-stone-500 mb-1">Talla de T-shirt</label>
+                    <div className="relative">
+                      <select value={hijo.tallaCamiseta} onChange={(e) => handleHijoChange(hijo.id, 'tallaCamiseta', e.target.value)}
+                        className="w-full px-4 py-2 pr-10 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none">
+                        <option value="">Selecciona...</option>
+                        {TALLAS_ROPA.map(t => <option key={t} value={t}>{t}</option>)}
+                      </select>
+                      <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                  </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <FileDropZone

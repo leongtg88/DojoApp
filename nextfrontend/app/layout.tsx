@@ -3,6 +3,7 @@ import { Montserrat, Open_Sans } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import ConditionalFooter from '@/components/conditionalFooter';
+import ScrollToTop from '@/components/ScrollToTop';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -86,6 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es" suppressHydrationWarning>
       <body suppressHydrationWarning className={`${montserrat.variable} ${openSans.variable} min-h-screen bg-white text-[#dee2f0] flex flex-col font-sans relative antialiased selection:bg-brand-accent selection:text-gray-700`}>
         <Navbar />
+        <ScrollToTop />
         <main className="flex-grow pt-20 md:pb-20">{children}</main>
         <ConditionalFooter />
       </body>
