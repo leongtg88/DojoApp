@@ -17,7 +17,9 @@ export default function VerifyEmailPage() {
       return
     }
 
-    fetch(`/api/auth/verify-email?token=${encodeURIComponent(token)}`)
+    fetch(`/api/auth/verify-email?token=${encodeURIComponent(token)}`, {
+      method: 'POST',
+    })
       .then(async (response) => {
         const result = await response.json() as { message?: string; error?: string }
         if (!response.ok) throw new Error(result.error || 'No se pudo verificar el correo')

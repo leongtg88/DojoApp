@@ -4,7 +4,7 @@ import { db } from '@/lib/db'
 
 export const runtime = 'nodejs'
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   const rawToken = request.nextUrl.searchParams.get('token')
 
   if (!rawToken) {
