@@ -337,13 +337,12 @@ export function SignUpForm({ onSuccess, onNavigateToLogin }: SignUpFormProps) {
                 if (errorMessage) setErrorMessage(null);
               }}
               placeholder="••••••••••••"
-              className={`w-full pl-11 pr-11 py-3.5 bg-white/5 border rounded-xl text-sm text-white placeholder-white/20 focus:outline-none transition-all shadow-inner ${
-                isMatchValid
+              className={`w-full pl-11 pr-11 py-3.5 bg-white/5 border rounded-xl text-sm text-white placeholder-white/20 focus:outline-none transition-all shadow-inner ${isMatchValid
                   ? 'border-emerald-500/80 focus:ring-1 focus:ring-emerald-500/30'
                   : isMatchInvalid
-                  ? 'border-red-500/80 focus:ring-1 focus:ring-red-500/30'
-                  : 'border-white/10 focus:border-white/30 focus:ring-1 focus:ring-white/10'
-              }`}
+                    ? 'border-red-500/80 focus:ring-1 focus:ring-red-500/30'
+                    : 'border-white/10 focus:border-white/30 focus:ring-1 focus:ring-white/10'
+                }`}
             />
             <button
               id="btn-toggle-signup-confirm-password"
