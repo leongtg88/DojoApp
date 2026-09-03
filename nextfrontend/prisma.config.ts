@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import { defineConfig, env } from 'prisma/config'
+import { defineConfig } from 'prisma/config'
 
 dotenv.config({ path: '.env.local' })
 
@@ -10,6 +10,6 @@ export default defineConfig({
     seed: 'tsx prisma/seed.ts',
   },
   datasource: {
-    url: env('DIRECT_URL'),
+    url: process.env.DIRECT_URL ?? process.env.DATABASE_URL ?? 'postgresql://localhost:5432/postgres',
   },
 })
