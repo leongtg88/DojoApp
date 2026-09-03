@@ -1,3 +1,6 @@
+export { Role } from '@/types/types'
+export type { User, Session } from '@/types/types'
+
 export interface Benefit {
   id: string;
   title: string;

@@ -28,7 +28,7 @@ export default function Navbar() {
         <Link href="/" className="flex items-center gap-3 cursor-pointer focus:outline-none text-left">
           <div className="w-[220px] h-[50px] flex items-center justify-center font-extrabold font-display text-lg text-gray-700">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/LogoRecatangularNegro.svg" alt="Logo Tosei Gusoku" />
+            <img src="/assets/LogoRectangularNegro.svg" alt="Logo Tosei Gusoku" />
           </div>
         </Link>
 

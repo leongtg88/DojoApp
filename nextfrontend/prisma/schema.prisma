@@ -1,0 +1,266 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==================== Organización ====================
+model School {
+  id        String   @id @default(cuid())
+  name      String
+  branches  Branch[]
+  users     User[]
+  students  Student[]
+  beltRanks BeltRank[]
+  techniques Technique[]
+  achievementTypes AchievementType[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Branch {
+  id        String   @id @default(cuid())
+  name      String
+  schoolId  String
+  school    School   @relation(fields: [schoolId], references: [id])
+  users     User[]
+  students  Student[]
+  classes   Class[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==================== Usuarios y roles ====================
+enum Role {
+  STUDENT
+  GUARDIAN
+  INSTRUCTOR
+  SCHOOL_ADMIN
+  SUPERADMIN
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  emailVerified  DateTime?
+  passwordHash   String?
+  name           String?
+  phone          String?
+  role           Role      @default(STUDENT)
+  schoolId       String?
+  school         School?   @relation(fields: [schoolId], references: [id])
+  branchId       String?
+  branch         Branch?   @relation(fields: [branchId], references: [id])
+  instructorProfile InstructorProfile?
+  studentProfile Student?
+  guardians      GuardianStudent[] @relation("guardian")
+  guardianOfStudents Student[] @relation("primaryGuardian")
+  emailVerificationTokens EmailVerificationToken[]
+  classes        Class[] @relation("instructor")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  token     String   @unique // hash del token
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+}
+
+model InstructorProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  bio         String?
+  specialties String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Student {
+  id               String   @id @default(cuid())
+  userId           String?  @unique // si el estudiante tiene cuenta propia (mayor de edad)
+  guardianId       String?  // referencia al User tutor (si es menor)
+  schoolId         String
+  branchId         String
+  firstName        String
+  lastName         String
+  dateOfBirth      DateTime
+  contactPhone     String?
+  medicalInfo      String?
+  emergencyContact String?
+  enrollmentDate   DateTime @default(now())
+  status           String   @default("ACTIVE") // ACTIVE, INACTIVE, GRADUATED
+  currentRank      String?
+  photoKey         String?  // clave en Supabase Storage
+  school           School   @relation(fields: [schoolId], references: [id])
+  branch           Branch   @relation(fields: [branchId], references: [id])
+  user             User?    @relation(fields: [userId], references: [id])
+  guardian         User?    @relation("primaryGuardian", fields: [guardianId], references: [id])
+  guardians        GuardianStudent[] @relation("student")
+  enrollments      Enrollment[]
+  attendances      Attendance[]
+  achievements     StudentAchievement[]
+  techniques       StudentTechnique[]
+  fitnessReports   FitnessReport[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+// Relación muchos a muchos entre tutores y estudiantes
+model GuardianStudent {
+  guardianId String
+  studentId  String
+  guardian   User    @relation("guardian", fields: [guardianId], references: [id])
+  student    Student @relation("student", fields: [studentId], references: [id])
+  relationship String? // padre, madre, tutor legal...
+  createdAt  DateTime @default(now())
+
+  @@id([guardianId, studentId])
+}
+
+// ==================== Inscripciones ====================
+enum EnrollmentOrigin {
+  FORM
+  ASSISTANT
+}
+
+model Enrollment {
+  id               String           @id @default(cuid())
+  origin           EnrollmentOrigin
+  interest         String?          // qué le interesa (karate, defensa personal...)
+  schedule         String?          // horario preferido
+  quote            String?          // cotización dada
+  studentId        String?          // si ya se creó el expediente
+  student          Student?         @relation(fields: [studentId], references: [id])
+  contactEmail     String
+  contactPhone     String?
+  status           String           @default("PENDING") // PENDING, CONTACTED, ENROLLED, REJECTED
+  notes            String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@unique([contactEmail, status]) // control básico de duplicados
+}
+
+// ==================== Rangos y técnicas ====================
+model BeltRank {
+  id        String   @id @default(cuid())
+  name      String   // Blanco, Amarillo, etc.
+  order     Int      // orden secuencial
+  schoolId  String?
+  school    School?  @relation(fields: [schoolId], references: [id])
+  techniques Technique[]
+  createdAt DateTime @default(now())
+}
+
+model Technique {
+  id          String   @id @default(cuid())
+  name        String   // nombre de la técnica (kata, kihon, etc.)
+  description String?
+  rankId      String?
+  rank        BeltRank? @relation(fields: [rankId], references: [id])
+  schoolId    String?
+  school      School?  @relation(fields: [schoolId], references: [id])
+  students    StudentTechnique[]
+  createdAt   DateTime @default(now())
+}
+
+model StudentTechnique {
+  id          String   @id @default(cuid())
+  studentId   String
+  techniqueId String
+  student     Student  @relation(fields: [studentId], references: [id])
+  technique   Technique @relation(fields: [techniqueId], references: [id])
+  approved    Boolean  @default(false)
+  approvedBy  String?
+  approvedAt  DateTime?
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  @@unique([studentId, techniqueId])
+}
+
+// ==================== Clases y asistencia ====================
+model Class {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  branchId    String
+  branch      Branch   @relation(fields: [branchId], references: [id])
+  instructorId String?
+  instructor  User?    @relation("instructor", fields: [instructorId], references: [id])
+  dayOfWeek   Int      // 0=domingo, 1=lunes...
+  startTime   String   // formato "HH:MM"
+  endTime     String
+  sessions    ClassSession[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ClassSession {
+  id        String   @id @default(cuid())
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id])
+  date      DateTime
+  notes     String?
+  attendances Attendance[]
+  createdAt DateTime @default(now())
+}
+
+model Attendance {
+  id        String   @id @default(cuid())
+  sessionId String
+  session   ClassSession @relation(fields: [sessionId], references: [id])
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id])
+  present   Boolean  @default(true)
+  notes     String?
+  createdAt DateTime @default(now())
+
+  @@unique([sessionId, studentId])
+}
+
+// ==================== Logros y reportes ====================
+model AchievementType {
+  id          String   @id @default(cuid())
+  name        String   // "Cinturón amarillo", "Torneo", etc.
+  description String?
+  schoolId    String?
+  school      School?  @relation(fields: [schoolId], references: [id])
+  achievements StudentAchievement[]
+  createdAt   DateTime @default(now())
+}
+
+model StudentAchievement {
+  id          String   @id @default(cuid())
+  studentId   String
+  student     Student  @relation(fields: [studentId], references: [id])
+  typeId      String
+  type        AchievementType @relation(fields: [typeId], references: [id])
+  evidenceKey String?  // clave en Storage
+  approvedBy  String?
+  comment     String?
+  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  achievedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
+
+model FitnessReport {
+  id          String   @id @default(cuid())
+  studentId   String
+  student     Student  @relation(fields: [studentId], references: [id])
+  report      String   // texto del auto-reporte
+  evidenceKey String?
+  approvedBy  String?
+  comment     String?
+  status      String   @default("PENDING")
+  createdAt   DateTime @default(now())
+}
