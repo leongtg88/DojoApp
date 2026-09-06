@@ -275,7 +275,7 @@ export default function useEnrollmentChat(startNodeId?: FlowNodeId) {
       const url = buildWaUrl(effect.waText ?? 'auto', draft);
       window.open(url, '_blank', 'noopener,noreferrer');
     }
-    if (effect.post) {
+    if (effect.post && draft.email) {
       fetch('/api/enrollments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

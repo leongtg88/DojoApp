@@ -1,0 +1,105 @@
+'use client';
+
+import React from 'react';
+import { BeltRank } from '@/types';
+
+interface BeltRankIndicatorProps {
+  rank?: BeltRank | null;
+  name?: string;
+  kyuDan?: string;
+  color?: string;
+  secondaryColor?: string;
+  size?: 'sm' | 'md' | 'lg';
+  showDetails?: boolean;
+  className?: string;
+  id?: string;
+}
+
+export function BeltRankIndicator({
+  rank,
+  name,
+  kyuDan,
+  color,
+  secondaryColor,
+  size = 'md',
+  showDetails = false,
+  className = '',
+  id,
+}: BeltRankIndicatorProps) {
+  const displayColor = color || rank?.beltColor || '#FACC15';
+  const displaySecColor = secondaryColor || rank?.beltSecondaryColor || '#CA8A04';
+  const displayName = name || rank?.name || 'Cinturón';
+  const displayKyuDan = kyuDan || rank?.kyuDan || '';
+  const isDan = rank?.isMaximumRank || displayKyuDan.toLowerCase().includes('dan');
+
+  const heightClasses = {
+    sm: 'h-2.5 w-10',
+    md: 'h-3.5 w-12',
+    lg: 'h-7 w-full',
+  };
+
+  if (size === 'lg') {
+    return (
+      <div
+        id={id}
+        className={`relative w-full h-7 rounded-lg overflow-hidden shadow-inner flex items-center justify-between px-3 ${className}`}
+        style={{ backgroundColor: displayColor }}
+      >
+        {/* Obi central fabric line */}
+        <div
+          className="absolute inset-y-0 left-0 right-0 h-1 my-auto opacity-35"
+          style={{ backgroundColor: isDan ? '#B8B070' : displaySecColor }}
+        />
+        <div className="relative z-10 flex items-center justify-between w-full">
+          <span
+            className="font-bold text-xs tracking-wider uppercase drop-shadow-xs"
+            style={{ color: isDan ? '#FFFFFF' : '#18181B' }}
+          >
+            {displayKyuDan} {displayName}
+          </span>
+          {/* Black tip patch */}
+          <div className="h-5 w-3.5 bg-[#18181B] rounded-xs flex items-center justify-center border border-black/20">
+            <span
+              className="h-3 w-1 rounded-2xs"
+              style={{ backgroundColor: isDan ? '#B8B070' : displayColor }}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div id={id} className={`inline-flex items-center gap-2 ${className}`}>
+      <div
+        className={`relative rounded-xs shadow-xs overflow-hidden flex items-center justify-end px-0.5 border border-black/10 ${heightClasses[size]}`}
+        style={{ backgroundColor: displayColor }}
+      >
+        {/* Center stripe */}
+        <div
+          className="absolute inset-y-0 left-0 right-0 h-0.5 my-auto opacity-40"
+          style={{ backgroundColor: displaySecColor }}
+        />
+        {/* Tip tab */}
+        <div className="relative z-10 w-1.5 h-full bg-[#18181B] flex items-center justify-center">
+          <span
+            className="w-0.5 h-2 rounded-2xs"
+            style={{ backgroundColor: isDan ? '#B8B070' : displayColor }}
+          />
+        </div>
+      </div>
+      {showDetails && (
+        <div className="flex flex-col">
+          <span className="text-xs font-bold text-white leading-tight">
+            {displayName}
+          </span>
+          {displayKyuDan && (
+            <span className="text-[11px] text-gray-400 font-semibold">
+              {displayKyuDan}
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

@@ -61,15 +61,29 @@ async function main() {
     },
   })
 
+  await db.beltRank.upsert({
+    where: {
+      id: 'belt-orange',
+    },
+    update: {},
+    create: {
+      id: 'belt-orange',
+      name: 'Naranja',
+      order: 3,
+      schoolId: school.id,
+    },
+  })
+
   await db.technique.upsert({
     where: {
       id: 'technique-kihon-basico',
     },
-    update: {},
+    update: { category: 'KIHON' },
     create: {
       id: 'technique-kihon-basico',
       name: 'Kihon básico',
       description: 'Técnicas fundamentales de desplazamiento y golpeo.',
+      category: 'KIHON',
       rankId: whiteBelt.id,
       schoolId: school.id,
     },
@@ -79,11 +93,12 @@ async function main() {
     where: {
       id: 'technique-kata-taikyoku-shodan',
     },
-    update: {},
+    update: { category: 'KATA' },
     create: {
       id: 'technique-kata-taikyoku-shodan',
       name: 'Kata Taikyoku Shodan',
       description: 'Kata inicial para estudiantes principiantes.',
+      category: 'KATA',
       rankId: yellowBelt.id,
       schoolId: school.id,
     },
@@ -169,6 +184,41 @@ async function main() {
     },
   })
 
+  const regularClass = await db.class.upsert({
+    where: {
+      id: 'class-adult-regular',
+    },
+    update: {},
+    create: {
+      id: 'class-adult-regular',
+      name: 'Karate general',
+      description: 'Kihon, kata y preparación física.',
+      branchId: branch.id,
+      instructorId: instructor.id,
+      dayOfWeek: 2,
+      startTime: '19:00',
+      endTime: '20:30',
+    },
+  })
+
+  await db.classEnrollment.upsert({
+    where: {
+      classId_studentId: {
+        classId: regularClass.id,
+        studentId: student.id,
+      },
+    },
+    update: {
+      status: 'ACTIVE',
+      endedAt: null,
+    },
+    create: {
+      classId: regularClass.id,
+      studentId: student.id,
+      status: 'ACTIVE',
+    },
+  })
+
   await db.studentTechnique.upsert({
     where: {
       studentId_techniqueId: {
@@ -183,6 +233,34 @@ async function main() {
       approved: true,
       approvedBy: instructor.id,
       approvedAt: new Date(),
+    },
+  })
+
+  await db.studentTechnique.upsert({
+    where: {
+      studentId_techniqueId: {
+        studentId: student.id,
+        techniqueId: 'technique-kata-taikyoku-shodan',
+      },
+    },
+    update: {},
+    create: {
+      studentId: student.id,
+      techniqueId: 'technique-kata-taikyoku-shodan',
+      approved: false,
+      notes: 'Practicar embusen y postura inicial.',
+    },
+  })
+
+  await db.studentRankHistory.upsert({
+    where: { id: 'rank-history-juan-yellow' },
+    update: {},
+    create: {
+      id: 'rank-history-juan-yellow',
+      studentId: student.id,
+      beltRankId: yellowBelt.id,
+      promotedBy: instructor.id,
+      notes: 'Grado inicial registrado.',
     },
   })
 

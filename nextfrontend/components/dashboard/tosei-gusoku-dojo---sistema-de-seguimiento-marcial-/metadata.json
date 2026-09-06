@@ -1,0 +1,6 @@
+{
+  "name": "Tosei Gusoku Dojo - Sistema de Seguimiento Marcial",
+  "description": "Plataforma de seguimiento técnico, evaluación de katas y progresión de grados kyu y dan para Shito-Ryu Inoue Ha Karate-Do.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

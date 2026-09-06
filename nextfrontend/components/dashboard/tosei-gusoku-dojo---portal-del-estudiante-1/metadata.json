@@ -1,0 +1,6 @@
+{
+  "name": "Tosei Gusoku Dojo - Portal del Estudiante",
+  "description": "Dashboard para alumnos de karate en Tosei Gusoku Dojo: seguimiento de grado, técnicas del syllabus, horarios semanales, datos personales y expediente digital.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

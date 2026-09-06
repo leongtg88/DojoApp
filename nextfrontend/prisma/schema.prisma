@@ -14,6 +14,7 @@ model School {
   branches  Branch[]
   users     User[]
   students  Student[]
+  enrollments Enrollment[]
   beltRanks BeltRank[]
   techniques Technique[]
   achievementTypes AchievementType[]
@@ -28,6 +29,7 @@ model Branch {
   school    School   @relation(fields: [schoolId], references: [id])
   users     User[]
   students  Student[]
+  enrollments Enrollment[]
   classes   Class[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -58,6 +60,7 @@ model User {
   studentProfile Student?
   guardians      GuardianStudent[] @relation("guardian")
   guardianOfStudents Student[] @relation("primaryGuardian")
+  rankPromotions StudentRankHistory[] @relation("rankPromoter")
   emailVerificationTokens EmailVerificationToken[]
   classes        Class[] @relation("instructor")
   createdAt      DateTime  @default(now())
@@ -110,6 +113,8 @@ model Student {
   achievements     StudentAchievement[]
   techniques       StudentTechnique[]
   fitnessReports   FitnessReport[]
+  classEnrollments ClassEnrollment[]
+  rankHistory      StudentRankHistory[]
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
@@ -132,9 +137,21 @@ enum EnrollmentOrigin {
   ASSISTANT
 }
 
+enum TechniqueCategory {
+  KIHON
+  KATA
+  KUMITE
+  BUNKAI
+}
+
 model Enrollment {
   id               String           @id @default(cuid())
   origin           EnrollmentOrigin
+  schoolId         String?
+  school           School?          @relation(fields: [schoolId], references: [id])
+  branchId         String?
+  branch           Branch?          @relation(fields: [branchId], references: [id])
+  applicantName    String?
   interest         String?          // qué le interesa (karate, defensa personal...)
   schedule         String?          // horario preferido
   quote            String?          // cotización dada
@@ -158,13 +175,31 @@ model BeltRank {
   schoolId  String?
   school    School?  @relation(fields: [schoolId], references: [id])
   techniques Technique[]
+  promotions StudentRankHistory[]
   createdAt DateTime @default(now())
+}
+
+model StudentRankHistory {
+  id          String   @id @default(cuid())
+  studentId   String
+  beltRankId  String
+  promotedBy  String?
+  promotedAt  DateTime @default(now())
+  notes       String?
+  student     Student  @relation(fields: [studentId], references: [id])
+  beltRank    BeltRank @relation(fields: [beltRankId], references: [id])
+  promoter    User?    @relation("rankPromoter", fields: [promotedBy], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@index([studentId, promotedAt])
+  @@index([beltRankId])
 }
 
 model Technique {
   id          String   @id @default(cuid())
   name        String   // nombre de la técnica (kata, kihon, etc.)
   description String?
+  category    TechniqueCategory @default(KIHON)
   rankId      String?
   rank        BeltRank? @relation(fields: [rankId], references: [id])
   schoolId    String?
@@ -201,8 +236,27 @@ model Class {
   startTime   String   // formato "HH:MM"
   endTime     String
   sessions    ClassSession[]
+  enrollments ClassEnrollment[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model ClassEnrollment {
+  id        String   @id @default(cuid())
+  classId   String
+  studentId String
+  status    String   @default("ACTIVE") // ACTIVE, PAUSED, COMPLETED
+  enrolledAt DateTime @default(now())
+  endedAt   DateTime?
+  notes     String?
+  class     Class    @relation(fields: [classId], references: [id])
+  student   Student  @relation(fields: [studentId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([classId, studentId])
+  @@index([studentId, status])
+  @@index([classId, status])
 }
 
 model ClassSession {
@@ -213,6 +267,8 @@ model ClassSession {
   notes     String?
   attendances Attendance[]
   createdAt DateTime @default(now())
+
+  @@unique([classId, date])
 }
 
 model Attendance {

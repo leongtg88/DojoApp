@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-bg: #FFFFFF;
+  --color-brand-card: #EF476F;
+  --color-brand-accent: #B8B070;
+  --color-brand-accent-hover: #118AB2;
+  --color-brand-red: #DC2626;
+  --color-brand-purple: #6FFFE9;
+  --color-brand-secondary: #A0CBFF;
+
+  --color-asistent-bgdark: #1A1A1A;
+  --color-asistent-bgpurple: #7B2FBE;
+  --color-asistent-bgaqua: #00B4D8;
+  --color-asistent-bgsurface: #E2E8F0;
+
+  /* Dojo Specific Semantic Tokens */
+  --color-primary: #B70011;
+  --color-primary-container: #DC2626;
+  --color-on-primary: #FFFFFF;
+  --color-secondary: #666028;
+  --color-secondary-container: #EBE29D;
+  --color-on-secondary-container: #6A642C;
+  --color-secondary-fixed: #EEE49F;
+  --color-on-secondary-fixed: #1F1C00;
+  --color-secondary-fixed-dim: #D1C886;
+
+  --color-surface: #FCF9F8;
+  --color-surface-bright: #FCF9F8;
+  --color-surface-dim: #DCD9D9;
+  --color-surface-container-lowest: #FFFFFF;
+  --color-surface-container-low: #F6F3F2;
+  --color-surface-container: #F0EDEC;
+  --color-surface-container-high: #EBE7E7;
+  --color-surface-container-highest: #E5E2E1;
+
+  --color-on-surface: #1C1B1B;
+  --color-on-surface-variant: #5C403C;
+  --color-outline: #916F6B;
+  --color-outline-variant: #E6BDB8;
+
+  --color-tertiary: #00617F;
+  --color-tertiary-container: #007BA0;
+  --color-tertiary-fixed: #BFE8FF;
+  --color-tertiary-fixed-dim: #73D2FD;
+  --color-on-tertiary-fixed-variant: #004D65;
+
+  --color-inverse-surface: #1C1B1B;
+  --color-inverse-on-surface: #F3F0EF;
+
+  --font-display: var(--font-display), 'Montserrat', sans-serif;
+  --font-sans: var(--font-sans), 'Open Sans', sans-serif;
+}
+
+/* Custom keyframes for color cycling */
+@keyframes border-color-change {
+  0% { border-color: #B8B070; }
+  25% { border-color: #6FFFE9; }
+  50% { border-color: #EF476F; }
+  75% { border-color: #118AB2; }
+  100% { border-color: #A0CBFF; }
+}
+
+@keyframes bg-color-change {
+  0% { background-color: #B8B070; }
+  25% { background-color: #6FFFE9; }
+  50% { background-color: #EF476F; }
+  75% { background-color: #118AB2; }
+  100% { background-color: #A0CBFF; }
+}
+
+@keyframes color-change {
+  0% { color: #B8B070; }
+  25% { color: #6FFFE9; }
+  50% { color: #EF476F; }
+  75% { color: #118AB2; }
+  100% { color: #A0CBFF; }
+}
+
+@keyframes shadow-color-change {
+  0% { box-shadow: 0 0 15px rgba(184, 176, 112, 0.4); }
+  25% { box-shadow: 0 0 15px rgba(111, 255, 233, 0.4); }
+  50% { box-shadow: 0 0 15px rgba(239, 71, 111, 0.4); }
+  75% { box-shadow: 0 0 15px rgba(17, 138, 178, 0.4); }
+  100% { box-shadow: 0 0 15px rgba(160, 203, 255, 0.4); }
+}
+
+/* Custom Utility Classes */
+.glass {
+  background-color: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+  background-color: rgba(26, 26, 26, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+  background-color: rgba(15, 15, 15, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-card-hover:hover {
+  transform: translateY(-3px);
+  border-color: rgba(220, 38, 38, 0.4);
+  box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.hero-button {
+  border-radius: 0.75rem;
+  padding: 1rem 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-width: 2px;
+  border-style: solid;
+  animation: border-color-change 8s infinite linear;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.hero-button:hover {
+  animation: bg-color-change 6s infinite linear;
+  color: #111111;
+  transform: scale(1.02);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #FFFFFF 40%, #DC2626);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

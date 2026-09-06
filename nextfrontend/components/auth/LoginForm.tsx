@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { motion } from 'motion/react';
@@ -22,6 +22,7 @@ export function LoginForm({
   presetPassword = '',
 }: LoginFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [email, setEmail] = useState(presetEmail);
   const [password, setPassword] = useState(presetPassword);
@@ -79,7 +80,9 @@ export function LoginForm({
       if (onSuccess) {
         onSuccess();
       } else {
-        router.push('/');
+        const callbackUrl = searchParams.get('callbackUrl');
+        router.push(callbackUrl?.startsWith('/dashboard') ? callbackUrl : '/dashboard');
+        router.refresh();
       }
     } catch (err: unknown) {
       setErrorMessage((err as Error)?.message || 'Ocurrió un error inesperado al iniciar sesión.');
