@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
 const conversionSchema = z.object({
+  applicantId: z.string().trim().min(1).optional(),
   firstName: z.string().trim().min(2).max(80),
   lastName: z.string().trim().min(2).max(120),
   dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
@@ -57,6 +58,8 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
       schoolId: true,
       branchId: true,
       contactPhone: true,
+    registrationData: true,
+    applicants: { select: { id: true, studentId: true, profileData: true } },
     },
   })
 
@@ -65,6 +68,10 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
   }
 
   const input = result.data
+  const applicant = input.applicantId ? enrollment.applicants.find(({ id, studentId }) => id === input.applicantId && !studentId) : null
+  if (input.applicantId && !applicant) {
+    return NextResponse.json({ error: 'El aspirante no está disponible para conversión' }, { status: 409 })
+  }
   const student = await db.$transaction(async (transaction) => {
     const createdStudent = await transaction.student.create({
       data: {
@@ -76,14 +83,19 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
         contactPhone: input.contactPhone ?? enrollment.contactPhone,
         medicalInfo: input.medicalInfo,
         emergencyContact: input.emergencyContact,
+    		registrationData: applicant?.profileData ?? enrollment.registrationData,
       },
       select: { id: true },
     })
 
-    await transaction.enrollment.update({
-      where: { id: enrollment.id },
-      data: { status: 'ENROLLED', studentId: createdStudent.id },
-    })
+  if (applicant) {
+    await transaction.enrollmentApplicant.update({ where: { id: applicant.id }, data: { studentId: createdStudent.id } })
+    await transaction.studentDocument.updateMany({ where: { enrollmentId: enrollment.id, applicantId: applicant.id }, data: { studentId: createdStudent.id } })
+    const remainingApplicants = await transaction.enrollmentApplicant.count({ where: { enrollmentId: enrollment.id, studentId: null } })
+    await transaction.enrollment.update({ where: { id: enrollment.id }, data: remainingApplicants === 0 ? { status: 'ENROLLED', studentId: createdStudent.id } : {} })
+  } else {
+    await transaction.enrollment.update({ where: { id: enrollment.id }, data: { status: 'ENROLLED', studentId: createdStudent.id } })
+  }
 
     return createdStudent
   })

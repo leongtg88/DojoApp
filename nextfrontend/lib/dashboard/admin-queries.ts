@@ -115,12 +115,14 @@ export async function getAdminEnrollments(userId: string): Promise<AdminEnrollme
       schedule: true,
       status: true,
       createdAt: true,
+	  applicants: { where: { studentId: null }, select: { id: true, name: true, dateOfBirth: true } },
     },
   })
 
   return enrollments.map((enrollment) => ({
     ...enrollment,
     createdAt: enrollment.createdAt.toISOString(),
+    applicants: enrollment.applicants.map((applicant) => ({ ...applicant, dateOfBirth: applicant.dateOfBirth.toISOString() })),
   }))
 }
 
@@ -171,6 +173,10 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
       schoolId: true,
       contactPhone: true,
       branch: { select: { name: true } },
+    documents: {
+    orderBy: { uploadedAt: 'desc' },
+    select: { id: true, type: true, status: true, fileName: true, mimeType: true, fileSize: true, reviewNotes: true, uploadedAt: true },
+    },
       rankHistory: {
         orderBy: { promotedAt: 'desc' },
         select: {
@@ -209,6 +215,7 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
     status: student.status,
     branchName: student.branch.name,
     contactPhone: student.contactPhone,
+	 documents: student.documents.map((document) => ({ ...document, uploadedAt: document.uploadedAt.toISOString() })),
     availableRanks: ranks.map((rank) => ({
       id: rank.id,
       name: rank.name,

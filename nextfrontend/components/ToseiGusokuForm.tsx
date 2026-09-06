@@ -306,6 +306,7 @@ const ToseiGusokuForm = () => {
 
   const [formData, setFormData] = useState<FormData>(createInitialFormData);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // ===== MANEJADORES =====
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -556,12 +557,26 @@ const ToseiGusokuForm = () => {
     if (step > 1) setStep(step - 1);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (validateStep3()) {
-      console.log('Datos a enviar:', formData);
-      setIsSuccess(true);
+    if (!validateStep3()) return;
+
+    const applicants = formData.tipoRegistro === 'adulto'
+      ? [{ name: formData.nombreAdulto, dateOfBirth: formData.fechaNacimientoAdulto, profileData: { bloodType: formData.tipoSangreAdulto, height: formData.alturaAdulto, pantSize: formData.tallaPantalonAdulto, shirtSize: formData.tallaCamisetaAdulto, address: formData.direccionAdulto, nationalId: formData.cedula, medicalInfo: formData.condicionMedica } }]
+      : formData.hijos.map((hijo) => ({ name: hijo.nombre, dateOfBirth: hijo.fechaNacimiento, profileData: { bloodType: hijo.tipoSangre, height: hijo.altura, pantSize: hijo.tallaPantalon, shirtSize: hijo.tallaCamiseta, medicalInfo: formData.condicionMedica } }));
+    const uploadData = new FormData();
+    uploadData.append('payload', JSON.stringify({ email: formData.email, phone: formData.tipoRegistro === 'adulto' ? formData.telefonoContacto : formData.telefonoMadre, applicants, registrationData: { tipoRegistro: formData.tipoRegistro, nombreMadre: formData.nombreMadre, telefonoMadre: formData.telefonoMadre, nombrePadre: formData.nombrePadre, telefonoPadre: formData.telefonoPadre, direccionPadres: formData.direccionPadres, condicionMedica: formData.condicionMedica, horasPractica: formData.horasPractica, espacioCasa: formData.espacioCasa, compromisoDiario: formData.compromisoDiario, asistenciaPadre: formData.asistenciaPadre, metodoMotivacion: formData.metodoMotivacion, razonesKarate: formData.razonesKarate, compromisoObstaculos: formData.compromisoObstaculos } }));
+    if (formData.tipoRegistro === 'adulto') {
+      if (formData.fotoAdulto) uploadData.append('document-0-PROFILE_PHOTO', formData.fotoAdulto);
+      formData.identAdulto.forEach((file) => uploadData.append('document-0-IDENTITY', file));
+    } else {
+      formData.hijos.forEach((hijo, index) => { if (hijo.foto) uploadData.append(`document-${index}-PROFILE_PHOTO`, hijo.foto); hijo.identificacion.forEach((file) => uploadData.append(`document-${index}-IDENTITY`, file)); });
     }
+    setIsSubmitting(true);
+    const response = await fetch('/api/enrollments/family', { method: 'POST', body: uploadData });
+    setIsSubmitting(false);
+    if (!response.ok) { setErrors({ tipoRegistro: 'No fue posible enviar la inscripción. Inténtalo nuevamente.' }); return; }
+    setIsSuccess(true);
   };
 
   const handleStart = () => {

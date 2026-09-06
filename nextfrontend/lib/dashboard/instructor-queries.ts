@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import type {
+  DashboardBirthday,
   InstructorAttendanceRoster,
   InstructorClassSummary,
   InstructorStudentSummary,
@@ -74,6 +75,39 @@ export async function getInstructorStudents(userId: string): Promise<InstructorS
     status: student.status,
     classNames: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.name),
   }))
+}
+
+export async function getInstructorUpcomingBirthdays(userId: string): Promise<DashboardBirthday[]> {
+  const students = await db.student.findMany({
+    where: {
+      status: 'ACTIVE',
+      classEnrollments: {
+        some: {
+          status: 'ACTIVE',
+          class: { instructorId: userId },
+        },
+      },
+    },
+    select: { id: true, firstName: true, lastName: true, dateOfBirth: true },
+  })
+  const today = new Date()
+  const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+  const millisecondsPerDay = 1000 * 60 * 60 * 24
+
+  return students.map((student) => {
+    const nextBirthday = new Date(today.getFullYear(), student.dateOfBirth.getMonth(), student.dateOfBirth.getDate())
+
+    if (nextBirthday < startOfToday) {
+      nextBirthday.setFullYear(nextBirthday.getFullYear() + 1)
+    }
+
+    return {
+      id: student.id,
+      name: `${student.firstName} ${student.lastName}`,
+      dateOfBirth: student.dateOfBirth.toISOString(),
+      daysUntil: Math.round((nextBirthday.getTime() - startOfToday.getTime()) / millisecondsPerDay),
+    }
+  }).filter(({ daysUntil }) => daysUntil <= 30).sort((first, second) => first.daysUntil - second.daysUntil)
 }
 
 export async function getInstructorAttendanceRoster(
@@ -154,7 +188,7 @@ export async function getInstructorTechniqueReview(
       currentRank: true,
       schoolId: true,
       techniques: {
-        include: { technique: true },
+        include: { technique: true, evaluation: { include: { evaluator: { select: { name: true } } } } },
         orderBy: { createdAt: 'desc' },
       },
     },
@@ -179,7 +213,7 @@ export async function getInstructorTechniqueReview(
       lastName: student.lastName,
       currentRank: student.currentRank,
     },
-    techniques: student.techniques.map(({ approved, approvedAt, notes, technique }) => ({
+    techniques: student.techniques.map(({ approved, approvedAt, notes, technique, evaluation }) => ({
       id: technique.id,
       name: technique.name,
       description: technique.description,
@@ -187,6 +221,12 @@ export async function getInstructorTechniqueReview(
       status: approved ? 'APPROVED' : 'PENDING',
       approvedAt: approvedAt?.toISOString() ?? null,
       notes,
+      evaluation: evaluation ? {
+        score: evaluation.score,
+        feedback: evaluation.feedback,
+        evaluatedAt: evaluation.evaluatedAt.toISOString(),
+        evaluatorName: evaluation.evaluator.name,
+      } : null,
     })),
     availableTechniques,
   }

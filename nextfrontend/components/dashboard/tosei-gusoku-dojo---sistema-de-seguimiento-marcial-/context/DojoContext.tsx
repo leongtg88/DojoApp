@@ -362,7 +362,7 @@ export function DojoProvider({ children }: { children: React.ReactNode }) {
           kata: kataDef,
           requirement: req,
           studentKata: sk,
-          status: sk?.status || 'POR_PRACTICAR',
+          status: sk?.status || 'NO_INICIADA',
           approvedAt: sk?.approvedAt || null,
           approvedBy: sk?.approvedBy || null,
           notes: sk?.notes,
@@ -371,7 +371,7 @@ export function DojoProvider({ children }: { children: React.ReactNode }) {
       .filter(Boolean) as KataProgressItem[];
 
     const totalRequired = katasProgress.length;
-    const masteredCount = katasProgress.filter((item) => item.status === 'DOMINADA').length;
+    const masteredCount = katasProgress.filter((item) => item.status === 'APROBADA').length;
     const percentage = totalRequired > 0 ? Number(((masteredCount / totalRequired) * 100).toFixed(1)) : 0;
     const isReadyForExam = masteredCount === totalRequired && totalRequired > 0;
 
@@ -409,7 +409,7 @@ export function DojoProvider({ children }: { children: React.ReactNode }) {
 
     if (existingIndex >= 0) {
       const existing = studentKatas[existingIndex];
-      const isNowDominada = newStatus === 'DOMINADA';
+      const isNowDominada = newStatus === 'APROBADA';
       const updated: StudentKata = {
         ...existing,
         status: newStatus,
@@ -421,7 +421,7 @@ export function DojoProvider({ children }: { children: React.ReactNode }) {
       updatedList = [...studentKatas];
       updatedList[existingIndex] = updated;
     } else {
-      const isNowDominada = newStatus === 'DOMINADA';
+      const isNowDominada = newStatus === 'APROBADA';
       const newRecord: StudentKata = {
         id: `sk-${studentId}-${kataId}-${Date.now()}`,
         studentId,
@@ -440,9 +440,9 @@ export function DojoProvider({ children }: { children: React.ReactNode }) {
 
     const kataDef = katas.find((k) => k.id === kataId);
     const statusLabels: Record<KataStatus, string> = {
-      POR_PRACTICAR: 'Por practicar',
-      EN_PROGRESO: 'En progreso',
-      DOMINADA: 'Dominada',
+      NO_INICIADA: 'Por practicar',
+      EN_PRACTICA: 'En progreso',
+      APROBADA: 'Dominada',
     };
     showToast(
       'Estado de kata actualizado',
@@ -451,7 +451,7 @@ export function DojoProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  // Update status with confirmation when reverting DOMINADA
+  // Update status with confirmation when reverting APROBADA
   const updateKataStatus = async (
     studentId: string,
     kataId: string,
@@ -461,10 +461,10 @@ export function DojoProvider({ children }: { children: React.ReactNode }) {
     const existing = studentKatas.find(
       (sk) => sk.studentId === studentId && sk.kataId === kataId
     );
-    const currentStatus = existing?.status || 'POR_PRACTICAR';
+    const currentStatus = existing?.status || 'NO_INICIADA';
 
-    // Rule: "Si cambia desde DOMINADA a otro estado, solicitar confirmación porque se eliminará la fecha de aprobación."
-    if (currentStatus === 'DOMINADA' && newStatus !== 'DOMINADA') {
+    // Rule: "Si cambia desde APROBADA a otro estado, solicitar confirmación porque se eliminará la fecha de aprobación."
+    if (currentStatus === 'APROBADA' && newStatus !== 'APROBADA') {
       const kataDef = katas.find((k) => k.id === kataId);
       setPendingReversion({
         studentId,

@@ -42,9 +42,9 @@ export function KataStatusControl({
       <button
         type="button"
         disabled={disabled || isUpdating}
-        onClick={() => handleSelect('POR_PRACTICAR')}
+        onClick={() => handleSelect('NO_INICIADA')}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-150 cursor-pointer ${
-          currentStatus === 'POR_PRACTICAR'
+          currentStatus === 'NO_INICIADA'
             ? 'bg-[#222222] text-gray-200 shadow-sm border border-[#3A3A3A]'
             : 'text-gray-400 hover:text-white hover:bg-[#1A1A1A]'
         }`}
@@ -57,9 +57,9 @@ export function KataStatusControl({
       <button
         type="button"
         disabled={disabled || isUpdating}
-        onClick={() => handleSelect('EN_PROGRESO')}
+        onClick={() => handleSelect('EN_PRACTICA')}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-150 cursor-pointer ${
-          currentStatus === 'EN_PROGRESO'
+          currentStatus === 'EN_PRACTICA'
             ? 'bg-blue-950/50 text-blue-300 shadow-sm border border-blue-700/50'
             : 'text-gray-400 hover:text-white hover:bg-[#1A1A1A]'
         }`}
@@ -72,9 +72,9 @@ export function KataStatusControl({
       <button
         type="button"
         disabled={disabled || isUpdating}
-        onClick={() => handleSelect('DOMINADA')}
+        onClick={() => handleSelect('APROBADA')}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-150 cursor-pointer ${
-          currentStatus === 'DOMINADA'
+          currentStatus === 'APROBADA'
             ? 'bg-green-950/50 text-green-300 shadow-sm border border-green-700/50 font-bold'
             : 'text-gray-400 hover:text-white hover:bg-[#1A1A1A]'
         }`}

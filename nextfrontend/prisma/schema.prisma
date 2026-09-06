@@ -61,6 +61,7 @@ model User {
   guardians      GuardianStudent[] @relation("guardian")
   guardianOfStudents Student[] @relation("primaryGuardian")
   rankPromotions StudentRankHistory[] @relation("rankPromoter")
+  techniqueEvaluations TechniqueEvaluation[] @relation("techniqueEvaluator")
   emailVerificationTokens EmailVerificationToken[]
   classes        Class[] @relation("instructor")
   createdAt      DateTime  @default(now())
@@ -103,6 +104,7 @@ model Student {
   status           String   @default("ACTIVE") // ACTIVE, INACTIVE, GRADUATED
   currentRank      String?
   photoKey         String?  // clave en Supabase Storage
+  registrationData Json?
   school           School   @relation(fields: [schoolId], references: [id])
   branch           Branch   @relation(fields: [branchId], references: [id])
   user             User?    @relation(fields: [userId], references: [id])
@@ -115,6 +117,8 @@ model Student {
   fitnessReports   FitnessReport[]
   classEnrollments ClassEnrollment[]
   rankHistory      StudentRankHistory[]
+  enrollmentApplicant EnrollmentApplicant?
+  documents        StudentDocument[]
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
@@ -135,6 +139,22 @@ model GuardianStudent {
 enum EnrollmentOrigin {
   FORM
   ASSISTANT
+}
+
+enum StudentDocumentType {
+  PROFILE_PHOTO
+  IDENTITY
+  BIRTH_CERTIFICATE
+  PASSPORT
+  MEDICAL_CERTIFICATE
+  OTHER
+}
+
+enum StudentDocumentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
 }
 
 enum TechniqueCategory {
@@ -161,10 +181,52 @@ model Enrollment {
   contactPhone     String?
   status           String           @default("PENDING") // PENDING, CONTACTED, ENROLLED, REJECTED
   notes            String?
+  registrationData Json?
+  applicants       EnrollmentApplicant[]
+  documents        StudentDocument[]
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
   @@unique([contactEmail, status]) // control básico de duplicados
+}
+
+model EnrollmentApplicant {
+  id           String     @id @default(cuid())
+  enrollmentId String
+  studentId    String?    @unique
+  name         String
+  dateOfBirth  DateTime
+  profileData  Json
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  student      Student?   @relation(fields: [studentId], references: [id])
+  documents    StudentDocument[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([enrollmentId])
+}
+
+model StudentDocument {
+  id           String                @id @default(cuid())
+  enrollmentId String
+  applicantId  String?
+  studentId    String?
+  type         StudentDocumentType
+  status       StudentDocumentStatus @default(PENDING)
+  fileName     String
+  storageKey   String                @unique
+  mimeType     String
+  fileSize     Int
+  reviewNotes  String?
+  reviewedAt   DateTime?
+  enrollment   Enrollment            @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  applicant    EnrollmentApplicant?  @relation(fields: [applicantId], references: [id], onDelete: SetNull)
+  student      Student?              @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  uploadedAt   DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+
+  @@index([applicantId])
+  @@index([studentId, status])
 }
 
 // ==================== Rangos y técnicas ====================
@@ -218,9 +280,25 @@ model StudentTechnique {
   approvedBy  String?
   approvedAt  DateTime?
   notes       String?
+  evaluation  TechniqueEvaluation?
   createdAt   DateTime @default(now())
 
   @@unique([studentId, techniqueId])
+}
+
+model TechniqueEvaluation {
+  id                 String           @id @default(cuid())
+  studentTechniqueId String           @unique
+  score              Int
+  feedback           String?
+  evaluatedBy        String
+  evaluatedAt        DateTime         @default(now())
+  studentTechnique   StudentTechnique @relation(fields: [studentTechniqueId], references: [id], onDelete: Cascade)
+  evaluator          User             @relation("techniqueEvaluator", fields: [evaluatedBy], references: [id])
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([evaluatedBy, evaluatedAt])
 }
 
 // ==================== Clases y asistencia ====================

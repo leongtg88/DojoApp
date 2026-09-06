@@ -511,89 +511,89 @@ export const INITIAL_STUDENTS: Student[] = [
 export const INITIAL_STUDENT_KATAS: StudentKata[] = [
   // Sofía Martínez (Amarillo 9.º kyu -> looking towards Naranja 8.º kyu):
   // 8 required katas for 8.º kyu:
-  // 1. Heian Shodan -> DOMINADA (approved 2026-07-12)
+  // 1. Heian Shodan -> APROBADA (approved 2026-07-12)
   {
     id: 'sk-sofia-1',
     studentId: 'student-sofia',
     kataId: 'kata-heian-shodan',
-    status: 'DOMINADA',
+    status: 'APROBADA',
     approvedAt: '2026-07-12T10:30:00.000Z',
     approvedBy: 'sensei-tanaka',
     notes: 'Excelente kime y sincronía postural en zenkutsu dachi.',
     updatedAt: '2026-07-12T10:30:00.000Z',
   },
-  // 2. Heian Nidan -> DOMINADA (approved 2026-08-20)
+  // 2. Heian Nidan -> APROBADA (approved 2026-08-20)
   {
     id: 'sk-sofia-2',
     studentId: 'student-sofia',
     kataId: 'kata-heian-nidan',
-    status: 'DOMINADA',
+    status: 'APROBADA',
     approvedAt: '2026-08-20T11:00:00.000Z',
     approvedBy: 'sensei-castillo',
     notes: 'Buena transición en kokutsu dachi con morote-uke.',
     updatedAt: '2026-08-20T11:00:00.000Z',
   },
-  // 3. Juroku -> DOMINADA (approved 2026-08-28)
+  // 3. Juroku -> APROBADA (approved 2026-08-28)
   {
     id: 'sk-sofia-3',
     studentId: 'student-sofia',
     kataId: 'kata-juroku',
-    status: 'DOMINADA',
+    status: 'APROBADA',
     approvedAt: '2026-08-28T09:15:00.000Z',
     approvedBy: 'sensei-castillo',
     notes: '16 técnicas ejecutadas con fluidez y balance marcial.',
     updatedAt: '2026-08-28T09:15:00.000Z',
   },
-  // 4. Heian Sandan -> EN_PROGRESO
+  // 4. Heian Sandan -> EN_PRACTICA
   {
     id: 'sk-sofia-4',
     studentId: 'student-sofia',
     kataId: 'kata-heian-sandan',
-    status: 'EN_PROGRESO',
+    status: 'EN_PRACTICA',
     approvedAt: null,
     approvedBy: null,
     notes: 'Mejorar la estabilidad en kiba dachi y el control de la cadera al girar.',
     updatedAt: '2026-08-29T16:00:00.000Z',
   },
-  // 5. Heian Yondan -> EN_PROGRESO
+  // 5. Heian Yondan -> EN_PRACTICA
   {
     id: 'sk-sofia-5',
     studentId: 'student-sofia',
     kataId: 'kata-heian-yondan',
-    status: 'EN_PROGRESO',
+    status: 'EN_PRACTICA',
     approvedAt: null,
     approvedBy: null,
     notes: 'Coordinar patada yorigeri con bloqueo y asegurar kime en el impacto.',
     updatedAt: '2026-08-30T17:30:00.000Z',
   },
-  // 6. Tekki Shodan -> POR_PRACTICAR
+  // 6. Tekki Shodan -> NO_INICIADA
   {
     id: 'sk-sofia-6',
     studentId: 'student-sofia',
     kataId: 'kata-tekki-shodan',
-    status: 'POR_PRACTICAR',
+    status: 'NO_INICIADA',
     approvedAt: null,
     approvedBy: null,
     notes: 'Pendiente de instrucción inicial en tatami.',
     updatedAt: '2026-08-15T00:00:00.000Z',
   },
-  // 7. Bassai Dai -> POR_PRACTICAR
+  // 7. Bassai Dai -> NO_INICIADA
   {
     id: 'sk-sofia-7',
     studentId: 'student-sofia',
     kataId: 'kata-bassai-dai',
-    status: 'POR_PRACTICAR',
+    status: 'NO_INICIADA',
     approvedAt: null,
     approvedBy: null,
     notes: 'Kata fundamental Shito-Ryu ("Romper la fortaleza").',
     updatedAt: '2026-08-15T00:00:00.000Z',
   },
-  // 8. Matsukaze -> POR_PRACTICAR
+  // 8. Matsukaze -> NO_INICIADA
   {
     id: 'sk-sofia-8',
     studentId: 'student-sofia',
     kataId: 'kata-matsukaze',
-    status: 'POR_PRACTICAR',
+    status: 'NO_INICIADA',
     approvedAt: null,
     approvedBy: null,
     notes: 'Viento en los pinos • Tradición Inoue Ha.',
@@ -605,7 +605,7 @@ export const INITIAL_STUDENT_KATAS: StudentKata[] = [
     id: 'sk-carlos-1',
     studentId: 'student-carlos',
     kataId: 'kata-heian-godan',
-    status: 'DOMINADA',
+    status: 'APROBADA',
     approvedAt: '2026-08-10T11:00:00.000Z',
     approvedBy: 'sensei-castillo',
     notes: 'Salto marcial y kime impecables.',
@@ -615,7 +615,7 @@ export const INITIAL_STUDENT_KATAS: StudentKata[] = [
     id: 'sk-carlos-2',
     studentId: 'student-carlos',
     kataId: 'kata-enpi',
-    status: 'DOMINADA',
+    status: 'APROBADA',
     approvedAt: '2026-08-18T10:00:00.000Z',
     approvedBy: 'sensei-castillo',
     notes: 'Velocidad y rotación koshi sobresalientes.',
@@ -625,7 +625,7 @@ export const INITIAL_STUDENT_KATAS: StudentKata[] = [
     id: 'sk-carlos-3',
     studentId: 'student-carlos',
     kataId: 'kata-tekki-nidan',
-    status: 'DOMINADA',
+    status: 'APROBADA',
     approvedAt: '2026-08-25T11:30:00.000Z',
     approvedBy: 'sensei-castillo',
     notes: 'Línea de kiba dachi inquebrantable.',
@@ -635,7 +635,7 @@ export const INITIAL_STUDENT_KATAS: StudentKata[] = [
     id: 'sk-carlos-4',
     studentId: 'student-carlos',
     kataId: 'kata-seienchin',
-    status: 'DOMINADA',
+    status: 'APROBADA',
     approvedAt: '2026-08-30T12:00:00.000Z',
     approvedBy: 'sensei-castillo',
     notes: 'Control respiratorio Ibuki correcto.',
@@ -645,7 +645,7 @@ export const INITIAL_STUDENT_KATAS: StudentKata[] = [
     id: 'sk-carlos-5',
     studentId: 'student-carlos',
     kataId: 'kata-rohai',
-    status: 'DOMINADA',
+    status: 'APROBADA',
     approvedAt: '2026-09-01T15:00:00.000Z',
     approvedBy: 'sensei-castillo',
     notes: 'Equilibrio tsuruashi dachi validado por tribunal.',
@@ -657,7 +657,7 @@ export const INITIAL_STUDENT_KATAS: StudentKata[] = [
     id: 'sk-marcos-1',
     studentId: 'student-marcos',
     kataId: 'kata-heian-shodan',
-    status: 'DOMINADA',
+    status: 'APROBADA',
     approvedAt: '2026-08-15T09:00:00.000Z',
     approvedBy: 'sensei-tanaka',
     notes: 'Dominio inicial de la postura básica.',
@@ -667,7 +667,7 @@ export const INITIAL_STUDENT_KATAS: StudentKata[] = [
     id: 'sk-marcos-2',
     studentId: 'student-marcos',
     kataId: 'kata-heian-nidan',
-    status: 'DOMINADA',
+    status: 'APROBADA',
     approvedAt: '2026-08-22T09:30:00.000Z',
     approvedBy: 'sensei-tanaka',
     notes: 'Correcta alineación en kokutsu dachi.',
@@ -677,7 +677,7 @@ export const INITIAL_STUDENT_KATAS: StudentKata[] = [
     id: 'sk-marcos-3',
     studentId: 'student-marcos',
     kataId: 'kata-juroku',
-    status: 'EN_PROGRESO',
+    status: 'EN_PRACTICA',
     approvedAt: null,
     approvedBy: null,
     notes: 'Faltan detalles de sincronización.',
@@ -689,7 +689,7 @@ export const INITIAL_STUDENT_KATAS: StudentKata[] = [
     id: 'sk-kenji-1',
     studentId: 'student-kenji',
     kataId: 'kata-heian-shodan',
-    status: 'POR_PRACTICAR',
+    status: 'NO_INICIADA',
     approvedAt: null,
     approvedBy: null,
     notes: 'Primera sesión programada este mes.',

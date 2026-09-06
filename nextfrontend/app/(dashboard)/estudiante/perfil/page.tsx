@@ -1,7 +1,8 @@
 import { auth } from '@/auth'
 import { StudentProfileDetails } from '@/components/dashboard/student/StudentProfileDetails'
 import { StudentProfileForm } from '@/components/dashboard/student/StudentProfileForm'
-import { getStudentDashboardSummary } from '@/lib/dashboard/student-queries'
+import { StudentDocuments } from '@/components/dashboard/student/StudentDocuments'
+import { getStudentDashboardSummary, getStudentDocuments } from '@/lib/dashboard/student-queries'
 import { redirect } from 'next/navigation'
 
 export default async function StudentProfilePage() {
@@ -10,9 +11,9 @@ export default async function StudentProfilePage() {
     }
 
     const session = await auth()
-    const summary = session?.user?.id ? await getStudentDashboardSummary(session.user.id) : null
+    const [summary, documents] = session?.user?.id ? await Promise.all([getStudentDashboardSummary(session.user.id), getStudentDocuments(session.user.id)]) : [null, null]
 
-    if (!summary) {
+    if (!summary || !documents) {
         redirect('/dashboard/estudiante')
     }
 
@@ -21,6 +22,7 @@ export default async function StudentProfilePage() {
             <StudentProfileDetails profile={summary.profile} />
             <div className="mx-auto max-w-4xl px-4 pb-8 sm:px-6 lg:px-8">
                 <StudentProfileForm profile={summary.profile} />
+                <StudentDocuments documents={documents} />
             </div>
         </>
     )

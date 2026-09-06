@@ -19,10 +19,10 @@ export function StudentMetricsGrid({ attendance, techniques }: StudentMetricsGri
     return (
         <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {cards.map(({ detail, href, icon: Icon, label, value }) => (
-                <Link className="rounded-xl border border-[#e5e2e1] bg-white p-4 shadow-sm transition-colors hover:bg-[#fffaf0]" href={href} key={label}>
-                    <div className="flex items-center justify-between text-[#666028]"><Icon aria-hidden="true" className="size-4" /><span className="text-[11px] font-semibold uppercase tracking-wide">{label}</span></div>
-                    <p className="mt-5 font-display text-3xl font-extrabold text-[#1c1b1b]">{value}</p>
-                    <p className="mt-1 text-xs text-[#5c403c]">{detail}</p>
+                <Link className="rounded-lg border border-neutral-800 bg-[#161b22] p-4 shadow-sm transition-colors hover:border-cyan-500/40 hover:bg-neutral-800" href={href} key={label}>
+                    <div className="flex items-center justify-between text-cyan-400"><Icon aria-hidden="true" className="size-4" /><span className="text-[11px] font-semibold uppercase tracking-wide">{label}</span></div>
+                    <p className="mt-5 font-display text-3xl font-extrabold text-white">{value}</p>
+                    <p className="mt-1 text-xs text-neutral-400">{detail}</p>
                 </Link>
             ))}
         </section>

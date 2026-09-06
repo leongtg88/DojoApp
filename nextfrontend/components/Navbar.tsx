@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Menu, X, BookOpen, Calendar, MapPin, Camera, MessagesSquare,
-  Play, Home, ClipboardList
+  Play, Home, ClipboardList, UserRound
 } from 'lucide-react';
 import DojoEnrollmentModal from './DojoEnrollmentModal';
 
@@ -51,6 +51,14 @@ export default function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
+          <Link
+            aria-label="Iniciar sesión"
+            className={`flex size-10 items-center justify-center rounded-lg border transition-colors ${pathname === '/login' ? 'border-brand-accent bg-brand-accent text-black' : 'border-brand-accent/20 bg-brand-accent/10 text-brand-accent hover:bg-brand-accent hover:text-black'}`}
+            href="/login"
+            title="Iniciar sesión"
+          >
+            <UserRound aria-hidden="true" className="size-4" />
+          </Link>
           <button
             onClick={() => handleOpenEnrollment('adult')}
             className="bg-brand-accent/10 border border-brand-accent/20 hover:bg-brand-accent hover:text-black text-brand-accent font-bold px-4 py-2 rounded-xl text-xs transition-all cursor-pointer active:scale-95 uppercase tracking-wide"
@@ -59,13 +67,16 @@ export default function Navbar() {
           </button>
         </div>
 
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden text-gray-700 hover:text-brand-accent p-2 rounded-lg cursor-pointer focus:outline-none"
-          aria-label="Menú principal"
-        >
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="flex items-center gap-1 md:hidden">
+          <Link aria-label="Iniciar sesión" className={`flex size-10 items-center justify-center rounded-lg transition-colors ${pathname === '/login' ? 'bg-brand-accent text-black' : 'text-gray-700 hover:bg-brand-accent/10 hover:text-brand-accent'}`} href="/login" title="Iniciar sesión"><UserRound aria-hidden="true" className="size-5" /></Link>
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="text-gray-700 hover:text-brand-accent p-2 rounded-lg cursor-pointer focus:outline-none"
+            aria-label="Menú principal"
+          >
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile bottom tab bar */}
@@ -85,6 +96,10 @@ export default function Navbar() {
         <Link href="/inscripcion" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${pathname === '/inscripcion' ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
           <ClipboardList className="w-5 h-5 mb-1" />
           <span className="font-display text-[9px] uppercase tracking-wider font-bold">Inscripción</span>
+        </Link>
+        <Link href="/login" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${pathname === '/login' ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
+          <UserRound className="w-5 h-5 mb-1" />
+          <span className="font-display text-[9px] uppercase tracking-wider">Acceder</span>
         </Link>
       </nav>
 
@@ -119,6 +134,9 @@ export default function Navbar() {
                   </Link>
                   <Link href="/inscripcion" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname === '/inscripcion' ? 'text-brand-accent' : 'text-gray-700/80'}`}>
                     <ClipboardList className="w-4 h-4 shrink-0" /><span>Formulario de Inscripción</span>
+                  </Link>
+                  <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname === '/login' ? 'text-brand-accent' : 'text-gray-700/80'}`}>
+                    <UserRound className="w-4 h-4 shrink-0" /><span>Iniciar sesión</span>
                   </Link>
                 </div>
               </div>

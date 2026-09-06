@@ -1,6 +1,6 @@
 export type Role = 'student' | 'instructor' | 'admin';
 
-export type KataStatus = 'POR_PRACTICAR' | 'EN_PROGRESO' | 'DOMINADA';
+export type KataStatus = 'NO_INICIADA' | 'EN_PRACTICA' | 'APROBADA';
 
 export type KataCategory = 'Básico' | 'Intermedio' | 'Avanzado' | 'Maestro';
 
@@ -33,6 +33,32 @@ export interface Kata {
   embusen?: string; // Floor pattern e.g. "I", "H", "Cross"
   createdAt: string;
   updatedAt: string;
+  minRankId?: string;
+  rankName?: string;
+  difficulty?: 'Básica' | 'Intermedia' | 'Avanzada';
+  videoUrl?: string;
+  tags?: string[];
+}
+
+export interface StudentKataProgress {
+  kataId: string;
+  status: KataStatus;
+  practiceHours: number;
+  score?: number;
+  lastFeedback?: string;
+  lastPracticeDate?: string;
+  evaluatedBy?: string;
+}
+
+export interface Rank {
+  id: string;
+  name: string;
+  japaneseName: string;
+  beltColor: string;
+  order: number;
+  requiredKatasIds: string[];
+  minAttendances: number;
+  minMonths: number;
 }
 
 export interface RankKataRequirement {
@@ -49,10 +75,14 @@ export interface StudentKata {
   studentId: string;
   kataId: string;
   status: KataStatus;
-  approvedAt: string | null; // ISO string when DOMINADA, null otherwise
-  approvedBy: string | null; // instructor ID when DOMINADA, null otherwise
+  approvedAt: string | null; // ISO string when APROBADA, null otherwise
+  approvedBy: string | null; // instructor ID when APROBADA, null otherwise
   notes?: string; // Sensei pedagogical feedback
   updatedAt: string;
+  practiceHours?: number;
+  score?: number;
+  lastPracticeDate?: string;
+  evaluatedBy?: string;
 }
 
 export type AttendanceStatus = 'PENDIENTE' | 'CONFIRMADA' | 'RECHAZADA';
@@ -106,6 +136,12 @@ export interface Student {
   attendancePercentage: number;
   attendancesCount: number;
   targetAttendances: number;
+  rankName?: string;
+  beltColor?: string;
+  nextRankName?: string;
+  katasProgress?: StudentKataProgress[];
+  monthsInRank?: number;
+  targetMonths?: number;
   isEligibleForExam: boolean;
   status: 'Activa' | 'Inactiva' | 'Licencia';
 }

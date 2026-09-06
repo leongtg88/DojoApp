@@ -27,6 +27,17 @@ export interface StudentProfile {
 	emergencyContact: string | null
 }
 
+export interface StudentDocumentSummary {
+	id: string
+	type: 'PROFILE_PHOTO' | 'IDENTITY' | 'BIRTH_CERTIFICATE' | 'PASSPORT' | 'MEDICAL_CERTIFICATE' | 'OTHER'
+	status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'EXPIRED'
+	fileName: string
+	mimeType: string
+	fileSize: number
+	reviewNotes: string | null
+	uploadedAt: string
+}
+
 export interface StudentTechnique {
 	id: string
 	name: string
@@ -35,6 +46,14 @@ export interface StudentTechnique {
 	status: TechniqueStatus
 	approvedAt: string | null
 	notes: string | null
+	evaluation: TechniqueEvaluation | null
+}
+
+export interface TechniqueEvaluation {
+	score: number
+	feedback: string | null
+	evaluatedAt: string
+	evaluatorName: string | null
 }
 
 export interface TechniqueCatalogItem {
@@ -115,6 +134,7 @@ export interface AdminEnrollmentSummary {
 	schedule: string | null
 	status: string
 	createdAt: string
+	applicants: { id: string; name: string; dateOfBirth: string }[]
 }
 
 export interface AdminBeltRankSummary {
@@ -142,6 +162,7 @@ export interface AdminStudentDetail {
 	status: string
 	branchName: string
 	contactPhone: string | null
+	documents: StudentDocumentSummary[]
 	rankHistory: AdminRankHistoryEntry[]
 	availableRanks: AdminBeltRankSummary[]
 }

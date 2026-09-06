@@ -11,6 +11,8 @@ const techniqueAssignmentSchema = z.object({
 
 const techniqueUpdateSchema = techniqueAssignmentSchema.extend({
   approved: z.boolean(),
+  score: z.number().int().min(0).max(10).nullable().optional(),
+  feedback: z.string().trim().max(2_000).nullable().optional(),
 })
 
 async function findInstructorStudent(userId: string, studentId: string) {
@@ -108,14 +110,34 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: 'La técnica no está asignada al alumno' }, { status: 404 })
   }
 
-  await db.studentTechnique.update({
-    where: { id: currentTechnique.id },
-    data: {
-      approved: result.data.approved,
-      approvedAt: result.data.approved ? new Date() : null,
-      approvedBy: result.data.approved ? session.user.id : null,
-      notes: result.data.notes,
-    },
+  await db.$transaction(async (transaction) => {
+    await transaction.studentTechnique.update({
+      where: { id: currentTechnique.id },
+      data: {
+        approved: result.data.approved,
+        approvedAt: result.data.approved ? new Date() : null,
+        approvedBy: result.data.approved ? session.user.id : null,
+        notes: result.data.notes,
+      },
+    })
+
+    if (result.data.score !== undefined && result.data.score !== null) {
+      await transaction.techniqueEvaluation.upsert({
+        where: { studentTechniqueId: currentTechnique.id },
+        update: {
+          score: result.data.score,
+          feedback: result.data.feedback ?? result.data.notes,
+          evaluatedBy: session.user.id,
+          evaluatedAt: new Date(),
+        },
+        create: {
+          studentTechniqueId: currentTechnique.id,
+          score: result.data.score,
+          feedback: result.data.feedback ?? result.data.notes,
+          evaluatedBy: session.user.id,
+        },
+      })
+    }
   })
 
   return NextResponse.json({ ok: true })

@@ -42,7 +42,7 @@ export function AdminStudentDetailView() {
 
   // All historical mastered katas for this student across ANY rank
   const masteredHistory = studentKatas
-    .filter((sk) => sk.studentId === activeStudent.id && sk.status === 'DOMINADA')
+    .filter((sk) => sk.studentId === activeStudent.id && sk.status === 'APROBADA')
     .map((sk) => ({
       sk,
       kata: katas.find((k) => k.id === sk.kataId),

@@ -1,330 +1,46 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import { KataProgressItem } from '@/context/DojoContext';
+import { useMemo, useState } from 'react';
+import { ChevronDown, ChevronUp, Clock, MessageSquare, Search, Timer } from 'lucide-react';
+import { Kata, KataStatus, StudentKataProgress } from '@/types';
 import { KataBadge } from './KataBadge';
-import { KataStatusControl } from './KataStatusControl';
-import { ExamRubricModal } from './ExamRubricModal';
-import { Kata, KataStatus } from '@/types';
-import {
-  FileText,
-  Search,
-  MessageSquare,
-  History,
-  Trash2,
-  Unlink,
-  Edit2,
-  MoveUp,
-  MoveDown,
-  Layers,
-  Inbox,
-} from 'lucide-react';
+import { kataDifficulty } from './studentKataModule';
+
+type StatusFilter = 'ALL' | KataStatus;
 
 interface KataListProps {
-  items: KataProgressItem[];
-  mode?: 'student' | 'instructor' | 'admin';
-  onStatusChange?: (kataId: string, newStatus: KataStatus) => Promise<unknown> | void;
-  onEditKata?: (kata: Kata) => void;
-  onUnassignKata?: (kataId: string) => void;
-  onReorder?: (kataId: string, direction: 'up' | 'down') => void;
-  showFilters?: boolean;
-  emptyMessage?: string;
+  katas?: Kata[];
+  progress?: StudentKataProgress[];
+  requiredKataIds?: string[];
+  onStartPractice?: (kataId: string) => void;
+  onSaveNote?: (kataId: string, note: string) => void;
   className?: string;
-  id?: string;
 }
 
-export function KataList({
-  items,
-  mode = 'student',
-  onStatusChange,
-  onEditKata,
-  onUnassignKata,
-  onReorder,
-  showFilters = true,
-  emptyMessage,
-  className = '',
-  id,
-}: KataListProps) {
-  const [filter, setFilter] = useState<'all' | 'pending' | 'progress' | 'mastered'>('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedRubricKata, setSelectedRubricKata] = useState<Kata | null>(null);
+export function KataList({ katas = [], progress = [], requiredKataIds = [], onStartPractice, onSaveNote, className = '' }: KataListProps) {
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
+  const [showRequired, setShowRequired] = useState(true);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [note, setNote] = useState('');
+  const progressByKata = useMemo(() => new Map(progress.map((item) => [item.kataId, item])), [progress]);
+  const visibleKatas = useMemo(() => katas.filter((kata) => {
+    const item = progressByKata.get(kata.id);
+    const status = item?.status ?? 'NO_INICIADA';
+    const matchesSearch = `${kata.name} ${kata.japaneseName ?? ''}`.toLowerCase().includes(search.toLowerCase().trim());
+    return matchesSearch && (statusFilter === 'ALL' || status === statusFilter) && (showRequired === requiredKataIds.includes(kata.id));
+  }), [katas, progressByKata, requiredKataIds, search, showRequired, statusFilter]);
+  const filters: Array<{ value: StatusFilter; label: string }> = [{ value: 'ALL', label: 'Todas' }, { value: 'APROBADA', label: 'Aprobadas' }, { value: 'EN_PRACTICA', label: 'En práctica' }, { value: 'NO_INICIADA', label: 'Por iniciar' }];
 
-  // Counts
-  const counts = useMemo(() => {
-    return {
-      all: items.length,
-      pending: items.filter((i) => i.status === 'POR_PRACTICAR').length,
-      progress: items.filter((i) => i.status === 'EN_PROGRESO').length,
-      mastered: items.filter((i) => i.status === 'DOMINADA').length,
-    };
-  }, [items]);
-
-  // Filtered items
-  const filteredItems = useMemo(() => {
-    return items.filter((item) => {
-      // Filter by status
-      if (filter === 'pending' && item.status !== 'POR_PRACTICAR') return false;
-      if (filter === 'progress' && item.status !== 'EN_PROGRESO') return false;
-      if (filter === 'mastered' && item.status !== 'DOMINADA') return false;
-
-      // Filter by search
-      if (searchTerm.trim()) {
-        const term = searchTerm.toLowerCase();
-        const matchName = item.kata.name.toLowerCase().includes(term);
-        const matchDesc = item.kata.description?.toLowerCase().includes(term) || false;
-        const matchKanji = item.kata.kanji?.toLowerCase().includes(term) || false;
-        return matchName || matchDesc || matchKanji;
-      }
-      return true;
-    });
-  }, [items, filter, searchTerm]);
-
-  return (
-    <div id={id} className={`space-y-3 ${className}`}>
-      {/* Search & Filter Bar */}
-      {showFilters && (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-          {/* Status Filter Chips */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-            <button
-              type="button"
-              onClick={() => setFilter('all')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 border ${
-                filter === 'all'
-                  ? 'bg-[#252525] text-white border-[#3A3A3A] shadow-xs'
-                  : 'bg-[#161616] text-gray-400 border-[#2A2A2A] hover:bg-[#1E1E1E] hover:text-white'
-              }`}
-            >
-              <span>Todas</span>
-              <span
-                className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                  filter === 'all' ? 'bg-white/20 text-white' : 'bg-[#111111] text-gray-400'
-                }`}
-              >
-                {counts.all}
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setFilter('pending')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 border ${
-                filter === 'pending'
-                  ? 'bg-[#252525] text-white border-[#3A3A3A] shadow-xs'
-                  : 'bg-[#161616] text-gray-400 border-[#2A2A2A] hover:bg-[#1E1E1E] hover:text-white'
-              }`}
-            >
-              <span>Por practicar</span>
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-950/50 text-amber-400 border border-amber-800/40">
-                {counts.pending}
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setFilter('progress')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 border ${
-                filter === 'progress'
-                  ? 'bg-[#252525] text-white border-[#3A3A3A] shadow-xs'
-                  : 'bg-[#161616] text-gray-400 border-[#2A2A2A] hover:bg-[#1E1E1E] hover:text-white'
-              }`}
-            >
-              <span>En progreso</span>
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-blue-950/50 text-blue-400 border border-blue-800/40">
-                {counts.progress}
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setFilter('mastered')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 border ${
-                filter === 'mastered'
-                  ? 'bg-[#252525] text-white border-[#3A3A3A] shadow-xs'
-                  : 'bg-[#161616] text-gray-400 border-[#2A2A2A] hover:bg-[#1E1E1E] hover:text-white'
-              }`}
-            >
-              <span>Dominadas</span>
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-green-950/50 text-green-400 border border-green-800/40">
-                {counts.mastered}
-              </span>
-            </button>
-          </div>
-
-          {/* Quick Search */}
-          <div className="relative w-full sm:w-56">
-            <Search className="w-4 h-4 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Filtrar por nombre..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[#161616] border border-[#2A2A2A] rounded-lg pl-8 pr-3 py-1.5 text-xs text-[#F5F5F5] placeholder:text-gray-500 focus:outline-none focus:border-[#00FFFF]"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Items List */}
-      {filteredItems.length === 0 ? (
-        <div className="bg-[#161616] rounded-xl p-8 text-center border border-[#2A2A2A] shadow-lg space-y-2">
-          <div className="w-12 h-12 rounded-full bg-[#1A1A1A] border border-[#2A2A2A] flex items-center justify-center mx-auto text-gray-500">
-            <Inbox className="w-6 h-6" />
-          </div>
-          <h4 className="text-sm font-bold text-gray-200">
-            {emptyMessage || 'No se encontraron katas con este filtro'}
-          </h4>
-          <p className="text-xs text-gray-500 max-w-sm mx-auto">
-            Prueba seleccionando otra pestaña de estado o limpiando el término de búsqueda.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-2.5">
-          {filteredItems.map((item, idx) => (
-            <div
-              key={item.kata.id}
-              className="bg-[#161616] p-4 rounded-xl shadow-lg border border-[#2A2A2A] hover:border-[#383838] transition-all space-y-3"
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                {/* Left info */}
-                <div className="flex items-start sm:items-center gap-3 min-w-0">
-                  <div className="w-9 h-9 rounded-lg bg-[#111111] flex items-center justify-center text-xs font-bold text-gray-300 shrink-0 border border-[#2A2A2A]">
-                    #{item.requirement.requiredOrder || idx + 1}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h4 className="text-sm font-bold text-white truncate">
-                        {item.kata.name}
-                      </h4>
-                      {item.kata.kanji && (
-                        <span className="text-xs text-gray-400 font-serif">
-                          {item.kata.kanji}
-                        </span>
-                      )}
-                      <KataBadge
-                        status={item.status}
-                        approvedAt={item.approvedAt}
-                      />
-                    </div>
-                    <p className="text-xs text-gray-400 mt-1 line-clamp-1">
-                      {item.kata.description || 'Kata oficial Inoue Ha Shito-Ryu.'}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Right controls based on mode */}
-                <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                  {/* Mode: Student */}
-                  {mode === 'student' && (
-                    <button
-                      type="button"
-                      onClick={() => setSelectedRubricKata(item.kata)}
-                      className="px-3 py-1.5 rounded-lg bg-[#222222] hover:bg-[#2A2A2A] border border-[#2A2A2A] text-gray-200 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
-                    >
-                      <FileText className="w-3.5 h-3.5 text-gray-400" />
-                      <span>Ver pautas de examen</span>
-                    </button>
-                  )}
-
-                  {/* Mode: Instructor */}
-                  {mode === 'instructor' && onStatusChange && (
-                    <KataStatusControl
-                      currentStatus={item.status}
-                      kataId={item.kata.id}
-                      kataName={item.kata.name}
-                      onStatusSelect={(status) => onStatusChange(item.kata.id, status)}
-                    />
-                  )}
-
-                  {/* Mode: Admin */}
-                  {mode === 'admin' && (
-                    <div className="flex items-center gap-1">
-                      {onReorder && (
-                        <>
-                          <button
-                            type="button"
-                            onClick={() => onReorder(item.kata.id, 'up')}
-                            title="Subir orden"
-                            className="p-1.5 rounded hover:bg-[#222222] text-gray-400 hover:text-white cursor-pointer"
-                          >
-                            <MoveUp className="w-4 h-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => onReorder(item.kata.id, 'down')}
-                            title="Bajar orden"
-                            className="p-1.5 rounded hover:bg-[#222222] text-gray-400 hover:text-white cursor-pointer"
-                          >
-                            <MoveDown className="w-4 h-4" />
-                          </button>
-                        </>
-                      )}
-                      {onEditKata && (
-                        <button
-                          type="button"
-                          onClick={() => onEditKata(item.kata)}
-                          title="Editar Kata"
-                          className="p-1.5 rounded hover:bg-[#222222] text-gray-400 hover:text-white cursor-pointer"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                      )}
-                      {onUnassignKata && (
-                        <button
-                          type="button"
-                          onClick={() => onUnassignKata(item.kata.id)}
-                          title="Desasignar del grado"
-                          className="p-1.5 rounded hover:bg-red-950/40 text-red-400 cursor-pointer"
-                        >
-                          <Unlink className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Sensei Observation / Feedback Note */}
-              {item.notes && (
-                <div className="bg-[#1A1A1A] p-2.5 rounded-lg border border-[#2A2A2A] flex items-start gap-2 text-xs">
-                  <MessageSquare className="w-3.5 h-3.5 text-[#D10000] shrink-0 mt-0.5" />
-                  <div className="flex flex-col">
-                    <span className="font-bold text-[#D10000] uppercase text-[10px]">
-                      Observación del Sensei
-                    </span>
-                    <p className="text-gray-300 italic mt-0.5">&ldquo;{item.notes}&rdquo;</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Metadata strip */}
-              <div className="flex items-center gap-3 text-[11px] text-gray-500 pt-1 border-t border-[#222222]">
-                <span>{item.kata.movementsCount} movimientos</span>
-                <span>•</span>
-                <span>{item.kata.embusen || 'Línea de tatami'}</span>
-                <span>•</span>
-                <span className="capitalize">{item.kata.category}</span>
-                {item.approvedAt && (
-                  <>
-                    <span>•</span>
-                    <span className="text-green-400 font-medium flex items-center gap-1">
-                      <History className="w-3 h-3" />
-                      Evaluada el {new Date(item.approvedAt).toLocaleDateString('es-DO')}
-                    </span>
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Rubric Examination Modal */}
-      <ExamRubricModal
-        kata={selectedRubricKata}
-        isOpen={Boolean(selectedRubricKata)}
-        onClose={() => setSelectedRubricKata(null)}
-      />
+  return <section className={`space-y-4 ${className}`}>
+    <div className="space-y-3 rounded-lg border border-neutral-800 bg-[#161b22] p-3">
+      <label className="relative block"><Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-cyan-400" /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar Pinan Nidan, Bassai Dai, Seienchin..." className="w-full rounded-md border border-neutral-700 bg-[#0d1117] py-2 pl-9 pr-3 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" /></label>
+      <div className="flex flex-wrap gap-2">{filters.map((filter) => <button key={filter.value} type="button" onClick={() => setStatusFilter(filter.value)} className={`rounded-md border px-2.5 py-1.5 text-xs font-semibold ${statusFilter === filter.value ? 'border-cyan-500/50 bg-cyan-500/15 text-cyan-200' : 'border-neutral-700 bg-neutral-900 text-neutral-400 hover:text-white'}`}>{filter.label}</button>)}</div>
+      <div className="inline-flex rounded-md border border-neutral-700 bg-[#0d1117] p-1 text-xs"><button type="button" onClick={() => setShowRequired(true)} className={`rounded px-2.5 py-1.5 ${showRequired ? 'bg-emerald-500/20 text-emerald-200' : 'text-neutral-400'}`}>Requeridas para mi grado</button><button type="button" onClick={() => setShowRequired(false)} className={`rounded px-2.5 py-1.5 ${!showRequired ? 'bg-cyan-500/20 text-cyan-200' : 'text-neutral-400'}`}>Adicionales / asignadas</button></div>
     </div>
-  );
+    {visibleKatas.length === 0 ? <div className="rounded-lg border border-dashed border-neutral-700 bg-[#161b22] px-6 py-12 text-center text-sm text-neutral-400">No hay katas que coincidan con los filtros seleccionados.</div> : <div className="space-y-3">{visibleKatas.map((kata) => {
+      const item = progressByKata.get(kata.id); const status = item?.status ?? 'NO_INICIADA'; const isExpanded = expandedId === kata.id;
+      return <article key={kata.id} className="rounded-lg border border-neutral-800 bg-[#161b22] p-4 hover:border-neutral-700"><div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h3 className="font-semibold text-white">{kata.name}</h3><KataBadge status={status} /></div><p className="mt-1 font-serif text-sm text-neutral-400">{kata.japaneseName ?? 'Nombre japonés pendiente'}</p></div><button type="button" onClick={() => { setExpandedId(isExpanded ? null : kata.id); setNote(item?.lastFeedback ?? ''); }} className="inline-flex items-center gap-1 self-start text-xs font-semibold text-cyan-300 hover:text-cyan-100">Detalles {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</button></div><div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-400"><span>{kataDifficulty(kata)}</span><span>{kata.movementsCount} movimientos</span><span>{kata.embusen ?? 'Embusen por definir'}</span><span>{kata.rankName ?? 'Programa del dojo'}</span><span className="inline-flex items-center gap-1"><Timer className="h-3.5 w-3.5 text-amber-400" />{item?.practiceHours ?? 0} h de práctica</span></div>{isExpanded && <div className="mt-4 space-y-3 border-t border-neutral-800 pt-4"><p className="text-sm leading-6 text-neutral-300">{kata.description}</p>{item?.score !== undefined && <p className="text-sm text-emerald-300">Evaluación del sensei: {item.score.toFixed(1)} / 10</p>}{item?.lastFeedback && <p className="flex gap-2 rounded-md border border-cyan-900/50 bg-cyan-950/20 p-3 text-xs text-cyan-100"><MessageSquare className="h-4 w-4 shrink-0 text-cyan-400" />{item.lastFeedback}</p>}{status === 'NO_INICIADA' && <button type="button" onClick={() => onStartPractice?.(kata.id)} className="inline-flex items-center gap-1.5 rounded-md bg-amber-500 px-3 py-2 text-xs font-bold text-[#0d1117] hover:bg-amber-400"><Clock className="h-4 w-4" />Comenzar práctica</button>}<div className="flex flex-col gap-2 sm:flex-row"><input value={note} onChange={(event) => setNote(event.target.value)} placeholder="Nota personal de práctica" className="min-w-0 flex-1 rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-xs text-white outline-none focus:border-cyan-500" /><button type="button" onClick={() => onSaveNote?.(kata.id, note)} className="rounded-md border border-cyan-500/40 px-3 py-2 text-xs font-semibold text-cyan-200 hover:bg-cyan-500/10">Guardar nota</button></div></div>}</article>;
+    })}</div>}
+  </section>;
 }

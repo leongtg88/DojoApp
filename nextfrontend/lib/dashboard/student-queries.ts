@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import type {
   StudentAttendanceRecord,
   StudentDashboardSummary,
+	StudentDocumentSummary,
   TechniqueStatus,
 } from '@/types/dashboard'
 
@@ -17,7 +18,7 @@ export async function getStudentDashboardSummary(
     include: {
       user: { select: { email: true } },
       techniques: {
-        include: { technique: true },
+        include: { technique: true, evaluation: { include: { evaluator: { select: { name: true } } } } },
         orderBy: { createdAt: 'desc' },
       },
       attendances: { select: { present: true } },
@@ -59,7 +60,7 @@ export async function getStudentDashboardSummary(
       totalSessions,
       percentage: totalSessions === 0 ? 0 : Math.round((attendedSessions / totalSessions) * 100),
     },
-    techniques: student.techniques.map(({ approved, approvedAt, notes, technique }) => ({
+    techniques: student.techniques.map(({ approved, approvedAt, notes, technique, evaluation }) => ({
       id: technique.id,
       name: technique.name,
       description: technique.description,
@@ -67,6 +68,12 @@ export async function getStudentDashboardSummary(
       status: techniqueStatus(approved),
       approvedAt: approvedAt?.toISOString() ?? null,
       notes,
+      evaluation: evaluation ? {
+        score: evaluation.score,
+        feedback: evaluation.feedback,
+        evaluatedAt: evaluation.evaluatedAt.toISOString(),
+        evaluatorName: evaluation.evaluator.name,
+      } : null,
     })),
     upcomingClasses: [],
   }
@@ -143,4 +150,22 @@ export async function getStudentSchedule(userId: string) {
     endTime: scheduledClass.endTime,
     instructorName: scheduledClass.instructor?.name ?? null,
   }))
+}
+
+export async function getStudentDocuments(userId: string): Promise<StudentDocumentSummary[] | null> {
+  const student = await db.student.findUnique({
+    where: { userId },
+    select: {
+      documents: {
+        orderBy: { uploadedAt: 'desc' },
+        select: { id: true, type: true, status: true, fileName: true, mimeType: true, fileSize: true, reviewNotes: true, uploadedAt: true },
+      },
+    },
+  })
+
+  if (!student) {
+    return null
+  }
+
+  return student.documents.map((document) => ({ ...document, uploadedAt: document.uploadedAt.toISOString() }))
 }

@@ -260,7 +260,7 @@ export function DeliverableDocumentationView() {
 
             <div className="py-3 grid grid-cols-1 sm:grid-cols-4 gap-2">
               <span className="font-bold text-white">4. KataBadge</span>
-              <span className="text-gray-400">POR_PRACTICAR, EN_PROGRESO, DOMINADA</span>
+              <span className="text-gray-400">NO_INICIADA, EN_PRACTICA, APROBADA</span>
               <span className="text-gray-300 sm:col-span-2">
                 Insignia accesible combinando color, icono específico y fecha de aprobación si aplica.
               </span>
@@ -359,7 +359,7 @@ export function DeliverableDocumentationView() {
             <div className="p-4 rounded-lg bg-[#1A1A1A] border border-[#2A2A2A] space-y-2">
               <h4 className="font-bold text-white">4. StudentKata (Progreso Individual)</h4>
               <p className="text-gray-400">
-                id, studentId, kataId, status (&apos;POR_PRACTICAR&apos;|&apos;EN_PROGRESO&apos;|&apos;DOMINADA&apos;), approvedAt, approvedBySenseiId, notes.
+                id, studentId, kataId, status (&apos;NO_INICIADA&apos;|&apos;EN_PRACTICA&apos;|&apos;APROBADA&apos;), approvedAt, approvedBySenseiId, notes.
               </p>
               <div className="text-[11px] text-gray-500">
                 Almacena el estado de la kata, timestamp de aprobación y observaciones del Sensei.

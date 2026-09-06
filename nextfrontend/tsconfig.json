@@ -30,5 +30,9 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "components/dashboard/tosei-gusoku-dojo---portal-del-estudiante-1",
+    "components/dashboard/tosei-gusoku-dojo---sistema-de-seguimiento-marcial-"
+  ]
 }

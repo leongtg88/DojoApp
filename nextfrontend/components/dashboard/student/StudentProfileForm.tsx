@@ -43,15 +43,15 @@ export function StudentProfileForm({ profile }: StudentProfileFormProps) {
     }
 
     return (
-        <section className="mt-8 border border-[#e5e2e1] bg-white p-5 sm:p-6">
-            <h2 className="font-display text-lg font-bold text-[#1c1b1b]">Actualizar datos de contacto</h2>
-            <p className="mt-1 text-sm text-[#5c403c]">Los cambios quedan asociados a tu expediente de estudiante.</p>
+        <section className="mt-8 rounded-lg border border-neutral-800 bg-[#161b22] p-5 sm:p-6">
+            <h2 className="font-display text-lg font-bold text-white">Actualizar datos de contacto</h2>
+            <p className="mt-1 text-sm text-neutral-400">Los cambios quedan asociados a tu expediente de estudiante.</p>
 
             <form className="mt-5 space-y-4" onSubmit={handleSubmit}>
-                <label className="block text-sm font-semibold text-[#1c1b1b]" htmlFor="contact-phone">
+                <label className="block text-sm font-semibold text-neutral-200" htmlFor="contact-phone">
                     Teléfono
                     <input
-                        className="mt-1.5 block w-full border border-[#d8d1cf] bg-[#fcf9f8] px-3 py-2 text-sm outline-none focus:border-[#b70011]"
+                        className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
                         id="contact-phone"
                         onChange={(event) => setContactPhone(event.target.value)}
                         type="tel"
@@ -59,10 +59,10 @@ export function StudentProfileForm({ profile }: StudentProfileFormProps) {
                     />
                 </label>
 
-                <label className="block text-sm font-semibold text-[#1c1b1b]" htmlFor="emergency-contact">
+                <label className="block text-sm font-semibold text-neutral-200" htmlFor="emergency-contact">
                     Contacto de emergencia
                     <textarea
-                        className="mt-1.5 block w-full border border-[#d8d1cf] bg-[#fcf9f8] px-3 py-2 text-sm outline-none focus:border-[#b70011]"
+                        className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
                         id="emergency-contact"
                         onChange={(event) => setEmergencyContact(event.target.value)}
                         rows={3}
@@ -70,10 +70,10 @@ export function StudentProfileForm({ profile }: StudentProfileFormProps) {
                     />
                 </label>
 
-                <label className="block text-sm font-semibold text-[#1c1b1b]" htmlFor="medical-info">
+                <label className="block text-sm font-semibold text-neutral-200" htmlFor="medical-info">
                     Información médica relevante
                     <textarea
-                        className="mt-1.5 block w-full border border-[#d8d1cf] bg-[#fcf9f8] px-3 py-2 text-sm outline-none focus:border-[#b70011]"
+                        className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
                         id="medical-info"
                         onChange={(event) => setMedicalInfo(event.target.value)}
                         rows={4}
@@ -81,10 +81,10 @@ export function StudentProfileForm({ profile }: StudentProfileFormProps) {
                     />
                 </label>
 
-                {error && <p className="text-sm font-medium text-[#b70011]">{error}</p>}
+                {error && <p className="text-sm font-medium text-red-300">{error}</p>}
 
                 <button
-                    className="inline-flex items-center gap-2 bg-[#b70011] px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] disabled:cursor-not-allowed disabled:opacity-60"
                     disabled={isSaving}
                     type="submit"
                 >
