@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'motion/react';
-import { MapPin, Phone, Globe, Award, Sparkles, CheckCircle, Shield } from 'lucide-react';
+import { MapPin, Phone, Globe } from 'lucide-react';
 import { DOJO_INFO } from '@/lib/auth-data';
 
 interface AuthSidePanelProps {
@@ -12,9 +13,9 @@ interface AuthSidePanelProps {
 export function AuthSidePanel({ mode }: AuthSidePanelProps) {
   const isLogin = mode === 'login';
 
-  const title = isLogin ? 'Logística Global Confiable' : 'Únete a Nuestra Escuela';
+  const title = isLogin ? 'Karate Tradicional Shito Ryu' : 'Únete a Nuestra Escuela';
   const subtitle = isLogin
-    ? 'Gestiona tu entrenamiento marcial con la misma precisión que mueve el mundo.'
+    ? 'Entrena con disciplina, respeto y constancia en el camino de la tradición.'
     : 'Comienza tu camino en el karate tradicional Shito Ryu con instructores certificados en Santo Domingo.';
 
   return (
@@ -47,17 +48,8 @@ export function AuthSidePanel({ mode }: AuthSidePanelProps) {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between"
+          className="flex items-center justify-end"
         >
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-white to-gray-500 flex items-center justify-center text-black shadow-lg">
-              <Shield className="w-4 h-4 text-black" />
-            </div>
-            <span className="text-sm font-bold tracking-[0.3em] uppercase text-white">
-              {DOJO_INFO.name}
-            </span>
-          </div>
-
           <div className="flex items-center space-x-2 text-[10px] tracking-[0.2em] uppercase text-white/40 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></div>
             <span>Sistema Activo</span>
@@ -76,11 +68,18 @@ export function AuthSidePanel({ mode }: AuthSidePanelProps) {
           className="max-w-md space-y-4"
         >
           <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-white/40 font-semibold">
-            <Award className="w-3.5 h-3.5 text-white/60" />
             <span>{isLogin ? 'Acceso a Miembros' : 'Admisión Abierta'}</span>
           </div>
 
-          <h1 className="text-4xl lg:text-5xl font-light tracking-tighter leading-[1.05] text-white">
+          <Image
+            src="/assets/LogoIskia.svg"
+            alt="ISKIA"
+            width={120}
+            height={120}
+            className="w-auto h-24 lg:h-28 my-4 mx-auto"
+          />
+
+          <h1 className="text-3xl lg:text-4xl font-light tracking-tighter leading-[1.05] text-white">
             {title}
           </h1>
 

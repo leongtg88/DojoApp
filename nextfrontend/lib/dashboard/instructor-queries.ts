@@ -1,6 +1,9 @@
 import { db } from '@/lib/db'
+import { computeBirthdays } from '@/lib/dashboard/birthdays'
 import type {
+  AttendanceRecord,
   DashboardBirthday,
+  InstructorAttendanceBoardData,
   InstructorAttendanceRoster,
   InstructorClassSummary,
   InstructorStudentSummary,
@@ -56,6 +59,7 @@ export async function getInstructorStudents(userId: string): Promise<InstructorS
       firstName: true,
       lastName: true,
       currentRank: true,
+      schoolId: true,
       status: true,
       classEnrollments: {
         where: {
@@ -64,17 +68,42 @@ export async function getInstructorStudents(userId: string): Promise<InstructorS
         },
         select: { class: { select: { name: true } } },
       },
+      techniques: {
+        select: { approved: true, practiceHours: true },
+      },
+      attendances: {
+        select: { status: true, present: true, hoursTrained: true },
+      },
     },
   })
 
-  return students.map((student) => ({
-    id: student.id,
-    firstName: student.firstName,
-    lastName: student.lastName,
-    currentRank: student.currentRank,
-    status: student.status,
-    classNames: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.name),
-  }))
+  const ranks = await db.beltRank.findMany({
+    where: { OR: [{ schoolId: students[0]?.schoolId ?? '__none__' }, { schoolId: null }] },
+    select: { name: true, kyuDan: true, beltColor: true, order: true },
+  })
+  const rankByName = new Map(ranks.map((rank) => [rank.name, rank]))
+
+  return students.map((student) => {
+    const rank = rankByName.get(student.currentRank ?? '')
+    const masteredCount = student.techniques.filter(({ approved }) => approved).length
+    const requiredCount = student.techniques.length
+    const confirmedCount = student.attendances.filter(({ status }) => status === 'CONFIRMED').length
+    const attendancePercent = Math.min(100, Math.round((confirmedCount / 30) * 100))
+
+    return {
+      id: student.id,
+      firstName: student.firstName,
+      lastName: student.lastName,
+      currentRank: student.currentRank,
+      status: student.status,
+      classNames: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.name),
+      kyuDan: rank?.kyuDan ?? null,
+      beltColor: rank?.beltColor ?? null,
+      masteredCount,
+      requiredCount,
+      attendancePercent,
+    }
+  })
 }
 
 export async function getInstructorUpcomingBirthdays(userId: string): Promise<DashboardBirthday[]> {
@@ -88,26 +117,74 @@ export async function getInstructorUpcomingBirthdays(userId: string): Promise<Da
         },
       },
     },
-    select: { id: true, firstName: true, lastName: true, dateOfBirth: true },
+    select: { id: true, firstName: true, lastName: true, dateOfBirth: true, currentRank: true },
   })
-  const today = new Date()
-  const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-  const millisecondsPerDay = 1000 * 60 * 60 * 24
+  const ranks = await db.beltRank.findMany({ select: { name: true, kyuDan: true } })
+  const rankByName = new Map(ranks.map((rank) => [rank.name, rank]))
 
-  return students.map((student) => {
-    const nextBirthday = new Date(today.getFullYear(), student.dateOfBirth.getMonth(), student.dateOfBirth.getDate())
+  return computeBirthdays(
+    students.map((student) => {
+      const rank = rankByName.get(student.currentRank ?? '')
+      return {
+        id: student.id,
+        name: `${student.firstName} ${student.lastName}`,
+        role: 'student' as const,
+        birthDate: student.dateOfBirth,
+        detail: rank ? `${rank.name} (${rank.kyuDan ?? ''})`.trim() : 'Alumno',
+      }
+    }),
+  )
+}
 
-    if (nextBirthday < startOfToday) {
-      nextBirthday.setFullYear(nextBirthday.getFullYear() + 1)
-    }
+export async function getInstructorAttendanceBoard(userId: string): Promise<InstructorAttendanceBoardData> {
+  const instructor = await db.user.findUnique({
+    where: { id: userId },
+    select: { name: true },
+  })
 
-    return {
-      id: student.id,
-      name: `${student.firstName} ${student.lastName}`,
-      dateOfBirth: student.dateOfBirth.toISOString(),
-      daysUntil: Math.round((nextBirthday.getTime() - startOfToday.getTime()) / millisecondsPerDay),
-    }
-  }).filter(({ daysUntil }) => daysUntil <= 30).sort((first, second) => first.daysUntil - second.daysUntil)
+  const attendances = await db.attendance.findMany({
+    where: {
+      student: {
+        classEnrollments: {
+          some: {
+            status: 'ACTIVE',
+            class: { instructorId: userId },
+          },
+        },
+      },
+    },
+    orderBy: { date: 'desc' },
+    take: 200,
+    include: {
+      student: { select: { id: true, firstName: true, lastName: true } },
+      confirmedBy: { select: { name: true } },
+    },
+  })
+
+  const records: AttendanceRecord[] = attendances.map((attendance) => ({
+    id: attendance.id,
+    studentId: attendance.student.id,
+    studentName: `${attendance.student.firstName} ${attendance.student.lastName}`,
+    date: attendance.date.toISOString(),
+    hoursTrained: attendance.hoursTrained,
+    sessionType: attendance.sessionType,
+    status: attendance.status,
+    present: attendance.present,
+    confirmedByName: attendance.confirmedBy?.name ?? null,
+    notes: attendance.notes,
+    punchedAt: attendance.punchedAt.toISOString(),
+  }))
+
+  const availableDates = [...new Set(records.map(({ date }) => date.slice(0, 10)))].sort().reverse()
+
+  return {
+    pendingCount: records.filter(({ status }) => status === 'PENDING').length,
+    confirmedCount: records.filter(({ status }) => status === 'CONFIRMED').length,
+    totalHours: Number(records.filter(({ status }) => status === 'CONFIRMED').reduce((sum, { hoursTrained }) => sum + hoursTrained, 0).toFixed(1)),
+    instructorName: instructor?.name ?? 'Instructor',
+    records,
+    availableDates,
+  }
 }
 
 export async function getInstructorAttendanceRoster(
@@ -213,14 +290,15 @@ export async function getInstructorTechniqueReview(
       lastName: student.lastName,
       currentRank: student.currentRank,
     },
-    techniques: student.techniques.map(({ approved, approvedAt, notes, technique, evaluation }) => ({
+    techniques: student.techniques.map(({ approved, approvedAt, inPractice, notes, practiceHours, technique, evaluation }) => ({
       id: technique.id,
       name: technique.name,
       description: technique.description,
       category: technique.category,
-      status: approved ? 'APPROVED' : 'PENDING',
+      status: approved ? 'APPROVED' : inPractice ? 'IN_PROGRESS' : 'PENDING',
       approvedAt: approvedAt?.toISOString() ?? null,
       notes,
+      practiceHours,
       evaluation: evaluation ? {
         score: evaluation.score,
         feedback: evaluation.feedback,

@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
+import { StudentProfileActions } from '@/components/dashboard/student/StudentProfileActions'
 import { StudentProfileDetails } from '@/components/dashboard/student/StudentProfileDetails'
-import { StudentProfileForm } from '@/components/dashboard/student/StudentProfileForm'
 import { StudentDocuments } from '@/components/dashboard/student/StudentDocuments'
 import { getStudentDashboardSummary, getStudentDocuments } from '@/lib/dashboard/student-queries'
 import { redirect } from 'next/navigation'
@@ -20,8 +20,11 @@ export default async function StudentProfilePage() {
     return (
         <>
             <StudentProfileDetails profile={summary.profile} />
+            <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 pb-8 sm:px-6 lg:px-8">
+                <p className="text-sm text-neutral-400">¿Necesitas actualizar tu teléfono, contacto de emergencia o notas médicas?</p>
+                <StudentProfileActions profile={summary.profile} />
+            </div>
             <div className="mx-auto max-w-4xl px-4 pb-8 sm:px-6 lg:px-8">
-                <StudentProfileForm profile={summary.profile} />
                 <StudentDocuments documents={documents} />
             </div>
         </>

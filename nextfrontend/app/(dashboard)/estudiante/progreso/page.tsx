@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
 import { StudentProgressOverview } from '@/components/dashboard/student/StudentProgressOverview'
-import { getStudentDashboardSummary } from '@/lib/dashboard/student-queries'
+import { getStudentDashboardSummary, getStudentKataProgress } from '@/lib/dashboard/student-queries'
 import { redirect } from 'next/navigation'
 
 export default async function StudentProgressPage() {
@@ -9,11 +9,17 @@ export default async function StudentProgressPage() {
     }
 
     const session = await auth()
-    const summary = session?.user?.id ? await getStudentDashboardSummary(session.user.id) : null
+    const userId = session?.user?.id
 
-    if (!summary) {
+    if (!userId) {
+        redirect('/dashboard/no-autorizado')
+    }
+
+    const [kataSummary, summary] = await Promise.all([getStudentKataProgress(userId), getStudentDashboardSummary(userId)])
+
+    if (!kataSummary || !summary) {
         redirect('/dashboard/estudiante')
     }
 
-    return <StudentProgressOverview summary={summary} />
+    return <StudentProgressOverview kataSummary={kataSummary} summary={summary} />
 }

@@ -89,12 +89,12 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                                     <div>
                                         <p className="text-sm font-semibold text-white">{record.firstName} {record.lastName}</p>
                                         <p className="mt-1 text-xs text-neutral-400">{record.currentRank ?? 'Sin grado asignado'}</p>
-                                    <input
-                                        className="mt-3 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
-                                        onChange={(event) => updateRecord(record.id, { notes: event.target.value })}
-                                        placeholder="Observación opcional"
-                                        value={record.notes ?? ''}
-                                    />
+                                        <input
+                                            className="mt-3 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
+                                            onChange={(event) => updateRecord(record.id, { notes: event.target.value })}
+                                            placeholder="Observación opcional"
+                                            value={record.notes ?? ''}
+                                        />
                                     </div>
                                     <div aria-label={`Asistencia de ${record.firstName} ${record.lastName}`} className="inline-flex self-start rounded-md border border-neutral-700 bg-[#0d1117] p-1 text-xs font-bold">
                                         <button aria-pressed={record.present} className={`rounded px-3 py-1.5 ${record.present ? 'bg-emerald-500 text-[#0d1117]' : 'text-neutral-400 hover:bg-neutral-800'}`} onClick={() => updateRecord(record.id, { present: true })} type="button">Presente</button>

@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
-import { StudentAttendanceHistory } from '@/components/dashboard/student/StudentAttendanceHistory'
-import { getStudentAttendanceHistory } from '@/lib/dashboard/student-queries'
+import { StudentAttendancePunch } from '@/components/dashboard/student/StudentAttendancePunch'
+import { getStudentAttendancePunchData } from '@/lib/dashboard/student-queries'
 import { redirect } from 'next/navigation'
 
 export default async function StudentAttendancePage() {
@@ -10,11 +10,20 @@ export default async function StudentAttendancePage() {
         redirect('/dashboard/no-autorizado')
     }
 
-    const records = await getStudentAttendanceHistory(session.user.id)
+    const data = await getStudentAttendancePunchData(session.user.id)
 
-    if (!records) {
+    if (!data) {
         redirect('/dashboard/estudiante')
     }
 
-    return <StudentAttendanceHistory records={records} />
+    return (
+        <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+            <p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">Mi asistencia</p>
+            <h1 className="mt-2 font-display text-3xl font-extrabold text-white">Punch &amp; Seguimiento</h1>
+            <p className="mt-2 text-sm text-neutral-400">Marca tus prácticas y el Sensei confirma al finalizar el tatami.</p>
+            <section className="mt-7">
+                <StudentAttendancePunch data={data} />
+            </section>
+        </main>
+    )
 }

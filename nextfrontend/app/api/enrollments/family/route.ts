@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client'
 import { db } from '@/lib/db'
 import { uploadPrivateDocument } from '@/lib/document-storage'
 import { NextResponse } from 'next/server'
@@ -32,6 +33,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Datos de inscripción no válidos' }, { status: 400 })
   }
 
+  if (!formData) {
+    return NextResponse.json({ error: 'Solicitud sin archivos adjuntos' }, { status: 400 })
+  }
+
   const branch = await db.branch.findFirst({ orderBy: { createdAt: 'asc' }, select: { id: true, schoolId: true } })
   if (!branch) {
     return NextResponse.json({ error: 'No hay una sede disponible para la inscripción' }, { status: 503 })
@@ -45,12 +50,12 @@ export async function POST(request: Request) {
   const input = parsed.data
   const enrollment = await db.enrollment.upsert({
     where: { contactEmail_status: { contactEmail: input.email.toLowerCase(), status: 'PENDING' } },
-    update: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, registrationData: input.registrationData, applicants: { deleteMany: {} } },
-    create: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactEmail: input.email.toLowerCase(), contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, registrationData: input.registrationData },
+    update: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, registrationData: input.registrationData as Prisma.InputJsonValue, applicants: { deleteMany: {} } },
+    create: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactEmail: input.email.toLowerCase(), contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, registrationData: input.registrationData as Prisma.InputJsonValue },
     select: { id: true },
   })
 
-  const applicants = await Promise.all(input.applicants.map((applicant) => db.enrollmentApplicant.create({ data: { enrollmentId: enrollment.id, name: applicant.name, dateOfBirth: new Date(`${applicant.dateOfBirth}T00:00:00.000Z`), profileData: applicant.profileData }, select: { id: true } })))
+  const applicants = await Promise.all(input.applicants.map((applicant) => db.enrollmentApplicant.create({ data: { enrollmentId: enrollment.id, name: applicant.name, dateOfBirth: new Date(`${applicant.dateOfBirth}T00:00:00.000Z`), profileData: applicant.profileData as Prisma.InputJsonValue }, select: { id: true } })))
 
   try {
     for (const [key, value] of formData.entries()) {

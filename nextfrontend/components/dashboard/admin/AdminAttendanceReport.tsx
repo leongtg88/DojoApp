@@ -1,11 +1,25 @@
 'use client'
 
 import { useState } from 'react'
-import { CalendarCheck2, CircleX, Search, Users } from 'lucide-react'
-import type { AdminAttendanceRecord } from '@/types/dashboard'
+import { CalendarCheck2, CircleX, Clock3, Search, Users } from 'lucide-react'
+import type { AdminAttendanceRecord, AttendanceStatus } from '@/types/dashboard'
 
 interface AdminAttendanceReportProps {
     records: AdminAttendanceRecord[]
+}
+
+const STATUS_META: Record<AttendanceStatus, { label: string; className: string }> = {
+    PENDING: { label: 'Punch-in pendiente', className: 'border-amber-500/30 bg-amber-500/10 text-amber-200' },
+    CONFIRMED: { label: 'Confirmada', className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200' },
+    REJECTED: { label: 'Rechazada', className: 'border-rose-500/30 bg-rose-500/10 text-rose-200' },
+}
+
+const SESSION_TYPE_LABELS: Record<string, string> = {
+    class: 'Clase',
+    private: 'Clase privada',
+    autonomous: 'Entrenamiento libre',
+    seminar: 'Seminario',
+    other: 'Otro',
 }
 
 export function AdminAttendanceReport({ records }: AdminAttendanceReportProps) {
@@ -14,14 +28,15 @@ export function AdminAttendanceReport({ records }: AdminAttendanceReportProps) {
     const [branchFilter, setBranchFilter] = useState('ALL')
     const formatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric' })
     const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
-    const branches = [...new Set(records.map(({ branchName }) => branchName))].sort()
+    const branches = [...new Set(records.map(({ branchName }) => branchName ?? 'Punch-in'))].sort()
     const presentCount = records.filter(({ present }) => present).length
+    const totalHours = records.reduce((total, record) => total + (record.hoursTrained ?? 0), 0)
     const filteredRecords = records.filter((record) => {
         const matchesStatus = attendanceFilter === 'ALL'
             || (attendanceFilter === 'PRESENT' && record.present)
             || (attendanceFilter === 'ABSENT' && !record.present)
         const matchesBranch = branchFilter === 'ALL' || record.branchName === branchFilter
-        const matchesSearch = !normalizedSearch || [record.studentName, record.className, record.branchName, record.notes ?? '']
+        const matchesSearch = !normalizedSearch || [record.studentName, record.className ?? '', record.branchName ?? '', record.notes ?? '']
             .some((value) => value.toLocaleLowerCase('es').includes(normalizedSearch))
 
         return matchesStatus && matchesBranch && matchesSearch
@@ -36,7 +51,12 @@ export function AdminAttendanceReport({ records }: AdminAttendanceReportProps) {
                 <section className="mt-7 rounded-lg border border-dashed border-neutral-700 bg-[#161b22] px-5 py-10 text-center"><Users aria-hidden="true" className="mx-auto size-7 text-cyan-400" /><p className="mt-3 text-sm font-semibold text-white">No hay asistencias registradas.</p></section>
             ) : (
                 <>
-                    <section className="mt-7 grid gap-3 sm:grid-cols-3"><article className="rounded-lg border border-neutral-800 bg-[#161b22] p-4 shadow-sm"><p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Registros auditados</p><p className="mt-1 text-2xl font-bold text-white">{records.length}</p></article><article className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-emerald-200">Presencias</p><p className="mt-1 text-2xl font-bold text-emerald-200">{presentCount}</p></article><article className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-rose-200">Ausencias</p><p className="mt-1 text-2xl font-bold text-rose-200">{records.length - presentCount}</p></article></section>
+                    <section className="mt-7 grid gap-3 sm:grid-cols-4">
+                        <article className="rounded-lg border border-neutral-800 bg-[#161b22] p-4 shadow-sm"><p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">Registros auditados</p><p className="mt-1 text-2xl font-bold text-white">{records.length}</p></article>
+                        <article className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-emerald-200">Presencias</p><p className="mt-1 text-2xl font-bold text-emerald-200">{presentCount}</p></article>
+                        <article className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-rose-200">Ausencias</p><p className="mt-1 text-2xl font-bold text-rose-200">{records.length - presentCount}</p></article>
+                        <article className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-cyan-200">Horas entrenadas</p><p className="mt-1 text-2xl font-bold text-cyan-200">{totalHours.toFixed(1)}h</p></article>
+                    </section>
                     <section className="mt-5 rounded-lg border border-neutral-800 bg-[#161b22] shadow-sm">
                         <div className="grid gap-3 border-b border-neutral-800 p-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:p-5">
                             <label className="relative block" htmlFor="attendance-search"><Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-cyan-400" /><input className="w-full rounded-md border border-neutral-700 bg-[#0d1117] py-2.5 pl-10 pr-3 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="attendance-search" onChange={(event) => setSearchTerm(event.target.value)} placeholder="Buscar alumno, clase o nota" type="search" value={searchTerm} /></label>
@@ -44,19 +64,29 @@ export function AdminAttendanceReport({ records }: AdminAttendanceReportProps) {
                             <label className="text-xs font-semibold text-neutral-300" htmlFor="attendance-branch">Sucursal<select className="mt-1 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="attendance-branch" onChange={(event) => setBranchFilter(event.target.value)} value={branchFilter}><option value="ALL">Todas</option>{branches.map((branch) => <option key={branch} value={branch}>{branch}</option>)}</select></label>
                         </div>
                         {filteredRecords.length === 0 ? <div className="px-5 py-10 text-center"><Users aria-hidden="true" className="mx-auto size-6 text-cyan-400" /><p className="mt-3 text-sm font-semibold text-white">No hay registros con esos filtros.</p></div> : <ul className="divide-y divide-neutral-800">
-                            {filteredRecords.map((record) => (
-                                <li className="flex items-start justify-between gap-4 px-5 py-4" key={record.id}>
-                                    <div className="flex min-w-0 gap-3">
-                                        {record.present ? <CalendarCheck2 aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-emerald-400" /> : <CircleX aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-rose-400" />}
-                                        <div className="min-w-0">
-                                            <p className="truncate text-sm font-semibold text-white">{record.studentName}</p>
-                                            <p className="mt-1 text-xs text-neutral-400">{record.className} · {record.branchName} · {formatter.format(new Date(record.date))}</p>
-                                            {record.notes && <p className="mt-2 rounded-md border border-neutral-700 bg-[#0d1117] p-2 text-sm text-neutral-300">{record.notes}</p>}
+                            {filteredRecords.map((record) => {
+                                const statusMeta = STATUS_META[record.status]
+                                return (
+                                    <li className="flex items-start justify-between gap-4 px-5 py-4" key={record.id}>
+                                        <div className="flex min-w-0 gap-3">
+                                            {record.present ? <CalendarCheck2 aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-emerald-400" /> : <CircleX aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-rose-400" />}
+                                            <div className="min-w-0">
+                                                <p className="truncate text-sm font-semibold text-white">{record.studentName}</p>
+                                                <p className="mt-1 text-xs text-neutral-400">{record.className ?? SESSION_TYPE_LABELS[record.sessionType ?? 'autonomous'] ?? 'Entrenamiento libre'} · {record.branchName ?? 'Sin sucursal'} · {formatter.format(new Date(record.date))}</p>
+                                                <div className="mt-2 flex flex-wrap items-center gap-2">
+                                                    {record.hoursTrained > 0 && <span className="inline-flex items-center gap-1 rounded-md border border-neutral-700 bg-[#0d1117] px-2 py-0.5 text-[11px] font-semibold text-neutral-300"><Clock3 aria-hidden="true" className="size-3 text-cyan-400" />{record.hoursTrained}h</span>}
+                                                    {record.confirmedByName && <span className="text-[11px] text-neutral-500">Confirmado por {record.confirmedByName}</span>}
+                                                </div>
+                                                {record.notes && <p className="mt-2 rounded-md border border-neutral-700 bg-[#0d1117] p-2 text-sm text-neutral-300">{record.notes}</p>}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <span className={`shrink-0 rounded-md border px-2 py-1 text-xs font-semibold ${record.present ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200' : 'border-rose-500/30 bg-rose-500/10 text-rose-200'}`}>{record.present ? 'Presente' : 'Ausente'}</span>
-                                </li>
-                            ))}
+                                        <div className="flex shrink-0 flex-col items-end gap-1.5">
+                                            <span className={`rounded-md border px-2 py-1 text-xs font-semibold ${statusMeta.className}`}>{statusMeta.label}</span>
+                                            <span className={`rounded-md border px-2 py-1 text-xs font-semibold ${record.present ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200' : 'border-rose-500/30 bg-rose-500/10 text-rose-200'}`}>{record.present ? 'Presente' : 'Ausente'}</span>
+                                        </div>
+                                    </li>
+                                )
+                            })}
                         </ul>}
                     </section>
                 </>

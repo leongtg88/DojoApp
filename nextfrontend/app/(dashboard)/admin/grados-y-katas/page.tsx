@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { AdminCurriculumCatalog } from '@/components/dashboard/admin/AdminCurriculumCatalog'
-import { getAdminBeltRanks } from '@/lib/dashboard/admin-queries'
+import { AdminTechniqueManager } from '@/components/dashboard/admin/AdminTechniqueManager'
+import { getAdminCurriculum } from '@/lib/dashboard/admin-queries'
 import { redirect } from 'next/navigation'
 
 export default async function AdminCurriculumPage() {
@@ -12,11 +13,17 @@ export default async function AdminCurriculumPage() {
         redirect('/dashboard/no-autorizado')
     }
 
-    const ranks = await getAdminBeltRanks(userId)
+    const curriculum = await getAdminCurriculum(userId)
 
-    if (!ranks) {
+    if (!curriculum) {
         redirect('/dashboard/no-autorizado')
     }
 
-    return <AdminCurriculumCatalog ranks={ranks} />
+    return (
+        <>
+            <AdminCurriculumCatalog ranks={curriculum.ranks} techniques={curriculum.techniques} />
+            <div className="mt-8 border-t border-neutral-800" />
+            <AdminTechniqueManager ranks={curriculum.ranks} techniques={curriculum.techniques} />
+        </>
+    )
 }

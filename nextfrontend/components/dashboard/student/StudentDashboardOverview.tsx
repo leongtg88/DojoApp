@@ -1,16 +1,18 @@
-import type { StudentDashboardSummary } from '@/types/dashboard'
+import type { StudentDashboardSummary, StudentKataProgressSummary } from '@/types/dashboard'
 import { StudentBirthdayCard } from './StudentBirthdayCard'
+import { ExaminationCriteriaCard } from './ExaminationCriteriaCard'
 import { FocusTechniquesList } from './FocusTechniquesList'
+import { KataToEvaluateCard } from './KataToEvaluateCard'
 import { MartialGradeCard } from './MartialGradeCard'
 import { StudentGreeting } from './StudentGreeting'
 import { StudentMetricsGrid } from './StudentMetricsGrid'
-import { StudentPromotionCriteria } from './StudentPromotionCriteria'
 
 interface StudentDashboardOverviewProps {
     summary: StudentDashboardSummary
+    kataSummary: StudentKataProgressSummary | null
 }
 
-export function StudentDashboardOverview({ summary }: StudentDashboardOverviewProps) {
+export function StudentDashboardOverview({ summary, kataSummary }: StudentDashboardOverviewProps) {
     const { attendance, profile, techniques } = summary
     const approvedTechniques = techniques.filter(({ status }) => status === 'APPROVED').length
     const studentName = `${profile.firstName} ${profile.lastName}`
@@ -19,11 +21,19 @@ export function StudentDashboardOverview({ summary }: StudentDashboardOverviewPr
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
             <StudentGreeting profile={profile} />
             <section className="mt-7 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
-                <MartialGradeCard approvedTechniques={approvedTechniques} rank={profile.currentRank} studentName={studentName} totalTechniques={techniques.length} />
+                <MartialGradeCard approvedTechniques={approvedTechniques} grado={kataSummary?.grado} rank={profile.currentRank} studentName={studentName} totalTechniques={techniques.length} />
                 <StudentBirthdayCard dateOfBirth={profile.dateOfBirth} />
             </section>
             <div className="mt-5"><StudentMetricsGrid attendance={attendance} techniques={techniques} /></div>
-            <section className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]"><FocusTechniquesList techniques={techniques} /><StudentPromotionCriteria attendance={attendance} techniques={techniques} /></section>
+            <section className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
+                <FocusTechniquesList techniques={techniques} />
+                <KataToEvaluateCard katas={kataSummary?.katas ?? []} />
+            </section>
+            {kataSummary && (
+                <div className="mt-5">
+                    <ExaminationCriteriaCard grado={kataSummary.grado} />
+                </div>
+            )}
         </main>
     )
 }

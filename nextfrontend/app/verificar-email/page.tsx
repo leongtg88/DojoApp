@@ -9,13 +9,10 @@ export default function VerifyEmailPage() {
   const [message, setMessage] = useState('Verificando tu correo...')
   const [success, setSuccess] = useState(false)
 
-  useEffect(() => {
-    const token = searchParams.get('token')
+  const token = searchParams.get('token')
 
-    if (!token) {
-      setMessage('El enlace de verificación está incompleto.')
-      return
-    }
+  useEffect(() => {
+    if (!token) return
 
     fetch(`/api/auth/verify-email?token=${encodeURIComponent(token)}`, {
       method: 'POST',
@@ -29,17 +26,23 @@ export default function VerifyEmailPage() {
       .catch((error: unknown) => {
         setMessage(error instanceof Error ? error.message : 'No se pudo verificar el correo.')
       })
-  }, [searchParams])
+  }, [token])
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-6">
       <section className="w-full max-w-md border border-white/10 bg-[#0f0f0f] rounded-2xl p-8 text-center">
         <h1 className="text-2xl font-semibold mb-4">Verificación de correo</h1>
-        <p className={success ? 'text-emerald-300' : 'text-white/60'}>{message}</p>
-        {success && (
-          <Link href="/login" className="inline-block mt-6 hero-button px-6 py-3">
-            Ir al inicio de sesión
-          </Link>
+        {!token ? (
+          <p className="text-red-300">El enlace de verificación está incompleto.</p>
+        ) : (
+          <>
+            <p className={success ? 'text-emerald-300' : 'text-white/60'}>{message}</p>
+            {success && (
+              <Link href="/login" className="inline-block mt-6 hero-button px-6 py-3">
+                Ir al inicio de sesión
+              </Link>
+            )}
+          </>
         )}
       </section>
     </main>

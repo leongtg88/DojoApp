@@ -147,7 +147,7 @@ export default function Navbar() {
                   RESERVAR CLASE DEMO
                 </button>
               </div>
-                <p className="text-[10px] pt-4 text-gray-700/40 text-center">Primer entrenamiento gratuito sin compromiso de pago.</p>
+              <p className="text-[10px] pt-4 text-gray-700/40 text-center">Primer entrenamiento gratuito sin compromiso de pago.</p>
             </motion.div>
           </div>
         )}

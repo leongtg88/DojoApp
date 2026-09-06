@@ -62,6 +62,7 @@ model User {
   guardianOfStudents Student[] @relation("primaryGuardian")
   rankPromotions StudentRankHistory[] @relation("rankPromoter")
   techniqueEvaluations TechniqueEvaluation[] @relation("techniqueEvaluator")
+  attendanceConfirmations Attendance[] @relation("attendanceConfirmer")
   emailVerificationTokens EmailVerificationToken[]
   classes        Class[] @relation("instructor")
   createdAt      DateTime  @default(now())
@@ -101,6 +102,7 @@ model Student {
   medicalInfo      String?
   emergencyContact String?
   enrollmentDate   DateTime @default(now())
+  memberNumber     String?  @unique // matrícula KYU-YYYY-NNN
   status           String   @default("ACTIVE") // ACTIVE, INACTIVE, GRADUATED
   currentRank      String?
   photoKey         String?  // clave en Supabase Storage
@@ -231,14 +233,25 @@ model StudentDocument {
 
 // ==================== Rangos y técnicas ====================
 model BeltRank {
-  id        String   @id @default(cuid())
-  name      String   // Blanco, Amarillo, etc.
-  order     Int      // orden secuencial
-  schoolId  String?
-  school    School?  @relation(fields: [schoolId], references: [id])
-  techniques Technique[]
-  promotions StudentRankHistory[]
-  createdAt DateTime @default(now())
+  id                    String   @id @default(cuid())
+  name                  String   // Blanco, Amarillo, etc.
+  kyuDan                String?  // e.g. "9.º kyu", "1.º dan"
+  japaneseName          String?  // e.g. "Kyukyu", "Shodan"
+  kanji                 String?  // e.g. "九級"
+  order                 Int      // orden secuencial
+  beltColor             String?  // color del cinturón (hex)
+  beltSecondaryColor    String?  // color secundario (franjas)
+  isMaximumRank         Boolean  @default(false)
+  estimatedDurationMonths Int?   // duración estimada del grado
+  description           String?
+  schoolId              String?
+  minMonths             Int?     // permanencia mínima para examen
+  minAttendancePercent  Int?     // asistencia mínima exigida para examen
+  school                School?  @relation(fields: [schoolId], references: [id])
+  techniques            Technique[]
+  promotions            StudentRankHistory[]
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 
 model StudentRankHistory {
@@ -247,6 +260,7 @@ model StudentRankHistory {
   beltRankId  String
   promotedBy  String?
   promotedAt  DateTime @default(now())
+  examinerName String? // sensei sinodal / evaluador del examen
   notes       String?
   student     Student  @relation(fields: [studentId], references: [id])
   beltRank    BeltRank @relation(fields: [beltRankId], references: [id])
@@ -258,30 +272,41 @@ model StudentRankHistory {
 }
 
 model Technique {
-  id          String   @id @default(cuid())
-  name        String   // nombre de la técnica (kata, kihon, etc.)
-  description String?
-  category    TechniqueCategory @default(KIHON)
-  rankId      String?
-  rank        BeltRank? @relation(fields: [rankId], references: [id])
-  schoolId    String?
-  school      School?  @relation(fields: [schoolId], references: [id])
-  students    StudentTechnique[]
-  createdAt   DateTime @default(now())
+  id           String   @id @default(cuid())
+  name         String   // nombre de la técnica (kata, kihon, etc.)
+  japaneseName String?
+  kanji        String?
+  description  String?
+  category     TechniqueCategory @default(KIHON)
+  rankId       String?
+  rank         BeltRank? @relation(fields: [rankId], references: [id])
+  order        Int      @default(0) // orden pedagógico dentro del grado
+  movementsCount Int?
+  embusen      String?  // patrón de desplazamiento (I, H, Cruz...)
+  difficulty   String?  // Básica, Intermedia, Avanzada
+  videoUrl     String?
+  schoolId     String?
+  school       School?  @relation(fields: [schoolId], references: [id])
+  students     StudentTechnique[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model StudentTechnique {
-  id          String   @id @default(cuid())
-  studentId   String
-  techniqueId String
-  student     Student  @relation(fields: [studentId], references: [id])
-  technique   Technique @relation(fields: [techniqueId], references: [id])
-  approved    Boolean  @default(false)
-  approvedBy  String?
-  approvedAt  DateTime?
-  notes       String?
-  evaluation  TechniqueEvaluation?
-  createdAt   DateTime @default(now())
+  id              String   @id @default(cuid())
+  studentId       String
+  techniqueId     String
+  student         Student  @relation(fields: [studentId], references: [id])
+  technique       Technique @relation(fields: [techniqueId], references: [id])
+  approved        Boolean  @default(false)
+  approvedBy      String?
+  approvedAt      DateTime?
+  inPractice      Boolean  @default(false)
+  practiceHours   Float    @default(0)
+  lastPracticeDate DateTime?
+  notes           String?
+  evaluation      TechniqueEvaluation?
+  createdAt       DateTime @default(now())
 
   @@unique([studentId, techniqueId])
 }
@@ -349,17 +374,34 @@ model ClassSession {
   @@unique([classId, date])
 }
 
+enum AttendanceStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+}
+
 model Attendance {
-  id        String   @id @default(cuid())
-  sessionId String
-  session   ClassSession @relation(fields: [sessionId], references: [id])
-  studentId String
-  student   Student  @relation(fields: [studentId], references: [id])
-  present   Boolean  @default(true)
-  notes     String?
-  createdAt DateTime @default(now())
+  id           String   @id @default(cuid())
+  sessionId    String?
+  session      ClassSession? @relation(fields: [sessionId], references: [id])
+  studentId    String
+  student      Student  @relation(fields: [studentId], references: [id])
+  date         DateTime @default(now()) // fecha del registro (punch-in o pase de lista)
+  present      Boolean  @default(true)
+  hoursTrained Float    @default(1)
+  sessionType  String?
+  status       AttendanceStatus @default(PENDING)
+  punchedAt    DateTime @default(now())
+  confirmedAt  DateTime?
+  confirmedById String?
+  confirmedBy  User?    @relation("attendanceConfirmer", fields: [confirmedById], references: [id])
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@unique([sessionId, studentId])
+  @@index([studentId, date])
+  @@index([status, date])
 }
 
 // ==================== Logros y reportes ====================

@@ -798,7 +798,7 @@ const ToseiGusokuForm = () => {
                     previews={hijo.fotoPreview ? [hijo.fotoPreview] : []}
                     error={errors.hijos?.[index]?.foto}
                     accept="image/*"
-                     hint="Formatos: JPG, PNG"
+                    hint="Formatos: JPG, PNG"
                     onFiles={(fs) => handleHijoFoto(hijo.id, fs[0] ?? null)}
                     onRemove={() => handleHijoFotoRemove(hijo.id)}
                   />

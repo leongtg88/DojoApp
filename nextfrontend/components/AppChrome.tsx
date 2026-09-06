@@ -10,15 +10,16 @@ import ScrollToTop from '@/components/ScrollToTop'
 export function AppChrome({ children }: { children: ReactNode }) {
     const pathname = usePathname()
     const isDashboard = pathname.startsWith('/dashboard')
+    const isAuth = pathname === '/login' || pathname === '/registro'
 
     return (
         <>
-            {!isDashboard && <Navbar />}
+            {!isDashboard && !isAuth && <Navbar />}
             <Suspense>
                 <ScrollToTop />
             </Suspense>
-            <main className={isDashboard ? 'flex-grow' : 'flex-grow pt-20 md:pb-20'}>{children}</main>
-            {!isDashboard && <ConditionalFooter />}
+            <main className={isDashboard || isAuth ? 'flex-grow' : 'flex-grow pt-20 md:pb-20'}>{children}</main>
+            {!isDashboard && !isAuth && <ConditionalFooter />}
         </>
     )
 }

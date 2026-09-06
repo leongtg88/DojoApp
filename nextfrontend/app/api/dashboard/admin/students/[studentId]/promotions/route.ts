@@ -6,6 +6,7 @@ import { z } from 'zod'
 const promotionSchema = z.object({
   beltRankId: z.string().trim().min(1),
   promotedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  examinerName: z.string().trim().max(120).nullable().optional(),
   notes: z.string().trim().max(1_000).nullable(),
 }).refine(({ promotedAt }) => !Number.isNaN(new Date(`${promotedAt}T00:00:00.000Z`).getTime()), {
   message: 'Fecha de ascenso inválida',
@@ -56,7 +57,7 @@ export async function POST(request: Request, { params }: PromotionRouteContext) 
       id: result.data.beltRankId,
       OR: [{ schoolId: student.schoolId }, { schoolId: null }],
     },
-    select: { id: true, name: true, order: true },
+    select: { id: true, name: true, order: true, techniques: { select: { id: true } } },
   })
 
   if (!newRank) {
@@ -78,6 +79,8 @@ export async function POST(request: Request, { params }: PromotionRouteContext) 
   }
 
   const promotedAt = new Date(`${result.data.promotedAt}T00:00:00.000Z`)
+  const techniqueIds = newRank.techniques.map(({ id }) => id)
+
   await db.$transaction([
     db.student.update({
       where: { id: student.id },
@@ -89,9 +92,18 @@ export async function POST(request: Request, { params }: PromotionRouteContext) 
         beltRankId: newRank.id,
         promotedBy: session.user.id,
         promotedAt,
+        examinerName: result.data.examinerName ?? null,
         notes: result.data.notes,
       },
     }),
+    ...(techniqueIds.length > 0
+      ? [
+          db.studentTechnique.createMany({
+            data: techniqueIds.map((techniqueId) => ({ studentId: student.id, techniqueId })),
+            skipDuplicates: true,
+          }),
+        ]
+      : []),
   ])
 
   return NextResponse.json({ ok: true })

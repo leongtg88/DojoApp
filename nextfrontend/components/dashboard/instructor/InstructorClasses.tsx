@@ -16,9 +16,9 @@ export function InstructorClasses({ classes }: InstructorClassesProps) {
             <p className="mt-2 text-sm text-neutral-400">Grupos que tienes asignados y alumnos activos por clase.</p>
 
             {classes.length === 0 ? (
-                <section className="mt-7 border border-[#e5e2e1] bg-white px-5 py-10 text-center">
-                    <CalendarDays aria-hidden="true" className="mx-auto size-7 text-[#a1918e]" />
-                    <p className="mt-3 text-sm font-semibold text-[#1c1b1b]">No tienes clases asignadas.</p>
+                <section className="mt-7 rounded-lg border border-dashed border-neutral-700 bg-[#161b22] px-5 py-10 text-center">
+                    <CalendarDays aria-hidden="true" className="mx-auto size-7 text-cyan-400" />
+                    <p className="mt-3 text-sm font-semibold text-white">No tienes clases asignadas.</p>
                 </section>
             ) : (
                 <ul className="mt-7 grid gap-3 md:grid-cols-2">

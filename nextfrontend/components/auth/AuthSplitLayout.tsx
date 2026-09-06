@@ -1,8 +1,10 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { AuthSidePanel } from './AuthSidePanel';
-import { Shield } from 'lucide-react';
 import { DOJO_INFO } from '@/lib/auth-data';
 
 interface AuthSplitLayoutProps {
@@ -46,17 +48,16 @@ export function AuthSplitLayout({ children, mode }: AuthSplitLayoutProps) {
 
             {/* Mobile Header Logo */}
             <div className="relative z-10 flex items-center gap-2.5 pb-6 mb-4 border-b border-white/5">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-white to-gray-500 flex items-center justify-center text-black shadow-md">
-                <Shield className="w-4 h-4 text-black" />
-              </div>
-              <div>
-                <span className="font-sans font-bold uppercase text-xs tracking-[0.3em] block text-white">
-                  {DOJO_INFO.name}
-                </span>
-                <span className="text-[10px] text-white/40 tracking-[0.2em] uppercase font-semibold">
-                  {DOJO_INFO.specialty}
-                </span>
-              </div>
+              <Link href="/" aria-label="Ir al inicio de Tosei Gusoku Dojo">
+                <Image
+                  src="/assets/LogoRectangularblanco.svg"
+                  alt={DOJO_INFO.name}
+                  width={220}
+                  height={48}
+                  className="w-auto h-10"
+                  priority
+                />
+              </Link>
             </div>
 
             {/* Form */}
@@ -88,24 +89,30 @@ export function AuthSplitLayout({ children, mode }: AuthSplitLayoutProps) {
             }}
           />
 
-          {/* Top Brand Tag for mobile/desktop */}
+          {/* Top Brand for mobile/desktop */}
           <div className="relative z-10 flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-white to-gray-500 flex items-center justify-center text-black shadow-lg">
-                <Shield className="w-4 h-4 text-black" />
-              </div>
-              <div>
-                <span className="font-sans font-bold uppercase text-xs tracking-[0.3em] block text-white leading-tight">
-                  {DOJO_INFO.name}
-                </span>
-                <span className="text-[10px] text-white/40 tracking-[0.2em] uppercase font-semibold">
-                  {DOJO_INFO.specialty}
-                </span>
-              </div>
-            </div>
+            <Link href="/" aria-label="Ir al inicio de Tosei Gusoku Dojo">
+              <Image
+                src="/assets/LogoRectangularblanco.svg"
+                alt={DOJO_INFO.name}
+                width={220}
+                height={48}
+                className="w-auto h-9"
+                priority
+              />
+            </Link>
 
-            <div className="hidden sm:inline-flex items-center text-[10px] font-semibold tracking-[0.2em] uppercase px-3 py-1 rounded-full bg-white/5 text-white/40 border border-white/10">
-              Santo Domingo
+            <div className="flex items-center gap-2">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] px-3 py-1.5 rounded-full bg-white/5 text-white/60 border border-white/10 transition-colors hover:text-white hover:border-white/25 hover:bg-white/10"
+              >
+                <ArrowLeft className="w-3 h-3" />
+                Home
+              </Link>
+              <div className="hidden sm:inline-flex items-center text-[10px] font-semibold tracking-[0.2em] uppercase px-3 py-1 rounded-full bg-white/5 text-white/40 border border-white/10">
+                Santo Domingo
+              </div>
             </div>
           </div>
 

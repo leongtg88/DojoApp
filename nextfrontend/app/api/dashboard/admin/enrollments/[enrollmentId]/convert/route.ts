@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
@@ -83,7 +84,7 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
         contactPhone: input.contactPhone ?? enrollment.contactPhone,
         medicalInfo: input.medicalInfo,
         emergencyContact: input.emergencyContact,
-    		registrationData: applicant?.profileData ?? enrollment.registrationData,
+        registrationData: (applicant?.profileData ?? enrollment.registrationData) ?? Prisma.JsonNull,
       },
       select: { id: true },
     })

@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { motion } from 'motion/react';
-import { Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, AlertCircle } from 'lucide-react';
 import { ForgotPasswordModal } from './ForgotPasswordModal';
 
 interface LoginFormProps {
@@ -100,9 +100,10 @@ export function LoginForm({
             Portal de Acceso Seguro
           </span>
         </div>
-        <h2 className="text-3xl lg:text-4xl font-light tracking-tight text-white mb-2">
+        <h2 className="text-3xl lg:text-4xl font-light tracking-tight text-white mb-3">
           Iniciar Sesión
         </h2>
+        <div className="w-16 h-[3px] rounded-full mb-3" style={{ background: 'linear-gradient(90deg, var(--sand), var(--emerald), var(--bubblegum-pink))' }} />
         <p className="text-sm text-white/40 leading-relaxed font-light">
           Ingresa tus credenciales para establecer una sesión segura en el dojo.
         </p>
@@ -209,16 +210,16 @@ export function LoginForm({
             id="btn-submit-login"
             type="submit"
             disabled={isLoading}
-            className="hero-button w-full shadow-xl shadow-black/50"
+            className="hero-button-dark w-full shadow-xl shadow-black/50"
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin text-black" />
+                <Loader2 className="w-4 h-4 animate-spin text-current" />
                 <span>Verificando credenciales...</span>
               </span>
             ) : (
               <span className="flex items-center justify-center gap-2">
-                <span>Autorizar Sesión</span>
+                <span>Iniciar Sesión</span>
                 <ArrowRight className="w-4 h-4" />
               </span>
             )}
@@ -249,19 +250,6 @@ export function LoginForm({
             </Link>
           )}
         </p>
-      </div>
-
-      {/* Quick Seed Credentials hint */}
-      <div className="mt-6 p-4 bg-white/5 rounded-xl border border-white/10 text-xs text-white/50 space-y-2">
-        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
-          <ShieldCheck className="w-3.5 h-3.5 text-white/70" />
-          <span>Cuentas de prueba del sistema:</span>
-        </div>
-        <div className="space-y-1 font-mono text-[11px] text-white/40">
-          <div><span className="text-white/20">Admin:</span> admin@toseigusoku.com / Admin123!</div>
-          <div><span className="text-white/20">Instructor:</span> instructor@toseigusoku.com / Instructor123!</div>
-          <div><span className="text-white/20">Alumno:</span> alumno@test.com / Alumno123!</div>
-        </div>
       </div>
 
       {/* Forgot Password Modal */}

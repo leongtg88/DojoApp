@@ -79,10 +79,10 @@ export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
             </div>
 
             {filteredTechniques.length === 0 ? (
-                <div className="mt-4 border border-dashed border-[#d5d0ce] bg-white px-5 py-10 text-center">
-                    <Award aria-hidden="true" className="mx-auto size-8 text-[#a1918e]" />
-                    <p className="mt-3 text-sm font-semibold text-[#1c1b1b]">No hay técnicas en esta categoría</p>
-                    <p className="mt-1 text-sm text-[#5c403c]">Prueba con otra categoría, estado o término de búsqueda.</p>
+                <div className="mt-4 rounded-lg border border-dashed border-neutral-700 bg-[#161b22] px-5 py-10 text-center">
+                    <Award aria-hidden="true" className="mx-auto size-8 text-neutral-500" />
+                    <p className="mt-3 text-sm font-semibold text-white">No hay técnicas en esta categoría</p>
+                    <p className="mt-1 text-sm text-neutral-400">Prueba con otra categoría, estado o término de búsqueda.</p>
                 </div>
             ) : (
                 <ul className="mt-4 space-y-3">
@@ -91,23 +91,23 @@ export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
                         const approved = technique.status === 'APPROVED'
 
                         return (
-                            <li className="border border-[#e5e2e1] bg-white p-4 shadow-sm" key={technique.id}>
+                            <li className="rounded-lg border border-neutral-800 bg-[#161b22] p-4 shadow-sm" key={technique.id}>
                                 <div className="flex items-start justify-between gap-3">
                                     <div className="flex min-w-0 gap-3">
-                                        <span aria-hidden="true" className={`mt-0.5 h-10 w-1 shrink-0 ${category?.accent ?? 'bg-[#a1918e]'}`} />
+                                        <span aria-hidden="true" className={`mt-0.5 h-10 w-1 shrink-0 rounded-full ${category?.accent ?? 'bg-neutral-600'}`} />
                                         <div className="min-w-0">
-                                            <p className="text-[11px] font-bold uppercase tracking-wide text-[#666028]">{category?.label ?? technique.category}</p>
-                                            <h3 className="mt-1 text-base font-bold text-[#1c1b1b]">{technique.name}</h3>
+                                            <p className="text-[11px] font-bold uppercase tracking-wide text-cyan-400">{category?.label ?? technique.category}</p>
+                                            <h3 className="mt-1 text-base font-bold text-white">{technique.name}</h3>
                                         </div>
                                     </div>
-                                    <span className={`inline-flex shrink-0 items-center gap-1 px-2.5 py-1 text-[11px] font-bold ${approved ? 'bg-[#e6f1d8] text-[#426020]' : 'bg-[#e5e2e1] text-[#5c403c]'}`}>
+                                    <span className={`inline-flex shrink-0 items-center gap-1 rounded-md border px-2.5 py-1 text-[11px] font-bold ${approved ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-200' : 'border-neutral-700 bg-[#0d1117] text-neutral-300'}`}>
                                         {approved ? <CheckCheck aria-hidden="true" className="size-3.5" /> : <CircleDashed aria-hidden="true" className="size-3.5" />}
                                         {approved ? 'Aprobada' : 'Pendiente'}
                                     </span>
                                 </div>
-                                {technique.description && <p className="mt-3 pl-4 text-sm leading-6 text-[#5c403c]">{technique.description}</p>}
-                                {technique.notes && <p className="mt-3 flex items-start gap-2 border border-[#e5e2e1] bg-[#f6f3f2] p-2.5 text-xs leading-5 text-[#1c1b1b]"><Info aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-[#b70011]" />{technique.notes}</p>}
-                                {technique.evaluation && <div className="mt-3 flex items-start gap-2 border border-[#cee2b7] bg-[#f6faef] p-2.5 text-xs leading-5 text-[#426020]"><Star aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" /><div><p className="font-bold">Evaluación: {technique.evaluation.score} / 10</p>{technique.evaluation.feedback && <p className="mt-1">{technique.evaluation.feedback}</p>}<p className="mt-1 text-[#5b7f38]">{new Date(technique.evaluation.evaluatedAt).toLocaleDateString('es-DO')}{technique.evaluation.evaluatorName ? ` · ${technique.evaluation.evaluatorName}` : ''}</p></div></div>}
+                                {technique.description && <p className="mt-3 pl-4 text-sm leading-6 text-neutral-300">{technique.description}</p>}
+                                {technique.notes && <p className="mt-3 flex items-start gap-2 rounded-md border border-cyan-900/50 bg-cyan-950/20 p-2.5 text-xs leading-5 text-cyan-100"><Info aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-cyan-400" />{technique.notes}</p>}
+                                {technique.evaluation && <div className="mt-3 flex items-start gap-2 rounded-md border border-emerald-900/50 bg-emerald-950/20 p-2.5 text-xs leading-5 text-emerald-100"><Star aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-emerald-400" /><div><p className="font-bold">Evaluación: {technique.evaluation.score} / 10</p>{technique.evaluation.feedback && <p className="mt-1">{technique.evaluation.feedback}</p>}<p className="mt-1 text-emerald-300/80">{new Date(technique.evaluation.evaluatedAt).toLocaleDateString('es-DO')}{technique.evaluation.evaluatorName ? ` · ${technique.evaluation.evaluatorName}` : ''}</p></div></div>}
                             </li>
                         )
                     })}

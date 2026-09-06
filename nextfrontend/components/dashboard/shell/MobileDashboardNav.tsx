@@ -7,7 +7,7 @@ import type { DashboardRole } from '@/types/dashboard'
 import { getRoleNavigation } from './RoleNavigation'
 
 interface MobileDashboardNavProps {
-	 onSignOut: () => void
+    onSignOut: () => void
     role: DashboardRole
 }
 

@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
+import { Prisma } from '@prisma/client'
 import { z } from 'zod'
 
 const techniqueAssignmentSchema = z.object({
@@ -10,7 +11,8 @@ const techniqueAssignmentSchema = z.object({
 })
 
 const techniqueUpdateSchema = techniqueAssignmentSchema.extend({
-  approved: z.boolean(),
+  approved: z.boolean().optional(),
+  inPractice: z.boolean().optional(),
   score: z.number().int().min(0).max(10).nullable().optional(),
   feedback: z.string().trim().max(2_000).nullable().optional(),
 })
@@ -110,15 +112,22 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: 'La técnica no está asignada al alumno' }, { status: 404 })
   }
 
+  const data: Prisma.StudentTechniqueUpdateInput = { notes: result.data.notes }
+
+  if (result.data.approved !== undefined) {
+    data.approved = result.data.approved
+    data.approvedAt = result.data.approved ? new Date() : null
+    data.approvedBy = result.data.approved ? session.user.id : null
+  }
+
+  if (result.data.inPractice !== undefined) {
+    data.inPractice = result.data.inPractice
+  }
+
   await db.$transaction(async (transaction) => {
     await transaction.studentTechnique.update({
       where: { id: currentTechnique.id },
-      data: {
-        approved: result.data.approved,
-        approvedAt: result.data.approved ? new Date() : null,
-        approvedBy: result.data.approved ? session.user.id : null,
-        notes: result.data.notes,
-      },
+      data,
     })
 
     if (result.data.score !== undefined && result.data.score !== null) {

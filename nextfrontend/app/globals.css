@@ -143,6 +143,18 @@
   animation: bg-color-change 10s infinite linear;
 }
 
+.hero-button-dark {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-4 text-xs font-bold uppercase tracking-wider transition-all duration-300 border shadow-lg/30 cursor-pointer text-white backdrop-blur-sm;
+  background-image: radial-gradient(closest-side, rgba(255,255,255,0.25), transparent);
+  animation: 10s infinite linear, border-color-change 10s infinite linear;
+  border-color: currentColor;
+}
+
+.hero-button-dark:hover {
+  animation: bg-color-change 10s infinite linear;
+  color: #1a1a1a;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: #0a0a0a; }

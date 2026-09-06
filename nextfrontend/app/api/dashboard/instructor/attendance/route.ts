@@ -70,12 +70,26 @@ export async function POST(request: Request) {
           studentId: record.studentId,
         },
       },
-      update: { present: record.present, notes: record.notes },
+      update: {
+        present: record.present,
+        notes: record.notes,
+        status: record.present ? 'CONFIRMED' : 'REJECTED',
+        hoursTrained: record.present ? 1 : 0,
+        sessionType: 'class',
+        confirmedById: session.user.id,
+        confirmedAt: record.present ? new Date() : null,
+      },
       create: {
         sessionId: classSession.id,
         studentId: record.studentId,
         present: record.present,
         notes: record.notes,
+        date: sessionDate,
+        status: record.present ? 'CONFIRMED' : 'REJECTED',
+        hoursTrained: record.present ? 1 : 0,
+        sessionType: 'class',
+        confirmedById: session.user.id,
+        confirmedAt: record.present ? new Date() : null,
       },
     })))
   })

@@ -19,10 +19,10 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [dateOfBirth, setDateOfBirth] = useState('')
-	const [applicantId, setApplicantId] = useState('')
+    const [applicantId, setApplicantId] = useState('')
 
     function openConversion(enrollment: AdminEnrollmentSummary) {
-		const applicant = enrollment.applicants[0]
+        const applicant = enrollment.applicants[0]
         const parts = (applicant?.name ?? enrollment.applicantName ?? '').trim().split(/\s+/)
         setSelectedEnrollment(enrollment)
         setFirstName(parts[0] ?? '')
@@ -48,7 +48,7 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                 firstName,
                 lastName,
                 dateOfBirth,
-			applicantId: applicantId || undefined,
+                applicantId: applicantId || undefined,
                 contactPhone: selectedEnrollment.contactPhone,
                 medicalInfo: null,
                 emergencyContact: null,
