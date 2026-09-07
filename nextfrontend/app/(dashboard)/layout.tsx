@@ -11,11 +11,11 @@ export default async function DashboardLayout({ children }: { children: ReactNod
         redirect('/login')
     }
 
-    const role = session.user.role as DashboardRole
+    const roles = session.user.roles as DashboardRole[]
 
-    if (!['STUDENT', 'INSTRUCTOR', 'SCHOOL_ADMIN', 'SUPERADMIN'].includes(role)) {
-        redirect('/dashboard/no-autorizado')
+    if (!roles.some((role) => ['STUDENT', 'INSTRUCTOR', 'SCHOOL_ADMIN', 'SUPERADMIN'].includes(role))) {
+        redirect('/no-autorizado')
     }
 
-    return <DashboardShell role={role} userName={session.user.name}>{children}</DashboardShell>
+    return <DashboardShell roles={roles} userName={session.user.name} primaryRole={roles[0]}>{children}</DashboardShell>
 }

@@ -1,5 +1,6 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
+import { hasRole } from '@/lib/auth/roles'
 import { NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
 import { z } from 'zod'
@@ -45,7 +46,7 @@ async function findSchoolTechnique(techniqueId: string, schoolId: string) {
 export async function POST(request: Request) {
   const session = await auth()
 
-  if (session?.user?.role !== 'INSTRUCTOR' || !session.user.id) {
+  if (!session?.user?.id || !hasRole(session?.user, 'INSTRUCTOR')) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
@@ -82,7 +83,7 @@ export async function POST(request: Request) {
 export async function PATCH(request: Request) {
   const session = await auth()
 
-  if (session?.user?.role !== 'INSTRUCTOR' || !session.user.id) {
+  if (!session?.user?.id || !hasRole(session?.user, 'INSTRUCTOR')) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 

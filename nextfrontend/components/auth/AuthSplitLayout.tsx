@@ -78,7 +78,7 @@ export function AuthSplitLayout({ children, mode }: AuthSplitLayoutProps) {
         {/* Left column: 50% Auth Form */}
         <div
           id="auth-form-column"
-          className="w-full md:w-1/2 flex flex-col justify-between p-6 sm:p-10 lg:p-14 bg-[#0f0f0f] md:border-r md:border-white/5 relative overflow-y-auto"
+          className="w-full my-auto md:w-1/2 space-y-8 flex flex-col justify-between p-6 sm:p-10 lg:p-14 bg-[#0f0f0f] md:border-r md:border-white/5 relative overflow-y-auto"
         >
           {/* Subtle dot matrix pattern */}
           <div

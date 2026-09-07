@@ -3,20 +3,20 @@ import { AdminCurriculumCatalog } from '@/components/dashboard/admin/AdminCurric
 import { AdminTechniqueManager } from '@/components/dashboard/admin/AdminTechniqueManager'
 import { getAdminCurriculum } from '@/lib/dashboard/admin-queries'
 import { redirect } from 'next/navigation'
+import { hasAnyRole } from '@/lib/auth/roles'
 
 export default async function AdminCurriculumPage() {
     const session = await auth()
-    const role = session?.user?.role
     const userId = session?.user?.id
 
-    if ((role !== 'SCHOOL_ADMIN' && role !== 'SUPERADMIN') || !userId) {
-        redirect('/dashboard/no-autorizado')
+    if (!hasAnyRole(session?.user, ['SCHOOL_ADMIN', 'SUPERADMIN']) || !userId) {
+        redirect('/no-autorizado')
     }
 
     const curriculum = await getAdminCurriculum(userId)
 
     if (!curriculum) {
-        redirect('/dashboard/no-autorizado')
+        redirect('/no-autorizado')
     }
 
     return (

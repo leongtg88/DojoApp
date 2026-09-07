@@ -15,6 +15,9 @@ const fieldClass =
 
 export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
     const router = useRouter()
+    const [firstName, setFirstName] = useState(profile.firstName)
+    const [lastName, setLastName] = useState(profile.lastName)
+    const [dateOfBirth, setDateOfBirth] = useState(profile.dateOfBirth.slice(0, 10))
     const [contactPhone, setContactPhone] = useState(profile.contactPhone ?? '')
     const [emergencyContact, setEmergencyContact] = useState(profile.emergencyContact ?? '')
     const [medicalInfo, setMedicalInfo] = useState(profile.medicalInfo ?? '')
@@ -26,14 +29,21 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
         setError(null)
         setIsSaving(true)
 
+        const body: Record<string, unknown> = {
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            contactPhone: contactPhone.trim() || null,
+            emergencyContact: emergencyContact.trim() || null,
+            medicalInfo: medicalInfo.trim() || null,
+        }
+        if (dateOfBirth) {
+            body.dateOfBirth = dateOfBirth
+        }
+
         const response = await fetch('/api/dashboard/student/profile', {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contactPhone: contactPhone.trim() || null,
-                emergencyContact: emergencyContact.trim() || null,
-                medicalInfo: medicalInfo.trim() || null,
-            }),
+            body: JSON.stringify(body),
         })
 
         setIsSaving(false)
@@ -70,6 +80,44 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
                 </div>
 
                 <form className="space-y-4 px-5 py-5" onSubmit={handleSubmit}>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <label className="block text-sm font-semibold text-neutral-200" htmlFor="edit-firstname">
+                            Nombre
+                            <input
+                                className={fieldClass}
+                                id="edit-firstname"
+                                maxLength={80}
+                                onChange={(event) => setFirstName(event.target.value)}
+                                type="text"
+                                value={firstName}
+                            />
+                        </label>
+
+                        <label className="block text-sm font-semibold text-neutral-200" htmlFor="edit-lastname">
+                            Apellido
+                            <input
+                                className={fieldClass}
+                                id="edit-lastname"
+                                maxLength={120}
+                                onChange={(event) => setLastName(event.target.value)}
+                                type="text"
+                                value={lastName}
+                            />
+                        </label>
+                    </div>
+
+                    <label className="block text-sm font-semibold text-neutral-200" htmlFor="edit-dob">
+                        Fecha de nacimiento
+                        <input
+                            className={fieldClass}
+                            id="edit-dob"
+                            max={new Date().toISOString().slice(0, 10)}
+                            onChange={(event) => setDateOfBirth(event.target.value)}
+                            type="date"
+                            value={dateOfBirth}
+                        />
+                    </label>
+
                     <label className="block text-sm font-semibold text-neutral-200" htmlFor="edit-phone">
                         Teléfono
                         <input

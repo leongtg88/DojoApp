@@ -4,10 +4,11 @@ import { StudentProfileDetails } from '@/components/dashboard/student/StudentPro
 import { StudentDocuments } from '@/components/dashboard/student/StudentDocuments'
 import { getStudentDashboardSummary, getStudentDocuments } from '@/lib/dashboard/student-queries'
 import { redirect } from 'next/navigation'
+import { hasRole } from '@/lib/auth/roles'
 
 export default async function StudentProfilePage() {
-    if ((await auth())?.user?.role !== 'STUDENT') {
-        redirect('/dashboard/no-autorizado')
+    if (!hasRole((await auth())?.user, 'STUDENT')) {
+        redirect('/no-autorizado')
     }
 
     const session = await auth()
@@ -21,7 +22,7 @@ export default async function StudentProfilePage() {
         <>
             <StudentProfileDetails profile={summary.profile} />
             <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 pb-8 sm:px-6 lg:px-8">
-                <p className="text-sm text-neutral-400">¿Necesitas actualizar tu teléfono, contacto de emergencia o notas médicas?</p>
+                <p className="text-sm text-neutral-400">¿Necesitas actualizar tu nombre, fecha de nacimiento, teléfono, contacto de emergencia o notas médicas?</p>
                 <StudentProfileActions profile={summary.profile} />
             </div>
             <div className="mx-auto max-w-4xl px-4 pb-8 sm:px-6 lg:px-8">

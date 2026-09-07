@@ -2,18 +2,19 @@ import { auth } from '@/auth'
 import { StudentDashboardOverview } from '@/components/dashboard/student/StudentDashboardOverview'
 import { getStudentDashboardSummary, getStudentKataProgress } from '@/lib/dashboard/student-queries'
 import { redirect } from 'next/navigation'
+import { hasRole } from '@/lib/auth/roles'
 
 export default async function StudentDashboardPage() {
     const session = await auth()
 
-    if (session?.user?.role !== 'STUDENT') {
-        redirect('/dashboard/no-autorizado')
+    if (!session?.user?.id || !hasRole(session?.user, 'STUDENT')) {
+        redirect('/no-autorizado')
     }
 
     const userId = session.user.id
 
     if (!userId) {
-        redirect('/dashboard/no-autorizado')
+        redirect('/no-autorizado')
     }
 
     const summary = await getStudentDashboardSummary(userId)

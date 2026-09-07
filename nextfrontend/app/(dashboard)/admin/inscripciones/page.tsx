@@ -2,20 +2,20 @@ import { auth } from '@/auth'
 import { AdminEnrollments } from '@/components/dashboard/admin/AdminEnrollments'
 import { getAdminEnrollments } from '@/lib/dashboard/admin-queries'
 import { redirect } from 'next/navigation'
+import { hasAnyRole } from '@/lib/auth/roles'
 
 export default async function AdminEnrollmentsPage() {
     const session = await auth()
-    const role = session?.user?.role
     const userId = session?.user?.id
 
-    if ((role !== 'SCHOOL_ADMIN' && role !== 'SUPERADMIN') || !userId) {
-        redirect('/dashboard/no-autorizado')
+    if (!hasAnyRole(session?.user, ['SCHOOL_ADMIN', 'SUPERADMIN']) || !userId) {
+        redirect('/no-autorizado')
     }
 
     const enrollments = await getAdminEnrollments(userId)
 
     if (!enrollments) {
-        redirect('/dashboard/no-autorizado')
+        redirect('/no-autorizado')
     }
 
     return <AdminEnrollments enrollments={enrollments} />

@@ -1,5 +1,6 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
+import { hasRole } from '@/lib/auth/roles'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -21,7 +22,7 @@ interface PracticeRouteContext {
 export async function PATCH(request: Request, { params }: PracticeRouteContext) {
   const session = await auth()
 
-  if (session?.user?.role !== 'STUDENT' || !session.user.id) {
+  if (!session?.user?.id || !hasRole(session?.user, 'STUDENT')) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 

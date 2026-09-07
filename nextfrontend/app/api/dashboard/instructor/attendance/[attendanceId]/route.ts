@@ -1,5 +1,6 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
+import { hasRole } from '@/lib/auth/roles'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -19,7 +20,7 @@ interface AttendanceRouteContext {
 export async function PATCH(request: Request, { params }: AttendanceRouteContext) {
   const session = await auth()
 
-  if (session?.user?.role !== 'INSTRUCTOR' || !session.user.id) {
+  if (!session?.user?.id || !hasRole(session?.user, 'INSTRUCTOR')) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 

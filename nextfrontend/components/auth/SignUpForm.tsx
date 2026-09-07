@@ -413,11 +413,11 @@ export function SignUpForm({ onSuccess, onNavigateToLogin }: SignUpFormProps) {
             id="btn-submit-signup"
             type="submit"
             disabled={isLoading || !isLengthValid || !isMatchValid}
-            className="hero-button w-full shadow-xl shadow-black/50"
+            className="hero-button-dark w-full shadow-xl shadow-black/50"
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin text-black" />
+                <Loader2 className="w-4 h-4 animate-spin text-current" />
                 <span>Registrando cuenta...</span>
               </span>
             ) : (

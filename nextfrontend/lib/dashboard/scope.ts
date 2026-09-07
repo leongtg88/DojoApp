@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import { hasRole } from '@/lib/auth/roles'
 
 export interface AdminScope {
   isSuperAdmin: boolean
@@ -8,19 +9,19 @@ export interface AdminScope {
 export async function getAdminScope(userId: string): Promise<AdminScope | null> {
   const user = await db.user.findUnique({
     where: { id: userId },
-    select: { role: true, schoolId: true },
+    select: { role: true, roles: true, schoolId: true },
   })
 
-  if (!user || (user.role !== 'SCHOOL_ADMIN' && user.role !== 'SUPERADMIN')) {
+  if (!user || !hasRole(user, 'SCHOOL_ADMIN') && !hasRole(user, 'SUPERADMIN')) {
     return null
   }
 
-  if (user.role === 'SCHOOL_ADMIN' && !user.schoolId) {
+  if (hasRole(user, 'SCHOOL_ADMIN') && !hasRole(user, 'SUPERADMIN') && !user.schoolId) {
     return null
   }
 
   return {
-    isSuperAdmin: user.role === 'SUPERADMIN',
+    isSuperAdmin: hasRole(user, 'SUPERADMIN'),
     schoolId: user.schoolId,
   }
 }

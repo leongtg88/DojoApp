@@ -8,12 +8,12 @@ import { getRoleNavigation } from './RoleNavigation'
 
 interface MobileDashboardNavProps {
     onSignOut: () => void
-    role: DashboardRole
+    activeRole: DashboardRole
 }
 
-export function MobileDashboardNav({ onSignOut, role }: MobileDashboardNavProps) {
+export function MobileDashboardNav({ onSignOut, activeRole }: MobileDashboardNavProps) {
     const pathname = usePathname()
-    const navigation = getRoleNavigation(role).slice(0, 5)
+    const navigation = getRoleNavigation(activeRole).slice(0, 5)
 
     return (
         <nav

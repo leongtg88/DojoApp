@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { AdminStudentDetail } from '@/components/dashboard/admin/AdminStudentDetail'
 import { getAdminStudentDetail } from '@/lib/dashboard/admin-queries'
 import { redirect } from 'next/navigation'
+import { hasAnyRole } from '@/lib/auth/roles'
 
 interface AdminStudentDetailPageProps {
     params: Promise<{ studentId: string }>
@@ -9,18 +10,17 @@ interface AdminStudentDetailPageProps {
 
 export default async function AdminStudentDetailPage({ params }: AdminStudentDetailPageProps) {
     const session = await auth()
-    const role = session?.user?.role
     const userId = session?.user?.id
 
-    if ((role !== 'SCHOOL_ADMIN' && role !== 'SUPERADMIN') || !userId) {
-        redirect('/dashboard/no-autorizado')
+    if (!hasAnyRole(session?.user, ['SCHOOL_ADMIN', 'SUPERADMIN']) || !userId) {
+        redirect('/no-autorizado')
     }
 
     const { studentId } = await params
     const student = await getAdminStudentDetail(userId, studentId)
 
     if (!student) {
-        redirect('/dashboard/no-autorizado')
+        redirect('/no-autorizado')
     }
 
     return <AdminStudentDetail student={student} />

@@ -3,6 +3,7 @@ import { InstructorAttendanceBoard } from '@/components/dashboard/instructor/Ins
 import { InstructorAttendanceRoster } from '@/components/dashboard/instructor/InstructorAttendanceRoster'
 import { getInstructorAttendanceBoard, getInstructorAttendanceRoster, getInstructorClasses } from '@/lib/dashboard/instructor-queries'
 import { redirect } from 'next/navigation'
+import { hasRole } from '@/lib/auth/roles'
 
 interface InstructorAttendancePageProps {
     searchParams: Promise<{ classId?: string; date?: string }>
@@ -11,8 +12,8 @@ interface InstructorAttendancePageProps {
 export default async function InstructorAttendancePage({ searchParams }: InstructorAttendancePageProps) {
     const session = await auth()
 
-    if (session?.user?.role !== 'INSTRUCTOR' || !session.user.id) {
-        redirect('/dashboard/no-autorizado')
+    if (!session?.user?.id || !hasRole(session?.user, 'INSTRUCTOR')) {
+        redirect('/no-autorizado')
     }
 
     const parameters = await searchParams

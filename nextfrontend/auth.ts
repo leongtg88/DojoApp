@@ -2,6 +2,7 @@ import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 import { db } from '@/lib/db'
+import type { DashboardRole } from '@/types/dashboard'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
@@ -64,6 +65,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user.email,
           name: user.name,
           role: user.role,
+          roles: user.roles as DashboardRole[],
         }
       },
     }),
@@ -74,6 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id
         token.role = user.role
+        token.roles = user.roles as DashboardRole[]
       }
 
       return token
@@ -83,6 +86,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = String(token.id)
         session.user.role = String(token.role)
+        session.user.roles = (token.roles ?? [String(token.role) as DashboardRole]) as DashboardRole[]
       }
 
       return session

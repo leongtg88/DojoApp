@@ -235,6 +235,7 @@ async function main() {
       passwordHash: adminPassword,
       name: 'Administrador Tosei Gusoku',
       role: Role.SCHOOL_ADMIN,
+      roles: [Role.SCHOOL_ADMIN],
       emailVerified: new Date(),
       schoolId: school.id,
       branchId: branch.id,
@@ -251,6 +252,7 @@ async function main() {
       passwordHash: instructorPassword,
       name: 'Instructor Principal',
       role: Role.INSTRUCTOR,
+      roles: [Role.INSTRUCTOR],
       emailVerified: new Date(),
       schoolId: school.id,
       branchId: branch.id,
@@ -273,6 +275,7 @@ async function main() {
       passwordHash: studentPassword,
       name: 'Juan Pérez',
       role: Role.STUDENT,
+      roles: [Role.STUDENT],
       emailVerified: new Date(),
       schoolId: school.id,
       branchId: branch.id,
@@ -293,6 +296,47 @@ async function main() {
       medicalInfo: null,
       emergencyContact: 'María Pérez - +18095550000',
       currentRank: 'Amarillo',
+      status: 'ACTIVE',
+    },
+  })
+
+  // Cuenta owner multirol (principal del dojo). Datos genéricos: se autocompletan desde su perfil en el panel del estudiante.
+  const ownerPassword = await bcrypt.hash('Sensei123!', 12)
+
+  const ownerUser = await db.user.upsert({
+    where: { email: 'sensei@toseigusoku.com' },
+    update: {},
+    create: {
+      email: 'sensei@toseigusoku.com',
+      passwordHash: ownerPassword,
+      name: 'Sensei Tosei Gusoku',
+      role: Role.SUPERADMIN,
+      roles: [Role.SUPERADMIN, Role.SCHOOL_ADMIN, Role.INSTRUCTOR, Role.STUDENT],
+      emailVerified: new Date(),
+      schoolId: school.id,
+      branchId: branch.id,
+      instructorProfile: {
+        create: {
+          bio: 'Instructor titular del dojo Tosei Gusoku.',
+          specialties: ['Kihon', 'Kata', 'Kumite', 'Defensa personal'],
+        },
+      },
+    },
+  })
+
+  await db.student.upsert({
+    where: { userId: ownerUser.id },
+    update: {},
+    create: {
+      userId: ownerUser.id,
+      schoolId: school.id,
+      branchId: branch.id,
+      firstName: 'Sensei',
+      lastName: 'Tosei Gusoku',
+      dateOfBirth: new Date('1990-01-01'),
+      medicalInfo: null,
+      emergencyContact: null,
+      currentRank: null,
       status: 'ACTIVE',
     },
   })
@@ -423,6 +467,7 @@ async function main() {
   })
 
   console.log('Seed completado correctamente')
+  console.log('Owner (multirol): sensei@toseigusoku.com / Sensei123!')
   console.log('Administrador: admin@toseigusoku.com / Admin123!')
   console.log('Instructor: instructor@toseigusoku.com / Instructor123!')
   console.log('Alumno: alumno@test.com / Alumno123!')

@@ -100,7 +100,7 @@ export function LoginForm({
             Portal de Acceso Seguro
           </span>
         </div>
-        <h2 className="text-3xl lg:text-4xl font-light tracking-tight text-white mb-3">
+        <h2 className="text-xl lg:text-4xl font-light tracking-tight text-white mb-3">
           Iniciar Sesión
         </h2>
         <div className="w-16 h-[3px] rounded-full mb-3" style={{ background: 'linear-gradient(90deg, var(--sand), var(--emerald), var(--bubblegum-pink))' }} />
@@ -205,7 +205,7 @@ export function LoginForm({
         </div>
 
         {/* Submit button with animated hero styling and loading indicator */}
-        <div className="pt-2">
+        <div className="pt-3">
           <button
             id="btn-submit-login"
             type="submit"

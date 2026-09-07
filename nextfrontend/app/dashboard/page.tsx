@@ -1,18 +1,26 @@
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
+import { RolePicker } from '@/components/dashboard/shell/RolePicker'
+import { getRolePanelOptions } from '@/components/dashboard/shell/RolePanels'
+import type { DashboardRole } from '@/types/dashboard'
 
 export default async function DashboardIndexPage() {
   const session = await auth()
 
-  switch (session?.user?.role) {
-    case 'STUDENT':
-      redirect('/dashboard/estudiante')
-    case 'INSTRUCTOR':
-      redirect('/dashboard/instructor')
-    case 'SCHOOL_ADMIN':
-    case 'SUPERADMIN':
-      redirect('/dashboard/admin')
-    default:
-      redirect('/dashboard/no-autorizado')
+  if (!session?.user?.id) {
+    redirect('/login')
   }
+
+  const roles = (session.user.roles ?? []) as DashboardRole[]
+  const options = getRolePanelOptions(roles)
+
+  if (options.length === 0) {
+    redirect('/no-autorizado')
+  }
+
+  if (options.length === 1) {
+    redirect(options[0].href)
+  }
+
+  return <RolePicker roles={roles} userName={session.user.name} />
 }

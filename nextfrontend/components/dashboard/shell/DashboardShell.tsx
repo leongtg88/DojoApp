@@ -1,21 +1,35 @@
 'use client'
 
 import type { ReactNode } from 'react'
+import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 import { LogOut } from 'lucide-react'
 import type { DashboardRole } from '@/types/dashboard'
+import { getPanelHref } from './RolePanels'
 import { DashboardSidebar } from './DashboardSidebar'
 import { MobileDashboardNav } from './MobileDashboardNav'
 
 interface DashboardShellProps {
     children: ReactNode
-    role: DashboardRole
+    roles: DashboardRole[]
+    primaryRole: DashboardRole
     userName: string | null | undefined
 }
 
-export function DashboardShell({ children, role, userName }: DashboardShellProps) {
+function resolveActiveRole(pathname: string, roles: DashboardRole[], primaryRole: DashboardRole): DashboardRole {
+    if (pathname.startsWith(getPanelHref('STUDENT'))) return 'STUDENT'
+    if (pathname.startsWith(getPanelHref('INSTRUCTOR'))) return 'INSTRUCTOR'
+    if (pathname.startsWith(getPanelHref('SCHOOL_ADMIN'))) {
+        return roles.includes('SUPERADMIN') ? 'SUPERADMIN' : roles.includes('SCHOOL_ADMIN') ? 'SCHOOL_ADMIN' : primaryRole
+    }
+    return primaryRole
+}
+
+export function DashboardShell({ children, roles, primaryRole, userName }: DashboardShellProps) {
+    const pathname = usePathname()
+    const activeRole = resolveActiveRole(pathname, roles, primaryRole)
     const initials = (userName ?? 'Usuario').split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()
-    const roleLabel = role === 'STUDENT' ? 'Portal del estudiante' : role === 'INSTRUCTOR' ? 'Panel de instructor' : 'Administración del dojo'
+    const roleLabel = activeRole === 'STUDENT' ? 'Portal del estudiante' : activeRole === 'INSTRUCTOR' ? 'Panel de instructor' : 'Administración del dojo'
 
     function handleSignOut() {
         void signOut({ redirectTo: '/login' })
@@ -37,11 +51,11 @@ export function DashboardShell({ children, role, userName }: DashboardShellProps
             </header>
 
             <div className="mx-auto flex max-w-7xl">
-                <DashboardSidebar onSignOut={handleSignOut} role={role} userName={userName} />
+                <DashboardSidebar onSignOut={handleSignOut} activeRole={activeRole} roles={roles} userName={userName} />
                 <div className="min-w-0 flex-1">{children}</div>
             </div>
 
-            <MobileDashboardNav onSignOut={handleSignOut} role={role} />
+            <MobileDashboardNav onSignOut={handleSignOut} activeRole={activeRole} />
         </div>
     )
 }

@@ -1,5 +1,6 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
+import { hasAnyRole, hasRole } from '@/lib/auth/roles'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -20,7 +21,7 @@ interface PromotionRouteContext {
 export async function POST(request: Request, { params }: PromotionRouteContext) {
   const session = await auth()
 
-  if (!session?.user?.id || (session.user.role !== 'SCHOOL_ADMIN' && session.user.role !== 'SUPERADMIN')) {
+  if (!session?.user?.id || !hasAnyRole(session.user, ['SCHOOL_ADMIN', 'SUPERADMIN'])) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
@@ -32,10 +33,10 @@ export async function POST(request: Request, { params }: PromotionRouteContext) 
 
   const admin = await db.user.findUnique({
     where: { id: session.user.id },
-    select: { role: true, schoolId: true },
+    select: { roles: true, schoolId: true },
   })
 
-  if (!admin || (admin.role !== 'SCHOOL_ADMIN' && admin.role !== 'SUPERADMIN') || (admin.role === 'SCHOOL_ADMIN' && !admin.schoolId)) {
+  if (!admin || !hasAnyRole(admin, ['SCHOOL_ADMIN', 'SUPERADMIN']) || (hasRole(admin, 'SCHOOL_ADMIN') && !hasRole(admin, 'SUPERADMIN') && !admin.schoolId)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
@@ -43,7 +44,7 @@ export async function POST(request: Request, { params }: PromotionRouteContext) 
   const student = await db.student.findFirst({
     where: {
       id: studentId,
-      ...(admin.role === 'SUPERADMIN' ? {} : { schoolId: admin.schoolId! }),
+      ...(hasRole(admin, 'SUPERADMIN') ? {} : { schoolId: admin.schoolId! }),
     },
     select: { id: true, schoolId: true, currentRank: true },
   })

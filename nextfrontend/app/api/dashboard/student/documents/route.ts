@@ -1,5 +1,6 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
+import { hasRole } from '@/lib/auth/roles'
 import { createPrivateDocumentUrl, uploadPrivateDocument } from '@/lib/document-storage'
 import { NextResponse } from 'next/server'
 
@@ -9,7 +10,7 @@ const maxFileSize = 5 * 1024 * 1024
 
 async function getStudentId() {
   const session = await auth()
-  if (session?.user?.role !== 'STUDENT' || !session.user.id) return null
+  if (!session?.user?.id || !hasRole(session?.user, 'STUDENT')) return null
   const student = await db.student.findUnique({
     where: { userId: session.user.id },
     select: { id: true, enrollments: { select: { id: true }, take: 1 } },

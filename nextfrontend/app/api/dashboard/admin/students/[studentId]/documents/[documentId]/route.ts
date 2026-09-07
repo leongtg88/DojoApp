@@ -1,5 +1,6 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
+import { hasAnyRole, hasRole } from '@/lib/auth/roles'
 import { createPrivateDocumentUrl } from '@/lib/document-storage'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -19,15 +20,15 @@ interface DocumentRouteContext {
 
 async function findScopedDocument(context: DocumentRouteContext) {
   const session = await auth()
-  if (!session?.user?.id || (session.user.role !== 'SCHOOL_ADMIN' && session.user.role !== 'SUPERADMIN')) return null
+  if (!session?.user?.id || !hasAnyRole(session.user, ['SCHOOL_ADMIN', 'SUPERADMIN'])) return null
   const [{ studentId, documentId }, admin] = await Promise.all([
     context.params,
-    db.user.findUnique({ where: { id: session.user.id }, select: { role: true, schoolId: true } }),
+    db.user.findUnique({ where: { id: session.user.id }, select: { roles: true, schoolId: true } }),
   ])
-  if (!admin || (admin.role === 'SCHOOL_ADMIN' && !admin.schoolId)) return null
+  if (!admin || (hasRole(admin, 'SCHOOL_ADMIN') && !hasRole(admin, 'SUPERADMIN') && !admin.schoolId)) return null
 
   return db.studentDocument.findFirst({
-    where: { id: documentId, studentId, student: admin.role === 'SUPERADMIN' ? {} : { schoolId: admin.schoolId! } },
+    where: { id: documentId, studentId, student: hasRole(admin, 'SUPERADMIN') ? {} : { schoolId: admin.schoolId! } },
     select: { id: true, storageKey: true },
   })
 }
