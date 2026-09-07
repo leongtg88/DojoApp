@@ -2,7 +2,7 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
 import { NextResponse } from 'next/server'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@/lib/generated/prisma'
 import { z } from 'zod'
 
 const techniqueAssignmentSchema = z.object({

@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@/lib/generated/prisma'
 import { db } from '@/lib/db'
 import { uploadPrivateDocument } from '@/lib/document-storage'
 import { NextResponse } from 'next/server'

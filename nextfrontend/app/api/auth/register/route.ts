@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import { Resend } from 'resend'
 import { db } from '@/lib/db'
-import { Role } from '@prisma/client'
+import { Role } from '@/lib/generated/prisma'
 
 export const runtime = 'nodejs'
 

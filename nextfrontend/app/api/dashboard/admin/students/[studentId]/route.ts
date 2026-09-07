@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@/lib/generated/prisma'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import { db } from '@/lib/db'
-import { Role } from '@prisma/client'
+import { Role } from '@/lib/generated/prisma'
 
 export const runtime = 'nodejs'
 
