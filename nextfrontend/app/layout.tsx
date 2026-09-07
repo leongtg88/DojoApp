@@ -1,7 +1,8 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Montserrat, Open_Sans } from 'next/font/google';
 import './globals.css';
 import { AppChrome } from '@/components/AppChrome';
+import { PwaRegister } from '@/components/PwaRegister';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -78,12 +79,33 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  applicationName: 'Tosei Gusoku Dojo',
+  manifest: '/manifest.webmanifest',
+  icons: {
+    apple: [{ url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Tosei Gusoku',
+  },
+  formatDetection: {
+    telephone: false,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#000000',
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" suppressHydrationWarning>
       <body suppressHydrationWarning className={`${montserrat.variable} ${openSans.variable} min-h-screen bg-white text-[#dee2f0] flex flex-col font-sans relative antialiased selection:bg-brand-accent selection:text-gray-700`}>
+        <PwaRegister />
         <AppChrome>{children}</AppChrome>
       </body>
     </html>

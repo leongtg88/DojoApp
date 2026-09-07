@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import ConditionalFooter from '@/components/conditionalFooter'
 import ScrollToTop from '@/components/ScrollToTop'
+import { InstallPrompt } from '@/components/InstallPrompt'
 
 export function AppChrome({ children }: { children: ReactNode }) {
     const pathname = usePathname()
@@ -20,6 +21,7 @@ export function AppChrome({ children }: { children: ReactNode }) {
             </Suspense>
             <main className={isDashboard || isAuth ? 'flex-grow' : 'flex-grow pt-20 md:pb-20'}>{children}</main>
             {!isDashboard && !isAuth && <ConditionalFooter />}
+            {!isDashboard && !isAuth && <InstallPrompt />}
         </>
     )
 }
