@@ -63,27 +63,53 @@ export async function POST(request: NextRequest) {
     const firstName = nameParts[0]
     const lastName = nameParts.slice(1).join(' ') || firstName
 
+    const existingUnlinkedStudent = await db.student.findFirst({
+      where: { email: parsed.data.email, userId: null },
+      select: { id: true, schoolId: true, branchId: true, firstName: true, lastName: true },
+    })
+
+    const targetSchoolId = existingUnlinkedStudent?.schoolId ?? branch.schoolId
+    const targetBranchId = existingUnlinkedStudent?.branchId ?? branch.id
+    const displayName = existingUnlinkedStudent
+      ? `${existingUnlinkedStudent.firstName} ${existingUnlinkedStudent.lastName}`.trim()
+      : parsed.data.name
+
     const user = await db.$transaction(async (transaction) => {
       const createdUser = await transaction.user.create({
         data: {
-          name: parsed.data.name,
+          name: displayName,
           email: parsed.data.email,
           passwordHash,
           role: Role.STUDENT,
-          schoolId: branch.schoolId,
-          branchId: branch.id,
-          studentProfile: {
-            create: {
-              schoolId: branch.schoolId,
-              branchId: branch.id,
-              firstName,
-              lastName,
-              dateOfBirth: parsed.data.dateOfBirth,
-            },
-          },
+          schoolId: targetSchoolId,
+          branchId: targetBranchId,
+          ...(existingUnlinkedStudent
+            ? {}
+            : {
+                studentProfile: {
+                  create: {
+                    schoolId: targetSchoolId,
+                    branchId: targetBranchId,
+                    email: parsed.data.email,
+                    firstName,
+                    lastName,
+                    dateOfBirth: parsed.data.dateOfBirth,
+                  },
+                },
+              }),
         },
         select: { id: true, email: true },
       })
+
+      if (existingUnlinkedStudent) {
+        await transaction.student.update({
+          where: { id: existingUnlinkedStudent.id },
+          data: { userId: createdUser.id },
+        })
+        await transaction.studentInvitationToken.deleteMany({
+          where: { studentId: existingUnlinkedStudent.id, usedAt: null },
+        })
+      }
 
       await transaction.emailVerificationToken.deleteMany({
         where: { userId: createdUser.id },
@@ -100,7 +126,7 @@ export async function POST(request: NextRequest) {
       return createdUser
     })
 
-    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'}/verificar-email?token=${rawToken}`
+    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTDOJO_APP ?? 'http://localhost:3000'}/verificar-email?token=${rawToken}`
     const hasEmailConfig = Boolean(process.env.RESEND_API_KEY && process.env.EMAIL_FROM)
 
     if (!hasEmailConfig && process.env.NODE_ENV === 'production') {

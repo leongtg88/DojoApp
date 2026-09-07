@@ -64,6 +64,7 @@ model User {
   techniqueEvaluations TechniqueEvaluation[] @relation("techniqueEvaluator")
   attendanceConfirmations Attendance[] @relation("attendanceConfirmer")
   emailVerificationTokens EmailVerificationToken[]
+  acceptedInvitations StudentInvitationToken[]
   classes        Class[] @relation("instructor")
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -77,6 +78,22 @@ model EmailVerificationToken {
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime @default(now())
+}
+
+model StudentInvitationToken {
+  id        String   @id @default(cuid())
+  token     String   @unique // hash del token
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  email     String   // correo destino de la invitación
+  expiresAt DateTime
+  usedAt    DateTime?
+  usedByUserId String? // id del User que aceptó la invitación
+  usedBy    User?    @relation(fields: [usedByUserId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@index([studentId])
+  @@index([expiresAt])
 }
 
 model InstructorProfile {
@@ -98,6 +115,7 @@ model Student {
   firstName        String
   lastName         String
   dateOfBirth      DateTime
+  email            String?  // correo de contacto para la invitación de acceso
   contactPhone     String?
   medicalInfo      String?
   emergencyContact String?
@@ -120,6 +138,7 @@ model Student {
   classEnrollments ClassEnrollment[]
   rankHistory      StudentRankHistory[]
   enrollmentApplicant EnrollmentApplicant?
+  invitationTokens StudentInvitationToken[]
   documents        StudentDocument[]
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt

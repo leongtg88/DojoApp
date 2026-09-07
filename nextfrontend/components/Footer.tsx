@@ -2,11 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { requestAppInstall, useIsInstalledPwa } from '@/lib/pwa';
 const logoRectangular = '/assets/LogoRectangularNegro.svg';
 
 export default function Footer() {
   const pathname = usePathname();
   const router = useRouter();
+  const isInstalled = useIsInstalledPwa();
 
   const scrollToSection = (id: string) => {
     if (pathname === '/') {
@@ -69,6 +71,11 @@ export default function Footer() {
         <div className="md:col-span-2 space-y-3">
           <h5 className="font-bold text-xs uppercase tracking-widest text-brand-accent font-display">Soporte</h5>
           <div className="text-xs text-gray-700/60 space-y-1.5">
+            {!isInstalled && (
+              <button type="button" onClick={requestAppInstall} className="hover:text-brand-accent block cursor-pointer">
+                Descargar la App
+              </button>
+            )}
             <Link href="/terminos" className="hover:text-brand-accent block">Términos Legales</Link>
             <Link href="/privacidad" className="hover:text-brand-accent block">Privacidad de Datos</Link>
             <p className="pt-2 text-[10px] text-gray-700/40">© {new Date().getFullYear()} Web Developed by León Gustavo Sensei.</p>

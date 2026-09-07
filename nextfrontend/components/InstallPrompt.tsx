@@ -2,17 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import { Download, X } from 'lucide-react'
+import { isStandalone, INSTALL_REQUEST_EVENT } from '@/lib/pwa'
 
 type BeforeInstallPromptEvent = Event & {
     prompt: () => Promise<void>
     userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>
-}
-
-function isStandalone(): boolean {
-    if (typeof window === 'undefined') return false
-    if (window.matchMedia('(display-mode: standalone)').matches) return true
-    const nav = navigator as Navigator & { standalone?: boolean }
-    return typeof nav.standalone === 'boolean' && nav.standalone
 }
 
 function isIos(): boolean {
@@ -28,29 +22,33 @@ export function InstallPrompt() {
     useEffect(() => {
         if (isStandalone()) return
 
+        let currentDeferred: BeforeInstallPromptEvent | null = null
+
         const onBeforeInstallPrompt = (event: Event) => {
             event.preventDefault()
-            setDeferred(event as BeforeInstallPromptEvent)
+            currentDeferred = event as BeforeInstallPromptEvent
+            setDeferred(currentDeferred)
             setVisible(true)
+        }
+
+        const onRequestInstall = () => {
+            if (currentDeferred || isIos()) setVisible(true)
         }
 
         const onAppInstalled = () => {
             setVisible(false)
             setDeferred(null)
-        }
-
-        let timer: ReturnType<typeof setTimeout> | undefined
-        if (isIos()) {
-            timer = setTimeout(() => setVisible(true), 0)
+            currentDeferred = null
         }
 
         window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt)
         window.addEventListener('appinstalled', onAppInstalled)
+        window.addEventListener(INSTALL_REQUEST_EVENT, onRequestInstall)
 
         return () => {
             window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt)
             window.removeEventListener('appinstalled', onAppInstalled)
-            if (timer !== undefined) clearTimeout(timer)
+            window.removeEventListener(INSTALL_REQUEST_EVENT, onRequestInstall)
         }
     }, [])
 
@@ -59,9 +57,9 @@ export function InstallPrompt() {
     const handleInstall = async () => {
         if (!deferred) return
         await deferred.prompt()
-        const { outcome } = await deferred.userChoice
+        await deferred.userChoice
         setDeferred(null)
-        if (outcome === 'accepted') setVisible(false)
+        setVisible(false)
     }
 
     return (
@@ -84,7 +82,7 @@ export function InstallPrompt() {
                         <button
                             type="button"
                             onClick={handleInstall}
-                            className="inline-flex items-center gap-2 rounded-lg bg-brand-accent px-4 py-2 text-sm font-bold text-gray-900 hover:bg-brand-accent-hover transition-colors"
+                            className="hero-button-dark px-4! py-2!"
                         >
                             <Download className="w-4 h-4" />
                             Instalar app

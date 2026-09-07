@@ -136,6 +136,8 @@ export interface AdminStudentSummary {
 	beltColor: string | null
 	beltSecondaryColor: string | null
 	status: string
+	email: string | null
+	accountStatus: 'SIN_CUENTA' | 'INVITADO' | 'ACTIVO'
 	branchName: string
 	activeClassNames: string[],
 	techniques: AdminTechniqueSummary[],

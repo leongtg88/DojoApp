@@ -6,15 +6,17 @@ import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Menu, X, BookOpen, Calendar, MapPin, Camera, MessagesSquare,
-  Play, Home, ClipboardList, UserRound
+  Play, Home, ClipboardList, UserRound, Smartphone
 } from 'lucide-react';
 import DojoEnrollmentModal from './DojoEnrollmentModal';
+import { requestAppInstall, useIsInstalledPwa } from '@/lib/pwa';
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEnrollmentModalOpen, setIsEnrollmentModalOpen] = useState(false);
   const [preSelectedProgram, setPreSelectedProgram] = useState<'kid' | 'adult'>('adult');
+  const isInstalled = useIsInstalledPwa();
 
   const handleOpenEnrollment = (program: string = 'adult') => {
     setPreSelectedProgram(program === 'kid' ? 'kid' : 'adult');
@@ -51,6 +53,17 @@ export default function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
+          {!isInstalled && (
+            <button
+              type="button"
+              onClick={requestAppInstall}
+              aria-label="Instalar la app"
+              title="Instalar la app"
+              className="flex size-10 items-center justify-center rounded-lg border border-brand-accent/20 bg-brand-accent/10 text-brand-accent hover:bg-brand-accent hover:text-black transition-colors"
+            >
+              <Smartphone aria-hidden="true" className="size-4" />
+            </button>
+          )}
           <Link
             aria-label="Iniciar sesión"
             className={`flex size-10 items-center justify-center rounded-lg border transition-colors ${pathname === '/login' ? 'border-brand-accent bg-brand-accent text-black' : 'border-brand-accent/20 bg-brand-accent/10 text-brand-accent hover:bg-brand-accent hover:text-black'}`}
@@ -138,6 +151,18 @@ export default function Navbar() {
                   <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname === '/login' ? 'text-brand-accent' : 'text-gray-700/80'}`}>
                     <UserRound className="w-4 h-4 shrink-0" /><span>Iniciar sesión</span>
                   </Link>
+                  {!isInstalled && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        requestAppInstall();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full text-left transition-colors flex items-center gap-3 py-1 cursor-pointer text-gray-700/80 hover:text-brand-accent"
+                    >
+                      <Smartphone className="w-4 h-4 shrink-0" /><span>Instalar la App</span>
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="py-2 px-6 inline-block bg-current backdrop-blur-sm shadow-xl/30 border hover-color-change hover:bg-white hover:text-gray-700 font-regular rounded-lg mt-auto" style={{ animation: "border-color-change 10s infinite linear" }}>

@@ -10,6 +10,7 @@ import {
 import GalleryLightbox from './GalleryLightbox';
 import Hero5 from './Hero5';
 import Link from 'next/link';
+import { InstallAppBand } from './InstallAppBand';
 
 interface HomeViewProps {
   onOpenEnrollment: (program?: string) => void;
@@ -349,6 +350,9 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
           </div>
         </div>
       </section>
+
+      {/* Instala la app */}
+      <InstallAppBand />
 
       {/* CTA Final */}
       <section className="relative md:py-24 pt-10 pb-20 px-8 text-center overflow-hidden bg-brand-bg">

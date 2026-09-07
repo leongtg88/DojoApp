@@ -56,6 +56,14 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       memberNumber: true,
       currentRank: true,
       status: true,
+      userId: true,
+      email: true,
+      invitationTokens: {
+        where: { usedAt: null, expiresAt: { gt: new Date() } },
+        orderBy: { createdAt: 'desc' },
+        take: 1,
+        select: { id: true },
+      },
       branch: { select: { name: true } },
       classEnrollments: {
         where: { status: 'ACTIVE' },
@@ -127,6 +135,8 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       beltColor: currentBeltRank?.beltColor ?? null,
       beltSecondaryColor: currentBeltRank?.beltSecondaryColor ?? null,
       status: student.status,
+      email: student.email,
+      accountStatus: student.userId ? 'ACTIVO' : student.invitationTokens.length > 0 ? 'INVITADO' : 'SIN_CUENTA',
       branchName: student.branch.name,
       activeClassNames: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.name),
       techniques: student.techniques.map(({ technique }) => ({ ...technique })),

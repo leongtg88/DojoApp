@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { Award, Check, Loader2, Pencil, Plus, Search, UserCheck, UserMinus, Users, X } from 'lucide-react'
+import { Award, Check, Loader2, Mail, Pencil, Plus, Search, UserCheck, UserMinus, Users, X } from 'lucide-react'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
 import type { AdminBeltRankSummary, AdminStudentSummary } from '@/types/dashboard'
 
@@ -48,6 +48,12 @@ function attendanceBadgeClass(percent: number) {
 	if (percent >= 85) return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
 	if (percent >= 50) return 'border-amber-500/30 bg-amber-500/10 text-amber-200'
 	return 'border-red-500/30 bg-red-500/10 text-red-200'
+}
+
+function accountBadgeClass(accountStatus: 'SIN_CUENTA' | 'INVITADO' | 'ACTIVO') {
+	if (accountStatus === 'ACTIVO') return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
+	if (accountStatus === 'INVITADO') return 'border-amber-500/30 bg-amber-500/10 text-amber-200'
+	return 'border-neutral-700 bg-[#0d1117] text-neutral-300'
 }
 
 interface ConfirmModalProps {
@@ -327,6 +333,8 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 	const [editingStudent, setEditingStudent] = useState<AdminStudentSummary | null>(null)
 	const [togglingStudent, setTogglingStudent] = useState<AdminStudentSummary | null>(null)
 	const [isToggling, setIsToggling] = useState(false)
+	const [invitingStudent, setInvitingStudent] = useState<AdminStudentSummary | null>(null)
+	const [isInviting, setIsInviting] = useState(false)
 	const [actionError, setActionError] = useState<string | null>(null)
 
 	const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
@@ -361,6 +369,23 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 			})
 			.catch((reason: Error) => setActionError(reason.message))
 			.finally(() => setIsToggling(false))
+	}
+
+	function handleInvite(student: AdminStudentSummary) {
+		setIsInviting(true)
+		setActionError(null)
+		fetch(`/api/dashboard/admin/students/${student.id}/invite`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+		})
+			.then(async (response) => {
+				const payload = await response.json().catch(() => ({}))
+				if (!response.ok) throw new Error(payload.error ?? 'No fue posible enviar la invitación.')
+				router.refresh()
+				setInvitingStudent(null)
+			})
+			.catch((reason: Error) => setActionError(reason.message))
+			.finally(() => setIsInviting(false))
 	}
 
 	return (
@@ -436,6 +461,7 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 										<th className="px-5 py-3">Asistencia</th>
 										<th className="px-5 py-3">Sucursal</th>
 										<th className="px-5 py-3">Estado</th>
+										<th className="px-5 py-3">Cuenta</th>
 										<th className="px-5 py-3 text-right">Acciones</th>
 									</tr>
 								</thead>
@@ -480,7 +506,16 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 													<span className={`rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${statusBadgeClass(student.status)}`}>{student.status}</span>
 												</td>
 												<td className="px-5 py-4">
+													<span className={`rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${accountBadgeClass(student.accountStatus)}`}>{student.accountStatus}</span>
+													{student.accountStatus === 'INVITADO' && student.email && <p className="mt-1 max-w-[160px] truncate font-mono text-[11px] text-neutral-500">{student.email}</p>}
+												</td>
+												<td className="px-5 py-4">
 													<div className="flex items-center justify-end gap-1">
+														{(student.accountStatus !== 'ACTIVO' && student.email) && (
+															<button type="button" title={student.accountStatus === 'INVITADO' ? 'Reenviar invitación' : 'Enviar invitación al correo'} onClick={() => setInvitingStudent(student)} className="flex items-center gap-1 rounded px-2 py-1.5 text-xs font-semibold text-cyan-400 transition-colors hover:bg-cyan-950/40 hover:text-cyan-300">
+																<Mail className="size-4" />{student.accountStatus === 'INVITADO' ? 'Reenviar' : 'Invitar'}
+															</button>
+														)}
 														{student.status !== 'ACTIVE' && (
 															<button type="button" title="Dar de alta" onClick={() => setTogglingStudent(student)} className="rounded p-1.5 text-emerald-400 transition-colors hover:bg-emerald-950/40">
 																<UserCheck className="size-4" />
@@ -522,6 +557,17 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 					if (togglingStudent) handleToggleStatus(togglingStudent)
 				}}
 				onCancel={() => setTogglingStudent(null)}
+			/>
+
+			<ConfirmModal
+				open={invitingStudent !== null}
+				title={invitingStudent?.accountStatus === 'INVITADO' ? 'Reenviar invitación' : 'Enviar invitación'}
+				message={invitingStudent ? `Se creará un enlace de acceso y se enviará un correo a ${invitingStudent.email ?? 'sin correo registrado'} para que ${invitingStudent.firstName} ${invitingStudent.lastName} cree su contraseña. Este enlace vence en 7 días.` : ''}
+				confirmLabel={isInviting ? 'Enviando...' : 'Enviar invitación'}
+				onConfirm={() => {
+					if (invitingStudent) handleInvite(invitingStudent)
+				}}
+				onCancel={() => setInvitingStudent(null)}
 			/>
 		</main>
 	)
