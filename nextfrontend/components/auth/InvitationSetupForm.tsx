@@ -63,6 +63,9 @@ export function InvitationSetupForm() {
 
     setIsLoading(true);
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20_000);
+
     try {
       const response = await fetch('/api/auth/invitation', {
         method: 'POST',
@@ -72,7 +75,9 @@ export function InvitationSetupForm() {
           email: emailTrimmed,
           password,
         }),
+        signal: controller.signal,
       });
+      clearTimeout(timeout);
       const res = await response.json() as { success?: boolean; error?: string };
 
       if (!response.ok || !res.success) {
@@ -86,7 +91,13 @@ export function InvitationSetupForm() {
         router.push('/login');
       }, 1500);
     } catch (err: unknown) {
-      setErrorMessage((err as Error)?.message || 'Ocurrió un error inesperado al crear la cuenta.');
+      clearTimeout(timeout);
+      const isTimeout = (err as Error)?.name === 'AbortError';
+      setErrorMessage(
+        isTimeout
+          ? 'El servidor tardó demasiado en responder. Inténtalo de nuevo en unos minutos.'
+          : (err as Error)?.message || 'Ocurrió un error inesperado al crear la cuenta.',
+      );
       setIsLoading(false);
     }
   };
