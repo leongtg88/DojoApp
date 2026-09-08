@@ -39,7 +39,7 @@ export function DashboardShell({ children, roles, primaryRole, userName }: Dashb
     return (
         <div className="min-h-screen bg-[#0d1117] pb-16 text-neutral-100 md:pb-0">
             <header className="sticky top-0 z-30 border-b border-neutral-800 bg-[#161b22]/95 shadow-[0_1px_8px_rgba(0,0,0,0.35)] backdrop-blur">
-                <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+                <div className="flex h-16 w-full items-center justify-between px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center gap-3">
                         <span aria-hidden="true" className="h-8 w-1.5 bg-cyan-500" />
                         <div>
@@ -51,7 +51,7 @@ export function DashboardShell({ children, roles, primaryRole, userName }: Dashb
                 </div>
             </header>
 
-            <div className="mx-auto flex max-w-7xl">
+            <div className="flex w-full">
                 <DashboardSidebar onSignOut={handleSignOut} activeRole={activeRole} roles={roles} userName={userName} />
                 <div className="min-w-0 flex-1">{children}</div>
             </div>

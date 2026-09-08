@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { Award, Check, Loader2, Mail, Pencil, Plus, Search, UserCheck, UserMinus, Users, X } from 'lucide-react'
+import { Award, Check, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
 import type { AdminBeltRankSummary, AdminStudentSummary } from '@/types/dashboard'
 
@@ -335,6 +335,8 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 	const [isToggling, setIsToggling] = useState(false)
 	const [invitingStudent, setInvitingStudent] = useState<AdminStudentSummary | null>(null)
 	const [isInviting, setIsInviting] = useState(false)
+	const [deletingStudent, setDeletingStudent] = useState<AdminStudentSummary | null>(null)
+	const [isDeleting, setIsDeleting] = useState(false)
 	const [actionError, setActionError] = useState<string | null>(null)
 
 	const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
@@ -388,8 +390,24 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 			.finally(() => setIsInviting(false))
 	}
 
+	function handleDelete(student: AdminStudentSummary) {
+		setIsDeleting(true)
+		setActionError(null)
+		fetch(`/api/dashboard/admin/students/${student.id}`, {
+			method: 'DELETE',
+		})
+			.then(async (response) => {
+				const payload = await response.json().catch(() => ({}))
+				if (!response.ok) throw new Error(payload.error ?? 'No fue posible eliminar el alumno.')
+				router.refresh()
+				setDeletingStudent(null)
+			})
+			.catch((reason: Error) => setActionError(reason.message))
+			.finally(() => setIsDeleting(false))
+	}
+
 	return (
-		<main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+		<main className="w-full px-4 py-8 sm:px-6 lg:px-8">
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 				<div>
 					<p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">Administración</p>
@@ -532,6 +550,9 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 														<Link href={`/dashboard/admin/alumnos/${student.id}`} title="Ver ficha y promover" className="flex items-center gap-1 rounded px-2 py-1.5 text-xs font-semibold text-cyan-400 transition-colors hover:bg-cyan-950/40 hover:text-cyan-300">
 															<Award className="size-4" />Promover
 														</Link>
+														<button type="button" title="Eliminar alumno" onClick={() => setDeletingStudent(student)} className="rounded p-1.5 text-red-400 transition-colors hover:bg-red-950/40">
+															<Trash2 className="size-4" />
+														</button>
 													</div>
 												</td>
 											</tr>
@@ -568,6 +589,18 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 					if (invitingStudent) handleInvite(invitingStudent)
 				}}
 				onCancel={() => setInvitingStudent(null)}
+			/>
+
+			<ConfirmModal
+				open={deletingStudent !== null}
+				title="Eliminar alumno"
+				message={deletingStudent ? `¿Seguro que deseas eliminar a ${deletingStudent.firstName} ${deletingStudent.lastName}? Se borrarán su expediente, asistencias, técnicas y progreso. Esta acción no se puede deshacer.` : ''}
+				confirmLabel={isDeleting ? 'Eliminando...' : 'Eliminar definitivamente'}
+				isDestructive
+				onConfirm={() => {
+					if (deletingStudent) handleDelete(deletingStudent)
+				}}
+				onCancel={() => setDeletingStudent(null)}
 			/>
 		</main>
 	)

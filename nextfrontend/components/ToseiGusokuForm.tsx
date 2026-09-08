@@ -309,6 +309,10 @@ const ToseiGusokuForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
+  useEffect(() => {
+    if (isSuccess) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [isSuccess]);
+
   // ===== MANEJADORES =====
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -1111,7 +1115,7 @@ const ToseiGusokuForm = () => {
       )}
 
       {isSuccess && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="inscripcion-exitosa-title">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center space-y-6">
             <div className="w-20 h-20 bg-brand-accent/15 border border-brand-accent/30 rounded-full flex items-center justify-center mx-auto">
               <svg className="w-10 h-10 text-brand-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -1119,7 +1123,7 @@ const ToseiGusokuForm = () => {
               </svg>
             </div>
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold text-gray-900 font-display">Gracias por Inscribirte</h2>
+              <h2 id="inscripcion-exitosa-title" className="text-2xl font-bold text-gray-900 font-display">Gracias por Inscribirte</h2>
               <p className="text-sm text-gray-600">El Sensei te estará enviando una invitación a tu email. <span className="font-bold text-gray-800">Oss!</span></p>
             </div>
             <button

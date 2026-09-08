@@ -68,3 +68,44 @@ export async function PATCH(request: Request, { params }: UpdateStudentRouteCont
 
   return NextResponse.json({ ok: true, studentId: existing.id })
 }
+
+export async function DELETE(_request: Request, { params }: UpdateStudentRouteContext) {
+  const session = await auth()
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+  }
+
+  const scope = await getAdminScope(session.user.id)
+
+  if (!scope) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+  }
+
+  const { studentId } = await params
+  const existing = await db.student.findFirst({
+    where: { id: studentId, ...scopeSchoolFilter(scope) },
+    select: { id: true },
+  })
+
+  if (!existing) {
+    return NextResponse.json({ error: 'Alumno no encontrado' }, { status: 404 })
+  }
+
+  await db.$transaction(async (tx) => {
+    await tx.guardianStudent.deleteMany({ where: { studentId } })
+    await tx.studentRankHistory.deleteMany({ where: { studentId } })
+    await tx.studentTechnique.deleteMany({ where: { studentId } })
+    await tx.studentAchievement.deleteMany({ where: { studentId } })
+    await tx.attendance.deleteMany({ where: { studentId } })
+    await tx.fitnessReport.deleteMany({ where: { studentId } })
+    await tx.classEnrollment.deleteMany({ where: { studentId } })
+    await tx.student.update({
+      where: { id: studentId },
+      data: { userId: null, guardianId: null },
+    })
+    await tx.student.delete({ where: { id: studentId } })
+  })
+
+  return NextResponse.json({ ok: true, studentId: existing.id })
+}
