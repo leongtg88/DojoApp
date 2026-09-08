@@ -1,6 +1,6 @@
 import { Prisma } from '@/lib/generated/prisma'
 import { db } from '@/lib/db'
-import { uploadPrivateDocument } from '@/lib/document-storage'
+import { uploadPrivateDocument, sanitizeStorageName } from '@/lib/document-storage'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
       const [, applicantIndex, type] = key.split('-')
       const applicant = applicants[Number(applicantIndex)]
       if (!applicant) continue
-      const storageKey = `enrollments/${enrollment.id}/${applicant.id}/${crypto.randomUUID()}-${value.name}`
+      const storageKey = `enrollments/${enrollment.id}/${applicant.id}/${crypto.randomUUID()}-${sanitizeStorageName(value.name)}`
       await uploadPrivateDocument(storageKey, value)
       await db.studentDocument.create({ data: { enrollmentId: enrollment.id, applicantId: applicant.id, type: type === 'PROFILE_PHOTO' ? 'PROFILE_PHOTO' : 'IDENTITY', fileName: value.name, storageKey, mimeType: value.type, fileSize: value.size } })
     }

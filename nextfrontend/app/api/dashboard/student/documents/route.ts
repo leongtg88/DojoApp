@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
-import { createPrivateDocumentUrl, uploadPrivateDocument } from '@/lib/document-storage'
+import { createPrivateDocumentUrl, uploadPrivateDocument, sanitizeStorageName } from '@/lib/document-storage'
 import { NextResponse } from 'next/server'
 
 const documentTypes = ['PROFILE_PHOTO', 'IDENTITY', 'BIRTH_CERTIFICATE', 'PASSPORT', 'MEDICAL_CERTIFICATE', 'OTHER'] as const
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Selecciona un archivo JPG, PNG, WEBP o PDF de hasta 5 MB' }, { status: 400 })
   }
 
-  const storageKey = `students/${student.id}/${crypto.randomUUID()}-${file.name}`
+  const storageKey = `students/${student.id}/${crypto.randomUUID()}-${sanitizeStorageName(file.name)}`
   try {
     await uploadPrivateDocument(storageKey, file)
     const document = await db.$transaction(async (transaction) => {

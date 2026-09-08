@@ -3,6 +3,18 @@ import { createClient } from '@supabase/supabase-js'
 
 const bucketName = process.env.SUPABASE_DOCUMENTS_BUCKET ?? 'dojo-documents'
 
+export function sanitizeStorageName(name: string) {
+  return (
+    name
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^A-Za-z0-9._-]/g, '_')
+      .replace(/_+/g, '_')
+      .trim()
+      .replace(/[._-]$/, '') || 'archivo'
+  )
+}
+
 function getStorageClient() {
   const url = process.env.SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
