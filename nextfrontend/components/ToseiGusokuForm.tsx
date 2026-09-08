@@ -307,6 +307,7 @@ const ToseiGusokuForm = () => {
   const [formData, setFormData] = useState<FormData>(createInitialFormData);
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   // ===== MANEJADORES =====
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -573,9 +574,25 @@ const ToseiGusokuForm = () => {
       formData.hijos.forEach((hijo, index) => { if (hijo.foto) uploadData.append(`document-${index}-PROFILE_PHOTO`, hijo.foto); hijo.identificacion.forEach((file) => uploadData.append(`document-${index}-IDENTITY`, file)); });
     }
     setIsSubmitting(true);
-    const response = await fetch('/api/enrollments/family', { method: 'POST', body: uploadData });
+    setSubmitError('');
+    let response: Response;
+    try {
+      response = await fetch('/api/enrollments/family', { method: 'POST', body: uploadData });
+    } catch {
+      setIsSubmitting(false);
+      setSubmitError('No fue posible enviar la inscripción. Verifica tu conexión e inténtalo nuevamente.');
+      return;
+    }
     setIsSubmitting(false);
-    if (!response.ok) { setErrors({ tipoRegistro: 'No fue posible enviar la inscripción. Inténtalo nuevamente.' }); return; }
+    if (!response.ok) {
+      let message = 'No fue posible enviar la inscripción. Inténtalo nuevamente.';
+      try {
+        const data = await response.json();
+        if (data && typeof data.error === 'string') message = data.error;
+      } catch { /* ignore */ }
+      setSubmitError(message);
+      return;
+    }
     setIsSuccess(true);
   };
 
@@ -583,6 +600,7 @@ const ToseiGusokuForm = () => {
     setShowForm(true);
     setStep(1);
     setErrors({});
+    setSubmitError('');
     setFormData(createInitialFormData());
   };
 
@@ -1067,15 +1085,22 @@ const ToseiGusokuForm = () => {
                 {step === 3 && renderStep3()}
 
                 <div className="flex justify-between mt-8 pt-6 border-t">
+                  {submitError && (
+                    <p className="text-red-600 text-sm font-medium text-center w-full mb-4" role="alert">{submitError}</p>
+                  )}
+                </div>
+                <div className="flex justify-between mt-8 pt-6 border-t">
                   {step > 1 ? (
                     <button type="button" onClick={handleBack} className="px-6 py-2 bg-stone-200 text-stone-700 rounded-lg hover:bg-stone-300 transition font-medium">← Anterior</button>
                   ) : (
                     <button type="button" onClick={() => setShowForm(false)} className="px-6 py-2 bg-stone-200 text-stone-700 rounded-lg hover:bg-stone-300 transition font-medium">← Volver</button>
                   )}
                   {step < 3 ? (
-                    <button type="button" onClick={handleNext} className="px-8 py-2 text-white rounded-lg bg-brand-accent transition font-medium">Siguiente →</button>
+                    <button type="button" onClick={handleNext} className="px-2 py-2 text-white rounded-lg bg-brand-accent transition font-medium">Siguiente →</button>
                   ) : (
-                    <button type="submit" className="px-8 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium">Enviar Inscripción</button>
+                    <button type="submit" disabled={isSubmitting} className="px-2 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium disabled:opacity-60 disabled:cursor-not-allowed">
+                      {isSubmitting ? 'Enviando...' : 'Enviar Inscripción'}
+                    </button>
                   )}
                 </div>
               </form>
@@ -1094,8 +1119,8 @@ const ToseiGusokuForm = () => {
               </svg>
             </div>
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold text-gray-900 font-display">¡Inscripción Exitosa!</h2>
-              <p className="text-sm text-gray-600">Tu inscripción ha sido registrada correctamente. Un asesor del dojo se contactará contigo para confirmar los próximos pasos.</p>
+              <h2 className="text-2xl font-bold text-gray-900 font-display">Gracias por Inscribirte</h2>
+              <p className="text-sm text-gray-600">El Sensei te estará enviando una invitación a tu email. <span className="font-bold text-gray-800">Oss!</span></p>
             </div>
             <button
               type="button"

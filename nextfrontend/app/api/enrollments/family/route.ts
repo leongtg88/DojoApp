@@ -27,7 +27,15 @@ function validateFile(file: File) {
 export async function POST(request: Request) {
   const formData = await request.formData().catch(() => null)
   const payload = formData?.get('payload')
-  const parsed = typeof payload === 'string' ? payloadSchema.safeParse(JSON.parse(payload)) : null
+  let parsedPayload: string | null = null
+  if (typeof payload === 'string') {
+    try {
+      parsedPayload = JSON.parse(payload)
+    } catch {
+      parsedPayload = null
+    }
+  }
+  const parsed = parsedPayload ? payloadSchema.safeParse(parsedPayload) : null
 
   if (!parsed?.success) {
     return NextResponse.json({ error: 'Datos de inscripción no válidos' }, { status: 400 })
@@ -67,8 +75,10 @@ export async function POST(request: Request) {
       await uploadPrivateDocument(storageKey, value)
       await db.studentDocument.create({ data: { enrollmentId: enrollment.id, applicantId: applicant.id, type: type === 'PROFILE_PHOTO' ? 'PROFILE_PHOTO' : 'IDENTITY', fileName: value.name, storageKey, mimeType: value.type, fileSize: value.size } })
     }
-  } catch {
-    return NextResponse.json({ error: 'No fue posible guardar los documentos. Verifica la configuración de almacenamiento.' }, { status: 503 })
+  } catch (uploadError) {
+    console.error('Error guardando documentos de inscripción:', uploadError)
+    const detail = uploadError instanceof Error ? uploadError.message : 'Verifica la configuración de almacenamiento.'
+    return NextResponse.json({ error: `No fue posible guardar los documentos. ${detail}` }, { status: 503 })
   }
 
   return NextResponse.json({ ok: true, id: enrollment.id })

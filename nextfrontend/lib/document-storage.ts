@@ -23,7 +23,7 @@ export async function uploadPrivateDocument(storageKey: string, file: File) {
   })
 
   if (error) {
-    throw new Error('No fue posible guardar el documento de forma segura.')
+    throw new Error(`No fue posible guardar el documento de forma segura: ${error.message}`)
   }
 }
 
@@ -31,7 +31,7 @@ export async function createPrivateDocumentUrl(storageKey: string) {
   const { data, error } = await getStorageClient().storage.from(bucketName).createSignedUrl(storageKey, 60)
 
   if (error || !data) {
-    throw new Error('No fue posible preparar la vista segura del documento.')
+    throw new Error(`No fue posible preparar la vista segura del documento: ${error?.message ?? 'respuesta vacía'}`)
   }
 
   return data.signedUrl

@@ -39,8 +39,10 @@ export async function GET(_: Request, context: DocumentRouteContext) {
 
   try {
     return NextResponse.json({ url: await createPrivateDocumentUrl(document.storageKey) })
-  } catch {
-    return NextResponse.json({ error: 'No fue posible abrir el documento' }, { status: 503 })
+  } catch (urlError) {
+    console.error('Error abriendo documento:', urlError)
+    const detail = urlError instanceof Error ? urlError.message : 'No fue posible abrir el documento'
+    return NextResponse.json({ error: detail }, { status: 503 })
   }
 }
 
