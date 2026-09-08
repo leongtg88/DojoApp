@@ -1,9 +1,10 @@
 'use client'
 
 import type { ReactNode } from 'react'
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
-import { LogOut } from 'lucide-react'
+import { LayoutGrid, LogOut } from 'lucide-react'
 import type { DashboardRole } from '@/types/dashboard'
 import { getPanelHref } from './RolePanels'
 import { DashboardSidebar } from './DashboardSidebar'
@@ -46,7 +47,7 @@ export function DashboardShell({ children, roles, primaryRole, userName }: Dashb
                             <p className="text-[10px] font-bold uppercase tracking-widest text-cyan-400">{roleLabel}</p>
                         </div>
                     </div>
-                    <div className="flex min-w-0 items-center gap-2.5"><div className="hidden min-w-0 text-right sm:block"><p className="max-w-44 truncate text-sm font-bold text-white">{userName ?? 'Usuario'}</p><p className="text-[10px] font-semibold uppercase tracking-wide text-neutral-500">Sesión activa</p></div><span aria-label="Usuario activo" className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-cyan-400/50 bg-cyan-500/20 font-display text-xs font-extrabold text-cyan-100 shadow-sm">{initials}</span><button aria-label="Cerrar sesión" className="flex size-9 shrink-0 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-red-950/50 hover:text-red-300" onClick={handleSignOut} title="Cerrar sesión" type="button"><LogOut aria-hidden="true" className="size-4" /></button></div>
+                    <div className="flex min-w-0 items-center gap-2.5"><div className="hidden min-w-0 text-right sm:block"><p className="max-w-44 truncate text-sm font-bold text-white">{userName ?? 'Usuario'}</p><p className="text-[10px] font-semibold uppercase tracking-wide text-neutral-500">Sesión activa</p></div><span aria-label="Usuario activo" className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-cyan-400/50 bg-cyan-500/20 font-display text-xs font-extrabold text-cyan-100 shadow-sm">{initials}</span>{roles.length > 1 && (<Link aria-label="Cambiar de panel" className="flex size-9 shrink-0 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white md:hidden" href="/dashboard" title="Cambiar de panel"><LayoutGrid aria-hidden="true" className="size-4" /></Link>)}<button aria-label="Cerrar sesión" className="flex size-9 shrink-0 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-red-950/50 hover:text-red-300" onClick={handleSignOut} title="Cerrar sesión" type="button"><LogOut aria-hidden="true" className="size-4" /></button></div>
                 </div>
             </header>
 

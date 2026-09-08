@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
@@ -17,6 +17,17 @@ export default function Navbar() {
   const [isEnrollmentModalOpen, setIsEnrollmentModalOpen] = useState(false);
   const [preSelectedProgram, setPreSelectedProgram] = useState<'kid' | 'adult'>('adult');
   const isInstalled = useIsInstalledPwa();
+  const [hash, setHash] = useState('');
+
+  useEffect(() => {
+    const updateHash = () => setHash(window.location.hash);
+    updateHash();
+    window.addEventListener('hashchange', updateHash);
+    return () => window.removeEventListener('hashchange', updateHash);
+  }, []);
+
+  const isHorariosActive = hash === '#horarios';
+  const isHomeActive = pathname === '/' && !isHorariosActive;
 
   const handleOpenEnrollment = (program: string = 'adult') => {
     setPreSelectedProgram(program === 'kid' ? 'kid' : 'adult');
@@ -94,7 +105,7 @@ export default function Navbar() {
 
       {/* Mobile bottom tab bar */}
       <nav className="fixed bottom-0 left-0 w-full md:hidden h-14 bg-brand-bg/95 backdrop-blur-xl border-t border-white/10 z-40 flex items-center justify-around px-4 ">
-        <Link href="/" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${pathname === '/' ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
+        <Link href="/" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${isHomeActive ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
           <Home className="w-5 h-5 mb-1" />
           <span className="font-display text-[9px] uppercase tracking-wider">Dojo Home</span>
         </Link>
@@ -102,13 +113,13 @@ export default function Navbar() {
           <BookOpen className="w-5 h-5 mb-1" />
           <span className="font-display text-[9px] uppercase tracking-wider">Nosotros</span>
         </Link>
-        <Link href="/#horarios" onClick={() => setIsMobileMenuOpen(false)} className="flex flex-col items-center justify-center p-2 text-xs text-gray-700/60 cursor-pointer">
+        <Link href="/#horarios" onClick={() => setIsMobileMenuOpen(false)} className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${isHorariosActive ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
           <Calendar className="w-5 h-5 mb-1" />
-          <span className="font-display text-[9px] uppercase tracking-wider">Horarios</span>
+          <span className={`font-display text-[9px] uppercase tracking-wider ${isHorariosActive ? 'font-bold' : ''}`}>Horarios</span>
         </Link>
         <Link href="/inscripcion" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${pathname === '/inscripcion' ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
           <ClipboardList className="w-5 h-5 mb-1" />
-          <span className="font-display text-[9px] uppercase tracking-wider font-bold">Inscripción</span>
+          <span className="font-display text-[9px] uppercase tracking-wider">Inscripción</span>
         </Link>
         <Link href="/login" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${pathname === '/login' ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
           <UserRound className="w-5 h-5 mb-1" />

@@ -1,4 +1,4 @@
-const CACHE = 'tosei-gusoku-v1';
+const CACHE = 'tosei-gusoku-v2';
 const PRECACHE_URLS = ['/', '/manifest.webmanifest', '/icons/icon-192.png'];
 
 self.addEventListener('install', (event) => {
@@ -30,8 +30,10 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put(request, copy));
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE).then((cache) => cache.put(request, copy));
+          }
           return response;
         })
         .catch(() => caches.match(request).then((cached) => cached || caches.match('/')))
@@ -39,11 +41,22 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (
-    url.pathname.startsWith('/_next/static/') ||
-    url.pathname.startsWith('/assets/') ||
-    url.pathname.startsWith('/icons/')
-  ) {
+  if (url.pathname.startsWith('/_next/static/')) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response && response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE).then((cache) => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  if (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/icons/')) {
     event.respondWith(
       caches.match(request).then((cached) => {
         const network = fetch(request)

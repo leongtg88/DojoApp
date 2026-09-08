@@ -1,13 +1,23 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { Download, X } from 'lucide-react'
-import { isStandalone, INSTALL_REQUEST_EVENT } from '@/lib/pwa'
+import {
+    INSTALL_REQUEST_EVENT,
+    isAppInstalled,
+    isInstallPromptDismissed,
+    markAppInstalled,
+    markInstallPromptDismissed,
+} from '@/lib/pwa'
 
 type BeforeInstallPromptEvent = Event & {
     prompt: () => Promise<void>
     userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>
 }
+
+const PROMPT_TARGET_ROUTES = ['/', '/inscripcion']
+const PROMPT_SEEN_SESSION_KEY = 'tosei:install-prompt-seen-session'
 
 function isIos(): boolean {
     if (typeof navigator === 'undefined') return false
@@ -16,26 +26,58 @@ function isIos(): boolean {
 }
 
 export function InstallPrompt() {
+    const pathname = usePathname()
+    const isTargetRoute = PROMPT_TARGET_ROUTES.includes(pathname)
     const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null)
     const [visible, setVisible] = useState(false)
 
+    const [prevIsTarget, setPrevIsTarget] = useState(isTargetRoute)
+    if (prevIsTarget !== isTargetRoute) {
+        setPrevIsTarget(isTargetRoute)
+        if (!isTargetRoute) {
+            setVisible(false)
+        }
+    }
+
     useEffect(() => {
-        if (isStandalone()) return
+        if (!isTargetRoute) return
+
+        if (isAppInstalled() || isInstallPromptDismissed()) return
+
+        let seenInSession = false
+        try {
+            seenInSession = sessionStorage.getItem(PROMPT_SEEN_SESSION_KEY) === '1'
+        } catch {
+            // storage no disponible
+        }
+        if (seenInSession) return
 
         let currentDeferred: BeforeInstallPromptEvent | null = null
+
+        const show = () => {
+            if (seenInSession) return
+            try {
+                sessionStorage.setItem(PROMPT_SEEN_SESSION_KEY, '1')
+            } catch {
+                // storage no disponible
+            }
+            seenInSession = true
+            setVisible(true)
+        }
 
         const onBeforeInstallPrompt = (event: Event) => {
             event.preventDefault()
             currentDeferred = event as BeforeInstallPromptEvent
             setDeferred(currentDeferred)
-            setVisible(true)
+            show()
         }
 
         const onRequestInstall = () => {
-            if (currentDeferred || isIos()) setVisible(true)
+            if (currentDeferred || isIos()) show()
         }
 
         const onAppInstalled = () => {
+            markAppInstalled()
             setVisible(false)
             setDeferred(null)
             currentDeferred = null
@@ -50,14 +92,21 @@ export function InstallPrompt() {
             window.removeEventListener('appinstalled', onAppInstalled)
             window.removeEventListener(INSTALL_REQUEST_EVENT, onRequestInstall)
         }
-    }, [])
+    }, [isTargetRoute])
 
-    if (!visible) return null
+    if (!visible || !isTargetRoute) return null
 
     const handleInstall = async () => {
         if (!deferred) return
         await deferred.prompt()
-        await deferred.userChoice
+        const { outcome } = await deferred.userChoice
+        if (outcome === 'accepted') markAppInstalled()
+        setDeferred(null)
+        setVisible(false)
+    }
+
+    const handleDismiss = () => {
+        markInstallPromptDismissed()
         setDeferred(null)
         setVisible(false)
     }
@@ -67,7 +116,7 @@ export function InstallPrompt() {
             <button
                 type="button"
                 aria-label="Cerrar"
-                onClick={() => setVisible(false)}
+                onClick={handleDismiss}
                 className="absolute top-3 right-3 text-white/50 hover:text-white transition-colors"
             >
                 <X className="w-4 h-4" />
