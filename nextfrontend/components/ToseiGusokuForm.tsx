@@ -484,7 +484,7 @@ const ToseiGusokuForm = () => {
       if (!formData.tipoSangreAdulto) newErrors.tipoSangreAdulto = 'Selecciona una opción';
       if (!formData.direccionAdulto.trim()) newErrors.direccionAdulto = 'Campo requerido';
       if (!formData.cedula.trim()) newErrors.cedula = 'Campo requerido';
-      else if (!/^\d{7,8}$/.test(formData.cedula.replace(/\D/g, ''))) newErrors.cedula = 'Cédula inválida (7-8 dígitos)';
+      else if (!/^\d{11}$/.test(formData.cedula.replace(/\D/g, ''))) newErrors.cedula = 'Cédula inválida (11 dígitos)';
       if (!formData.fotoAdulto) newErrors.fotoAdulto = 'Foto requerida';
       if (formData.identAdulto.length === 0) newErrors.identAdulto = 'Identificación requerida';
       if (!formData.email.trim()) {
@@ -635,7 +635,7 @@ const ToseiGusokuForm = () => {
             <div>
               <label className="block text-sm font-medium text-stone-500 mb-1">Número de Cédula <span className="text-red-500">*</span></label>
               <input type="text" name="cedula" value={formData.cedula} onChange={handleChange}
-                className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.cedula ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="Ej: 12345678" />
+                className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.cedula ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="Ej: 00123456789" />
               {errors.cedula && <p className="text-red-500 text-xs mt-1">{errors.cedula}</p>}
             </div>
             <div>
