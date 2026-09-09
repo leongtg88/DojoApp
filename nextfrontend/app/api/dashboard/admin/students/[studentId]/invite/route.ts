@@ -58,19 +58,13 @@ export async function POST(request: NextRequest, { params }: InviteRouteContext)
   const tokenHash = createHash('sha256').update(rawToken).digest('hex')
   const expiresAt = new Date(Date.now() + INVITATION_TTL_MS)
 
-  await db.$transaction(async (transaction) => {
-    await transaction.studentInvitationToken.deleteMany({
-      where: { studentId: student.id, usedAt: null },
-    })
-
-    await transaction.studentInvitationToken.create({
-      data: {
-        token: tokenHash,
-        studentId: student.id,
-        email: student.email!,
-        expiresAt,
-      },
-    })
+  await db.studentInvitationToken.create({
+    data: {
+      token: tokenHash,
+      studentId: student.id,
+      email: student.email!,
+      expiresAt,
+    },
   })
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTDOJO_APP ?? 'http://localhost:3000'
@@ -78,6 +72,7 @@ export async function POST(request: NextRequest, { params }: InviteRouteContext)
   const hasEmailConfig = Boolean(process.env.RESEND_API_KEY && process.env.EMAIL_FROM)
 
   if (!hasEmailConfig && process.env.NODE_ENV === 'production') {
+    await db.studentInvitationToken.delete({ where: { token: tokenHash } })
     return NextResponse.json(
       { error: 'El servicio de correo no está configurado' },
       { status: 503 },
@@ -90,18 +85,24 @@ export async function POST(request: NextRequest, { params }: InviteRouteContext)
       from: process.env.EMAIL_FROM!,
       to: [student.email],
       subject: 'Te invitan a crear tu cuenta de Tosei Gusoku',
+      text: `Hola ${student.firstName} ${student.lastName},\n\nTu expediente quedó listo en Tosei Gusoku. Crea tu cuenta de acceso para consultar tu progreso en el dojo.\n\nCrear mi cuenta: ${invitationUrl}\n\nEste enlace vence en 7 días.`,
       html: `<p>Hola ${student.firstName} ${student.lastName},</p><p>Tu expediente quedó listo en Tosei Gusoku. Crea tu cuenta de acceso para consultar tu progreso en el dojo.</p><p><a href="${invitationUrl}">Crear mi cuenta</a></p><p>Este enlace vence en 7 días.</p>`,
     })
 
     if (emailResult.error) {
       console.error('Error enviando invitación:', emailResult.error)
-      await db.studentInvitationToken.deleteMany({ where: { studentId: student.id, usedAt: null } })
+      await db.studentInvitationToken.delete({ where: { token: tokenHash } })
       return NextResponse.json(
         { error: 'No se pudo enviar el correo de invitación. Inténtalo nuevamente.' },
         { status: 502 },
       )
     }
   }
+
+  // El correo salió correctamente: ahora sí se inactivan los enlaces anteriores.
+  await db.studentInvitationToken.deleteMany({
+    where: { studentId: student.id, usedAt: null, token: { not: tokenHash } },
+  })
 
   return NextResponse.json({
     ok: true,
