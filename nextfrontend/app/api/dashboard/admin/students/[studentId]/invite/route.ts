@@ -85,8 +85,8 @@ export async function POST(request: NextRequest, { params }: InviteRouteContext)
       from: process.env.EMAIL_FROM!,
       to: [student.email],
       subject: 'Te invitan a crear tu cuenta de Tosei Gusoku',
-      text: `Hola ${student.firstName} ${student.lastName},\n\nTu expediente quedó listo en Tosei Gusoku. Crea tu cuenta de acceso para consultar tu progreso en el dojo.\n\nCrear mi cuenta: ${invitationUrl}\n\nEste enlace vence en 7 días.`,
-      html: `<p>Hola ${student.firstName} ${student.lastName},</p><p>Tu expediente quedó listo en Tosei Gusoku. Crea tu cuenta de acceso para consultar tu progreso en el dojo.</p><p><a href="${invitationUrl}">Crear mi cuenta</a></p><p>Este enlace vence en 7 días.</p>`,
+      text: `Hola ${student.firstName} ${student.lastName},\n\nTu expediente quedó listo en Tosei Gusoku. Crea tu cuenta de acceso para consultar tu progreso en el dojo.\n\nCrear mi cuenta: ${invitationUrl}\n\nSi el enlace no funciona, cópialo y pégalo en tu navegador:\n${invitationUrl}\n\nEste enlace vence en 7 días.`,
+      html: `<p>Hola ${student.firstName} ${student.lastName},</p><p>Tu expediente quedó listo en Tosei Gusoku. Crea tu cuenta de acceso para consultar tu progreso en el dojo.</p><p style="margin:24px 0;"><a href="${invitationUrl}" style="display:inline-block;background:#0ea5e9;color:#ffffff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">Crear mi cuenta</a></p><p style="margin-bottom:4px;">Si el botón no funciona, copia y pega este enlace en tu navegador:</p><p style="margin-top:0;word-break:break-all;color:#0ea5e9;">${invitationUrl}</p><p>Este enlace vence en 7 días.</p>`,
     })
 
     if (emailResult.error) {
@@ -107,8 +107,8 @@ export async function POST(request: NextRequest, { params }: InviteRouteContext)
   return NextResponse.json({
     ok: true,
     message: hasEmailConfig
-      ? 'Invitación enviada al correo del alumno.'
-      : 'Invitación generada. Enlázala manualmente (modo desarrollo).',
-    ...(process.env.NODE_ENV !== 'production' ? { invitationUrl } : { invitationUrl: null }),
+      ? 'Invitación enviada al correo del alumno. Puedes copiar el enlace y enviarlo manualmente.'
+      : 'Invitación generada. Enlázala manualmente.',
+    invitationUrl,
   })
 }
