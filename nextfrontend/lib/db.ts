@@ -10,6 +10,9 @@ export const db =
   new PrismaClient({
     adapter: new PrismaPg({
       connectionString: process.env.DATABASE_URL,
+      max: 1,
+      connectionTimeoutMillis: 5_000,
+      idleTimeoutMillis: 15_000,
     }),
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
   })
