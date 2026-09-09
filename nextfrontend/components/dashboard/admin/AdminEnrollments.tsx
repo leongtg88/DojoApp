@@ -41,28 +41,35 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
 
         setError(null)
         setIsSaving(true)
-        const response = await fetch(`/api/dashboard/admin/enrollments/${selectedEnrollment.id}/convert`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                firstName,
-                lastName,
-                dateOfBirth,
-                applicantId: applicantId || undefined,
-                contactPhone: selectedEnrollment.contactPhone,
-                medicalInfo: null,
-                emergencyContact: null,
-            }),
-        })
-        setIsSaving(false)
+        try {
+            const response = await fetch(`/api/dashboard/admin/enrollments/${selectedEnrollment.id}/convert`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    firstName,
+                    lastName,
+                    dateOfBirth,
+                    applicantId: applicantId || undefined,
+                    contactPhone: selectedEnrollment.contactPhone,
+                    medicalInfo: null,
+                    emergencyContact: null,
+                }),
+            })
 
-        if (!response.ok) {
-            setError('No fue posible convertir esta inscripción. Verifica los datos e inténtalo nuevamente.')
-            return
+            const payload = await response.json().catch(() => ({})) as { error?: string }
+
+            if (!response.ok) {
+                setError(payload.error ?? 'No fue posible convertir esta inscripción. Verifica los datos e inténtalo nuevamente.')
+                return
+            }
+
+            setSelectedEnrollment(null)
+            router.refresh()
+        } catch (reason: unknown) {
+            setError(reason instanceof Error ? reason.message : 'No fue posible convertir esta inscripción. Verifica tu conexión e inténtalo nuevamente.')
+        } finally {
+            setIsSaving(false)
         }
-
-        setSelectedEnrollment(null)
-        router.refresh()
     }
 
     return (

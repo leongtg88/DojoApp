@@ -88,6 +88,30 @@ const generarId = () => Math.random().toString(36).substr(2, 9);
 const TIPOS_SANGRE = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 const TALLAS_ROPA = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
+// ========== VALIDACIONES COMPARTIDAS ==========
+const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf']);
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+const soloDigitos = (value: string) => value.replace(/\D/g, '');
+
+const esCedulaValida = (value: string) => /^\d{11}$/.test(soloDigitos(value));
+
+const esTelefonoValido = (value: string) => {
+  const digits = soloDigitos(value);
+  return digits.length >= 10 && digits.length <= 15;
+};
+
+// Devuelve un mensaje de error si el archivo no es válido, o null si es válido.
+const archivoInvalido = (file: File, permitirPdf: boolean): string | null => {
+  if (!(file.size > 0 && file.size <= MAX_FILE_SIZE)) {
+    return 'El archivo supera los 5 MB. Comprime la imagen o usa otro archivo.';
+  }
+  if (!ALLOWED_MIME_TYPES.has(file.type)) {
+    return `Formato no permitido. Usa ${permitirPdf ? 'JPG, PNG, WEBP o PDF' : 'JPG, PNG o WEBP'}.`;
+  }
+  return null;
+};
+
 // ========== COMPONENTE DRAG & DROP ==========
 const FileDropZone = ({ label, files, previews, error, accept, multiple, hint, onFiles, onRemove }: {
   label: string;
@@ -381,6 +405,23 @@ const ToseiGusokuForm = () => {
 
   const handleHijoFoto = (id: string, file: File | null) => {
     if (!file) return;
+    const index = formData.hijos.findIndex(h => h.id === id);
+    if (index >= 0) {
+      const msg = archivoInvalido(file, false);
+      if (msg) {
+        setErrors(prev => {
+          const hijos = prev.hijos ? [...prev.hijos] : [];
+          hijos[index] = { ...(hijos[index] ?? {}), foto: msg };
+          return { ...prev, hijos };
+        });
+        return;
+      }
+      setErrors(prev => {
+        const hijos = prev.hijos ? [...prev.hijos] : [];
+        hijos[index] = { ...(hijos[index] ?? {}), foto: '' };
+        return { ...prev, hijos };
+      });
+    }
     const preview = URL.createObjectURL(file);
     setFormData(prev => ({
       ...prev,
@@ -399,6 +440,27 @@ const ToseiGusokuForm = () => {
 
   const handleHijoIdentFiles = (id: string, files: File[]) => {
     if (!files.length) return;
+    const index = formData.hijos.findIndex(h => h.id === id);
+    for (const f of files) {
+      const msg = archivoInvalido(f, true);
+      if (msg) {
+        if (index >= 0) {
+          setErrors(prev => {
+            const hijos = prev.hijos ? [...prev.hijos] : [];
+            hijos[index] = { ...(hijos[index] ?? {}), identificacion: msg };
+            return { ...prev, hijos };
+          });
+        }
+        return;
+      }
+    }
+    if (index >= 0) {
+      setErrors(prev => {
+        const hijos = prev.hijos ? [...prev.hijos] : [];
+        hijos[index] = { ...(hijos[index] ?? {}), identificacion: '' };
+        return { ...prev, hijos };
+      });
+    }
     setFormData(prev => ({
       ...prev,
       hijos: prev.hijos.map(h => {
@@ -428,6 +490,12 @@ const ToseiGusokuForm = () => {
   // Archivos para adulto
   const handleAdultoFoto = (file: File | null) => {
     if (!file) return;
+    const msg = archivoInvalido(file, false);
+    if (msg) {
+      setErrors(prev => ({ ...prev, fotoAdulto: msg }));
+      return;
+    }
+    setErrors(prev => ({ ...prev, fotoAdulto: '' }));
     const preview = URL.createObjectURL(file);
     setFormData(prev => ({
       ...prev,
@@ -442,6 +510,14 @@ const ToseiGusokuForm = () => {
 
   const handleAdultoIdentFiles = (files: File[]) => {
     if (!files.length) return;
+    for (const f of files) {
+      const msg = archivoInvalido(f, true);
+      if (msg) {
+        setErrors(prev => ({ ...prev, identAdulto: msg }));
+        return;
+      }
+    }
+    setErrors(prev => ({ ...prev, identAdulto: '' }));
     setFormData(prev => ({
       ...prev,
       identAdulto: [...prev.identAdulto, ...files],
@@ -488,16 +564,32 @@ const ToseiGusokuForm = () => {
       if (!formData.fechaNacimientoAdulto) newErrors.fechaNacimientoAdulto = 'Campo requerido';
       if (!formData.tipoSangreAdulto) newErrors.tipoSangreAdulto = 'Selecciona una opción';
       if (!formData.direccionAdulto.trim()) newErrors.direccionAdulto = 'Campo requerido';
+      if (formData.tallaPantalonAdulto && !TALLAS_ROPA.includes(formData.tallaPantalonAdulto)) newErrors.tallaPantalonAdulto = 'Selecciona una talla válida';
+      else if (!formData.tallaPantalonAdulto) newErrors.tallaPantalonAdulto = 'Selecciona una talla';
+      if (formData.tallaCamisetaAdulto && !TALLAS_ROPA.includes(formData.tallaCamisetaAdulto)) newErrors.tallaCamisetaAdulto = 'Selecciona una talla válida';
+      else if (!formData.tallaCamisetaAdulto) newErrors.tallaCamisetaAdulto = 'Selecciona una talla';
       if (!formData.cedula.trim()) newErrors.cedula = 'Campo requerido';
-      else if (!/^\d{11}$/.test(formData.cedula.replace(/\D/g, ''))) newErrors.cedula = 'Cédula inválida (11 dígitos)';
+      else if (!esCedulaValida(formData.cedula)) newErrors.cedula = 'La cédula debe tener exactamente 11 dígitos (ej: 00123456789)';
       if (!formData.fotoAdulto) newErrors.fotoAdulto = 'Foto requerida';
-      if (formData.identAdulto.length === 0) newErrors.identAdulto = 'Identificación requerida';
+      else {
+        const msg = archivoInvalido(formData.fotoAdulto, false);
+        if (msg) newErrors.fotoAdulto = msg;
+      }
+      if (formData.identAdulto.length === 0) {
+        newErrors.identAdulto = 'Identificación requerida';
+      } else {
+        for (const file of formData.identAdulto) {
+          const msg = archivoInvalido(file, true);
+          if (msg) { newErrors.identAdulto = msg; break; }
+        }
+      }
       if (!formData.email.trim()) {
         newErrors.email = 'Campo requerido';
       } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
         newErrors.email = 'Email inválido';
       }
       if (!formData.telefonoContacto.trim()) newErrors.telefonoContacto = 'Campo requerido';
+      else if (!esTelefonoValido(formData.telefonoContacto)) newErrors.telefonoContacto = 'Ingresa un teléfono válido (ej: 809-123-4567)';
     } else {
       // Menor
       const hijosErrores: { [key: string]: string }[] = [];
@@ -507,16 +599,32 @@ const ToseiGusokuForm = () => {
         if (!hijo.nombre.trim()) { err.nombre = `Nombre del hijo ${index + 1} requerido`; hasError = true; }
         if (!hijo.fechaNacimiento) { err.fechaNacimiento = `Fecha de nacimiento del hijo ${index + 1} requerida`; hasError = true; }
         if (!hijo.tipoSangre) { err.tipoSangre = `Tipo de sangre del hijo ${index + 1} requerido`; hasError = true; }
+        if (hijo.tallaPantalon && !TALLAS_ROPA.includes(hijo.tallaPantalon)) { err.tallaPantalon = `Selecciona una talla válida para el hijo ${index + 1}`; hasError = true; }
+        else if (!hijo.tallaPantalon) { err.tallaPantalon = `Selecciona una talla para el hijo ${index + 1}`; hasError = true; }
+        if (hijo.tallaCamiseta && !TALLAS_ROPA.includes(hijo.tallaCamiseta)) { err.tallaCamiseta = `Selecciona una talla válida para el hijo ${index + 1}`; hasError = true; }
+        else if (!hijo.tallaCamiseta) { err.tallaCamiseta = `Selecciona una talla para el hijo ${index + 1}`; hasError = true; }
         if (!hijo.foto) { err.foto = `Foto del hijo ${index + 1} requerida`; hasError = true; }
+        else {
+          const msg = archivoInvalido(hijo.foto, false);
+          if (msg) { err.foto = msg; hasError = true; }
+        }
         if (hijo.identificacion.length === 0) { err.identificacion = `Identificación del hijo ${index + 1} requerida`; hasError = true; }
+        else {
+          for (const file of hijo.identificacion) {
+            const msg = archivoInvalido(file, true);
+            if (msg) { err.identificacion = msg; hasError = true; break; }
+          }
+        }
         hijosErrores.push(err);
       });
       if (hasError) newErrors.hijos = hijosErrores;
 
       if (!formData.nombreMadre.trim()) newErrors.nombreMadre = 'Campo requerido';
       if (!formData.telefonoMadre.trim()) newErrors.telefonoMadre = 'Campo requerido';
+      else if (!esTelefonoValido(formData.telefonoMadre)) newErrors.telefonoMadre = 'Ingresa un teléfono válido (ej: 809-123-4567)';
       if (!formData.nombrePadre.trim()) newErrors.nombrePadre = 'Campo requerido';
       if (!formData.telefonoPadre.trim()) newErrors.telefonoPadre = 'Campo requerido';
+      else if (!esTelefonoValido(formData.telefonoPadre)) newErrors.telefonoPadre = 'Ingresa un teléfono válido (ej: 809-123-4567)';
       if (!formData.direccionPadres.trim()) newErrors.direccionPadres = 'Campo requerido';
       if (!formData.email.trim()) {
         newErrors.email = 'Campo requerido';
@@ -564,6 +672,8 @@ const ToseiGusokuForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateStep1()) { setStep(1); return; }
+    if (!validateStep2()) { setStep(2); return; }
     if (!validateStep3()) return;
 
     const applicants = formData.tipoRegistro === 'adulto'
@@ -691,26 +801,28 @@ const ToseiGusokuForm = () => {
                   className="w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" placeholder="Ej: 170" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-500 mb-1">Talla de Pantalón</label>
+                <label className="block text-sm font-medium text-stone-500 mb-1">Talla de Pantalón <span className="text-red-500">*</span></label>
                 <div className="relative">
                   <select name="tallaPantalonAdulto" value={formData.tallaPantalonAdulto} onChange={handleChange}
-                    className="w-full px-4 py-2 pr-10 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none">
+                    className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.tallaPantalonAdulto ? 'border-red-500' : 'border-brand-accent/60'}`}>
                     <option value="">Selecciona...</option>
                     {TALLAS_ROPA.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                   <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
+                {errors.tallaPantalonAdulto && <p className="text-red-500 text-xs mt-1">{errors.tallaPantalonAdulto}</p>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-500 mb-1">Talla de T-shirt</label>
+                <label className="block text-sm font-medium text-stone-500 mb-1">Talla de T-shirt <span className="text-red-500">*</span></label>
                 <div className="relative">
                   <select name="tallaCamisetaAdulto" value={formData.tallaCamisetaAdulto} onChange={handleChange}
-                    className="w-full px-4 py-2 pr-10 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none">
+                    className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.tallaCamisetaAdulto ? 'border-red-500' : 'border-brand-accent/60'}`}>
                     <option value="">Selecciona...</option>
                     {TALLAS_ROPA.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                   <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
+                {errors.tallaCamisetaAdulto && <p className="text-red-500 text-xs mt-1">{errors.tallaCamisetaAdulto}</p>}
               </div>
             </div>
             <div>
@@ -791,26 +903,28 @@ const ToseiGusokuForm = () => {
                       className="w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" placeholder="Ej: 130" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-stone-500 mb-1">Talla de Pantalón</label>
+                    <label className="block text-sm font-medium text-stone-500 mb-1">Talla de Pantalón <span className="text-red-500">*</span></label>
                     <div className="relative">
                       <select value={hijo.tallaPantalon} onChange={(e) => handleHijoChange(hijo.id, 'tallaPantalon', e.target.value)}
-                        className="w-full px-4 py-2 pr-10 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none">
+                        className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.hijos?.[index]?.tallaPantalon ? 'border-red-500' : 'border-brand-accent/60'}`}>
                         <option value="">Selecciona...</option>
                         {TALLAS_ROPA.map(t => <option key={t} value={t}>{t}</option>)}
                       </select>
                       <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
+                    {errors.hijos?.[index]?.tallaPantalon && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.tallaPantalon}</p>}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-stone-500 mb-1">Talla de T-shirt</label>
+                    <label className="block text-sm font-medium text-stone-500 mb-1">Talla de T-shirt <span className="text-red-500">*</span></label>
                     <div className="relative">
                       <select value={hijo.tallaCamiseta} onChange={(e) => handleHijoChange(hijo.id, 'tallaCamiseta', e.target.value)}
-                        className="w-full px-4 py-2 pr-10 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none">
+                        className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.hijos?.[index]?.tallaCamiseta ? 'border-red-500' : 'border-brand-accent/60'}`}>
                         <option value="">Selecciona...</option>
                         {TALLAS_ROPA.map(t => <option key={t} value={t}>{t}</option>)}
                       </select>
                       <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
+                    {errors.hijos?.[index]?.tallaCamiseta && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.tallaCamiseta}</p>}
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

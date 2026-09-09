@@ -4,25 +4,123 @@ import { uploadPrivateDocument, sanitizeStorageName } from '@/lib/document-stora
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
+// ==================== Validaciones de negocio ====================
+
+const TALLAS_ROPA = ['XS', 'S', 'M', 'L', 'XL', 'XXL'] as const
+
+const soloDigitos = (value: string) => value.replace(/\D/g, '')
+
+function esCedulaValida(value: string) {
+  return /^\d{11}$/.test(soloDigitos(value))
+}
+
+function esTelefonoValido(value: string) {
+  const digits = soloDigitos(value)
+  return digits.length >= 10 && digits.length <= 15
+}
+
+// ==================== Esquemas ====================
+
+const profileDataSchema = z
+  .record(z.string(), z.unknown())
+  .superRefine((profile, ctx) => {
+    const pantSize = typeof profile.pantSize === 'string' ? profile.pantSize.trim() : ''
+    if (!pantSize) {
+      ctx.addIssue({ code: 'custom', path: ['pantSize'], message: 'Debes seleccionar la talla de pantalón.' })
+    } else if (!TALLAS_ROPA.includes(pantSize as (typeof TALLAS_ROPA)[number])) {
+      ctx.addIssue({ code: 'custom', path: ['pantSize'], message: 'La talla de pantalón no es válida.' })
+    }
+
+    const shirtSize = typeof profile.shirtSize === 'string' ? profile.shirtSize.trim() : ''
+    if (!shirtSize) {
+      ctx.addIssue({ code: 'custom', path: ['shirtSize'], message: 'Debes seleccionar la talla de camiseta.' })
+    } else if (!TALLAS_ROPA.includes(shirtSize as (typeof TALLAS_ROPA)[number])) {
+      ctx.addIssue({ code: 'custom', path: ['shirtSize'], message: 'La talla de camiseta no es válida.' })
+    }
+
+    const nationalId = typeof profile.nationalId === 'string' ? profile.nationalId.trim() : ''
+    if (nationalId && !esCedulaValida(nationalId)) {
+      ctx.addIssue({ code: 'custom', path: ['nationalId'], message: 'La cédula debe tener exactamente 11 dígitos.' })
+    }
+  })
+
 const applicantSchema = z.object({
   name: z.string().trim().min(2).max(200),
-  dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  profileData: z.record(z.string(), z.unknown()),
+  dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'La fecha de nacimiento no es válida.'),
+  profileData: profileDataSchema,
 })
 
-const payloadSchema = z.object({
-  email: z.string().trim().email().max(320),
-  phone: z.string().trim().max(30).nullable(),
-  applicants: z.array(applicantSchema).min(1).max(10),
-  registrationData: z.record(z.string(), z.unknown()),
-})
+const payloadSchema = z
+  .object({
+    email: z.string().trim().email('El email no es válido.').max(320),
+    phone: z.string().trim().max(30).nullable(),
+    applicants: z.array(applicantSchema).min(1).max(10),
+    registrationData: z.record(z.string(), z.unknown()),
+  })
+  .superRefine((payload, ctx) => {
+    if (payload.phone) {
+      if (!esTelefonoValido(payload.phone)) {
+        ctx.addIssue({ code: 'custom', path: ['phone'], message: 'Ingresa un teléfono válido (ej: 809-123-4567).' })
+      }
+    }
+
+    const reg = payload.registrationData
+    const tipoRegistro = typeof reg.tipoRegistro === 'string' ? reg.tipoRegistro.trim() : ''
+
+    if (tipoRegistro === 'menor') {
+      const telMadre = typeof reg.telefonoMadre === 'string' ? reg.telefonoMadre.trim() : ''
+      const telPadre = typeof reg.telefonoPadre === 'string' ? reg.telefonoPadre.trim() : ''
+      if (telMadre && !esTelefonoValido(telMadre)) {
+        ctx.addIssue({ code: 'custom', path: ['registrationData', 'telefonoMadre'], message: 'Ingresa un teléfono válido para la madre (ej: 809-123-4567).' })
+      }
+      if (telPadre && !esTelefonoValido(telPadre)) {
+        ctx.addIssue({ code: 'custom', path: ['registrationData', 'telefonoPadre'], message: 'Ingresa un teléfono válido para el padre (ej: 809-123-4567).' })
+      }
+    }
+  })
+
+const FIELD_LABELS: Record<string, string> = {
+  email: 'Email',
+  phone: 'Teléfono de contacto',
+  'applicants.name': 'Nombre y Apellido',
+  'applicants.dateOfBirth': 'Fecha de Nacimiento',
+  'applicants.profileData.nationalId': 'Número de Cédula',
+  'applicants.profileData.pantSize': 'Talla de Pantalón',
+  'applicants.profileData.shirtSize': 'Talla de T-shirt',
+  'applicants.profileData.bloodType': 'Tipo de Sangre',
+  'registrationData.telefonoMadre': 'Teléfono de la Madre',
+  'registrationData.telefonoPadre': 'Teléfono del Padre',
+}
+
+function fieldLabel(path: string) {
+  return FIELD_LABELS[path] ?? FIELD_LABELS[path.replace(/^applicants\.\d+\./, 'applicants.')] ?? path
+}
+
+function readableValidationMessage(issues: z.ZodIssue[]) {
+  const details = issues.map((issue) => {
+    const path = issue.path.join('.')
+    const label = fieldLabel(path)
+    return `${label}: ${issue.message}`
+  })
+  return `Revisa la inscripción: ${details.join(' · ')}`
+}
+
+// ==================== Archivos ====================
 
 const allowedTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
 const maxFileSize = 5 * 1024 * 1024
 
 function validateFile(file: File) {
-  return file.size > 0 && file.size <= maxFileSize && allowedTypes.has(file.type)
+  if (!(file.size > 0 && file.size <= maxFileSize)) {
+    return { ok: false, message: 'Un archivo supera los 5 MB. Comprime o usa otro archivo.' }
+  }
+  if (!allowedTypes.has(file.type)) {
+    return { ok: false, message: 'El formato del archivo no es válido. Usa JPG, PNG, WEBP o PDF.' }
+  }
+  return { ok: true }
 }
+
+// ==================== Ruta ====================
 
 export async function POST(request: Request) {
   const formData = await request.formData().catch(() => null)
@@ -38,7 +136,10 @@ export async function POST(request: Request) {
   const parsed = parsedPayload ? payloadSchema.safeParse(parsedPayload) : null
 
   if (!parsed?.success) {
-    return NextResponse.json({ error: 'Datos de inscripción no válidos' }, { status: 400 })
+    const message = parsed && parsed.error
+      ? readableValidationMessage(parsed.error.issues)
+      : 'Datos de inscripción no válidos.'
+    return NextResponse.json({ error: message }, { status: 400 })
   }
 
   if (!formData) {
@@ -50,35 +151,43 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'No hay una sede disponible para la inscripción' }, { status: 503 })
   }
 
-  const invalidFile = [...formData.entries()].find(([key, value]) => key.startsWith('document-') && value instanceof File && !validateFile(value))
+  const invalidFile = [...formData.entries()].find(([key, value]) => key.startsWith('document-') && value instanceof File && !validateFile(value).ok)
   if (invalidFile) {
-    return NextResponse.json({ error: 'Los archivos deben ser JPG, PNG, WEBP o PDF de hasta 5 MB' }, { status: 400 })
+    const [, value] = invalidFile
+    const detail = value instanceof File ? validateFile(value).message : 'Los archivos deben ser JPG, PNG, WEBP o PDF de hasta 5 MB.'
+    return NextResponse.json({ error: detail }, { status: 400 })
   }
 
   const input = parsed.data
-  const enrollment = await db.enrollment.upsert({
-    where: { contactEmail_status: { contactEmail: input.email.toLowerCase(), status: 'PENDING' } },
-    update: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, registrationData: input.registrationData as Prisma.InputJsonValue, applicants: { deleteMany: {} } },
-    create: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactEmail: input.email.toLowerCase(), contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, registrationData: input.registrationData as Prisma.InputJsonValue },
-    select: { id: true },
-  })
-
-  const applicants = await Promise.all(input.applicants.map((applicant) => db.enrollmentApplicant.create({ data: { enrollmentId: enrollment.id, name: applicant.name, dateOfBirth: new Date(`${applicant.dateOfBirth}T00:00:00.000Z`), profileData: applicant.profileData as Prisma.InputJsonValue }, select: { id: true } })))
-
+  let enrollment: { id: string }
   try {
-    for (const [key, value] of formData.entries()) {
-      if (!key.startsWith('document-') || !(value instanceof File)) continue
-      const [, applicantIndex, type] = key.split('-')
-      const applicant = applicants[Number(applicantIndex)]
-      if (!applicant) continue
-      const storageKey = `enrollments/${enrollment.id}/${applicant.id}/${crypto.randomUUID()}-${sanitizeStorageName(value.name)}`
-      await uploadPrivateDocument(storageKey, value)
-      await db.studentDocument.create({ data: { enrollmentId: enrollment.id, applicantId: applicant.id, type: type === 'PROFILE_PHOTO' ? 'PROFILE_PHOTO' : 'IDENTITY', fileName: value.name, storageKey, mimeType: value.type, fileSize: value.size } })
+    enrollment = await db.enrollment.upsert({
+      where: { contactEmail_status: { contactEmail: input.email.toLowerCase(), status: 'PENDING' } },
+      update: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, registrationData: input.registrationData as Prisma.InputJsonValue, applicants: { deleteMany: {} } },
+      create: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactEmail: input.email.toLowerCase(), contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, registrationData: input.registrationData as Prisma.InputJsonValue },
+      select: { id: true },
+    })
+
+    const applicants = await Promise.all(input.applicants.map((applicant) => db.enrollmentApplicant.create({ data: { enrollmentId: enrollment.id, name: applicant.name, dateOfBirth: new Date(`${applicant.dateOfBirth}T00:00:00.000Z`), profileData: applicant.profileData as Prisma.InputJsonValue }, select: { id: true } })))
+
+    try {
+      for (const [key, value] of formData.entries()) {
+        if (!key.startsWith('document-') || !(value instanceof File)) continue
+        const [, applicantIndex, type] = key.split('-')
+        const applicant = applicants[Number(applicantIndex)]
+        if (!applicant) continue
+        const storageKey = `enrollments/${enrollment.id}/${applicant.id}/${crypto.randomUUID()}-${sanitizeStorageName(value.name)}`
+        await uploadPrivateDocument(storageKey, value)
+        await db.studentDocument.create({ data: { enrollmentId: enrollment.id, applicantId: applicant.id, type: type === 'PROFILE_PHOTO' ? 'PROFILE_PHOTO' : 'IDENTITY', fileName: value.name, storageKey, mimeType: value.type, fileSize: value.size } })
+      }
+    } catch (uploadError) {
+      console.error('Error guardando documentos de inscripción:', uploadError)
+      const message = uploadError instanceof Error ? uploadError.message : 'Verifica la configuración de almacenamiento.'
+      return NextResponse.json({ error: message }, { status: 503 })
     }
-  } catch (uploadError) {
-    console.error('Error guardando documentos de inscripción:', uploadError)
-    const detail = uploadError instanceof Error ? uploadError.message : 'Verifica la configuración de almacenamiento.'
-    return NextResponse.json({ error: `No fue posible guardar los documentos. ${detail}` }, { status: 503 })
+  } catch (dbError) {
+    console.error('Error guardando la inscripción:', dbError)
+    return NextResponse.json({ error: 'No fue posible guardar la inscripción. Inténtalo nuevamente en unos momentos.' }, { status: 503 })
   }
 
   return NextResponse.json({ ok: true, id: enrollment.id })

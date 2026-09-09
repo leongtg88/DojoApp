@@ -86,7 +86,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = String(token.id)
         session.user.role = String(token.role)
-        session.user.roles = (token.roles ?? [String(token.role) as DashboardRole]) as DashboardRole[]
+        const tokenRoles = (token.roles ?? []) as DashboardRole[]
+        const fallbackRoles = token.role ? [String(token.role) as DashboardRole] : []
+        session.user.roles = tokenRoles.length > 0 ? tokenRoles : (fallbackRoles as DashboardRole[])
       }
 
       return session

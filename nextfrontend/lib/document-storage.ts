@@ -28,6 +28,50 @@ function getStorageClient() {
   })
 }
 
+export function describeStorageError(error: unknown): string {
+  const name = typeof error === 'object' && error !== null && 'name' in error && typeof (error as { name?: unknown }).name === 'string'
+    ? (error as { name: string }).name
+    : ''
+  const message = typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message?: unknown }).message === 'string'
+    ? (error as { message: string }).message
+    : ''
+  const code = typeof error === 'object' && error !== null && 'code' in error && typeof (error as { code?: unknown }).code === 'string'
+    ? (error as { code: string }).code
+    : ''
+
+  const haystack = `${name} ${code} ${message}`.toLowerCase()
+
+  if (haystack.includes('entitytoolarge') || haystack.includes('maxsizeexceeded') || haystack.includes('too large') || haystack.includes('exceeds the maximum') || haystack.includes('supera el tama')) {
+    return 'El archivo supera el tamaño máximo permitido de 5 MB. Comprime la imagen o usa otro archivo.'
+  }
+
+  if (haystack.includes('invalidkey') || haystack.includes('invalid path') || haystack.includes('invalid key') || haystack.includes('not valid')) {
+    return 'El nombre o formato del archivo no es válido. Usa JPG, PNG, WEBP o PDF con nombres simples (sin caracteres especiales).'
+  }
+
+  if (haystack.includes('nosuchbucket') || haystack.includes('bucket not found')) {
+    return 'El almacenamiento de documentos no está configurado correctamente. Contacta al administrador.'
+  }
+
+  if (haystack.includes('duplicate') || haystack.includes('already exists') || haystack.includes('keyalreadyexists')) {
+    return 'Ese archivo ya existe. Intenta con otro nombre o archivo.'
+  }
+
+  if (haystack.includes('nosuchkey') || haystack.includes('object not found') || haystack.includes('not found')) {
+    return 'El documento no se encontró en el sistema. Inténtalo nuevamente.'
+  }
+
+  if (haystack.includes('forbidden') || haystack.includes('unauthorized') || haystack.includes('permission')) {
+    return 'No hay permiso para guardar el documento. Contacta al administrador.'
+  }
+
+  if (haystack.includes('timeout') || haystack.includes('econnrefused') || haystack.includes('fetch failed') || haystack.includes('network')) {
+    return 'No se pudo conectar con el almacenamiento. Verifica tu conexión e inténtalo nuevamente.'
+  }
+
+  return 'No fue posible guardar el documento de forma segura. Inténtalo nuevamente.'
+}
+
 export async function uploadPrivateDocument(storageKey: string, file: File) {
   const { error } = await getStorageClient().storage.from(bucketName).upload(storageKey, file, {
     contentType: file.type,
@@ -35,7 +79,7 @@ export async function uploadPrivateDocument(storageKey: string, file: File) {
   })
 
   if (error) {
-    throw new Error(`No fue posible guardar el documento de forma segura: ${error.message}`)
+    throw new Error(describeStorageError(error))
   }
 }
 
@@ -43,7 +87,7 @@ export async function createPrivateDocumentUrl(storageKey: string) {
   const { data, error } = await getStorageClient().storage.from(bucketName).createSignedUrl(storageKey, 60)
 
   if (error || !data) {
-    throw new Error(`No fue posible preparar la vista segura del documento: ${error?.message ?? 'respuesta vacía'}`)
+    throw new Error(describeStorageError(error ?? { message: 'respuesta vacía' }))
   }
 
   return data.signedUrl

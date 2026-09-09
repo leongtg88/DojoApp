@@ -159,6 +159,15 @@ exports.Prisma.EmailVerificationTokenScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.StudentInvitationTokenScalarFieldEnum = {
   id: 'id',
   token: 'token',
@@ -486,6 +495,7 @@ exports.Prisma.ModelName = {
   Branch: 'Branch',
   User: 'User',
   EmailVerificationToken: 'EmailVerificationToken',
+  PasswordResetToken: 'PasswordResetToken',
   StudentInvitationToken: 'StudentInvitationToken',
   InstructorProfile: 'InstructorProfile',
   Student: 'Student',

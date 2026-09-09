@@ -16,6 +16,7 @@ export function ForgotPasswordModal({ isOpen, onClose, defaultEmail = '' }: Forg
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resetUrl, setResetUrl] = useState<string | null>(null);
 
   // Sync defaultEmail when prop changes during render
   if (prevDefault !== defaultEmail) {
@@ -42,11 +43,12 @@ export function ForgotPasswordModal({ isOpen, onClose, defaultEmail = '' }: Forg
         body: JSON.stringify({ email }),
       });
 
-      const data = await res.json();
+      const data = await res.json() as { error?: string; resetUrl?: string };
       if (!res.ok) {
         throw new Error(data.error || 'Error al enviar enlace');
       }
 
+      setResetUrl(data.resetUrl ?? null);
       setIsSuccess(true);
     } catch (err: unknown) {
       setError((err as Error)?.message || 'Ocurrió un error inesperado');
@@ -58,6 +60,7 @@ export function ForgotPasswordModal({ isOpen, onClose, defaultEmail = '' }: Forg
   const handleClose = () => {
     setIsSuccess(false);
     setError(null);
+    setResetUrl(null);
     onClose();
   };
 
@@ -115,6 +118,19 @@ export function ForgotPasswordModal({ isOpen, onClose, defaultEmail = '' }: Forg
                     <p className="text-xs text-white/30 mt-2">
                       Si no lo encuentras en tu bandeja principal, revisa la carpeta de spam o correo no deseado.
                     </p>
+                    {resetUrl && (
+                      <div className="text-left space-y-1.5">
+                        <p className="text-[10px] uppercase tracking-[0.2em] text-cyan-300/80 font-semibold">
+                          Enlace de recuperación (desarrollo)
+                        </p>
+                        <input
+                          readOnly
+                          value={resetUrl}
+                          onFocus={(e) => e.target.select()}
+                          className="w-full rounded-lg border border-cyan-900/50 bg-cyan-950/30 px-3 py-2 text-[11px] text-cyan-200 outline-none focus:border-cyan-500"
+                        />
+                      </div>
+                    )}
                   </div>
                   <button
                     id="btn-confirm-forgot-success"

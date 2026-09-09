@@ -81,6 +81,7 @@ export async function POST(request: NextRequest) {
           email: parsed.data.email,
           passwordHash,
           role: Role.STUDENT,
+          roles: [Role.STUDENT],
           schoolId: targetSchoolId,
           branchId: targetBranchId,
           ...(existingUnlinkedStudent

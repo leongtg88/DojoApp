@@ -66,6 +66,7 @@ model User {
   techniqueEvaluations TechniqueEvaluation[] @relation("techniqueEvaluator")
   attendanceConfirmations Attendance[] @relation("attendanceConfirmer")
   emailVerificationTokens EmailVerificationToken[]
+  passwordResetTokens    PasswordResetToken[]
   acceptedInvitations StudentInvitationToken[]
   classes        Class[] @relation("instructor")
   createdAt      DateTime  @default(now())
@@ -80,6 +81,18 @@ model EmailVerificationToken {
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime @default(now())
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique // hash del token
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model StudentInvitationToken {

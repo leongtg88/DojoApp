@@ -1,13 +1,15 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { ArrowLeft, Award, BookOpen, CalendarDays, GraduationCap, History, MapPin, Phone, ShieldCheck, Stethoscope } from 'lucide-react'
+import { ArrowLeft, Award, BookOpen, CalendarDays, GraduationCap, History, Loader2, Mail, MapPin, Phone, ShieldCheck, Stethoscope } from 'lucide-react'
 import { AdminStudentDocuments } from './AdminStudentDocuments'
 import { AssignRankDialog } from '../dojo/AssignRankDialog'
 import { KataAssignmentDialog } from '../dojo/KataAssignmentDialog'
 import { KataBadge } from '../dojo/KataBadge'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
+import { InvitationLinkModal } from './InvitationLinkModal'
 import type { AdminStudentDetail as StudentDetail } from '@/types/dashboard'
 
 interface AdminStudentDetailProps {
@@ -22,9 +24,40 @@ function formatDate(value: string | null) {
 }
 
 export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
+	const router = useRouter()
 	const [activeTab, setActiveTab] = useState<DetailTab>('katas')
 	const [isAssignRankOpen, setIsAssignRankOpen] = useState(false)
 	const [isKataAssignOpen, setIsKataAssignOpen] = useState(false)
+	const [isInviteConfirmOpen, setIsInviteConfirmOpen] = useState(false)
+	const [isInviting, setIsInviting] = useState(false)
+	const [actionError, setActionError] = useState<string | null>(null)
+	const [invitationLink, setInvitationLink] = useState<{ url: string; name: string; email: string | null } | null>(null)
+
+	const studentFullName = `${student.firstName} ${student.lastName}`
+
+	async function handleInvite() {
+		setIsInviting(true)
+		setActionError(null)
+		try {
+			const response = await fetch(`/api/dashboard/admin/students/${student.id}/invite`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+			})
+			const payload = await response.json().catch(() => ({})) as { error?: string; invitationUrl?: string }
+			if (!response.ok) {
+				throw new Error(payload.error ?? 'No fue posible enviar la invitación.')
+			}
+			setIsInviteConfirmOpen(false)
+			router.refresh()
+			if (typeof payload.invitationUrl === 'string' && payload.invitationUrl.length > 0) {
+				setInvitationLink({ url: payload.invitationUrl, name: studentFullName, email: student.email ?? null })
+			}
+		} catch (reason: unknown) {
+			setActionError(reason instanceof Error ? reason.message : 'No fue posible enviar la invitación.')
+		} finally {
+			setIsInviting(false)
+		}
+	}
 
 	const currentRankInfo = student.currentRank ? student.availableRanks.find((rank) => rank.name === student.currentRank) : undefined
 	const nextRank = student.nextRankName ? student.availableRanks.find((rank) => rank.name === student.nextRankName) : undefined
@@ -44,6 +77,11 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 					<ArrowLeft aria-hidden="true" className="size-4" />Volver al padrón
 				</Link>
 				<div className="flex items-center gap-2">
+					{student.accountStatus !== 'ACTIVO' && student.email && (
+						<button type="button" onClick={() => setIsInviteConfirmOpen(true)} className="inline-flex items-center gap-2 rounded-md border border-cyan-500/40 bg-[#0d1117] px-3.5 py-2 text-xs font-semibold text-cyan-200 transition-colors hover:bg-cyan-500/10 hover:text-cyan-100">
+							<Mail className="size-4" />{student.accountStatus === 'INVITADO' ? 'Reenviar invitación' : 'Invitar'}
+						</button>
+					)}
 					<button type="button" onClick={() => setIsKataAssignOpen(true)} className="inline-flex items-center gap-2 rounded-md border border-neutral-700 bg-[#0d1117] px-3.5 py-2 text-xs font-semibold text-neutral-200 transition-colors hover:bg-neutral-800 hover:text-white">
 						<BookOpen className="size-4" />Asignar katas
 					</button>
@@ -72,6 +110,9 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 					</div>
 					<span className={`inline-flex w-fit items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-bold uppercase tracking-wide ${student.status === 'ACTIVE' ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200' : student.status === 'INACTIVE' ? 'border-amber-500/30 bg-amber-500/10 text-amber-200' : 'border-neutral-700 bg-[#0d1117] text-neutral-300'}`}>
 						<ShieldCheck aria-hidden="true" className="size-3.5" />{student.status}
+					</span>
+					<span className={`inline-flex w-fit items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-bold uppercase tracking-wide ${student.accountStatus === 'ACTIVO' ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-200' : student.accountStatus === 'INVITADO' ? 'border-amber-500/30 bg-amber-500/10 text-amber-200' : 'border-neutral-700 bg-[#0d1117] text-neutral-400'}`}>
+						<Mail aria-hidden="true" className="size-3.5" />Cuenta: {student.accountStatus === 'ACTIVO' ? 'Activa' : student.accountStatus === 'INVITADO' ? 'Pendiente de registro' : 'Sin cuenta'}
 					</span>
 				</div>
 
@@ -292,11 +333,43 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 
 			<KataAssignmentDialog
 				studentId={student.id}
-				studentName={`${student.firstName} ${student.lastName}`}
+				studentName={studentFullName}
 				isOpen={isKataAssignOpen}
 				onClose={() => setIsKataAssignOpen(false)}
 				assignedTechniqueIds={assignedTechniqueIds}
 				availableTechniques={availableTechniques}
+			/>
+
+			{actionError && (
+				<p className="mt-4 rounded-md border border-red-900/40 bg-red-950/20 px-3 py-2 text-sm font-medium text-red-300">{actionError}</p>
+			)}
+
+			{isInviteConfirmOpen && (
+				<div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" onClick={() => setIsInviteConfirmOpen(false)}>
+					<div className="w-full max-w-md rounded-lg border border-neutral-800 bg-[#161b22] p-5 shadow-xl" onClick={(event) => event.stopPropagation()}>
+						<h3 className="font-display text-lg font-bold text-white">{student.accountStatus === 'INVITADO' ? 'Reenviar invitación' : 'Enviar invitación'}</h3>
+						<p className="mt-2 text-sm leading-relaxed text-neutral-300">
+							Se enviará un correo de invitación a <span className="font-semibold text-white">{student.email}</span> para que {studentFullName} cree su cuenta y acceda al dashboard como estudiante.
+						</p>
+						{isInviting && <p className="mt-3 flex items-center gap-2 text-xs font-medium text-cyan-300"><Loader2 className="size-4 animate-spin" />Enviando invitación…</p>}
+						<div className="mt-5 flex items-center justify-end gap-2.5">
+							<button type="button" onClick={() => setIsInviteConfirmOpen(false)} disabled={isInviting} className="rounded-md border border-neutral-700 bg-[#0d1117] px-4 py-2 text-xs font-semibold text-neutral-300 hover:bg-neutral-800 hover:text-white disabled:opacity-50">
+								Cancelar
+							</button>
+							<button type="button" onClick={handleInvite} disabled={isInviting} className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-xs font-semibold text-[#0d1117] hover:bg-cyan-400 disabled:opacity-50">
+								<Mail className="size-4" />{student.accountStatus === 'INVITADO' ? 'Reenviar' : 'Enviar invitación'}
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			<InvitationLinkModal
+				open={invitationLink !== null}
+				name={invitationLink?.name ?? ''}
+				email={invitationLink?.email ?? null}
+				url={invitationLink?.url ?? ''}
+				onClose={() => setInvitationLink(null)}
 			/>
 		</main>
 	)

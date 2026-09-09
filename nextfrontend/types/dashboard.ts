@@ -218,6 +218,8 @@ export interface AdminStudentDetail {
 	currentRankOrder: number | null
 	status: string
 	branchName: string
+	email: string | null
+	accountStatus: 'SIN_CUENTA' | 'INVITADO' | 'ACTIVO'
 	contactPhone: string | null
 	dateOfBirth: string | null
 	enrollmentDate: string | null

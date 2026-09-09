@@ -41,6 +41,7 @@ export function SignUpForm({ onSuccess, onNavigateToLogin }: SignUpFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [verificationLink, setVerificationLink] = useState<string | null>(null);
 
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
@@ -106,7 +107,7 @@ export function SignUpForm({ onSuccess, onNavigateToLogin }: SignUpFormProps) {
           password,
         }),
       });
-      const res = await response.json() as { success?: boolean; error?: string };
+      const res = await response.json() as { success?: boolean; error?: string; verificationUrl?: string };
 
       if (!response.ok || !res.success) {
         setErrorMessage(res.error || 'Error al registrar la cuenta.');
@@ -114,14 +115,20 @@ export function SignUpForm({ onSuccess, onNavigateToLogin }: SignUpFormProps) {
         return;
       }
 
-      setSuccessMessage('¡Cuenta creada exitosamente! Redirigiendo al inicio de sesión...');
+      const devVerificationUrl = res.verificationUrl || null;
+      setVerificationLink(devVerificationUrl);
+      setSuccessMessage(
+        devVerificationUrl
+          ? '¡Cuenta creada exitosamente! Como el correo no está configurado en este entorno, verifica tu cuenta con el enlace de desarrollo antes de iniciar sesión. Redirigiendo al inicio de sesión...'
+          : '¡Cuenta creada exitosamente! Revisa tu correo para verificarla. Redirigiendo al inicio de sesión...',
+      );
       setTimeout(() => {
         if (onNavigateToLogin) {
           onNavigateToLogin();
         } else {
           router.push('/login');
         }
-      }, 1500);
+      }, devVerificationUrl ? 6000 : 1500);
     } catch (err: unknown) {
       setErrorMessage((err as Error)?.message || 'Ocurrió un error inesperado durante el registro.');
       setIsLoading(false);
@@ -158,6 +165,14 @@ export function SignUpForm({ onSuccess, onNavigateToLogin }: SignUpFormProps) {
           <div>
             <span className="font-semibold block text-emerald-200">Registro exitoso</span>
             <span className="text-xs text-emerald-300/80 leading-relaxed">{successMessage}</span>
+            {verificationLink && (
+              <input
+                readOnly
+                value={verificationLink}
+                onFocus={(e) => e.target.select()}
+                className="mt-3 w-full rounded-lg border border-emerald-700/50 bg-emerald-950/40 px-3 py-2 text-[11px] text-emerald-200 outline-none focus:border-emerald-500"
+              />
+            )}
           </div>
         </motion.div>
       )}
