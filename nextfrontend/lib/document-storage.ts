@@ -45,7 +45,7 @@ export function describeStorageError(error: unknown): string {
     return 'El archivo supera el tamaño máximo permitido de 5 MB. Comprime la imagen o usa otro archivo.'
   }
 
-  if (haystack.includes('invalidkey') || haystack.includes('invalid path') || haystack.includes('invalid key') || haystack.includes('not valid')) {
+  if (haystack.includes('invalidkey') || haystack.includes('invalid key') || haystack.includes('invalid path')) {
     return 'El nombre o formato del archivo no es válido. Usa JPG, PNG, WEBP o PDF con nombres simples (sin caracteres especiales).'
   }
 
@@ -79,7 +79,9 @@ export async function uploadPrivateDocument(storageKey: string, file: File) {
   })
 
   if (error) {
-    throw new Error(describeStorageError(error))
+    const err = new Error(describeStorageError(error))
+    ;(err as { cause?: unknown }).cause = error
+    throw err
   }
 }
 

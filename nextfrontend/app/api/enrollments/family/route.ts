@@ -1,6 +1,7 @@
 import { Prisma } from '@/lib/generated/prisma'
 import { db } from '@/lib/db'
 import { uploadPrivateDocument, sanitizeStorageName } from '@/lib/document-storage'
+import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES, mimeForExtension, sniffMimeType } from '@/lib/file-validation'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -107,14 +108,15 @@ function readableValidationMessage(issues: z.ZodIssue[]) {
 
 // ==================== Archivos ====================
 
-const allowedTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
-const maxFileSize = 5 * 1024 * 1024
-
-function validateFile(file: File) {
-  if (!(file.size > 0 && file.size <= maxFileSize)) {
+async function validateFile(file: File): Promise<{ ok: true } | { ok: false; message: string }> {
+  if (!(file.size > 0 && file.size <= MAX_FILE_SIZE)) {
     return { ok: false, message: 'Un archivo supera los 5 MB. Comprime o usa otro archivo.' }
   }
-  if (!allowedTypes.has(file.type)) {
+  const bytes = new Uint8Array(await file.arrayBuffer())
+  const detected = sniffMimeType(bytes)
+  const declared = file.type && file.type !== 'application/octet-stream' ? file.type : ''
+  const effective = detected || declared || mimeForExtension(file.name)
+  if (!effective || !ALLOWED_MIME_TYPES.has(effective)) {
     return { ok: false, message: 'El formato del archivo no es válido. Usa JPG, PNG, WEBP o PDF.' }
   }
   return { ok: true }
@@ -151,11 +153,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'No hay una sede disponible para la inscripción' }, { status: 503 })
   }
 
-  const invalidFile = [...formData.entries()].find(([key, value]) => key.startsWith('document-') && value instanceof File && !validateFile(value).ok)
-  if (invalidFile) {
-    const [, value] = invalidFile
-    const detail = value instanceof File ? validateFile(value).message : 'Los archivos deben ser JPG, PNG, WEBP o PDF de hasta 5 MB.'
-    return NextResponse.json({ error: detail }, { status: 400 })
+  let invalidMessage: string | null = null
+  for (const [key, value] of formData.entries()) {
+    if (key.startsWith('document-') && value instanceof File) {
+      const result = await validateFile(value)
+      if (!result.ok) {
+        invalidMessage = result.message
+        break
+      }
+    }
+  }
+  if (invalidMessage) {
+    return NextResponse.json({ error: invalidMessage }, { status: 400 })
   }
 
   const input = parsed.data
@@ -176,9 +185,17 @@ export async function POST(request: Request) {
         const [, applicantIndex, type] = key.split('-')
         const applicant = applicants[Number(applicantIndex)]
         if (!applicant) continue
-        const storageKey = `enrollments/${enrollment.id}/${applicant.id}/${crypto.randomUUID()}-${sanitizeStorageName(value.name)}`
-        await uploadPrivateDocument(storageKey, value)
-        await db.studentDocument.create({ data: { enrollmentId: enrollment.id, applicantId: applicant.id, type: type === 'PROFILE_PHOTO' ? 'PROFILE_PHOTO' : 'IDENTITY', fileName: value.name, storageKey, mimeType: value.type, fileSize: value.size } })
+        let storageKey = ''
+        try {
+          storageKey = `enrollments/${enrollment.id}/${applicant.id}/${crypto.randomUUID()}-${sanitizeStorageName(value.name)}`
+          await uploadPrivateDocument(storageKey, value)
+          await db.studentDocument.create({ data: { enrollmentId: enrollment.id, applicantId: applicant.id, type: type === 'PROFILE_PHOTO' ? 'PROFILE_PHOTO' : 'IDENTITY', fileName: value.name, storageKey, mimeType: value.type, fileSize: value.size } })
+        } catch (fileError) {
+          console.error('Error guardando documento de inscripción:', fileError, { storageKey, fileName: value.name, fileType: value.type, fileSize: value.size })
+          const cause = (fileError as { cause?: unknown }).cause
+          if (cause) console.error('Causa raíz de Supabase:', cause)
+          throw fileError
+        }
       }
     } catch (uploadError) {
       console.error('Error guardando documentos de inscripción:', uploadError)

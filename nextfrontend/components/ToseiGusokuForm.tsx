@@ -3,6 +3,7 @@
 import { Fragment, useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { MOCK_BENEFITS } from '@/lib/types';
+import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES, mimeForExtension } from '@/lib/file-validation';
 import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake, FileText, ChevronDown } from 'lucide-react';
 
 const heroImageDesktop = '/assets/BannerbgHero19080x1080.webp';
@@ -89,9 +90,6 @@ const TIPOS_SANGRE = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 const TALLAS_ROPA = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 // ========== VALIDACIONES COMPARTIDAS ==========
-const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf']);
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
-
 const soloDigitos = (value: string) => value.replace(/\D/g, '');
 
 const esCedulaValida = (value: string) => /^\d{11}$/.test(soloDigitos(value));
@@ -102,11 +100,15 @@ const esTelefonoValido = (value: string) => {
 };
 
 // Devuelve un mensaje de error si el archivo no es válido, o null si es válido.
+// En móvil el navegador a veces reporta MIME vacío u "octet-stream" para JPG/PNG válidos,
+// por eso se infiere el tipo desde la extensión como respaldo.
 const archivoInvalido = (file: File, permitirPdf: boolean): string | null => {
   if (!(file.size > 0 && file.size <= MAX_FILE_SIZE)) {
     return 'El archivo supera los 5 MB. Comprime la imagen o usa otro archivo.';
   }
-  if (!ALLOWED_MIME_TYPES.has(file.type)) {
+  const declared = file.type && file.type !== 'application/octet-stream' ? file.type : '';
+  const effective = declared || mimeForExtension(file.name);
+  if (!ALLOWED_MIME_TYPES.has(effective)) {
     return `Formato no permitido. Usa ${permitirPdf ? 'JPG, PNG, WEBP o PDF' : 'JPG, PNG o WEBP'}.`;
   }
   return null;
@@ -390,10 +392,18 @@ const ToseiGusokuForm = () => {
 
   const eliminarHijo = (id: string) => {
     if (formData.hijos.length <= 1) return;
+    const index = formData.hijos.findIndex(h => h.id === id);
     setFormData(prev => ({
       ...prev,
       hijos: prev.hijos.filter(h => h.id !== id)
     }));
+    if (index >= 0) {
+      setErrors(prev => {
+        const hijos = prev.hijos ? [...prev.hijos] : [];
+        hijos.splice(index, 1);
+        return { ...prev, hijos };
+      });
+    }
   };
 
   const handleHijoChange = (id: string, field: keyof Hijo, value: Hijo[keyof Hijo]) => {
@@ -436,6 +446,14 @@ const ToseiGusokuForm = () => {
       ...prev,
       hijos: prev.hijos.map(h => h.id === id ? { ...h, foto: null, fotoPreview: '' } : h)
     }));
+    const index = formData.hijos.findIndex(h => h.id === id);
+    if (index >= 0) {
+      setErrors(prev => {
+        const hijos = prev.hijos ? [...prev.hijos] : [];
+        hijos[index] = { ...(hijos[index] ?? {}), foto: '' };
+        return { ...prev, hijos };
+      });
+    }
   };
 
   const handleHijoIdentFiles = (id: string, files: File[]) => {
@@ -485,6 +503,14 @@ const ToseiGusokuForm = () => {
         };
       })
     }));
+    const hijoIndex = formData.hijos.findIndex(h => h.id === id);
+    if (hijoIndex >= 0) {
+      setErrors(prev => {
+        const hijos = prev.hijos ? [...prev.hijos] : [];
+        hijos[hijoIndex] = { ...(hijos[hijoIndex] ?? {}), identificacion: '' };
+        return { ...prev, hijos };
+      });
+    }
   };
 
   // Archivos para adulto
@@ -505,6 +531,7 @@ const ToseiGusokuForm = () => {
   };
 
   const handleAdultoFotoRemove = () => {
+    setErrors(prev => ({ ...prev, fotoAdulto: '' }));
     setFormData(prev => ({ ...prev, fotoAdulto: null, fotoAdultoPreview: '' }));
   };
 
@@ -535,6 +562,7 @@ const ToseiGusokuForm = () => {
         identAdultoPreview: prev.identAdultoPreview.filter((_, i) => i !== index),
       };
     });
+    setErrors(prev => ({ ...prev, identAdulto: '' }));
   };
 
   const handleMultiSelect = (name: 'metodoMotivacion' | 'razonesKarate', value: string) => {
