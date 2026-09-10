@@ -731,6 +731,11 @@ const ToseiGusokuForm = () => {
       try {
         const data = await response.json();
         if (data && typeof data.error === 'string') message = data.error;
+        if (data && typeof data.detalle === 'object' && data.detalle !== null) {
+          const d = data.detalle as { name?: string; code?: string; message?: string };
+          const extra = [d.name, d.code, d.message].filter(Boolean).join(' | ');
+          if (extra) message = `${message}\n[DEBUG] ${extra}`;
+        }
       } catch { /* ignore */ }
       setSubmitError(message);
       return;
@@ -1232,7 +1237,7 @@ const ToseiGusokuForm = () => {
 
                 <div className="flex justify-between mt-8 pt-6 border-t">
                   {submitError && (
-                    <p className="text-red-600 text-sm font-medium text-center w-full mb-4" role="alert">{submitError}</p>
+                    <p className="text-red-600 text-sm font-medium text-center w-full mb-4 whitespace-pre-line" role="alert">{submitError}</p>
                   )}
                 </div>
                 <div className="flex justify-between mt-8 pt-6 border-t">
