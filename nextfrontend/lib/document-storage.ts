@@ -15,13 +15,21 @@ export function sanitizeStorageName(name: string) {
   )
 }
 
+function normalizeStorageUrl(url: string) {
+  const trimmed = url.trim().replace(/\/+$/, '')
+  const match = trimmed.match(/^(https?:\/\/[^/]+)/)
+  return match ? match[1] : trimmed
+}
+
 function getStorageClient() {
-  const url = process.env.SUPABASE_URL
+  const rawUrl = process.env.SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-  if (!url || !serviceRoleKey) {
+  if (!rawUrl || !serviceRoleKey) {
     throw new Error('El almacenamiento privado de documentos no está configurado.')
   }
+
+  const url = normalizeStorageUrl(rawUrl)
 
   return createClient(url, serviceRoleKey, {
     auth: { autoRefreshToken: false, persistSession: false },
@@ -42,20 +50,19 @@ function errorFields(error: unknown): { name: string; code: string; message: str
   }
 }
 
-export function storageErrorDetails(error: unknown): { name: string; code: string; message: string } {
-  const { name, code, message } = errorFields(error)
-  return { name, code, message: message.slice(0, 300) }
-}
-
 export function describeStorageError(error: unknown): string {
   const { name, code, message } = errorFields(error)
   const haystack = `${name} ${code} ${message}`.toLowerCase()
+
+  if (haystack.includes('pgrst125') || haystack.includes('invalid path specified') || haystack.includes('invalid path in request url')) {
+    return 'El almacenamiento no está configurado correctamente en el servidor. Contacta al administrador.'
+  }
 
   if (haystack.includes('entitytoolarge') || haystack.includes('maxsizeexceeded') || haystack.includes('too large') || haystack.includes('exceeds the maximum') || haystack.includes('supera el tama')) {
     return 'El archivo supera el tamaño máximo permitido de 5 MB. Comprime la imagen o usa otro archivo.'
   }
 
-  if (haystack.includes('invalidkey') || haystack.includes('invalid key') || haystack.includes('invalid path')) {
+  if (haystack.includes('invalidkey') || haystack.includes('invalid key')) {
     return 'El nombre o formato del archivo no es válido. Usa JPG, PNG, WEBP o PDF con nombres simples (sin caracteres especiales).'
   }
 
