@@ -48,7 +48,7 @@ export function InstructorAttendanceBoard({ data }: InstructorAttendanceBoardPro
     const [editNotes, setEditNotes] = useState('')
     const [busy, setBusy] = useState(false)
 
-    const formatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric' })
+    const formatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })
     const pendingRecords = data.records.filter((record) => record.status === 'PENDING')
 
     const filteredRecords = data.records.filter((record) => {

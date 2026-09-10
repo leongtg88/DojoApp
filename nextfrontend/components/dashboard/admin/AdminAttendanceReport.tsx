@@ -26,7 +26,7 @@ export function AdminAttendanceReport({ records }: AdminAttendanceReportProps) {
     const [searchTerm, setSearchTerm] = useState('')
     const [attendanceFilter, setAttendanceFilter] = useState<'ALL' | 'PRESENT' | 'ABSENT'>('ALL')
     const [branchFilter, setBranchFilter] = useState('ALL')
-    const formatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric' })
+    const formatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })
     const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
     const branches = [...new Set(records.map(({ branchName }) => branchName ?? 'Punch-in'))].sort()
     const presentCount = records.filter(({ present }) => present).length

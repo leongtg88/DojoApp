@@ -11,7 +11,7 @@ interface AdminEnrollmentsProps {
 
 export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
     const router = useRouter()
-    const formatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric' })
+    const formatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })
     const [selectedEnrollment, setSelectedEnrollment] = useState<AdminEnrollmentSummary | null>(null)
     const [error, setError] = useState<string | null>(null)
     const [isSaving, setIsSaving] = useState(false)

@@ -10,6 +10,8 @@ export function StudentAttendanceHistory({ records }: StudentAttendanceHistoryPr
         day: 'numeric',
         month: 'short',
         year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
     })
 
     return (

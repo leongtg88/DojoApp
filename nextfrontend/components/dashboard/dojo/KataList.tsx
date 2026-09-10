@@ -154,7 +154,7 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                                     )}
                                     {kata.evaluatedBy && <span>Evaluado por {kata.evaluatedBy}</span>}
                                     {kata.lastPracticeDate && (
-                                        <span>{new Date(kata.lastPracticeDate).toLocaleDateString('es-DO')}</span>
+                                        <span>{new Date(kata.lastPracticeDate).toLocaleString('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}</span>
                                     )}
                                 </div>
 

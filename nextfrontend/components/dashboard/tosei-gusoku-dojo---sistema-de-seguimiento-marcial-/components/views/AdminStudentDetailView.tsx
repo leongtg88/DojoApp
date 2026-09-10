@@ -331,7 +331,7 @@ export function AdminStudentDetailView() {
                       </div>
                     </div>
                     <span className="text-[11px] text-gray-400 font-medium">
-                      {sk.approvedAt ? new Date(sk.approvedAt).toLocaleDateString('es-DO') : 'Mayo 2026'}
+                      {sk.approvedAt ? new Date(sk.approvedAt).toLocaleString('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : 'Mayo 2026'}
                     </span>
                   </div>
                 ))}

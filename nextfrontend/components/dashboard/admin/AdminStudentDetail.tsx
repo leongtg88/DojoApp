@@ -23,6 +23,11 @@ function formatDate(value: string | null) {
 	return new Intl.DateTimeFormat('es-DO', { dateStyle: 'medium' }).format(new Date(value))
 }
 
+function formatDateTime(value: string | null) {
+	if (!value) return '—'
+	return new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(value))
+}
+
 export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 	const router = useRouter()
 	const [activeTab, setActiveTab] = useState<DetailTab>('katas')
@@ -104,7 +109,7 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 							<div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-neutral-400">
 								<span className="inline-flex items-center gap-1.5"><MapPin aria-hidden="true" className="size-3.5 text-cyan-400" />{student.branchName}</span>
 								{student.contactPhone && <span className="inline-flex items-center gap-1.5"><Phone aria-hidden="true" className="size-3.5 text-cyan-400" />{student.contactPhone}</span>}
-								<span className="inline-flex items-center gap-1.5"><CalendarDays aria-hidden="true" className="size-3.5 text-cyan-400" />Alta: {formatDate(student.enrollmentDate)}</span>
+								<span className="inline-flex items-center gap-1.5"><CalendarDays aria-hidden="true" className="size-3.5 text-cyan-400" />Alta: {formatDateTime(student.enrollmentDate)}</span>
 							</div>
 						</div>
 					</div>
@@ -126,7 +131,7 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 								{currentRankInfo?.kyuDan && <p className="text-xs font-semibold text-cyan-300">{currentRankInfo.kyuDan}</p>}
 							</div>
 						</div>
-						<p className="mt-2 text-[11px] text-neutral-400">Otorgado: {formatDate(student.rankAwardedAt)}</p>
+						<p className="mt-2 text-[11px] text-neutral-400">Otorgado: {formatDateTime(student.rankAwardedAt)}</p>
 					</div>
 
 					<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
@@ -235,7 +240,7 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 										</div>
 										<div className="flex items-center gap-3">
 											<KataBadge status={entry.status} />
-											{entry.approvedAt && <span className="text-[11px] text-neutral-400">{formatDate(entry.approvedAt)}</span>}
+											{entry.approvedAt && <span className="text-[11px] text-neutral-400">{formatDateTime(entry.approvedAt)}</span>}
 										</div>
 									</div>
 								))}
@@ -306,7 +311,7 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 								<div>
 									<p className="text-sm font-semibold text-white">{entry.rankName}</p>
 									<p className="mt-1 inline-flex items-center gap-1.5 text-xs text-neutral-400">
-										<CalendarDays aria-hidden="true" className="size-3.5 text-cyan-400" />{formatDate(entry.promotedAt)} · {entry.promoterName ?? 'Sin responsable registrado'}
+										<CalendarDays aria-hidden="true" className="size-3.5 text-cyan-400" />{formatDateTime(entry.promotedAt)} · {entry.promoterName ?? 'Sin responsable registrado'}
 									</p>
 									{entry.examinerName && <p className="mt-1 text-xs text-neutral-400">Sensei examinador: <span className="text-neutral-200">{entry.examinerName}</span></p>}
 									{entry.notes && <p className="mt-2 text-sm text-neutral-300">{entry.notes}</p>}

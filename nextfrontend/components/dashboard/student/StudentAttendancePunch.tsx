@@ -55,7 +55,7 @@ export function StudentAttendancePunch({ data }: StudentAttendancePunchProps) {
   const [editSessionType, setEditSessionType] = useState<string>('class')
   const [editNotes, setEditNotes] = useState<string>('')
 
-  const formatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric' })
+  const formatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })
   const quickHours = [1.0, 1.5, 2.0, 2.5]
   const compliance = Math.min(100, summary.attendancePercent)
   const eligible = summary.confirmedCount >= minimum * 0.8
