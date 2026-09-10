@@ -28,17 +28,27 @@ function getStorageClient() {
   })
 }
 
-export function describeStorageError(error: unknown): string {
-  const name = typeof error === 'object' && error !== null && 'name' in error && typeof (error as { name?: unknown }).name === 'string'
-    ? (error as { name: string }).name
-    : ''
-  const message = typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message?: unknown }).message === 'string'
-    ? (error as { message: string }).message
-    : ''
-  const code = typeof error === 'object' && error !== null && 'code' in error && typeof (error as { code?: unknown }).code === 'string'
-    ? (error as { code: string }).code
-    : ''
+function errorFields(error: unknown): { name: string; code: string; message: string } {
+  return {
+    name: typeof error === 'object' && error !== null && 'name' in error && typeof (error as { name?: unknown }).name === 'string'
+      ? (error as { name: string }).name
+      : '',
+    code: typeof error === 'object' && error !== null && 'code' in error && typeof (error as { code?: unknown }).code === 'string'
+      ? (error as { code: string }).code
+      : '',
+    message: typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message?: unknown }).message === 'string'
+      ? (error as { message: string }).message
+      : '',
+  }
+}
 
+export function storageErrorDetails(error: unknown): { name: string; code: string; message: string } {
+  const { name, code, message } = errorFields(error)
+  return { name, code, message: message.slice(0, 300) }
+}
+
+export function describeStorageError(error: unknown): string {
+  const { name, code, message } = errorFields(error)
   const haystack = `${name} ${code} ${message}`.toLowerCase()
 
   if (haystack.includes('entitytoolarge') || haystack.includes('maxsizeexceeded') || haystack.includes('too large') || haystack.includes('exceeds the maximum') || haystack.includes('supera el tama')) {

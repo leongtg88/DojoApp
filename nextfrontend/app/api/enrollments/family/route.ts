@@ -1,6 +1,6 @@
 import { Prisma } from '@/lib/generated/prisma'
 import { db } from '@/lib/db'
-import { uploadPrivateDocument, sanitizeStorageName } from '@/lib/document-storage'
+import { uploadPrivateDocument, sanitizeStorageName, storageErrorDetails } from '@/lib/document-storage'
 import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES, mimeForExtension, sniffMimeType } from '@/lib/file-validation'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -200,7 +200,9 @@ export async function POST(request: Request) {
     } catch (uploadError) {
       console.error('Error guardando documentos de inscripción:', uploadError)
       const message = uploadError instanceof Error ? uploadError.message : 'Verifica la configuración de almacenamiento.'
-      return NextResponse.json({ error: message }, { status: 503 })
+      const cause = (uploadError as { cause?: unknown }).cause
+      const detalle = storageErrorDetails(cause ?? uploadError)
+      return NextResponse.json({ error: message, detalle }, { status: 503 })
     }
   } catch (dbError) {
     console.error('Error guardando la inscripción:', dbError)
