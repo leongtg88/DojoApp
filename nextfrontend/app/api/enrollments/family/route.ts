@@ -168,12 +168,14 @@ export async function POST(request: Request) {
   }
 
   const input = parsed.data
+  const reg = input.registrationData
+  const interest = reg.tipoRegistro === 'menor' ? 'Pequeños Guerreros' : 'Jóvenes y Adultos'
   let enrollment: { id: string }
   try {
     enrollment = await db.enrollment.upsert({
       where: { contactEmail_status: { contactEmail: input.email.toLowerCase(), status: 'PENDING' } },
-      update: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, registrationData: input.registrationData as Prisma.InputJsonValue, applicants: { deleteMany: {} } },
-      create: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactEmail: input.email.toLowerCase(), contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, registrationData: input.registrationData as Prisma.InputJsonValue },
+      update: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, interest, registrationData: input.registrationData as Prisma.InputJsonValue, applicants: { deleteMany: {} } },
+      create: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactEmail: input.email.toLowerCase(), contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, interest, registrationData: input.registrationData as Prisma.InputJsonValue },
       select: { id: true },
     })
 

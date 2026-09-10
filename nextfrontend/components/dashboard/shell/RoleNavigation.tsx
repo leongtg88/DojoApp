@@ -15,6 +15,7 @@ export interface DashboardNavigationItem {
     href: string
     label: string
     icon: LucideIcon
+    badge?: number
 }
 
 const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
@@ -48,6 +49,10 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
     ],
 }
 
-export function getRoleNavigation(role: DashboardRole) {
-    return navigationByRole[role]
+export function getRoleNavigation(role: DashboardRole, pendingEnrollmentCount = 0) {
+    return navigationByRole[role].map((item) =>
+        item.href === '/dashboard/admin/inscripciones' && pendingEnrollmentCount > 0
+            ? { ...item, badge: pendingEnrollmentCount }
+            : item
+    )
 }

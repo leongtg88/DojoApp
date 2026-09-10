@@ -152,6 +152,21 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
   })
 }
 
+export async function getAdminPendingEnrollmentCount(userId: string): Promise<number> {
+  const scope = await getAdminScope(userId)
+
+  if (!scope) {
+    return 0
+  }
+
+  return db.enrollment.count({
+    where: {
+      ...(scopeSchoolFilter(scope)),
+      status: 'PENDING',
+    },
+  })
+}
+
 export async function getAdminEnrollments(userId: string): Promise<AdminEnrollmentSummary[] | null> {
   const scope = await getAdminScope(userId)
 

@@ -12,11 +12,12 @@ interface DashboardSidebarProps {
     activeRole: DashboardRole
     roles: DashboardRole[]
     userName: string | null | undefined
+    pendingEnrollmentCount?: number
 }
 
-export function DashboardSidebar({ onSignOut, activeRole, roles, userName }: DashboardSidebarProps) {
+export function DashboardSidebar({ onSignOut, activeRole, roles, userName, pendingEnrollmentCount = 0 }: DashboardSidebarProps) {
     const pathname = usePathname()
-    const navigation = getRoleNavigation(activeRole)
+    const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount)
     const activeHref = getPanelHref(activeRole)
     const switchOptions = getRolePanelOptions(roles).filter((option) => option.href !== activeHref)
     const initials = (userName ?? 'Usuario').split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()
@@ -31,7 +32,7 @@ export function DashboardSidebar({ onSignOut, activeRole, roles, userName }: Das
 
             <nav className="flex flex-1 flex-col gap-1.5" aria-label="Navegación del dashboard">
                 <p className="mb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-neutral-500">Navegación</p>
-                {navigation.map(({ href, icon: Icon, label }) => {
+                {navigation.map(({ href, icon: Icon, label, badge }) => {
                     const active = pathname === href || (href !== navigation[0]?.href && pathname.startsWith(`${href}/`))
 
                     return (
@@ -41,8 +42,8 @@ export function DashboardSidebar({ onSignOut, activeRole, roles, userName }: Das
                             href={href}
                             key={href}
                         >
-                            <span className="flex items-center gap-3"><Icon aria-hidden="true" className="size-4" />{label}</span>
-                            {active && <span aria-hidden="true" className="size-1.5 rounded-full bg-cyan-400" />}
+                            <span className="flex min-w-0 items-center gap-3"><Icon aria-hidden="true" className="size-4 shrink-0" /><span className="truncate">{label}</span></span>
+                            {badge ? <span className="flex shrink-0 items-center gap-2"><span className="rounded-full bg-cyan-500 px-1.5 py-0.5 text-[10px] font-bold leading-none text-[#0d1117]">{badge > 99 ? '99+' : badge}</span>{active && <span aria-hidden="true" className="size-1.5 rounded-full bg-cyan-400" />}</span> : active && <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-cyan-400" />}
                         </Link>
                     )
                 })}

@@ -166,6 +166,7 @@ export interface AdminEnrollmentSummary {
 	schedule: string | null
 	status: string
 	createdAt: string
+	createdAtLabel?: string
 	applicants: { id: string; name: string; dateOfBirth: string }[]
 }
 

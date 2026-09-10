@@ -11,7 +11,6 @@ interface AdminEnrollmentsProps {
 
 export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
     const router = useRouter()
-    const formatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })
     const [selectedEnrollment, setSelectedEnrollment] = useState<AdminEnrollmentSummary | null>(null)
     const [error, setError] = useState<string | null>(null)
     const [isSaving, setIsSaving] = useState(false)
@@ -91,7 +90,7 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                         <li className="px-5 py-4" key={enrollment.id}>
                             <p className="text-sm font-semibold text-white">{enrollment.applicantName ?? 'Nombre pendiente'}</p>
                             <p className="mt-1 text-sm text-neutral-300">{enrollment.contactEmail} · {enrollment.contactPhone ?? 'Sin teléfono'}</p>
-                            <p className="mt-2 text-xs text-neutral-400">{enrollment.interest ?? 'Sin programa'} · {enrollment.schedule ?? 'Sin horario'} · {formatter.format(new Date(enrollment.createdAt))}</p>
+                            <p className="mt-2 text-xs text-neutral-400">{enrollment.interest ?? 'Sin programa'} · {enrollment.schedule ?? 'Sin horario'} · {enrollment.createdAtLabel ?? enrollment.createdAt}</p>
                             {enrollment.applicants.length > 0 && <p className="mt-1 text-xs font-semibold text-cyan-300">{enrollment.applicants.length} aspirante{enrollment.applicants.length === 1 ? '' : 's'} pendiente{enrollment.applicants.length === 1 ? '' : 's'}</p>}
                             <button className="mt-3 rounded-md border border-cyan-500/40 px-3 py-2 text-sm font-semibold text-cyan-200 hover:bg-cyan-500/10" onClick={() => openConversion(enrollment)} type="button">
                                 Convertir en alumno

@@ -15,6 +15,7 @@ interface DashboardShellProps {
     roles: DashboardRole[]
     primaryRole: DashboardRole
     userName: string | null | undefined
+    pendingEnrollmentCount?: number
 }
 
 function resolveActiveRole(pathname: string, roles: DashboardRole[], primaryRole: DashboardRole): DashboardRole {
@@ -26,7 +27,7 @@ function resolveActiveRole(pathname: string, roles: DashboardRole[], primaryRole
     return primaryRole
 }
 
-export function DashboardShell({ children, roles, primaryRole, userName }: DashboardShellProps) {
+export function DashboardShell({ children, roles, primaryRole, userName, pendingEnrollmentCount }: DashboardShellProps) {
     const pathname = usePathname()
     const activeRole = resolveActiveRole(pathname, roles, primaryRole)
     const initials = (userName ?? 'Usuario').split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()
@@ -52,11 +53,11 @@ export function DashboardShell({ children, roles, primaryRole, userName }: Dashb
             </header>
 
             <div className="flex w-full">
-                <DashboardSidebar onSignOut={handleSignOut} activeRole={activeRole} roles={roles} userName={userName} />
+                <DashboardSidebar onSignOut={handleSignOut} activeRole={activeRole} roles={roles} userName={userName} pendingEnrollmentCount={pendingEnrollmentCount} />
                 <div className="min-w-0 flex-1">{children}</div>
             </div>
 
-            <MobileDashboardNav onSignOut={handleSignOut} activeRole={activeRole} />
+            <MobileDashboardNav onSignOut={handleSignOut} activeRole={activeRole} pendingEnrollmentCount={pendingEnrollmentCount} />
         </div>
     )
 }

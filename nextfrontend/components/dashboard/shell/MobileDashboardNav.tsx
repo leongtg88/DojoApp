@@ -9,11 +9,12 @@ import { getRoleNavigation } from './RoleNavigation'
 interface MobileDashboardNavProps {
     onSignOut: () => void
     activeRole: DashboardRole
+    pendingEnrollmentCount?: number
 }
 
-export function MobileDashboardNav({ onSignOut, activeRole }: MobileDashboardNavProps) {
+export function MobileDashboardNav({ onSignOut, activeRole, pendingEnrollmentCount = 0 }: MobileDashboardNavProps) {
     const pathname = usePathname()
-    const navigation = getRoleNavigation(activeRole).slice(0, 5)
+    const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount).slice(0, 5)
 
     return (
         <nav
@@ -21,7 +22,7 @@ export function MobileDashboardNav({ onSignOut, activeRole }: MobileDashboardNav
             className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-800 bg-[#161b22]/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-2px_10px_rgba(0,0,0,0.35)] backdrop-blur md:hidden"
         >
             <div className="mx-auto flex h-16 max-w-lg items-center justify-around px-1">
-                {navigation.map(({ href, icon: Icon, label }) => {
+                {navigation.map(({ href, icon: Icon, label, badge }) => {
                     const active = pathname === href || (href !== navigation[0]?.href && pathname.startsWith(`${href}/`))
 
                     return (
@@ -31,7 +32,10 @@ export function MobileDashboardNav({ onSignOut, activeRole }: MobileDashboardNav
                             href={href}
                             key={href}
                         >
-                            <Icon aria-hidden="true" className="size-5" />
+                            <span className="relative">
+                                <Icon aria-hidden="true" className="size-5" />
+                                {badge && <span className="absolute -right-2 -top-1.5 rounded-full bg-cyan-500 px-1.5 py-0.5 text-[9px] font-bold leading-none text-[#0d1117]">{badge > 99 ? '99+' : badge}</span>}
+                            </span>
                             <span className="max-w-16 truncate">{label}</span>
                             {active && <span aria-hidden="true" className="absolute bottom-1 h-0.5 w-7 bg-cyan-400" />}
                         </Link>
