@@ -21,6 +21,7 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
     const [applicantId, setApplicantId] = useState('')
 
     function openConversion(enrollment: AdminEnrollmentSummary) {
+        console.log('[convertir-alumno] abrir formulario para:', enrollment.id, enrollment.applicantName)
         const applicant = enrollment.applicants[0]
         const parts = (applicant?.name ?? enrollment.applicantName ?? '').trim().split(/\s+/)
         setSelectedEnrollment(enrollment)
@@ -65,6 +66,7 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
             setSelectedEnrollment(null)
             router.refresh()
         } catch (reason: unknown) {
+            console.error('[convertir-alumno] error al convertir:', reason)
             setError(reason instanceof Error ? reason.message : 'No fue posible convertir esta inscripción. Verifica tu conexión e inténtalo nuevamente.')
         } finally {
             setIsSaving(false)
@@ -100,29 +102,31 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                 </ul>
             )}
             {selectedEnrollment && (
-                <form className="mt-6 rounded-lg border border-neutral-800 bg-[#161b22] p-5" onSubmit={convertEnrollment}>
-                    <h2 className="font-display text-lg font-bold text-white">Completar expediente de alumno</h2>
-                    <p className="mt-1 text-sm text-neutral-400">Se creará el expediente sin cuenta de acceso. La cuenta se invita en un paso posterior.</p>
-                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                        {selectedEnrollment.applicants.length > 1 && <label className="sm:col-span-2 text-sm font-semibold text-neutral-200" htmlFor="applicantId">Aspirante
-                            <select className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="applicantId" onChange={(event) => { const applicant = selectedEnrollment.applicants.find(({ id }) => id === event.target.value); setApplicantId(event.target.value); const parts = applicant?.name.split(/\s+/) ?? []; setFirstName(parts[0] ?? ''); setLastName(parts.slice(1).join(' ')); setDateOfBirth(applicant?.dateOfBirth.slice(0, 10) ?? '') }} value={applicantId}>{selectedEnrollment.applicants.map((applicant) => <option key={applicant.id} value={applicant.id}>{applicant.name}</option>)}</select>
-                        </label>}
-                        <label className="text-sm font-semibold text-neutral-200" htmlFor="firstName">Nombre
-                            <input className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="firstName" onChange={(event) => setFirstName(event.target.value)} required value={firstName} />
-                        </label>
-                        <label className="text-sm font-semibold text-neutral-200" htmlFor="lastName">Apellido
-                            <input className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="lastName" onChange={(event) => setLastName(event.target.value)} required value={lastName} />
-                        </label>
-                        <label className="text-sm font-semibold text-neutral-200" htmlFor="dateOfBirth">Fecha de nacimiento
-                            <input className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="dateOfBirth" onChange={(event) => setDateOfBirth(event.target.value)} required type="date" value={dateOfBirth} />
-                        </label>
-                    </div>
-                    {error && <p className="mt-4 text-sm font-medium text-red-300">{error}</p>}
-                    <div className="mt-5 flex gap-3">
-                        <button className="rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] disabled:opacity-60" disabled={isSaving} type="submit">{isSaving ? 'Convirtiendo...' : 'Crear alumno'}</button>
-                        <button className="rounded-md border border-neutral-700 px-4 py-2.5 text-sm font-semibold text-neutral-300 hover:bg-neutral-800" onClick={() => setSelectedEnrollment(null)} type="button">Cancelar</button>
-                    </div>
-                </form>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" onClick={() => setSelectedEnrollment(null)} role="dialog" aria-modal="true" aria-label="Completar expediente de alumno">
+                    <form className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border border-neutral-800 bg-[#161b22] p-5" onClick={(event) => event.stopPropagation()} onSubmit={convertEnrollment}>
+                        <h2 className="font-display text-lg font-bold text-white">Completar expediente de alumno</h2>
+                        <p className="mt-1 text-sm text-neutral-400">Se creará el expediente sin cuenta de acceso. La cuenta se invita en un paso posterior.</p>
+                        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                            {selectedEnrollment.applicants.length > 1 && <label className="sm:col-span-2 text-sm font-semibold text-neutral-200" htmlFor="applicantId">Aspirante
+                                <select className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="applicantId" onChange={(event) => { const applicant = selectedEnrollment.applicants.find(({ id }) => id === event.target.value); setApplicantId(event.target.value); const parts = applicant?.name.split(/\s+/) ?? []; setFirstName(parts[0] ?? ''); setLastName(parts.slice(1).join(' ')); setDateOfBirth(applicant?.dateOfBirth.slice(0, 10) ?? '') }} value={applicantId}>{selectedEnrollment.applicants.map((applicant) => <option key={applicant.id} value={applicant.id}>{applicant.name}</option>)}</select>
+                            </label>}
+                            <label className="text-sm font-semibold text-neutral-200" htmlFor="firstName">Nombre
+                                <input className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="firstName" onChange={(event) => setFirstName(event.target.value)} required value={firstName} />
+                            </label>
+                            <label className="text-sm font-semibold text-neutral-200" htmlFor="lastName">Apellido
+                                <input className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="lastName" onChange={(event) => setLastName(event.target.value)} required value={lastName} />
+                            </label>
+                            <label className="text-sm font-semibold text-neutral-200" htmlFor="dateOfBirth">Fecha de nacimiento
+                                <input className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="dateOfBirth" onChange={(event) => setDateOfBirth(event.target.value)} required type="date" value={dateOfBirth} />
+                            </label>
+                        </div>
+                        {error && <p className="mt-4 text-sm font-medium text-red-300">{error}</p>}
+                        <div className="mt-5 flex gap-3">
+                            <button className="rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] disabled:opacity-60" disabled={isSaving} type="submit">{isSaving ? 'Convirtiendo...' : 'Crear alumno'}</button>
+                            <button className="rounded-md border border-neutral-700 px-4 py-2.5 text-sm font-semibold text-neutral-300 hover:bg-neutral-800" onClick={() => setSelectedEnrollment(null)} type="button">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
             )}
         </main>
     )
