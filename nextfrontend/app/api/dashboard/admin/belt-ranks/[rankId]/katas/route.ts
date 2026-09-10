@@ -47,16 +47,24 @@ export async function PUT(request: Request, { params }: RankKatasContext) {
   }
 
   await db.$transaction([
+    // Reemplaza el conjunto de katas del grado (M:N) con su posición relativa.
+    db.beltRankKata.deleteMany({ where: { beltRankId: rank.id } }),
+    ...(techniqueIds.length > 0
+      ? [
+          db.beltRankKata.createMany({
+            data: techniqueIds.map((kataId, position) => ({ beltRankId: rank.id, kataId, order: position + 1 })),
+          }),
+        ]
+      : []),
+    // Compatibilidad: mantiene Technique.rankId como "grado base" sincronizado.
     db.technique.updateMany({
       where: { rankId: rank.id, id: { notIn: techniqueIds } },
       data: { rankId: null },
     }),
-    ...techniqueIds.map((techniqueId, position) =>
-      db.technique.update({
-        where: { id: techniqueId },
-        data: { rankId: rank.id, order: rank.order * 1000 + position + 1 },
-      }),
-    ),
+    db.technique.updateMany({
+      where: { id: { in: techniqueIds }, rankId: null },
+      data: { rankId: rank.id },
+    }),
   ])
 
   return NextResponse.json({ ok: true })

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { BookOpen, CheckSquare, Clock, GraduationCap, ListChecks, Loader2, MoveDown, MoveUp, Pencil, Plus, Rows3, ShieldCheck, Square, Trash2, Users, X } from 'lucide-react'
 import { RankCatalog } from '../shared/RankCatalog'
+import { ADULT_RANKS, BELT_COLORS, YOUTH_RANKS } from '@/lib/curriculum/programs'
 import type { AdminBeltRankSummary, AdminTechniqueSummary, TechniqueCategory } from '@/types/dashboard'
 
 interface AdminCurriculumCatalogProps {
@@ -19,25 +20,44 @@ const CATEGORY_LABELS: Record<TechniqueCategory, string> = {
 }
 
 interface RankForm {
+    program: 'ADULT' | 'YOUTH'
     name: string
+    order: string
     kyuDan: string
     japaneseName: string
     kanji: string
     beltColor: string
     estimatedDurationMonths: string
+    minMonths: string
+    maxMonths: string
     isMaximumRank: boolean
     description: string
 }
 
 const EMPTY_RANK_FORM: RankForm = {
+    program: 'ADULT',
     name: '',
+    order: '',
     kyuDan: '',
     japaneseName: '',
     kanji: '',
     beltColor: '',
     estimatedDurationMonths: '',
+    minMonths: '',
+    maxMonths: '',
     isMaximumRank: false,
     description: '',
+}
+
+const RANK_META_BY_PROGRAM: Record<'ADULT' | 'YOUTH', Map<number, { kyuDan: string; japaneseName: string; kanji: string }>> = {
+    ADULT: new Map(ADULT_RANKS.map(({ order, kyuDan, japaneseName, kanji }) => [order, { kyuDan, japaneseName, kanji }])),
+    YOUTH: new Map(YOUTH_RANKS.map(({ order, kyuDan, japaneseName, kanji }) => [order, { kyuDan, japaneseName, kanji }])),
+}
+
+function rankMetaFor(form: RankForm) {
+    const orderNum = Number(form.order)
+    if (!Number.isInteger(orderNum) || orderNum < 1) return null
+    return RANK_META_BY_PROGRAM[form.program].get(orderNum) ?? null
 }
 
 export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalog }: AdminCurriculumCatalogProps) {
@@ -64,12 +84,16 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
     function openEditRank(rank: AdminBeltRankSummary) {
         setEditingRank(rank)
         setRankForm({
+            program: rank.program,
             name: rank.name,
+            order: String(rank.order ?? ''),
             kyuDan: rank.kyuDan ?? '',
             japaneseName: rank.japaneseName ?? '',
             kanji: rank.kanji ?? '',
             beltColor: rank.beltColor ?? '',
             estimatedDurationMonths: rank.estimatedDurationMonths != null ? String(rank.estimatedDurationMonths) : '',
+            minMonths: rank.minMonths != null ? String(rank.minMonths) : '',
+            maxMonths: rank.maxMonths != null ? String(rank.maxMonths) : '',
             isMaximumRank: rank.isMaximumRank,
             description: rank.description ?? '',
         })
@@ -82,12 +106,16 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
         setSaving(true)
         setError(null)
         const body = {
+            program: rankForm.program,
             name: rankForm.name.trim(),
+            order: rankForm.order === '' ? undefined : Number(rankForm.order),
             kyuDan: rankForm.kyuDan.trim() || null,
             japaneseName: rankForm.japaneseName.trim() || null,
             kanji: rankForm.kanji.trim() || null,
-            beltColor: rankForm.beltColor.trim() || null,
+            beltColor: rankForm.beltColor || null,
             estimatedDurationMonths: rankForm.estimatedDurationMonths === '' ? null : Number(rankForm.estimatedDurationMonths),
+            minMonths: rankForm.minMonths === '' ? null : Number(rankForm.minMonths),
+            maxMonths: rankForm.maxMonths === '' ? null : Number(rankForm.maxMonths),
             isMaximumRank: rankForm.isMaximumRank,
             description: rankForm.description.trim() || null,
         }
@@ -202,7 +230,7 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
                                     <span aria-hidden="true" className="flex size-12 items-center justify-center rounded-md border border-white/10" style={{ backgroundColor: selectedRank.beltColor ?? '#3f3f46' }}><GraduationCap className="size-6 text-[#10131a]" /></span>
                                     <div>
                                         <p className="text-xs font-semibold uppercase tracking-wide text-cyan-400">Grado seleccionado</p>
-                                        <h2 className="mt-1 font-display text-xl font-bold text-white">{selectedRank.name}</h2>
+                                        <h2 className="mt-1 font-display text-xl font-bold text-white flex items-center gap-2">{selectedRank.name}<span className="inline-flex items-center rounded-full border border-neutral-700 bg-[#0d1117] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-neutral-400">{selectedRank.program === 'YOUTH' ? 'Niños' : 'Adultos'}</span></h2>
                                         <p className="mt-1 text-sm text-neutral-400">{selectedRank.kyuDan ?? `Posición ${selectedRank.order}`}{selectedRank.isMaximumRank ? ' · Grado máximo' : ''}</p>
                                     </div>
                                 </div>
@@ -277,6 +305,7 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
                     catalogSize={catalog.length}
                     onClose={() => setIsKataDialogOpen(false)}
                     onSave={(techniqueIds) => saveKatas(selectedRank.id, techniqueIds)}
+                    ranks={ranks}
                     saving={saving}
                     unassignedTechniques={unassignedTechniques}
                 />
@@ -301,7 +330,14 @@ function RankDialog({
     saving: boolean
 }) {
     function set<K extends keyof RankForm>(key: K, value: RankForm[K]) {
-        onChange({ ...form, [key]: value })
+        let next = { ...form, [key]: value } as RankForm
+        if (key === 'program' || key === 'order') {
+            const meta = rankMetaFor(next)
+            if (meta) {
+                next = { ...next, kyuDan: meta.kyuDan, japaneseName: meta.japaneseName, kanji: meta.kanji }
+            }
+        }
+        onChange(next)
     }
 
     return (
@@ -316,16 +352,29 @@ function RankDialog({
                 </div>
 
                 <div className="mt-5 grid gap-4">
+                    <div>
+                        <span className="text-xs font-semibold text-neutral-300">Programa</span>
+                        <div className="mt-1.5 grid grid-cols-2 gap-1 rounded-md border border-neutral-700 bg-[#0d1117] p-1">
+                            {(['ADULT', 'YOUTH'] as const).map((program) => (
+                                <button className={`rounded px-3 py-2 text-sm font-semibold transition-colors ${form.program === program ? 'bg-cyan-500 text-[#0d1117]' : 'text-neutral-400 hover:text-white'}`} key={program} onClick={() => set('program', program)} type="button">{program === 'ADULT' ? 'Adultos' : 'Niños'}</button>
+                            ))}
+                        </div>
+                    </div>
                     <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-name">Nombre (ej. Cinturón Blanco)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-name" onChange={(event) => set('name', event.target.value)} placeholder="Cinturón Blanco" required value={form.name} /></label>
                     <div className="grid gap-4 sm:grid-cols-2">
+                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-order">Número de grado (autocompleta)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-order" min="1" onChange={(event) => set('order', event.target.value)} placeholder="10" type="number" value={form.order} /></label>
                         <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-kyu">Grado (Kyū/Dan)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-kyu" onChange={(event) => set('kyuDan', event.target.value)} placeholder="10º Kyū" value={form.kyuDan} /></label>
-                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-duration">Duración estimada (meses)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-duration" min="0" onChange={(event) => set('estimatedDurationMonths', event.target.value)} type="number" value={form.estimatedDurationMonths} /></label>
                         <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-japanese">Nombre japonés<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-japanese" onChange={(event) => set('japaneseName', event.target.value)} placeholder="Hachikyū" value={form.japaneseName} /></label>
                         <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-kanji">Kanji<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-kanji" onChange={(event) => set('kanji', event.target.value)} placeholder="八級" value={form.kanji} /></label>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
-                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-color">Color de cinturón (CSS)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-color" onChange={(event) => set('beltColor', event.target.value)} placeholder="#ffffff" value={form.beltColor} /></label>
-                        <div className="flex items-end"><span aria-hidden="true" className="mb-1.5 inline-block h-7 w-14 rounded-sm border border-white/30" style={{ backgroundColor: form.beltColor || '#3f3f46' }} /></div>
+                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-color">Color de cinturón<select className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-color" onChange={(event) => set('beltColor', event.target.value)} value={form.beltColor}>{form.beltColor ? null : <option value="">Selecciona un color…</option>}{BELT_COLORS.map(({ label, value }) => <option key={value} value={value}>{label}</option>)}</select></label>
+                        <div className="flex items-end gap-3"><span aria-hidden="true" className="mb-1.5 inline-block h-7 w-14 rounded-sm border border-white/30" style={{ backgroundColor: form.beltColor || '#3f3f46' }} /><span className="mb-1.5 text-xs text-neutral-500">{form.beltColor || 'Sin color'}</span></div>
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-3">
+                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-duration">Permanencia mínima (meses)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-duration" min="0" onChange={(event) => set('estimatedDurationMonths', event.target.value)} type="number" value={form.estimatedDurationMonths} /></label>
+                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-min-months">Mínimo por edad (meses)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-min-months" min="0" onChange={(event) => set('minMonths', event.target.value)} type="number" value={form.minMonths} /></label>
+                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-max-months">Máximo por edad (meses)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-max-months" min="0" onChange={(event) => set('maxMonths', event.target.value)} type="number" value={form.maxMonths} /></label>
                     </div>
                     <label className="flex items-center gap-2 text-xs font-semibold text-neutral-300" htmlFor="rank-max"><input checked={form.isMaximumRank} className="size-4 accent-cyan-500" id="rank-max" onChange={(event) => set('isMaximumRank', event.target.checked)} type="checkbox" />Grado máximo del escalafón</label>
                     <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-desc">Descripción<textarea className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm font-normal text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-desc" onChange={(event) => set('description', event.target.value)} placeholder="Requisitos y notas del grado" rows={3} value={form.description} /></label>
@@ -345,6 +394,7 @@ function AssignKatasDialog({
     catalogSize,
     onClose,
     onSave,
+    ranks,
     saving,
     unassignedTechniques,
 }: {
@@ -352,12 +402,31 @@ function AssignKatasDialog({
     catalogSize: number
     onClose: () => void
     onSave: (techniqueIds: string[]) => Promise<boolean>
+    ranks: AdminBeltRankSummary[]
     saving: boolean
     unassignedTechniques: AdminTechniqueSummary[]
 }) {
     const [selected, setSelected] = useState<Set<string>>(() => new Set(assignedTechniques.map(({ id }) => id)))
     const allCatalog = [...unassignedTechniques, ...assignedTechniques]
     const allSelected = allCatalog.length > 0 && selected.size === allCatalog.length
+
+    const ranksById = new Map(ranks.map((rank) => [rank.id, rank]))
+    const groups = allCatalog.reduce<{ key: string; label: string; sort: number; items: AdminTechniqueSummary[] }[]>((accumulator, technique) => {
+        const rank = technique.rankId ? ranksById.get(technique.rankId) : null
+        const key = rank?.id ?? '__unassigned__'
+        let group = accumulator.find(({ key: groupKey }) => groupKey === key)
+        if (!group) {
+            group = {
+                key,
+                label: rank ? `${rank.name}${rank.order ? ` · Pos. ${rank.order}` : ''}` : 'Sin grado base',
+                sort: rank?.order ?? Number.MAX_SAFE_INTEGER,
+                items: [],
+            }
+            accumulator.push(group)
+        }
+        group.items.push(technique)
+        return accumulator
+    }, []).sort((a, b) => a.sort - b.sort || a.label.localeCompare(b.label))
 
     function toggle(id: string) {
         setSelected((previous) => {
@@ -388,15 +457,22 @@ function AssignKatasDialog({
                     <p className="mt-5 rounded-md border border-dashed border-neutral-700 bg-[#0d1117] p-4 text-sm text-neutral-400">No hay técnicas en el catálogo todavía. Crea técnicas para poder asignarlas a los grados.</p>
                 ) : (
                     <ul className="mt-4 max-h-72 divide-y divide-neutral-800 overflow-y-auto rounded-md border border-neutral-800 bg-[#0d1117]">
-                        {allCatalog.map((technique) => (
-                            <li key={technique.id}>
-                                <button className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition-colors hover:bg-neutral-800" onClick={() => toggle(technique.id)} type="button">
-                                    <span className="min-w-0">
-                                        <span className="block truncate text-sm font-semibold text-white">{technique.name}</span>
-                                        <span className="block text-xs text-neutral-400">{CATEGORY_LABELS[technique.category]}{technique.difficulty ? ` · ${technique.difficulty}` : ''}</span>
-                                    </span>
-                                    {selected.has(technique.id) ? <CheckSquare aria-hidden="true" className="size-5 shrink-0 text-cyan-400" /> : <Square aria-hidden="true" className="size-5 shrink-0 text-neutral-600" />}
-                                </button>
+                        {groups.map((group) => (
+                            <li key={group.key}>
+                                <p className="sticky top-0 flex items-center gap-2 bg-[#0d1117]/95 px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider text-neutral-500 backdrop-blur-sm">{group.label}<span className="font-medium normal-case text-neutral-600">{group.items.length}</span></p>
+                                <ul className="divide-y divide-neutral-800/70">
+                                    {group.items.map((technique) => (
+                                        <li key={technique.id}>
+                                            <button className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition-colors hover:bg-neutral-800" onClick={() => toggle(technique.id)} type="button">
+                                                <span className="min-w-0">
+                                                    <span className="block truncate text-sm font-semibold text-white">{technique.name}</span>
+                                                    <span className="block text-xs text-neutral-400">{CATEGORY_LABELS[technique.category]}{technique.difficulty ? ` · ${technique.difficulty}` : ''}</span>
+                                                </span>
+                                                {selected.has(technique.id) ? <CheckSquare aria-hidden="true" className="size-5 shrink-0 text-cyan-400" /> : <Square aria-hidden="true" className="size-5 shrink-0 text-neutral-600" />}
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
                             </li>
                         ))}
                     </ul>

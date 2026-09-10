@@ -267,6 +267,7 @@ exports.Prisma.StudentDocumentScalarFieldEnum = {
 
 exports.Prisma.BeltRankScalarFieldEnum = {
   id: 'id',
+  program: 'program',
   name: 'name',
   kyuDan: 'kyuDan',
   japaneseName: 'japaneseName',
@@ -279,9 +280,17 @@ exports.Prisma.BeltRankScalarFieldEnum = {
   description: 'description',
   schoolId: 'schoolId',
   minMonths: 'minMonths',
+  maxMonths: 'maxMonths',
   minAttendancePercent: 'minAttendancePercent',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BeltRankKataScalarFieldEnum = {
+  beltRankId: 'beltRankId',
+  kataId: 'kataId',
+  order: 'order',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.StudentRankHistoryScalarFieldEnum = {
@@ -477,6 +486,11 @@ exports.StudentDocumentStatus = exports.$Enums.StudentDocumentStatus = {
   EXPIRED: 'EXPIRED'
 };
 
+exports.Program = exports.$Enums.Program = {
+  ADULT: 'ADULT',
+  YOUTH: 'YOUTH'
+};
+
 exports.TechniqueCategory = exports.$Enums.TechniqueCategory = {
   KIHON: 'KIHON',
   KATA: 'KATA',
@@ -504,6 +518,7 @@ exports.Prisma.ModelName = {
   EnrollmentApplicant: 'EnrollmentApplicant',
   StudentDocument: 'StudentDocument',
   BeltRank: 'BeltRank',
+  BeltRankKata: 'BeltRankKata',
   StudentRankHistory: 'StudentRankHistory',
   Technique: 'Technique',
   StudentTechnique: 'StudentTechnique',

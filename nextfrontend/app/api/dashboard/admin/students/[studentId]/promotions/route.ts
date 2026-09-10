@@ -58,7 +58,12 @@ export async function POST(request: Request, { params }: PromotionRouteContext) 
       id: result.data.beltRankId,
       OR: [{ schoolId: student.schoolId }, { schoolId: null }],
     },
-    select: { id: true, name: true, order: true, techniques: { select: { id: true } } },
+    select: {
+      id: true,
+      name: true,
+      order: true,
+      katas: { select: { kataId: true }, orderBy: { order: 'asc' } },
+    },
   })
 
   if (!newRank) {
@@ -80,7 +85,7 @@ export async function POST(request: Request, { params }: PromotionRouteContext) 
   }
 
   const promotedAt = new Date(`${result.data.promotedAt}T00:00:00.000Z`)
-  const techniqueIds = newRank.techniques.map(({ id }) => id)
+  const techniqueIds = newRank.katas.map(({ kataId }) => kataId)
 
   await db.$transaction([
     db.student.update({

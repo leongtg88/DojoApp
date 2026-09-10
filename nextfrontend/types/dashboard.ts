@@ -172,6 +172,7 @@ export interface AdminEnrollmentSummary {
 
 export interface AdminBeltRankSummary {
 	id: string
+	program: 'ADULT' | 'YOUTH'
 	name: string
 	order: number
 	kyuDan: string | null
@@ -181,6 +182,7 @@ export interface AdminBeltRankSummary {
 	beltSecondaryColor: string | null
 	isMaximumRank: boolean
 	minMonths: number | null
+	maxMonths: number | null
 	minAttendancePercent: number | null
 	estimatedDurationMonths: number | null
 	description: string | null

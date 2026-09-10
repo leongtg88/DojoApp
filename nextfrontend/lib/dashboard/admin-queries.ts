@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import { computeBirthdays } from '@/lib/dashboard/birthdays'
+import { ageFromDob, programForAge } from '@/lib/dashboard/program'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
 import type {
   AdminDashboardSummary,
@@ -209,9 +210,10 @@ export async function getAdminBeltRanks(userId: string): Promise<AdminBeltRankSu
 
   const ranks = await db.beltRank.findMany({
     where: scope.isSuperAdmin ? {} : { OR: [{ schoolId: scope.schoolId! }, { schoolId: null }] },
-    orderBy: { order: 'asc' },
+    orderBy: [{ program: 'asc' }, { order: 'asc' }],
     select: {
       id: true,
+      program: true,
       name: true,
       order: true,
       kyuDan: true,
@@ -221,10 +223,11 @@ export async function getAdminBeltRanks(userId: string): Promise<AdminBeltRankSu
       beltSecondaryColor: true,
       isMaximumRank: true,
       minMonths: true,
+      maxMonths: true,
       minAttendancePercent: true,
       estimatedDurationMonths: true,
       description: true,
-      techniques: { orderBy: { order: 'asc' }, select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, rankId: true } },
+      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, rankId: true } } } },
       _count: { select: { promotions: true } },
     },
   })
@@ -243,6 +246,7 @@ export async function getAdminBeltRanks(userId: string): Promise<AdminBeltRankSu
 
   return ranks.map((rank) => ({
     id: rank.id,
+    program: rank.program,
     name: rank.name,
     order: rank.order,
     kyuDan: rank.kyuDan,
@@ -252,12 +256,13 @@ export async function getAdminBeltRanks(userId: string): Promise<AdminBeltRankSu
     beltSecondaryColor: rank.beltSecondaryColor,
     isMaximumRank: rank.isMaximumRank,
     minMonths: rank.minMonths,
+    maxMonths: rank.maxMonths,
     minAttendancePercent: rank.minAttendancePercent,
     estimatedDurationMonths: rank.estimatedDurationMonths,
     description: rank.description,
-    techniqueCount: rank.techniques.length,
+    techniqueCount: rank.katas.length,
     studentCount: countByRankName.get(rank.name) ?? 0,
-    techniques: rank.techniques.map((technique) => ({ ...technique })),
+    techniques: rank.katas.map(({ kata }) => ({ ...kata })),
   }))
 }
 
@@ -272,7 +277,7 @@ export async function getAdminCurriculum(userId: string): Promise<AdminCurriculu
 
   const techniques = await db.technique.findMany({
     where: scope.isSuperAdmin ? {} : { OR: [{ schoolId: scope.schoolId! }, { schoolId: null }] },
-    orderBy: [{ rankId: 'asc' }, { order: 'asc' }, { name: 'asc' }],
+    orderBy: [{ order: 'asc' }, { name: 'asc' }],
     select: {
       id: true,
       name: true,
@@ -384,9 +389,10 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
 
   const ranks = await db.beltRank.findMany({
     where: { OR: [{ schoolId: student.schoolId }, { schoolId: null }] },
-    orderBy: { order: 'asc' },
+    orderBy: [{ program: 'asc' }, { order: 'asc' }],
     select: {
       id: true,
+      program: true,
       name: true,
       order: true,
       kyuDan: true,
@@ -396,14 +402,20 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
       beltSecondaryColor: true,
       isMaximumRank: true,
       minMonths: true,
+      maxMonths: true,
       minAttendancePercent: true,
       estimatedDurationMonths: true,
       description: true,
-      techniques: { orderBy: { order: 'asc' }, select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, rankId: true } },
-      _count: { select: { techniques: true } },
+      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, rankId: true } } } },
+      _count: { select: { katas: true } },
     },
   })
-  const currentRankOrder = ranks.find(({ name }) => name === student.currentRank)?.order ?? null
+  const currentRankOrder =
+    ranks.find(({ name }) => name === student.currentRank)?.order ??
+    (student.dateOfBirth
+      ? ranks.find(({ program, order }) => program === programForAge(ageFromDob(new Date(student.dateOfBirth))) && order === 1)?.order
+      : null) ??
+    null
   const nextBeltRank = currentRankOrder !== null ? ranks.find(({ order }) => order === currentRankOrder + 1) : null
   const TARGET_ATTENDANCES = 30
   const attendedCount = student._count.attendances
@@ -427,6 +439,7 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
 	 documents: student.documents.map((document) => ({ ...document, uploadedAt: document.uploadedAt.toISOString() })),
     availableRanks: ranks.map((rank) => ({
       id: rank.id,
+      program: rank.program,
       name: rank.name,
       order: rank.order,
       kyuDan: rank.kyuDan,
@@ -436,12 +449,13 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
       beltSecondaryColor: rank.beltSecondaryColor,
       isMaximumRank: rank.isMaximumRank,
       minMonths: rank.minMonths,
+      maxMonths: rank.maxMonths,
       minAttendancePercent: rank.minAttendancePercent,
       estimatedDurationMonths: rank.estimatedDurationMonths,
       description: rank.description,
-      techniqueCount: rank._count.techniques,
+      techniqueCount: rank._count.katas,
       studentCount: 0,
-      techniques: rank.techniques.map((technique) => ({ ...technique })),
+      techniques: rank.katas.map(({ kata }) => ({ ...kata })),
     })),
     rankHistory: student.rankHistory.map((entry) => ({
       id: entry.id,
@@ -469,7 +483,7 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
     nextRankName: nextBeltRank?.name ?? null,
     nextRankKyuDan: nextBeltRank?.kyuDan ?? null,
     nextRankBeltColor: nextBeltRank?.beltColor ?? null,
-    nextRankRequiredKatas: nextBeltRank?._count.techniques ?? 0,
+    nextRankRequiredKatas: nextBeltRank?._count.katas ?? 0,
   }
 }
 

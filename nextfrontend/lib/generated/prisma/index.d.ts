@@ -79,6 +79,11 @@ export type StudentDocument = $Result.DefaultSelection<Prisma.$StudentDocumentPa
  */
 export type BeltRank = $Result.DefaultSelection<Prisma.$BeltRankPayload>
 /**
+ * Model BeltRankKata
+ * 
+ */
+export type BeltRankKata = $Result.DefaultSelection<Prisma.$BeltRankKataPayload>
+/**
  * Model StudentRankHistory
  * 
  */
@@ -189,6 +194,14 @@ export const TechniqueCategory: {
 export type TechniqueCategory = (typeof TechniqueCategory)[keyof typeof TechniqueCategory]
 
 
+export const Program: {
+  ADULT: 'ADULT',
+  YOUTH: 'YOUTH'
+};
+
+export type Program = (typeof Program)[keyof typeof Program]
+
+
 export const AttendanceStatus: {
   PENDING: 'PENDING',
   CONFIRMED: 'CONFIRMED',
@@ -218,6 +231,10 @@ export const StudentDocumentStatus: typeof $Enums.StudentDocumentStatus
 export type TechniqueCategory = $Enums.TechniqueCategory
 
 export const TechniqueCategory: typeof $Enums.TechniqueCategory
+
+export type Program = $Enums.Program
+
+export const Program: typeof $Enums.Program
 
 export type AttendanceStatus = $Enums.AttendanceStatus
 
@@ -473,6 +490,16 @@ export class PrismaClient<
     * ```
     */
   get beltRank(): Prisma.BeltRankDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.beltRankKata`: Exposes CRUD operations for the **BeltRankKata** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BeltRankKatas
+    * const beltRankKatas = await prisma.beltRankKata.findMany()
+    * ```
+    */
+  get beltRankKata(): Prisma.BeltRankKataDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.studentRankHistory`: Exposes CRUD operations for the **StudentRankHistory** model.
@@ -1043,6 +1070,7 @@ export namespace Prisma {
     EnrollmentApplicant: 'EnrollmentApplicant',
     StudentDocument: 'StudentDocument',
     BeltRank: 'BeltRank',
+    BeltRankKata: 'BeltRankKata',
     StudentRankHistory: 'StudentRankHistory',
     Technique: 'Technique',
     StudentTechnique: 'StudentTechnique',
@@ -1069,7 +1097,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "studentRankHistory" | "technique" | "studentTechnique" | "techniqueEvaluation" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport"
+      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniqueEvaluation" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2035,6 +2063,80 @@ export namespace Prisma {
           }
         }
       }
+      BeltRankKata: {
+        payload: Prisma.$BeltRankKataPayload<ExtArgs>
+        fields: Prisma.BeltRankKataFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BeltRankKataFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BeltRankKataPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BeltRankKataFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BeltRankKataPayload>
+          }
+          findFirst: {
+            args: Prisma.BeltRankKataFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BeltRankKataPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BeltRankKataFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BeltRankKataPayload>
+          }
+          findMany: {
+            args: Prisma.BeltRankKataFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BeltRankKataPayload>[]
+          }
+          create: {
+            args: Prisma.BeltRankKataCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BeltRankKataPayload>
+          }
+          createMany: {
+            args: Prisma.BeltRankKataCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BeltRankKataCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BeltRankKataPayload>[]
+          }
+          delete: {
+            args: Prisma.BeltRankKataDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BeltRankKataPayload>
+          }
+          update: {
+            args: Prisma.BeltRankKataUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BeltRankKataPayload>
+          }
+          deleteMany: {
+            args: Prisma.BeltRankKataDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BeltRankKataUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BeltRankKataUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BeltRankKataPayload>[]
+          }
+          upsert: {
+            args: Prisma.BeltRankKataUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BeltRankKataPayload>
+          }
+          aggregate: {
+            args: Prisma.BeltRankKataAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBeltRankKata>
+          }
+          groupBy: {
+            args: Prisma.BeltRankKataGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BeltRankKataGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BeltRankKataCountArgs<ExtArgs>
+            result: $Utils.Optional<BeltRankKataCountAggregateOutputType> | number
+          }
+        }
+      }
       StudentRankHistory: {
         payload: Prisma.$StudentRankHistoryPayload<ExtArgs>
         fields: Prisma.StudentRankHistoryFieldRefs
@@ -2985,6 +3087,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantOmit
     studentDocument?: StudentDocumentOmit
     beltRank?: BeltRankOmit
+    beltRankKata?: BeltRankKataOmit
     studentRankHistory?: StudentRankHistoryOmit
     technique?: TechniqueOmit
     studentTechnique?: StudentTechniqueOmit
@@ -3505,11 +3608,13 @@ export namespace Prisma {
    */
 
   export type BeltRankCountOutputType = {
+    katas: number
     techniques: number
     promotions: number
   }
 
   export type BeltRankCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    katas?: boolean | BeltRankCountOutputTypeCountKatasArgs
     techniques?: boolean | BeltRankCountOutputTypeCountTechniquesArgs
     promotions?: boolean | BeltRankCountOutputTypeCountPromotionsArgs
   }
@@ -3523,6 +3628,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the BeltRankCountOutputType
      */
     select?: BeltRankCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * BeltRankCountOutputType without action
+   */
+  export type BeltRankCountOutputTypeCountKatasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BeltRankKataWhereInput
   }
 
   /**
@@ -3545,10 +3657,12 @@ export namespace Prisma {
    */
 
   export type TechniqueCountOutputType = {
+    beltRankKatas: number
     students: number
   }
 
   export type TechniqueCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    beltRankKatas?: boolean | TechniqueCountOutputTypeCountBeltRankKatasArgs
     students?: boolean | TechniqueCountOutputTypeCountStudentsArgs
   }
 
@@ -3561,6 +3675,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the TechniqueCountOutputType
      */
     select?: TechniqueCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TechniqueCountOutputType without action
+   */
+  export type TechniqueCountOutputTypeCountBeltRankKatasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BeltRankKataWhereInput
   }
 
   /**
@@ -18384,6 +18505,7 @@ export namespace Prisma {
     order: number | null
     estimatedDurationMonths: number | null
     minMonths: number | null
+    maxMonths: number | null
     minAttendancePercent: number | null
   }
 
@@ -18391,11 +18513,13 @@ export namespace Prisma {
     order: number | null
     estimatedDurationMonths: number | null
     minMonths: number | null
+    maxMonths: number | null
     minAttendancePercent: number | null
   }
 
   export type BeltRankMinAggregateOutputType = {
     id: string | null
+    program: $Enums.Program | null
     name: string | null
     kyuDan: string | null
     japaneseName: string | null
@@ -18408,6 +18532,7 @@ export namespace Prisma {
     description: string | null
     schoolId: string | null
     minMonths: number | null
+    maxMonths: number | null
     minAttendancePercent: number | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -18415,6 +18540,7 @@ export namespace Prisma {
 
   export type BeltRankMaxAggregateOutputType = {
     id: string | null
+    program: $Enums.Program | null
     name: string | null
     kyuDan: string | null
     japaneseName: string | null
@@ -18427,6 +18553,7 @@ export namespace Prisma {
     description: string | null
     schoolId: string | null
     minMonths: number | null
+    maxMonths: number | null
     minAttendancePercent: number | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -18434,6 +18561,7 @@ export namespace Prisma {
 
   export type BeltRankCountAggregateOutputType = {
     id: number
+    program: number
     name: number
     kyuDan: number
     japaneseName: number
@@ -18446,6 +18574,7 @@ export namespace Prisma {
     description: number
     schoolId: number
     minMonths: number
+    maxMonths: number
     minAttendancePercent: number
     createdAt: number
     updatedAt: number
@@ -18457,6 +18586,7 @@ export namespace Prisma {
     order?: true
     estimatedDurationMonths?: true
     minMonths?: true
+    maxMonths?: true
     minAttendancePercent?: true
   }
 
@@ -18464,11 +18594,13 @@ export namespace Prisma {
     order?: true
     estimatedDurationMonths?: true
     minMonths?: true
+    maxMonths?: true
     minAttendancePercent?: true
   }
 
   export type BeltRankMinAggregateInputType = {
     id?: true
+    program?: true
     name?: true
     kyuDan?: true
     japaneseName?: true
@@ -18481,6 +18613,7 @@ export namespace Prisma {
     description?: true
     schoolId?: true
     minMonths?: true
+    maxMonths?: true
     minAttendancePercent?: true
     createdAt?: true
     updatedAt?: true
@@ -18488,6 +18621,7 @@ export namespace Prisma {
 
   export type BeltRankMaxAggregateInputType = {
     id?: true
+    program?: true
     name?: true
     kyuDan?: true
     japaneseName?: true
@@ -18500,6 +18634,7 @@ export namespace Prisma {
     description?: true
     schoolId?: true
     minMonths?: true
+    maxMonths?: true
     minAttendancePercent?: true
     createdAt?: true
     updatedAt?: true
@@ -18507,6 +18642,7 @@ export namespace Prisma {
 
   export type BeltRankCountAggregateInputType = {
     id?: true
+    program?: true
     name?: true
     kyuDan?: true
     japaneseName?: true
@@ -18519,6 +18655,7 @@ export namespace Prisma {
     description?: true
     schoolId?: true
     minMonths?: true
+    maxMonths?: true
     minAttendancePercent?: true
     createdAt?: true
     updatedAt?: true
@@ -18613,6 +18750,7 @@ export namespace Prisma {
 
   export type BeltRankGroupByOutputType = {
     id: string
+    program: $Enums.Program
     name: string
     kyuDan: string | null
     japaneseName: string | null
@@ -18625,6 +18763,7 @@ export namespace Prisma {
     description: string | null
     schoolId: string | null
     minMonths: number | null
+    maxMonths: number | null
     minAttendancePercent: number | null
     createdAt: Date
     updatedAt: Date
@@ -18651,6 +18790,7 @@ export namespace Prisma {
 
   export type BeltRankSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    program?: boolean
     name?: boolean
     kyuDan?: boolean
     japaneseName?: boolean
@@ -18663,10 +18803,12 @@ export namespace Prisma {
     description?: boolean
     schoolId?: boolean
     minMonths?: boolean
+    maxMonths?: boolean
     minAttendancePercent?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     school?: boolean | BeltRank$schoolArgs<ExtArgs>
+    katas?: boolean | BeltRank$katasArgs<ExtArgs>
     techniques?: boolean | BeltRank$techniquesArgs<ExtArgs>
     promotions?: boolean | BeltRank$promotionsArgs<ExtArgs>
     _count?: boolean | BeltRankCountOutputTypeDefaultArgs<ExtArgs>
@@ -18674,6 +18816,7 @@ export namespace Prisma {
 
   export type BeltRankSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    program?: boolean
     name?: boolean
     kyuDan?: boolean
     japaneseName?: boolean
@@ -18686,6 +18829,7 @@ export namespace Prisma {
     description?: boolean
     schoolId?: boolean
     minMonths?: boolean
+    maxMonths?: boolean
     minAttendancePercent?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -18694,6 +18838,7 @@ export namespace Prisma {
 
   export type BeltRankSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    program?: boolean
     name?: boolean
     kyuDan?: boolean
     japaneseName?: boolean
@@ -18706,6 +18851,7 @@ export namespace Prisma {
     description?: boolean
     schoolId?: boolean
     minMonths?: boolean
+    maxMonths?: boolean
     minAttendancePercent?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -18714,6 +18860,7 @@ export namespace Prisma {
 
   export type BeltRankSelectScalar = {
     id?: boolean
+    program?: boolean
     name?: boolean
     kyuDan?: boolean
     japaneseName?: boolean
@@ -18726,14 +18873,16 @@ export namespace Prisma {
     description?: boolean
     schoolId?: boolean
     minMonths?: boolean
+    maxMonths?: boolean
     minAttendancePercent?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type BeltRankOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "kyuDan" | "japaneseName" | "kanji" | "order" | "beltColor" | "beltSecondaryColor" | "isMaximumRank" | "estimatedDurationMonths" | "description" | "schoolId" | "minMonths" | "minAttendancePercent" | "createdAt" | "updatedAt", ExtArgs["result"]["beltRank"]>
+  export type BeltRankOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "program" | "name" | "kyuDan" | "japaneseName" | "kanji" | "order" | "beltColor" | "beltSecondaryColor" | "isMaximumRank" | "estimatedDurationMonths" | "description" | "schoolId" | "minMonths" | "maxMonths" | "minAttendancePercent" | "createdAt" | "updatedAt", ExtArgs["result"]["beltRank"]>
   export type BeltRankInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     school?: boolean | BeltRank$schoolArgs<ExtArgs>
+    katas?: boolean | BeltRank$katasArgs<ExtArgs>
     techniques?: boolean | BeltRank$techniquesArgs<ExtArgs>
     promotions?: boolean | BeltRank$promotionsArgs<ExtArgs>
     _count?: boolean | BeltRankCountOutputTypeDefaultArgs<ExtArgs>
@@ -18749,11 +18898,13 @@ export namespace Prisma {
     name: "BeltRank"
     objects: {
       school: Prisma.$SchoolPayload<ExtArgs> | null
+      katas: Prisma.$BeltRankKataPayload<ExtArgs>[]
       techniques: Prisma.$TechniquePayload<ExtArgs>[]
       promotions: Prisma.$StudentRankHistoryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      program: $Enums.Program
       name: string
       kyuDan: string | null
       japaneseName: string | null
@@ -18766,6 +18917,7 @@ export namespace Prisma {
       description: string | null
       schoolId: string | null
       minMonths: number | null
+      maxMonths: number | null
       minAttendancePercent: number | null
       createdAt: Date
       updatedAt: Date
@@ -19164,6 +19316,7 @@ export namespace Prisma {
   export interface Prisma__BeltRankClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     school<T extends BeltRank$schoolArgs<ExtArgs> = {}>(args?: Subset<T, BeltRank$schoolArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    katas<T extends BeltRank$katasArgs<ExtArgs> = {}>(args?: Subset<T, BeltRank$katasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     techniques<T extends BeltRank$techniquesArgs<ExtArgs> = {}>(args?: Subset<T, BeltRank$techniquesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TechniquePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     promotions<T extends BeltRank$promotionsArgs<ExtArgs> = {}>(args?: Subset<T, BeltRank$promotionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentRankHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -19196,6 +19349,7 @@ export namespace Prisma {
    */
   interface BeltRankFieldRefs {
     readonly id: FieldRef<"BeltRank", 'String'>
+    readonly program: FieldRef<"BeltRank", 'Program'>
     readonly name: FieldRef<"BeltRank", 'String'>
     readonly kyuDan: FieldRef<"BeltRank", 'String'>
     readonly japaneseName: FieldRef<"BeltRank", 'String'>
@@ -19208,6 +19362,7 @@ export namespace Prisma {
     readonly description: FieldRef<"BeltRank", 'String'>
     readonly schoolId: FieldRef<"BeltRank", 'String'>
     readonly minMonths: FieldRef<"BeltRank", 'Int'>
+    readonly maxMonths: FieldRef<"BeltRank", 'Int'>
     readonly minAttendancePercent: FieldRef<"BeltRank", 'Int'>
     readonly createdAt: FieldRef<"BeltRank", 'DateTime'>
     readonly updatedAt: FieldRef<"BeltRank", 'DateTime'>
@@ -19631,6 +19786,30 @@ export namespace Prisma {
   }
 
   /**
+   * BeltRank.katas
+   */
+  export type BeltRank$katasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRankKata
+     */
+    select?: BeltRankKataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRankKata
+     */
+    omit?: BeltRankKataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankKataInclude<ExtArgs> | null
+    where?: BeltRankKataWhereInput
+    orderBy?: BeltRankKataOrderByWithRelationInput | BeltRankKataOrderByWithRelationInput[]
+    cursor?: BeltRankKataWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BeltRankKataScalarFieldEnum | BeltRankKataScalarFieldEnum[]
+  }
+
+  /**
    * BeltRank.techniques
    */
   export type BeltRank$techniquesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19694,6 +19873,1098 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: BeltRankInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BeltRankKata
+   */
+
+  export type AggregateBeltRankKata = {
+    _count: BeltRankKataCountAggregateOutputType | null
+    _avg: BeltRankKataAvgAggregateOutputType | null
+    _sum: BeltRankKataSumAggregateOutputType | null
+    _min: BeltRankKataMinAggregateOutputType | null
+    _max: BeltRankKataMaxAggregateOutputType | null
+  }
+
+  export type BeltRankKataAvgAggregateOutputType = {
+    order: number | null
+  }
+
+  export type BeltRankKataSumAggregateOutputType = {
+    order: number | null
+  }
+
+  export type BeltRankKataMinAggregateOutputType = {
+    beltRankId: string | null
+    kataId: string | null
+    order: number | null
+    createdAt: Date | null
+  }
+
+  export type BeltRankKataMaxAggregateOutputType = {
+    beltRankId: string | null
+    kataId: string | null
+    order: number | null
+    createdAt: Date | null
+  }
+
+  export type BeltRankKataCountAggregateOutputType = {
+    beltRankId: number
+    kataId: number
+    order: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type BeltRankKataAvgAggregateInputType = {
+    order?: true
+  }
+
+  export type BeltRankKataSumAggregateInputType = {
+    order?: true
+  }
+
+  export type BeltRankKataMinAggregateInputType = {
+    beltRankId?: true
+    kataId?: true
+    order?: true
+    createdAt?: true
+  }
+
+  export type BeltRankKataMaxAggregateInputType = {
+    beltRankId?: true
+    kataId?: true
+    order?: true
+    createdAt?: true
+  }
+
+  export type BeltRankKataCountAggregateInputType = {
+    beltRankId?: true
+    kataId?: true
+    order?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type BeltRankKataAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BeltRankKata to aggregate.
+     */
+    where?: BeltRankKataWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BeltRankKatas to fetch.
+     */
+    orderBy?: BeltRankKataOrderByWithRelationInput | BeltRankKataOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BeltRankKataWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BeltRankKatas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BeltRankKatas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BeltRankKatas
+    **/
+    _count?: true | BeltRankKataCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: BeltRankKataAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: BeltRankKataSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BeltRankKataMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BeltRankKataMaxAggregateInputType
+  }
+
+  export type GetBeltRankKataAggregateType<T extends BeltRankKataAggregateArgs> = {
+        [P in keyof T & keyof AggregateBeltRankKata]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBeltRankKata[P]>
+      : GetScalarType<T[P], AggregateBeltRankKata[P]>
+  }
+
+
+
+
+  export type BeltRankKataGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BeltRankKataWhereInput
+    orderBy?: BeltRankKataOrderByWithAggregationInput | BeltRankKataOrderByWithAggregationInput[]
+    by: BeltRankKataScalarFieldEnum[] | BeltRankKataScalarFieldEnum
+    having?: BeltRankKataScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BeltRankKataCountAggregateInputType | true
+    _avg?: BeltRankKataAvgAggregateInputType
+    _sum?: BeltRankKataSumAggregateInputType
+    _min?: BeltRankKataMinAggregateInputType
+    _max?: BeltRankKataMaxAggregateInputType
+  }
+
+  export type BeltRankKataGroupByOutputType = {
+    beltRankId: string
+    kataId: string
+    order: number
+    createdAt: Date
+    _count: BeltRankKataCountAggregateOutputType | null
+    _avg: BeltRankKataAvgAggregateOutputType | null
+    _sum: BeltRankKataSumAggregateOutputType | null
+    _min: BeltRankKataMinAggregateOutputType | null
+    _max: BeltRankKataMaxAggregateOutputType | null
+  }
+
+  type GetBeltRankKataGroupByPayload<T extends BeltRankKataGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BeltRankKataGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BeltRankKataGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BeltRankKataGroupByOutputType[P]>
+            : GetScalarType<T[P], BeltRankKataGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BeltRankKataSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    beltRankId?: boolean
+    kataId?: boolean
+    order?: boolean
+    createdAt?: boolean
+    beltRank?: boolean | BeltRankDefaultArgs<ExtArgs>
+    kata?: boolean | TechniqueDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["beltRankKata"]>
+
+  export type BeltRankKataSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    beltRankId?: boolean
+    kataId?: boolean
+    order?: boolean
+    createdAt?: boolean
+    beltRank?: boolean | BeltRankDefaultArgs<ExtArgs>
+    kata?: boolean | TechniqueDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["beltRankKata"]>
+
+  export type BeltRankKataSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    beltRankId?: boolean
+    kataId?: boolean
+    order?: boolean
+    createdAt?: boolean
+    beltRank?: boolean | BeltRankDefaultArgs<ExtArgs>
+    kata?: boolean | TechniqueDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["beltRankKata"]>
+
+  export type BeltRankKataSelectScalar = {
+    beltRankId?: boolean
+    kataId?: boolean
+    order?: boolean
+    createdAt?: boolean
+  }
+
+  export type BeltRankKataOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"beltRankId" | "kataId" | "order" | "createdAt", ExtArgs["result"]["beltRankKata"]>
+  export type BeltRankKataInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    beltRank?: boolean | BeltRankDefaultArgs<ExtArgs>
+    kata?: boolean | TechniqueDefaultArgs<ExtArgs>
+  }
+  export type BeltRankKataIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    beltRank?: boolean | BeltRankDefaultArgs<ExtArgs>
+    kata?: boolean | TechniqueDefaultArgs<ExtArgs>
+  }
+  export type BeltRankKataIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    beltRank?: boolean | BeltRankDefaultArgs<ExtArgs>
+    kata?: boolean | TechniqueDefaultArgs<ExtArgs>
+  }
+
+  export type $BeltRankKataPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BeltRankKata"
+    objects: {
+      beltRank: Prisma.$BeltRankPayload<ExtArgs>
+      kata: Prisma.$TechniquePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      beltRankId: string
+      kataId: string
+      order: number
+      createdAt: Date
+    }, ExtArgs["result"]["beltRankKata"]>
+    composites: {}
+  }
+
+  type BeltRankKataGetPayload<S extends boolean | null | undefined | BeltRankKataDefaultArgs> = $Result.GetResult<Prisma.$BeltRankKataPayload, S>
+
+  type BeltRankKataCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BeltRankKataFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BeltRankKataCountAggregateInputType | true
+    }
+
+  export interface BeltRankKataDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BeltRankKata'], meta: { name: 'BeltRankKata' } }
+    /**
+     * Find zero or one BeltRankKata that matches the filter.
+     * @param {BeltRankKataFindUniqueArgs} args - Arguments to find a BeltRankKata
+     * @example
+     * // Get one BeltRankKata
+     * const beltRankKata = await prisma.beltRankKata.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BeltRankKataFindUniqueArgs>(args: SelectSubset<T, BeltRankKataFindUniqueArgs<ExtArgs>>): Prisma__BeltRankKataClient<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BeltRankKata that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BeltRankKataFindUniqueOrThrowArgs} args - Arguments to find a BeltRankKata
+     * @example
+     * // Get one BeltRankKata
+     * const beltRankKata = await prisma.beltRankKata.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BeltRankKataFindUniqueOrThrowArgs>(args: SelectSubset<T, BeltRankKataFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BeltRankKataClient<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BeltRankKata that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BeltRankKataFindFirstArgs} args - Arguments to find a BeltRankKata
+     * @example
+     * // Get one BeltRankKata
+     * const beltRankKata = await prisma.beltRankKata.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BeltRankKataFindFirstArgs>(args?: SelectSubset<T, BeltRankKataFindFirstArgs<ExtArgs>>): Prisma__BeltRankKataClient<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BeltRankKata that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BeltRankKataFindFirstOrThrowArgs} args - Arguments to find a BeltRankKata
+     * @example
+     * // Get one BeltRankKata
+     * const beltRankKata = await prisma.beltRankKata.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BeltRankKataFindFirstOrThrowArgs>(args?: SelectSubset<T, BeltRankKataFindFirstOrThrowArgs<ExtArgs>>): Prisma__BeltRankKataClient<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BeltRankKatas that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BeltRankKataFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BeltRankKatas
+     * const beltRankKatas = await prisma.beltRankKata.findMany()
+     * 
+     * // Get first 10 BeltRankKatas
+     * const beltRankKatas = await prisma.beltRankKata.findMany({ take: 10 })
+     * 
+     * // Only select the `beltRankId`
+     * const beltRankKataWithBeltRankIdOnly = await prisma.beltRankKata.findMany({ select: { beltRankId: true } })
+     * 
+     */
+    findMany<T extends BeltRankKataFindManyArgs>(args?: SelectSubset<T, BeltRankKataFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BeltRankKata.
+     * @param {BeltRankKataCreateArgs} args - Arguments to create a BeltRankKata.
+     * @example
+     * // Create one BeltRankKata
+     * const BeltRankKata = await prisma.beltRankKata.create({
+     *   data: {
+     *     // ... data to create a BeltRankKata
+     *   }
+     * })
+     * 
+     */
+    create<T extends BeltRankKataCreateArgs>(args: SelectSubset<T, BeltRankKataCreateArgs<ExtArgs>>): Prisma__BeltRankKataClient<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BeltRankKatas.
+     * @param {BeltRankKataCreateManyArgs} args - Arguments to create many BeltRankKatas.
+     * @example
+     * // Create many BeltRankKatas
+     * const beltRankKata = await prisma.beltRankKata.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BeltRankKataCreateManyArgs>(args?: SelectSubset<T, BeltRankKataCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BeltRankKatas and returns the data saved in the database.
+     * @param {BeltRankKataCreateManyAndReturnArgs} args - Arguments to create many BeltRankKatas.
+     * @example
+     * // Create many BeltRankKatas
+     * const beltRankKata = await prisma.beltRankKata.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BeltRankKatas and only return the `beltRankId`
+     * const beltRankKataWithBeltRankIdOnly = await prisma.beltRankKata.createManyAndReturn({
+     *   select: { beltRankId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BeltRankKataCreateManyAndReturnArgs>(args?: SelectSubset<T, BeltRankKataCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BeltRankKata.
+     * @param {BeltRankKataDeleteArgs} args - Arguments to delete one BeltRankKata.
+     * @example
+     * // Delete one BeltRankKata
+     * const BeltRankKata = await prisma.beltRankKata.delete({
+     *   where: {
+     *     // ... filter to delete one BeltRankKata
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BeltRankKataDeleteArgs>(args: SelectSubset<T, BeltRankKataDeleteArgs<ExtArgs>>): Prisma__BeltRankKataClient<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BeltRankKata.
+     * @param {BeltRankKataUpdateArgs} args - Arguments to update one BeltRankKata.
+     * @example
+     * // Update one BeltRankKata
+     * const beltRankKata = await prisma.beltRankKata.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BeltRankKataUpdateArgs>(args: SelectSubset<T, BeltRankKataUpdateArgs<ExtArgs>>): Prisma__BeltRankKataClient<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BeltRankKatas.
+     * @param {BeltRankKataDeleteManyArgs} args - Arguments to filter BeltRankKatas to delete.
+     * @example
+     * // Delete a few BeltRankKatas
+     * const { count } = await prisma.beltRankKata.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BeltRankKataDeleteManyArgs>(args?: SelectSubset<T, BeltRankKataDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BeltRankKatas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BeltRankKataUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BeltRankKatas
+     * const beltRankKata = await prisma.beltRankKata.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BeltRankKataUpdateManyArgs>(args: SelectSubset<T, BeltRankKataUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BeltRankKatas and returns the data updated in the database.
+     * @param {BeltRankKataUpdateManyAndReturnArgs} args - Arguments to update many BeltRankKatas.
+     * @example
+     * // Update many BeltRankKatas
+     * const beltRankKata = await prisma.beltRankKata.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BeltRankKatas and only return the `beltRankId`
+     * const beltRankKataWithBeltRankIdOnly = await prisma.beltRankKata.updateManyAndReturn({
+     *   select: { beltRankId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BeltRankKataUpdateManyAndReturnArgs>(args: SelectSubset<T, BeltRankKataUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BeltRankKata.
+     * @param {BeltRankKataUpsertArgs} args - Arguments to update or create a BeltRankKata.
+     * @example
+     * // Update or create a BeltRankKata
+     * const beltRankKata = await prisma.beltRankKata.upsert({
+     *   create: {
+     *     // ... data to create a BeltRankKata
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BeltRankKata we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BeltRankKataUpsertArgs>(args: SelectSubset<T, BeltRankKataUpsertArgs<ExtArgs>>): Prisma__BeltRankKataClient<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BeltRankKatas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BeltRankKataCountArgs} args - Arguments to filter BeltRankKatas to count.
+     * @example
+     * // Count the number of BeltRankKatas
+     * const count = await prisma.beltRankKata.count({
+     *   where: {
+     *     // ... the filter for the BeltRankKatas we want to count
+     *   }
+     * })
+    **/
+    count<T extends BeltRankKataCountArgs>(
+      args?: Subset<T, BeltRankKataCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BeltRankKataCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BeltRankKata.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BeltRankKataAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BeltRankKataAggregateArgs>(args: Subset<T, BeltRankKataAggregateArgs>): Prisma.PrismaPromise<GetBeltRankKataAggregateType<T>>
+
+    /**
+     * Group by BeltRankKata.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BeltRankKataGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BeltRankKataGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BeltRankKataGroupByArgs['orderBy'] }
+        : { orderBy?: BeltRankKataGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BeltRankKataGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBeltRankKataGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BeltRankKata model
+   */
+  readonly fields: BeltRankKataFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BeltRankKata.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BeltRankKataClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    beltRank<T extends BeltRankDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BeltRankDefaultArgs<ExtArgs>>): Prisma__BeltRankClient<$Result.GetResult<Prisma.$BeltRankPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    kata<T extends TechniqueDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TechniqueDefaultArgs<ExtArgs>>): Prisma__TechniqueClient<$Result.GetResult<Prisma.$TechniquePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BeltRankKata model
+   */
+  interface BeltRankKataFieldRefs {
+    readonly beltRankId: FieldRef<"BeltRankKata", 'String'>
+    readonly kataId: FieldRef<"BeltRankKata", 'String'>
+    readonly order: FieldRef<"BeltRankKata", 'Int'>
+    readonly createdAt: FieldRef<"BeltRankKata", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BeltRankKata findUnique
+   */
+  export type BeltRankKataFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRankKata
+     */
+    select?: BeltRankKataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRankKata
+     */
+    omit?: BeltRankKataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankKataInclude<ExtArgs> | null
+    /**
+     * Filter, which BeltRankKata to fetch.
+     */
+    where: BeltRankKataWhereUniqueInput
+  }
+
+  /**
+   * BeltRankKata findUniqueOrThrow
+   */
+  export type BeltRankKataFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRankKata
+     */
+    select?: BeltRankKataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRankKata
+     */
+    omit?: BeltRankKataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankKataInclude<ExtArgs> | null
+    /**
+     * Filter, which BeltRankKata to fetch.
+     */
+    where: BeltRankKataWhereUniqueInput
+  }
+
+  /**
+   * BeltRankKata findFirst
+   */
+  export type BeltRankKataFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRankKata
+     */
+    select?: BeltRankKataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRankKata
+     */
+    omit?: BeltRankKataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankKataInclude<ExtArgs> | null
+    /**
+     * Filter, which BeltRankKata to fetch.
+     */
+    where?: BeltRankKataWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BeltRankKatas to fetch.
+     */
+    orderBy?: BeltRankKataOrderByWithRelationInput | BeltRankKataOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BeltRankKatas.
+     */
+    cursor?: BeltRankKataWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BeltRankKatas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BeltRankKatas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BeltRankKatas.
+     */
+    distinct?: BeltRankKataScalarFieldEnum | BeltRankKataScalarFieldEnum[]
+  }
+
+  /**
+   * BeltRankKata findFirstOrThrow
+   */
+  export type BeltRankKataFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRankKata
+     */
+    select?: BeltRankKataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRankKata
+     */
+    omit?: BeltRankKataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankKataInclude<ExtArgs> | null
+    /**
+     * Filter, which BeltRankKata to fetch.
+     */
+    where?: BeltRankKataWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BeltRankKatas to fetch.
+     */
+    orderBy?: BeltRankKataOrderByWithRelationInput | BeltRankKataOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BeltRankKatas.
+     */
+    cursor?: BeltRankKataWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BeltRankKatas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BeltRankKatas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BeltRankKatas.
+     */
+    distinct?: BeltRankKataScalarFieldEnum | BeltRankKataScalarFieldEnum[]
+  }
+
+  /**
+   * BeltRankKata findMany
+   */
+  export type BeltRankKataFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRankKata
+     */
+    select?: BeltRankKataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRankKata
+     */
+    omit?: BeltRankKataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankKataInclude<ExtArgs> | null
+    /**
+     * Filter, which BeltRankKatas to fetch.
+     */
+    where?: BeltRankKataWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BeltRankKatas to fetch.
+     */
+    orderBy?: BeltRankKataOrderByWithRelationInput | BeltRankKataOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BeltRankKatas.
+     */
+    cursor?: BeltRankKataWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BeltRankKatas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BeltRankKatas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BeltRankKatas.
+     */
+    distinct?: BeltRankKataScalarFieldEnum | BeltRankKataScalarFieldEnum[]
+  }
+
+  /**
+   * BeltRankKata create
+   */
+  export type BeltRankKataCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRankKata
+     */
+    select?: BeltRankKataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRankKata
+     */
+    omit?: BeltRankKataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankKataInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BeltRankKata.
+     */
+    data: XOR<BeltRankKataCreateInput, BeltRankKataUncheckedCreateInput>
+  }
+
+  /**
+   * BeltRankKata createMany
+   */
+  export type BeltRankKataCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BeltRankKatas.
+     */
+    data: BeltRankKataCreateManyInput | BeltRankKataCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BeltRankKata createManyAndReturn
+   */
+  export type BeltRankKataCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRankKata
+     */
+    select?: BeltRankKataSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRankKata
+     */
+    omit?: BeltRankKataOmit<ExtArgs> | null
+    /**
+     * The data used to create many BeltRankKatas.
+     */
+    data: BeltRankKataCreateManyInput | BeltRankKataCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankKataIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BeltRankKata update
+   */
+  export type BeltRankKataUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRankKata
+     */
+    select?: BeltRankKataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRankKata
+     */
+    omit?: BeltRankKataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankKataInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BeltRankKata.
+     */
+    data: XOR<BeltRankKataUpdateInput, BeltRankKataUncheckedUpdateInput>
+    /**
+     * Choose, which BeltRankKata to update.
+     */
+    where: BeltRankKataWhereUniqueInput
+  }
+
+  /**
+   * BeltRankKata updateMany
+   */
+  export type BeltRankKataUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BeltRankKatas.
+     */
+    data: XOR<BeltRankKataUpdateManyMutationInput, BeltRankKataUncheckedUpdateManyInput>
+    /**
+     * Filter which BeltRankKatas to update
+     */
+    where?: BeltRankKataWhereInput
+    /**
+     * Limit how many BeltRankKatas to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BeltRankKata updateManyAndReturn
+   */
+  export type BeltRankKataUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRankKata
+     */
+    select?: BeltRankKataSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRankKata
+     */
+    omit?: BeltRankKataOmit<ExtArgs> | null
+    /**
+     * The data used to update BeltRankKatas.
+     */
+    data: XOR<BeltRankKataUpdateManyMutationInput, BeltRankKataUncheckedUpdateManyInput>
+    /**
+     * Filter which BeltRankKatas to update
+     */
+    where?: BeltRankKataWhereInput
+    /**
+     * Limit how many BeltRankKatas to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankKataIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BeltRankKata upsert
+   */
+  export type BeltRankKataUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRankKata
+     */
+    select?: BeltRankKataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRankKata
+     */
+    omit?: BeltRankKataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankKataInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BeltRankKata to update in case it exists.
+     */
+    where: BeltRankKataWhereUniqueInput
+    /**
+     * In case the BeltRankKata found by the `where` argument doesn't exist, create a new BeltRankKata with this data.
+     */
+    create: XOR<BeltRankKataCreateInput, BeltRankKataUncheckedCreateInput>
+    /**
+     * In case the BeltRankKata was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BeltRankKataUpdateInput, BeltRankKataUncheckedUpdateInput>
+  }
+
+  /**
+   * BeltRankKata delete
+   */
+  export type BeltRankKataDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRankKata
+     */
+    select?: BeltRankKataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRankKata
+     */
+    omit?: BeltRankKataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankKataInclude<ExtArgs> | null
+    /**
+     * Filter which BeltRankKata to delete.
+     */
+    where: BeltRankKataWhereUniqueInput
+  }
+
+  /**
+   * BeltRankKata deleteMany
+   */
+  export type BeltRankKataDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BeltRankKatas to delete
+     */
+    where?: BeltRankKataWhereInput
+    /**
+     * Limit how many BeltRankKatas to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BeltRankKata without action
+   */
+  export type BeltRankKataDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRankKata
+     */
+    select?: BeltRankKataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRankKata
+     */
+    omit?: BeltRankKataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankKataInclude<ExtArgs> | null
   }
 
 
@@ -21118,6 +22389,7 @@ export namespace Prisma {
     updatedAt?: boolean
     rank?: boolean | Technique$rankArgs<ExtArgs>
     school?: boolean | Technique$schoolArgs<ExtArgs>
+    beltRankKatas?: boolean | Technique$beltRankKatasArgs<ExtArgs>
     students?: boolean | Technique$studentsArgs<ExtArgs>
     _count?: boolean | TechniqueCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["technique"]>
@@ -21184,6 +22456,7 @@ export namespace Prisma {
   export type TechniqueInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     rank?: boolean | Technique$rankArgs<ExtArgs>
     school?: boolean | Technique$schoolArgs<ExtArgs>
+    beltRankKatas?: boolean | Technique$beltRankKatasArgs<ExtArgs>
     students?: boolean | Technique$studentsArgs<ExtArgs>
     _count?: boolean | TechniqueCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -21201,6 +22474,7 @@ export namespace Prisma {
     objects: {
       rank: Prisma.$BeltRankPayload<ExtArgs> | null
       school: Prisma.$SchoolPayload<ExtArgs> | null
+      beltRankKatas: Prisma.$BeltRankKataPayload<ExtArgs>[]
       students: Prisma.$StudentTechniquePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -21615,6 +22889,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     rank<T extends Technique$rankArgs<ExtArgs> = {}>(args?: Subset<T, Technique$rankArgs<ExtArgs>>): Prisma__BeltRankClient<$Result.GetResult<Prisma.$BeltRankPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     school<T extends Technique$schoolArgs<ExtArgs> = {}>(args?: Subset<T, Technique$schoolArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    beltRankKatas<T extends Technique$beltRankKatasArgs<ExtArgs> = {}>(args?: Subset<T, Technique$beltRankKatasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     students<T extends Technique$studentsArgs<ExtArgs> = {}>(args?: Subset<T, Technique$studentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentTechniquePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -22096,6 +23371,30 @@ export namespace Prisma {
      */
     include?: SchoolInclude<ExtArgs> | null
     where?: SchoolWhereInput
+  }
+
+  /**
+   * Technique.beltRankKatas
+   */
+  export type Technique$beltRankKatasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRankKata
+     */
+    select?: BeltRankKataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRankKata
+     */
+    omit?: BeltRankKataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankKataInclude<ExtArgs> | null
+    where?: BeltRankKataWhereInput
+    orderBy?: BeltRankKataOrderByWithRelationInput | BeltRankKataOrderByWithRelationInput[]
+    cursor?: BeltRankKataWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BeltRankKataScalarFieldEnum | BeltRankKataScalarFieldEnum[]
   }
 
   /**
@@ -32756,6 +34055,7 @@ export namespace Prisma {
 
   export const BeltRankScalarFieldEnum: {
     id: 'id',
+    program: 'program',
     name: 'name',
     kyuDan: 'kyuDan',
     japaneseName: 'japaneseName',
@@ -32768,12 +34068,23 @@ export namespace Prisma {
     description: 'description',
     schoolId: 'schoolId',
     minMonths: 'minMonths',
+    maxMonths: 'maxMonths',
     minAttendancePercent: 'minAttendancePercent',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type BeltRankScalarFieldEnum = (typeof BeltRankScalarFieldEnum)[keyof typeof BeltRankScalarFieldEnum]
+
+
+  export const BeltRankKataScalarFieldEnum: {
+    beltRankId: 'beltRankId',
+    kataId: 'kataId',
+    order: 'order',
+    createdAt: 'createdAt'
+  };
+
+  export type BeltRankKataScalarFieldEnum = (typeof BeltRankKataScalarFieldEnum)[keyof typeof BeltRankKataScalarFieldEnum]
 
 
   export const StudentRankHistoryScalarFieldEnum: {
@@ -33106,6 +34417,20 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Program'
+   */
+  export type EnumProgramFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Program'>
+    
+
+
+  /**
+   * Reference to a field of type 'Program[]'
+   */
+  export type ListEnumProgramFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Program[]'>
     
 
 
@@ -34213,6 +35538,7 @@ export namespace Prisma {
     OR?: BeltRankWhereInput[]
     NOT?: BeltRankWhereInput | BeltRankWhereInput[]
     id?: StringFilter<"BeltRank"> | string
+    program?: EnumProgramFilter<"BeltRank"> | $Enums.Program
     name?: StringFilter<"BeltRank"> | string
     kyuDan?: StringNullableFilter<"BeltRank"> | string | null
     japaneseName?: StringNullableFilter<"BeltRank"> | string | null
@@ -34225,16 +35551,19 @@ export namespace Prisma {
     description?: StringNullableFilter<"BeltRank"> | string | null
     schoolId?: StringNullableFilter<"BeltRank"> | string | null
     minMonths?: IntNullableFilter<"BeltRank"> | number | null
+    maxMonths?: IntNullableFilter<"BeltRank"> | number | null
     minAttendancePercent?: IntNullableFilter<"BeltRank"> | number | null
     createdAt?: DateTimeFilter<"BeltRank"> | Date | string
     updatedAt?: DateTimeFilter<"BeltRank"> | Date | string
     school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
+    katas?: BeltRankKataListRelationFilter
     techniques?: TechniqueListRelationFilter
     promotions?: StudentRankHistoryListRelationFilter
   }
 
   export type BeltRankOrderByWithRelationInput = {
     id?: SortOrder
+    program?: SortOrder
     name?: SortOrder
     kyuDan?: SortOrderInput | SortOrder
     japaneseName?: SortOrderInput | SortOrder
@@ -34247,19 +35576,23 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     schoolId?: SortOrderInput | SortOrder
     minMonths?: SortOrderInput | SortOrder
+    maxMonths?: SortOrderInput | SortOrder
     minAttendancePercent?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     school?: SchoolOrderByWithRelationInput
+    katas?: BeltRankKataOrderByRelationAggregateInput
     techniques?: TechniqueOrderByRelationAggregateInput
     promotions?: StudentRankHistoryOrderByRelationAggregateInput
   }
 
   export type BeltRankWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    program_order?: BeltRankProgramOrderCompoundUniqueInput
     AND?: BeltRankWhereInput | BeltRankWhereInput[]
     OR?: BeltRankWhereInput[]
     NOT?: BeltRankWhereInput | BeltRankWhereInput[]
+    program?: EnumProgramFilter<"BeltRank"> | $Enums.Program
     name?: StringFilter<"BeltRank"> | string
     kyuDan?: StringNullableFilter<"BeltRank"> | string | null
     japaneseName?: StringNullableFilter<"BeltRank"> | string | null
@@ -34272,16 +35605,19 @@ export namespace Prisma {
     description?: StringNullableFilter<"BeltRank"> | string | null
     schoolId?: StringNullableFilter<"BeltRank"> | string | null
     minMonths?: IntNullableFilter<"BeltRank"> | number | null
+    maxMonths?: IntNullableFilter<"BeltRank"> | number | null
     minAttendancePercent?: IntNullableFilter<"BeltRank"> | number | null
     createdAt?: DateTimeFilter<"BeltRank"> | Date | string
     updatedAt?: DateTimeFilter<"BeltRank"> | Date | string
     school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
+    katas?: BeltRankKataListRelationFilter
     techniques?: TechniqueListRelationFilter
     promotions?: StudentRankHistoryListRelationFilter
-  }, "id">
+  }, "id" | "program_order">
 
   export type BeltRankOrderByWithAggregationInput = {
     id?: SortOrder
+    program?: SortOrder
     name?: SortOrder
     kyuDan?: SortOrderInput | SortOrder
     japaneseName?: SortOrderInput | SortOrder
@@ -34294,6 +35630,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     schoolId?: SortOrderInput | SortOrder
     minMonths?: SortOrderInput | SortOrder
+    maxMonths?: SortOrderInput | SortOrder
     minAttendancePercent?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -34309,6 +35646,7 @@ export namespace Prisma {
     OR?: BeltRankScalarWhereWithAggregatesInput[]
     NOT?: BeltRankScalarWhereWithAggregatesInput | BeltRankScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"BeltRank"> | string
+    program?: EnumProgramWithAggregatesFilter<"BeltRank"> | $Enums.Program
     name?: StringWithAggregatesFilter<"BeltRank"> | string
     kyuDan?: StringNullableWithAggregatesFilter<"BeltRank"> | string | null
     japaneseName?: StringNullableWithAggregatesFilter<"BeltRank"> | string | null
@@ -34321,9 +35659,66 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"BeltRank"> | string | null
     schoolId?: StringNullableWithAggregatesFilter<"BeltRank"> | string | null
     minMonths?: IntNullableWithAggregatesFilter<"BeltRank"> | number | null
+    maxMonths?: IntNullableWithAggregatesFilter<"BeltRank"> | number | null
     minAttendancePercent?: IntNullableWithAggregatesFilter<"BeltRank"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"BeltRank"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"BeltRank"> | Date | string
+  }
+
+  export type BeltRankKataWhereInput = {
+    AND?: BeltRankKataWhereInput | BeltRankKataWhereInput[]
+    OR?: BeltRankKataWhereInput[]
+    NOT?: BeltRankKataWhereInput | BeltRankKataWhereInput[]
+    beltRankId?: StringFilter<"BeltRankKata"> | string
+    kataId?: StringFilter<"BeltRankKata"> | string
+    order?: IntFilter<"BeltRankKata"> | number
+    createdAt?: DateTimeFilter<"BeltRankKata"> | Date | string
+    beltRank?: XOR<BeltRankScalarRelationFilter, BeltRankWhereInput>
+    kata?: XOR<TechniqueScalarRelationFilter, TechniqueWhereInput>
+  }
+
+  export type BeltRankKataOrderByWithRelationInput = {
+    beltRankId?: SortOrder
+    kataId?: SortOrder
+    order?: SortOrder
+    createdAt?: SortOrder
+    beltRank?: BeltRankOrderByWithRelationInput
+    kata?: TechniqueOrderByWithRelationInput
+  }
+
+  export type BeltRankKataWhereUniqueInput = Prisma.AtLeast<{
+    beltRankId_kataId?: BeltRankKataBeltRankIdKataIdCompoundUniqueInput
+    AND?: BeltRankKataWhereInput | BeltRankKataWhereInput[]
+    OR?: BeltRankKataWhereInput[]
+    NOT?: BeltRankKataWhereInput | BeltRankKataWhereInput[]
+    beltRankId?: StringFilter<"BeltRankKata"> | string
+    kataId?: StringFilter<"BeltRankKata"> | string
+    order?: IntFilter<"BeltRankKata"> | number
+    createdAt?: DateTimeFilter<"BeltRankKata"> | Date | string
+    beltRank?: XOR<BeltRankScalarRelationFilter, BeltRankWhereInput>
+    kata?: XOR<TechniqueScalarRelationFilter, TechniqueWhereInput>
+  }, "beltRankId_kataId">
+
+  export type BeltRankKataOrderByWithAggregationInput = {
+    beltRankId?: SortOrder
+    kataId?: SortOrder
+    order?: SortOrder
+    createdAt?: SortOrder
+    _count?: BeltRankKataCountOrderByAggregateInput
+    _avg?: BeltRankKataAvgOrderByAggregateInput
+    _max?: BeltRankKataMaxOrderByAggregateInput
+    _min?: BeltRankKataMinOrderByAggregateInput
+    _sum?: BeltRankKataSumOrderByAggregateInput
+  }
+
+  export type BeltRankKataScalarWhereWithAggregatesInput = {
+    AND?: BeltRankKataScalarWhereWithAggregatesInput | BeltRankKataScalarWhereWithAggregatesInput[]
+    OR?: BeltRankKataScalarWhereWithAggregatesInput[]
+    NOT?: BeltRankKataScalarWhereWithAggregatesInput | BeltRankKataScalarWhereWithAggregatesInput[]
+    beltRankId?: StringWithAggregatesFilter<"BeltRankKata"> | string
+    kataId?: StringWithAggregatesFilter<"BeltRankKata"> | string
+    order?: IntWithAggregatesFilter<"BeltRankKata"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"BeltRankKata"> | Date | string
   }
 
   export type StudentRankHistoryWhereInput = {
@@ -34423,6 +35818,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Technique"> | Date | string
     rank?: XOR<BeltRankNullableScalarRelationFilter, BeltRankWhereInput> | null
     school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
+    beltRankKatas?: BeltRankKataListRelationFilter
     students?: StudentTechniqueListRelationFilter
   }
 
@@ -34444,6 +35840,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     rank?: BeltRankOrderByWithRelationInput
     school?: SchoolOrderByWithRelationInput
+    beltRankKatas?: BeltRankKataOrderByRelationAggregateInput
     students?: StudentTechniqueOrderByRelationAggregateInput
   }
 
@@ -34468,6 +35865,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Technique"> | Date | string
     rank?: XOR<BeltRankNullableScalarRelationFilter, BeltRankWhereInput> | null
     school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
+    beltRankKatas?: BeltRankKataListRelationFilter
     students?: StudentTechniqueListRelationFilter
   }, "id">
 
@@ -36367,6 +37765,7 @@ export namespace Prisma {
 
   export type BeltRankCreateInput = {
     id?: string
+    program?: $Enums.Program
     name: string
     kyuDan?: string | null
     japaneseName?: string | null
@@ -36378,16 +37777,19 @@ export namespace Prisma {
     estimatedDurationMonths?: number | null
     description?: string | null
     minMonths?: number | null
+    maxMonths?: number | null
     minAttendancePercent?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     school?: SchoolCreateNestedOneWithoutBeltRanksInput
+    katas?: BeltRankKataCreateNestedManyWithoutBeltRankInput
     techniques?: TechniqueCreateNestedManyWithoutRankInput
     promotions?: StudentRankHistoryCreateNestedManyWithoutBeltRankInput
   }
 
   export type BeltRankUncheckedCreateInput = {
     id?: string
+    program?: $Enums.Program
     name: string
     kyuDan?: string | null
     japaneseName?: string | null
@@ -36400,15 +37802,18 @@ export namespace Prisma {
     description?: string | null
     schoolId?: string | null
     minMonths?: number | null
+    maxMonths?: number | null
     minAttendancePercent?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    katas?: BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput
     techniques?: TechniqueUncheckedCreateNestedManyWithoutRankInput
     promotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutBeltRankInput
   }
 
   export type BeltRankUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
     name?: StringFieldUpdateOperationsInput | string
     kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
     japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -36420,16 +37825,19 @@ export namespace Prisma {
     estimatedDurationMonths?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     school?: SchoolUpdateOneWithoutBeltRanksNestedInput
+    katas?: BeltRankKataUpdateManyWithoutBeltRankNestedInput
     techniques?: TechniqueUpdateManyWithoutRankNestedInput
     promotions?: StudentRankHistoryUpdateManyWithoutBeltRankNestedInput
   }
 
   export type BeltRankUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
     name?: StringFieldUpdateOperationsInput | string
     kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
     japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -36442,15 +37850,18 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    katas?: BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput
     techniques?: TechniqueUncheckedUpdateManyWithoutRankNestedInput
     promotions?: StudentRankHistoryUncheckedUpdateManyWithoutBeltRankNestedInput
   }
 
   export type BeltRankCreateManyInput = {
     id?: string
+    program?: $Enums.Program
     name: string
     kyuDan?: string | null
     japaneseName?: string | null
@@ -36463,6 +37874,7 @@ export namespace Prisma {
     description?: string | null
     schoolId?: string | null
     minMonths?: number | null
+    maxMonths?: number | null
     minAttendancePercent?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36470,6 +37882,7 @@ export namespace Prisma {
 
   export type BeltRankUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
     name?: StringFieldUpdateOperationsInput | string
     kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
     japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -36481,6 +37894,7 @@ export namespace Prisma {
     estimatedDurationMonths?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36488,6 +37902,7 @@ export namespace Prisma {
 
   export type BeltRankUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
     name?: StringFieldUpdateOperationsInput | string
     kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
     japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -36500,9 +37915,57 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BeltRankKataCreateInput = {
+    order?: number
+    createdAt?: Date | string
+    beltRank: BeltRankCreateNestedOneWithoutKatasInput
+    kata: TechniqueCreateNestedOneWithoutBeltRankKatasInput
+  }
+
+  export type BeltRankKataUncheckedCreateInput = {
+    beltRankId: string
+    kataId: string
+    order?: number
+    createdAt?: Date | string
+  }
+
+  export type BeltRankKataUpdateInput = {
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    beltRank?: BeltRankUpdateOneRequiredWithoutKatasNestedInput
+    kata?: TechniqueUpdateOneRequiredWithoutBeltRankKatasNestedInput
+  }
+
+  export type BeltRankKataUncheckedUpdateInput = {
+    beltRankId?: StringFieldUpdateOperationsInput | string
+    kataId?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BeltRankKataCreateManyInput = {
+    beltRankId: string
+    kataId: string
+    order?: number
+    createdAt?: Date | string
+  }
+
+  export type BeltRankKataUpdateManyMutationInput = {
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BeltRankKataUncheckedUpdateManyInput = {
+    beltRankId?: StringFieldUpdateOperationsInput | string
+    kataId?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StudentRankHistoryCreateInput = {
@@ -36595,6 +38058,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     rank?: BeltRankCreateNestedOneWithoutTechniquesInput
     school?: SchoolCreateNestedOneWithoutTechniquesInput
+    beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
     students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
   }
 
@@ -36614,6 +38078,7 @@ export namespace Prisma {
     schoolId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
     students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
   }
 
@@ -36633,6 +38098,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     rank?: BeltRankUpdateOneWithoutTechniquesNestedInput
     school?: SchoolUpdateOneWithoutTechniquesNestedInput
+    beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
   }
 
@@ -36652,6 +38118,7 @@ export namespace Prisma {
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
   }
 
@@ -38491,6 +39958,13 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
+  export type EnumProgramFilter<$PrismaModel = never> = {
+    equals?: $Enums.Program | EnumProgramFieldRefInput<$PrismaModel>
+    in?: $Enums.Program[] | ListEnumProgramFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Program[] | ListEnumProgramFieldRefInput<$PrismaModel>
+    not?: NestedEnumProgramFilter<$PrismaModel> | $Enums.Program
+  }
+
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -38507,8 +39981,24 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type BeltRankKataListRelationFilter = {
+    every?: BeltRankKataWhereInput
+    some?: BeltRankKataWhereInput
+    none?: BeltRankKataWhereInput
+  }
+
+  export type BeltRankKataOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BeltRankProgramOrderCompoundUniqueInput = {
+    program: $Enums.Program
+    order: number
+  }
+
   export type BeltRankCountOrderByAggregateInput = {
     id?: SortOrder
+    program?: SortOrder
     name?: SortOrder
     kyuDan?: SortOrder
     japaneseName?: SortOrder
@@ -38521,6 +40011,7 @@ export namespace Prisma {
     description?: SortOrder
     schoolId?: SortOrder
     minMonths?: SortOrder
+    maxMonths?: SortOrder
     minAttendancePercent?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -38530,11 +40021,13 @@ export namespace Prisma {
     order?: SortOrder
     estimatedDurationMonths?: SortOrder
     minMonths?: SortOrder
+    maxMonths?: SortOrder
     minAttendancePercent?: SortOrder
   }
 
   export type BeltRankMaxOrderByAggregateInput = {
     id?: SortOrder
+    program?: SortOrder
     name?: SortOrder
     kyuDan?: SortOrder
     japaneseName?: SortOrder
@@ -38547,6 +40040,7 @@ export namespace Prisma {
     description?: SortOrder
     schoolId?: SortOrder
     minMonths?: SortOrder
+    maxMonths?: SortOrder
     minAttendancePercent?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -38554,6 +40048,7 @@ export namespace Prisma {
 
   export type BeltRankMinOrderByAggregateInput = {
     id?: SortOrder
+    program?: SortOrder
     name?: SortOrder
     kyuDan?: SortOrder
     japaneseName?: SortOrder
@@ -38566,6 +40061,7 @@ export namespace Prisma {
     description?: SortOrder
     schoolId?: SortOrder
     minMonths?: SortOrder
+    maxMonths?: SortOrder
     minAttendancePercent?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -38575,7 +40071,18 @@ export namespace Prisma {
     order?: SortOrder
     estimatedDurationMonths?: SortOrder
     minMonths?: SortOrder
+    maxMonths?: SortOrder
     minAttendancePercent?: SortOrder
+  }
+
+  export type EnumProgramWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Program | EnumProgramFieldRefInput<$PrismaModel>
+    in?: $Enums.Program[] | ListEnumProgramFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Program[] | ListEnumProgramFieldRefInput<$PrismaModel>
+    not?: NestedEnumProgramWithAggregatesFilter<$PrismaModel> | $Enums.Program
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProgramFilter<$PrismaModel>
+    _max?: NestedEnumProgramFilter<$PrismaModel>
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -38605,6 +40112,45 @@ export namespace Prisma {
   export type BeltRankScalarRelationFilter = {
     is?: BeltRankWhereInput
     isNot?: BeltRankWhereInput
+  }
+
+  export type TechniqueScalarRelationFilter = {
+    is?: TechniqueWhereInput
+    isNot?: TechniqueWhereInput
+  }
+
+  export type BeltRankKataBeltRankIdKataIdCompoundUniqueInput = {
+    beltRankId: string
+    kataId: string
+  }
+
+  export type BeltRankKataCountOrderByAggregateInput = {
+    beltRankId?: SortOrder
+    kataId?: SortOrder
+    order?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BeltRankKataAvgOrderByAggregateInput = {
+    order?: SortOrder
+  }
+
+  export type BeltRankKataMaxOrderByAggregateInput = {
+    beltRankId?: SortOrder
+    kataId?: SortOrder
+    order?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BeltRankKataMinOrderByAggregateInput = {
+    beltRankId?: SortOrder
+    kataId?: SortOrder
+    order?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BeltRankKataSumOrderByAggregateInput = {
+    order?: SortOrder
   }
 
   export type StudentRankHistoryCountOrderByAggregateInput = {
@@ -38735,11 +40281,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type TechniqueScalarRelationFilter = {
-    is?: TechniqueWhereInput
-    isNot?: TechniqueWhereInput
   }
 
   export type TechniqueEvaluationNullableScalarRelationFilter = {
@@ -41056,6 +42597,13 @@ export namespace Prisma {
     connect?: SchoolWhereUniqueInput
   }
 
+  export type BeltRankKataCreateNestedManyWithoutBeltRankInput = {
+    create?: XOR<BeltRankKataCreateWithoutBeltRankInput, BeltRankKataUncheckedCreateWithoutBeltRankInput> | BeltRankKataCreateWithoutBeltRankInput[] | BeltRankKataUncheckedCreateWithoutBeltRankInput[]
+    connectOrCreate?: BeltRankKataCreateOrConnectWithoutBeltRankInput | BeltRankKataCreateOrConnectWithoutBeltRankInput[]
+    createMany?: BeltRankKataCreateManyBeltRankInputEnvelope
+    connect?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+  }
+
   export type TechniqueCreateNestedManyWithoutRankInput = {
     create?: XOR<TechniqueCreateWithoutRankInput, TechniqueUncheckedCreateWithoutRankInput> | TechniqueCreateWithoutRankInput[] | TechniqueUncheckedCreateWithoutRankInput[]
     connectOrCreate?: TechniqueCreateOrConnectWithoutRankInput | TechniqueCreateOrConnectWithoutRankInput[]
@@ -41070,6 +42618,13 @@ export namespace Prisma {
     connect?: StudentRankHistoryWhereUniqueInput | StudentRankHistoryWhereUniqueInput[]
   }
 
+  export type BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput = {
+    create?: XOR<BeltRankKataCreateWithoutBeltRankInput, BeltRankKataUncheckedCreateWithoutBeltRankInput> | BeltRankKataCreateWithoutBeltRankInput[] | BeltRankKataUncheckedCreateWithoutBeltRankInput[]
+    connectOrCreate?: BeltRankKataCreateOrConnectWithoutBeltRankInput | BeltRankKataCreateOrConnectWithoutBeltRankInput[]
+    createMany?: BeltRankKataCreateManyBeltRankInputEnvelope
+    connect?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+  }
+
   export type TechniqueUncheckedCreateNestedManyWithoutRankInput = {
     create?: XOR<TechniqueCreateWithoutRankInput, TechniqueUncheckedCreateWithoutRankInput> | TechniqueCreateWithoutRankInput[] | TechniqueUncheckedCreateWithoutRankInput[]
     connectOrCreate?: TechniqueCreateOrConnectWithoutRankInput | TechniqueCreateOrConnectWithoutRankInput[]
@@ -41082,6 +42637,10 @@ export namespace Prisma {
     connectOrCreate?: StudentRankHistoryCreateOrConnectWithoutBeltRankInput | StudentRankHistoryCreateOrConnectWithoutBeltRankInput[]
     createMany?: StudentRankHistoryCreateManyBeltRankInputEnvelope
     connect?: StudentRankHistoryWhereUniqueInput | StudentRankHistoryWhereUniqueInput[]
+  }
+
+  export type EnumProgramFieldUpdateOperationsInput = {
+    set?: $Enums.Program
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -41104,6 +42663,20 @@ export namespace Prisma {
     delete?: SchoolWhereInput | boolean
     connect?: SchoolWhereUniqueInput
     update?: XOR<XOR<SchoolUpdateToOneWithWhereWithoutBeltRanksInput, SchoolUpdateWithoutBeltRanksInput>, SchoolUncheckedUpdateWithoutBeltRanksInput>
+  }
+
+  export type BeltRankKataUpdateManyWithoutBeltRankNestedInput = {
+    create?: XOR<BeltRankKataCreateWithoutBeltRankInput, BeltRankKataUncheckedCreateWithoutBeltRankInput> | BeltRankKataCreateWithoutBeltRankInput[] | BeltRankKataUncheckedCreateWithoutBeltRankInput[]
+    connectOrCreate?: BeltRankKataCreateOrConnectWithoutBeltRankInput | BeltRankKataCreateOrConnectWithoutBeltRankInput[]
+    upsert?: BeltRankKataUpsertWithWhereUniqueWithoutBeltRankInput | BeltRankKataUpsertWithWhereUniqueWithoutBeltRankInput[]
+    createMany?: BeltRankKataCreateManyBeltRankInputEnvelope
+    set?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    disconnect?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    delete?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    connect?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    update?: BeltRankKataUpdateWithWhereUniqueWithoutBeltRankInput | BeltRankKataUpdateWithWhereUniqueWithoutBeltRankInput[]
+    updateMany?: BeltRankKataUpdateManyWithWhereWithoutBeltRankInput | BeltRankKataUpdateManyWithWhereWithoutBeltRankInput[]
+    deleteMany?: BeltRankKataScalarWhereInput | BeltRankKataScalarWhereInput[]
   }
 
   export type TechniqueUpdateManyWithoutRankNestedInput = {
@@ -41134,6 +42707,20 @@ export namespace Prisma {
     deleteMany?: StudentRankHistoryScalarWhereInput | StudentRankHistoryScalarWhereInput[]
   }
 
+  export type BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput = {
+    create?: XOR<BeltRankKataCreateWithoutBeltRankInput, BeltRankKataUncheckedCreateWithoutBeltRankInput> | BeltRankKataCreateWithoutBeltRankInput[] | BeltRankKataUncheckedCreateWithoutBeltRankInput[]
+    connectOrCreate?: BeltRankKataCreateOrConnectWithoutBeltRankInput | BeltRankKataCreateOrConnectWithoutBeltRankInput[]
+    upsert?: BeltRankKataUpsertWithWhereUniqueWithoutBeltRankInput | BeltRankKataUpsertWithWhereUniqueWithoutBeltRankInput[]
+    createMany?: BeltRankKataCreateManyBeltRankInputEnvelope
+    set?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    disconnect?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    delete?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    connect?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    update?: BeltRankKataUpdateWithWhereUniqueWithoutBeltRankInput | BeltRankKataUpdateWithWhereUniqueWithoutBeltRankInput[]
+    updateMany?: BeltRankKataUpdateManyWithWhereWithoutBeltRankInput | BeltRankKataUpdateManyWithWhereWithoutBeltRankInput[]
+    deleteMany?: BeltRankKataScalarWhereInput | BeltRankKataScalarWhereInput[]
+  }
+
   export type TechniqueUncheckedUpdateManyWithoutRankNestedInput = {
     create?: XOR<TechniqueCreateWithoutRankInput, TechniqueUncheckedCreateWithoutRankInput> | TechniqueCreateWithoutRankInput[] | TechniqueUncheckedCreateWithoutRankInput[]
     connectOrCreate?: TechniqueCreateOrConnectWithoutRankInput | TechniqueCreateOrConnectWithoutRankInput[]
@@ -41160,6 +42747,34 @@ export namespace Prisma {
     update?: StudentRankHistoryUpdateWithWhereUniqueWithoutBeltRankInput | StudentRankHistoryUpdateWithWhereUniqueWithoutBeltRankInput[]
     updateMany?: StudentRankHistoryUpdateManyWithWhereWithoutBeltRankInput | StudentRankHistoryUpdateManyWithWhereWithoutBeltRankInput[]
     deleteMany?: StudentRankHistoryScalarWhereInput | StudentRankHistoryScalarWhereInput[]
+  }
+
+  export type BeltRankCreateNestedOneWithoutKatasInput = {
+    create?: XOR<BeltRankCreateWithoutKatasInput, BeltRankUncheckedCreateWithoutKatasInput>
+    connectOrCreate?: BeltRankCreateOrConnectWithoutKatasInput
+    connect?: BeltRankWhereUniqueInput
+  }
+
+  export type TechniqueCreateNestedOneWithoutBeltRankKatasInput = {
+    create?: XOR<TechniqueCreateWithoutBeltRankKatasInput, TechniqueUncheckedCreateWithoutBeltRankKatasInput>
+    connectOrCreate?: TechniqueCreateOrConnectWithoutBeltRankKatasInput
+    connect?: TechniqueWhereUniqueInput
+  }
+
+  export type BeltRankUpdateOneRequiredWithoutKatasNestedInput = {
+    create?: XOR<BeltRankCreateWithoutKatasInput, BeltRankUncheckedCreateWithoutKatasInput>
+    connectOrCreate?: BeltRankCreateOrConnectWithoutKatasInput
+    upsert?: BeltRankUpsertWithoutKatasInput
+    connect?: BeltRankWhereUniqueInput
+    update?: XOR<XOR<BeltRankUpdateToOneWithWhereWithoutKatasInput, BeltRankUpdateWithoutKatasInput>, BeltRankUncheckedUpdateWithoutKatasInput>
+  }
+
+  export type TechniqueUpdateOneRequiredWithoutBeltRankKatasNestedInput = {
+    create?: XOR<TechniqueCreateWithoutBeltRankKatasInput, TechniqueUncheckedCreateWithoutBeltRankKatasInput>
+    connectOrCreate?: TechniqueCreateOrConnectWithoutBeltRankKatasInput
+    upsert?: TechniqueUpsertWithoutBeltRankKatasInput
+    connect?: TechniqueWhereUniqueInput
+    update?: XOR<XOR<TechniqueUpdateToOneWithWhereWithoutBeltRankKatasInput, TechniqueUpdateWithoutBeltRankKatasInput>, TechniqueUncheckedUpdateWithoutBeltRankKatasInput>
   }
 
   export type StudentCreateNestedOneWithoutRankHistoryInput = {
@@ -41218,11 +42833,25 @@ export namespace Prisma {
     connect?: SchoolWhereUniqueInput
   }
 
+  export type BeltRankKataCreateNestedManyWithoutKataInput = {
+    create?: XOR<BeltRankKataCreateWithoutKataInput, BeltRankKataUncheckedCreateWithoutKataInput> | BeltRankKataCreateWithoutKataInput[] | BeltRankKataUncheckedCreateWithoutKataInput[]
+    connectOrCreate?: BeltRankKataCreateOrConnectWithoutKataInput | BeltRankKataCreateOrConnectWithoutKataInput[]
+    createMany?: BeltRankKataCreateManyKataInputEnvelope
+    connect?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+  }
+
   export type StudentTechniqueCreateNestedManyWithoutTechniqueInput = {
     create?: XOR<StudentTechniqueCreateWithoutTechniqueInput, StudentTechniqueUncheckedCreateWithoutTechniqueInput> | StudentTechniqueCreateWithoutTechniqueInput[] | StudentTechniqueUncheckedCreateWithoutTechniqueInput[]
     connectOrCreate?: StudentTechniqueCreateOrConnectWithoutTechniqueInput | StudentTechniqueCreateOrConnectWithoutTechniqueInput[]
     createMany?: StudentTechniqueCreateManyTechniqueInputEnvelope
     connect?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
+  }
+
+  export type BeltRankKataUncheckedCreateNestedManyWithoutKataInput = {
+    create?: XOR<BeltRankKataCreateWithoutKataInput, BeltRankKataUncheckedCreateWithoutKataInput> | BeltRankKataCreateWithoutKataInput[] | BeltRankKataUncheckedCreateWithoutKataInput[]
+    connectOrCreate?: BeltRankKataCreateOrConnectWithoutKataInput | BeltRankKataCreateOrConnectWithoutKataInput[]
+    createMany?: BeltRankKataCreateManyKataInputEnvelope
+    connect?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
   }
 
   export type StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput = {
@@ -41256,6 +42885,20 @@ export namespace Prisma {
     update?: XOR<XOR<SchoolUpdateToOneWithWhereWithoutTechniquesInput, SchoolUpdateWithoutTechniquesInput>, SchoolUncheckedUpdateWithoutTechniquesInput>
   }
 
+  export type BeltRankKataUpdateManyWithoutKataNestedInput = {
+    create?: XOR<BeltRankKataCreateWithoutKataInput, BeltRankKataUncheckedCreateWithoutKataInput> | BeltRankKataCreateWithoutKataInput[] | BeltRankKataUncheckedCreateWithoutKataInput[]
+    connectOrCreate?: BeltRankKataCreateOrConnectWithoutKataInput | BeltRankKataCreateOrConnectWithoutKataInput[]
+    upsert?: BeltRankKataUpsertWithWhereUniqueWithoutKataInput | BeltRankKataUpsertWithWhereUniqueWithoutKataInput[]
+    createMany?: BeltRankKataCreateManyKataInputEnvelope
+    set?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    disconnect?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    delete?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    connect?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    update?: BeltRankKataUpdateWithWhereUniqueWithoutKataInput | BeltRankKataUpdateWithWhereUniqueWithoutKataInput[]
+    updateMany?: BeltRankKataUpdateManyWithWhereWithoutKataInput | BeltRankKataUpdateManyWithWhereWithoutKataInput[]
+    deleteMany?: BeltRankKataScalarWhereInput | BeltRankKataScalarWhereInput[]
+  }
+
   export type StudentTechniqueUpdateManyWithoutTechniqueNestedInput = {
     create?: XOR<StudentTechniqueCreateWithoutTechniqueInput, StudentTechniqueUncheckedCreateWithoutTechniqueInput> | StudentTechniqueCreateWithoutTechniqueInput[] | StudentTechniqueUncheckedCreateWithoutTechniqueInput[]
     connectOrCreate?: StudentTechniqueCreateOrConnectWithoutTechniqueInput | StudentTechniqueCreateOrConnectWithoutTechniqueInput[]
@@ -41268,6 +42911,20 @@ export namespace Prisma {
     update?: StudentTechniqueUpdateWithWhereUniqueWithoutTechniqueInput | StudentTechniqueUpdateWithWhereUniqueWithoutTechniqueInput[]
     updateMany?: StudentTechniqueUpdateManyWithWhereWithoutTechniqueInput | StudentTechniqueUpdateManyWithWhereWithoutTechniqueInput[]
     deleteMany?: StudentTechniqueScalarWhereInput | StudentTechniqueScalarWhereInput[]
+  }
+
+  export type BeltRankKataUncheckedUpdateManyWithoutKataNestedInput = {
+    create?: XOR<BeltRankKataCreateWithoutKataInput, BeltRankKataUncheckedCreateWithoutKataInput> | BeltRankKataCreateWithoutKataInput[] | BeltRankKataUncheckedCreateWithoutKataInput[]
+    connectOrCreate?: BeltRankKataCreateOrConnectWithoutKataInput | BeltRankKataCreateOrConnectWithoutKataInput[]
+    upsert?: BeltRankKataUpsertWithWhereUniqueWithoutKataInput | BeltRankKataUpsertWithWhereUniqueWithoutKataInput[]
+    createMany?: BeltRankKataCreateManyKataInputEnvelope
+    set?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    disconnect?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    delete?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    connect?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
+    update?: BeltRankKataUpdateWithWhereUniqueWithoutKataInput | BeltRankKataUpdateWithWhereUniqueWithoutKataInput[]
+    updateMany?: BeltRankKataUpdateManyWithWhereWithoutKataInput | BeltRankKataUpdateManyWithWhereWithoutKataInput[]
+    deleteMany?: BeltRankKataScalarWhereInput | BeltRankKataScalarWhereInput[]
   }
 
   export type StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput = {
@@ -42003,9 +43660,26 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedEnumProgramFilter<$PrismaModel = never> = {
+    equals?: $Enums.Program | EnumProgramFieldRefInput<$PrismaModel>
+    in?: $Enums.Program[] | ListEnumProgramFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Program[] | ListEnumProgramFieldRefInput<$PrismaModel>
+    not?: NestedEnumProgramFilter<$PrismaModel> | $Enums.Program
+  }
+
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedEnumProgramWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Program | EnumProgramFieldRefInput<$PrismaModel>
+    in?: $Enums.Program[] | ListEnumProgramFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Program[] | ListEnumProgramFieldRefInput<$PrismaModel>
+    not?: NestedEnumProgramWithAggregatesFilter<$PrismaModel> | $Enums.Program
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProgramFilter<$PrismaModel>
+    _max?: NestedEnumProgramFilter<$PrismaModel>
   }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -42313,6 +43987,7 @@ export namespace Prisma {
 
   export type BeltRankCreateWithoutSchoolInput = {
     id?: string
+    program?: $Enums.Program
     name: string
     kyuDan?: string | null
     japaneseName?: string | null
@@ -42324,15 +43999,18 @@ export namespace Prisma {
     estimatedDurationMonths?: number | null
     description?: string | null
     minMonths?: number | null
+    maxMonths?: number | null
     minAttendancePercent?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    katas?: BeltRankKataCreateNestedManyWithoutBeltRankInput
     techniques?: TechniqueCreateNestedManyWithoutRankInput
     promotions?: StudentRankHistoryCreateNestedManyWithoutBeltRankInput
   }
 
   export type BeltRankUncheckedCreateWithoutSchoolInput = {
     id?: string
+    program?: $Enums.Program
     name: string
     kyuDan?: string | null
     japaneseName?: string | null
@@ -42344,9 +44022,11 @@ export namespace Prisma {
     estimatedDurationMonths?: number | null
     description?: string | null
     minMonths?: number | null
+    maxMonths?: number | null
     minAttendancePercent?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    katas?: BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput
     techniques?: TechniqueUncheckedCreateNestedManyWithoutRankInput
     promotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutBeltRankInput
   }
@@ -42376,6 +44056,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     rank?: BeltRankCreateNestedOneWithoutTechniquesInput
+    beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
     students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
   }
 
@@ -42394,6 +44075,7 @@ export namespace Prisma {
     videoUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
     students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
   }
 
@@ -42595,6 +44277,7 @@ export namespace Prisma {
     OR?: BeltRankScalarWhereInput[]
     NOT?: BeltRankScalarWhereInput | BeltRankScalarWhereInput[]
     id?: StringFilter<"BeltRank"> | string
+    program?: EnumProgramFilter<"BeltRank"> | $Enums.Program
     name?: StringFilter<"BeltRank"> | string
     kyuDan?: StringNullableFilter<"BeltRank"> | string | null
     japaneseName?: StringNullableFilter<"BeltRank"> | string | null
@@ -42607,6 +44290,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"BeltRank"> | string | null
     schoolId?: StringNullableFilter<"BeltRank"> | string | null
     minMonths?: IntNullableFilter<"BeltRank"> | number | null
+    maxMonths?: IntNullableFilter<"BeltRank"> | number | null
     minAttendancePercent?: IntNullableFilter<"BeltRank"> | number | null
     createdAt?: DateTimeFilter<"BeltRank"> | Date | string
     updatedAt?: DateTimeFilter<"BeltRank"> | Date | string
@@ -46850,6 +48534,28 @@ export namespace Prisma {
     create: XOR<SchoolCreateWithoutBeltRanksInput, SchoolUncheckedCreateWithoutBeltRanksInput>
   }
 
+  export type BeltRankKataCreateWithoutBeltRankInput = {
+    order?: number
+    createdAt?: Date | string
+    kata: TechniqueCreateNestedOneWithoutBeltRankKatasInput
+  }
+
+  export type BeltRankKataUncheckedCreateWithoutBeltRankInput = {
+    kataId: string
+    order?: number
+    createdAt?: Date | string
+  }
+
+  export type BeltRankKataCreateOrConnectWithoutBeltRankInput = {
+    where: BeltRankKataWhereUniqueInput
+    create: XOR<BeltRankKataCreateWithoutBeltRankInput, BeltRankKataUncheckedCreateWithoutBeltRankInput>
+  }
+
+  export type BeltRankKataCreateManyBeltRankInputEnvelope = {
+    data: BeltRankKataCreateManyBeltRankInput | BeltRankKataCreateManyBeltRankInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TechniqueCreateWithoutRankInput = {
     id?: string
     name: string
@@ -46865,6 +48571,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     school?: SchoolCreateNestedOneWithoutTechniquesInput
+    beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
     students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
   }
 
@@ -46883,6 +48590,7 @@ export namespace Prisma {
     schoolId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
     students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
   }
 
@@ -46963,6 +48671,32 @@ export namespace Prisma {
     achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
+  export type BeltRankKataUpsertWithWhereUniqueWithoutBeltRankInput = {
+    where: BeltRankKataWhereUniqueInput
+    update: XOR<BeltRankKataUpdateWithoutBeltRankInput, BeltRankKataUncheckedUpdateWithoutBeltRankInput>
+    create: XOR<BeltRankKataCreateWithoutBeltRankInput, BeltRankKataUncheckedCreateWithoutBeltRankInput>
+  }
+
+  export type BeltRankKataUpdateWithWhereUniqueWithoutBeltRankInput = {
+    where: BeltRankKataWhereUniqueInput
+    data: XOR<BeltRankKataUpdateWithoutBeltRankInput, BeltRankKataUncheckedUpdateWithoutBeltRankInput>
+  }
+
+  export type BeltRankKataUpdateManyWithWhereWithoutBeltRankInput = {
+    where: BeltRankKataScalarWhereInput
+    data: XOR<BeltRankKataUpdateManyMutationInput, BeltRankKataUncheckedUpdateManyWithoutBeltRankInput>
+  }
+
+  export type BeltRankKataScalarWhereInput = {
+    AND?: BeltRankKataScalarWhereInput | BeltRankKataScalarWhereInput[]
+    OR?: BeltRankKataScalarWhereInput[]
+    NOT?: BeltRankKataScalarWhereInput | BeltRankKataScalarWhereInput[]
+    beltRankId?: StringFilter<"BeltRankKata"> | string
+    kataId?: StringFilter<"BeltRankKata"> | string
+    order?: IntFilter<"BeltRankKata"> | number
+    createdAt?: DateTimeFilter<"BeltRankKata"> | Date | string
+  }
+
   export type TechniqueUpsertWithWhereUniqueWithoutRankInput = {
     where: TechniqueWhereUniqueInput
     update: XOR<TechniqueUpdateWithoutRankInput, TechniqueUncheckedUpdateWithoutRankInput>
@@ -46993,6 +48727,206 @@ export namespace Prisma {
   export type StudentRankHistoryUpdateManyWithWhereWithoutBeltRankInput = {
     where: StudentRankHistoryScalarWhereInput
     data: XOR<StudentRankHistoryUpdateManyMutationInput, StudentRankHistoryUncheckedUpdateManyWithoutBeltRankInput>
+  }
+
+  export type BeltRankCreateWithoutKatasInput = {
+    id?: string
+    program?: $Enums.Program
+    name: string
+    kyuDan?: string | null
+    japaneseName?: string | null
+    kanji?: string | null
+    order: number
+    beltColor?: string | null
+    beltSecondaryColor?: string | null
+    isMaximumRank?: boolean
+    estimatedDurationMonths?: number | null
+    description?: string | null
+    minMonths?: number | null
+    maxMonths?: number | null
+    minAttendancePercent?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutBeltRanksInput
+    techniques?: TechniqueCreateNestedManyWithoutRankInput
+    promotions?: StudentRankHistoryCreateNestedManyWithoutBeltRankInput
+  }
+
+  export type BeltRankUncheckedCreateWithoutKatasInput = {
+    id?: string
+    program?: $Enums.Program
+    name: string
+    kyuDan?: string | null
+    japaneseName?: string | null
+    kanji?: string | null
+    order: number
+    beltColor?: string | null
+    beltSecondaryColor?: string | null
+    isMaximumRank?: boolean
+    estimatedDurationMonths?: number | null
+    description?: string | null
+    schoolId?: string | null
+    minMonths?: number | null
+    maxMonths?: number | null
+    minAttendancePercent?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    techniques?: TechniqueUncheckedCreateNestedManyWithoutRankInput
+    promotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutBeltRankInput
+  }
+
+  export type BeltRankCreateOrConnectWithoutKatasInput = {
+    where: BeltRankWhereUniqueInput
+    create: XOR<BeltRankCreateWithoutKatasInput, BeltRankUncheckedCreateWithoutKatasInput>
+  }
+
+  export type TechniqueCreateWithoutBeltRankKatasInput = {
+    id?: string
+    name: string
+    japaneseName?: string | null
+    kanji?: string | null
+    description?: string | null
+    category?: $Enums.TechniqueCategory
+    order?: number
+    movementsCount?: number | null
+    embusen?: string | null
+    difficulty?: string | null
+    videoUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    rank?: BeltRankCreateNestedOneWithoutTechniquesInput
+    school?: SchoolCreateNestedOneWithoutTechniquesInput
+    students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
+  }
+
+  export type TechniqueUncheckedCreateWithoutBeltRankKatasInput = {
+    id?: string
+    name: string
+    japaneseName?: string | null
+    kanji?: string | null
+    description?: string | null
+    category?: $Enums.TechniqueCategory
+    rankId?: string | null
+    order?: number
+    movementsCount?: number | null
+    embusen?: string | null
+    difficulty?: string | null
+    videoUrl?: string | null
+    schoolId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
+  }
+
+  export type TechniqueCreateOrConnectWithoutBeltRankKatasInput = {
+    where: TechniqueWhereUniqueInput
+    create: XOR<TechniqueCreateWithoutBeltRankKatasInput, TechniqueUncheckedCreateWithoutBeltRankKatasInput>
+  }
+
+  export type BeltRankUpsertWithoutKatasInput = {
+    update: XOR<BeltRankUpdateWithoutKatasInput, BeltRankUncheckedUpdateWithoutKatasInput>
+    create: XOR<BeltRankCreateWithoutKatasInput, BeltRankUncheckedCreateWithoutKatasInput>
+    where?: BeltRankWhereInput
+  }
+
+  export type BeltRankUpdateToOneWithWhereWithoutKatasInput = {
+    where?: BeltRankWhereInput
+    data: XOR<BeltRankUpdateWithoutKatasInput, BeltRankUncheckedUpdateWithoutKatasInput>
+  }
+
+  export type BeltRankUpdateWithoutKatasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
+    name?: StringFieldUpdateOperationsInput | string
+    kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
+    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
+    kanji?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    beltColor?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSecondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isMaximumRank?: BoolFieldUpdateOperationsInput | boolean
+    estimatedDurationMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutBeltRanksNestedInput
+    techniques?: TechniqueUpdateManyWithoutRankNestedInput
+    promotions?: StudentRankHistoryUpdateManyWithoutBeltRankNestedInput
+  }
+
+  export type BeltRankUncheckedUpdateWithoutKatasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
+    name?: StringFieldUpdateOperationsInput | string
+    kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
+    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
+    kanji?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    beltColor?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSecondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isMaximumRank?: BoolFieldUpdateOperationsInput | boolean
+    estimatedDurationMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    techniques?: TechniqueUncheckedUpdateManyWithoutRankNestedInput
+    promotions?: StudentRankHistoryUncheckedUpdateManyWithoutBeltRankNestedInput
+  }
+
+  export type TechniqueUpsertWithoutBeltRankKatasInput = {
+    update: XOR<TechniqueUpdateWithoutBeltRankKatasInput, TechniqueUncheckedUpdateWithoutBeltRankKatasInput>
+    create: XOR<TechniqueCreateWithoutBeltRankKatasInput, TechniqueUncheckedCreateWithoutBeltRankKatasInput>
+    where?: TechniqueWhereInput
+  }
+
+  export type TechniqueUpdateToOneWithWhereWithoutBeltRankKatasInput = {
+    where?: TechniqueWhereInput
+    data: XOR<TechniqueUpdateWithoutBeltRankKatasInput, TechniqueUncheckedUpdateWithoutBeltRankKatasInput>
+  }
+
+  export type TechniqueUpdateWithoutBeltRankKatasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
+    kanji?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
+    order?: IntFieldUpdateOperationsInput | number
+    movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    embusen?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableStringFieldUpdateOperationsInput | string | null
+    videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rank?: BeltRankUpdateOneWithoutTechniquesNestedInput
+    school?: SchoolUpdateOneWithoutTechniquesNestedInput
+    students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
+  }
+
+  export type TechniqueUncheckedUpdateWithoutBeltRankKatasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
+    kanji?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
+    rankId?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    embusen?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableStringFieldUpdateOperationsInput | string | null
+    videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
   }
 
   export type StudentCreateWithoutRankHistoryInput = {
@@ -47068,6 +49002,7 @@ export namespace Prisma {
 
   export type BeltRankCreateWithoutPromotionsInput = {
     id?: string
+    program?: $Enums.Program
     name: string
     kyuDan?: string | null
     japaneseName?: string | null
@@ -47079,15 +49014,18 @@ export namespace Prisma {
     estimatedDurationMonths?: number | null
     description?: string | null
     minMonths?: number | null
+    maxMonths?: number | null
     minAttendancePercent?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     school?: SchoolCreateNestedOneWithoutBeltRanksInput
+    katas?: BeltRankKataCreateNestedManyWithoutBeltRankInput
     techniques?: TechniqueCreateNestedManyWithoutRankInput
   }
 
   export type BeltRankUncheckedCreateWithoutPromotionsInput = {
     id?: string
+    program?: $Enums.Program
     name: string
     kyuDan?: string | null
     japaneseName?: string | null
@@ -47100,9 +49038,11 @@ export namespace Prisma {
     description?: string | null
     schoolId?: string | null
     minMonths?: number | null
+    maxMonths?: number | null
     minAttendancePercent?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    katas?: BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput
     techniques?: TechniqueUncheckedCreateNestedManyWithoutRankInput
   }
 
@@ -47256,6 +49196,7 @@ export namespace Prisma {
 
   export type BeltRankUpdateWithoutPromotionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
     name?: StringFieldUpdateOperationsInput | string
     kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
     japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47267,15 +49208,18 @@ export namespace Prisma {
     estimatedDurationMonths?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     school?: SchoolUpdateOneWithoutBeltRanksNestedInput
+    katas?: BeltRankKataUpdateManyWithoutBeltRankNestedInput
     techniques?: TechniqueUpdateManyWithoutRankNestedInput
   }
 
   export type BeltRankUncheckedUpdateWithoutPromotionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
     name?: StringFieldUpdateOperationsInput | string
     kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
     japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47288,9 +49232,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    katas?: BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput
     techniques?: TechniqueUncheckedUpdateManyWithoutRankNestedInput
   }
 
@@ -47357,6 +49303,7 @@ export namespace Prisma {
 
   export type BeltRankCreateWithoutTechniquesInput = {
     id?: string
+    program?: $Enums.Program
     name: string
     kyuDan?: string | null
     japaneseName?: string | null
@@ -47368,15 +49315,18 @@ export namespace Prisma {
     estimatedDurationMonths?: number | null
     description?: string | null
     minMonths?: number | null
+    maxMonths?: number | null
     minAttendancePercent?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     school?: SchoolCreateNestedOneWithoutBeltRanksInput
+    katas?: BeltRankKataCreateNestedManyWithoutBeltRankInput
     promotions?: StudentRankHistoryCreateNestedManyWithoutBeltRankInput
   }
 
   export type BeltRankUncheckedCreateWithoutTechniquesInput = {
     id?: string
+    program?: $Enums.Program
     name: string
     kyuDan?: string | null
     japaneseName?: string | null
@@ -47389,9 +49339,11 @@ export namespace Prisma {
     description?: string | null
     schoolId?: string | null
     minMonths?: number | null
+    maxMonths?: number | null
     minAttendancePercent?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    katas?: BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput
     promotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutBeltRankInput
   }
 
@@ -47429,6 +49381,28 @@ export namespace Prisma {
   export type SchoolCreateOrConnectWithoutTechniquesInput = {
     where: SchoolWhereUniqueInput
     create: XOR<SchoolCreateWithoutTechniquesInput, SchoolUncheckedCreateWithoutTechniquesInput>
+  }
+
+  export type BeltRankKataCreateWithoutKataInput = {
+    order?: number
+    createdAt?: Date | string
+    beltRank: BeltRankCreateNestedOneWithoutKatasInput
+  }
+
+  export type BeltRankKataUncheckedCreateWithoutKataInput = {
+    beltRankId: string
+    order?: number
+    createdAt?: Date | string
+  }
+
+  export type BeltRankKataCreateOrConnectWithoutKataInput = {
+    where: BeltRankKataWhereUniqueInput
+    create: XOR<BeltRankKataCreateWithoutKataInput, BeltRankKataUncheckedCreateWithoutKataInput>
+  }
+
+  export type BeltRankKataCreateManyKataInputEnvelope = {
+    data: BeltRankKataCreateManyKataInput | BeltRankKataCreateManyKataInput[]
+    skipDuplicates?: boolean
   }
 
   export type StudentTechniqueCreateWithoutTechniqueInput = {
@@ -47482,6 +49456,7 @@ export namespace Prisma {
 
   export type BeltRankUpdateWithoutTechniquesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
     name?: StringFieldUpdateOperationsInput | string
     kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
     japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47493,15 +49468,18 @@ export namespace Prisma {
     estimatedDurationMonths?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     school?: SchoolUpdateOneWithoutBeltRanksNestedInput
+    katas?: BeltRankKataUpdateManyWithoutBeltRankNestedInput
     promotions?: StudentRankHistoryUpdateManyWithoutBeltRankNestedInput
   }
 
   export type BeltRankUncheckedUpdateWithoutTechniquesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
     name?: StringFieldUpdateOperationsInput | string
     kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
     japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47514,9 +49492,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    katas?: BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput
     promotions?: StudentRankHistoryUncheckedUpdateManyWithoutBeltRankNestedInput
   }
 
@@ -47555,6 +49535,22 @@ export namespace Prisma {
     enrollments?: EnrollmentUncheckedUpdateManyWithoutSchoolNestedInput
     beltRanks?: BeltRankUncheckedUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
+  }
+
+  export type BeltRankKataUpsertWithWhereUniqueWithoutKataInput = {
+    where: BeltRankKataWhereUniqueInput
+    update: XOR<BeltRankKataUpdateWithoutKataInput, BeltRankKataUncheckedUpdateWithoutKataInput>
+    create: XOR<BeltRankKataCreateWithoutKataInput, BeltRankKataUncheckedCreateWithoutKataInput>
+  }
+
+  export type BeltRankKataUpdateWithWhereUniqueWithoutKataInput = {
+    where: BeltRankKataWhereUniqueInput
+    data: XOR<BeltRankKataUpdateWithoutKataInput, BeltRankKataUncheckedUpdateWithoutKataInput>
+  }
+
+  export type BeltRankKataUpdateManyWithWhereWithoutKataInput = {
+    where: BeltRankKataScalarWhereInput
+    data: XOR<BeltRankKataUpdateManyMutationInput, BeltRankKataUncheckedUpdateManyWithoutKataInput>
   }
 
   export type StudentTechniqueUpsertWithWhereUniqueWithoutTechniqueInput = {
@@ -47660,6 +49656,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     rank?: BeltRankCreateNestedOneWithoutTechniquesInput
     school?: SchoolCreateNestedOneWithoutTechniquesInput
+    beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
   }
 
   export type TechniqueUncheckedCreateWithoutStudentsInput = {
@@ -47678,6 +49675,7 @@ export namespace Prisma {
     schoolId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
   }
 
   export type TechniqueCreateOrConnectWithoutStudentsInput = {
@@ -47814,6 +49812,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     rank?: BeltRankUpdateOneWithoutTechniquesNestedInput
     school?: SchoolUpdateOneWithoutTechniquesNestedInput
+    beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
   }
 
   export type TechniqueUncheckedUpdateWithoutStudentsInput = {
@@ -47832,6 +49831,7 @@ export namespace Prisma {
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
   }
 
   export type TechniqueEvaluationUpsertWithoutStudentTechniqueInput = {
@@ -49515,6 +51515,7 @@ export namespace Prisma {
 
   export type BeltRankCreateManySchoolInput = {
     id?: string
+    program?: $Enums.Program
     name: string
     kyuDan?: string | null
     japaneseName?: string | null
@@ -49526,6 +51527,7 @@ export namespace Prisma {
     estimatedDurationMonths?: number | null
     description?: string | null
     minMonths?: number | null
+    maxMonths?: number | null
     minAttendancePercent?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -49796,6 +51798,7 @@ export namespace Prisma {
 
   export type BeltRankUpdateWithoutSchoolInput = {
     id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
     name?: StringFieldUpdateOperationsInput | string
     kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
     japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49807,15 +51810,18 @@ export namespace Prisma {
     estimatedDurationMonths?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    katas?: BeltRankKataUpdateManyWithoutBeltRankNestedInput
     techniques?: TechniqueUpdateManyWithoutRankNestedInput
     promotions?: StudentRankHistoryUpdateManyWithoutBeltRankNestedInput
   }
 
   export type BeltRankUncheckedUpdateWithoutSchoolInput = {
     id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
     name?: StringFieldUpdateOperationsInput | string
     kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
     japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49827,15 +51833,18 @@ export namespace Prisma {
     estimatedDurationMonths?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    katas?: BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput
     techniques?: TechniqueUncheckedUpdateManyWithoutRankNestedInput
     promotions?: StudentRankHistoryUncheckedUpdateManyWithoutBeltRankNestedInput
   }
 
   export type BeltRankUncheckedUpdateManyWithoutSchoolInput = {
     id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
     name?: StringFieldUpdateOperationsInput | string
     kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
     japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49847,6 +51856,7 @@ export namespace Prisma {
     estimatedDurationMonths?: NullableIntFieldUpdateOperationsInput | number | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49867,6 +51877,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     rank?: BeltRankUpdateOneWithoutTechniquesNestedInput
+    beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
   }
 
@@ -49885,6 +51896,7 @@ export namespace Prisma {
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
   }
 
@@ -51338,6 +53350,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type BeltRankKataCreateManyBeltRankInput = {
+    kataId: string
+    order?: number
+    createdAt?: Date | string
+  }
+
   export type TechniqueCreateManyRankInput = {
     id?: string
     name: string
@@ -51365,6 +53383,24 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type BeltRankKataUpdateWithoutBeltRankInput = {
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    kata?: TechniqueUpdateOneRequiredWithoutBeltRankKatasNestedInput
+  }
+
+  export type BeltRankKataUncheckedUpdateWithoutBeltRankInput = {
+    kataId?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BeltRankKataUncheckedUpdateManyWithoutBeltRankInput = {
+    kataId?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TechniqueUpdateWithoutRankInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -51380,6 +53416,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     school?: SchoolUpdateOneWithoutTechniquesNestedInput
+    beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
   }
 
@@ -51398,6 +53435,7 @@ export namespace Prisma {
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
   }
 
@@ -51448,6 +53486,12 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type BeltRankKataCreateManyKataInput = {
+    beltRankId: string
+    order?: number
+    createdAt?: Date | string
+  }
+
   export type StudentTechniqueCreateManyTechniqueInput = {
     id?: string
     studentId: string
@@ -51459,6 +53503,24 @@ export namespace Prisma {
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
+  }
+
+  export type BeltRankKataUpdateWithoutKataInput = {
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    beltRank?: BeltRankUpdateOneRequiredWithoutKatasNestedInput
+  }
+
+  export type BeltRankKataUncheckedUpdateWithoutKataInput = {
+    beltRankId?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BeltRankKataUncheckedUpdateManyWithoutKataInput = {
+    beltRankId?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StudentTechniqueUpdateWithoutTechniqueInput = {

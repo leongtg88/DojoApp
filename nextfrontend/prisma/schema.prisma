@@ -266,13 +266,19 @@ model StudentDocument {
 }
 
 // ==================== Rangos y técnicas ====================
+enum Program {
+  ADULT // 18+
+  YOUTH // 11-17
+}
+
 model BeltRank {
   id                    String   @id @default(cuid())
+  program               Program  @default(ADULT)
   name                  String   // Blanco, Amarillo, etc.
-  kyuDan                String?  // e.g. "9.º kyu", "1.º dan"
-  japaneseName          String?  // e.g. "Kyukyu", "Shodan"
-  kanji                 String?  // e.g. "九級"
-  order                 Int      // orden secuencial
+  kyuDan                String?  // e.g. "10TH KYU", "SHODAN"
+  japaneseName          String?  // e.g. "Ju-kyu", "Shodan"
+  kanji                 String?  // e.g. "十級", "初段"
+  order                 Int      // orden secuencial dentro del programa
   beltColor             String?  // color del cinturón (hex)
   beltSecondaryColor    String?  // color secundario (franjas)
   isMaximumRank         Boolean  @default(false)
@@ -280,12 +286,29 @@ model BeltRank {
   description           String?
   schoolId              String?
   minMonths             Int?     // permanencia mínima para examen
+  maxMonths             Int?     // permanencia máxima estimada para el grado
   minAttendancePercent  Int?     // asistencia mínima exigida para examen
   school                School?  @relation(fields: [schoolId], references: [id])
+  katas                 BeltRankKata[]
   techniques            Technique[]
   promotions            StudentRankHistory[]
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
+
+  @@unique([program, order])
+}
+
+// Katas requeridas por grado (catálogo M:N). Reutiliza Technique con category KATA.
+model BeltRankKata {
+  beltRankId String
+  kataId     String
+  order      Int      @default(0) // posición dentro del grado
+  beltRank   BeltRank @relation(fields: [beltRankId], references: [id], onDelete: Cascade)
+  kata       Technique @relation(fields: [kataId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@id([beltRankId, kataId])
+  @@index([kataId])
 }
 
 model StudentRankHistory {
@@ -321,6 +344,7 @@ model Technique {
   videoUrl     String?
   schoolId     String?
   school       School?  @relation(fields: [schoolId], references: [id])
+  beltRankKatas BeltRankKata[]
   students     StudentTechnique[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

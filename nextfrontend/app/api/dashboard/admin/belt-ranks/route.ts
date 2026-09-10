@@ -6,6 +6,7 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
 const createRankSchema = z.object({
+  program: z.enum(['ADULT', 'YOUTH']).optional(),
   name: z.string().trim().min(1).max(50),
   kyuDan: z.string().trim().max(20).optional().nullable(),
   japaneseName: z.string().trim().max(50).optional().nullable(),
@@ -17,6 +18,7 @@ const createRankSchema = z.object({
   estimatedDurationMonths: z.number().int().min(0).optional().nullable(),
   description: z.string().trim().max(500).optional().nullable(),
   minMonths: z.number().int().min(0).optional().nullable(),
+  maxMonths: z.number().int().min(0).optional().nullable(),
   minAttendancePercent: z.number().int().min(0).max(100).optional().nullable(),
 })
 
@@ -60,17 +62,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'El nombre del grado es obligatorio' }, { status: 400 })
   }
 
-  const existing = await db.beltRank.findFirst({ where: { name: result.data.name } })
+  const program = result.data.program ?? 'ADULT'
+
+  const existing = await db.beltRank.findFirst({ where: { name: result.data.name, program } })
 
   if (existing) {
-    return NextResponse.json({ error: 'Ya existe un grado con ese nombre' }, { status: 409 })
+    return NextResponse.json({ error: 'Ya existe un grado con ese nombre en este programa' }, { status: 409 })
   }
 
-  const aggregate = await db.beltRank.aggregate({ _max: { order: true } })
+  const aggregate = await db.beltRank.aggregate({ where: { program }, _max: { order: true } })
   const order = result.data.order ?? (aggregate._max.order ?? -1) + 1
 
   const rank = await db.beltRank.create({
     data: {
+      program,
       name: result.data.name,
       kyuDan: result.data.kyuDan ?? null,
       japaneseName: result.data.japaneseName ?? null,
@@ -82,6 +87,7 @@ export async function POST(request: Request) {
       estimatedDurationMonths: result.data.estimatedDurationMonths ?? null,
       description: result.data.description ?? null,
       minMonths: result.data.minMonths ?? null,
+      maxMonths: result.data.maxMonths ?? null,
       minAttendancePercent: result.data.minAttendancePercent ?? null,
       schoolId: scope.schoolId ?? null,
     },

@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import { ageFromDob, programForAge, resolveDefaultRank } from '@/lib/dashboard/program'
 import type {
   StudentAttendanceRecord,
   StudentAttendancePunchData,
@@ -37,29 +38,40 @@ export async function getStudentDashboardSummary(
     return null
   }
 
-  const rank = student.currentRank
+  const rankSelect = {
+    id: true,
+    name: true,
+    kyuDan: true,
+    japaneseName: true,
+    kanji: true,
+    order: true,
+    beltColor: true,
+    beltSecondaryColor: true,
+    isMaximumRank: true,
+    minMonths: true,
+    minAttendancePercent: true,
+    estimatedDurationMonths: true,
+    description: true,
+  } as const
+
+  let rank = student.currentRank
     ? await db.beltRank.findFirst({
         where: {
           name: student.currentRank,
           OR: [{ schoolId: student.schoolId }, { schoolId: null }],
         },
-        select: {
-          id: true,
-          name: true,
-          kyuDan: true,
-          japaneseName: true,
-          kanji: true,
-          order: true,
-          beltColor: true,
-          beltSecondaryColor: true,
-          isMaximumRank: true,
-          minMonths: true,
-          minAttendancePercent: true,
-          estimatedDurationMonths: true,
-          description: true,
-        },
+        select: rankSelect,
       })
     : null
+
+  // Fallback: un estudiante sin grado asignado siempre resuelve a cinturón blanco
+  // según su programa (nunca más "grado fantasma").
+  if (!rank && !student.currentRank) {
+    const fallback = await resolveDefaultRank(student.schoolId, student.dateOfBirth)
+    if (fallback) {
+      rank = await db.beltRank.findUnique({ where: { id: fallback.id }, select: rankSelect })
+    }
+  }
 
   const attendedSessions = student.attendances.filter(({ present, status }) => present && status !== 'REJECTED').length
   const totalSessions = student.attendances.length
@@ -295,12 +307,28 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
   const ranks = await db.beltRank.findMany({
     where: { OR: [{ schoolId: student.schoolId }, { schoolId: null }] },
     orderBy: { order: 'asc' },
-    select: { id: true, name: true, kyuDan: true, beltColor: true, order: true, minMonths: true, minAttendancePercent: true },
+    select: {
+      id: true,
+      name: true,
+      program: true,
+      kyuDan: true,
+      beltColor: true,
+      order: true,
+      minMonths: true,
+      minAttendancePercent: true,
+      katas: { select: { kataId: true }, orderBy: { order: 'asc' } },
+    },
   })
-  const currentRank = ranks.find(({ name }) => name === student.currentRank) ?? null
+  const currentProgram = programForAge(ageFromDob(student.dateOfBirth))
+  const currentRank =
+    ranks.find(({ name }) => name === student.currentRank) ??
+    ranks.find(({ program, order }) => program === currentProgram && order === 1) ??
+    null
   const nextRank = currentRank ? ranks.find(({ order }) => order === currentRank.order + 1) ?? null : null
+  const gradeKataIds = currentRank?.katas.map(({ kataId }) => kataId) ?? []
 
-  const attendedSessions = student.attendances.filter(({ present, status }) => present && status !== 'REJECTED').length
+  // Solo las asistencias confirmadas cuentan para el avance (PENDING aún no es válido).
+  const attendedSessions = student.attendances.filter(({ present, status }) => present && status === 'CONFIRMED').length
   const totalSessions = student.attendances.length
   const attendancePercent = totalSessions === 0 ? 0 : Math.round((attendedSessions / totalSessions) * 100)
   const minAttendancePercent = currentRank?.minAttendancePercent ?? 80
@@ -312,7 +340,7 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
   const katas = student.techniques
     .filter(({ technique }) => technique.category === 'KATA')
     .map(({ technique, approved, inPractice, practiceHours, lastPracticeDate, notes, evaluation, approvedAt }) => {
-      const requiredForGrade = Boolean(technique.rankId)
+      const requiredForGrade = gradeKataIds.includes(technique.id)
       return {
         id: technique.id,
         name: technique.name,
@@ -328,9 +356,10 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
       } satisfies KataProgressItem
     })
 
-  const requiredKatas = katas.filter(({ requiredForGrade }) => requiredForGrade)
-  const approvedKatas = requiredKatas.filter(({ status }) => status === 'APPROVED').length
-  const kataPercent = clampPercent(approvedKatas, requiredKatas.length)
+  const gradeKataIdsSet = new Set(gradeKataIds)
+  const approvedKatas = katas.filter(({ id, status }) => gradeKataIdsSet.has(id) && status === 'APPROVED').length
+  const totalRequiredKatas = gradeKataIds.length
+  const kataPercent = totalRequiredKatas === 0 ? 0 : clampPercent(approvedKatas, totalRequiredKatas)
   const attendanceCriteriaPercent = clampPercent(attendancePercent, minAttendancePercent)
   const monthsPercent = clampPercent(monthsInRank, minMonths)
   const overallPercent = Math.round((kataPercent + attendanceCriteriaPercent + monthsPercent) / 3)
@@ -342,7 +371,7 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
     nextRankName: nextRank?.name ?? null,
     beltColor: currentRank?.beltColor ?? beltColorFor(currentRank?.name ?? student.currentRank),
     approvedKatas,
-    requiredKatas: requiredKatas.length,
+    requiredKatas: totalRequiredKatas,
     attendance: { attendedSessions, totalSessions, percentage: attendancePercent },
     minAttendancePercent,
     monthsInRank,

@@ -2,6 +2,7 @@ import { Prisma } from '@/lib/generated/prisma'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasAnyRole, hasRole } from '@/lib/auth/roles'
+import { ageFromDob, programForAge } from '@/lib/dashboard/program'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -76,21 +77,44 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
     return NextResponse.json({ error: 'El aspirante no está disponible para conversión' }, { status: 409 })
   }
   const student = await db.$transaction(async (transaction) => {
+    const dateOfBirth = new Date(`${input.dateOfBirth}T00:00:00.000Z`)
+
+    // Nuevo estudiante entra como cinturón blanco según su programa (edad).
+    const defaultRank = await transaction.beltRank.findFirst({
+      where: {
+        program: programForAge(ageFromDob(dateOfBirth)),
+        order: 1,
+        OR: [{ schoolId: enrollment.schoolId! }, { schoolId: null }],
+      },
+      select: { id: true, name: true },
+    })
+
     const createdStudent = await transaction.student.create({
       data: {
         schoolId: enrollment.schoolId!,
         branchId: enrollment.branchId!,
         firstName: input.firstName,
         lastName: input.lastName,
-        dateOfBirth: new Date(`${input.dateOfBirth}T00:00:00.000Z`),
+        dateOfBirth,
         email: enrollment.contactEmail,
         contactPhone: input.contactPhone ?? enrollment.contactPhone,
         medicalInfo: input.medicalInfo,
         emergencyContact: input.emergencyContact,
+        currentRank: defaultRank?.name ?? null,
         registrationData: (applicant?.profileData ?? enrollment.registrationData) ?? Prisma.JsonNull,
       },
       select: { id: true },
     })
+
+    if (defaultRank) {
+      await transaction.studentRankHistory.create({
+        data: {
+          studentId: createdStudent.id,
+          beltRankId: defaultRank.id,
+          promotedBy: session.user.id,
+        },
+      })
+    }
 
   if (applicant) {
     await transaction.enrollmentApplicant.update({ where: { id: applicant.id }, data: { studentId: createdStudent.id } })

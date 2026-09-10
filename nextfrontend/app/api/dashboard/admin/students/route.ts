@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
+import { resolveDefaultRank } from '@/lib/dashboard/program'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -69,14 +70,24 @@ export async function POST(request: Request) {
         id: beltRankId,
         ...(scope.isSuperAdmin ? {} : { OR: [{ schoolId: branch.schoolId }, { schoolId: null }] }),
       },
-      select: { id: true, name: true, techniques: { select: { id: true } } },
+      select: {
+        id: true,
+        name: true,
+        katas: { select: { kataId: true }, orderBy: { order: 'asc' } },
+      },
     })
 
     if (!beltRank) {
       return NextResponse.json({ error: 'Grado inicial no disponible para esta escuela' }, { status: 400 })
     }
 
-    rank = { id: beltRank.id, name: beltRank.name, techniqueIds: beltRank.techniques.map(({ id }) => id) }
+    rank = { id: beltRank.id, name: beltRank.name, techniqueIds: beltRank.katas.map(({ kataId }) => kataId) }
+  } else {
+    // Nuevo alumno entra como cinturón blanco según su programa (edad).
+    const defaultRank = await resolveDefaultRank(branch.schoolId, new Date(`${input.dateOfBirth}T00:00:00.000Z`))
+    if (defaultRank) {
+      rank = { id: defaultRank.id, name: defaultRank.name, techniqueIds: defaultRank.katas.map(({ kataId }) => kataId) }
+    }
   }
 
   const memberNumber = await buildMemberNumber(branch.schoolId)

@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
 const updateRankSchema = z.object({
+  program: z.enum(['ADULT', 'YOUTH']).optional(),
   name: z.string().trim().min(1).max(50).optional(),
   kyuDan: z.string().trim().max(20).optional().nullable(),
   japaneseName: z.string().trim().max(50).optional().nullable(),
@@ -16,6 +17,7 @@ const updateRankSchema = z.object({
   estimatedDurationMonths: z.number().int().min(0).optional().nullable(),
   description: z.string().trim().max(500).optional().nullable(),
   minMonths: z.number().int().min(0).optional().nullable(),
+  maxMonths: z.number().int().min(0).optional().nullable(),
   minAttendancePercent: z.number().int().min(0).max(100).optional().nullable(),
 })
 
@@ -54,9 +56,30 @@ export async function PUT(request: Request, { params }: RankRouteContext) {
     Object.entries(result.data).filter(([, value]) => value !== undefined),
   )
 
-  const updated = await db.beltRank.update({ where: { id: rank.id }, data })
+  if (result.data.name || result.data.program || result.data.order) {
+    const program = (result.data.program ?? rank.program) as 'ADULT' | 'YOUTH'
+    const duplicate = await db.beltRank.findFirst({
+      where: {
+        id: { not: rank.id },
+        program,
+        ...(result.data.name ? { name: result.data.name } : {}),
+      },
+    })
+    if (duplicate) {
+      return NextResponse.json({ error: 'Ya existe un grado con ese nombre en este programa' }, { status: 409 })
+    }
+  }
 
-  return NextResponse.json({ rank: updated })
+  try {
+    const updated = await db.beltRank.update({ where: { id: rank.id }, data })
+
+    return NextResponse.json({ rank: updated })
+  } catch (error) {
+    if ((error as { code?: string }).code === 'P2002') {
+      return NextResponse.json({ error: 'Ya existe un grado con ese número en este programa' }, { status: 409 })
+    }
+    throw error
+  }
 }
 
 export async function DELETE(_request: Request, { params }: RankRouteContext) {
@@ -76,7 +99,7 @@ export async function DELETE(_request: Request, { params }: RankRouteContext) {
   const rank = await db.beltRank.findFirst({
     where: { id: rankId },
     include: {
-      _count: { select: { techniques: true, promotions: true } },
+      _count: { select: { katas: true, promotions: true } },
     },
   })
 
@@ -84,8 +107,8 @@ export async function DELETE(_request: Request, { params }: RankRouteContext) {
     return NextResponse.json({ error: 'Grado no encontrado' }, { status: 404 })
   }
 
-  if (rank._count.techniques > 0 || rank._count.promotions > 0) {
-    return NextResponse.json({ error: 'El grado tiene técnicas o promociones asociadas y no se puede eliminar' }, { status: 409 })
+  if (rank._count.katas > 0 || rank._count.promotions > 0) {
+    return NextResponse.json({ error: 'El grado tiene katas o promociones asociadas y no se puede eliminar' }, { status: 409 })
   }
 
   const assignedStudents = await db.student.count({ where: { currentRank: rank.name } })
