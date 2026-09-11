@@ -112,4 +112,16 @@ export async function createPrivateDocumentUrl(storageKey: string) {
   return data.signedUrl
 }
 
+export async function deletePrivateDocuments(storageKeys: string[]) {
+  if (storageKeys.length === 0) return
+
+  const { error } = await getStorageClient().storage.from(bucketName).remove(storageKeys)
+
+  if (error) {
+    const err = new Error(describeStorageError(error))
+    ;(err as { cause?: unknown }).cause = error
+    throw err
+  }
+}
+
 export { bucketName }

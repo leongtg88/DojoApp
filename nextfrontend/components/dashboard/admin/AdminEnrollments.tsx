@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { FilePlus2 } from 'lucide-react'
+import { FilePlus2, Trash2 } from 'lucide-react'
 import type { AdminEnrollmentSummary } from '@/types/dashboard'
 
 interface AdminEnrollmentsProps {
@@ -30,6 +30,35 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
         setDateOfBirth(applicant?.dateOfBirth.slice(0, 10) ?? '')
         setApplicantId(applicant?.id ?? '')
         setError(null)
+    }
+
+    async function deleteEnrollment(enrollment: AdminEnrollmentSummary) {
+        const applicantCount = enrollment.applicants.length
+        const label = enrollment.applicantName ?? 'esta inscripción'
+        const message = applicantCount > 0
+            ? `¿Eliminar la inscripción de ${label}? Se borrarán ${applicantCount} aspirante${applicantCount === 1 ? '' : 's'} y sus documentos. Esta acción no se puede deshacer.`
+            : `¿Eliminar la inscripción de ${label}? Esta acción no se puede deshacer.`
+        if (!window.confirm(message)) return
+
+        setError(null)
+        setIsSaving(true)
+        try {
+            const response = await fetch(`/api/dashboard/admin/enrollments/${enrollment.id}`, { method: 'DELETE' })
+
+            const payload = await response.json().catch(() => ({})) as { error?: string }
+
+            if (!response.ok) {
+                setError(payload.error ?? 'No fue posible eliminar esta inscripción.')
+                return
+            }
+
+            router.refresh()
+        } catch (reason: unknown) {
+            console.error('[eliminar-inscripcion] error al eliminar:', reason)
+            setError(reason instanceof Error ? reason.message : 'No fue posible eliminar esta inscripción. Verifica tu conexión e inténtalo nuevamente.')
+        } finally {
+            setIsSaving(false)
+        }
     }
 
     async function convertEnrollment(event: React.FormEvent<HTMLFormElement>) {
@@ -94,9 +123,12 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                             <p className="mt-1 text-sm text-neutral-300">{enrollment.contactEmail} · {enrollment.contactPhone ?? 'Sin teléfono'}</p>
                             <p className="mt-2 text-xs text-neutral-400">{enrollment.interest ?? 'Sin programa'} · {enrollment.schedule ?? 'Sin horario'} · {enrollment.createdAtLabel ?? enrollment.createdAt}</p>
                             {enrollment.applicants.length > 0 && <p className="mt-1 text-xs font-semibold text-cyan-300">{enrollment.applicants.length} aspirante{enrollment.applicants.length === 1 ? '' : 's'} pendiente{enrollment.applicants.length === 1 ? '' : 's'}</p>}
-                            <button className="mt-3 rounded-md border border-cyan-500/40 px-3 py-2 text-sm font-semibold text-cyan-200 hover:bg-cyan-500/10" onClick={() => openConversion(enrollment)} type="button">
-                                Convertir en alumno
-                            </button>
+                            <div className="mt-3 flex flex-wrap items-center gap-2">
+                                <button className="rounded-md border border-cyan-500/40 px-3 py-2 text-sm font-semibold text-cyan-200 hover:bg-cyan-500/10 disabled:opacity-60" disabled={isSaving} onClick={() => openConversion(enrollment)} type="button">
+                                    Convertir en alumno
+                                </button>
+                                <button className="inline-flex items-center gap-1.5 rounded-md border border-red-500/40 px-3 py-2 text-sm font-semibold text-red-300 hover:bg-red-500/10 disabled:opacity-60" disabled={isSaving} onClick={() => deleteEnrollment(enrollment)} type="button"><Trash2 aria-hidden="true" className="size-4" />Eliminar</button>
+                            </div>
                         </li>
                     ))}
                 </ul>

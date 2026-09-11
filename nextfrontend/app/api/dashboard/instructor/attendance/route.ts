@@ -55,6 +55,7 @@ export async function POST(request: Request) {
   }
 
   const sessionDate = new Date(`${date}T00:00:00.000Z`)
+  const dayAfter = new Date(sessionDate.getTime() + 86_400_000)
 
   await db.$transaction(async (transaction) => {
     const classSession = await transaction.classSession.upsert({
@@ -64,35 +65,72 @@ export async function POST(request: Request) {
       select: { id: true },
     })
 
-    await Promise.all(records.map((record) => transaction.attendance.upsert({
-      where: {
-        sessionId_studentId: {
+    await Promise.all(records.map(async (record) => {
+      // Si el pase de lista ya existe para este alumno en esta sesión, se actualiza.
+      // Se conservan las horas del punch-in fusionado si ya venían de una marcación previa.
+      const existing = await transaction.attendance.findFirst({
+        where: { sessionId: classSession.id, studentId: record.studentId },
+        select: { id: true, hoursTrained: true },
+      })
+
+      if (existing) {
+        const hadHours = (existing.hoursTrained ?? 0) > 0
+        return transaction.attendance.update({
+          where: { id: existing.id },
+          data: {
+            present: record.present,
+            notes: record.notes,
+            status: record.present ? 'CONFIRMED' : 'REJECTED',
+            hoursTrained: record.present ? (hadHours ? existing.hoursTrained : 1) : 0,
+            sessionType: 'class',
+            confirmedById: session.user.id,
+            confirmedAt: record.present ? new Date() : null,
+          },
+        })
+      }
+
+      // Si el alumno hizo punch-in el mismo día (sessionId null), fusiona el registro
+      // en el pase de lista para evitar el doble conteo (punch + clase).
+      const punch = await transaction.attendance.findFirst({
+        where: {
+          studentId: record.studentId,
+          sessionId: null,
+          date: { gte: sessionDate, lt: dayAfter },
+        },
+        select: { id: true, hoursTrained: true, notes: true },
+      })
+
+      if (punch) {
+        await transaction.attendance.deleteMany({ where: { sessionId: classSession.id, studentId: record.studentId } })
+        return transaction.attendance.update({
+          where: { id: punch.id },
+          data: {
+            sessionId: classSession.id,
+            present: record.present,
+            notes: record.notes ?? punch.notes,
+            status: record.present ? 'CONFIRMED' : 'REJECTED',
+            hoursTrained: record.present ? (punch.hoursTrained ?? 1) : 0,
+            confirmedById: session.user.id,
+            confirmedAt: record.present ? new Date() : null,
+          },
+        })
+      }
+
+      return transaction.attendance.create({
+        data: {
           sessionId: classSession.id,
           studentId: record.studentId,
+          present: record.present,
+          notes: record.notes,
+          date: sessionDate,
+          status: record.present ? 'CONFIRMED' : 'REJECTED',
+          hoursTrained: record.present ? 1 : 0,
+          sessionType: 'class',
+          confirmedById: session.user.id,
+          confirmedAt: record.present ? new Date() : null,
         },
-      },
-      update: {
-        present: record.present,
-        notes: record.notes,
-        status: record.present ? 'CONFIRMED' : 'REJECTED',
-        hoursTrained: record.present ? 1 : 0,
-        sessionType: 'class',
-        confirmedById: session.user.id,
-        confirmedAt: record.present ? new Date() : null,
-      },
-      create: {
-        sessionId: classSession.id,
-        studentId: record.studentId,
-        present: record.present,
-        notes: record.notes,
-        date: sessionDate,
-        status: record.present ? 'CONFIRMED' : 'REJECTED',
-        hoursTrained: record.present ? 1 : 0,
-        sessionType: 'class',
-        confirmedById: session.user.id,
-        confirmedAt: record.present ? new Date() : null,
-      },
-    })))
+      })
+    }))
   })
 
   return NextResponse.json({ ok: true })

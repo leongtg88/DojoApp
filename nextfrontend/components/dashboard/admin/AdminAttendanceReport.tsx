@@ -25,6 +25,7 @@ const SESSION_TYPE_LABELS: Record<string, string> = {
 export function AdminAttendanceReport({ records }: AdminAttendanceReportProps) {
     const [searchTerm, setSearchTerm] = useState('')
     const [attendanceFilter, setAttendanceFilter] = useState<'ALL' | 'PRESENT' | 'ABSENT'>('ALL')
+    const [statusFilter, setStatusFilter] = useState<'ALL' | AttendanceStatus>('ALL')
     const [branchFilter, setBranchFilter] = useState('ALL')
     const formatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })
     const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
@@ -35,11 +36,12 @@ export function AdminAttendanceReport({ records }: AdminAttendanceReportProps) {
         const matchesStatus = attendanceFilter === 'ALL'
             || (attendanceFilter === 'PRESENT' && record.present)
             || (attendanceFilter === 'ABSENT' && !record.present)
+        const matchesState = statusFilter === 'ALL' || record.status === statusFilter
         const matchesBranch = branchFilter === 'ALL' || record.branchName === branchFilter
         const matchesSearch = !normalizedSearch || [record.studentName, record.className ?? '', record.branchName ?? '', record.notes ?? '']
             .some((value) => value.toLocaleLowerCase('es').includes(normalizedSearch))
 
-        return matchesStatus && matchesBranch && matchesSearch
+        return matchesStatus && matchesState && matchesBranch && matchesSearch
     })
 
     return (
@@ -58,9 +60,10 @@ export function AdminAttendanceReport({ records }: AdminAttendanceReportProps) {
                         <article className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-cyan-200">Horas entrenadas</p><p className="mt-1 text-2xl font-bold text-cyan-200">{totalHours.toFixed(1)}h</p></article>
                     </section>
                     <section className="mt-5 rounded-lg border border-neutral-800 bg-[#161b22] shadow-sm">
-                        <div className="grid gap-3 border-b border-neutral-800 p-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:p-5">
+                        <div className="grid gap-3 border-b border-neutral-800 p-4 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:p-5">
                             <label className="relative block" htmlFor="attendance-search"><Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-cyan-400" /><input className="w-full rounded-md border border-neutral-700 bg-[#0d1117] py-2.5 pl-10 pr-3 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="attendance-search" onChange={(event) => setSearchTerm(event.target.value)} placeholder="Buscar alumno, clase o nota" type="search" value={searchTerm} /></label>
-                            <label className="text-xs font-semibold text-neutral-300" htmlFor="attendance-status">Estado<select className="mt-1 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="attendance-status" onChange={(event) => setAttendanceFilter(event.target.value as typeof attendanceFilter)} value={attendanceFilter}><option value="ALL">Todos</option><option value="PRESENT">Presentes</option><option value="ABSENT">Ausentes</option></select></label>
+                            <label className="text-xs font-semibold text-neutral-300" htmlFor="attendance-attendance">Presencia<select className="mt-1 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="attendance-attendance" onChange={(event) => setAttendanceFilter(event.target.value as typeof attendanceFilter)} value={attendanceFilter}><option value="ALL">Todos</option><option value="PRESENT">Presentes</option><option value="ABSENT">Ausentes</option></select></label>
+                            <label className="text-xs font-semibold text-neutral-300" htmlFor="attendance-status">Estado<select className="mt-1 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="attendance-status" onChange={(event) => setStatusFilter(event.target.value as typeof statusFilter)} value={statusFilter}><option value="ALL">Todos</option><option value="PENDING">Punch-in pendiente</option><option value="CONFIRMED">Confirmadas</option><option value="REJECTED">Rechazadas</option></select></label>
                             <label className="text-xs font-semibold text-neutral-300" htmlFor="attendance-branch">Sucursal<select className="mt-1 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="attendance-branch" onChange={(event) => setBranchFilter(event.target.value)} value={branchFilter}><option value="ALL">Todas</option>{branches.map((branch) => <option key={branch} value={branch}>{branch}</option>)}</select></label>
                         </div>
                         {filteredRecords.length === 0 ? <div className="px-5 py-10 text-center"><Users aria-hidden="true" className="mx-auto size-6 text-cyan-400" /><p className="mt-3 text-sm font-semibold text-white">No hay registros con esos filtros.</p></div> : <ul className="divide-y divide-neutral-800">

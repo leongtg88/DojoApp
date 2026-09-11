@@ -62,7 +62,7 @@ function rankMetaFor(form: RankForm) {
 
 export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalog }: AdminCurriculumCatalogProps) {
     const router = useRouter()
-    const [ranks] = useState(initialRanks)
+    const ranks = initialRanks
     const [selectedRankId, setSelectedRankId] = useState(initialRanks[0]?.id ?? '')
     const [editingRank, setEditingRank] = useState<AdminBeltRankSummary | null>(null)
     const [rankForm, setRankForm] = useState<RankForm>(EMPTY_RANK_FORM)

@@ -70,7 +70,7 @@ export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
 
             <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div aria-label="Filtrar técnicas por estado" className="flex gap-2 overflow-x-auto pb-1 sm:pb-0">
-                    {([['ALL', 'Todas', techniques.length], ['PENDING', 'Pendientes', techniques.length - approvedCount], ['APPROVED', 'Aprobadas', approvedCount]] as const).map(([status, label, count]) => <button aria-pressed={statusFilter === status} className={`shrink-0 rounded-md border px-3 py-1.5 text-xs font-bold transition-colors ${statusFilter === status ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-100' : 'border-neutral-700 bg-[#161b22] text-neutral-400 hover:border-neutral-500'}`} key={status} onClick={() => setStatusFilter(status)} type="button">{label} ({count})</button>)}
+                    {([['ALL', 'Todos los estados', techniques.length], ['PENDING', 'Pendientes', techniques.length - approvedCount], ['APPROVED', 'Aprobadas', approvedCount]] as const).map(([status, label, count]) => <button aria-pressed={statusFilter === status} className={`shrink-0 rounded-md border px-3 py-1.5 text-xs font-bold transition-colors ${statusFilter === status ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-100' : 'border-neutral-700 bg-[#161b22] text-neutral-400 hover:border-neutral-500'}`} key={status} onClick={() => setStatusFilter(status)} type="button">{label} ({count})</button>)}
                 </div>
                 <label className="relative block sm:w-60" htmlFor="student-technique-search">
                     <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-cyan-400" />
