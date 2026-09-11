@@ -281,7 +281,7 @@ function constructorStatus(approved: boolean, inPractice: boolean): KataStatus {
 }
 
 function clampPercent(value: number, goal: number): number {
-  return goal <= 0 ? 100 : Math.min(100, Math.round((value / goal) * 100))
+  return goal <= 0 ? 0 : Math.min(100, Math.round((value / goal) * 100))
 }
 
 export async function getStudentKataProgress(userId: string): Promise<StudentKataProgressSummary | null> {

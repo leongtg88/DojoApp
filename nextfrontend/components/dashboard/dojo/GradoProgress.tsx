@@ -8,7 +8,7 @@ interface GradoProgressProps {
     className?: string
 }
 
-const percent = (value: number, goal: number) => (goal > 0 ? Math.min(100, Math.round((value / goal) * 100)) : 100)
+const percent = (value: number, goal: number) => (goal > 0 ? Math.min(100, Math.round((value / goal) * 100)) : 0)
 
 export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
     const kataPercent = percent(grado.approvedKatas, grado.requiredKatas)
