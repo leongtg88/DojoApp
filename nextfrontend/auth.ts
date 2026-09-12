@@ -64,7 +64,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // inscripción (tiene al menos un enrolment). Las cuentas sin
         // inscripción (auto-registradas o huérfanas) quedan bloqueadas:
         // el acceso es exclusivo por invitación de la escuela.
-        if (user.roles.includes('STUDENT')) {
+        // El gate aplica SOLO a cuentas cuyo único rol es STUDENT: el staff
+        // multirol (admin/instructor) nunca queda bloqueado por este chequeo.
+        const staffRoles = user.roles.filter((role) => role !== 'STUDENT')
+        if (staffRoles.length === 0) {
           const studentWithEnrollment = await db.student.findFirst({
             where: {
               userId: user.id,

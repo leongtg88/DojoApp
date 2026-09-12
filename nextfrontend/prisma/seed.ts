@@ -41,6 +41,8 @@ async function main() {
   }
 
   // ============ HORARIOS (un bloque por día; los horarios multidía comparten nombre) ============
+  // Prisma 7 exige ISO-8601 (o Date) para columnas TIME; se normaliza HH:MM -> 1970-01-01THH:MM:00.000Z
+  const toTimeInput = (t: string) => `1970-01-01T${t}:00.000Z`
   const SCHEDULES = [
     { id: 'schedule-adult-mon', name: 'Adultos Noche', audience: 'ADULTS', dayOfWeek: 1, startTime: '19:00', endTime: '20:30', description: 'Lunes - Clase de adultos/avanzados.' },
     { id: 'schedule-adult-wed', name: 'Adultos Noche', audience: 'ADULTS', dayOfWeek: 3, startTime: '19:00', endTime: '20:30', description: 'Miércoles - Clase de adultos/avanzados.' },
@@ -51,8 +53,8 @@ async function main() {
   for (const schedule of SCHEDULES) {
     await db.class.upsert({
       where: { id: schedule.id },
-      update: { name: schedule.name, audience: schedule.audience as ClassAudience, dayOfWeek: schedule.dayOfWeek, startTime: schedule.startTime, endTime: schedule.endTime, description: schedule.description, active: true },
-      create: { ...schedule, audience: schedule.audience as ClassAudience, branchId: branch.id, active: true },
+      update: { name: schedule.name, audience: schedule.audience as ClassAudience, dayOfWeek: schedule.dayOfWeek, startTime: toTimeInput(schedule.startTime), endTime: toTimeInput(schedule.endTime), description: schedule.description, active: true },
+      create: { ...schedule, audience: schedule.audience as ClassAudience, branchId: branch.id, startTime: toTimeInput(schedule.startTime), endTime: toTimeInput(schedule.endTime), active: true },
     })
   }
 
@@ -237,6 +239,22 @@ async function main() {
     },
   })
 
+  // Inscripción demo del estudiante: el gate de login exige que una cuenta
+  // cuya única función sea STUDENT provenga de una inscripción.
+  await db.enrollment.upsert({
+    where: { contactEmail_status: { contactEmail: 'alumno@test.com', status: 'ENROLLED' } },
+    update: {},
+    create: {
+      origin: 'ASSISTANT',
+      schoolId: school.id,
+      branchId: branch.id,
+      applicantName: 'Juan Pérez',
+      contactEmail: 'alumno@test.com',
+      status: 'ENROLLED',
+      studentId: student.id,
+    },
+  })
+
   // Cuenta owner multirol (principal del dojo). Datos genéricos: se autocompletan desde su perfil en el panel del estudiante.
   const ownerPassword = await bcrypt.hash('Sensei123!', 12)
 
@@ -287,8 +305,8 @@ async function main() {
       branchId: branch.id,
       instructorId: instructor.id,
       dayOfWeek: 2,
-      startTime: '19:00',
-      endTime: '20:30',
+      startTime: toTimeInput('19:00'),
+      endTime: toTimeInput('20:30'),
     },
   })
 

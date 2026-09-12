@@ -60,8 +60,8 @@ export async function PATCH(request: Request, { params }: ClassRouteContext) {
     where: { id: existing.id },
     data: {
       ...result.data,
-      ...(result.data.startTime ? { startTime: `${result.data.startTime}:00` } : {}),
-      ...(result.data.endTime ? { endTime: `${result.data.endTime}:00` } : {}),
+      ...(result.data.startTime ? { startTime: `1970-01-01T${result.data.startTime}:00.000Z` } : {}),
+      ...(result.data.endTime ? { endTime: `1970-01-01T${result.data.endTime}:00.000Z` } : {}),
     },
     select: {
       id: true,

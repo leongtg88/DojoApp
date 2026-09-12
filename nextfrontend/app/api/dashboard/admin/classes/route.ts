@@ -100,8 +100,8 @@ export async function POST(request: Request) {
     branchId: branch.id,
     instructorId: data.instructorId ?? null,
     dayOfWeek: data.dayOfWeek,
-    startTime: `${data.startTime}:00`,
-    endTime: `${data.endTime}:00`,
+    startTime: `1970-01-01T${data.startTime}:00.000Z`,
+    endTime: `1970-01-01T${data.endTime}:00.000Z`,
     active: true,
   }
 
