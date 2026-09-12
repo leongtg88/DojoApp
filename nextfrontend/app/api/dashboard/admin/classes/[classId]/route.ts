@@ -2,6 +2,8 @@ import { Prisma } from '@/lib/generated/prisma'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
+import { formatTime } from '@/lib/dashboard/balance'
+import { findInstructorScheduleConflict } from '@/lib/dashboard/class-schedule'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -49,11 +51,46 @@ export async function PATCH(request: Request, { params }: ClassRouteContext) {
   const { classId } = await params
   const existing = await db.class.findFirst({
     where: { id: classId, ...classScopeFilter(scope) },
-    select: { id: true },
+    select: { id: true, active: true, dayOfWeek: true, startTime: true, endTime: true, instructorId: true },
   })
 
   if (!existing) {
     return NextResponse.json({ error: 'Horario no encontrado' }, { status: 404 })
+  }
+
+  if (result.data.instructorId) {
+    const instructor = await db.user.findFirst({
+      where: {
+        id: result.data.instructorId,
+        roles: { has: 'INSTRUCTOR' },
+        ...(scope.isSuperAdmin ? {} : { OR: [{ schoolId: scope.schoolId! }, { schoolId: null }] }),
+      },
+      select: { id: true },
+    })
+
+    if (!instructor) {
+      return NextResponse.json({ error: 'El instructor seleccionado no pertenece a la escuela.' }, { status: 400 })
+    }
+  }
+
+  const nextActive = result.data.active ?? existing.active
+  const nextInstructor = result.data.instructorId !== undefined ? result.data.instructorId : existing.instructorId
+
+  if (nextActive && nextInstructor) {
+    const conflict = await findInstructorScheduleConflict({
+      dayOfWeek: result.data.dayOfWeek ?? existing.dayOfWeek,
+      startTime: result.data.startTime ?? formatTime(existing.startTime),
+      endTime: result.data.endTime ?? formatTime(existing.endTime),
+      instructorId: nextInstructor,
+      excludeClassId: existing.id,
+    })
+
+    if (conflict) {
+      return NextResponse.json(
+        { error: `El instructor ya tiene la clase "${conflict.name}" de ${formatTime(conflict.startTime)} a ${formatTime(conflict.endTime)} ese día.` },
+        { status: 409 },
+      )
+    }
   }
 
   const scheduledClass = await db.class.update({

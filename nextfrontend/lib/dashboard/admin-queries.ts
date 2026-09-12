@@ -17,6 +17,7 @@ import type {
   AdminAttendanceRecord,
   AdminCurriculumData,
   AdminEnrollmentSummary,
+  AdminInstructor,
   AdminScheduleSummary,
   AdminStudentDetail,
   AdminStudentSummary,
@@ -737,6 +738,28 @@ export async function getAdminPlans(userId: string): Promise<PlanSummary[] | nul
   }))
 }
 
+export async function getAdminInstructors(userId: string): Promise<AdminInstructor[] | null> {
+  const scope = await getAdminScope(userId)
+
+  if (!scope) {
+    return null
+  }
+
+  const instructors = await db.user.findMany({
+    where: {
+      roles: { has: 'INSTRUCTOR' },
+      ...(scope.isSuperAdmin ? {} : { OR: [{ schoolId: scope.schoolId! }, { schoolId: null }] }),
+    },
+    orderBy: [{ name: 'asc' }],
+    select: { id: true, name: true, email: true },
+  })
+
+  return instructors.map((instructor) => ({
+    id: instructor.id,
+    name: instructor.name ?? instructor.email,
+  }))
+}
+
 export async function getAdminSchedules(userId: string): Promise<AdminScheduleSummary[] | null> {
   const scope = await getAdminScope(userId)
 
@@ -759,10 +782,11 @@ export async function getAdminSchedules(userId: string): Promise<AdminScheduleSu
       branch: { select: { id: true, name: true } },
       instructor: { select: { id: true, name: true } },
       _count: { select: { enrollments: { where: { status: ClassEnrollmentStatus.ACTIVE } } } },
+      enrollments: { where: { status: ClassEnrollmentStatus.ACTIVE }, select: { studentId: true } },
     },
   })
 
-  return classes.map(({ branch, instructor, _count, startTime, endTime, ...scheduledClass }) => ({
+  return classes.map(({ branch, instructor, _count, enrollments, startTime, endTime, ...scheduledClass }) => ({
     ...scheduledClass,
     startTime: formatTime(startTime),
     endTime: formatTime(endTime),
@@ -771,6 +795,7 @@ export async function getAdminSchedules(userId: string): Promise<AdminScheduleSu
     instructorId: instructor?.id ?? null,
     instructorName: instructor?.name ?? null,
     activeStudentCount: _count.enrollments,
+    enrolledStudentIds: enrollments.map(({ studentId }) => studentId),
   }))
 }
 

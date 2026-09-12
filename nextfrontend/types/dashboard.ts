@@ -476,6 +476,12 @@ export interface ScheduleOption {
 
 export interface AdminScheduleSummary extends ScheduleOption {
 	description: string | null
+	enrolledStudentIds: string[]
+}
+
+export interface AdminInstructor {
+	id: string
+	name: string
 }
 
 export interface StudentPendingRecovery {

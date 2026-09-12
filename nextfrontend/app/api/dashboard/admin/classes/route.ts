@@ -2,6 +2,8 @@ import { Prisma } from '@/lib/generated/prisma'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
+import { formatTime } from '@/lib/dashboard/balance'
+import { findInstructorScheduleConflict } from '@/lib/dashboard/class-schedule'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -55,7 +57,17 @@ export async function GET() {
     },
   })
 
-  return NextResponse.json({ classes })
+  return NextResponse.json({
+    classes: classes.map(({ branch, instructor, _count, startTime, endTime, ...scheduledClass }) => ({
+      ...scheduledClass,
+      startTime: formatTime(startTime),
+      endTime: formatTime(endTime),
+      branchName: branch.name,
+      instructorId: instructor?.id ?? null,
+      instructorName: instructor?.name ?? null,
+      activeStudentCount: _count.enrollments,
+    })),
+  })
 }
 
 export async function POST(request: Request) {
@@ -80,17 +92,57 @@ export async function POST(request: Request) {
 
   const data = result.data
 
-  if (!data.branchId && !scope.isSuperAdmin) {
-    return NextResponse.json({ error: 'Se requiere la sucursal para crear el horario.' }, { status: 400 })
+  // Sede: la indicada, la del admin, o la primera disponible.
+  let branchId = data.branchId ?? scope.branchId ?? null
+  if (!branchId) {
+    const fallbackBranch = await db.branch.findFirst({
+      where: scope.isSuperAdmin ? {} : { schoolId: scope.schoolId! },
+      orderBy: { createdAt: 'asc' },
+      select: { id: true },
+    })
+    branchId = fallbackBranch?.id ?? null
+  }
+
+  if (!branchId) {
+    return NextResponse.json({ error: 'No se encontró una sede para el horario.' }, { status: 400 })
   }
 
   const branch = await db.branch.findFirst({
-    where: { id: data.branchId, ...(scope.isSuperAdmin ? {} : { schoolId: scope.schoolId! }) },
+    where: { id: branchId, ...(scope.isSuperAdmin ? {} : { schoolId: scope.schoolId! }) },
     select: { id: true },
   })
 
   if (!branch) {
     return NextResponse.json({ error: 'Sucursal no encontrada' }, { status: 404 })
+  }
+
+  if (data.instructorId) {
+    const instructor = await db.user.findFirst({
+      where: {
+        id: data.instructorId,
+        roles: { has: 'INSTRUCTOR' },
+        ...(scope.isSuperAdmin ? {} : { OR: [{ schoolId: scope.schoolId! }, { schoolId: null }] }),
+      },
+      select: { id: true },
+    })
+
+    if (!instructor) {
+      return NextResponse.json({ error: 'El instructor seleccionado no pertenece a la escuela.' }, { status: 400 })
+    }
+
+    const conflict = await findInstructorScheduleConflict({
+      dayOfWeek: data.dayOfWeek,
+      startTime: data.startTime,
+      endTime: data.endTime,
+      instructorId: data.instructorId,
+    })
+
+    if (conflict) {
+      return NextResponse.json(
+        { error: `El instructor ya tiene la clase "${conflict.name}" de ${formatTime(conflict.startTime)} a ${formatTime(conflict.endTime)} ese día.` },
+        { status: 409 },
+      )
+    }
   }
 
   const createData: Prisma.ClassUncheckedCreateInput = {
