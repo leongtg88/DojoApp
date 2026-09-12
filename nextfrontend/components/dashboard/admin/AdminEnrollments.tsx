@@ -18,7 +18,14 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [dateOfBirth, setDateOfBirth] = useState('')
+    const [gender, setGender] = useState<'female' | 'male' | ''>('')
     const [applicantId, setApplicantId] = useState('')
+
+    function sexoToGender(sexo: unknown): 'female' | 'male' | '' {
+        if (sexo === 'Femenino') return 'female'
+        if (sexo === 'Masculino') return 'male'
+        return ''
+    }
 
     function openConversion(enrollment: AdminEnrollmentSummary) {
         console.log('[convertir-alumno] abrir formulario para:', enrollment.id, enrollment.applicantName)
@@ -28,6 +35,7 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
         setFirstName(parts[0] ?? '')
         setLastName(parts.slice(1).join(' '))
         setDateOfBirth(applicant?.dateOfBirth.slice(0, 10) ?? '')
+        setGender(sexoToGender(applicant?.profileData?.sexo))
         setApplicantId(applicant?.id ?? '')
         setError(null)
     }
@@ -78,6 +86,7 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                     firstName,
                     lastName,
                     dateOfBirth,
+                    gender: gender || undefined,
                     applicantId: applicantId || undefined,
                     contactPhone: selectedEnrollment.contactPhone,
                     medicalInfo: null,
@@ -140,7 +149,7 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                         <p className="mt-1 text-sm text-neutral-400">Se creará el expediente sin cuenta de acceso. La cuenta se invita en un paso posterior.</p>
                         <div className="mt-4 grid gap-3 sm:grid-cols-2">
                             {selectedEnrollment.applicants.length > 1 && <label className="sm:col-span-2 text-sm font-semibold text-neutral-200" htmlFor="applicantId">Aspirante
-                                <select className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="applicantId" onChange={(event) => { const applicant = selectedEnrollment.applicants.find(({ id }) => id === event.target.value); setApplicantId(event.target.value); const parts = applicant?.name.split(/\s+/) ?? []; setFirstName(parts[0] ?? ''); setLastName(parts.slice(1).join(' ')); setDateOfBirth(applicant?.dateOfBirth.slice(0, 10) ?? '') }} value={applicantId}>{selectedEnrollment.applicants.map((applicant) => <option key={applicant.id} value={applicant.id}>{applicant.name}</option>)}</select>
+                                <select className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="applicantId" onChange={(event) => { const applicant = selectedEnrollment.applicants.find(({ id }) => id === event.target.value); setApplicantId(event.target.value); const parts = applicant?.name.split(/\s+/) ?? []; setFirstName(parts[0] ?? ''); setLastName(parts.slice(1).join(' ')); setDateOfBirth(applicant?.dateOfBirth.slice(0, 10) ?? ''); setGender(sexoToGender(applicant?.profileData?.sexo)) }} value={applicantId}>{selectedEnrollment.applicants.map((applicant) => <option key={applicant.id} value={applicant.id}>{applicant.name}</option>)}</select>
                             </label>}
                             <label className="text-sm font-semibold text-neutral-200" htmlFor="firstName">Nombre
                                 <input className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="firstName" onChange={(event) => setFirstName(event.target.value)} required value={firstName} />
@@ -150,6 +159,13 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                             </label>
                             <label className="text-sm font-semibold text-neutral-200" htmlFor="dateOfBirth">Fecha de nacimiento
                                 <input className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="dateOfBirth" onChange={(event) => setDateOfBirth(event.target.value)} required type="date" value={dateOfBirth} />
+                            </label>
+                            <label className="text-sm font-semibold text-neutral-200" htmlFor="gender">Sexo
+                                <select className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="gender" onChange={(event) => setGender(event.target.value as 'female' | 'male' | '')} value={gender}>
+                                    <option value="">No especificado</option>
+                                    <option value="female">Femenino</option>
+                                    <option value="male">Masculino</option>
+                                </select>
                             </label>
                         </div>
                         {error && <p className="mt-4 text-sm font-medium text-red-300">{error}</p>}

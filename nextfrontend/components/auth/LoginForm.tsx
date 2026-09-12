@@ -230,7 +230,7 @@ export function LoginForm({
       {/* Switch to Register link */}
       <div className="mt-8 pt-6 border-t border-white/5 text-center">
         <p className="text-xs text-white/40 tracking-wide">
-          ¿No tienes cuenta en el dojo?{' '}
+          ¿Aún no eres alumno?{' '}
           {onNavigateToRegister ? (
             <button
               id="link-go-to-register"
@@ -238,15 +238,15 @@ export function LoginForm({
               onClick={onNavigateToRegister}
               className="text-white font-medium hover:underline ml-1 underline-offset-4 transition-all"
             >
-              Crear cuenta
+              Inscríbete en el dojo
             </button>
           ) : (
             <Link
               id="link-go-to-register"
-              href="/registro"
+              href="/inscripcion"
               className="text-white font-medium hover:underline ml-1 underline-offset-4 transition-all"
             >
-              Crear cuenta
+              Inscríbete en el dojo
             </Link>
           )}
         </p>

@@ -81,6 +81,7 @@ export async function getStudentDashboardSummary(
       id: student.id,
       firstName: student.firstName,
       lastName: student.lastName,
+      gender: student.gender,
       email: student.user?.email ?? null,
       contactPhone: student.contactPhone,
       dateOfBirth: student.dateOfBirth.toISOString(),

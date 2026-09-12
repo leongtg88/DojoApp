@@ -14,6 +14,7 @@ type Hijo = {
   id: string;
   nombre: string;
   fechaNacimiento: string;
+  sexo: string;
   tipoSangre: string;
   altura: string;
   tallaPantalon: string;
@@ -29,6 +30,7 @@ type FormData = {
   // Adulto
   nombreAdulto: string;
   fechaNacimientoAdulto: string;
+  sexoAdulto: string;
   tipoSangreAdulto: string;
   alturaAdulto: string;
   tallaPantalonAdulto: string;
@@ -293,6 +295,7 @@ const ToseiGusokuForm = () => {
     tipoRegistro: 'ninguno',
     nombreAdulto: '',
     fechaNacimientoAdulto: '',
+    sexoAdulto: '',
     tipoSangreAdulto: '',
     alturaAdulto: '',
     tallaPantalonAdulto: '',
@@ -305,7 +308,7 @@ const ToseiGusokuForm = () => {
     identAdultoPreview: [],
     telefonoContacto: '',
     email: '',
-    hijos: [{ id: generarId(), nombre: '', fechaNacimiento: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }],
+    hijos: [{ id: generarId(), nombre: '', fechaNacimiento: '', sexo: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }],
     nombreMadre: '',
     telefonoMadre: '',
     nombrePadre: '',
@@ -366,6 +369,7 @@ const ToseiGusokuForm = () => {
       } : {
         nombreAdulto: '',
         fechaNacimientoAdulto: '',
+        sexoAdulto: '',
         tipoSangreAdulto: '',
         alturaAdulto: '',
         tallaPantalonAdulto: '',
@@ -386,7 +390,7 @@ const ToseiGusokuForm = () => {
   const agregarHijo = () => {
     setFormData(prev => ({
       ...prev,
-      hijos: [...prev.hijos, { id: generarId(), nombre: '', fechaNacimiento: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }]
+      hijos: [...prev.hijos, { id: generarId(), nombre: '', fechaNacimiento: '', sexo: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }]
     }));
   };
 
@@ -590,6 +594,7 @@ const ToseiGusokuForm = () => {
     if (tipoRegistro === 'adulto') {
       if (!formData.nombreAdulto.trim()) newErrors.nombreAdulto = 'Campo requerido';
       if (!formData.fechaNacimientoAdulto) newErrors.fechaNacimientoAdulto = 'Campo requerido';
+      if (!formData.sexoAdulto) newErrors.sexoAdulto = 'Selecciona una opción';
       if (!formData.tipoSangreAdulto) newErrors.tipoSangreAdulto = 'Selecciona una opción';
       if (!formData.direccionAdulto.trim()) newErrors.direccionAdulto = 'Campo requerido';
       if (formData.tallaPantalonAdulto && !TALLAS_ROPA.includes(formData.tallaPantalonAdulto)) newErrors.tallaPantalonAdulto = 'Selecciona una talla válida';
@@ -627,6 +632,7 @@ const ToseiGusokuForm = () => {
         if (!hijo.nombre.trim()) { err.nombre = `Nombre del hijo ${index + 1} requerido`; hasError = true; }
         if (!hijo.fechaNacimiento) { err.fechaNacimiento = `Fecha de nacimiento del hijo ${index + 1} requerida`; hasError = true; }
         if (!hijo.tipoSangre) { err.tipoSangre = `Tipo de sangre del hijo ${index + 1} requerido`; hasError = true; }
+        if (!hijo.sexo) { err.sexo = `Sexo del hijo ${index + 1} requerido`; hasError = true; }
         if (hijo.tallaPantalon && !TALLAS_ROPA.includes(hijo.tallaPantalon)) { err.tallaPantalon = `Selecciona una talla válida para el hijo ${index + 1}`; hasError = true; }
         else if (!hijo.tallaPantalon) { err.tallaPantalon = `Selecciona una talla para el hijo ${index + 1}`; hasError = true; }
         if (hijo.tallaCamiseta && !TALLAS_ROPA.includes(hijo.tallaCamiseta)) { err.tallaCamiseta = `Selecciona una talla válida para el hijo ${index + 1}`; hasError = true; }
@@ -705,8 +711,8 @@ const ToseiGusokuForm = () => {
     if (!validateStep3()) return;
 
     const applicants = formData.tipoRegistro === 'adulto'
-      ? [{ name: formData.nombreAdulto, dateOfBirth: formData.fechaNacimientoAdulto, profileData: { bloodType: formData.tipoSangreAdulto, height: formData.alturaAdulto, pantSize: formData.tallaPantalonAdulto, shirtSize: formData.tallaCamisetaAdulto, address: formData.direccionAdulto, nationalId: formData.cedula, medicalInfo: formData.condicionMedica } }]
-      : formData.hijos.map((hijo) => ({ name: hijo.nombre, dateOfBirth: hijo.fechaNacimiento, profileData: { bloodType: hijo.tipoSangre, height: hijo.altura, pantSize: hijo.tallaPantalon, shirtSize: hijo.tallaCamiseta, medicalInfo: formData.condicionMedica } }));
+      ? [{ name: formData.nombreAdulto, dateOfBirth: formData.fechaNacimientoAdulto, profileData: { sexo: formData.sexoAdulto, bloodType: formData.tipoSangreAdulto, height: formData.alturaAdulto, pantSize: formData.tallaPantalonAdulto, shirtSize: formData.tallaCamisetaAdulto, address: formData.direccionAdulto, nationalId: formData.cedula, medicalInfo: formData.condicionMedica } }]
+      : formData.hijos.map((hijo) => ({ name: hijo.nombre, dateOfBirth: hijo.fechaNacimiento, profileData: { sexo: hijo.sexo, bloodType: hijo.tipoSangre, height: hijo.altura, pantSize: hijo.tallaPantalon, shirtSize: hijo.tallaCamiseta, medicalInfo: formData.condicionMedica } }));
     const uploadData = new FormData();
     uploadData.append('payload', JSON.stringify({ email: formData.email, phone: formData.tipoRegistro === 'adulto' ? formData.telefonoContacto : formData.telefonoMadre, applicants, registrationData: { tipoRegistro: formData.tipoRegistro, nombreMadre: formData.nombreMadre, telefonoMadre: formData.telefonoMadre, nombrePadre: formData.nombrePadre, telefonoPadre: formData.telefonoPadre, direccionPadres: formData.direccionPadres, condicionMedica: formData.condicionMedica, horasPractica: formData.horasPractica, espacioCasa: formData.espacioCasa, compromisoDiario: formData.compromisoDiario, asistenciaPadre: formData.asistenciaPadre, metodoMotivacion: formData.metodoMotivacion, razonesKarate: formData.razonesKarate, compromisoObstaculos: formData.compromisoObstaculos } }));
     if (formData.tipoRegistro === 'adulto') {
@@ -791,6 +797,19 @@ const ToseiGusokuForm = () => {
               <input type="date" name="fechaNacimientoAdulto" value={formData.fechaNacimientoAdulto} onChange={handleChange}
                 className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.fechaNacimientoAdulto ? 'border-red-500' : 'border-brand-accent/60'}`} />
               {errors.fechaNacimientoAdulto && <p className="text-red-500 text-xs mt-1">{errors.fechaNacimientoAdulto}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-stone-500 mb-1">Sexo <span className="text-red-500">*</span></label>
+              <div className="relative">
+                <select name="sexoAdulto" value={formData.sexoAdulto} onChange={handleChange}
+                  className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.sexoAdulto ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                  <option value="">Selecciona...</option>
+                  <option value="Masculino">Masculino</option>
+                  <option value="Femenino">Femenino</option>
+                </select>
+                <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
+              {errors.sexoAdulto && <p className="text-red-500 text-xs mt-1">{errors.sexoAdulto}</p>}
             </div>
             <div>
               <label className="block text-sm font-medium text-stone-500 mb-1">Número de Cédula <span className="text-red-500">*</span></label>
@@ -911,6 +930,19 @@ const ToseiGusokuForm = () => {
                   <input type="date" value={hijo.fechaNacimiento} onChange={(e) => handleHijoChange(hijo.id, 'fechaNacimiento', e.target.value)}
                     className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.hijos?.[index]?.fechaNacimiento ? 'border-red-500' : 'border-brand-accent/60'}`} />
                   {errors.hijos?.[index]?.fechaNacimiento && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.fechaNacimiento}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-stone-500 mb-1">Sexo <span className="text-red-500">*</span></label>
+                  <div className="relative">
+                    <select value={hijo.sexo} onChange={(e) => handleHijoChange(hijo.id, 'sexo', e.target.value)}
+                      className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.hijos?.[index]?.sexo ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                      <option value="">Selecciona...</option>
+                      <option value="Masculino">Masculino</option>
+                      <option value="Femenino">Femenino</option>
+                    </select>
+                    <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                  {errors.hijos?.[index]?.sexo && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.sexo}</p>}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-stone-500 mb-1">Tipo de Sangre <span className="text-red-500">*</span></label>

@@ -25,6 +25,13 @@ function esTelefonoValido(value: string) {
 const profileDataSchema = z
   .record(z.string(), z.unknown())
   .superRefine((profile, ctx) => {
+    const sexo = typeof profile.sexo === 'string' ? profile.sexo.trim() : ''
+    if (!sexo) {
+      ctx.addIssue({ code: 'custom', path: ['sexo'], message: 'Debes seleccionar el sexo.' })
+    } else if (sexo !== 'Masculino' && sexo !== 'Femenino') {
+      ctx.addIssue({ code: 'custom', path: ['sexo'], message: 'El sexo seleccionado no es válido.' })
+    }
+
     const pantSize = typeof profile.pantSize === 'string' ? profile.pantSize.trim() : ''
     if (!pantSize) {
       ctx.addIssue({ code: 'custom', path: ['pantSize'], message: 'Debes seleccionar la talla de pantalón.' })
@@ -86,6 +93,7 @@ const FIELD_LABELS: Record<string, string> = {
   'applicants.name': 'Nombre y Apellido',
   'applicants.dateOfBirth': 'Fecha de Nacimiento',
   'applicants.profileData.nationalId': 'Número de Cédula',
+  'applicants.profileData.sexo': 'Sexo',
   'applicants.profileData.pantSize': 'Talla de Pantalón',
   'applicants.profileData.shirtSize': 'Talla de T-shirt',
   'applicants.profileData.bloodType': 'Tipo de Sangre',

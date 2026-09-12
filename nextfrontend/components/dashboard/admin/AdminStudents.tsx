@@ -21,6 +21,7 @@ type StudentFormState = {
 	firstName: string
 	lastName: string
 	dateOfBirth: string
+	gender: string
 	contactPhone: string
 	medicalInfo: string
 	emergencyContact: string
@@ -32,6 +33,7 @@ const emptyForm: StudentFormState = {
 	firstName: '',
 	lastName: '',
 	dateOfBirth: '',
+	gender: '',
 	contactPhone: '',
 	medicalInfo: '',
 	emergencyContact: '',
@@ -120,6 +122,7 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 						firstName: student.firstName,
 						lastName: student.lastName,
 						dateOfBirth: '',
+						gender: student.gender ?? '',
 						contactPhone: '',
 						medicalInfo: '',
 						emergencyContact: '',
@@ -171,6 +174,7 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 				firstName: form.firstName.trim(),
 				lastName: form.lastName.trim(),
 				dateOfBirth: form.dateOfBirth,
+				gender: form.gender || null,
 				contactPhone: form.contactPhone.trim() || null,
 				medicalInfo: form.medicalInfo.trim() || null,
 				emergencyContact: form.emergencyContact.trim() || null,
@@ -197,6 +201,7 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 			body: JSON.stringify({
 				firstName: form.firstName.trim() || undefined,
 				lastName: form.lastName.trim() || undefined,
+				gender: form.gender || null,
 				contactPhone: form.contactPhone.trim() || null,
 				medicalInfo: form.medicalInfo.trim() || null,
 				emergencyContact: form.emergencyContact.trim() || null,
@@ -257,6 +262,14 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 						<label className="text-sm font-semibold text-neutral-200" htmlFor="student-dob">
 							Fecha de nacimiento *
 							<input id="student-dob" type="date" value={form.dateOfBirth} onChange={(event) => updateField('dateOfBirth', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" />
+						</label>
+						<label className="text-sm font-semibold text-neutral-200" htmlFor="student-gender">
+							Sexo
+							<select id="student-gender" value={form.gender} onChange={(event) => updateField('gender', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white">
+								<option value="">No especificado</option>
+								<option value="female">Femenino</option>
+								<option value="male">Masculino</option>
+							</select>
 						</label>
 						<label className="text-sm font-semibold text-neutral-200" htmlFor="student-phone">
 							Teléfono de contacto

@@ -12073,6 +12073,7 @@ export namespace Prisma {
     firstName: string | null
     lastName: string | null
     dateOfBirth: Date | null
+    gender: string | null
     email: string | null
     contactPhone: string | null
     medicalInfo: string | null
@@ -12095,6 +12096,7 @@ export namespace Prisma {
     firstName: string | null
     lastName: string | null
     dateOfBirth: Date | null
+    gender: string | null
     email: string | null
     contactPhone: string | null
     medicalInfo: string | null
@@ -12117,6 +12119,7 @@ export namespace Prisma {
     firstName: number
     lastName: number
     dateOfBirth: number
+    gender: number
     email: number
     contactPhone: number
     medicalInfo: number
@@ -12142,6 +12145,7 @@ export namespace Prisma {
     firstName?: true
     lastName?: true
     dateOfBirth?: true
+    gender?: true
     email?: true
     contactPhone?: true
     medicalInfo?: true
@@ -12164,6 +12168,7 @@ export namespace Prisma {
     firstName?: true
     lastName?: true
     dateOfBirth?: true
+    gender?: true
     email?: true
     contactPhone?: true
     medicalInfo?: true
@@ -12186,6 +12191,7 @@ export namespace Prisma {
     firstName?: true
     lastName?: true
     dateOfBirth?: true
+    gender?: true
     email?: true
     contactPhone?: true
     medicalInfo?: true
@@ -12282,6 +12288,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date
+    gender: string | null
     email: string | null
     contactPhone: string | null
     medicalInfo: string | null
@@ -12322,6 +12329,7 @@ export namespace Prisma {
     firstName?: boolean
     lastName?: boolean
     dateOfBirth?: boolean
+    gender?: boolean
     email?: boolean
     contactPhone?: boolean
     medicalInfo?: boolean
@@ -12361,6 +12369,7 @@ export namespace Prisma {
     firstName?: boolean
     lastName?: boolean
     dateOfBirth?: boolean
+    gender?: boolean
     email?: boolean
     contactPhone?: boolean
     medicalInfo?: boolean
@@ -12388,6 +12397,7 @@ export namespace Prisma {
     firstName?: boolean
     lastName?: boolean
     dateOfBirth?: boolean
+    gender?: boolean
     email?: boolean
     contactPhone?: boolean
     medicalInfo?: boolean
@@ -12415,6 +12425,7 @@ export namespace Prisma {
     firstName?: boolean
     lastName?: boolean
     dateOfBirth?: boolean
+    gender?: boolean
     email?: boolean
     contactPhone?: boolean
     medicalInfo?: boolean
@@ -12429,7 +12440,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type StudentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "guardianId" | "schoolId" | "branchId" | "firstName" | "lastName" | "dateOfBirth" | "email" | "contactPhone" | "medicalInfo" | "emergencyContact" | "enrollmentDate" | "memberNumber" | "status" | "currentRank" | "photoKey" | "registrationData" | "createdAt" | "updatedAt", ExtArgs["result"]["student"]>
+  export type StudentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "guardianId" | "schoolId" | "branchId" | "firstName" | "lastName" | "dateOfBirth" | "gender" | "email" | "contactPhone" | "medicalInfo" | "emergencyContact" | "enrollmentDate" | "memberNumber" | "status" | "currentRank" | "photoKey" | "registrationData" | "createdAt" | "updatedAt", ExtArgs["result"]["student"]>
   export type StudentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     school?: boolean | SchoolDefaultArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
@@ -12489,6 +12500,7 @@ export namespace Prisma {
       firstName: string
       lastName: string
       dateOfBirth: Date
+      gender: string | null
       email: string | null
       contactPhone: string | null
       medicalInfo: string | null
@@ -12947,6 +12959,7 @@ export namespace Prisma {
     readonly firstName: FieldRef<"Student", 'String'>
     readonly lastName: FieldRef<"Student", 'String'>
     readonly dateOfBirth: FieldRef<"Student", 'DateTime'>
+    readonly gender: FieldRef<"Student", 'String'>
     readonly email: FieldRef<"Student", 'String'>
     readonly contactPhone: FieldRef<"Student", 'String'>
     readonly medicalInfo: FieldRef<"Student", 'String'>
@@ -33970,6 +33983,7 @@ export namespace Prisma {
     firstName: 'firstName',
     lastName: 'lastName',
     dateOfBirth: 'dateOfBirth',
+    gender: 'gender',
     email: 'email',
     contactPhone: 'contactPhone',
     medicalInfo: 'medicalInfo',
@@ -35012,6 +35026,7 @@ export namespace Prisma {
     firstName?: StringFilter<"Student"> | string
     lastName?: StringFilter<"Student"> | string
     dateOfBirth?: DateTimeFilter<"Student"> | Date | string
+    gender?: StringNullableFilter<"Student"> | string | null
     email?: StringNullableFilter<"Student"> | string | null
     contactPhone?: StringNullableFilter<"Student"> | string | null
     medicalInfo?: StringNullableFilter<"Student"> | string | null
@@ -35050,6 +35065,7 @@ export namespace Prisma {
     firstName?: SortOrder
     lastName?: SortOrder
     dateOfBirth?: SortOrder
+    gender?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     contactPhone?: SortOrderInput | SortOrder
     medicalInfo?: SortOrderInput | SortOrder
@@ -35092,6 +35108,7 @@ export namespace Prisma {
     firstName?: StringFilter<"Student"> | string
     lastName?: StringFilter<"Student"> | string
     dateOfBirth?: DateTimeFilter<"Student"> | Date | string
+    gender?: StringNullableFilter<"Student"> | string | null
     email?: StringNullableFilter<"Student"> | string | null
     contactPhone?: StringNullableFilter<"Student"> | string | null
     medicalInfo?: StringNullableFilter<"Student"> | string | null
@@ -35129,6 +35146,7 @@ export namespace Prisma {
     firstName?: SortOrder
     lastName?: SortOrder
     dateOfBirth?: SortOrder
+    gender?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     contactPhone?: SortOrderInput | SortOrder
     medicalInfo?: SortOrderInput | SortOrder
@@ -35158,6 +35176,7 @@ export namespace Prisma {
     firstName?: StringWithAggregatesFilter<"Student"> | string
     lastName?: StringWithAggregatesFilter<"Student"> | string
     dateOfBirth?: DateTimeWithAggregatesFilter<"Student"> | Date | string
+    gender?: StringNullableWithAggregatesFilter<"Student"> | string | null
     email?: StringNullableWithAggregatesFilter<"Student"> | string | null
     contactPhone?: StringNullableWithAggregatesFilter<"Student"> | string | null
     medicalInfo?: StringNullableWithAggregatesFilter<"Student"> | string | null
@@ -37187,6 +37206,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -37225,6 +37245,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -37255,6 +37276,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -37293,6 +37315,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -37327,6 +37350,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -37346,6 +37370,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -37369,6 +37394,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39556,6 +39582,7 @@ export namespace Prisma {
     firstName?: SortOrder
     lastName?: SortOrder
     dateOfBirth?: SortOrder
+    gender?: SortOrder
     email?: SortOrder
     contactPhone?: SortOrder
     medicalInfo?: SortOrder
@@ -39579,6 +39606,7 @@ export namespace Prisma {
     firstName?: SortOrder
     lastName?: SortOrder
     dateOfBirth?: SortOrder
+    gender?: SortOrder
     email?: SortOrder
     contactPhone?: SortOrder
     medicalInfo?: SortOrder
@@ -39601,6 +39629,7 @@ export namespace Prisma {
     firstName?: SortOrder
     lastName?: SortOrder
     dateOfBirth?: SortOrder
+    gender?: SortOrder
     email?: SortOrder
     contactPhone?: SortOrder
     medicalInfo?: SortOrder
@@ -43864,6 +43893,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -43900,6 +43930,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -44204,6 +44235,7 @@ export namespace Prisma {
     firstName?: StringFilter<"Student"> | string
     lastName?: StringFilter<"Student"> | string
     dateOfBirth?: DateTimeFilter<"Student"> | Date | string
+    gender?: StringNullableFilter<"Student"> | string | null
     email?: StringNullableFilter<"Student"> | string | null
     contactPhone?: StringNullableFilter<"Student"> | string | null
     medicalInfo?: StringNullableFilter<"Student"> | string | null
@@ -44456,6 +44488,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -44492,6 +44525,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -44816,6 +44850,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -44852,6 +44887,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -44909,6 +44945,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -44945,6 +44982,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -45315,6 +45353,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -45351,6 +45390,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -45853,6 +45893,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -45890,6 +45931,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -45990,6 +46032,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -46027,6 +46070,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47297,6 +47341,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -47334,6 +47379,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -47440,6 +47486,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47477,6 +47524,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47564,6 +47612,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -47601,6 +47650,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -47790,6 +47840,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47827,6 +47878,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47947,6 +47999,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -47984,6 +48037,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -48122,6 +48176,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48159,6 +48214,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48276,6 +48332,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -48313,6 +48370,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -48442,6 +48500,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48479,6 +48538,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48934,6 +48994,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -48971,6 +49032,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -49122,6 +49184,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49159,6 +49222,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49574,6 +49638,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -49611,6 +49676,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -49724,6 +49790,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49761,6 +49828,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50368,6 +50436,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -50405,6 +50474,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -50489,6 +50559,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50526,6 +50597,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50706,6 +50778,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -50743,6 +50816,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -50870,6 +50944,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50907,6 +50982,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51113,6 +51189,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -51150,6 +51227,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -51216,6 +51294,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51253,6 +51332,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51309,6 +51389,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -51346,6 +51427,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -51391,6 +51473,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51428,6 +51511,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51481,6 +51565,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -51655,6 +51740,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51691,6 +51777,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51724,6 +51811,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51962,6 +52050,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -52075,6 +52164,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52111,6 +52201,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52144,6 +52235,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52270,6 +52362,7 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
+    gender?: string | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
@@ -52381,6 +52474,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52417,6 +52511,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52450,6 +52545,7 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null

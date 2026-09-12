@@ -54,6 +54,7 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       id: true,
       firstName: true,
       lastName: true,
+      gender: true,
       memberNumber: true,
       currentRank: true,
       status: true,
@@ -130,6 +131,7 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       id: student.id,
       firstName: student.firstName,
       lastName: student.lastName,
+      gender: student.gender,
       memberNumber: student.memberNumber,
       currentRank: student.currentRank,
       kyuDan: currentBeltRank?.kyuDan ?? null,
@@ -190,14 +192,14 @@ export async function getAdminEnrollments(userId: string): Promise<AdminEnrollme
       schedule: true,
       status: true,
       createdAt: true,
-	  applicants: { where: { studentId: null }, select: { id: true, name: true, dateOfBirth: true } },
+	  applicants: { where: { studentId: null }, select: { id: true, name: true, dateOfBirth: true, profileData: true } },
     },
   })
 
   return enrollments.map((enrollment) => ({
     ...enrollment,
     createdAt: enrollment.createdAt.toISOString(),
-    applicants: enrollment.applicants.map((applicant) => ({ ...applicant, dateOfBirth: applicant.dateOfBirth.toISOString() })),
+    applicants: enrollment.applicants.map((applicant) => ({ ...applicant, dateOfBirth: applicant.dateOfBirth.toISOString(), profileData: applicant.profileData as Record<string, unknown> | null })),
   }))
 }
 
@@ -316,6 +318,7 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
       id: true,
       firstName: true,
       lastName: true,
+      gender: true,
       memberNumber: true,
       currentRank: true,
       status: true,

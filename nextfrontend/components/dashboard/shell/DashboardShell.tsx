@@ -57,7 +57,7 @@ export function DashboardShell({ children, roles, primaryRole, userName, pending
                 <div className="min-w-0 flex-1">{children}</div>
             </div>
 
-            <MobileDashboardNav onSignOut={handleSignOut} activeRole={activeRole} pendingEnrollmentCount={pendingEnrollmentCount} />
+            <MobileDashboardNav activeRole={activeRole} pendingEnrollmentCount={pendingEnrollmentCount} />
         </div>
     )
 }

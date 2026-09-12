@@ -45,20 +45,48 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'El correo no coincide con el de la invitación. Verifica el enlace recibido.' }, { status: 400 })
     }
 
-    if (invitation.student.userId) {
-      return NextResponse.json({ error: 'Este estudiante ya tiene una cuenta de acceso' }, { status: 409 })
-    }
-
     const existingUser = await db.user.findUnique({
       where: { email: parsed.data.email },
       select: { id: true },
     })
 
+    // Si el estudiante ya tiene una cuenta de acceso y no coincide con quien acepta la invitación.
+    if (invitation.student.userId && (!existingUser || invitation.student.userId !== existingUser.id)) {
+      return NextResponse.json({ error: 'Este estudiante ya tiene una cuenta de acceso' }, { status: 409 })
+    }
+
+    // La cuenta ya existe vinculada a este estudiante: activación idempotente, solo marcamos el token como usado.
+    if (existingUser && invitation.student.userId === existingUser.id) {
+      await db.studentInvitationToken.update({
+        where: { id: invitation.id },
+        data: { usedAt: new Date(), usedByUserId: existingUser.id },
+      })
+
+      return NextResponse.json({
+        success: true,
+        message: 'Tu cuenta ya está activada. Ya puedes iniciar sesión.',
+      })
+    }
+
+    // Ya existe una cuenta con este correo pero el estudiante aún no está vinculado:
+    // se vincula la cuenta existente para activar el dashboard en lugar de crear otra.
     if (existingUser) {
-      return NextResponse.json(
-        { error: 'Ya existe una cuenta registrada con este correo electrónico' },
-        { status: 409 },
-      )
+      await db.$transaction(async (transaction) => {
+        await transaction.student.update({
+          where: { id: invitation.studentId },
+          data: { userId: existingUser.id },
+        })
+
+        await transaction.studentInvitationToken.update({
+          where: { id: invitation.id },
+          data: { usedAt: new Date(), usedByUserId: existingUser.id },
+        })
+      })
+
+      return NextResponse.json({
+        success: true,
+        message: 'Cuenta vinculada correctamente. Ya puedes iniciar sesión con tu correo y contraseña.',
+      })
     }
 
     const passwordHash = await bcrypt.hash(parsed.data.password, 12)

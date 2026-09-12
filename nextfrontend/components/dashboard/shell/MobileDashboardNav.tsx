@@ -2,17 +2,15 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LogOut } from 'lucide-react'
 import type { DashboardRole } from '@/types/dashboard'
 import { getRoleNavigation } from './RoleNavigation'
 
 interface MobileDashboardNavProps {
-    onSignOut: () => void
     activeRole: DashboardRole
     pendingEnrollmentCount?: number
 }
 
-export function MobileDashboardNav({ onSignOut, activeRole, pendingEnrollmentCount = 0 }: MobileDashboardNavProps) {
+export function MobileDashboardNav({ activeRole, pendingEnrollmentCount = 0 }: MobileDashboardNavProps) {
     const pathname = usePathname()
     const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount).slice(0, 5)
 
@@ -41,7 +39,6 @@ export function MobileDashboardNav({ onSignOut, activeRole, pendingEnrollmentCou
                         </Link>
                     )
                 })}
-                <button aria-label="Cerrar sesión" className="flex h-14 min-w-14 flex-col items-center justify-center gap-1 px-1 text-center text-[10px] font-semibold text-neutral-500 hover:text-red-300" onClick={onSignOut} title="Cerrar sesión" type="button"><LogOut aria-hidden="true" className="size-5" /><span className="max-w-16 truncate">Salir</span></button>
             </div>
         </nav>
     )

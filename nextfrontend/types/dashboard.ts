@@ -28,6 +28,7 @@ export interface StudentProfile {
 	id: string
 	firstName: string
 	lastName: string
+	gender: string | null
 	email: string | null
 	contactPhone: string | null
 	dateOfBirth: string
@@ -130,6 +131,7 @@ export interface AdminStudentSummary {
 	id: string
 	firstName: string
 	lastName: string
+	gender: string | null
 	memberNumber: string | null
 	currentRank: string | null
 	kyuDan: string | null
@@ -167,7 +169,7 @@ export interface AdminEnrollmentSummary {
 	status: string
 	createdAt: string
 	createdAtLabel?: string
-	applicants: { id: string; name: string; dateOfBirth: string }[]
+	applicants: { id: string; name: string; dateOfBirth: string; profileData?: { sexo?: string } | Record<string, unknown> | null }[]
 }
 
 export interface AdminBeltRankSummary {

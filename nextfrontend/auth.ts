@@ -60,6 +60,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null
         }
 
+        // Un alumno solo puede entrar si su expediente proviene de una
+        // inscripción (tiene al menos un enrolment). Las cuentas sin
+        // inscripción (auto-registradas o huérfanas) quedan bloqueadas:
+        // el acceso es exclusivo por invitación de la escuela.
+        if (user.role === 'STUDENT') {
+          const studentWithEnrollment = await db.student.findFirst({
+            where: {
+              userId: user.id,
+              enrollments: { some: {} },
+            },
+            select: { id: true },
+          })
+
+          if (!studentWithEnrollment) {
+            return null
+          }
+        }
+
         return {
           id: user.id,
           email: user.email,

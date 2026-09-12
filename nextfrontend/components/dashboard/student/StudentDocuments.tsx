@@ -27,7 +27,11 @@ export function StudentDocuments({ documents }: StudentDocumentsProps) {
         const formData = new FormData(); formData.append('type', selectedType); formData.append('file', file)
         const response = await fetch('/api/dashboard/student/documents', { method: 'POST', body: formData })
         setIsUploading(false)
-        if (!response.ok) { setError('No fue posible cargar el documento.'); return }
+        if (!response.ok) {
+            const result = await response.json().catch(() => null)
+            setError((result as { error?: string } | null)?.error ?? 'No fue posible cargar el documento.')
+            return
+        }
         window.location.reload()
     }
 

@@ -74,11 +74,11 @@ export function AuthSplitLayout({ children, mode }: AuthSplitLayoutProps) {
       className="min-h-screen w-full bg-[#0a0a0a] bg-[radial-gradient(circle_at_70%_30%,_#1a1a1a_0%,_#0a0a0a_100%)] flex flex-col justify-center items-center p-0 md:p-6 lg:p-10 text-white"
     >
       {/* Container card */}
-      <div className="w-full max-w-6xl min-h-screen md:min-h-[720px] bg-[#0f0f0f] md:rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] overflow-hidden border-0 md:border md:border-white/10 flex flex-col md:flex-row relative">
+      <div className="w-full max-w-6xl h-screen md:h-[min(760px,calc(100dvh-2rem))] bg-[#0f0f0f] md:rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] overflow-hidden border-0 md:border md:border-white/10 flex flex-col md:flex-row relative">
         {/* Left column: 50% Auth Form */}
         <div
           id="auth-form-column"
-          className="w-full my-auto md:w-1/2 space-y-8 flex flex-col justify-between p-6 sm:p-10 lg:p-14 bg-[#0f0f0f] md:border-r md:border-white/5 relative overflow-y-auto"
+          className="w-full h-full md:w-1/2 space-y-8 flex flex-col p-6 sm:p-10 lg:p-14 bg-[#0f0f0f] md:border-r md:border-white/5 relative overflow-y-auto"
         >
           {/* Subtle dot matrix pattern */}
           <div
@@ -117,7 +117,7 @@ export function AuthSplitLayout({ children, mode }: AuthSplitLayoutProps) {
           </div>
 
           {/* Form Content */}
-          <div className="relative z-10 my-auto">{children}</div>
+          <div className="relative z-10 flex-1 flex flex-col justify-center">{children}</div>
 
           {/* Bottom subtle copyright / location */}
           <div className="relative z-10 mt-8 pt-4 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between text-[10px] tracking-[0.15em] uppercase text-white/30 gap-2">

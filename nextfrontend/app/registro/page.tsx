@@ -1,10 +1,10 @@
 import { AuthSplitLayout } from '@/components/auth/AuthSplitLayout'
-import { SignUpForm } from '@/components/auth/SignUpForm'
+import { RegistrationClosedNotice } from '@/components/auth/RegistrationClosedNotice'
 
 export default function RegistroPage() {
   return (
     <AuthSplitLayout mode="registro">
-      <SignUpForm />
+      <RegistrationClosedNotice />
     </AuthSplitLayout>
   )
 }

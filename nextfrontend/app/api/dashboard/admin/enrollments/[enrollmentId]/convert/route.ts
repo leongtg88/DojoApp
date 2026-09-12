@@ -11,6 +11,7 @@ const conversionSchema = z.object({
   firstName: z.string().trim().min(2).max(80),
   lastName: z.string().trim().min(2).max(120),
   dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  gender: z.enum(['female', 'male']).optional(),
   contactPhone: z.string().trim().max(30).nullable(),
   medicalInfo: z.string().trim().max(2_000).nullable(),
   emergencyContact: z.string().trim().max(500).nullable(),
@@ -76,6 +77,10 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
   if (input.applicantId && !applicant) {
     return NextResponse.json({ error: 'El aspirante no está disponible para conversión' }, { status: 409 })
   }
+  // Género: prioriza el del formulario de inscripción si el admin no lo seleccionó explícitamente.
+  const applicantSexo = (applicant?.profileData as { sexo?: string } | null)?.sexo
+  const applicantGender = applicantSexo === 'Femenino' ? 'female' : applicantSexo === 'Masculino' ? 'male' : null
+  const gender = input.gender ?? applicantGender ?? null
   const student = await db.$transaction(async (transaction) => {
     const dateOfBirth = new Date(`${input.dateOfBirth}T00:00:00.000Z`)
 
@@ -96,6 +101,7 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
         firstName: input.firstName,
         lastName: input.lastName,
         dateOfBirth,
+        gender,
         email: enrollment.contactEmail,
         contactPhone: input.contactPhone ?? enrollment.contactPhone,
         medicalInfo: input.medicalInfo,

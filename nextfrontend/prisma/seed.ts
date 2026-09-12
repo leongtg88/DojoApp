@@ -198,6 +198,7 @@ async function main() {
       firstName: 'Juan',
       lastName: 'Pérez',
       dateOfBirth: new Date('2012-05-20'),
+      gender: 'male',
       contactPhone: '+18095551234',
       medicalInfo: null,
       emergencyContact: 'María Pérez - +18095550000',

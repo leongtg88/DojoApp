@@ -130,6 +130,7 @@ model Student {
   firstName        String
   lastName         String
   dateOfBirth      DateTime
+  gender           String? // 'female' | 'male'
   email            String?  // correo de contacto para la invitación de acceso
   contactPhone     String?
   medicalInfo      String?

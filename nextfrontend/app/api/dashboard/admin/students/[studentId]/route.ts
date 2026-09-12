@@ -9,6 +9,7 @@ const updateStudentSchema = z.object({
   firstName: z.string().trim().min(2).max(80).optional(),
   lastName: z.string().trim().min(2).max(120).optional(),
   dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  gender: z.enum(['female', 'male']).nullable().optional(),
   contactPhone: z.string().trim().max(30).nullable().optional(),
   medicalInfo: z.string().trim().max(2_000).nullable().optional(),
   emergencyContact: z.string().trim().max(500).nullable().optional(),
@@ -56,6 +57,7 @@ export async function PATCH(request: Request, { params }: UpdateStudentRouteCont
   if (result.data.firstName) data.firstName = result.data.firstName
   if (result.data.lastName) data.lastName = result.data.lastName
   if (result.data.dateOfBirth) data.dateOfBirth = new Date(`${result.data.dateOfBirth}T00:00:00.000Z`)
+  if (result.data.gender !== undefined) data.gender = result.data.gender
   if (result.data.contactPhone !== undefined) data.contactPhone = result.data.contactPhone
   if (result.data.medicalInfo !== undefined) data.medicalInfo = result.data.medicalInfo
   if (result.data.emergencyContact !== undefined) data.emergencyContact = result.data.emergencyContact
