@@ -1,4 +1,6 @@
 import { db } from '@/lib/db'
+import { buildEnrollmentExportRecord } from '@/lib/dashboard/student-export'
+import { postToN8n } from '@/lib/integrations/n8n'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -59,6 +61,22 @@ export async function POST(request: Request) {
     },
     select: { id: true },
   })
+
+  await postToN8n(
+    'enrollment.created',
+    buildEnrollmentExportRecord({
+      id: enrollment.id,
+      origin: 'ASSISTANT',
+      applicantName: data.nombre,
+      contactEmail: email,
+      contactPhone: data.whatsapp || null,
+      interest: data.programa || data.tipo,
+      schedule: data.horario_pref || null,
+      quote,
+      notes: data.nota || null,
+      createdAt: new Date(),
+    }),
+  )
 
   return NextResponse.json({ ok: true, id: enrollment.id })
 }

@@ -4,6 +4,7 @@ import { computeBirthdays } from '@/lib/dashboard/birthdays'
 import { ageFromDob, programForAge } from '@/lib/dashboard/program'
 import { computeBalance, formatTime, monthRange } from '@/lib/dashboard/balance'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
+import { buildStudentRegistrationView } from '@/lib/dashboard/registration-data'
 
 function techniqueWithRanks<T extends { beltRankKatas: { beltRankId: string }[] }>(technique: T) {
   const { beltRankKatas, ...rest } = technique
@@ -363,6 +364,7 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
       userId: true,
       email: true,
       contactPhone: true,
+      registrationData: true,
       dateOfBirth: true,
       enrollmentDate: true,
       medicalInfo: true,
@@ -390,10 +392,22 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
         where: { status: ClassEnrollmentStatus.ACTIVE },
         select: { class: { select: { id: true, name: true } } },
       },
-    documents: {
-    orderBy: { uploadedAt: 'desc' },
-    select: { id: true, type: true, status: true, fileName: true, mimeType: true, fileSize: true, reviewNotes: true, uploadedAt: true },
-    },
+documents: {
+	    orderBy: { uploadedAt: 'desc' },
+	    select: { id: true, type: true, status: true, fileName: true, mimeType: true, fileSize: true, reviewNotes: true, uploadedAt: true },
+	    },
+      enrollments: {
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          origin: true,
+          status: true,
+          applicantName: true,
+          createdAt: true,
+          registrationData: true,
+          applicants: { select: { id: true, name: true, dateOfBirth: true, profileData: true, studentId: true } },
+        },
+      },
       techniques: {
         select: {
           id: true,
@@ -550,6 +564,10 @@ techniques: rank.katas.map(({ kata }) => techniqueWithRanks(kata)),
     isCompetitor: student.isCompetitor,
     activeScheduleIds: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.id),
     activeScheduleNames: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.name),
+    registration: buildStudentRegistrationView({
+      registrationData: student.registrationData,
+      enrollments: student.enrollments,
+    }),
   }
 }
 

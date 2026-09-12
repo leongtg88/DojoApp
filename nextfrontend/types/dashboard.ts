@@ -4,6 +4,32 @@ export type DashboardRole =
 	| 'SCHOOL_ADMIN'
 	| 'SUPERADMIN'
 
+export interface RegistrationField {
+	label: string
+	value: string | number | null
+}
+
+export interface RegistrationGroup {
+	title: string
+	fields: RegistrationField[]
+}
+
+export interface RegistrationApplicant {
+	id: string
+	name: string
+	dateOfBirth: string | null
+}
+
+export interface StudentRegistrationView {
+	origin: 'FORM' | 'ASSISTANT' | 'MANUAL'
+	status: string | null
+	registeredAt: string | null
+	applicantName: string | null
+	hasForm: boolean
+	groups: RegistrationGroup[]
+	applicants: RegistrationApplicant[]
+}
+
 export type TechniqueStatus = 'PENDING' | 'IN_PROGRESS' | 'APPROVED'
 
 export type TechniqueCategory = 'KIHON' | 'KATA' | 'KUMITE' | 'BUNKAI'
@@ -265,6 +291,7 @@ export interface AdminStudentDetail {
 	isCompetitor: boolean
 	activeScheduleIds: string[]
 	activeScheduleNames: string[]
+	registration: StudentRegistrationView
 }
 
 export interface AdminAttendanceRecord {

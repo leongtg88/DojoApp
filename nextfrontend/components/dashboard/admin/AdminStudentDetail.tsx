@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { ArrowLeft, Award, BookOpen, CalendarDays, GraduationCap, History, Loader2, Mail, MapPin, Phone, ShieldCheck, Stethoscope } from 'lucide-react'
+import { ArrowLeft, Award, BookOpen, CalendarDays, ClipboardList, GraduationCap, History, Loader2, Mail, MapPin, Phone, ShieldCheck, Stethoscope, Users } from 'lucide-react'
 import { AdminPlacementModal } from './AdminPlacementModal'
 import { AdminStudentDocuments } from './AdminStudentDocuments'
 import { AssignRankDialog } from '../dojo/AssignRankDialog'
@@ -17,7 +17,7 @@ interface AdminStudentDetailProps {
 	student: StudentDetail
 }
 
-type DetailTab = 'katas' | 'attendance' | 'medical'
+type DetailTab = 'katas' | 'attendance' | 'inscripcion' | 'medical'
 
 function formatDate(value: string | null) {
 	if (!value) return '—'
@@ -27,6 +27,12 @@ function formatDate(value: string | null) {
 function formatDateTime(value: string | null) {
 	if (!value) return '—'
 	return new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(value))
+}
+
+const ORIGIN_LABELS: Record<string, string> = {
+	FORM: 'Formulario web',
+	ASSISTANT: 'Asistente virtual',
+	MANUAL: 'Registro manual',
 }
 
 export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
@@ -191,6 +197,7 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 					{([
 						{ key: 'katas' as const, label: 'Katas e historial técnico' },
 						{ key: 'attendance' as const, label: 'Asistencias' },
+						{ key: 'inscripcion' as const, label: 'Inscripción' },
 						{ key: 'medical' as const, label: 'Ficha médica' },
 					]).map(({ key, label }) => (
 						<button key={key} type="button" onClick={() => setActiveTab(key)} className={`relative cursor-pointer pb-3 transition-colors ${activeTab === key ? 'font-bold text-cyan-300' : 'text-neutral-400 hover:text-white'}`}>
@@ -300,6 +307,75 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 						</div>
 					</div>
 				</section>
+			)}
+
+			{activeTab === 'inscripcion' && (
+				<div className="mt-5 space-y-5">
+					<section className="rounded-lg border border-neutral-800 bg-[#161b22] p-5 shadow-sm">
+						<div className="flex flex-wrap items-start justify-between gap-3">
+							<div className="flex items-center gap-2">
+								<ClipboardList aria-hidden="true" className="size-4 text-cyan-400" />
+								<h2 className="font-display text-base font-bold text-white">Datos del formulario de inscripción</h2>
+							</div>
+							<span className="rounded border border-neutral-700 bg-[#0d1117] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-neutral-300">{ORIGIN_LABELS[student.registration.origin] ?? 'Registro manual'}</span>
+						</div>
+						<div className="mt-4 grid gap-4 sm:grid-cols-3">
+							<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
+								<p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Fecha de inscripción</p>
+								<p className="mt-1 text-sm font-semibold text-white">{formatDateTime(student.registration.registeredAt)}</p>
+							</div>
+							<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
+								<p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Referencia</p>
+								<p className="mt-1 text-sm font-semibold text-white">{student.registration.applicantName ?? '—'}</p>
+							</div>
+							<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
+								<p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Estado de la inscripción</p>
+								<p className="mt-1 text-sm font-semibold text-white">{student.registration.status ?? '—'}</p>
+							</div>
+						</div>
+					</section>
+
+					{!student.registration.hasForm ? (
+						<section className="rounded-lg border border-dashed border-neutral-700 bg-[#161b22] px-5 py-10 text-center">
+							<ClipboardList aria-hidden="true" className="mx-auto size-6 text-neutral-500" />
+							<p className="mt-3 text-sm font-semibold text-white">Sin formulario de inscripción.</p>
+							<p className="mt-1 text-sm text-neutral-400">Este alumno fue creado manualmente o no tiene datos del formulario asociados.</p>
+						</section>
+					) : (
+						<div className="grid gap-4 lg:grid-cols-2">
+							{student.registration.groups.map((group) => (
+								<section key={group.title} className="rounded-lg border border-neutral-800 bg-[#161b22] p-5 shadow-sm">
+									<h3 className="font-display text-sm font-bold uppercase tracking-wide text-cyan-300">{group.title}</h3>
+									<dl className="mt-3 divide-y divide-neutral-800/70">
+										{group.fields.map((field) => (
+											<div key={field.label} className="flex items-start justify-between gap-4 py-2">
+												<dt className="text-xs font-semibold text-neutral-400">{field.label}</dt>
+												<dd className="max-w-[60%] break-words text-right text-sm text-neutral-100">{field.value ?? '—'}</dd>
+											</div>
+										))}
+									</dl>
+								</section>
+							))}
+						</div>
+					)}
+
+					{student.registration.applicants.length > 0 && (
+						<section className="rounded-lg border border-neutral-800 bg-[#161b22] p-5 shadow-sm">
+							<div className="flex items-center gap-2">
+								<Users aria-hidden="true" className="size-4 text-cyan-400" />
+								<h3 className="font-display text-base font-bold text-white">Aspirantes de la solicitud</h3>
+							</div>
+							<ul className="mt-3 divide-y divide-neutral-800">
+								{student.registration.applicants.map((applicant) => (
+									<li key={applicant.id} className="flex items-center justify-between gap-3 py-2.5 text-sm">
+										<span className="font-semibold text-white">{applicant.name}</span>
+										<span className="text-xs text-neutral-400">{formatDate(applicant.dateOfBirth)}</span>
+									</li>
+								))}
+							</ul>
+						</section>
+					)}
+				</div>
 			)}
 
 			{activeTab === 'medical' && (

@@ -3,6 +3,8 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasAnyRole, hasRole } from '@/lib/auth/roles'
 import { ageFromDob, programForAge } from '@/lib/dashboard/program'
+import { buildStudentExportRecord } from '@/lib/dashboard/student-export'
+import { postToN8n } from '@/lib/integrations/n8n'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -134,6 +136,72 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
 
     return createdStudent
   })
+
+  const [exportedStudent, exportedEnrollment] = await Promise.all([
+    db.student.findUnique({
+      where: { id: student.id },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        gender: true,
+        memberNumber: true,
+        dateOfBirth: true,
+        email: true,
+        contactPhone: true,
+        currentRank: true,
+        status: true,
+        enrollmentDate: true,
+        scholarshipType: true,
+        isCompetitor: true,
+        userId: true,
+        registrationData: true,
+        branch: { select: { name: true } },
+        plan: { select: { name: true } },
+        invitationTokens: { where: { usedAt: null, expiresAt: { gt: new Date() } }, select: { id: true }, take: 1 },
+        classEnrollments: { select: { status: true, class: { select: { name: true } } } },
+      },
+    }),
+    db.enrollment.findUnique({
+      where: { id: enrollment.id },
+      select: {
+        id: true,
+        origin: true,
+        status: true,
+        applicantName: true,
+        createdAt: true,
+        registrationData: true,
+        applicants: { select: { id: true, name: true, dateOfBirth: true, profileData: true, studentId: true } },
+      },
+    }),
+  ])
+
+  if (exportedStudent) {
+    await postToN8n(
+      'student.converted',
+      buildStudentExportRecord({
+        id: exportedStudent.id,
+        firstName: exportedStudent.firstName,
+        lastName: exportedStudent.lastName,
+        gender: exportedStudent.gender,
+        memberNumber: exportedStudent.memberNumber,
+        dateOfBirth: exportedStudent.dateOfBirth,
+        email: exportedStudent.email,
+        contactPhone: exportedStudent.contactPhone,
+        currentRank: exportedStudent.currentRank,
+        status: exportedStudent.status,
+        enrollmentDate: exportedStudent.enrollmentDate,
+        scholarshipType: exportedStudent.scholarshipType,
+        isCompetitor: exportedStudent.isCompetitor,
+        branchName: exportedStudent.branch.name,
+        planName: exportedStudent.plan?.name ?? null,
+        accountStatus: exportedStudent.userId ? 'ACTIVO' : exportedStudent.invitationTokens.length > 0 ? 'INVITADO' : 'SIN_CUENTA',
+        activeClassNames: exportedStudent.classEnrollments.filter((entry) => entry.status === 'ACTIVE').map((entry) => entry.class.name),
+        registrationData: exportedStudent.registrationData as Record<string, unknown> | null,
+        enrollments: exportedEnrollment ? [exportedEnrollment] : [],
+      }),
+    )
+  }
 
   return NextResponse.json({ ok: true, studentId: student.id })
 }

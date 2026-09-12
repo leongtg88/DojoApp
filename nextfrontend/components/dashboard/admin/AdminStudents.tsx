@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { Award, Check, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
+import { Award, Check, FileSpreadsheet, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
 import { InvitationLinkModal } from './InvitationLinkModal'
 import type { AdminBeltRankSummary, AdminStudentSummary } from '@/types/dashboard'
@@ -352,6 +352,7 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 	const [invitationLink, setInvitationLink] = useState<{ url: string; name: string; email: string | null } | null>(null)
 	const [deletingStudent, setDeletingStudent] = useState<AdminStudentSummary | null>(null)
 	const [isDeleting, setIsDeleting] = useState(false)
+	const [isExporting, setIsExporting] = useState(false)
 	const [actionError, setActionError] = useState<string | null>(null)
 
 	const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
@@ -408,6 +409,38 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 		.finally(() => setIsInviting(false))
 	}
 
+	async function handleExport() {
+		setIsExporting(true)
+		setActionError(null)
+		try {
+			const params = new URLSearchParams()
+			if (statusFilter !== 'ALL') params.set('status', statusFilter)
+			if (branchFilter !== 'ALL') params.set('branch', branchFilter)
+			if (searchTerm.trim()) params.set('search', searchTerm.trim())
+			const query = params.toString()
+
+			const response = await fetch(`/api/dashboard/admin/students/export${query ? `?${query}` : ''}`)
+			if (!response.ok) {
+				const payload = await response.json().catch(() => ({})) as { error?: string }
+				throw new Error(payload.error ?? 'No fue posible exportar el padrón.')
+			}
+
+			const blob = await response.blob()
+			const objectUrl = URL.createObjectURL(blob)
+			const link = document.createElement('a')
+			link.href = objectUrl
+			link.download = `alumnos-${new Date().toISOString().slice(0, 10)}.xlsx`
+			document.body.appendChild(link)
+			link.click()
+			link.remove()
+			URL.revokeObjectURL(objectUrl)
+		} catch (reason: unknown) {
+			setActionError(reason instanceof Error ? reason.message : 'No fue posible exportar el padrón.')
+		} finally {
+			setIsExporting(false)
+		}
+	}
+
 	function handleDelete(student: AdminStudentSummary) {
 		setIsDeleting(true)
 		setActionError(null)
@@ -432,9 +465,15 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 					<h1 className="mt-2 font-display text-3xl font-extrabold text-white">Gestión de alumnos</h1>
 					<p className="mt-2 text-sm text-neutral-400">Padrón, matrículas, progreso técnico y altas/bajas dentro de tu escuela.</p>
 				</div>
-				<button type="button" onClick={() => setIsCreateOpen(true)} className="inline-flex items-center gap-2 self-start rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] hover:bg-cyan-400">
-					<Plus className="size-4" />Nuevo alumno
-				</button>
+				<div className="flex flex-wrap items-center gap-2 self-start">
+					<button type="button" onClick={handleExport} disabled={isExporting || students.length === 0} className="inline-flex items-center gap-2 rounded-md border border-neutral-700 bg-[#0d1117] px-4 py-2.5 text-sm font-semibold text-neutral-200 transition-colors hover:bg-neutral-800 hover:text-white disabled:opacity-50">
+						{isExporting ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <FileSpreadsheet aria-hidden="true" className="size-4" />}
+						{isExporting ? 'Exportando…' : 'Exportar Excel'}
+					</button>
+					<button type="button" onClick={() => setIsCreateOpen(true)} className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] hover:bg-cyan-400">
+						<Plus className="size-4" />Nuevo alumno
+					</button>
+				</div>
 			</div>
 
 			{actionError && <p className="mt-4 rounded-md border border-red-900/40 bg-red-950/20 px-3 py-2 text-sm font-medium text-red-300">{actionError}</p>}

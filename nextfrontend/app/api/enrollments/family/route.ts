@@ -2,6 +2,8 @@ import { Prisma } from '@/lib/generated/prisma'
 import { db } from '@/lib/db'
 import { uploadPrivateDocument, sanitizeStorageName } from '@/lib/document-storage'
 import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES, mimeForExtension, sniffMimeType } from '@/lib/file-validation'
+import { buildEnrollmentExportRecord } from '@/lib/dashboard/student-export'
+import { postToN8n } from '@/lib/integrations/n8n'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -216,6 +218,25 @@ export async function POST(request: Request) {
     console.error('Error guardando la inscripción:', dbError)
     return NextResponse.json({ error: 'No fue posible guardar la inscripción. Inténtalo nuevamente en unos momentos.' }, { status: 503 })
   }
+
+  await postToN8n(
+    'enrollment.created',
+    buildEnrollmentExportRecord({
+      id: enrollment.id,
+      origin: 'FORM',
+      applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`,
+      contactEmail: input.email.toLowerCase(),
+      contactPhone: input.phone,
+      interest,
+      createdAt: new Date(),
+      registrationData: input.registrationData,
+      applicants: input.applicants.map((applicant) => ({
+        name: applicant.name,
+        dateOfBirth: applicant.dateOfBirth,
+        profileData: applicant.profileData,
+      })),
+    }),
+  )
 
   return NextResponse.json({ ok: true, id: enrollment.id })
 }
