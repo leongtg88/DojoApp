@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { ArrowLeft, Award, BookOpen, CalendarDays, ClipboardList, GraduationCap, History, Loader2, Mail, MapPin, Phone, ShieldCheck, Stethoscope, Users } from 'lucide-react'
+import { ArrowLeft, Award, BookOpen, CalendarDays, ClipboardList, GraduationCap, History, Loader2, Mail, MapPin, Phone, ShieldCheck, Stethoscope, Trash2, Users } from 'lucide-react'
 import { AdminPlacementModal } from './AdminPlacementModal'
 import { AdminStudentDocuments } from './AdminStudentDocuments'
 import { AssignRankDialog } from '../dojo/AssignRankDialog'
@@ -43,6 +43,8 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 	const [isInviteConfirmOpen, setIsInviteConfirmOpen] = useState(false)
 	const [isInviting, setIsInviting] = useState(false)
 	const [isPlacementOpen, setIsPlacementOpen] = useState(false)
+	const [isPurgeOpen, setIsPurgeOpen] = useState(false)
+	const [isPurging, setIsPurging] = useState(false)
 	const [actionError, setActionError] = useState<string | null>(null)
 	const [invitationLink, setInvitationLink] = useState<{ url: string; name: string; email: string | null } | null>(null)
 
@@ -69,6 +71,28 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 			setActionError(reason instanceof Error ? reason.message : 'No fue posible enviar la invitación.')
 		} finally {
 			setIsInviting(false)
+		}
+	}
+
+	async function handlePurgeRegistration() {
+		setIsPurging(true)
+		setActionError(null)
+		try {
+			const response = await fetch(`/api/dashboard/admin/students/${student.id}`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ purgeRegistrationData: true }),
+			})
+			const payload = await response.json().catch(() => ({})) as { error?: string }
+			if (!response.ok) {
+				throw new Error(payload.error ?? 'No fue posible eliminar la información de inscripción.')
+			}
+			setIsPurgeOpen(false)
+			router.refresh()
+		} catch (reason: unknown) {
+			setActionError(reason instanceof Error ? reason.message : 'No fue posible eliminar la información de inscripción.')
+		} finally {
+			setIsPurging(false)
 		}
 	}
 
@@ -317,7 +341,14 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 								<ClipboardList aria-hidden="true" className="size-4 text-cyan-400" />
 								<h2 className="font-display text-base font-bold text-white">Datos del formulario de inscripción</h2>
 							</div>
+							<div className="flex flex-wrap items-center gap-2">
+							{student.registration.hasForm && (
+								<button type="button" onClick={() => setIsPurgeOpen(true)} className="inline-flex items-center gap-1.5 rounded-md border border-red-900/40 bg-red-950/20 px-2.5 py-1.5 text-[11px] font-semibold text-red-300 transition-colors hover:bg-red-950/40 hover:text-red-200">
+									<Trash2 className="size-3.5" />Eliminar datos de inscripción
+								</button>
+							)}
 							<span className="rounded border border-neutral-700 bg-[#0d1117] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-neutral-300">{ORIGIN_LABELS[student.registration.origin] ?? 'Registro manual'}</span>
+						</div>
 						</div>
 						<div className="mt-4 grid gap-4 sm:grid-cols-3">
 							<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
@@ -479,6 +510,27 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 							</button>
 							<button type="button" onClick={handleInvite} disabled={isInviting} className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-xs font-semibold text-[#0d1117] hover:bg-cyan-400 disabled:opacity-50">
 								<Mail className="size-4" />{student.accountStatus === 'INVITADO' ? 'Reenviar' : 'Enviar invitación'}
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{isPurgeOpen && (
+				<div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" onClick={() => setIsPurgeOpen(false)}>
+					<div className="w-full max-w-md rounded-lg border border-neutral-800 bg-[#161b22] p-5 shadow-xl" onClick={(event) => event.stopPropagation()}>
+						<h3 className="font-display text-lg font-bold text-white">Eliminar información de inscripción</h3>
+						<p className="mt-2 text-sm leading-relaxed text-neutral-300">
+							Se borrarán de forma permanente los datos capturados por el formulario de {studentFullName}: perfil físico, cédula, dirección, padres/tutores, condiciones médicas, motivación y aceptaciones. El expediente, asistencias, grados y katas se conservan.
+						</p>
+						<p className="mt-2 text-sm font-semibold text-red-300">Esta acción no se puede deshacer.</p>
+						{isPurging && <p className="mt-3 flex items-center gap-2 text-xs font-medium text-cyan-300"><Loader2 className="size-4 animate-spin" />Eliminando información…</p>}
+						<div className="mt-5 flex items-center justify-end gap-2.5">
+							<button type="button" onClick={() => setIsPurgeOpen(false)} disabled={isPurging} className="rounded-md border border-neutral-700 bg-[#0d1117] px-4 py-2 text-xs font-semibold text-neutral-300 hover:bg-neutral-800 hover:text-white disabled:opacity-50">
+								Cancelar
+							</button>
+							<button type="button" onClick={handlePurgeRegistration} disabled={isPurging} className="inline-flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-500 disabled:opacity-50">
+								<Trash2 className="size-4" />Eliminar definitivamente
 							</button>
 						</div>
 					</div>

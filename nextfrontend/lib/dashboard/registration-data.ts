@@ -36,6 +36,12 @@ export const REGISTRATION_FIELD_SPECS: RegistrationFieldSpec[] = [
 	{ group: 'formulario', groupLabel: 'Formulario', key: 'otraRazon', label: 'Otro motivo', from: 'formulario' },
 	{ group: 'formulario', groupLabel: 'Formulario', key: 'compromisoObstaculos', label: 'Compromiso ante obstáculos', from: 'formulario' },
 	{ group: 'formulario', groupLabel: 'Formulario', key: 'otroCompromiso', label: 'Otro compromiso', from: 'formulario' },
+	{ group: 'aceptaciones', groupLabel: 'Aceptaciones', key: 'aceptoPago', label: 'Pago en los primeros 5 días del mes', from: 'formulario' },
+	{ group: 'aceptaciones', groupLabel: 'Aceptaciones', key: 'aceptoMultas', label: 'Política de multas por retraso', from: 'formulario' },
+	{ group: 'aceptaciones', groupLabel: 'Aceptaciones', key: 'aceptoPagosParciales', label: 'Sin pagos parciales', from: 'formulario' },
+	{ group: 'aceptaciones', groupLabel: 'Aceptaciones', key: 'aceptoPagoIninterrumpido', label: 'Pago mensual e ininterrumpido', from: 'formulario' },
+	{ group: 'aceptaciones', groupLabel: 'Aceptaciones', key: 'aceptoDerechoAdmision', label: 'Derecho de admisión de la escuela', from: 'formulario' },
+	{ group: 'aceptaciones', groupLabel: 'Aceptaciones', key: 'aceptoPoliticas', label: 'Descargo de responsabilidad y uso de imagen', from: 'formulario' },
 ]
 
 const PERFIL_KEYS = REGISTRATION_FIELD_SPECS.filter(({ from }) => from === 'perfil').map(({ key }) => key)
@@ -48,7 +54,8 @@ function looksLikeProfile(record: Record<string, unknown> | null | undefined): b
 function formatValue(value: unknown): string | number | null {
 	if (value === undefined || value === null) return null
 	if (typeof value === 'string') return value.trim() === '' ? null : value
-	if (typeof value === 'number' || typeof value === 'boolean') return String(value)
+	if (typeof value === 'boolean') return value ? 'Sí' : 'No'
+	if (typeof value === 'number') return String(value)
 	if (value instanceof Date) return value.toISOString()
 	if (Array.isArray(value)) {
 		const parts = value.map((entry) => formatValue(entry)).filter((entry): entry is string | number => entry !== null)
@@ -88,7 +95,7 @@ export interface RegistrationViewInput {
 }
 
 export function buildRegistrationGroups(profileData?: Record<string, unknown> | null, registrationData?: Record<string, unknown> | null): RegistrationGroup[] {
-	const groupOrder = ['perfil', 'formulario']
+	const groupOrder = ['perfil', 'formulario', 'aceptaciones']
 	const byGroup = new Map<string, RegistrationGroup>()
 
 	for (const spec of REGISTRATION_FIELD_SPECS) {

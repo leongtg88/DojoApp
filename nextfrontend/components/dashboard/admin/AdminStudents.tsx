@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { Award, Check, FileSpreadsheet, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
 import { InvitationLinkModal } from './InvitationLinkModal'
@@ -65,11 +65,12 @@ interface ConfirmModalProps {
 	message: string
 	confirmLabel: string
 	isDestructive?: boolean
+	children?: ReactNode
 	onConfirm: () => void
 	onCancel: () => void
 }
 
-function ConfirmModal({ open, title, message, confirmLabel, isDestructive = false, onConfirm, onCancel }: ConfirmModalProps) {
+function ConfirmModal({ open, title, message, confirmLabel, isDestructive = false, children, onConfirm, onCancel }: ConfirmModalProps) {
 	if (!open) return null
 
 	return (
@@ -79,6 +80,7 @@ function ConfirmModal({ open, title, message, confirmLabel, isDestructive = fals
 					<h3 className="font-display text-lg font-bold text-white">{title}</h3>
 				</div>
 				<p className="px-5 py-4 text-sm text-neutral-300">{message}</p>
+				{children && <div className="border-t border-neutral-800 px-5 py-4">{children}</div>}
 				<div className="flex items-center justify-end gap-2.5 border-t border-neutral-800 px-5 py-3.5">
 					<button type="button" onClick={onCancel} className="rounded-md border border-neutral-700 bg-[#0d1117] px-4 py-2 text-xs font-semibold text-neutral-300 hover:bg-neutral-800 hover:text-white">
 						Cancelar
@@ -347,6 +349,7 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 	const [editingStudent, setEditingStudent] = useState<AdminStudentSummary | null>(null)
 	const [togglingStudent, setTogglingStudent] = useState<AdminStudentSummary | null>(null)
 	const [isToggling, setIsToggling] = useState(false)
+	const [purgeOnBaja, setPurgeOnBaja] = useState(false)
 	const [invitingStudent, setInvitingStudent] = useState<AdminStudentSummary | null>(null)
 	const [isInviting, setIsInviting] = useState(false)
 	const [invitationLink, setInvitationLink] = useState<{ url: string; name: string; email: string | null } | null>(null)
@@ -372,18 +375,20 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 
 	function handleToggleStatus(student: AdminStudentSummary) {
 		const nextStatus = student.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
+		const shouldPurge = nextStatus === 'INACTIVE' && purgeOnBaja
 		setIsToggling(true)
 		setActionError(null)
 		fetch(`/api/dashboard/admin/students/${student.id}`, {
 			method: 'PATCH',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ status: nextStatus }),
+			body: JSON.stringify({ status: nextStatus, ...(shouldPurge ? { purgeRegistrationData: true } : {}) }),
 		})
 			.then(async (response) => {
 				const payload = await response.json().catch(() => ({}))
 				if (!response.ok) throw new Error(payload.error ?? 'No fue posible actualizar el estado.')
 				router.refresh()
 				setTogglingStudent(null)
+				setPurgeOnBaja(false)
 			})
 			.catch((reason: Error) => setActionError(reason.message))
 			.finally(() => setIsToggling(false))
@@ -645,8 +650,26 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 				onConfirm={() => {
 					if (togglingStudent) handleToggleStatus(togglingStudent)
 				}}
-				onCancel={() => setTogglingStudent(null)}
-			/>
+				onCancel={() => {
+					setTogglingStudent(null)
+					setPurgeOnBaja(false)
+				}}
+			>
+				{togglingStudent?.status === 'ACTIVE' && (
+					<label className="flex cursor-pointer items-start gap-2.5 text-xs text-neutral-300">
+						<input
+							type="checkbox"
+							checked={purgeOnBaja}
+							onChange={(event) => setPurgeOnBaja(event.target.checked)}
+							className="mt-0.5 size-4 shrink-0 rounded border-neutral-600 bg-[#0d1117] accent-red-500"
+						/>
+						<span>
+							Eliminar también la información del formulario de inscripción (perfil físico, cédula, dirección, padres y aceptaciones).
+							<span className="mt-1 block font-semibold text-red-300">Esta acción no se puede deshacer.</span>
+						</span>
+					</label>
+				)}
+			</ConfirmModal>
 
 			<ConfirmModal
 				open={invitingStudent !== null}

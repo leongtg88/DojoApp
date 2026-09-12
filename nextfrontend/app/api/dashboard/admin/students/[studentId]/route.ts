@@ -2,6 +2,7 @@ import { Prisma } from '@/lib/generated/prisma'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
+import { purgeStudentRegistrationData } from '@/lib/dashboard/registration-purge'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -14,6 +15,7 @@ const updateStudentSchema = z.object({
   medicalInfo: z.string().trim().max(2_000).nullable().optional(),
   emergencyContact: z.string().trim().max(500).nullable().optional(),
   status: z.enum(['ACTIVE', 'INACTIVE', 'GRADUATED']).optional(),
+  purgeRegistrationData: z.boolean().optional(),
 }).refine(({ dateOfBirth }) => !dateOfBirth || !Number.isNaN(new Date(`${dateOfBirth}T00:00:00.000Z`).getTime()), {
   message: 'Fecha de nacimiento inválida',
   path: ['dateOfBirth'],
@@ -63,10 +65,16 @@ export async function PATCH(request: Request, { params }: UpdateStudentRouteCont
   if (result.data.emergencyContact !== undefined) data.emergencyContact = result.data.emergencyContact
   if (result.data.status) data.status = result.data.status
 
-  await db.student.update({
-    where: { id: existing.id },
-    data,
-  })
+  if (Object.keys(data).length > 0) {
+    await db.student.update({
+      where: { id: existing.id },
+      data,
+    })
+  }
+
+  if (result.data.purgeRegistrationData) {
+    await purgeStudentRegistrationData(existing.id)
+  }
 
   return NextResponse.json({ ok: true, studentId: existing.id })
 }
