@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { CheckCheck, CircleX, Save, UserCheck, Users } from 'lucide-react'
+import { CheckCheck, CircleX, Save, ShieldCheck, UserCheck, UserPlus, Users } from 'lucide-react'
 import type { InstructorAttendanceRoster as AttendanceRoster } from '@/types/dashboard'
+import { InstructorAddStudentModal } from './InstructorAddStudentModal'
 
 interface InstructorAttendanceRosterProps {
     roster: AttendanceRoster
@@ -12,9 +13,11 @@ interface InstructorAttendanceRosterProps {
 export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRosterProps) {
     const router = useRouter()
     const [records, setRecords] = useState(roster.students)
+    const [isAddOpen, setIsAddOpen] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [isSaving, setIsSaving] = useState(false)
     const presentCount = records.filter(({ present }) => present).length
+    const justifiedCount = records.filter(({ justified }) => justified).length
     const absentCount = records.length - presentCount
 
     function updateRecord(studentId: string, update: Partial<(typeof records)[number]>) {
@@ -24,7 +27,21 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
     }
 
     function updateAllRecords(present: boolean) {
-        setRecords((currentRecords) => currentRecords.map((record) => ({ ...record, present })))
+        setRecords((currentRecords) => currentRecords.map((record) => ({ ...record, present, justified: record.justified === true ? record.justified : false })))
+    }
+
+    function toggleJustified(studentId: string, justified: boolean) {
+        setRecords((currentRecords) => currentRecords.map((record) => (
+            record.id === studentId ? { ...record, justified } : record
+        )))
+    }
+
+    function addStudent(student: { id: string; firstName: string; lastName: string; currentRank: string | null }) {
+        setRecords((currentRecords) => {
+            if (currentRecords.some((record) => record.id === student.id)) return currentRecords
+            return [...currentRecords, { ...student, present: true, notes: null, justified: false }]
+        })
+        setIsAddOpen(false)
     }
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -38,9 +55,10 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
             body: JSON.stringify({
                 classId: roster.classId,
                 date: roster.date,
-                records: records.map(({ id, present, notes }) => ({
+                records: records.map(({ id, present, notes, justified }) => ({
                     studentId: id,
                     present,
+                    justified: !present && justified ? true : false,
                     notes: notes?.trim() || null,
                 })),
             }),
@@ -67,6 +85,7 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                     <div className="flex gap-2">
                         <span className="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-emerald-200"><UserCheck aria-hidden="true" className="size-3.5" />{presentCount} presentes</span>
                         <span className="inline-flex items-center gap-1.5 rounded-md border border-neutral-700 bg-[#0d1117] px-2.5 py-1 text-xs font-bold text-neutral-300"><CircleX aria-hidden="true" className="size-3.5" />{absentCount} ausentes</span>
+                        {justifiedCount > 0 && <span className="inline-flex items-center gap-1.5 rounded-md border border-sky-500/30 bg-sky-500/10 px-2.5 py-1 text-xs font-bold text-sky-200"><ShieldCheck aria-hidden="true" className="size-3.5" />{justifiedCount} justificadas</span>}
                     </div>
                 </div>
                 <p className="mt-2 text-sm text-neutral-400">{roster.students.length} alumnos activos en esta clase.</p>
@@ -81,6 +100,7 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                             <div className="flex gap-2">
                                 <button className="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/40 px-3 py-1.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500/10" onClick={() => updateAllRecords(true)} type="button"><CheckCheck aria-hidden="true" className="size-3.5" />Todos presentes</button>
                                 <button className="inline-flex items-center gap-1.5 rounded-md border border-neutral-700 px-3 py-1.5 text-xs font-bold text-neutral-300 hover:bg-neutral-800" onClick={() => updateAllRecords(false)} type="button"><CircleX aria-hidden="true" className="size-3.5" />Todos ausentes</button>
+                                <button className="inline-flex items-center gap-1.5 rounded-md border border-sky-500/40 px-3 py-1.5 text-xs font-bold text-sky-300 hover:bg-sky-500/10" onClick={() => setIsAddOpen(true)} type="button"><UserPlus aria-hidden="true" className="size-3.5" />Agregar alumno</button>
                             </div>
                         </div>
                         <ul className="divide-y divide-neutral-800">
@@ -96,10 +116,23 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                                             value={record.notes ?? ''}
                                         />
                                     </div>
-                                    <div aria-label={`Asistencia de ${record.firstName} ${record.lastName}`} className="inline-flex self-start rounded-md border border-neutral-700 bg-[#0d1117] p-1 text-xs font-bold">
-                                        <button aria-pressed={record.present} className={`rounded px-3 py-1.5 ${record.present ? 'bg-emerald-500 text-[#0d1117]' : 'text-neutral-400 hover:bg-neutral-800'}`} onClick={() => updateRecord(record.id, { present: true })} type="button">Presente</button>
-                                        <button aria-pressed={!record.present} className={`rounded px-3 py-1.5 ${!record.present ? 'bg-neutral-700 text-white' : 'text-neutral-400 hover:bg-neutral-800'}`} onClick={() => updateRecord(record.id, { present: false })} type="button">Ausente</button>
-                                    </div>
+                                    <div aria-label={`Asistencia de ${record.firstName} ${record.lastName}`} className="inline-flex flex-col items-end gap-2 self-start">
+                                            <div className="inline-flex rounded-md border border-neutral-700 bg-[#0d1117] p-1 text-xs font-bold">
+                                                <button aria-pressed={record.present} className={`rounded px-3 py-1.5 ${record.present ? 'bg-emerald-500 text-[#0d1117]' : 'text-neutral-400 hover:bg-neutral-800'}`} onClick={() => updateRecord(record.id, { present: true, justified: false })} type="button">Presente</button>
+                                                <button aria-pressed={!record.present} className={`rounded px-3 py-1.5 ${!record.present ? 'bg-neutral-700 text-white' : 'text-neutral-400 hover:bg-neutral-800'}`} onClick={() => updateRecord(record.id, { present: false })} type="button">Ausente</button>
+                                            </div>
+                                            {!record.present && (
+                                                <label className="flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-sky-300">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={record.justified ?? false}
+                                                        onChange={(event) => toggleJustified(record.id, event.target.checked)}
+                                                        className="size-3.5 accent-sky-500"
+                                                    />
+                                                    Falta justificada
+                                                </label>
+                                            )}
+                                        </div>
                                 </li>
                             ))}
                         </ul>
@@ -117,6 +150,13 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                     </button>
                 </div>
             </form>
+
+            <InstructorAddStudentModal
+                open={isAddOpen}
+                alreadyPresentIds={new Set(records.map(({ id }) => id))}
+                onAdd={addStudent}
+                onClose={() => setIsAddOpen(false)}
+            />
         </section>
     )
 }

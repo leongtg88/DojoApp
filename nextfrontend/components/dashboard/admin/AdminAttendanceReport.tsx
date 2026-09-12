@@ -12,6 +12,7 @@ const STATUS_META: Record<AttendanceStatus, { label: string; className: string }
     PENDING: { label: 'Punch-in pendiente', className: 'border-amber-500/30 bg-amber-500/10 text-amber-200' },
     CONFIRMED: { label: 'Confirmada', className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200' },
     REJECTED: { label: 'Rechazada', className: 'border-rose-500/30 bg-rose-500/10 text-rose-200' },
+    JUSTIFIED: { label: 'Justificada', className: 'border-sky-500/30 bg-sky-500/10 text-sky-200' },
 }
 
 const SESSION_TYPE_LABELS: Record<string, string> = {

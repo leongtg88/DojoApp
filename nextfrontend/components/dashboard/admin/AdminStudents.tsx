@@ -493,6 +493,7 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 									<tr>
 										<th className="px-5 py-3">Alumno</th>
 										<th className="px-5 py-3">Grado</th>
+										<th className="px-5 py-3">Plan</th>
 										<th className="px-5 py-3">Katas dominadas</th>
 										<th className="px-5 py-3">Asistencia</th>
 										<th className="px-5 py-3">Sucursal</th>
@@ -527,6 +528,16 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 															{student.nextRankName && <p className="text-[11px] text-neutral-400">Próximo: {student.nextRankName}</p>}
 														</div>
 													</div>
+												</td>
+												<td className="px-5 py-4">
+													<p className="text-sm font-semibold text-white">{student.planName ?? 'Sin plan'}</p>
+													{student.scholarshipType !== 'NONE' && <p className="text-[11px] text-cyan-300">{student.scholarshipType === 'ECONOMIC' ? 'Beca económica' : student.scholarshipType === 'MERIT' ? 'Beca mérito' : 'Beca competidor'}</p>}
+													{(student.needsPlan || student.needsSchedule) && (
+														<div className="mt-1 flex flex-wrap gap-1">
+															{student.needsPlan && <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-amber-200">Asignar plan</span>}
+															{student.needsSchedule && <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-amber-200">Asignar horario</span>}
+														</div>
+													)}
 												</td>
 												<td className="px-5 py-4">
 													<div className="text-sm font-semibold text-white">{student.kataMasteredCount}<span className="text-neutral-500"> / {student.kataTotalCount}</span></div>

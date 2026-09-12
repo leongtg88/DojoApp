@@ -208,6 +208,11 @@ exports.Prisma.StudentScalarFieldEnum = {
   currentRank: 'currentRank',
   photoKey: 'photoKey',
   registrationData: 'registrationData',
+  planId: 'planId',
+  planStartDate: 'planStartDate',
+  scholarshipType: 'scholarshipType',
+  scholarshipNote: 'scholarshipNote',
+  isCompetitor: 'isCompetitor',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -348,10 +353,26 @@ exports.Prisma.TechniqueEvaluationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PlanScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  monthlyHours: 'monthlyHours',
+  price: 'price',
+  isUnlimited: 'isUnlimited',
+  active: 'active',
+  sortOrder: 'sortOrder',
+  schoolId: 'schoolId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ClassScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
+  audience: 'audience',
+  active: 'active',
   branchId: 'branchId',
   instructorId: 'instructorId',
   dayOfWeek: 'dayOfWeek',
@@ -390,6 +411,9 @@ exports.Prisma.AttendanceScalarFieldEnum = {
   hoursTrained: 'hoursTrained',
   sessionType: 'sessionType',
   status: 'status',
+  classId: 'classId',
+  isOutOfSchedule: 'isOutOfSchedule',
+  recoveredById: 'recoveredById',
   punchedAt: 'punchedAt',
   confirmedAt: 'confirmedAt',
   confirmedById: 'confirmedById',
@@ -466,6 +490,13 @@ exports.Role = exports.$Enums.Role = {
   SUPERADMIN: 'SUPERADMIN'
 };
 
+exports.ScholarshipType = exports.$Enums.ScholarshipType = {
+  NONE: 'NONE',
+  ECONOMIC: 'ECONOMIC',
+  MERIT: 'MERIT',
+  COMPETITOR: 'COMPETITOR'
+};
+
 exports.EnrollmentOrigin = exports.$Enums.EnrollmentOrigin = {
   FORM: 'FORM',
   ASSISTANT: 'ASSISTANT'
@@ -499,10 +530,17 @@ exports.TechniqueCategory = exports.$Enums.TechniqueCategory = {
   BUNKAI: 'BUNKAI'
 };
 
+exports.ClassAudience = exports.$Enums.ClassAudience = {
+  ADULTS: 'ADULTS',
+  CHILDREN: 'CHILDREN',
+  MIXED: 'MIXED'
+};
+
 exports.AttendanceStatus = exports.$Enums.AttendanceStatus = {
   PENDING: 'PENDING',
   CONFIRMED: 'CONFIRMED',
-  REJECTED: 'REJECTED'
+  REJECTED: 'REJECTED',
+  JUSTIFIED: 'JUSTIFIED'
 };
 
 exports.Prisma.ModelName = {
@@ -524,6 +562,7 @@ exports.Prisma.ModelName = {
   Technique: 'Technique',
   StudentTechnique: 'StudentTechnique',
   TechniqueEvaluation: 'TechniqueEvaluation',
+  Plan: 'Plan',
   Class: 'Class',
   ClassEnrollment: 'ClassEnrollment',
   ClassSession: 'ClassSession',

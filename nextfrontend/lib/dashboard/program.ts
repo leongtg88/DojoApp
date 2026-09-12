@@ -15,6 +15,12 @@ export function programForAge(age: number): Program {
   return age >= 18 ? 'ADULT' : 'YOUTH'
 }
 
+export type ClassAudience = 'ADULTS' | 'CHILDREN' | 'MIXED'
+
+export function audienceForAge(age: number): ClassAudience {
+  return age >= 18 ? 'ADULTS' : 'CHILDREN'
+}
+
 export async function resolveDefaultRank(schoolId: string, dateOfBirth: Date) {
   const program = programForAge(ageFromDob(dateOfBirth))
   return db.beltRank.findFirst({

@@ -1,6 +1,8 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
+import { classHours } from '@/lib/dashboard/balance'
+import type { AttendanceStatus } from '@/lib/generated/prisma'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -10,6 +12,7 @@ const attendanceUpdateSchema = z.object({
   records: z.array(z.object({
     studentId: z.string().trim().min(1),
     present: z.boolean(),
+    justified: z.boolean().optional(),
     notes: z.string().trim().max(500).nullable(),
   })).max(500),
 })
@@ -35,27 +38,40 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Hay alumnos repetidos en el registro' }, { status: 400 })
   }
 
-  const assignedClass = await db.class.findFirst({
-    where: { id: classId, instructorId: session.user.id },
-    select: { id: true },
+  const scheduledClass = await db.class.findFirst({
+    where: { id: classId, instructorId: session.user.id, active: true },
+    select: {
+      id: true,
+      name: true,
+      startTime: true,
+      endTime: true,
+      branch: { select: { schoolId: true } },
+    },
   })
 
-  if (!assignedClass) {
+  if (!scheduledClass) {
     return NextResponse.json({ error: 'No tienes acceso a esta clase' }, { status: 403 })
   }
 
-  const enrollments = await db.classEnrollment.findMany({
+  // El pase de lista puede incluir alumnos de la misma escuela aunque no estén
+  // inscritos en este horario (asistencia "fuera de horario").
+  const validStudents = await db.student.count({
+    where: { id: { in: recordStudentIds }, schoolId: scheduledClass.branch.schoolId },
+  })
+
+  if (validStudents !== recordStudentIds.length) {
+    return NextResponse.json({ error: 'El registro incluye alumnos que no pertenecen a esta escuela' }, { status: 400 })
+  }
+
+  const enrolled = await db.classEnrollment.findMany({
     where: { classId, status: 'ACTIVE' },
     select: { studentId: true },
   })
-  const enrolledStudentIds = new Set(enrollments.map(({ studentId }) => studentId))
-
-  if (recordStudentIds.some((studentId) => !enrolledStudentIds.has(studentId))) {
-    return NextResponse.json({ error: 'El registro incluye alumnos no inscritos' }, { status: 400 })
-  }
+  const enrolledStudentIds = new Set(enrolled.map(({ studentId }) => studentId))
 
   const sessionDate = new Date(`${date}T00:00:00.000Z`)
   const dayAfter = new Date(sessionDate.getTime() + 86_400_000)
+  const defaultHours = classHours(scheduledClass)
 
   await db.$transaction(async (transaction) => {
     const classSession = await transaction.classSession.upsert({
@@ -66,6 +82,9 @@ export async function POST(request: Request) {
     })
 
     await Promise.all(records.map(async (record) => {
+      const isConfirmed = record.present
+      const status: AttendanceStatus = isConfirmed ? 'CONFIRMED' : (record.justified ? 'JUSTIFIED' : 'REJECTED')
+
       // Si el pase de lista ya existe para este alumno en esta sesión, se actualiza.
       // Se conservan las horas del punch-in fusionado si ya venían de una marcación previa.
       const existing = await transaction.attendance.findFirst({
@@ -73,20 +92,20 @@ export async function POST(request: Request) {
         select: { id: true, hoursTrained: true },
       })
 
+      const updateData = {
+        present: record.present,
+        notes: record.notes,
+        status,
+        hoursTrained: isConfirmed ? (existing && existing.hoursTrained > 0 ? existing.hoursTrained : defaultHours) : 0,
+        sessionType: 'class',
+        classId,
+        isOutOfSchedule: !enrolledStudentIds.has(record.studentId),
+        confirmedById: session.user.id,
+        confirmedAt: new Date(),
+      }
+
       if (existing) {
-        const hadHours = (existing.hoursTrained ?? 0) > 0
-        return transaction.attendance.update({
-          where: { id: existing.id },
-          data: {
-            present: record.present,
-            notes: record.notes,
-            status: record.present ? 'CONFIRMED' : 'REJECTED',
-            hoursTrained: record.present ? (hadHours ? existing.hoursTrained : 1) : 0,
-            sessionType: 'class',
-            confirmedById: session.user.id,
-            confirmedAt: record.present ? new Date() : null,
-          },
-        })
+        return transaction.attendance.update({ where: { id: existing.id }, data: updateData })
       }
 
       // Si el alumno hizo punch-in el mismo día (sessionId null), fusiona el registro
@@ -97,7 +116,7 @@ export async function POST(request: Request) {
           sessionId: null,
           date: { gte: sessionDate, lt: dayAfter },
         },
-        select: { id: true, hoursTrained: true, notes: true },
+        select: { id: true, hoursTrained: true, notes: true, classId: true, isOutOfSchedule: true },
       })
 
       if (punch) {
@@ -105,29 +124,22 @@ export async function POST(request: Request) {
         return transaction.attendance.update({
           where: { id: punch.id },
           data: {
+            ...updateData,
             sessionId: classSession.id,
-            present: record.present,
             notes: record.notes ?? punch.notes,
-            status: record.present ? 'CONFIRMED' : 'REJECTED',
-            hoursTrained: record.present ? (punch.hoursTrained ?? 1) : 0,
-            confirmedById: session.user.id,
-            confirmedAt: record.present ? new Date() : null,
+            hoursTrained: isConfirmed ? (punch.hoursTrained ?? defaultHours) : 0,
+            classId: punch.classId ?? classId,
+            isOutOfSchedule: punch.isOutOfSchedule ?? !enrolledStudentIds.has(record.studentId),
           },
         })
       }
 
       return transaction.attendance.create({
         data: {
+          ...updateData,
           sessionId: classSession.id,
           studentId: record.studentId,
-          present: record.present,
-          notes: record.notes,
           date: sessionDate,
-          status: record.present ? 'CONFIRMED' : 'REJECTED',
-          hoursTrained: record.present ? 1 : 0,
-          sessionType: 'class',
-          confirmedById: session.user.id,
-          confirmedAt: record.present ? new Date() : null,
         },
       })
     }))

@@ -266,6 +266,11 @@ export function InstructorAttendanceBoard({ data }: InstructorAttendanceBoardPro
                                                     {isPending && <Hourglass className="size-3 animate-spin" aria-hidden="true" />}
                                                     <span>{isConfirmed ? 'CONFIRMADA' : isPending ? 'PENDIENTE' : 'OBSERVADA'}</span>
                                                 </span>
+                                                {record.isOutOfSchedule && (
+                                                    <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-200" title="No pertenece a su horario de referencia">
+                                                        Fuera de horario
+                                                    </span>
+                                                )}
                                             </div>
                                             <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-400">
                                                 <span className="flex items-center gap-1 font-mono text-neutral-300"><Calendar className="size-3 text-neutral-500" aria-hidden="true" />{formatter.format(new Date(record.date))}</span>

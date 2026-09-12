@@ -112,6 +112,8 @@ export interface InstructorAttendanceStudent {
 	currentRank: string | null
 	present: boolean
 	notes: string | null
+	status?: string | null
+	justified?: boolean
 }
 
 export interface InstructorAttendanceRoster {
@@ -142,6 +144,13 @@ export interface AdminStudentSummary {
 	accountStatus: 'SIN_CUENTA' | 'INVITADO' | 'ACTIVO'
 	branchName: string
 	activeClassNames: string[],
+	planId: string | null,
+	planName: string | null,
+	scholarshipType: ScholarshipType,
+	scholarshipNote: string | null,
+	isCompetitor: boolean,
+	needsPlan: boolean,
+	needsSchedule: boolean,
 	techniques: AdminTechniqueSummary[],
 	studentCount: number
 	kataMasteredCount: number
@@ -157,6 +166,10 @@ export interface AdminDashboardSummary {
 	studentCount: number
 	activeEnrollmentCount: number
 	classCount: number
+	pendingCases: {
+		noPlan: number
+		noSchedule: number
+	}
 }
 
 export interface AdminEnrollmentSummary {
@@ -242,6 +255,16 @@ export interface AdminStudentDetail {
 	nextRankKyuDan: string | null
 	nextRankBeltColor: string | null
 	nextRankRequiredKatas: number
+	planId: string | null
+	planName: string | null
+	planMonthlyHours: number | null
+	isUnlimitedPlan: boolean
+	planStartDate: string | null
+	scholarshipType: ScholarshipType
+	scholarshipNote: string | null
+	isCompetitor: boolean
+	activeScheduleIds: string[]
+	activeScheduleNames: string[]
 }
 
 export interface AdminAttendanceRecord {
@@ -332,7 +355,7 @@ export interface StudentPracticeNote {
 }
 
 
-export type AttendanceStatus = 'PENDING' | 'CONFIRMED' | 'REJECTED'
+export type AttendanceStatus = 'PENDING' | 'CONFIRMED' | 'REJECTED' | 'JUSTIFIED'
 
 export interface AttendanceRecord {
 	id: string
@@ -346,6 +369,8 @@ export interface AttendanceRecord {
 	confirmedByName: string | null
 	notes: string | null
 	punchedAt: string
+	isOutOfSchedule?: boolean
+	className?: string | null,
 }
 
 export interface StudentAttendancePunchData {
@@ -386,4 +411,120 @@ export interface AdminTechniqueSummary {
 export interface AdminCurriculumData {
 	ranks: AdminBeltRankSummary[]
 	techniques: AdminTechniqueSummary[]
+}
+
+// ==================== Planes, horarios y balance ====================
+
+export type ScholarshipType = 'NONE' | 'ECONOMIC' | 'MERIT' | 'COMPETITOR'
+
+export interface PlanSummary {
+	id: string
+	name: string
+	description: string | null
+	monthlyHours: number
+	price: number | null
+	isUnlimited: boolean
+	active: boolean
+	sortOrder: number
+	studentCount?: number
+}
+
+export type ScheduleAudience = 'ADULTS' | 'CHILDREN' | 'MIXED'
+
+export interface ScheduleOption {
+	id: string
+	name: string
+	audience: ScheduleAudience
+	active: boolean
+	dayOfWeek: number
+	startTime: string
+	endTime: string
+	branchId: string
+	branchName: string
+	instructorId: string | null
+	instructorName: string | null
+	activeStudentCount?: number
+}
+
+export interface AdminScheduleSummary extends ScheduleOption {
+	description: string | null
+}
+
+export interface StudentPendingRecovery {
+	id: string
+	date: string
+	className: string | null
+}
+
+export type BalanceLevel = 'OK' | 'LOW' | 'HIGH' | 'VERY_HIGH'
+
+export interface StudentMonthlyStatus {
+	plan: PlanSummary | null
+	planStartDate: string | null
+	scholarshipType: ScholarshipType
+	scholarshipNote: string | null
+	isCompetitor: boolean
+	confirmedHours: number
+	expectedHours: number | null
+	balanceDiff: number | null
+	balanceLevel: BalanceLevel
+	balanceAlert: boolean
+	balanceMessage: string
+	pendingRecoveries: StudentPendingRecovery[]
+	outOfScheduleCount: number
+	needsPlan: boolean
+	needsSchedule: boolean
+}
+
+export interface AdminBalanceRow {
+	studentId: string
+	studentName: string
+	memberNumber: string | null
+	currentRank: string | null
+	planId: string | null
+	planName: string | null
+	planMonthlyHours: number | null
+	isUnlimited: boolean
+	scholarshipType: ScholarshipType
+	isCompetitor: boolean
+	confirmedHours: number
+	balanceDiff: number | null
+	balanceLevel: BalanceLevel
+	balanceAlert: boolean
+	balanceMessage: string
+	outOfScheduleCount: number
+}
+
+export interface InstructorKataGradeItem {
+	id: string
+	name: string
+	kanji: string | null
+	japaneseName: string | null
+	description: string | null
+	assigned: boolean
+	status: 'PENDING' | 'IN_PROGRESS' | 'APPROVED'
+}
+
+export interface InstructorKataGrade {
+	rankId: string
+	rankName: string
+	kyuDan: string | null
+	order: number
+	isMaximumRank: boolean
+	katas: InstructorKataGradeItem[]
+}
+
+export interface InstructorKataAssignmentData {
+	studentId: string
+	studentName: string
+	currentRank: string | null
+	grades: InstructorKataGrade[]
+}
+
+export interface InstructorStudentSearchResult {
+	id: string
+	firstName: string
+	lastName: string
+	currentRank: string | null
+	enrolledInClass: boolean
 }

@@ -6,6 +6,8 @@ import type {
   InstructorAttendanceBoardData,
   InstructorAttendanceRoster,
   InstructorClassSummary,
+  InstructorKataAssignmentData,
+  InstructorStudentSearchResult,
   InstructorStudentSummary,
   InstructorTechniqueReview,
 } from '@/types/dashboard'
@@ -223,7 +225,7 @@ export async function getInstructorAttendanceRoster(
     where: { classId_date: { classId, date: sessionDate } },
     select: {
       attendances: {
-        select: { studentId: true, present: true, notes: true },
+        select: { studentId: true, present: true, status: true, notes: true },
       },
     },
   })
@@ -239,6 +241,8 @@ export async function getInstructorAttendanceRoster(
         ...student,
         present: attendance?.present ?? true,
         notes: attendance?.notes ?? null,
+        status: attendance?.status ?? null,
+        justified: attendance?.status === 'JUSTIFIED',
       }
     }),
   }
@@ -308,4 +312,140 @@ export async function getInstructorTechniqueReview(
     })),
     availableTechniques,
   }
+}
+
+/**
+ * Datos del modal "Asignar katas al expediente": catálogo agrupado por grado
+ * (BeltRank) con sus katas requeridas y el estado de asignación del alumno.
+ */
+export async function getInstructorKataAssignment(
+  userId: string,
+  studentId: string,
+): Promise<InstructorKataAssignmentData | null> {
+  const student = await db.student.findFirst({
+    where: {
+      id: studentId,
+      classEnrollments: {
+        some: {
+          status: 'ACTIVE',
+          class: { instructorId: userId },
+        },
+      },
+    },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      currentRank: true,
+      schoolId: true,
+    },
+  })
+
+  if (!student) {
+    return null
+  }
+
+  const ranks = await db.beltRank.findMany({
+    where: { OR: [{ schoolId: student.schoolId }, { schoolId: null }] },
+    orderBy: [{ program: 'asc' }, { order: 'asc' }],
+    select: {
+      id: true,
+      name: true,
+      kyuDan: true,
+      order: true,
+      isMaximumRank: true,
+      katas: {
+        orderBy: { order: 'asc' },
+        select: {
+          kata: {
+            select: {
+              id: true,
+              name: true,
+              japaneseName: true,
+              kanji: true,
+              description: true,
+            },
+          },
+        },
+      },
+    },
+  })
+
+  const assigned = await db.studentTechnique.findMany({
+    where: { studentId: student.id },
+    select: { techniqueId: true, approved: true, inPractice: true },
+  })
+  const assignedByTechnique = new Map(
+    assigned.map((entry) => [
+      entry.techniqueId,
+      entry.approved ? 'APPROVED' : entry.inPractice ? 'IN_PROGRESS' : 'PENDING',
+    ] as const),
+  )
+
+  return {
+    studentId: student.id,
+    studentName: `${student.firstName} ${student.lastName}`,
+    currentRank: student.currentRank,
+    grades: ranks.map((rank) => ({
+      rankId: rank.id,
+      rankName: rank.name,
+      kyuDan: rank.kyuDan,
+      order: rank.order,
+      isMaximumRank: rank.isMaximumRank,
+      katas: rank.katas.map(({ kata }) => ({
+        id: kata.id,
+        name: kata.name,
+        kanji: kata.kanji,
+        japaneseName: kata.japaneseName,
+        description: kata.description,
+        assigned: assignedByTechnique.has(kata.id),
+        status: assignedByTechnique.get(kata.id) ?? 'PENDING',
+      })),
+    })),
+  }
+}
+
+/** Búsqueda de alumnos de la misma escuela para agregarlos al pase de lista. */
+export async function getInstructorStudentsSearch(
+  userId: string,
+  query: string,
+): Promise<InstructorStudentSearchResult[]> {
+  const instructor = await db.user.findUnique({
+    where: { id: userId },
+    select: { schoolId: true },
+  })
+
+  if (!instructor?.schoolId) {
+    return []
+  }
+
+  const classIds = await db.class.findMany({
+    where: { instructorId: userId },
+    select: { id: true },
+  })
+  const enrollments = await db.classEnrollment.findMany({
+    where: { classId: { in: classIds.map(({ id }) => id) }, status: 'ACTIVE' },
+    select: { studentId: true },
+  })
+  const enrolledSet = new Set(enrollments.map(({ studentId }) => studentId))
+
+  const students = await db.student.findMany({
+    where: {
+      schoolId: instructor.schoolId,
+      status: 'ACTIVE',
+      OR: [
+        { firstName: { contains: query, mode: 'insensitive' } },
+        { lastName: { contains: query, mode: 'insensitive' } },
+        { memberNumber: { contains: query, mode: 'insensitive' } },
+      ],
+    },
+    orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
+    take: 30,
+    select: { id: true, firstName: true, lastName: true, currentRank: true },
+  })
+
+  return students.map((student) => ({
+    ...student,
+    enrolledInClass: enrolledSet.has(student.id),
+  }))
 }

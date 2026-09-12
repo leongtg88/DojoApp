@@ -6,6 +6,7 @@ import { KataToEvaluateCard } from './KataToEvaluateCard'
 import { MartialGradeCard } from './MartialGradeCard'
 import { StudentGreeting } from './StudentGreeting'
 import { StudentMetricsGrid } from './StudentMetricsGrid'
+import { StudentMonthlyProgress } from './StudentMonthlyProgress'
 
 interface StudentDashboardOverviewProps {
     summary: StudentDashboardSummary
@@ -29,11 +30,14 @@ export function StudentDashboardOverview({ summary, kataSummary }: StudentDashbo
                 <FocusTechniquesList techniques={techniques} />
                 <KataToEvaluateCard katas={kataSummary?.katas ?? []} />
             </section>
-            {kataSummary && (
-                <div className="mt-5">
-                    <ExaminationCriteriaCard grado={kataSummary.grado} />
+            <section className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
+                <StudentMonthlyProgress />
+                <div className="flex flex-col gap-5">
+                    {kataSummary && (
+                        <ExaminationCriteriaCard grado={kataSummary.grado} />
+                    )}
                 </div>
-            )}
+            </section>
         </main>
     )
 }

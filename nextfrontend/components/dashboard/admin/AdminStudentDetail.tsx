@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { ArrowLeft, Award, BookOpen, CalendarDays, GraduationCap, History, Loader2, Mail, MapPin, Phone, ShieldCheck, Stethoscope } from 'lucide-react'
+import { AdminPlacementModal } from './AdminPlacementModal'
 import { AdminStudentDocuments } from './AdminStudentDocuments'
 import { AssignRankDialog } from '../dojo/AssignRankDialog'
 import { KataAssignmentDialog } from '../dojo/KataAssignmentDialog'
@@ -35,6 +36,7 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 	const [isKataAssignOpen, setIsKataAssignOpen] = useState(false)
 	const [isInviteConfirmOpen, setIsInviteConfirmOpen] = useState(false)
 	const [isInviting, setIsInviting] = useState(false)
+	const [isPlacementOpen, setIsPlacementOpen] = useState(false)
 	const [actionError, setActionError] = useState<string | null>(null)
 	const [invitationLink, setInvitationLink] = useState<{ url: string; name: string; email: string | null } | null>(null)
 
@@ -87,6 +89,9 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 							<Mail className="size-4" />{student.accountStatus === 'INVITADO' ? 'Reenviar invitación' : 'Invitar'}
 						</button>
 					)}
+					<button type="button" onClick={() => setIsPlacementOpen(true)} className="inline-flex items-center gap-2 rounded-md border border-neutral-700 bg-[#0d1117] px-3.5 py-2 text-xs font-semibold text-neutral-200 transition-colors hover:bg-neutral-800 hover:text-white">
+						<CalendarDays className="size-4" />Plan y horarios
+					</button>
 					<button type="button" onClick={() => setIsKataAssignOpen(true)} className="inline-flex items-center gap-2 rounded-md border border-neutral-700 bg-[#0d1117] px-3.5 py-2 text-xs font-semibold text-neutral-200 transition-colors hover:bg-neutral-800 hover:text-white">
 						<BookOpen className="size-4" />Asignar katas
 					</button>
@@ -154,6 +159,29 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 						<div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-neutral-800">
 							<div className="h-full rounded-full bg-cyan-400" style={{ width: `${nextRankPercent}%` }} />
 						</div>
+					</div>
+				</div>
+
+				<div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+					<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
+						<p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Plan de mensualidad</p>
+						<p className="mt-2 text-sm font-bold text-white">{student.planName ?? 'Sin plan asignado'}</p>
+						<p className="mt-1 text-[11px] text-neutral-400">
+							{student.planId ? (student.isUnlimitedPlan ? 'Horas ilimitadas' : `${student.planMonthlyHours} h/mes`) : 'Requiere asignación'}
+						</p>
+						{student.planStartDate && <p className="mt-1 text-[11px] text-neutral-500">Desde: {formatDate(student.planStartDate)}</p>}
+					</div>
+
+					<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
+						<p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Beca</p>
+						<p className="mt-2 text-sm font-bold text-white">{student.scholarshipType === 'NONE' ? 'Sin beca' : student.scholarshipType === 'ECONOMIC' ? 'Beca económica' : student.scholarshipType === 'MERIT' ? 'Beca por mérito' : 'Beca competidor'}</p>
+						<p className="mt-1 text-[11px] text-neutral-400">{student.scholarshipNote || (student.isCompetitor ? 'Competidor de alto rendimiento' : '—')}</p>
+					</div>
+
+					<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
+						<p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Horarios de referencia</p>
+						<p className="mt-2 text-sm font-bold text-white">{student.activeScheduleNames.length > 0 ? student.activeScheduleNames.join(', ') : 'Sin horario asignado'}</p>
+						<p className="mt-1 text-[11px] text-neutral-400">{student.activeScheduleNames.length} horario(s) activo(s)</p>
 					</div>
 				</div>
 			</section>
@@ -343,6 +371,18 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 				onClose={() => setIsKataAssignOpen(false)}
 				assignedTechniqueIds={assignedTechniqueIds}
 				availableTechniques={availableTechniques}
+			/>
+
+			<AdminPlacementModal
+				open={isPlacementOpen}
+				studentId={student.id}
+				studentName={studentFullName}
+				initialPlanId={student.planId}
+				initialSchedules={student.activeScheduleIds}
+				initialScholarshipType={student.scholarshipType}
+				initialScholarshipNote={student.scholarshipNote}
+				initialIsCompetitor={student.isCompetitor}
+				onClose={() => setIsPlacementOpen(false)}
 			/>
 
 			{actionError && (

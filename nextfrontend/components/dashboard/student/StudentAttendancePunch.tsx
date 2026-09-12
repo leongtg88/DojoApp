@@ -30,10 +30,11 @@ const SESSION_OPTIONS = [
   { value: 'other', label: 'Otro' },
 ]
 
-const STATUS_LABELS: Record<'CONFIRMED' | 'PENDING' | 'REJECTED', string> = {
+const STATUS_LABELS: Record<'CONFIRMED' | 'PENDING' | 'REJECTED' | 'JUSTIFIED', string> = {
   CONFIRMED: 'Confirmada',
   PENDING: 'Esperando al Sensei',
   REJECTED: 'Rechazada',
+  JUSTIFIED: 'Justificada',
 }
 
 function sessionLabel(sessionType: string | null): string {
@@ -294,6 +295,7 @@ export function StudentAttendancePunch({ data }: StudentAttendancePunchProps) {
             {records.map((record) => {
               const isConfirmed = record.status === 'CONFIRMED'
               const isPending = record.status === 'PENDING'
+              const isJustified = record.status === 'JUSTIFIED'
               const isRejected = record.status === 'REJECTED'
 
               return (
@@ -303,12 +305,16 @@ export function StudentAttendancePunch({ data }: StudentAttendancePunchProps) {
                       ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
                       : isPending
                         ? 'border-amber-500/30 bg-amber-500/10 text-amber-400'
-                        : 'border-red-500/30 bg-red-500/10 text-red-400'
+                        : isJustified
+                          ? 'border-sky-500/30 bg-sky-500/10 text-sky-400'
+                          : 'border-red-500/30 bg-red-500/10 text-red-400'
                     }`}>
                       {isConfirmed ? (
                         <CheckCircle2 className="size-5" aria-hidden="true" />
                       ) : isPending ? (
                         <Hourglass className="size-5 animate-pulse" aria-hidden="true" />
+                      ) : isJustified ? (
+                        <ShieldCheck className="size-5" aria-hidden="true" />
                       ) : (
                         <AlertCircle className="size-5" aria-hidden="true" />
                       )}
@@ -326,6 +332,11 @@ export function StudentAttendancePunch({ data }: StudentAttendancePunchProps) {
                           <span>Validado por {record.confirmedByName}</span>
                         </p>
                       )}
+                      {isJustified && (
+                        <p className="mt-0.5 text-[11px] text-sky-400/90">
+                          Falta justificada. Recupérala entrenando fuera de tu horario habitual.
+                        </p>
+                      )}
                       {isRejected && (
                         <p className="mt-0.5 text-[11px] text-red-400/90">
                           No fue validado por el Sensei. Registra tu práctica de nuevo.
@@ -335,14 +346,23 @@ export function StudentAttendancePunch({ data }: StudentAttendancePunchProps) {
                   </div>
 
                   <div className="flex flex-wrap items-center justify-end gap-2 self-end sm:self-center">
+                    {record.isOutOfSchedule && (
+                      <span className="flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-1 text-xs font-semibold text-amber-200">
+                        <Clock className="size-3.5" aria-hidden="true" />
+                        Fuera de horario
+                      </span>
+                    )}
                     <span className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${isConfirmed
                       ? 'border-emerald-500/30 bg-emerald-500/20 text-emerald-300'
                       : isPending
                         ? 'border-amber-500/30 bg-amber-500/20 text-amber-300'
-                        : 'border-red-500/30 bg-red-500/20 text-red-300'
+                        : isJustified
+                          ? 'border-sky-500/30 bg-sky-500/20 text-sky-300'
+                          : 'border-red-500/30 bg-red-500/20 text-red-300'
                     }`}>
                       {isConfirmed && <CheckCircle2 className="size-3.5" aria-hidden="true" />}
                       {isPending && <Hourglass className="size-3.5" aria-hidden="true" />}
+                      {isJustified && <ShieldCheck className="size-3.5" aria-hidden="true" />}
                       {isRejected && <AlertCircle className="size-3.5" aria-hidden="true" />}
                       <span>{STATUS_LABELS[record.status]}</span>
                     </span>

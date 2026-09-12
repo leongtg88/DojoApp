@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
+import { resolveClassByTime, classHours } from '@/lib/dashboard/balance'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -28,7 +29,13 @@ export async function POST(request: Request) {
 
   const student = await db.student.findUnique({
     where: { userId: session.user.id },
-    select: { id: true, firstName: true, lastName: true },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      branchId: true,
+      classEnrollments: { where: { status: 'ACTIVE' }, select: { classId: true } },
+    },
   })
 
   if (!student) {
@@ -58,14 +65,33 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Tipo de sesión no válido' }, { status: 400 })
   }
 
+  // Detecta el horario activo correspondiente a la fecha/hora actual para marcar
+  // "fuera de horario" cuando no coincide con los horarios de referencia del alumno.
+  const scheduledClasses = await db.class.findMany({
+    where: { branchId: student.branchId, active: true },
+    select: {
+      id: true,
+      name: true,
+      audience: true,
+      active: true,
+      dayOfWeek: true,
+      startTime: true,
+      endTime: true,
+    },
+  })
+  const resolvedClass = resolveClassByTime(scheduledClasses, now)
+  const referenceIds = new Set(student.classEnrollments.map((entry) => entry.classId))
+
   const attendance = await db.attendance.create({
     data: {
       studentId: student.id,
       date: now,
       present: true,
-      hoursTrained: result.data.hoursTrained ?? 1,
+      hoursTrained: result.data.hoursTrained ?? (resolvedClass ? classHours(resolvedClass) : 1),
       sessionType,
       status: 'PENDING',
+      classId: resolvedClass?.id ?? null,
+      isOutOfSchedule: resolvedClass ? !referenceIds.has(resolvedClass.id) : false,
       punchedAt: now,
       notes: result.data.notes ?? null,
     },

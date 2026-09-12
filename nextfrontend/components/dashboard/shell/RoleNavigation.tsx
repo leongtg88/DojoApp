@@ -4,8 +4,10 @@ import {
     BookOpenCheck,
     CalendarDays,
     ClipboardCheck,
+    Clock3,
     GraduationCap,
     LayoutDashboard,
+    ListChecks,
     Users,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -37,15 +39,21 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/admin', label: 'Resumen', icon: LayoutDashboard },
         { href: '/dashboard/admin/alumnos', label: 'Alumnos', icon: Users },
         { href: '/dashboard/admin/inscripciones', label: 'Inscripciones', icon: ClipboardCheck },
-        { href: '/dashboard/admin/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
+        { href: '/dashboard/admin/planes', label: 'Planes', icon: ListChecks },
+        { href: '/dashboard/admin/horarios', label: 'Horarios', icon: CalendarDays },
+        { href: '/dashboard/admin/balance', label: 'Balance de horas', icon: Clock3 },
         { href: '/dashboard/admin/asistencia', label: 'Asistencia', icon: CalendarDays },
+        { href: '/dashboard/admin/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
     ],
     SUPERADMIN: [
         { href: '/dashboard/admin', label: 'Resumen', icon: LayoutDashboard },
         { href: '/dashboard/admin/alumnos', label: 'Alumnos', icon: Users },
         { href: '/dashboard/admin/inscripciones', label: 'Inscripciones', icon: ClipboardCheck },
-        { href: '/dashboard/admin/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
+        { href: '/dashboard/admin/planes', label: 'Planes', icon: ListChecks },
+        { href: '/dashboard/admin/horarios', label: 'Horarios', icon: CalendarDays },
+        { href: '/dashboard/admin/balance', label: 'Balance de horas', icon: Clock3 },
         { href: '/dashboard/admin/asistencia', label: 'Asistencia', icon: CalendarDays },
+        { href: '/dashboard/admin/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
     ],
 }
 

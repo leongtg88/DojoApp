@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import { ageFromDob, programForAge, resolveDefaultRank } from '@/lib/dashboard/program'
+import { computeBalance, monthRange, pendingRecoveries } from '@/lib/dashboard/balance'
 import type {
   StudentAttendanceRecord,
   StudentAttendancePunchData,
@@ -11,6 +12,7 @@ import type {
   KataProgressItem,
   TechniqueStatus,
   AttendanceRecord,
+  StudentMonthlyStatus,
 } from '@/types/dashboard'
 
 function techniqueStatus(approved: boolean, inPractice: boolean): TechniqueStatus {
@@ -198,6 +200,100 @@ export async function getStudentAttendancePunchData(userId: string): Promise<Stu
       attendancePercent,
     },
     records,
+  }
+}
+
+export async function getStudentMonthlyStatus(userId: string, date = new Date()): Promise<StudentMonthlyStatus | null> {
+  const { start, end } = monthRange(date)
+  const student = await db.student.findUnique({
+    where: { userId },
+    select: {
+      id: true,
+      planId: true,
+      planStartDate: true,
+      scholarshipType: true,
+      scholarshipNote: true,
+      isCompetitor: true,
+      plan: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          monthlyHours: true,
+          price: true,
+          isUnlimited: true,
+          active: true,
+          sortOrder: true,
+        },
+      },
+      classEnrollments: {
+        where: { status: 'ACTIVE' },
+        select: { classId: true },
+      },
+      attendances: {
+        where: { date: { gte: start, lt: end } },
+        select: {
+          id: true,
+          date: true,
+          present: true,
+          status: true,
+          hoursTrained: true,
+          isOutOfSchedule: true,
+          recovery: { select: { id: true } },
+          class: { select: { name: true } },
+          session: { select: { class: { select: { name: true } } } },
+        },
+      },
+    },
+  })
+
+  if (!student) {
+    return null
+  }
+
+  const confirmedHours = student.attendances
+    .filter((attendance) => attendance.present && attendance.status === 'CONFIRMED')
+    .reduce((sum, attendance) => sum + attendance.hoursTrained, 0)
+
+  const balance = computeBalance({
+    confirmedHours,
+    planMonthlyHours: student.plan?.monthlyHours ?? null,
+    isUnlimited: student.plan?.isUnlimited ?? false,
+    scholarshipType: student.scholarshipType,
+    isCompetitor: student.isCompetitor,
+  })
+
+  const justifiedAbsences = student.attendances
+    .filter((attendance) => attendance.status === 'JUSTIFIED')
+    .map((attendance) => ({
+      id: attendance.id,
+      date: attendance.date,
+      recovery: attendance.recovery,
+      className: attendance.class?.name ?? attendance.session?.class.name ?? null,
+    }))
+
+  const pending = pendingRecoveries(justifiedAbsences)
+
+  return {
+    plan: student.plan ?? null,
+    planStartDate: student.planStartDate?.toISOString() ?? null,
+    scholarshipType: student.scholarshipType,
+    scholarshipNote: student.scholarshipNote,
+    isCompetitor: student.isCompetitor,
+    confirmedHours: Number(confirmedHours.toFixed(2)),
+    expectedHours: balance.planHours,
+    balanceDiff: balance.diff,
+    balanceLevel: balance.level,
+    balanceAlert: balance.alert,
+    balanceMessage: balance.message,
+    pendingRecoveries: pending.map((absence) => ({
+      id: absence.id,
+      date: absence.date.toISOString(),
+      className: absence.className,
+    })),
+    outOfScheduleCount: student.attendances.filter((attendance) => attendance.isOutOfSchedule && attendance.status === 'CONFIRMED').length,
+    needsPlan: !student.planId,
+    needsSchedule: student.classEnrollments.length === 0,
   }
 }
 

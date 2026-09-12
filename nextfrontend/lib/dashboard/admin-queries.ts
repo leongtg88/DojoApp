@@ -1,19 +1,24 @@
 import { db } from '@/lib/db'
 import { computeBirthdays } from '@/lib/dashboard/birthdays'
 import { ageFromDob, programForAge } from '@/lib/dashboard/program'
+import { computeBalance, monthRange } from '@/lib/dashboard/balance'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
 import type {
+  AdminBalanceRow,
   AdminDashboardSummary,
   AdminBeltRankSummary,
   AdminAttendanceRecord,
   AdminCurriculumData,
   AdminEnrollmentSummary,
+  AdminScheduleSummary,
   AdminStudentDetail,
   AdminStudentSummary,
   AdminTechniqueSummary,
   AttendanceRecord,
   DashboardBirthday,
   InstructorAttendanceBoardData,
+  PlanSummary,
+  ScholarshipType,
 } from '@/types/dashboard'
 
 export async function getAdminDashboardSummary(userId: string): Promise<AdminDashboardSummary | null> {
@@ -26,7 +31,7 @@ export async function getAdminDashboardSummary(userId: string): Promise<AdminDas
   const studentWhere = scopeSchoolFilter(scope)
   const classWhere = scope.isSuperAdmin ? {} : { branch: { schoolId: scope.schoolId! } }
 
-  const [studentCount, classCount, activeEnrollmentCount] = await Promise.all([
+  const [studentCount, classCount, activeEnrollmentCount, pendingCases] = await Promise.all([
     db.student.count({ where: studentWhere }),
     db.class.count({ where: classWhere }),
     db.classEnrollment.count({
@@ -35,9 +40,25 @@ export async function getAdminDashboardSummary(userId: string): Promise<AdminDas
         ...(scope.isSuperAdmin ? {} : { student: { schoolId: scope.schoolId! } }),
       },
     }),
+    (async () => {
+      const withoutPlan = await db.student.count({ where: scope.isSuperAdmin ? { planId: null } : { planId: null, schoolId: scope.schoolId! } })
+      const withEnrollment = await db.student.findMany({
+        where: scope.isSuperAdmin ? {} : { schoolId: scope.schoolId! },
+        select: { id: true },
+      })
+      const enrolledStudentIds = (
+        await db.classEnrollment.findMany({
+          where: { status: 'ACTIVE', ...(scope.isSuperAdmin ? {} : { student: { schoolId: scope.schoolId! } }) },
+          select: { studentId: true },
+        })
+      )
+      const enrolledSet = new Set(enrolledStudentIds.map(({ studentId }) => studentId))
+      const noSchedule = withEnrollment.filter((student) => !enrolledSet.has(student.id)).length
+      return { noPlan: withoutPlan, noSchedule }
+    })(),
   ])
 
-  return { studentCount, classCount, activeEnrollmentCount }
+  return { studentCount, classCount, activeEnrollmentCount, pendingCases }
 }
 
 export async function getAdminStudents(userId: string): Promise<AdminStudentSummary[] | null> {
@@ -67,6 +88,10 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
         select: { id: true },
       },
       branch: { select: { name: true } },
+      plan: { select: { id: true, name: true } },
+      scholarshipType: true,
+      scholarshipNote: true,
+      isCompetitor: true,
       classEnrollments: {
         where: { status: 'ACTIVE' },
         select: { class: { select: { name: true } } },
@@ -142,6 +167,13 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       accountStatus: student.userId ? 'ACTIVO' : student.invitationTokens.length > 0 ? 'INVITADO' : 'SIN_CUENTA',
       branchName: student.branch.name,
       activeClassNames: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.name),
+      planId: student.plan?.id ?? null,
+      planName: student.plan?.name ?? null,
+      scholarshipType: student.scholarshipType as ScholarshipType,
+      scholarshipNote: student.scholarshipNote,
+      isCompetitor: student.isCompetitor,
+      needsPlan: !student.plan?.id,
+      needsSchedule: student.classEnrollments.length === 0,
       techniques: student.techniques.map(({ technique }) => ({ ...technique })),
       studentCount: student.techniques.length,
       kataMasteredCount: student.techniques.filter(({ approved }) => approved).length,
@@ -337,6 +369,22 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
         select: { id: true },
       },
       branch: { select: { name: true } },
+      plan: {
+        select: {
+          id: true,
+          name: true,
+          monthlyHours: true,
+          isUnlimited: true,
+        },
+      },
+      planStartDate: true,
+      scholarshipType: true,
+      scholarshipNote: true,
+      isCompetitor: true,
+      classEnrollments: {
+        where: { status: 'ACTIVE' },
+        select: { class: { select: { id: true, name: true } } },
+      },
     documents: {
     orderBy: { uploadedAt: 'desc' },
     select: { id: true, type: true, status: true, fileName: true, mimeType: true, fileSize: true, reviewNotes: true, uploadedAt: true },
@@ -487,6 +535,16 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
     nextRankKyuDan: nextBeltRank?.kyuDan ?? null,
     nextRankBeltColor: nextBeltRank?.beltColor ?? null,
     nextRankRequiredKatas: nextBeltRank?._count.katas ?? 0,
+    planId: student.plan?.id ?? null,
+    planName: student.plan?.name ?? null,
+    planMonthlyHours: student.plan?.monthlyHours ?? null,
+    isUnlimitedPlan: student.plan?.isUnlimited ?? false,
+    planStartDate: student.planStartDate?.toISOString() ?? null,
+    scholarshipType: student.scholarshipType as ScholarshipType,
+    scholarshipNote: student.scholarshipNote,
+    isCompetitor: student.isCompetitor,
+    activeScheduleIds: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.id),
+    activeScheduleNames: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.name),
   }
 }
 
@@ -624,4 +682,136 @@ export async function getAdminUpcomingBirthdays(userId: string): Promise<Dashboa
       detail: instructor.instructorProfile?.bio?.slice(0, 40) ?? 'Sensei',
     })),
   ])
+}
+
+export async function getAdminPlans(userId: string): Promise<PlanSummary[] | null> {
+  const scope = await getAdminScope(userId)
+
+  if (!scope) {
+    return null
+  }
+
+  const plans = await db.plan.findMany({
+    where: scope.isSuperAdmin ? {} : { schoolId: scope.schoolId },
+    orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      monthlyHours: true,
+      price: true,
+      isUnlimited: true,
+      active: true,
+      sortOrder: true,
+      _count: { select: { students: true } },
+    },
+  })
+
+  return plans.map(({ _count, ...plan }) => ({ ...plan, studentCount: _count.students }))
+}
+
+export async function getAdminSchedules(userId: string): Promise<AdminScheduleSummary[] | null> {
+  const scope = await getAdminScope(userId)
+
+  if (!scope) {
+    return null
+  }
+
+  const classes = await db.class.findMany({
+    where: scope.isSuperAdmin ? {} : { branch: { schoolId: scope.schoolId! } },
+    orderBy: [{ dayOfWeek: 'asc' }, { startTime: 'asc' }],
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      audience: true,
+      active: true,
+      dayOfWeek: true,
+      startTime: true,
+      endTime: true,
+      branch: { select: { id: true, name: true } },
+      instructor: { select: { id: true, name: true } },
+      _count: { select: { enrollments: { where: { status: 'ACTIVE' } } } },
+    },
+  })
+
+  return classes.map(({ branch, instructor, _count, ...scheduledClass }) => ({
+    ...scheduledClass,
+    branchId: branch.id,
+    branchName: branch.name,
+    instructorId: instructor?.id ?? null,
+    instructorName: instructor?.name ?? null,
+    activeStudentCount: _count.enrollments,
+  }))
+}
+
+export async function getAdminBalanceReport(userId: string): Promise<AdminBalanceRow[] | null> {
+  const scope = await getAdminScope(userId)
+
+  if (!scope) {
+    return null
+  }
+
+  const { start, end } = monthRange(new Date())
+
+  const students = await db.student.findMany({
+    where: {
+      ...scopeSchoolFilter(scope),
+      status: 'ACTIVE',
+    },
+    orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      memberNumber: true,
+      currentRank: true,
+      scholarshipType: true,
+      isCompetitor: true,
+      plan: {
+        select: {
+          id: true,
+          name: true,
+          monthlyHours: true,
+          isUnlimited: true,
+        },
+      },
+      attendances: {
+        where: { date: { gte: start, lt: end } },
+        select: { present: true, status: true, hoursTrained: true, isOutOfSchedule: true },
+      },
+    },
+  })
+
+  return students.map((student) => {
+    const confirmedHours = student.attendances
+      .filter((attendance) => attendance.present && attendance.status === 'CONFIRMED')
+      .reduce((sum, attendance) => sum + attendance.hoursTrained, 0)
+    const balance = computeBalance({
+      confirmedHours,
+      planMonthlyHours: student.plan?.monthlyHours ?? null,
+      isUnlimited: student.plan?.isUnlimited ?? false,
+      scholarshipType: student.scholarshipType,
+      isCompetitor: student.isCompetitor,
+    })
+
+    return {
+      studentId: student.id,
+      studentName: `${student.firstName} ${student.lastName}`,
+      memberNumber: student.memberNumber,
+      currentRank: student.currentRank,
+      planId: student.plan?.id ?? null,
+      planName: student.plan?.name ?? null,
+      planMonthlyHours: student.plan?.monthlyHours ?? null,
+      isUnlimited: student.plan?.isUnlimited ?? false,
+      scholarshipType: student.scholarshipType as ScholarshipType,
+      isCompetitor: student.isCompetitor,
+      confirmedHours: Number(confirmedHours.toFixed(2)),
+      balanceDiff: balance.diff,
+      balanceLevel: balance.level,
+      balanceAlert: balance.alert,
+      balanceMessage: balance.message,
+      outOfScheduleCount: student.attendances.filter((attendance) => attendance.isOutOfSchedule && attendance.status === 'CONFIRMED').length,
+    }
+  })
 }

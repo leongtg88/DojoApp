@@ -1,4 +1,4 @@
-import { PrismaClient, Role } from '@/lib/generated/prisma'
+import { PrismaClient, Role, ClassAudience } from '@/lib/generated/prisma'
 import { PrismaPg } from '@prisma/adapter-pg'
 import bcrypt from 'bcryptjs'
 import dotenv from 'dotenv'
@@ -31,6 +31,37 @@ async function main() {
     update: {},
     create: { id: 'tosei-gusoku-main-branch', name: 'Sucursal principal', schoolId: school.id },
   })
+
+  // ============ PLANES / MENSUALIDADES ============
+  const PLANS = [
+    { id: 'plan-basico', name: 'Básico', description: '1 a 2 clases por semana.', monthlyHours: 8, price: 2500, isUnlimited: false },
+    { id: 'plan-full', name: 'Full', description: 'Clases ilimitadas en horarios regulares.', monthlyHours: 12, price: 3500, isUnlimited: false },
+    { id: 'plan-competidor', name: 'Competidor', description: 'Alto rendimiento con horas extendidas.', monthlyHours: 24, price: 4500, isUnlimited: false },
+    { id: 'plan-beca', name: 'Beca', description: 'Plan especial con apoyo económico o por mérito.', monthlyHours: 12, price: 0, isUnlimited: false },
+  ] as const
+  for (const [index, plan] of PLANS.entries()) {
+    await db.plan.upsert({
+      where: { id: plan.id },
+      update: { name: plan.name, description: plan.description, monthlyHours: plan.monthlyHours, price: plan.price, isUnlimited: plan.isUnlimited, sortOrder: index + 1, schoolId: school.id },
+      create: { ...plan, sortOrder: index + 1, schoolId: school.id },
+    })
+  }
+
+  // ============ HORARIOS (un bloque por día; los horarios multidía comparten nombre) ============
+  const SCHEDULES = [
+    { id: 'schedule-adult-mon', name: 'Adultos Noche', audience: 'ADULTS', dayOfWeek: 1, startTime: '19:00', endTime: '20:30', description: 'Lunes - Clase de adultos/avanzados.' },
+    { id: 'schedule-adult-wed', name: 'Adultos Noche', audience: 'ADULTS', dayOfWeek: 3, startTime: '19:00', endTime: '20:30', description: 'Miércoles - Clase de adultos/avanzados.' },
+    { id: 'schedule-child-tue', name: 'Niños Tarde', audience: 'CHILDREN', dayOfWeek: 2, startTime: '16:00', endTime: '17:30', description: 'Martes - Clase de niños.' },
+    { id: 'schedule-child-thu', name: 'Niños Tarde', audience: 'CHILDREN', dayOfWeek: 4, startTime: '16:00', endTime: '17:30', description: 'Jueves - Clase de niños.' },
+    { id: 'schedule-mixed-sat', name: 'Mixta Sábado', audience: 'MIXED', dayOfWeek: 6, startTime: '09:00', endTime: '10:30', description: 'Sábado - Clase mixta (niños y adultos).' },
+  ] as const
+  for (const schedule of SCHEDULES) {
+    await db.class.upsert({
+      where: { id: schedule.id },
+      update: { name: schedule.name, audience: schedule.audience as ClassAudience, dayOfWeek: schedule.dayOfWeek, startTime: schedule.startTime, endTime: schedule.endTime, description: schedule.description, active: true },
+      create: { ...schedule, audience: schedule.audience as ClassAudience, branchId: branch.id, active: true },
+    })
+  }
 
   // Limpieza de datos demo/legado (la DB es de desarrollo). El catálogo anterior
   // de grados (belt-white...belt-black) y técnicas (technique-kata-*) se reemplaza
@@ -190,6 +221,11 @@ async function main() {
       currentRank: 'Blanco',
       firstName: 'Juan',
       lastName: 'Pérez',
+      planId: 'plan-basico',
+      planStartDate: new Date(),
+      scholarshipType: 'MERIT',
+      scholarshipNote: 'Programa piloto de API: apoyo por mérito en el tatami.',
+      isCompetitor: false,
     },
     create: {
       userId: studentUser.id,
@@ -204,6 +240,11 @@ async function main() {
       emergencyContact: 'María Pérez - +18095550000',
       currentRank: 'Blanco',
       status: 'ACTIVE',
+      planId: 'plan-basico',
+      planStartDate: new Date(),
+      scholarshipType: 'MERIT',
+      scholarshipNote: 'Programa piloto de API: apoyo por mérito en el tatami.',
+      isCompetitor: false,
     },
   })
 
@@ -267,6 +308,21 @@ async function main() {
     where: { classId_studentId: { classId: regularClass.id, studentId: student.id } },
     update: { status: 'ACTIVE', endedAt: null },
     create: { classId: regularClass.id, studentId: student.id, status: 'ACTIVE' },
+  })
+
+  // Horario de referencia del alumno demo: Niños Tarde (bloque Martes).
+  await db.classEnrollment.upsert({
+    where: { classId_studentId: { classId: 'schedule-child-tue', studentId: student.id } },
+    update: { status: 'ACTIVE', endedAt: null },
+    create: { classId: 'schedule-child-tue', studentId: student.id, status: 'ACTIVE' },
+  })
+
+  // Asigna el instructor principal a los bloques de horario del dojo.
+  await db.class.updateMany({
+    where: {
+      id: { in: ['schedule-adult-mon', 'schedule-adult-wed', 'schedule-child-tue', 'schedule-child-thu', 'schedule-mixed-sat'] },
+    },
+    data: { instructorId: instructor.id },
   })
 
   // Historial de grado del demo: ingresó como blanco (YOUTH).

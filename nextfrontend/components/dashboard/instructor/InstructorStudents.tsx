@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { ArrowRight, Search, Users } from 'lucide-react'
+import { ArrowRight, BookOpenCheck, Search, Users } from 'lucide-react'
 import type { InstructorStudentSummary } from '@/types/dashboard'
+import { InstructorKatasModal } from './InstructorKatasModal'
 
 interface InstructorStudentsProps {
     students: InstructorStudentSummary[]
@@ -11,6 +12,7 @@ interface InstructorStudentsProps {
 
 export function InstructorStudents({ students }: InstructorStudentsProps) {
     const [searchTerm, setSearchTerm] = useState('')
+    const [katasFor, setKatasFor] = useState<InstructorStudentSummary | null>(null)
     const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
     const filteredStudents = normalizedSearch
         ? students.filter((student) => [
@@ -100,6 +102,14 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
                                                 </div>
                                             </div>
                                             <div className="flex shrink-0 items-center gap-4">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setKatasFor(student)}
+                                                    className="flex items-center gap-1.5 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-3 py-1.5 text-xs font-semibold text-cyan-300 transition-colors hover:bg-cyan-900/50"
+                                                    title="Asignar katas por grado al expediente"
+                                                >
+                                                    <BookOpenCheck className="size-3.5" aria-hidden="true" />Katas
+                                                </button>
                                                 <div className="hidden sm:block" title={`Katas dominadas: ${student.masteredCount} de ${student.requiredCount}`}>
                                                     <p className="text-right text-[11px] font-semibold uppercase tracking-wide text-neutral-400">Katas</p>
                                                     <div className="mt-1.5 flex items-center gap-2">
@@ -128,6 +138,13 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
                     )}
                 </section>
             )}
+
+            <InstructorKatasModal
+                open={katasFor !== null}
+                studentId={katasFor?.id ?? ''}
+                studentName={katasFor ? `${katasFor.firstName} ${katasFor.lastName}` : ''}
+                onClose={() => setKatasFor(null)}
+            />
         </main>
     )
 }

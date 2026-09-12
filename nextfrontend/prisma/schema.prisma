@@ -10,30 +10,31 @@ datasource db {
 
 // ==================== Organización ====================
 model School {
-  id        String   @id @default(cuid())
-  name      String
-  branches  Branch[]
-  users     User[]
-  students  Student[]
-  enrollments Enrollment[]
-  beltRanks BeltRank[]
-  techniques Technique[]
+  id               String            @id @default(cuid())
+  name             String
+  branches         Branch[]
+  users            User[]
+  students         Student[]
+  enrollments      Enrollment[]
+  beltRanks        BeltRank[]
+  techniques       Technique[]
   achievementTypes AchievementType[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  plans            Plan[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
 }
 
 model Branch {
-  id        String   @id @default(cuid())
-  name      String
-  schoolId  String
-  school    School   @relation(fields: [schoolId], references: [id])
-  users     User[]
-  students  Student[]
+  id          String       @id @default(cuid())
+  name        String
+  schoolId    String
+  school      School       @relation(fields: [schoolId], references: [id])
+  users       User[]
+  students    Student[]
   enrollments Enrollment[]
-  classes   Class[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  classes     Class[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 // ==================== Usuarios y roles ====================
@@ -46,66 +47,66 @@ enum Role {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  email          String    @unique
-  emailVerified  DateTime?
-  passwordHash   String?
-  name           String?
-  phone          String?
-  role           Role      @default(STUDENT) // rol principal (compatibilidad)
-  roles          Role[]    @default([]) // todos los roles del usuario (multirol)
-  schoolId       String?
-  school         School?   @relation(fields: [schoolId], references: [id])
-  branchId       String?
-  branch         Branch?   @relation(fields: [branchId], references: [id])
-  instructorProfile InstructorProfile?
-  studentProfile Student?
-  guardians      GuardianStudent[] @relation("guardian")
-  guardianOfStudents Student[] @relation("primaryGuardian")
-  rankPromotions StudentRankHistory[] @relation("rankPromoter")
-  techniqueEvaluations TechniqueEvaluation[] @relation("techniqueEvaluator")
-  attendanceConfirmations Attendance[] @relation("attendanceConfirmer")
+  id                      String                   @id @default(cuid())
+  email                   String                   @unique
+  emailVerified           DateTime?
+  passwordHash            String?
+  name                    String?
+  phone                   String?
+  role                    Role                     @default(STUDENT) // rol principal (compatibilidad)
+  roles                   Role[]                   @default([]) // todos los roles del usuario (multirol)
+  schoolId                String?
+  school                  School?                  @relation(fields: [schoolId], references: [id])
+  branchId                String?
+  branch                  Branch?                  @relation(fields: [branchId], references: [id])
+  instructorProfile       InstructorProfile?
+  studentProfile          Student?
+  guardians               GuardianStudent[]        @relation("guardian")
+  guardianOfStudents      Student[]                @relation("primaryGuardian")
+  rankPromotions          StudentRankHistory[]     @relation("rankPromoter")
+  techniqueEvaluations    TechniqueEvaluation[]    @relation("techniqueEvaluator")
+  attendanceConfirmations Attendance[]             @relation("attendanceConfirmer")
   emailVerificationTokens EmailVerificationToken[]
-  passwordResetTokens    PasswordResetToken[]
-  acceptedInvitations StudentInvitationToken[]
-  classes        Class[] @relation("instructor")
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  passwordResetTokens     PasswordResetToken[]
+  acceptedInvitations     StudentInvitationToken[]
+  classes                 Class[]                  @relation("instructor")
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
 }
 
 model EmailVerificationToken {
-  id        String   @id @default(cuid())
-  token     String   @unique // hash del token
+  id        String    @id @default(cuid())
+  token     String    @unique // hash del token
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
   expiresAt DateTime
   usedAt    DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 }
 
 model PasswordResetToken {
-  id        String   @id @default(cuid())
-  token     String   @unique // hash del token
+  id        String    @id @default(cuid())
+  token     String    @unique // hash del token
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
   expiresAt DateTime
   usedAt    DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
   @@index([userId])
 }
 
 model StudentInvitationToken {
-  id        String   @id @default(cuid())
-  token     String   @unique // hash del token
-  studentId String
-  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  email     String   // correo destino de la invitación
-  expiresAt DateTime
-  usedAt    DateTime?
+  id           String    @id @default(cuid())
+  token        String    @unique // hash del token
+  studentId    String
+  student      Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  email        String // correo destino de la invitación
+  expiresAt    DateTime
+  usedAt       DateTime?
   usedByUserId String? // id del User que aceptó la invitación
-  usedBy    User?    @relation(fields: [usedByUserId], references: [id])
-  createdAt DateTime @default(now())
+  usedBy       User?     @relation(fields: [usedByUserId], references: [id])
+  createdAt    DateTime  @default(now())
 
   @@index([studentId])
   @@index([expiresAt])
@@ -122,52 +123,61 @@ model InstructorProfile {
 }
 
 model Student {
-  id               String   @id @default(cuid())
-  userId           String?  @unique // si el estudiante tiene cuenta propia (mayor de edad)
-  guardianId       String?  // referencia al User tutor (si es menor)
-  schoolId         String
-  branchId         String
-  firstName        String
-  lastName         String
-  dateOfBirth      DateTime
-  gender           String? // 'female' | 'male'
-  email            String?  // correo de contacto para la invitación de acceso
-  contactPhone     String?
-  medicalInfo      String?
-  emergencyContact String?
-  enrollmentDate   DateTime @default(now())
-  memberNumber     String?  @unique // matrícula KYU-YYYY-NNN
-  status           String   @default("ACTIVE") // ACTIVE, INACTIVE, GRADUATED
-  currentRank      String?
-  photoKey         String?  // clave en Supabase Storage
-  registrationData Json?
-  school           School   @relation(fields: [schoolId], references: [id])
-  branch           Branch   @relation(fields: [branchId], references: [id])
-  user             User?    @relation(fields: [userId], references: [id])
-  guardian         User?    @relation("primaryGuardian", fields: [guardianId], references: [id])
-  guardians        GuardianStudent[] @relation("student")
-  enrollments      Enrollment[]
-  attendances      Attendance[]
-  achievements     StudentAchievement[]
-  techniques       StudentTechnique[]
-  fitnessReports   FitnessReport[]
-  classEnrollments ClassEnrollment[]
-  rankHistory      StudentRankHistory[]
+  id                  String                   @id @default(cuid())
+  userId              String?                  @unique // si el estudiante tiene cuenta propia (mayor de edad)
+  guardianId          String? // referencia al User tutor (si es menor)
+  schoolId            String
+  branchId            String
+  firstName           String
+  lastName            String
+  dateOfBirth         DateTime
+  gender              String? // 'female' | 'male'
+  email               String? // correo de contacto para la invitación de acceso
+  contactPhone        String?
+  medicalInfo         String?
+  emergencyContact    String?
+  enrollmentDate      DateTime                 @default(now())
+  memberNumber        String?                  @unique // matrícula KYU-YYYY-NNN
+  status              String                   @default("ACTIVE") // ACTIVE, INACTIVE, GRADUATED
+  currentRank         String?
+  photoKey            String? // clave en Supabase Storage
+  registrationData    Json?
+  planId              String?
+  plan                Plan?                    @relation(fields: [planId], references: [id])
+  planStartDate       DateTime? // fecha de inicio en el plan actual (para historial)
+  scholarshipType     ScholarshipType          @default(NONE)
+  scholarshipNote     String? // razón escrita de la beca
+  isCompetitor        Boolean                  @default(false)
+  school              School                   @relation(fields: [schoolId], references: [id])
+  branch              Branch                   @relation(fields: [branchId], references: [id])
+  user                User?                    @relation(fields: [userId], references: [id])
+  guardian            User?                    @relation("primaryGuardian", fields: [guardianId], references: [id])
+  guardians           GuardianStudent[]        @relation("student")
+  enrollments         Enrollment[]
+  attendances         Attendance[]
+  achievements        StudentAchievement[]
+  techniques          StudentTechnique[]
+  fitnessReports      FitnessReport[]
+  classEnrollments    ClassEnrollment[]
+  rankHistory         StudentRankHistory[]
   enrollmentApplicant EnrollmentApplicant?
-  invitationTokens StudentInvitationToken[]
-  documents        StudentDocument[]
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  invitationTokens    StudentInvitationToken[]
+  documents           StudentDocument[]
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+
+  @@index([planId])
+  @@index([scholarshipType])
 }
 
 // Relación muchos a muchos entre tutores y estudiantes
 model GuardianStudent {
-  guardianId String
-  studentId  String
-  guardian   User    @relation("guardian", fields: [guardianId], references: [id])
-  student    Student @relation("student", fields: [studentId], references: [id])
+  guardianId   String
+  studentId    String
+  guardian     User     @relation("guardian", fields: [guardianId], references: [id])
+  student      Student  @relation("student", fields: [studentId], references: [id])
   relationship String? // padre, madre, tutor legal...
-  createdAt  DateTime @default(now())
+  createdAt    DateTime @default(now())
 
   @@id([guardianId, studentId])
 }
@@ -202,43 +212,43 @@ enum TechniqueCategory {
 }
 
 model Enrollment {
-  id               String           @id @default(cuid())
+  id               String                @id @default(cuid())
   origin           EnrollmentOrigin
   schoolId         String?
-  school           School?          @relation(fields: [schoolId], references: [id])
+  school           School?               @relation(fields: [schoolId], references: [id])
   branchId         String?
-  branch           Branch?          @relation(fields: [branchId], references: [id])
+  branch           Branch?               @relation(fields: [branchId], references: [id])
   applicantName    String?
-  interest         String?          // qué le interesa (karate, defensa personal...)
-  schedule         String?          // horario preferido
-  quote            String?          // cotización dada
-  studentId        String?          // si ya se creó el expediente
-  student          Student?         @relation(fields: [studentId], references: [id])
+  interest         String? // qué le interesa (karate, defensa personal...)
+  schedule         String? // horario preferido
+  quote            String? // cotización dada
+  studentId        String? // si ya se creó el expediente
+  student          Student?              @relation(fields: [studentId], references: [id])
   contactEmail     String
   contactPhone     String?
-  status           String           @default("PENDING") // PENDING, CONTACTED, ENROLLED, REJECTED
+  status           String                @default("PENDING") // PENDING, CONTACTED, ENROLLED, REJECTED
   notes            String?
   registrationData Json?
   applicants       EnrollmentApplicant[]
   documents        StudentDocument[]
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
 
   @@unique([contactEmail, status]) // control básico de duplicados
 }
 
 model EnrollmentApplicant {
-  id           String     @id @default(cuid())
+  id           String            @id @default(cuid())
   enrollmentId String
-  studentId    String?    @unique
+  studentId    String?           @unique
   name         String
   dateOfBirth  DateTime
   profileData  Json
-  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
-  student      Student?   @relation(fields: [studentId], references: [id])
+  enrollment   Enrollment        @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  student      Student?          @relation(fields: [studentId], references: [id])
   documents    StudentDocument[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 
   @@index([enrollmentId])
 }
@@ -273,28 +283,28 @@ enum Program {
 }
 
 model BeltRank {
-  id                    String   @id @default(cuid())
-  program               Program  @default(ADULT)
-  name                  String   // Blanco, Amarillo, etc.
-  kyuDan                String?  // e.g. "10TH KYU", "SHODAN"
-  japaneseName          String?  // e.g. "Ju-kyu", "Shodan"
-  kanji                 String?  // e.g. "十級", "初段"
-  order                 Int      // orden secuencial dentro del programa
-  beltColor             String?  // color del cinturón (hex)
-  beltSecondaryColor    String?  // color secundario (franjas)
-  isMaximumRank         Boolean  @default(false)
-  estimatedDurationMonths Int?   // duración estimada del grado
-  description           String?
-  schoolId              String?
-  minMonths             Int?     // permanencia mínima para examen
-  maxMonths             Int?     // permanencia máxima estimada para el grado
-  minAttendancePercent  Int?     // asistencia mínima exigida para examen
-  school                School?  @relation(fields: [schoolId], references: [id])
-  katas                 BeltRankKata[]
-  techniques            Technique[]
-  promotions            StudentRankHistory[]
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  id                      String               @id @default(cuid())
+  program                 Program              @default(ADULT)
+  name                    String // Blanco, Amarillo, etc.
+  kyuDan                  String? // e.g. "10TH KYU", "SHODAN"
+  japaneseName            String? // e.g. "Ju-kyu", "Shodan"
+  kanji                   String? // e.g. "十級", "初段"
+  order                   Int // orden secuencial dentro del programa
+  beltColor               String? // color del cinturón (hex)
+  beltSecondaryColor      String? // color secundario (franjas)
+  isMaximumRank           Boolean              @default(false)
+  estimatedDurationMonths Int? // duración estimada del grado
+  description             String?
+  schoolId                String?
+  minMonths               Int? // permanencia mínima para examen
+  maxMonths               Int? // permanencia máxima estimada para el grado
+  minAttendancePercent    Int? // asistencia mínima exigida para examen
+  school                  School?              @relation(fields: [schoolId], references: [id])
+  katas                   BeltRankKata[]
+  techniques              Technique[]
+  promotions              StudentRankHistory[]
+  createdAt               DateTime             @default(now())
+  updatedAt               DateTime             @updatedAt
 
   @@unique([program, order])
 }
@@ -303,69 +313,69 @@ model BeltRank {
 model BeltRankKata {
   beltRankId String
   kataId     String
-  order      Int      @default(0) // posición dentro del grado
-  beltRank   BeltRank @relation(fields: [beltRankId], references: [id], onDelete: Cascade)
+  order      Int       @default(0) // posición dentro del grado
+  beltRank   BeltRank  @relation(fields: [beltRankId], references: [id], onDelete: Cascade)
   kata       Technique @relation(fields: [kataId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
+  createdAt  DateTime  @default(now())
 
   @@id([beltRankId, kataId])
   @@index([kataId])
 }
 
 model StudentRankHistory {
-  id          String   @id @default(cuid())
-  studentId   String
-  beltRankId  String
-  promotedBy  String?
-  promotedAt  DateTime @default(now())
+  id           String   @id @default(cuid())
+  studentId    String
+  beltRankId   String
+  promotedBy   String?
+  promotedAt   DateTime @default(now())
   examinerName String? // sensei sinodal / evaluador del examen
-  notes       String?
-  student     Student  @relation(fields: [studentId], references: [id])
-  beltRank    BeltRank @relation(fields: [beltRankId], references: [id])
-  promoter    User?    @relation("rankPromoter", fields: [promotedBy], references: [id])
-  createdAt   DateTime @default(now())
+  notes        String?
+  student      Student  @relation(fields: [studentId], references: [id])
+  beltRank     BeltRank @relation(fields: [beltRankId], references: [id])
+  promoter     User?    @relation("rankPromoter", fields: [promotedBy], references: [id])
+  createdAt    DateTime @default(now())
 
   @@index([studentId, promotedAt])
   @@index([beltRankId])
 }
 
 model Technique {
-  id           String   @id @default(cuid())
-  name         String   // nombre de la técnica (kata, kihon, etc.)
-  japaneseName String?
-  kanji        String?
-  description  String?
-  category     TechniqueCategory @default(KIHON)
-  rankId       String?
-  rank         BeltRank? @relation(fields: [rankId], references: [id])
-  order        Int      @default(0) // orden pedagógico dentro del grado
+  id             String             @id @default(cuid())
+  name           String // nombre de la técnica (kata, kihon, etc.)
+  japaneseName   String?
+  kanji          String?
+  description    String?
+  category       TechniqueCategory  @default(KIHON)
+  rankId         String?
+  rank           BeltRank?          @relation(fields: [rankId], references: [id])
+  order          Int                @default(0) // orden pedagógico dentro del grado
   movementsCount Int?
-  embusen      String?  // patrón de desplazamiento (I, H, Cruz...)
-  difficulty   String?  // Básica, Intermedia, Avanzada
-  videoUrl     String?
-  schoolId     String?
-  school       School?  @relation(fields: [schoolId], references: [id])
-  beltRankKatas BeltRankKata[]
-  students     StudentTechnique[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  embusen        String? // patrón de desplazamiento (I, H, Cruz...)
+  difficulty     String? // Básica, Intermedia, Avanzada
+  videoUrl       String?
+  schoolId       String?
+  school         School?            @relation(fields: [schoolId], references: [id])
+  beltRankKatas  BeltRankKata[]
+  students       StudentTechnique[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
 }
 
 model StudentTechnique {
-  id              String   @id @default(cuid())
-  studentId       String
-  techniqueId     String
-  student         Student  @relation(fields: [studentId], references: [id])
-  technique       Technique @relation(fields: [techniqueId], references: [id])
-  approved        Boolean  @default(false)
-  approvedBy      String?
-  approvedAt      DateTime?
-  inPractice      Boolean  @default(false)
-  practiceHours   Float    @default(0)
+  id               String               @id @default(cuid())
+  studentId        String
+  techniqueId      String
+  student          Student              @relation(fields: [studentId], references: [id])
+  technique        Technique            @relation(fields: [techniqueId], references: [id])
+  approved         Boolean              @default(false)
+  approvedBy       String?
+  approvedAt       DateTime?
+  inPractice       Boolean              @default(false)
+  practiceHours    Float                @default(0)
   lastPracticeDate DateTime?
-  notes           String?
-  evaluation      TechniqueEvaluation?
-  createdAt       DateTime @default(now())
+  notes            String?
+  evaluation       TechniqueEvaluation?
+  createdAt        DateTime             @default(now())
 
   @@unique([studentId, techniqueId])
 }
@@ -386,35 +396,64 @@ model TechniqueEvaluation {
 }
 
 // ==================== Clases y asistencia ====================
+enum ClassAudience {
+  ADULTS
+  CHILDREN
+  MIXED
+}
+
+model Plan {
+  id           String    @id @default(cuid())
+  name         String
+  description  String?
+  monthlyHours Float     @default(0) // horas mensuales incluidas
+  price        Float? // valor numérico simple (sin moneda)
+  isUnlimited  Boolean   @default(false)
+  active       Boolean   @default(true)
+  sortOrder    Int       @default(0)
+  schoolId     String?
+  school       School?   @relation(fields: [schoolId], references: [id])
+  students     Student[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([active, sortOrder])
+}
+
 model Class {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  branchId    String
-  branch      Branch   @relation(fields: [branchId], references: [id])
+  id           String            @id @default(cuid())
+  name         String
+  description  String?
+  audience     ClassAudience     @default(MIXED)
+  active       Boolean           @default(true)
+  branchId     String
+  branch       Branch            @relation(fields: [branchId], references: [id])
   instructorId String?
-  instructor  User?    @relation("instructor", fields: [instructorId], references: [id])
-  dayOfWeek   Int      // 0=domingo, 1=lunes...
-  startTime   String   // formato "HH:MM"
-  endTime     String
-  sessions    ClassSession[]
-  enrollments ClassEnrollment[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  instructor   User?             @relation("instructor", fields: [instructorId], references: [id])
+  dayOfWeek    Int // 0=domingo, 1=lunes...
+  startTime    String // formato "HH:MM"
+  endTime      String
+  sessions     ClassSession[]
+  enrollments  ClassEnrollment[]
+  attendances  Attendance[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([branchId, active])
 }
 
 model ClassEnrollment {
-  id        String   @id @default(cuid())
-  classId   String
-  studentId String
-  status    String   @default("ACTIVE") // ACTIVE, PAUSED, COMPLETED
-  enrolledAt DateTime @default(now())
-  endedAt   DateTime?
-  notes     String?
-  class     Class    @relation(fields: [classId], references: [id])
-  student   Student  @relation(fields: [studentId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String    @id @default(cuid())
+  classId    String
+  studentId  String
+  status     String    @default("ACTIVE") // ACTIVE, PAUSED, COMPLETED
+  enrolledAt DateTime  @default(now())
+  endedAt    DateTime?
+  notes      String?
+  class      Class     @relation(fields: [classId], references: [id])
+  student    Student   @relation(fields: [studentId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@unique([classId, studentId])
   @@index([studentId, status])
@@ -422,13 +461,13 @@ model ClassEnrollment {
 }
 
 model ClassSession {
-  id        String   @id @default(cuid())
-  classId   String
-  class     Class    @relation(fields: [classId], references: [id])
-  date      DateTime
-  notes     String?
+  id          String       @id @default(cuid())
+  classId     String
+  class       Class        @relation(fields: [classId], references: [id])
+  date        DateTime
+  notes       String?
   attendances Attendance[]
-  createdAt DateTime @default(now())
+  createdAt   DateTime     @default(now())
 
   @@unique([classId, date])
 }
@@ -437,62 +476,78 @@ enum AttendanceStatus {
   PENDING
   CONFIRMED
   REJECTED
+  JUSTIFIED
+}
+
+enum ScholarshipType {
+  NONE
+  ECONOMIC
+  MERIT
+  COMPETITOR
 }
 
 model Attendance {
-  id           String   @id @default(cuid())
-  sessionId    String?
-  session      ClassSession? @relation(fields: [sessionId], references: [id])
-  studentId    String
-  student      Student  @relation(fields: [studentId], references: [id])
-  date         DateTime @default(now()) // fecha del registro (punch-in o pase de lista)
-  present      Boolean  @default(true)
-  hoursTrained Float    @default(1)
-  sessionType  String?
-  status       AttendanceStatus @default(PENDING)
-  punchedAt    DateTime @default(now())
-  confirmedAt  DateTime?
-  confirmedById String?
-  confirmedBy  User?    @relation("attendanceConfirmer", fields: [confirmedById], references: [id])
-  notes        String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id              String           @id @default(cuid())
+  sessionId       String?
+  session         ClassSession?    @relation(fields: [sessionId], references: [id])
+  studentId       String
+  student         Student          @relation(fields: [studentId], references: [id])
+  date            DateTime         @default(now()) // fecha del registro (punch-in o pase de lista)
+  present         Boolean          @default(true)
+  hoursTrained    Float            @default(1)
+  sessionType     String?
+  status          AttendanceStatus @default(PENDING)
+  classId         String? // horario en el que asistió efectivamente
+  class           Class?           @relation(fields: [classId], references: [id])
+  isOutOfSchedule Boolean          @default(false) // asistió a un horario distinto al de su referencia
+  recoveredById   String?          @unique // asistencia (fuera de horario) que recuperó una falta justificada
+  recoveredBy     Attendance?      @relation("recovery", fields: [recoveredById], references: [id])
+  recovery        Attendance?      @relation("recovery")
+  punchedAt       DateTime         @default(now())
+  confirmedAt     DateTime?
+  confirmedById   String?
+  confirmedBy     User?            @relation("attendanceConfirmer", fields: [confirmedById], references: [id])
+  notes           String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 
   @@unique([sessionId, studentId])
   @@index([studentId, date])
   @@index([status, date])
+  @@index([classId])
+  @@index([isOutOfSchedule])
 }
 
 // ==================== Logros y reportes ====================
 model AchievementType {
-  id          String   @id @default(cuid())
-  name        String   // "Cinturón amarillo", "Torneo", etc.
-  description String?
-  schoolId    String?
-  school      School?  @relation(fields: [schoolId], references: [id])
+  id           String               @id @default(cuid())
+  name         String // "Cinturón amarillo", "Torneo", etc.
+  description  String?
+  schoolId     String?
+  school       School?              @relation(fields: [schoolId], references: [id])
   achievements StudentAchievement[]
-  createdAt   DateTime @default(now())
+  createdAt    DateTime             @default(now())
 }
 
 model StudentAchievement {
-  id          String   @id @default(cuid())
+  id          String          @id @default(cuid())
   studentId   String
-  student     Student  @relation(fields: [studentId], references: [id])
+  student     Student         @relation(fields: [studentId], references: [id])
   typeId      String
   type        AchievementType @relation(fields: [typeId], references: [id])
-  evidenceKey String?  // clave en Storage
+  evidenceKey String? // clave en Storage
   approvedBy  String?
   comment     String?
-  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
-  achievedAt  DateTime @default(now())
-  createdAt   DateTime @default(now())
+  status      String          @default("PENDING") // PENDING, APPROVED, REJECTED
+  achievedAt  DateTime        @default(now())
+  createdAt   DateTime        @default(now())
 }
 
 model FitnessReport {
   id          String   @id @default(cuid())
   studentId   String
   student     Student  @relation(fields: [studentId], references: [id])
-  report      String   // texto del auto-reporte
+  report      String // texto del auto-reporte
   evidenceKey String?
   approvedBy  String?
   comment     String?
