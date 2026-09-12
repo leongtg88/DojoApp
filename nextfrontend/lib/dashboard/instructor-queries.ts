@@ -1,7 +1,8 @@
 import { db } from '@/lib/db'
-import { ClassEnrollmentStatus } from '@/lib/generated/prisma'
+import { ClassEnrollmentStatus, StudentStatus } from '@/lib/generated/prisma'
 import { formatTime } from '@/lib/dashboard/balance'
 import { computeBirthdays } from '@/lib/dashboard/birthdays'
+import { ageFromDob, programForAge } from '@/lib/dashboard/program'
 import type {
   AttendanceRecord,
   DashboardBirthday,
@@ -16,7 +17,7 @@ import type {
 
 export async function getInstructorClasses(userId: string): Promise<InstructorClassSummary[]> {
   const classes = await db.class.findMany({
-    where: { instructorId: userId },
+    where: { instructorId: userId, active: true },
     orderBy: [{ dayOfWeek: 'asc' }, { startTime: 'asc' }],
     select: {
       id: true,
@@ -50,6 +51,7 @@ export async function getInstructorClasses(userId: string): Promise<InstructorCl
 export async function getInstructorStudents(userId: string): Promise<InstructorStudentSummary[]> {
   const students = await db.student.findMany({
     where: {
+      status: StudentStatus.ACTIVE,
       classEnrollments: {
         some: {
           status: ClassEnrollmentStatus.ACTIVE,
@@ -81,8 +83,9 @@ export async function getInstructorStudents(userId: string): Promise<InstructorS
     },
   })
 
+  const schoolIds = [...new Set(students.map((student) => student.schoolId))]
   const ranks = await db.beltRank.findMany({
-    where: { OR: [{ schoolId: students[0]?.schoolId ?? '__none__' }, { schoolId: null }] },
+    where: { OR: [{ schoolId: { in: schoolIds.length > 0 ? schoolIds : ['__none__'] } }, { schoolId: null }] },
     select: { name: true, kyuDan: true, beltColor: true, order: true },
   })
   const rankByName = new Map(ranks.map((rank) => [rank.name, rank]))
@@ -113,7 +116,7 @@ export async function getInstructorStudents(userId: string): Promise<InstructorS
 export async function getInstructorUpcomingBirthdays(userId: string): Promise<DashboardBirthday[]> {
   const students = await db.student.findMany({
     where: {
-      status: ClassEnrollmentStatus.ACTIVE,
+      status: StudentStatus.ACTIVE,
       classEnrollments: {
         some: {
           status: ClassEnrollmentStatus.ACTIVE,
@@ -148,20 +151,29 @@ export async function getInstructorAttendanceBoard(userId: string): Promise<Inst
 
   const attendances = await db.attendance.findMany({
     where: {
-      student: {
-        classEnrollments: {
-          some: {
-            status: ClassEnrollmentStatus.ACTIVE,
-            class: { instructorId: userId },
+      student: { status: StudentStatus.ACTIVE },
+      OR: [
+        {
+          student: {
+            classEnrollments: {
+              some: {
+                status: ClassEnrollmentStatus.ACTIVE,
+                class: { instructorId: userId },
+              },
+            },
           },
         },
-      },
+        { class: { instructorId: userId } },
+        { session: { class: { instructorId: userId } } },
+      ],
     },
     orderBy: { date: 'desc' },
     take: 200,
     include: {
       student: { select: { id: true, firstName: true, lastName: true } },
       confirmedBy: { select: { name: true } },
+      class: { select: { name: true } },
+      session: { select: { class: { select: { name: true } } } },
     },
   })
 
@@ -177,6 +189,8 @@ export async function getInstructorAttendanceBoard(userId: string): Promise<Inst
     confirmedByName: attendance.confirmedBy?.name ?? null,
     notes: attendance.notes,
     punchedAt: attendance.punchedAt.toISOString(),
+    className: attendance.session?.class.name ?? attendance.class?.name ?? null,
+    sessionId: attendance.sessionId,
   }))
 
   const availableDates = [...new Set(records.map(({ date }) => date.slice(0, 10)))].sort().reverse()
@@ -198,12 +212,12 @@ export async function getInstructorAttendanceRoster(
 ): Promise<InstructorAttendanceRoster | null> {
   const sessionDate = new Date(`${date}T00:00:00.000Z`)
   const assignedClass = await db.class.findFirst({
-    where: { id: classId, instructorId: userId },
+    where: { id: classId, instructorId: userId, active: true },
     select: {
       id: true,
       name: true,
       enrollments: {
-        where: { status: 'ACTIVE' },
+        where: { status: 'ACTIVE', student: { status: StudentStatus.ACTIVE } },
         orderBy: { student: { lastName: 'asc' } },
         select: {
           student: {
@@ -257,6 +271,7 @@ export async function getInstructorTechniqueReview(
   const student = await db.student.findFirst({
     where: {
       id: studentId,
+      status: StudentStatus.ACTIVE,
       classEnrollments: {
         some: {
           status: ClassEnrollmentStatus.ACTIVE,
@@ -327,6 +342,7 @@ export async function getInstructorKataAssignment(
   const student = await db.student.findFirst({
     where: {
       id: studentId,
+      status: StudentStatus.ACTIVE,
       classEnrollments: {
         some: {
           status: ClassEnrollmentStatus.ACTIVE,
@@ -340,6 +356,7 @@ export async function getInstructorKataAssignment(
       lastName: true,
       currentRank: true,
       schoolId: true,
+      dateOfBirth: true,
     },
   })
 
@@ -348,7 +365,10 @@ export async function getInstructorKataAssignment(
   }
 
   const ranks = await db.beltRank.findMany({
-    where: { OR: [{ schoolId: student.schoolId }, { schoolId: null }] },
+    where: {
+      OR: [{ schoolId: student.schoolId }, { schoolId: null }],
+      program: programForAge(ageFromDob(student.dateOfBirth)),
+    },
     orderBy: [{ program: 'asc' }, { order: 'asc' }],
     select: {
       id: true,
@@ -412,29 +432,36 @@ export async function getInstructorStudentsSearch(
   userId: string,
   query: string,
 ): Promise<InstructorStudentSearchResult[]> {
-  const instructor = await db.user.findUnique({
-    where: { id: userId },
-    select: { schoolId: true },
-  })
+  const [instructor, classes] = await Promise.all([
+    db.user.findUnique({
+      where: { id: userId },
+      select: { schoolId: true },
+    }),
+    db.class.findMany({
+      where: { instructorId: userId },
+      select: { id: true, branch: { select: { schoolId: true } } },
+    }),
+  ])
 
-  if (!instructor?.schoolId) {
+  // La escuela puede venir del perfil del instructor o, si no está asignada,
+  // derivarse de la sede de sus clases.
+  const schoolId = instructor?.schoolId ?? classes[0]?.branch.schoolId ?? null
+
+  if (!schoolId) {
     return []
   }
 
-  const classIds = await db.class.findMany({
-    where: { instructorId: userId },
-    select: { id: true },
-  })
+  const classIds = classes.map(({ id }) => id)
   const enrollments = await db.classEnrollment.findMany({
-    where: { classId: { in: classIds.map(({ id }) => id) }, status: 'ACTIVE' },
+    where: { classId: { in: classIds }, status: 'ACTIVE' },
     select: { studentId: true },
   })
   const enrolledSet = new Set(enrollments.map(({ studentId }) => studentId))
 
   const students = await db.student.findMany({
     where: {
-      schoolId: instructor.schoolId,
-      status: ClassEnrollmentStatus.ACTIVE,
+      schoolId,
+      status: StudentStatus.ACTIVE,
       OR: [
         { firstName: { contains: query, mode: 'insensitive' } },
         { lastName: { contains: query, mode: 'insensitive' } },

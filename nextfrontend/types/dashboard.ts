@@ -397,7 +397,8 @@ export interface AttendanceRecord {
 	notes: string | null
 	punchedAt: string
 	isOutOfSchedule?: boolean
-	className?: string | null,
+	className?: string | null
+	sessionId?: string | null
 }
 
 export interface StudentAttendancePunchData {

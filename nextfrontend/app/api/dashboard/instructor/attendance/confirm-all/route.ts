@@ -7,6 +7,7 @@ import { z } from 'zod'
 const confirmAllSchema = z.object({
   studentId: z.string().trim().min(1).optional(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  attendanceIds: z.array(z.string().trim().min(1)).max(500).optional(),
 })
 
 export async function POST(request: Request) {
@@ -28,6 +29,7 @@ export async function POST(request: Request) {
       status: 'PENDING',
       sessionId: null,
       ...(result.data.studentId ? { studentId: result.data.studentId } : {}),
+      ...(result.data.attendanceIds ? { id: { in: result.data.attendanceIds } } : {}),
       ...(result.data.date
         ? {
             date: {
@@ -40,14 +42,22 @@ export async function POST(request: Request) {
             },
           }
         : {}),
-      student: {
-        classEnrollments: {
-          some: {
-            status: 'ACTIVE',
-            class: { instructorId: session.user.id },
+      // Pertenencia al instructor: por matrícula activa, por la clase del registro
+      // o por la clase de su sesión (mantiene punch-ins históricos).
+      OR: [
+        {
+          student: {
+            classEnrollments: {
+              some: {
+                status: 'ACTIVE',
+                class: { instructorId: session.user.id },
+              },
+            },
           },
         },
-      },
+        { class: { instructorId: session.user.id } },
+        { session: { class: { instructorId: session.user.id } } },
+      ],
     },
     select: { id: true },
   })

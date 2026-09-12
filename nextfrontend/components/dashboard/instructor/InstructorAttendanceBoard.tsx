@@ -49,7 +49,6 @@ export function InstructorAttendanceBoard({ data }: InstructorAttendanceBoardPro
     const [busy, setBusy] = useState(false)
 
     const formatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })
-    const pendingRecords = data.records.filter((record) => record.status === 'PENDING')
 
     const filteredRecords = data.records.filter((record) => {
         const recordDate = record.date.slice(0, 10)
@@ -84,11 +83,14 @@ export function InstructorAttendanceBoard({ data }: InstructorAttendanceBoardPro
     }
 
     function handleConfirmAll() {
-        const date = dateFilter === 'HOY' ? todayStr : dateFilter !== 'TODAS' ? dateFilter : undefined
+        const attendanceIds = filteredRecords
+            .filter((record) => record.status === 'PENDING')
+            .map((record) => record.id)
+        if (attendanceIds.length === 0) return
         mutate('/api/dashboard/instructor/attendance/confirm-all', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(date ? { date } : {}),
+            body: JSON.stringify({ attendanceIds }),
         })
     }
 
@@ -220,14 +222,14 @@ export function InstructorAttendanceBoard({ data }: InstructorAttendanceBoardPro
                 </div>
 
                 <button
-                    className={`flex shrink-0 items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold shadow-md transition-all ${pendingRecords.length > 0 ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-emerald-950/40 hover:from-emerald-500 hover:to-teal-500' : 'cursor-not-allowed bg-neutral-800 text-neutral-500'}`}
-                    disabled={busy || pendingRecords.length === 0}
+                    className={`flex shrink-0 items-center gap-2 rounded-lg px-4 py-2 text-sm font-bold shadow-md transition-all ${pendingForFilter > 0 ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-emerald-950/40 hover:from-emerald-500 hover:to-teal-500' : 'cursor-not-allowed bg-neutral-800 text-neutral-500'}`}
+                    disabled={busy || pendingForFilter === 0}
                     onClick={handleConfirmAll}
                     type="button"
                 >
                     <CheckCheck className="size-4" aria-hidden="true" />
                     <span>
-                        {pendingRecords.length > 0
+                        {pendingForFilter > 0
                             ? `Confirmar Todas las Asistencias (${pendingForFilter})`
                             : 'No hay Asistencias Pendientes'}
                     </span>
@@ -278,6 +280,12 @@ export function InstructorAttendanceBoard({ data }: InstructorAttendanceBoardPro
                                                 <span className="flex items-center gap-1 font-mono font-bold text-amber-300"><Clock className="size-3 text-neutral-500" aria-hidden="true" />{record.hoursTrained} h</span>
                                                 <span className="text-neutral-600">•</span>
                                                 <span className="text-neutral-300">{sessionLabel(record.sessionType)}</span>
+                                                {record.className && (
+                                                    <>
+                                                        <span className="text-neutral-600">•</span>
+                                                        <span className="text-cyan-300">{record.className}</span>
+                                                    </>
+                                                )}
                                             </div>
                                             {record.notes && <p className="mt-1 rounded border border-neutral-800 bg-neutral-900/60 px-2 py-1 text-xs text-neutral-400">{record.notes}</p>}
                                             {isConfirmed && record.confirmedByName && (
