@@ -23,6 +23,11 @@ export function timeToMinutes(time: string): number {
   return (hours ?? 0) * 60 + (minutes ?? 0)
 }
 
+/** Normaliza un valor TIME de Prisma (Date con hora UTC = hora guardada) a "HH:MM". */
+export function formatTime(time: Date | string): string {
+  return typeof time === 'string' ? time : time.toISOString().slice(11, 16)
+}
+
 /** Duración en horas de un rango de clase, tolerando cruce de medianoche. */
 export function hoursFromTimes(startTime: string, endTime: string): number {
   let duration = timeToMinutes(endTime) - timeToMinutes(startTime)

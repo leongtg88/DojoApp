@@ -9,7 +9,7 @@ const createStudentSchema = z.object({
   firstName: z.string().trim().min(2).max(80),
   lastName: z.string().trim().min(2).max(120),
   dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  gender: z.enum(['female', 'male']).nullable().optional(),
+  gender: z.enum(['FEMALE', 'MALE']).nullable().optional(),
   contactPhone: z.string().trim().max(30).nullable().optional(),
   medicalInfo: z.string().trim().max(2_000).nullable().optional(),
   emergencyContact: z.string().trim().max(500).nullable().optional(),
@@ -106,6 +106,8 @@ export async function POST(request: Request) {
         medicalInfo: input.medicalInfo ?? null,
         emergencyContact: input.emergencyContact ?? null,
         memberNumber,
+        currentRank: rank?.name ?? null,
+        currentRankId: rank?.id ?? null,
       },
       select: { id: true },
     })

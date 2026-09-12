@@ -11,7 +11,7 @@ export default async function DashboardIndexPage() {
     redirect('/login')
   }
 
-  const roles = ((session.user.roles && session.user.roles.length > 0 ? session.user.roles : [session.user.role]) ?? []) as DashboardRole[]
+  const roles = ((session.user.roles && session.user.roles.length > 0 ? session.user.roles : [session.user.roles[0]]) ?? []) as DashboardRole[]
   const options = getRolePanelOptions(roles)
 
   if (options.length === 0) {

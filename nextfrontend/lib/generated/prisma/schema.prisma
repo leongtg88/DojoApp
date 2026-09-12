@@ -46,6 +46,39 @@ enum Role {
   SUPERADMIN
 }
 
+enum StudentStatus {
+  ACTIVE
+  INACTIVE
+  GRADUATED
+}
+
+enum EnrollmentStatus {
+  PENDING
+  CONTACTED
+  ENROLLED
+  REJECTED
+}
+
+enum ClassEnrollmentStatus {
+  ACTIVE
+  PAUSED
+  ENDED
+  COMPLETED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
 model User {
   id                      String                   @id @default(cuid())
   email                   String                   @unique
@@ -53,7 +86,6 @@ model User {
   passwordHash            String?
   name                    String?
   phone                   String?
-  role                    Role                     @default(STUDENT) // rol principal (compatibilidad)
   roles                   Role[]                   @default([]) // todos los roles del usuario (multirol)
   schoolId                String?
   school                  School?                  @relation(fields: [schoolId], references: [id])
@@ -65,6 +97,9 @@ model User {
   guardianOfStudents      Student[]                @relation("primaryGuardian")
   rankPromotions          StudentRankHistory[]     @relation("rankPromoter")
   techniqueEvaluations    TechniqueEvaluation[]    @relation("techniqueEvaluator")
+  techniquesApproved      StudentTechnique[]       @relation("techniqueApprovedBy")
+  achievementsApproved    StudentAchievement[]     @relation("achievementApprovedBy")
+  fitnessReportsApproved  FitnessReport[]          @relation("fitnessApprovedBy")
   attendanceConfirmations Attendance[]             @relation("attendanceConfirmer")
   emailVerificationTokens EmailVerificationToken[]
   passwordResetTokens     PasswordResetToken[]
@@ -72,6 +107,9 @@ model User {
   classes                 Class[]                  @relation("instructor")
   createdAt               DateTime                 @default(now())
   updatedAt               DateTime                 @updatedAt
+
+  @@index([schoolId])
+  @@index([branchId])
 }
 
 model EmailVerificationToken {
@@ -82,6 +120,8 @@ model EmailVerificationToken {
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())
+
+  @@index([userId])
 }
 
 model PasswordResetToken {
@@ -131,15 +171,17 @@ model Student {
   firstName           String
   lastName            String
   dateOfBirth         DateTime
-  gender              String? // 'female' | 'male'
+  gender              Gender? // género declarado
   email               String? // correo de contacto para la invitación de acceso
   contactPhone        String?
   medicalInfo         String?
   emergencyContact    String?
   enrollmentDate      DateTime                 @default(now())
   memberNumber        String?                  @unique // matrícula KYU-YYYY-NNN
-  status              String                   @default("ACTIVE") // ACTIVE, INACTIVE, GRADUATED
-  currentRank         String?
+  status              StudentStatus            @default(ACTIVE)
+  currentRank         String? // nombre denormalizado del grado actual (fallback)
+  currentRankId       String? // grado actual (FK al catálogo BeltRank)
+  currentRankRef      BeltRank?                @relation("studentCurrentRank", fields: [currentRankId], references: [id], onDelete: SetNull)
   photoKey            String? // clave en Supabase Storage
   registrationData    Json?
   planId              String?
@@ -168,6 +210,11 @@ model Student {
 
   @@index([planId])
   @@index([scholarshipType])
+  @@index([currentRankId])
+  @@index([branchId])
+  @@index([schoolId])
+  @@index([status])
+  @@index([branchId, status])
 }
 
 // Relación muchos a muchos entre tutores y estudiantes
@@ -226,7 +273,7 @@ model Enrollment {
   student          Student?              @relation(fields: [studentId], references: [id])
   contactEmail     String
   contactPhone     String?
-  status           String                @default("PENDING") // PENDING, CONTACTED, ENROLLED, REJECTED
+  status           EnrollmentStatus      @default(PENDING)
   notes            String?
   registrationData Json?
   applicants       EnrollmentApplicant[]
@@ -235,6 +282,8 @@ model Enrollment {
   updatedAt        DateTime              @updatedAt
 
   @@unique([contactEmail, status]) // control básico de duplicados
+  @@index([status])
+  @@index([branchId, status])
 }
 
 model EnrollmentApplicant {
@@ -255,7 +304,7 @@ model EnrollmentApplicant {
 
 model StudentDocument {
   id           String                @id @default(cuid())
-  enrollmentId String
+  enrollmentId String?
   applicantId  String?
   studentId    String?
   type         StudentDocumentType
@@ -266,7 +315,7 @@ model StudentDocument {
   fileSize     Int
   reviewNotes  String?
   reviewedAt   DateTime?
-  enrollment   Enrollment            @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  enrollment   Enrollment?           @relation(fields: [enrollmentId], references: [id], onDelete: SetNull)
   applicant    EnrollmentApplicant?  @relation(fields: [applicantId], references: [id], onDelete: SetNull)
   student      Student?              @relation(fields: [studentId], references: [id], onDelete: SetNull)
   uploadedAt   DateTime              @default(now())
@@ -301,12 +350,10 @@ model BeltRank {
   minAttendancePercent    Int? // asistencia mínima exigida para examen
   school                  School?              @relation(fields: [schoolId], references: [id])
   katas                   BeltRankKata[]
-  techniques              Technique[]
   promotions              StudentRankHistory[]
+  currentRankStudents     Student[]            @relation("studentCurrentRank")
   createdAt               DateTime             @default(now())
   updatedAt               DateTime             @updatedAt
-
-  @@unique([program, order])
 }
 
 // Katas requeridas por grado (catálogo M:N). Reutiliza Technique con category KATA.
@@ -346,8 +393,6 @@ model Technique {
   kanji          String?
   description    String?
   category       TechniqueCategory  @default(KIHON)
-  rankId         String?
-  rank           BeltRank?          @relation(fields: [rankId], references: [id])
   order          Int                @default(0) // orden pedagógico dentro del grado
   movementsCount Int?
   embusen        String? // patrón de desplazamiento (I, H, Cruz...)
@@ -369,6 +414,7 @@ model StudentTechnique {
   technique        Technique            @relation(fields: [techniqueId], references: [id])
   approved         Boolean              @default(false)
   approvedBy       String?
+  approvedByUser   User?                @relation("techniqueApprovedBy", fields: [approvedBy], references: [id], onDelete: SetNull)
   approvedAt       DateTime?
   inPractice       Boolean              @default(false)
   practiceHours    Float                @default(0)
@@ -378,6 +424,7 @@ model StudentTechnique {
   createdAt        DateTime             @default(now())
 
   @@unique([studentId, techniqueId])
+  @@index([approvedBy])
 }
 
 model TechniqueEvaluation {
@@ -407,7 +454,8 @@ model Plan {
   name         String
   description  String?
   monthlyHours Float     @default(0) // horas mensuales incluidas
-  price        Float? // valor numérico simple (sin moneda)
+  price        Decimal?  @db.Decimal(10, 2) // valor numérico
+  currency     String    @default("DOP") // moneda del precio (código ISO 4217)
   isUnlimited  Boolean   @default(false)
   active       Boolean   @default(true)
   sortOrder    Int       @default(0)
@@ -431,8 +479,8 @@ model Class {
   instructorId String?
   instructor   User?             @relation("instructor", fields: [instructorId], references: [id])
   dayOfWeek    Int // 0=domingo, 1=lunes...
-  startTime    String // formato "HH:MM"
-  endTime      String
+  startTime    DateTime          @db.Time // hora de inicio
+  endTime      DateTime          @db.Time // hora de fin
   sessions     ClassSession[]
   enrollments  ClassEnrollment[]
   attendances  Attendance[]
@@ -443,17 +491,17 @@ model Class {
 }
 
 model ClassEnrollment {
-  id         String    @id @default(cuid())
+  id         String                @id @default(cuid())
   classId    String
   studentId  String
-  status     String    @default("ACTIVE") // ACTIVE, PAUSED, COMPLETED
-  enrolledAt DateTime  @default(now())
+  status     ClassEnrollmentStatus @default(ACTIVE)
+  enrolledAt DateTime              @default(now())
   endedAt    DateTime?
   notes      String?
-  class      Class     @relation(fields: [classId], references: [id])
-  student    Student   @relation(fields: [studentId], references: [id])
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  class      Class                 @relation(fields: [classId], references: [id])
+  student    Student               @relation(fields: [studentId], references: [id])
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @updatedAt
 
   @@unique([classId, studentId])
   @@index([studentId, status])
@@ -527,30 +575,38 @@ model AchievementType {
   school       School?              @relation(fields: [schoolId], references: [id])
   achievements StudentAchievement[]
   createdAt    DateTime             @default(now())
+
+  @@index([schoolId])
 }
 
 model StudentAchievement {
-  id          String          @id @default(cuid())
-  studentId   String
-  student     Student         @relation(fields: [studentId], references: [id])
-  typeId      String
-  type        AchievementType @relation(fields: [typeId], references: [id])
-  evidenceKey String? // clave en Storage
-  approvedBy  String?
-  comment     String?
-  status      String          @default("PENDING") // PENDING, APPROVED, REJECTED
-  achievedAt  DateTime        @default(now())
-  createdAt   DateTime        @default(now())
+  id             String          @id @default(cuid())
+  studentId      String
+  student        Student         @relation(fields: [studentId], references: [id])
+  typeId         String
+  type           AchievementType @relation(fields: [typeId], references: [id])
+  evidenceKey    String? // clave en Storage
+  approvedBy     String?
+  approvedByUser User?           @relation("achievementApprovedBy", fields: [approvedBy], references: [id], onDelete: SetNull)
+  comment        String?
+  status         ApprovalStatus  @default(PENDING)
+  achievedAt     DateTime        @default(now())
+  createdAt      DateTime        @default(now())
+
+  @@index([approvedBy])
 }
 
 model FitnessReport {
-  id          String   @id @default(cuid())
-  studentId   String
-  student     Student  @relation(fields: [studentId], references: [id])
-  report      String // texto del auto-reporte
-  evidenceKey String?
-  approvedBy  String?
-  comment     String?
-  status      String   @default("PENDING")
-  createdAt   DateTime @default(now())
+  id             String         @id @default(cuid())
+  studentId      String
+  student        Student        @relation(fields: [studentId], references: [id])
+  report         String // texto del auto-reporte
+  evidenceKey    String?
+  approvedBy     String?
+  approvedByUser User?          @relation("fitnessApprovedBy", fields: [approvedBy], references: [id], onDelete: SetNull)
+  comment        String?
+  status         ApprovalStatus @default(PENDING)
+  createdAt      DateTime       @default(now())
+
+  @@index([approvedBy])
 }

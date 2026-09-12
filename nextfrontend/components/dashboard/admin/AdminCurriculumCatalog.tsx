@@ -412,7 +412,7 @@ function AssignKatasDialog({
 
     const ranksById = new Map(ranks.map((rank) => [rank.id, rank]))
     const groups = allCatalog.reduce<{ key: string; label: string; sort: number; items: AdminTechniqueSummary[] }[]>((accumulator, technique) => {
-        const rank = technique.rankId ? ranksById.get(technique.rankId) : null
+        const rank = technique.rankIds.length > 0 ? ranksById.get(technique.rankIds[0]) : null
         const key = rank?.id ?? '__unassigned__'
         let group = accumulator.find(({ key: groupKey }) => groupKey === key)
         if (!group) {

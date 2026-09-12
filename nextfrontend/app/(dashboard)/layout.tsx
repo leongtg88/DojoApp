@@ -17,8 +17,8 @@ export default async function DashboardLayout({ children }: { children: ReactNod
         redirect('/no-autorizado')
     }
 
-    const primaryRole = session.user.role as DashboardRole
-    const roles = (session.user.roles && session.user.roles.length > 0 ? session.user.roles : [primaryRole]) as DashboardRole[]
+    const roles = (session.user.roles && session.user.roles.length > 0 ? session.user.roles : [session.user.roles[0]]) as DashboardRole[]
+    const primaryRole = roles[0] ?? 'STUDENT'
     const pendingEnrollmentCount = hasAnyRole(session.user, ['SCHOOL_ADMIN', 'SUPERADMIN']) ? await getAdminPendingEnrollmentCount(session.user.id) : 0
 
     return <DashboardShell roles={roles} userName={session.user.name} primaryRole={primaryRole} pendingEnrollmentCount={pendingEnrollmentCount}>{children}</DashboardShell>

@@ -267,8 +267,8 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 							Sexo
 							<select id="student-gender" value={form.gender} onChange={(event) => updateField('gender', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white">
 								<option value="">No especificado</option>
-								<option value="female">Femenino</option>
-								<option value="male">Masculino</option>
+								<option value="FEMALE">Femenino</option>
+								<option value="MALE">Masculino</option>
 							</select>
 						</label>
 						<label className="text-sm font-semibold text-neutral-200" htmlFor="student-phone">

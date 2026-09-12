@@ -142,7 +142,6 @@ exports.Prisma.UserScalarFieldEnum = {
   passwordHash: 'passwordHash',
   name: 'name',
   phone: 'phone',
-  role: 'role',
   roles: 'roles',
   schoolId: 'schoolId',
   branchId: 'branchId',
@@ -206,6 +205,7 @@ exports.Prisma.StudentScalarFieldEnum = {
   memberNumber: 'memberNumber',
   status: 'status',
   currentRank: 'currentRank',
+  currentRankId: 'currentRankId',
   photoKey: 'photoKey',
   registrationData: 'registrationData',
   planId: 'planId',
@@ -317,7 +317,6 @@ exports.Prisma.TechniqueScalarFieldEnum = {
   kanji: 'kanji',
   description: 'description',
   category: 'category',
-  rankId: 'rankId',
   order: 'order',
   movementsCount: 'movementsCount',
   embusen: 'embusen',
@@ -359,6 +358,7 @@ exports.Prisma.PlanScalarFieldEnum = {
   description: 'description',
   monthlyHours: 'monthlyHours',
   price: 'price',
+  currency: 'currency',
   isUnlimited: 'isUnlimited',
   active: 'active',
   sortOrder: 'sortOrder',
@@ -490,6 +490,19 @@ exports.Role = exports.$Enums.Role = {
   SUPERADMIN: 'SUPERADMIN'
 };
 
+exports.Gender = exports.$Enums.Gender = {
+  MALE: 'MALE',
+  FEMALE: 'FEMALE',
+  OTHER: 'OTHER',
+  PREFER_NOT_TO_SAY: 'PREFER_NOT_TO_SAY'
+};
+
+exports.StudentStatus = exports.$Enums.StudentStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  GRADUATED: 'GRADUATED'
+};
+
 exports.ScholarshipType = exports.$Enums.ScholarshipType = {
   NONE: 'NONE',
   ECONOMIC: 'ECONOMIC',
@@ -500,6 +513,13 @@ exports.ScholarshipType = exports.$Enums.ScholarshipType = {
 exports.EnrollmentOrigin = exports.$Enums.EnrollmentOrigin = {
   FORM: 'FORM',
   ASSISTANT: 'ASSISTANT'
+};
+
+exports.EnrollmentStatus = exports.$Enums.EnrollmentStatus = {
+  PENDING: 'PENDING',
+  CONTACTED: 'CONTACTED',
+  ENROLLED: 'ENROLLED',
+  REJECTED: 'REJECTED'
 };
 
 exports.StudentDocumentType = exports.$Enums.StudentDocumentType = {
@@ -536,11 +556,24 @@ exports.ClassAudience = exports.$Enums.ClassAudience = {
   MIXED: 'MIXED'
 };
 
+exports.ClassEnrollmentStatus = exports.$Enums.ClassEnrollmentStatus = {
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  ENDED: 'ENDED',
+  COMPLETED: 'COMPLETED'
+};
+
 exports.AttendanceStatus = exports.$Enums.AttendanceStatus = {
   PENDING: 'PENDING',
   CONFIRMED: 'CONFIRMED',
   REJECTED: 'REJECTED',
   JUSTIFIED: 'JUSTIFIED'
+};
+
+exports.ApprovalStatus = exports.$Enums.ApprovalStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
 };
 
 exports.Prisma.ModelName = {

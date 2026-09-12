@@ -37,15 +37,17 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 w-full h-20 bg-white backdrop-blur-xs border-b border-white/60 shadow-lg z-50 flex items-center justify-between px-4 sm:px-8 md:px-12">
-        <Link href="/" className="flex items-center gap-3 cursor-pointer focus:outline-none text-left">
-          <div className="w-[220px] h-[50px] flex items-center justify-center font-extrabold font-display text-lg text-gray-700">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/LogoRectangularNegro.svg" alt="Logo Tosei Gusoku" />
-          </div>
-        </Link>
+      <nav className="fixed top-0 w-full h-20 bg-white backdrop-blur-xs border-b border-white/60 shadow-lg z-50 flex items-center px-4 sm:px-8 md:px-12">
+        <div className="flex-1 flex justify-start">
+          <Link href="/" className="flex items-center gap-3 cursor-pointer focus:outline-none text-left">
+            <div className="w-[125px] h-[50px] shrink-0 min-w-0 sm:w-[180px] md:w-[220px] flex items-center justify-center font-extrabold font-display text-lg text-gray-700">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/assets/LogoRectangularNegro.svg" alt="Logo Tosei Gusoku" />
+            </div>
+          </Link>
+        </div>
 
-        <div className="hidden md:flex items-center gap-8 text-sm font-semibold">
+        <div className="hidden min-[1200px]:flex items-center gap-8 text-sm font-semibold">
           <Link href="/" className={`cursor-pointer transition-colors hover:text-brand-accent ${pathname === '/' ? 'text-brand-accent font-bold' : 'text-gray-700'}`}>
             Inicio
           </Link>
@@ -63,7 +65,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        <div className="hidden md:flex items-center gap-4">
+        <div className="flex-1 flex justify-end items-center gap-1 sm:gap-3">
           {!isInstalled && (
             <button
               type="button"
@@ -85,18 +87,15 @@ export default function Navbar() {
           </Link>
           <button
             onClick={() => handleOpenEnrollment('adult')}
-            className="bg-brand-accent/10 border border-brand-accent/20 hover:bg-brand-accent hover:text-black text-brand-accent font-bold px-4 py-2 rounded-xl text-xs transition-all cursor-pointer active:scale-95 uppercase tracking-wide"
+            className="bg-brand-accent/10 border border-brand-accent/20 hover:bg-brand-accent hover:text-black text-brand-accent font-bold px-2.5 sm:px-4 py-2 rounded-xl text-[10px] sm:text-xs transition-all cursor-pointer active:scale-95 uppercase tracking-wide whitespace-nowrap"
           >
             CLASE DEMO GRATIS
           </button>
-        </div>
-
-        <div className="flex items-center gap-1 md:hidden">
-          <Link aria-label="Iniciar sesión" className={`flex size-10 items-center justify-center rounded-lg transition-colors ${pathname === '/login' ? 'bg-brand-accent text-black' : 'text-gray-700 hover:bg-brand-accent/10 hover:text-brand-accent'}`} href="/login" title="Iniciar sesión"><UserRound aria-hidden="true" className="size-5" /></Link>
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="text-gray-700 hover:text-brand-accent p-2 rounded-lg cursor-pointer focus:outline-none"
+            className="text-gray-700 hover:text-brand-accent p-2 rounded-lg cursor-pointer focus:outline-none min-[1200px]:hidden"
             aria-label="Menú principal"
+            title="Menú principal"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -130,7 +129,7 @@ export default function Navbar() {
       {/* Mobile slide-out drawer */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <div className="fixed inset-0 z-45 md:hidden">
+          <div className="fixed inset-0 z-45 min-[1200px]:hidden">
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setIsMobileMenuOpen(false)}

@@ -111,7 +111,9 @@ export async function DELETE(_request: Request, { params }: RankRouteContext) {
     return NextResponse.json({ error: 'El grado tiene katas o promociones asociadas y no se puede eliminar' }, { status: 409 })
   }
 
-  const assignedStudents = await db.student.count({ where: { currentRank: rank.name } })
+  const assignedStudents = await db.student.count({
+    where: { OR: [{ currentRank: rank.name }, { currentRankId: rank.id }] },
+  })
 
   if (assignedStudents > 0) {
     return NextResponse.json({ error: 'Hay alumnos con este grado asignado y no se puede eliminar' }, { status: 409 })

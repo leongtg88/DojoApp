@@ -1,4 +1,6 @@
 import { db } from '@/lib/db'
+import { ClassEnrollmentStatus } from '@/lib/generated/prisma'
+import { formatTime } from '@/lib/dashboard/balance'
 import { computeBirthdays } from '@/lib/dashboard/birthdays'
 import type {
   AttendanceRecord,
@@ -37,8 +39,8 @@ export async function getInstructorClasses(userId: string): Promise<InstructorCl
     name: scheduledClass.name,
     description: scheduledClass.description,
     dayOfWeek: scheduledClass.dayOfWeek,
-    startTime: scheduledClass.startTime,
-    endTime: scheduledClass.endTime,
+    startTime: formatTime(scheduledClass.startTime),
+    endTime: formatTime(scheduledClass.endTime),
     instructorName: scheduledClass.instructor?.name ?? null,
     branchName: scheduledClass.branch.name,
     activeStudentCount: scheduledClass.enrollments.length,
@@ -50,7 +52,7 @@ export async function getInstructorStudents(userId: string): Promise<InstructorS
     where: {
       classEnrollments: {
         some: {
-          status: 'ACTIVE',
+          status: ClassEnrollmentStatus.ACTIVE,
           class: { instructorId: userId },
         },
       },
@@ -65,7 +67,7 @@ export async function getInstructorStudents(userId: string): Promise<InstructorS
       status: true,
       classEnrollments: {
         where: {
-          status: 'ACTIVE',
+          status: ClassEnrollmentStatus.ACTIVE,
           class: { instructorId: userId },
         },
         select: { class: { select: { name: true } } },
@@ -111,10 +113,10 @@ export async function getInstructorStudents(userId: string): Promise<InstructorS
 export async function getInstructorUpcomingBirthdays(userId: string): Promise<DashboardBirthday[]> {
   const students = await db.student.findMany({
     where: {
-      status: 'ACTIVE',
+      status: ClassEnrollmentStatus.ACTIVE,
       classEnrollments: {
         some: {
-          status: 'ACTIVE',
+          status: ClassEnrollmentStatus.ACTIVE,
           class: { instructorId: userId },
         },
       },
@@ -149,7 +151,7 @@ export async function getInstructorAttendanceBoard(userId: string): Promise<Inst
       student: {
         classEnrollments: {
           some: {
-            status: 'ACTIVE',
+            status: ClassEnrollmentStatus.ACTIVE,
             class: { instructorId: userId },
           },
         },
@@ -257,7 +259,7 @@ export async function getInstructorTechniqueReview(
       id: studentId,
       classEnrollments: {
         some: {
-          status: 'ACTIVE',
+          status: ClassEnrollmentStatus.ACTIVE,
           class: { instructorId: userId },
         },
       },
@@ -327,7 +329,7 @@ export async function getInstructorKataAssignment(
       id: studentId,
       classEnrollments: {
         some: {
-          status: 'ACTIVE',
+          status: ClassEnrollmentStatus.ACTIVE,
           class: { instructorId: userId },
         },
       },
@@ -432,7 +434,7 @@ export async function getInstructorStudentsSearch(
   const students = await db.student.findMany({
     where: {
       schoolId: instructor.schoolId,
-      status: 'ACTIVE',
+      status: ClassEnrollmentStatus.ACTIVE,
       OR: [
         { firstName: { contains: query, mode: 'insensitive' } },
         { lastName: { contains: query, mode: 'insensitive' } },

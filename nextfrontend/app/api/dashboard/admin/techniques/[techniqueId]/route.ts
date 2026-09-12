@@ -15,7 +15,6 @@ const updateTechniqueSchema = z.object({
   embusen: z.string().trim().max(50).optional().nullable(),
   difficulty: z.string().trim().max(50).optional().nullable(),
   videoUrl: z.url().optional().nullable(),
-  rankId: z.string().trim().min(1).optional().nullable(),
 })
 
 interface TechniqueRouteContext {
@@ -47,14 +46,6 @@ export async function PATCH(request: Request, { params }: TechniqueRouteContext)
 
   if (!technique || (!scope.isSuperAdmin && technique.schoolId !== scope.schoolId)) {
     return NextResponse.json({ error: 'Técnica no encontrada' }, { status: 404 })
-  }
-
-  if (result.data.rankId) {
-    const rank = await db.beltRank.findFirst({ where: { id: result.data.rankId } })
-
-    if (!rank || (!scope.isSuperAdmin && rank.schoolId !== scope.schoolId)) {
-      return NextResponse.json({ error: 'Grado no encontrado' }, { status: 404 })
-    }
   }
 
   const data = Object.fromEntries(

@@ -405,7 +405,7 @@ export interface AdminTechniqueSummary {
 	embusen: string | null
 	movementsCount: number | null
 	videoUrl: string | null
-	rankId: string | null
+	rankIds: string[]
 }
 
 export interface AdminCurriculumData {

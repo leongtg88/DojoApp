@@ -1,6 +1,7 @@
 import { db } from '@/lib/db'
+import { ClassEnrollmentStatus } from '@/lib/generated/prisma'
 import { ageFromDob, programForAge, resolveDefaultRank } from '@/lib/dashboard/program'
-import { computeBalance, monthRange, pendingRecoveries } from '@/lib/dashboard/balance'
+import { computeBalance, formatTime, monthRange, pendingRecoveries } from '@/lib/dashboard/balance'
 import type {
   StudentAttendanceRecord,
   StudentAttendancePunchData,
@@ -275,7 +276,7 @@ export async function getStudentMonthlyStatus(userId: string, date = new Date())
   const pending = pendingRecoveries(justifiedAbsences)
 
   return {
-    plan: student.plan ?? null,
+    plan: student.plan ? { ...student.plan, price: student.plan.price?.toNumber() ?? null } : null,
     planStartDate: student.planStartDate?.toISOString() ?? null,
     scholarshipType: student.scholarshipType,
     scholarshipNote: student.scholarshipNote,
@@ -302,7 +303,7 @@ export async function getStudentSchedule(userId: string) {
     where: { userId },
     select: {
       classEnrollments: {
-        where: { status: 'ACTIVE' },
+        where: { status: ClassEnrollmentStatus.ACTIVE },
         orderBy: { class: { dayOfWeek: 'asc' } },
         select: {
           class: {
@@ -330,8 +331,8 @@ export async function getStudentSchedule(userId: string) {
     name: scheduledClass.name,
     description: scheduledClass.description,
     dayOfWeek: scheduledClass.dayOfWeek,
-    startTime: scheduledClass.startTime,
-    endTime: scheduledClass.endTime,
+    startTime: formatTime(scheduledClass.startTime),
+    endTime: formatTime(scheduledClass.endTime),
     instructorName: scheduledClass.instructor?.name ?? null,
   }))
 }
@@ -387,7 +388,11 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
     include: {
       techniques: {
         include: {
-          technique: { include: { rank: true } },
+          technique: {
+            include: {
+              beltRankKatas: { include: { beltRank: { select: { name: true } } } },
+            },
+          },
           evaluation: { include: { evaluator: { select: { name: true } } } },
         },
         orderBy: { createdAt: 'desc' },
@@ -448,7 +453,7 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
         lastFeedback: notes,
         lastPracticeDate: lastPracticeDate?.toISOString() ?? approvedAt?.toISOString() ?? null,
         evaluatedBy: evaluation?.evaluator.name ?? null,
-        rankName: technique.rank?.name ?? null,
+        rankName: technique.beltRankKatas[0]?.beltRank.name ?? null,
         requiredForGrade,
       } satisfies KataProgressItem
     })

@@ -12,13 +12,6 @@ const db = new PrismaClient({
   }),
 })
 
-// Declara el "grado base" de cada kata para compatibilidad: el grado ADULT de menor
-// order que la exige. La fuente autoritativa del curriculum es BeltRankKata.
-function homeRankIdFor(kataName: string): string | null {
-  const match = ADULT_RANKS.filter((rank) => rank.katas.includes(kataName)).sort((a, b) => a.order - b.order)[0]
-  return match?.id ?? null
-}
-
 async function main() {
   const school = await db.school.upsert({
     where: { id: 'tosei-gusoku-school' },
@@ -42,7 +35,7 @@ async function main() {
   for (const [index, plan] of PLANS.entries()) {
     await db.plan.upsert({
       where: { id: plan.id },
-      update: { name: plan.name, description: plan.description, monthlyHours: plan.monthlyHours, price: plan.price, isUnlimited: plan.isUnlimited, sortOrder: index + 1, schoolId: school.id },
+      update: { name: plan.name, description: plan.description, monthlyHours: plan.monthlyHours, price: plan.price, currency: 'DOP', isUnlimited: plan.isUnlimited, sortOrder: index + 1, schoolId: school.id },
       create: { ...plan, sortOrder: index + 1, schoolId: school.id },
     })
   }
@@ -118,7 +111,6 @@ async function main() {
   // ============ KATAS (catálogo global, reutilizan Technique.category = KATA) ============
   const kataNameToId = new Map<string, string>()
   for (const kata of KATAS) {
-    const homeRankId = homeRankIdFor(kata.name)
     const created = await db.technique.upsert({
       where: { id: kata.id },
       update: {
@@ -126,7 +118,6 @@ async function main() {
         kanji: kata.kanji,
         category: 'KATA',
         order: kata.order,
-        rankId: homeRankId,
         schoolId: null,
       },
       create: {
@@ -135,7 +126,6 @@ async function main() {
         kanji: kata.kanji,
         category: 'KATA',
         order: kata.order,
-        rankId: homeRankId,
         schoolId: null,
       },
     })
@@ -165,7 +155,6 @@ async function main() {
       email: 'admin@toseigusoku.com',
       passwordHash: adminPassword,
       name: 'Administrador Tosei Gusoku',
-      role: Role.SCHOOL_ADMIN,
       roles: [Role.SCHOOL_ADMIN],
       emailVerified: new Date(),
       schoolId: school.id,
@@ -182,7 +171,6 @@ async function main() {
       email: 'instructor@toseigusoku.com',
       passwordHash: instructorPassword,
       name: 'Instructor Principal',
-      role: Role.INSTRUCTOR,
       roles: [Role.INSTRUCTOR],
       emailVerified: new Date(),
       schoolId: school.id,
@@ -205,7 +193,6 @@ async function main() {
       email: 'alumno@test.com',
       passwordHash: studentPassword,
       name: 'Juan Pérez',
-      role: Role.STUDENT,
       roles: [Role.STUDENT],
       emailVerified: new Date(),
       schoolId: school.id,
@@ -219,6 +206,7 @@ async function main() {
     where: { userId: studentUser.id },
     update: {
       currentRank: 'Blanco',
+      currentRankId: 'belt-youth-01-blanco',
       firstName: 'Juan',
       lastName: 'Pérez',
       planId: 'plan-basico',
@@ -234,11 +222,12 @@ async function main() {
       firstName: 'Juan',
       lastName: 'Pérez',
       dateOfBirth: new Date('2012-05-20'),
-      gender: 'male',
+      gender: 'MALE',
       contactPhone: '+18095551234',
       medicalInfo: null,
       emergencyContact: 'María Pérez - +18095550000',
       currentRank: 'Blanco',
+      currentRankId: 'belt-youth-01-blanco',
       status: 'ACTIVE',
       planId: 'plan-basico',
       planStartDate: new Date(),
@@ -258,7 +247,6 @@ async function main() {
       email: 'sensei@toseigusoku.com',
       passwordHash: ownerPassword,
       name: 'Sensei Tosei Gusoku',
-      role: Role.SUPERADMIN,
       roles: [Role.SUPERADMIN, Role.SCHOOL_ADMIN, Role.INSTRUCTOR, Role.STUDENT],
       emailVerified: new Date(),
       schoolId: school.id,

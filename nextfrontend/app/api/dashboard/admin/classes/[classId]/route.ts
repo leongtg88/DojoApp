@@ -58,7 +58,11 @@ export async function PATCH(request: Request, { params }: ClassRouteContext) {
 
   const scheduledClass = await db.class.update({
     where: { id: existing.id },
-    data: result.data,
+    data: {
+      ...result.data,
+      ...(result.data.startTime ? { startTime: `${result.data.startTime}:00` } : {}),
+      ...(result.data.endTime ? { endTime: `${result.data.endTime}:00` } : {}),
+    },
     select: {
       id: true,
       name: true,

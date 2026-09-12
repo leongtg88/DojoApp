@@ -159,6 +159,54 @@ export namespace $Enums {
 export type Role = (typeof Role)[keyof typeof Role]
 
 
+export const StudentStatus: {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  GRADUATED: 'GRADUATED'
+};
+
+export type StudentStatus = (typeof StudentStatus)[keyof typeof StudentStatus]
+
+
+export const EnrollmentStatus: {
+  PENDING: 'PENDING',
+  CONTACTED: 'CONTACTED',
+  ENROLLED: 'ENROLLED',
+  REJECTED: 'REJECTED'
+};
+
+export type EnrollmentStatus = (typeof EnrollmentStatus)[keyof typeof EnrollmentStatus]
+
+
+export const ClassEnrollmentStatus: {
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  ENDED: 'ENDED',
+  COMPLETED: 'COMPLETED'
+};
+
+export type ClassEnrollmentStatus = (typeof ClassEnrollmentStatus)[keyof typeof ClassEnrollmentStatus]
+
+
+export const ApprovalStatus: {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+export type ApprovalStatus = (typeof ApprovalStatus)[keyof typeof ApprovalStatus]
+
+
+export const Gender: {
+  MALE: 'MALE',
+  FEMALE: 'FEMALE',
+  OTHER: 'OTHER',
+  PREFER_NOT_TO_SAY: 'PREFER_NOT_TO_SAY'
+};
+
+export type Gender = (typeof Gender)[keyof typeof Gender]
+
+
 export const EnrollmentOrigin: {
   FORM: 'FORM',
   ASSISTANT: 'ASSISTANT'
@@ -240,6 +288,26 @@ export type ScholarshipType = (typeof ScholarshipType)[keyof typeof ScholarshipT
 export type Role = $Enums.Role
 
 export const Role: typeof $Enums.Role
+
+export type StudentStatus = $Enums.StudentStatus
+
+export const StudentStatus: typeof $Enums.StudentStatus
+
+export type EnrollmentStatus = $Enums.EnrollmentStatus
+
+export const EnrollmentStatus: typeof $Enums.EnrollmentStatus
+
+export type ClassEnrollmentStatus = $Enums.ClassEnrollmentStatus
+
+export const ClassEnrollmentStatus: typeof $Enums.ClassEnrollmentStatus
+
+export type ApprovalStatus = $Enums.ApprovalStatus
+
+export const ApprovalStatus: typeof $Enums.ApprovalStatus
+
+export type Gender = $Enums.Gender
+
+export const Gender: typeof $Enums.Gender
 
 export type EnrollmentOrigin = $Enums.EnrollmentOrigin
 
@@ -3454,6 +3522,9 @@ export namespace Prisma {
     guardianOfStudents: number
     rankPromotions: number
     techniqueEvaluations: number
+    techniquesApproved: number
+    achievementsApproved: number
+    fitnessReportsApproved: number
     attendanceConfirmations: number
     emailVerificationTokens: number
     passwordResetTokens: number
@@ -3466,6 +3537,9 @@ export namespace Prisma {
     guardianOfStudents?: boolean | UserCountOutputTypeCountGuardianOfStudentsArgs
     rankPromotions?: boolean | UserCountOutputTypeCountRankPromotionsArgs
     techniqueEvaluations?: boolean | UserCountOutputTypeCountTechniqueEvaluationsArgs
+    techniquesApproved?: boolean | UserCountOutputTypeCountTechniquesApprovedArgs
+    achievementsApproved?: boolean | UserCountOutputTypeCountAchievementsApprovedArgs
+    fitnessReportsApproved?: boolean | UserCountOutputTypeCountFitnessReportsApprovedArgs
     attendanceConfirmations?: boolean | UserCountOutputTypeCountAttendanceConfirmationsArgs
     emailVerificationTokens?: boolean | UserCountOutputTypeCountEmailVerificationTokensArgs
     passwordResetTokens?: boolean | UserCountOutputTypeCountPasswordResetTokensArgs
@@ -3510,6 +3584,27 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountTechniqueEvaluationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TechniqueEvaluationWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTechniquesApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StudentTechniqueWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAchievementsApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StudentAchievementWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountFitnessReportsApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FitnessReportWhereInput
   }
 
   /**
@@ -3737,14 +3832,14 @@ export namespace Prisma {
 
   export type BeltRankCountOutputType = {
     katas: number
-    techniques: number
     promotions: number
+    currentRankStudents: number
   }
 
   export type BeltRankCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     katas?: boolean | BeltRankCountOutputTypeCountKatasArgs
-    techniques?: boolean | BeltRankCountOutputTypeCountTechniquesArgs
     promotions?: boolean | BeltRankCountOutputTypeCountPromotionsArgs
+    currentRankStudents?: boolean | BeltRankCountOutputTypeCountCurrentRankStudentsArgs
   }
 
   // Custom InputTypes
@@ -3768,15 +3863,15 @@ export namespace Prisma {
   /**
    * BeltRankCountOutputType without action
    */
-  export type BeltRankCountOutputTypeCountTechniquesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TechniqueWhereInput
+  export type BeltRankCountOutputTypeCountPromotionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StudentRankHistoryWhereInput
   }
 
   /**
    * BeltRankCountOutputType without action
    */
-  export type BeltRankCountOutputTypeCountPromotionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: StudentRankHistoryWhereInput
+  export type BeltRankCountOutputTypeCountCurrentRankStudentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StudentWhereInput
   }
 
 
@@ -6418,7 +6513,6 @@ export namespace Prisma {
     passwordHash: string | null
     name: string | null
     phone: string | null
-    role: $Enums.Role | null
     schoolId: string | null
     branchId: string | null
     createdAt: Date | null
@@ -6432,7 +6526,6 @@ export namespace Prisma {
     passwordHash: string | null
     name: string | null
     phone: string | null
-    role: $Enums.Role | null
     schoolId: string | null
     branchId: string | null
     createdAt: Date | null
@@ -6446,7 +6539,6 @@ export namespace Prisma {
     passwordHash: number
     name: number
     phone: number
-    role: number
     roles: number
     schoolId: number
     branchId: number
@@ -6463,7 +6555,6 @@ export namespace Prisma {
     passwordHash?: true
     name?: true
     phone?: true
-    role?: true
     schoolId?: true
     branchId?: true
     createdAt?: true
@@ -6477,7 +6568,6 @@ export namespace Prisma {
     passwordHash?: true
     name?: true
     phone?: true
-    role?: true
     schoolId?: true
     branchId?: true
     createdAt?: true
@@ -6491,7 +6581,6 @@ export namespace Prisma {
     passwordHash?: true
     name?: true
     phone?: true
-    role?: true
     roles?: true
     schoolId?: true
     branchId?: true
@@ -6579,7 +6668,6 @@ export namespace Prisma {
     passwordHash: string | null
     name: string | null
     phone: string | null
-    role: $Enums.Role
     roles: $Enums.Role[]
     schoolId: string | null
     branchId: string | null
@@ -6611,7 +6699,6 @@ export namespace Prisma {
     passwordHash?: boolean
     name?: boolean
     phone?: boolean
-    role?: boolean
     roles?: boolean
     schoolId?: boolean
     branchId?: boolean
@@ -6625,6 +6712,9 @@ export namespace Prisma {
     guardianOfStudents?: boolean | User$guardianOfStudentsArgs<ExtArgs>
     rankPromotions?: boolean | User$rankPromotionsArgs<ExtArgs>
     techniqueEvaluations?: boolean | User$techniqueEvaluationsArgs<ExtArgs>
+    techniquesApproved?: boolean | User$techniquesApprovedArgs<ExtArgs>
+    achievementsApproved?: boolean | User$achievementsApprovedArgs<ExtArgs>
+    fitnessReportsApproved?: boolean | User$fitnessReportsApprovedArgs<ExtArgs>
     attendanceConfirmations?: boolean | User$attendanceConfirmationsArgs<ExtArgs>
     emailVerificationTokens?: boolean | User$emailVerificationTokensArgs<ExtArgs>
     passwordResetTokens?: boolean | User$passwordResetTokensArgs<ExtArgs>
@@ -6640,7 +6730,6 @@ export namespace Prisma {
     passwordHash?: boolean
     name?: boolean
     phone?: boolean
-    role?: boolean
     roles?: boolean
     schoolId?: boolean
     branchId?: boolean
@@ -6657,7 +6746,6 @@ export namespace Prisma {
     passwordHash?: boolean
     name?: boolean
     phone?: boolean
-    role?: boolean
     roles?: boolean
     schoolId?: boolean
     branchId?: boolean
@@ -6674,7 +6762,6 @@ export namespace Prisma {
     passwordHash?: boolean
     name?: boolean
     phone?: boolean
-    role?: boolean
     roles?: boolean
     schoolId?: boolean
     branchId?: boolean
@@ -6682,7 +6769,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "passwordHash" | "name" | "phone" | "role" | "roles" | "schoolId" | "branchId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "passwordHash" | "name" | "phone" | "roles" | "schoolId" | "branchId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     school?: boolean | User$schoolArgs<ExtArgs>
     branch?: boolean | User$branchArgs<ExtArgs>
@@ -6692,6 +6779,9 @@ export namespace Prisma {
     guardianOfStudents?: boolean | User$guardianOfStudentsArgs<ExtArgs>
     rankPromotions?: boolean | User$rankPromotionsArgs<ExtArgs>
     techniqueEvaluations?: boolean | User$techniqueEvaluationsArgs<ExtArgs>
+    techniquesApproved?: boolean | User$techniquesApprovedArgs<ExtArgs>
+    achievementsApproved?: boolean | User$achievementsApprovedArgs<ExtArgs>
+    fitnessReportsApproved?: boolean | User$fitnessReportsApprovedArgs<ExtArgs>
     attendanceConfirmations?: boolean | User$attendanceConfirmationsArgs<ExtArgs>
     emailVerificationTokens?: boolean | User$emailVerificationTokensArgs<ExtArgs>
     passwordResetTokens?: boolean | User$passwordResetTokensArgs<ExtArgs>
@@ -6719,6 +6809,9 @@ export namespace Prisma {
       guardianOfStudents: Prisma.$StudentPayload<ExtArgs>[]
       rankPromotions: Prisma.$StudentRankHistoryPayload<ExtArgs>[]
       techniqueEvaluations: Prisma.$TechniqueEvaluationPayload<ExtArgs>[]
+      techniquesApproved: Prisma.$StudentTechniquePayload<ExtArgs>[]
+      achievementsApproved: Prisma.$StudentAchievementPayload<ExtArgs>[]
+      fitnessReportsApproved: Prisma.$FitnessReportPayload<ExtArgs>[]
       attendanceConfirmations: Prisma.$AttendancePayload<ExtArgs>[]
       emailVerificationTokens: Prisma.$EmailVerificationTokenPayload<ExtArgs>[]
       passwordResetTokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
@@ -6732,7 +6825,6 @@ export namespace Prisma {
       passwordHash: string | null
       name: string | null
       phone: string | null
-      role: $Enums.Role
       roles: $Enums.Role[]
       schoolId: string | null
       branchId: string | null
@@ -7140,6 +7232,9 @@ export namespace Prisma {
     guardianOfStudents<T extends User$guardianOfStudentsArgs<ExtArgs> = {}>(args?: Subset<T, User$guardianOfStudentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     rankPromotions<T extends User$rankPromotionsArgs<ExtArgs> = {}>(args?: Subset<T, User$rankPromotionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentRankHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     techniqueEvaluations<T extends User$techniqueEvaluationsArgs<ExtArgs> = {}>(args?: Subset<T, User$techniqueEvaluationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TechniqueEvaluationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    techniquesApproved<T extends User$techniquesApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$techniquesApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentTechniquePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    achievementsApproved<T extends User$achievementsApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$achievementsApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentAchievementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    fitnessReportsApproved<T extends User$fitnessReportsApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$fitnessReportsApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FitnessReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     attendanceConfirmations<T extends User$attendanceConfirmationsArgs<ExtArgs> = {}>(args?: Subset<T, User$attendanceConfirmationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     emailVerificationTokens<T extends User$emailVerificationTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$emailVerificationTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     passwordResetTokens<T extends User$passwordResetTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$passwordResetTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -7180,7 +7275,6 @@ export namespace Prisma {
     readonly passwordHash: FieldRef<"User", 'String'>
     readonly name: FieldRef<"User", 'String'>
     readonly phone: FieldRef<"User", 'String'>
-    readonly role: FieldRef<"User", 'Role'>
     readonly roles: FieldRef<"User", 'Role[]'>
     readonly schoolId: FieldRef<"User", 'String'>
     readonly branchId: FieldRef<"User", 'String'>
@@ -7756,6 +7850,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TechniqueEvaluationScalarFieldEnum | TechniqueEvaluationScalarFieldEnum[]
+  }
+
+  /**
+   * User.techniquesApproved
+   */
+  export type User$techniquesApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentTechnique
+     */
+    select?: StudentTechniqueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentTechnique
+     */
+    omit?: StudentTechniqueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentTechniqueInclude<ExtArgs> | null
+    where?: StudentTechniqueWhereInput
+    orderBy?: StudentTechniqueOrderByWithRelationInput | StudentTechniqueOrderByWithRelationInput[]
+    cursor?: StudentTechniqueWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StudentTechniqueScalarFieldEnum | StudentTechniqueScalarFieldEnum[]
+  }
+
+  /**
+   * User.achievementsApproved
+   */
+  export type User$achievementsApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentAchievement
+     */
+    select?: StudentAchievementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentAchievement
+     */
+    omit?: StudentAchievementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentAchievementInclude<ExtArgs> | null
+    where?: StudentAchievementWhereInput
+    orderBy?: StudentAchievementOrderByWithRelationInput | StudentAchievementOrderByWithRelationInput[]
+    cursor?: StudentAchievementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StudentAchievementScalarFieldEnum | StudentAchievementScalarFieldEnum[]
+  }
+
+  /**
+   * User.fitnessReportsApproved
+   */
+  export type User$fitnessReportsApprovedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FitnessReport
+     */
+    select?: FitnessReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FitnessReport
+     */
+    omit?: FitnessReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FitnessReportInclude<ExtArgs> | null
+    where?: FitnessReportWhereInput
+    orderBy?: FitnessReportOrderByWithRelationInput | FitnessReportOrderByWithRelationInput[]
+    cursor?: FitnessReportWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FitnessReportScalarFieldEnum | FitnessReportScalarFieldEnum[]
   }
 
   /**
@@ -12269,15 +12435,16 @@ export namespace Prisma {
     firstName: string | null
     lastName: string | null
     dateOfBirth: Date | null
-    gender: string | null
+    gender: $Enums.Gender | null
     email: string | null
     contactPhone: string | null
     medicalInfo: string | null
     emergencyContact: string | null
     enrollmentDate: Date | null
     memberNumber: string | null
-    status: string | null
+    status: $Enums.StudentStatus | null
     currentRank: string | null
+    currentRankId: string | null
     photoKey: string | null
     planId: string | null
     planStartDate: Date | null
@@ -12297,15 +12464,16 @@ export namespace Prisma {
     firstName: string | null
     lastName: string | null
     dateOfBirth: Date | null
-    gender: string | null
+    gender: $Enums.Gender | null
     email: string | null
     contactPhone: string | null
     medicalInfo: string | null
     emergencyContact: string | null
     enrollmentDate: Date | null
     memberNumber: string | null
-    status: string | null
+    status: $Enums.StudentStatus | null
     currentRank: string | null
+    currentRankId: string | null
     photoKey: string | null
     planId: string | null
     planStartDate: Date | null
@@ -12334,6 +12502,7 @@ export namespace Prisma {
     memberNumber: number
     status: number
     currentRank: number
+    currentRankId: number
     photoKey: number
     registrationData: number
     planId: number
@@ -12365,6 +12534,7 @@ export namespace Prisma {
     memberNumber?: true
     status?: true
     currentRank?: true
+    currentRankId?: true
     photoKey?: true
     planId?: true
     planStartDate?: true
@@ -12393,6 +12563,7 @@ export namespace Prisma {
     memberNumber?: true
     status?: true
     currentRank?: true
+    currentRankId?: true
     photoKey?: true
     planId?: true
     planStartDate?: true
@@ -12421,6 +12592,7 @@ export namespace Prisma {
     memberNumber?: true
     status?: true
     currentRank?: true
+    currentRankId?: true
     photoKey?: true
     registrationData?: true
     planId?: true
@@ -12514,15 +12686,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date
-    gender: string | null
+    gender: $Enums.Gender | null
     email: string | null
     contactPhone: string | null
     medicalInfo: string | null
     emergencyContact: string | null
     enrollmentDate: Date
     memberNumber: string | null
-    status: string
+    status: $Enums.StudentStatus
     currentRank: string | null
+    currentRankId: string | null
     photoKey: string | null
     registrationData: JsonValue | null
     planId: string | null
@@ -12569,6 +12742,7 @@ export namespace Prisma {
     memberNumber?: boolean
     status?: boolean
     currentRank?: boolean
+    currentRankId?: boolean
     photoKey?: boolean
     registrationData?: boolean
     planId?: boolean
@@ -12578,6 +12752,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    currentRankRef?: boolean | Student$currentRankRefArgs<ExtArgs>
     plan?: boolean | Student$planArgs<ExtArgs>
     school?: boolean | SchoolDefaultArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
@@ -12615,6 +12790,7 @@ export namespace Prisma {
     memberNumber?: boolean
     status?: boolean
     currentRank?: boolean
+    currentRankId?: boolean
     photoKey?: boolean
     registrationData?: boolean
     planId?: boolean
@@ -12624,6 +12800,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    currentRankRef?: boolean | Student$currentRankRefArgs<ExtArgs>
     plan?: boolean | Student$planArgs<ExtArgs>
     school?: boolean | SchoolDefaultArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
@@ -12649,6 +12826,7 @@ export namespace Prisma {
     memberNumber?: boolean
     status?: boolean
     currentRank?: boolean
+    currentRankId?: boolean
     photoKey?: boolean
     registrationData?: boolean
     planId?: boolean
@@ -12658,6 +12836,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    currentRankRef?: boolean | Student$currentRankRefArgs<ExtArgs>
     plan?: boolean | Student$planArgs<ExtArgs>
     school?: boolean | SchoolDefaultArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
@@ -12683,6 +12862,7 @@ export namespace Prisma {
     memberNumber?: boolean
     status?: boolean
     currentRank?: boolean
+    currentRankId?: boolean
     photoKey?: boolean
     registrationData?: boolean
     planId?: boolean
@@ -12694,8 +12874,9 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type StudentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "guardianId" | "schoolId" | "branchId" | "firstName" | "lastName" | "dateOfBirth" | "gender" | "email" | "contactPhone" | "medicalInfo" | "emergencyContact" | "enrollmentDate" | "memberNumber" | "status" | "currentRank" | "photoKey" | "registrationData" | "planId" | "planStartDate" | "scholarshipType" | "scholarshipNote" | "isCompetitor" | "createdAt" | "updatedAt", ExtArgs["result"]["student"]>
+  export type StudentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "guardianId" | "schoolId" | "branchId" | "firstName" | "lastName" | "dateOfBirth" | "gender" | "email" | "contactPhone" | "medicalInfo" | "emergencyContact" | "enrollmentDate" | "memberNumber" | "status" | "currentRank" | "currentRankId" | "photoKey" | "registrationData" | "planId" | "planStartDate" | "scholarshipType" | "scholarshipNote" | "isCompetitor" | "createdAt" | "updatedAt", ExtArgs["result"]["student"]>
   export type StudentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    currentRankRef?: boolean | Student$currentRankRefArgs<ExtArgs>
     plan?: boolean | Student$planArgs<ExtArgs>
     school?: boolean | SchoolDefaultArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
@@ -12715,6 +12896,7 @@ export namespace Prisma {
     _count?: boolean | StudentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StudentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    currentRankRef?: boolean | Student$currentRankRefArgs<ExtArgs>
     plan?: boolean | Student$planArgs<ExtArgs>
     school?: boolean | SchoolDefaultArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
@@ -12722,6 +12904,7 @@ export namespace Prisma {
     guardian?: boolean | Student$guardianArgs<ExtArgs>
   }
   export type StudentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    currentRankRef?: boolean | Student$currentRankRefArgs<ExtArgs>
     plan?: boolean | Student$planArgs<ExtArgs>
     school?: boolean | SchoolDefaultArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
@@ -12732,6 +12915,7 @@ export namespace Prisma {
   export type $StudentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Student"
     objects: {
+      currentRankRef: Prisma.$BeltRankPayload<ExtArgs> | null
       plan: Prisma.$PlanPayload<ExtArgs> | null
       school: Prisma.$SchoolPayload<ExtArgs>
       branch: Prisma.$BranchPayload<ExtArgs>
@@ -12758,15 +12942,16 @@ export namespace Prisma {
       firstName: string
       lastName: string
       dateOfBirth: Date
-      gender: string | null
+      gender: $Enums.Gender | null
       email: string | null
       contactPhone: string | null
       medicalInfo: string | null
       emergencyContact: string | null
       enrollmentDate: Date
       memberNumber: string | null
-      status: string
+      status: $Enums.StudentStatus
       currentRank: string | null
+      currentRankId: string | null
       photoKey: string | null
       registrationData: Prisma.JsonValue | null
       planId: string | null
@@ -13170,6 +13355,7 @@ export namespace Prisma {
    */
   export interface Prisma__StudentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    currentRankRef<T extends Student$currentRankRefArgs<ExtArgs> = {}>(args?: Subset<T, Student$currentRankRefArgs<ExtArgs>>): Prisma__BeltRankClient<$Result.GetResult<Prisma.$BeltRankPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     plan<T extends Student$planArgs<ExtArgs> = {}>(args?: Subset<T, Student$planArgs<ExtArgs>>): Prisma__PlanClient<$Result.GetResult<Prisma.$PlanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     school<T extends SchoolDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SchoolDefaultArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     branch<T extends BranchDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BranchDefaultArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -13223,15 +13409,16 @@ export namespace Prisma {
     readonly firstName: FieldRef<"Student", 'String'>
     readonly lastName: FieldRef<"Student", 'String'>
     readonly dateOfBirth: FieldRef<"Student", 'DateTime'>
-    readonly gender: FieldRef<"Student", 'String'>
+    readonly gender: FieldRef<"Student", 'Gender'>
     readonly email: FieldRef<"Student", 'String'>
     readonly contactPhone: FieldRef<"Student", 'String'>
     readonly medicalInfo: FieldRef<"Student", 'String'>
     readonly emergencyContact: FieldRef<"Student", 'String'>
     readonly enrollmentDate: FieldRef<"Student", 'DateTime'>
     readonly memberNumber: FieldRef<"Student", 'String'>
-    readonly status: FieldRef<"Student", 'String'>
+    readonly status: FieldRef<"Student", 'StudentStatus'>
     readonly currentRank: FieldRef<"Student", 'String'>
+    readonly currentRankId: FieldRef<"Student", 'String'>
     readonly photoKey: FieldRef<"Student", 'String'>
     readonly registrationData: FieldRef<"Student", 'Json'>
     readonly planId: FieldRef<"Student", 'String'>
@@ -13639,6 +13826,25 @@ export namespace Prisma {
      * Limit how many Students to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Student.currentRankRef
+   */
+  export type Student$currentRankRefArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BeltRank
+     */
+    select?: BeltRankSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BeltRank
+     */
+    omit?: BeltRankOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BeltRankInclude<ExtArgs> | null
+    where?: BeltRankWhereInput
   }
 
   /**
@@ -15056,7 +15262,7 @@ export namespace Prisma {
     studentId: string | null
     contactEmail: string | null
     contactPhone: string | null
-    status: string | null
+    status: $Enums.EnrollmentStatus | null
     notes: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -15074,7 +15280,7 @@ export namespace Prisma {
     studentId: string | null
     contactEmail: string | null
     contactPhone: string | null
-    status: string | null
+    status: $Enums.EnrollmentStatus | null
     notes: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -15241,7 +15447,7 @@ export namespace Prisma {
     studentId: string | null
     contactEmail: string
     contactPhone: string | null
-    status: string
+    status: $Enums.EnrollmentStatus
     notes: string | null
     registrationData: JsonValue | null
     createdAt: Date
@@ -15394,7 +15600,7 @@ export namespace Prisma {
       studentId: string | null
       contactEmail: string
       contactPhone: string | null
-      status: string
+      status: $Enums.EnrollmentStatus
       notes: string | null
       registrationData: Prisma.JsonValue | null
       createdAt: Date
@@ -15838,7 +16044,7 @@ export namespace Prisma {
     readonly studentId: FieldRef<"Enrollment", 'String'>
     readonly contactEmail: FieldRef<"Enrollment", 'String'>
     readonly contactPhone: FieldRef<"Enrollment", 'String'>
-    readonly status: FieldRef<"Enrollment", 'String'>
+    readonly status: FieldRef<"Enrollment", 'EnrollmentStatus'>
     readonly notes: FieldRef<"Enrollment", 'String'>
     readonly registrationData: FieldRef<"Enrollment", 'Json'>
     readonly createdAt: FieldRef<"Enrollment", 'DateTime'>
@@ -17743,7 +17949,7 @@ export namespace Prisma {
 
   export type StudentDocumentGroupByOutputType = {
     id: string
-    enrollmentId: string
+    enrollmentId: string | null
     applicantId: string | null
     studentId: string | null
     type: $Enums.StudentDocumentType
@@ -17792,7 +17998,7 @@ export namespace Prisma {
     reviewedAt?: boolean
     uploadedAt?: boolean
     updatedAt?: boolean
-    enrollment?: boolean | EnrollmentDefaultArgs<ExtArgs>
+    enrollment?: boolean | StudentDocument$enrollmentArgs<ExtArgs>
     applicant?: boolean | StudentDocument$applicantArgs<ExtArgs>
     student?: boolean | StudentDocument$studentArgs<ExtArgs>
   }, ExtArgs["result"]["studentDocument"]>
@@ -17812,7 +18018,7 @@ export namespace Prisma {
     reviewedAt?: boolean
     uploadedAt?: boolean
     updatedAt?: boolean
-    enrollment?: boolean | EnrollmentDefaultArgs<ExtArgs>
+    enrollment?: boolean | StudentDocument$enrollmentArgs<ExtArgs>
     applicant?: boolean | StudentDocument$applicantArgs<ExtArgs>
     student?: boolean | StudentDocument$studentArgs<ExtArgs>
   }, ExtArgs["result"]["studentDocument"]>
@@ -17832,7 +18038,7 @@ export namespace Prisma {
     reviewedAt?: boolean
     uploadedAt?: boolean
     updatedAt?: boolean
-    enrollment?: boolean | EnrollmentDefaultArgs<ExtArgs>
+    enrollment?: boolean | StudentDocument$enrollmentArgs<ExtArgs>
     applicant?: boolean | StudentDocument$applicantArgs<ExtArgs>
     student?: boolean | StudentDocument$studentArgs<ExtArgs>
   }, ExtArgs["result"]["studentDocument"]>
@@ -17856,17 +18062,17 @@ export namespace Prisma {
 
   export type StudentDocumentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "enrollmentId" | "applicantId" | "studentId" | "type" | "status" | "fileName" | "storageKey" | "mimeType" | "fileSize" | "reviewNotes" | "reviewedAt" | "uploadedAt" | "updatedAt", ExtArgs["result"]["studentDocument"]>
   export type StudentDocumentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    enrollment?: boolean | EnrollmentDefaultArgs<ExtArgs>
+    enrollment?: boolean | StudentDocument$enrollmentArgs<ExtArgs>
     applicant?: boolean | StudentDocument$applicantArgs<ExtArgs>
     student?: boolean | StudentDocument$studentArgs<ExtArgs>
   }
   export type StudentDocumentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    enrollment?: boolean | EnrollmentDefaultArgs<ExtArgs>
+    enrollment?: boolean | StudentDocument$enrollmentArgs<ExtArgs>
     applicant?: boolean | StudentDocument$applicantArgs<ExtArgs>
     student?: boolean | StudentDocument$studentArgs<ExtArgs>
   }
   export type StudentDocumentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    enrollment?: boolean | EnrollmentDefaultArgs<ExtArgs>
+    enrollment?: boolean | StudentDocument$enrollmentArgs<ExtArgs>
     applicant?: boolean | StudentDocument$applicantArgs<ExtArgs>
     student?: boolean | StudentDocument$studentArgs<ExtArgs>
   }
@@ -17874,13 +18080,13 @@ export namespace Prisma {
   export type $StudentDocumentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "StudentDocument"
     objects: {
-      enrollment: Prisma.$EnrollmentPayload<ExtArgs>
+      enrollment: Prisma.$EnrollmentPayload<ExtArgs> | null
       applicant: Prisma.$EnrollmentApplicantPayload<ExtArgs> | null
       student: Prisma.$StudentPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      enrollmentId: string
+      enrollmentId: string | null
       applicantId: string | null
       studentId: string | null
       type: $Enums.StudentDocumentType
@@ -18287,7 +18493,7 @@ export namespace Prisma {
    */
   export interface Prisma__StudentDocumentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    enrollment<T extends EnrollmentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EnrollmentDefaultArgs<ExtArgs>>): Prisma__EnrollmentClient<$Result.GetResult<Prisma.$EnrollmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    enrollment<T extends StudentDocument$enrollmentArgs<ExtArgs> = {}>(args?: Subset<T, StudentDocument$enrollmentArgs<ExtArgs>>): Prisma__EnrollmentClient<$Result.GetResult<Prisma.$EnrollmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     applicant<T extends StudentDocument$applicantArgs<ExtArgs> = {}>(args?: Subset<T, StudentDocument$applicantArgs<ExtArgs>>): Prisma__EnrollmentApplicantClient<$Result.GetResult<Prisma.$EnrollmentApplicantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     student<T extends StudentDocument$studentArgs<ExtArgs> = {}>(args?: Subset<T, StudentDocument$studentArgs<ExtArgs>>): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
@@ -18734,6 +18940,25 @@ export namespace Prisma {
   }
 
   /**
+   * StudentDocument.enrollment
+   */
+  export type StudentDocument$enrollmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Enrollment
+     */
+    select?: EnrollmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Enrollment
+     */
+    omit?: EnrollmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EnrollmentInclude<ExtArgs> | null
+    where?: EnrollmentWhereInput
+  }
+
+  /**
    * StudentDocument.applicant
    */
   export type StudentDocument$applicantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19110,8 +19335,8 @@ export namespace Prisma {
     updatedAt?: boolean
     school?: boolean | BeltRank$schoolArgs<ExtArgs>
     katas?: boolean | BeltRank$katasArgs<ExtArgs>
-    techniques?: boolean | BeltRank$techniquesArgs<ExtArgs>
     promotions?: boolean | BeltRank$promotionsArgs<ExtArgs>
+    currentRankStudents?: boolean | BeltRank$currentRankStudentsArgs<ExtArgs>
     _count?: boolean | BeltRankCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["beltRank"]>
 
@@ -19184,8 +19409,8 @@ export namespace Prisma {
   export type BeltRankInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     school?: boolean | BeltRank$schoolArgs<ExtArgs>
     katas?: boolean | BeltRank$katasArgs<ExtArgs>
-    techniques?: boolean | BeltRank$techniquesArgs<ExtArgs>
     promotions?: boolean | BeltRank$promotionsArgs<ExtArgs>
+    currentRankStudents?: boolean | BeltRank$currentRankStudentsArgs<ExtArgs>
     _count?: boolean | BeltRankCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BeltRankIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19200,8 +19425,8 @@ export namespace Prisma {
     objects: {
       school: Prisma.$SchoolPayload<ExtArgs> | null
       katas: Prisma.$BeltRankKataPayload<ExtArgs>[]
-      techniques: Prisma.$TechniquePayload<ExtArgs>[]
       promotions: Prisma.$StudentRankHistoryPayload<ExtArgs>[]
+      currentRankStudents: Prisma.$StudentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -19618,8 +19843,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     school<T extends BeltRank$schoolArgs<ExtArgs> = {}>(args?: Subset<T, BeltRank$schoolArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     katas<T extends BeltRank$katasArgs<ExtArgs> = {}>(args?: Subset<T, BeltRank$katasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    techniques<T extends BeltRank$techniquesArgs<ExtArgs> = {}>(args?: Subset<T, BeltRank$techniquesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TechniquePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     promotions<T extends BeltRank$promotionsArgs<ExtArgs> = {}>(args?: Subset<T, BeltRank$promotionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentRankHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    currentRankStudents<T extends BeltRank$currentRankStudentsArgs<ExtArgs> = {}>(args?: Subset<T, BeltRank$currentRankStudentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -20111,30 +20336,6 @@ export namespace Prisma {
   }
 
   /**
-   * BeltRank.techniques
-   */
-  export type BeltRank$techniquesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Technique
-     */
-    select?: TechniqueSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Technique
-     */
-    omit?: TechniqueOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TechniqueInclude<ExtArgs> | null
-    where?: TechniqueWhereInput
-    orderBy?: TechniqueOrderByWithRelationInput | TechniqueOrderByWithRelationInput[]
-    cursor?: TechniqueWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: TechniqueScalarFieldEnum | TechniqueScalarFieldEnum[]
-  }
-
-  /**
    * BeltRank.promotions
    */
   export type BeltRank$promotionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -20156,6 +20357,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StudentRankHistoryScalarFieldEnum | StudentRankHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * BeltRank.currentRankStudents
+   */
+  export type BeltRank$currentRankStudentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Student
+     */
+    select?: StudentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Student
+     */
+    omit?: StudentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
+    where?: StudentWhereInput
+    orderBy?: StudentOrderByWithRelationInput | StudentOrderByWithRelationInput[]
+    cursor?: StudentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StudentScalarFieldEnum | StudentScalarFieldEnum[]
   }
 
   /**
@@ -22435,7 +22660,6 @@ export namespace Prisma {
     kanji: string | null
     description: string | null
     category: $Enums.TechniqueCategory | null
-    rankId: string | null
     order: number | null
     movementsCount: number | null
     embusen: string | null
@@ -22453,7 +22677,6 @@ export namespace Prisma {
     kanji: string | null
     description: string | null
     category: $Enums.TechniqueCategory | null
-    rankId: string | null
     order: number | null
     movementsCount: number | null
     embusen: string | null
@@ -22471,7 +22694,6 @@ export namespace Prisma {
     kanji: number
     description: number
     category: number
-    rankId: number
     order: number
     movementsCount: number
     embusen: number
@@ -22501,7 +22723,6 @@ export namespace Prisma {
     kanji?: true
     description?: true
     category?: true
-    rankId?: true
     order?: true
     movementsCount?: true
     embusen?: true
@@ -22519,7 +22740,6 @@ export namespace Prisma {
     kanji?: true
     description?: true
     category?: true
-    rankId?: true
     order?: true
     movementsCount?: true
     embusen?: true
@@ -22537,7 +22757,6 @@ export namespace Prisma {
     kanji?: true
     description?: true
     category?: true
-    rankId?: true
     order?: true
     movementsCount?: true
     embusen?: true
@@ -22642,7 +22861,6 @@ export namespace Prisma {
     kanji: string | null
     description: string | null
     category: $Enums.TechniqueCategory
-    rankId: string | null
     order: number
     movementsCount: number | null
     embusen: string | null
@@ -22679,7 +22897,6 @@ export namespace Prisma {
     kanji?: boolean
     description?: boolean
     category?: boolean
-    rankId?: boolean
     order?: boolean
     movementsCount?: boolean
     embusen?: boolean
@@ -22688,7 +22905,6 @@ export namespace Prisma {
     schoolId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    rank?: boolean | Technique$rankArgs<ExtArgs>
     school?: boolean | Technique$schoolArgs<ExtArgs>
     beltRankKatas?: boolean | Technique$beltRankKatasArgs<ExtArgs>
     students?: boolean | Technique$studentsArgs<ExtArgs>
@@ -22702,7 +22918,6 @@ export namespace Prisma {
     kanji?: boolean
     description?: boolean
     category?: boolean
-    rankId?: boolean
     order?: boolean
     movementsCount?: boolean
     embusen?: boolean
@@ -22711,7 +22926,6 @@ export namespace Prisma {
     schoolId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    rank?: boolean | Technique$rankArgs<ExtArgs>
     school?: boolean | Technique$schoolArgs<ExtArgs>
   }, ExtArgs["result"]["technique"]>
 
@@ -22722,7 +22936,6 @@ export namespace Prisma {
     kanji?: boolean
     description?: boolean
     category?: boolean
-    rankId?: boolean
     order?: boolean
     movementsCount?: boolean
     embusen?: boolean
@@ -22731,7 +22944,6 @@ export namespace Prisma {
     schoolId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    rank?: boolean | Technique$rankArgs<ExtArgs>
     school?: boolean | Technique$schoolArgs<ExtArgs>
   }, ExtArgs["result"]["technique"]>
 
@@ -22742,7 +22954,6 @@ export namespace Prisma {
     kanji?: boolean
     description?: boolean
     category?: boolean
-    rankId?: boolean
     order?: boolean
     movementsCount?: boolean
     embusen?: boolean
@@ -22753,27 +22964,23 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type TechniqueOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "japaneseName" | "kanji" | "description" | "category" | "rankId" | "order" | "movementsCount" | "embusen" | "difficulty" | "videoUrl" | "schoolId" | "createdAt" | "updatedAt", ExtArgs["result"]["technique"]>
+  export type TechniqueOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "japaneseName" | "kanji" | "description" | "category" | "order" | "movementsCount" | "embusen" | "difficulty" | "videoUrl" | "schoolId" | "createdAt" | "updatedAt", ExtArgs["result"]["technique"]>
   export type TechniqueInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    rank?: boolean | Technique$rankArgs<ExtArgs>
     school?: boolean | Technique$schoolArgs<ExtArgs>
     beltRankKatas?: boolean | Technique$beltRankKatasArgs<ExtArgs>
     students?: boolean | Technique$studentsArgs<ExtArgs>
     _count?: boolean | TechniqueCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TechniqueIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    rank?: boolean | Technique$rankArgs<ExtArgs>
     school?: boolean | Technique$schoolArgs<ExtArgs>
   }
   export type TechniqueIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    rank?: boolean | Technique$rankArgs<ExtArgs>
     school?: boolean | Technique$schoolArgs<ExtArgs>
   }
 
   export type $TechniquePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Technique"
     objects: {
-      rank: Prisma.$BeltRankPayload<ExtArgs> | null
       school: Prisma.$SchoolPayload<ExtArgs> | null
       beltRankKatas: Prisma.$BeltRankKataPayload<ExtArgs>[]
       students: Prisma.$StudentTechniquePayload<ExtArgs>[]
@@ -22785,7 +22992,6 @@ export namespace Prisma {
       kanji: string | null
       description: string | null
       category: $Enums.TechniqueCategory
-      rankId: string | null
       order: number
       movementsCount: number | null
       embusen: string | null
@@ -23188,7 +23394,6 @@ export namespace Prisma {
    */
   export interface Prisma__TechniqueClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    rank<T extends Technique$rankArgs<ExtArgs> = {}>(args?: Subset<T, Technique$rankArgs<ExtArgs>>): Prisma__BeltRankClient<$Result.GetResult<Prisma.$BeltRankPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     school<T extends Technique$schoolArgs<ExtArgs> = {}>(args?: Subset<T, Technique$schoolArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     beltRankKatas<T extends Technique$beltRankKatasArgs<ExtArgs> = {}>(args?: Subset<T, Technique$beltRankKatasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     students<T extends Technique$studentsArgs<ExtArgs> = {}>(args?: Subset<T, Technique$studentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentTechniquePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -23227,7 +23432,6 @@ export namespace Prisma {
     readonly kanji: FieldRef<"Technique", 'String'>
     readonly description: FieldRef<"Technique", 'String'>
     readonly category: FieldRef<"Technique", 'TechniqueCategory'>
-    readonly rankId: FieldRef<"Technique", 'String'>
     readonly order: FieldRef<"Technique", 'Int'>
     readonly movementsCount: FieldRef<"Technique", 'Int'>
     readonly embusen: FieldRef<"Technique", 'String'>
@@ -23637,25 +23841,6 @@ export namespace Prisma {
   }
 
   /**
-   * Technique.rank
-   */
-  export type Technique$rankArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BeltRank
-     */
-    select?: BeltRankSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the BeltRank
-     */
-    omit?: BeltRankOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BeltRankInclude<ExtArgs> | null
-    where?: BeltRankWhereInput
-  }
-
-  /**
    * Technique.school
    */
   export type Technique$schoolArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -23989,6 +24174,7 @@ export namespace Prisma {
     createdAt?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
     technique?: boolean | TechniqueDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | StudentTechnique$approvedByUserArgs<ExtArgs>
     evaluation?: boolean | StudentTechnique$evaluationArgs<ExtArgs>
   }, ExtArgs["result"]["studentTechnique"]>
 
@@ -24006,6 +24192,7 @@ export namespace Prisma {
     createdAt?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
     technique?: boolean | TechniqueDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | StudentTechnique$approvedByUserArgs<ExtArgs>
   }, ExtArgs["result"]["studentTechnique"]>
 
   export type StudentTechniqueSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -24022,6 +24209,7 @@ export namespace Prisma {
     createdAt?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
     technique?: boolean | TechniqueDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | StudentTechnique$approvedByUserArgs<ExtArgs>
   }, ExtArgs["result"]["studentTechnique"]>
 
   export type StudentTechniqueSelectScalar = {
@@ -24042,15 +24230,18 @@ export namespace Prisma {
   export type StudentTechniqueInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | StudentDefaultArgs<ExtArgs>
     technique?: boolean | TechniqueDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | StudentTechnique$approvedByUserArgs<ExtArgs>
     evaluation?: boolean | StudentTechnique$evaluationArgs<ExtArgs>
   }
   export type StudentTechniqueIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | StudentDefaultArgs<ExtArgs>
     technique?: boolean | TechniqueDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | StudentTechnique$approvedByUserArgs<ExtArgs>
   }
   export type StudentTechniqueIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | StudentDefaultArgs<ExtArgs>
     technique?: boolean | TechniqueDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | StudentTechnique$approvedByUserArgs<ExtArgs>
   }
 
   export type $StudentTechniquePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -24058,6 +24249,7 @@ export namespace Prisma {
     objects: {
       student: Prisma.$StudentPayload<ExtArgs>
       technique: Prisma.$TechniquePayload<ExtArgs>
+      approvedByUser: Prisma.$UserPayload<ExtArgs> | null
       evaluation: Prisma.$TechniqueEvaluationPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -24468,6 +24660,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     student<T extends StudentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudentDefaultArgs<ExtArgs>>): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     technique<T extends TechniqueDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TechniqueDefaultArgs<ExtArgs>>): Prisma__TechniqueClient<$Result.GetResult<Prisma.$TechniquePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    approvedByUser<T extends StudentTechnique$approvedByUserArgs<ExtArgs> = {}>(args?: Subset<T, StudentTechnique$approvedByUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     evaluation<T extends StudentTechnique$evaluationArgs<ExtArgs> = {}>(args?: Subset<T, StudentTechnique$evaluationArgs<ExtArgs>>): Prisma__TechniqueEvaluationClient<$Result.GetResult<Prisma.$TechniqueEvaluationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -24907,6 +25100,25 @@ export namespace Prisma {
      * Limit how many StudentTechniques to delete.
      */
     limit?: number
+  }
+
+  /**
+   * StudentTechnique.approvedByUser
+   */
+  export type StudentTechnique$approvedByUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -26105,13 +26317,13 @@ export namespace Prisma {
 
   export type PlanAvgAggregateOutputType = {
     monthlyHours: number | null
-    price: number | null
+    price: Decimal | null
     sortOrder: number | null
   }
 
   export type PlanSumAggregateOutputType = {
     monthlyHours: number | null
-    price: number | null
+    price: Decimal | null
     sortOrder: number | null
   }
 
@@ -26120,7 +26332,8 @@ export namespace Prisma {
     name: string | null
     description: string | null
     monthlyHours: number | null
-    price: number | null
+    price: Decimal | null
+    currency: string | null
     isUnlimited: boolean | null
     active: boolean | null
     sortOrder: number | null
@@ -26134,7 +26347,8 @@ export namespace Prisma {
     name: string | null
     description: string | null
     monthlyHours: number | null
-    price: number | null
+    price: Decimal | null
+    currency: string | null
     isUnlimited: boolean | null
     active: boolean | null
     sortOrder: number | null
@@ -26149,6 +26363,7 @@ export namespace Prisma {
     description: number
     monthlyHours: number
     price: number
+    currency: number
     isUnlimited: number
     active: number
     sortOrder: number
@@ -26177,6 +26392,7 @@ export namespace Prisma {
     description?: true
     monthlyHours?: true
     price?: true
+    currency?: true
     isUnlimited?: true
     active?: true
     sortOrder?: true
@@ -26191,6 +26407,7 @@ export namespace Prisma {
     description?: true
     monthlyHours?: true
     price?: true
+    currency?: true
     isUnlimited?: true
     active?: true
     sortOrder?: true
@@ -26205,6 +26422,7 @@ export namespace Prisma {
     description?: true
     monthlyHours?: true
     price?: true
+    currency?: true
     isUnlimited?: true
     active?: true
     sortOrder?: true
@@ -26305,7 +26523,8 @@ export namespace Prisma {
     name: string
     description: string | null
     monthlyHours: number
-    price: number | null
+    price: Decimal | null
+    currency: string
     isUnlimited: boolean
     active: boolean
     sortOrder: number
@@ -26339,6 +26558,7 @@ export namespace Prisma {
     description?: boolean
     monthlyHours?: boolean
     price?: boolean
+    currency?: boolean
     isUnlimited?: boolean
     active?: boolean
     sortOrder?: boolean
@@ -26356,6 +26576,7 @@ export namespace Prisma {
     description?: boolean
     monthlyHours?: boolean
     price?: boolean
+    currency?: boolean
     isUnlimited?: boolean
     active?: boolean
     sortOrder?: boolean
@@ -26371,6 +26592,7 @@ export namespace Prisma {
     description?: boolean
     monthlyHours?: boolean
     price?: boolean
+    currency?: boolean
     isUnlimited?: boolean
     active?: boolean
     sortOrder?: boolean
@@ -26386,6 +26608,7 @@ export namespace Prisma {
     description?: boolean
     monthlyHours?: boolean
     price?: boolean
+    currency?: boolean
     isUnlimited?: boolean
     active?: boolean
     sortOrder?: boolean
@@ -26394,7 +26617,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type PlanOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "monthlyHours" | "price" | "isUnlimited" | "active" | "sortOrder" | "schoolId" | "createdAt" | "updatedAt", ExtArgs["result"]["plan"]>
+  export type PlanOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "monthlyHours" | "price" | "currency" | "isUnlimited" | "active" | "sortOrder" | "schoolId" | "createdAt" | "updatedAt", ExtArgs["result"]["plan"]>
   export type PlanInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     school?: boolean | Plan$schoolArgs<ExtArgs>
     students?: boolean | Plan$studentsArgs<ExtArgs>
@@ -26418,7 +26641,8 @@ export namespace Prisma {
       name: string
       description: string | null
       monthlyHours: number
-      price: number | null
+      price: Prisma.Decimal | null
+      currency: string
       isUnlimited: boolean
       active: boolean
       sortOrder: number
@@ -26854,7 +27078,8 @@ export namespace Prisma {
     readonly name: FieldRef<"Plan", 'String'>
     readonly description: FieldRef<"Plan", 'String'>
     readonly monthlyHours: FieldRef<"Plan", 'Float'>
-    readonly price: FieldRef<"Plan", 'Float'>
+    readonly price: FieldRef<"Plan", 'Decimal'>
+    readonly currency: FieldRef<"Plan", 'String'>
     readonly isUnlimited: FieldRef<"Plan", 'Boolean'>
     readonly active: FieldRef<"Plan", 'Boolean'>
     readonly sortOrder: FieldRef<"Plan", 'Int'>
@@ -27352,8 +27577,8 @@ export namespace Prisma {
     branchId: string | null
     instructorId: string | null
     dayOfWeek: number | null
-    startTime: string | null
-    endTime: string | null
+    startTime: Date | null
+    endTime: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -27367,8 +27592,8 @@ export namespace Prisma {
     branchId: string | null
     instructorId: string | null
     dayOfWeek: number | null
-    startTime: string | null
-    endTime: string | null
+    startTime: Date | null
+    endTime: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -27539,8 +27764,8 @@ export namespace Prisma {
     branchId: string
     instructorId: string | null
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date
+    endTime: Date
     createdAt: Date
     updatedAt: Date
     _count: ClassCountAggregateOutputType | null
@@ -27670,8 +27895,8 @@ export namespace Prisma {
       branchId: string
       instructorId: string | null
       dayOfWeek: number
-      startTime: string
-      endTime: string
+      startTime: Date
+      endTime: Date
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["class"]>
@@ -28110,8 +28335,8 @@ export namespace Prisma {
     readonly branchId: FieldRef<"Class", 'String'>
     readonly instructorId: FieldRef<"Class", 'String'>
     readonly dayOfWeek: FieldRef<"Class", 'Int'>
-    readonly startTime: FieldRef<"Class", 'String'>
-    readonly endTime: FieldRef<"Class", 'String'>
+    readonly startTime: FieldRef<"Class", 'DateTime'>
+    readonly endTime: FieldRef<"Class", 'DateTime'>
     readonly createdAt: FieldRef<"Class", 'DateTime'>
     readonly updatedAt: FieldRef<"Class", 'DateTime'>
   }
@@ -28638,7 +28863,7 @@ export namespace Prisma {
     id: string | null
     classId: string | null
     studentId: string | null
-    status: string | null
+    status: $Enums.ClassEnrollmentStatus | null
     enrolledAt: Date | null
     endedAt: Date | null
     notes: string | null
@@ -28650,7 +28875,7 @@ export namespace Prisma {
     id: string | null
     classId: string | null
     studentId: string | null
-    status: string | null
+    status: $Enums.ClassEnrollmentStatus | null
     enrolledAt: Date | null
     endedAt: Date | null
     notes: string | null
@@ -28785,7 +29010,7 @@ export namespace Prisma {
     id: string
     classId: string
     studentId: string
-    status: string
+    status: $Enums.ClassEnrollmentStatus
     enrolledAt: Date
     endedAt: Date | null
     notes: string | null
@@ -28888,7 +29113,7 @@ export namespace Prisma {
       id: string
       classId: string
       studentId: string
-      status: string
+      status: $Enums.ClassEnrollmentStatus
       enrolledAt: Date
       endedAt: Date | null
       notes: string | null
@@ -29322,7 +29547,7 @@ export namespace Prisma {
     readonly id: FieldRef<"ClassEnrollment", 'String'>
     readonly classId: FieldRef<"ClassEnrollment", 'String'>
     readonly studentId: FieldRef<"ClassEnrollment", 'String'>
-    readonly status: FieldRef<"ClassEnrollment", 'String'>
+    readonly status: FieldRef<"ClassEnrollment", 'ClassEnrollmentStatus'>
     readonly enrolledAt: FieldRef<"ClassEnrollment", 'DateTime'>
     readonly endedAt: FieldRef<"ClassEnrollment", 'DateTime'>
     readonly notes: FieldRef<"ClassEnrollment", 'String'>
@@ -33353,7 +33578,7 @@ export namespace Prisma {
     evidenceKey: string | null
     approvedBy: string | null
     comment: string | null
-    status: string | null
+    status: $Enums.ApprovalStatus | null
     achievedAt: Date | null
     createdAt: Date | null
   }
@@ -33365,7 +33590,7 @@ export namespace Prisma {
     evidenceKey: string | null
     approvedBy: string | null
     comment: string | null
-    status: string | null
+    status: $Enums.ApprovalStatus | null
     achievedAt: Date | null
     createdAt: Date | null
   }
@@ -33500,7 +33725,7 @@ export namespace Prisma {
     evidenceKey: string | null
     approvedBy: string | null
     comment: string | null
-    status: string
+    status: $Enums.ApprovalStatus
     achievedAt: Date
     createdAt: Date
     _count: StudentAchievementCountAggregateOutputType | null
@@ -33534,6 +33759,7 @@ export namespace Prisma {
     createdAt?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
     type?: boolean | AchievementTypeDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | StudentAchievement$approvedByUserArgs<ExtArgs>
   }, ExtArgs["result"]["studentAchievement"]>
 
   export type StudentAchievementSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -33548,6 +33774,7 @@ export namespace Prisma {
     createdAt?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
     type?: boolean | AchievementTypeDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | StudentAchievement$approvedByUserArgs<ExtArgs>
   }, ExtArgs["result"]["studentAchievement"]>
 
   export type StudentAchievementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -33562,6 +33789,7 @@ export namespace Prisma {
     createdAt?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
     type?: boolean | AchievementTypeDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | StudentAchievement$approvedByUserArgs<ExtArgs>
   }, ExtArgs["result"]["studentAchievement"]>
 
   export type StudentAchievementSelectScalar = {
@@ -33580,14 +33808,17 @@ export namespace Prisma {
   export type StudentAchievementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | StudentDefaultArgs<ExtArgs>
     type?: boolean | AchievementTypeDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | StudentAchievement$approvedByUserArgs<ExtArgs>
   }
   export type StudentAchievementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | StudentDefaultArgs<ExtArgs>
     type?: boolean | AchievementTypeDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | StudentAchievement$approvedByUserArgs<ExtArgs>
   }
   export type StudentAchievementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | StudentDefaultArgs<ExtArgs>
     type?: boolean | AchievementTypeDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | StudentAchievement$approvedByUserArgs<ExtArgs>
   }
 
   export type $StudentAchievementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -33595,6 +33826,7 @@ export namespace Prisma {
     objects: {
       student: Prisma.$StudentPayload<ExtArgs>
       type: Prisma.$AchievementTypePayload<ExtArgs>
+      approvedByUser: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -33603,7 +33835,7 @@ export namespace Prisma {
       evidenceKey: string | null
       approvedBy: string | null
       comment: string | null
-      status: string
+      status: $Enums.ApprovalStatus
       achievedAt: Date
       createdAt: Date
     }, ExtArgs["result"]["studentAchievement"]>
@@ -34002,6 +34234,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     student<T extends StudentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudentDefaultArgs<ExtArgs>>): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     type<T extends AchievementTypeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AchievementTypeDefaultArgs<ExtArgs>>): Prisma__AchievementTypeClient<$Result.GetResult<Prisma.$AchievementTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    approvedByUser<T extends StudentAchievement$approvedByUserArgs<ExtArgs> = {}>(args?: Subset<T, StudentAchievement$approvedByUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -34037,7 +34270,7 @@ export namespace Prisma {
     readonly evidenceKey: FieldRef<"StudentAchievement", 'String'>
     readonly approvedBy: FieldRef<"StudentAchievement", 'String'>
     readonly comment: FieldRef<"StudentAchievement", 'String'>
-    readonly status: FieldRef<"StudentAchievement", 'String'>
+    readonly status: FieldRef<"StudentAchievement", 'ApprovalStatus'>
     readonly achievedAt: FieldRef<"StudentAchievement", 'DateTime'>
     readonly createdAt: FieldRef<"StudentAchievement", 'DateTime'>
   }
@@ -34441,6 +34674,25 @@ export namespace Prisma {
   }
 
   /**
+   * StudentAchievement.approvedByUser
+   */
+  export type StudentAchievement$approvedByUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * StudentAchievement without action
    */
   export type StudentAchievementDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -34476,7 +34728,7 @@ export namespace Prisma {
     evidenceKey: string | null
     approvedBy: string | null
     comment: string | null
-    status: string | null
+    status: $Enums.ApprovalStatus | null
     createdAt: Date | null
   }
 
@@ -34487,7 +34739,7 @@ export namespace Prisma {
     evidenceKey: string | null
     approvedBy: string | null
     comment: string | null
-    status: string | null
+    status: $Enums.ApprovalStatus | null
     createdAt: Date | null
   }
 
@@ -34617,7 +34869,7 @@ export namespace Prisma {
     evidenceKey: string | null
     approvedBy: string | null
     comment: string | null
-    status: string
+    status: $Enums.ApprovalStatus
     createdAt: Date
     _count: FitnessReportCountAggregateOutputType | null
     _min: FitnessReportMinAggregateOutputType | null
@@ -34648,6 +34900,7 @@ export namespace Prisma {
     status?: boolean
     createdAt?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | FitnessReport$approvedByUserArgs<ExtArgs>
   }, ExtArgs["result"]["fitnessReport"]>
 
   export type FitnessReportSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -34660,6 +34913,7 @@ export namespace Prisma {
     status?: boolean
     createdAt?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | FitnessReport$approvedByUserArgs<ExtArgs>
   }, ExtArgs["result"]["fitnessReport"]>
 
   export type FitnessReportSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -34672,6 +34926,7 @@ export namespace Prisma {
     status?: boolean
     createdAt?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | FitnessReport$approvedByUserArgs<ExtArgs>
   }, ExtArgs["result"]["fitnessReport"]>
 
   export type FitnessReportSelectScalar = {
@@ -34688,18 +34943,22 @@ export namespace Prisma {
   export type FitnessReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "studentId" | "report" | "evidenceKey" | "approvedBy" | "comment" | "status" | "createdAt", ExtArgs["result"]["fitnessReport"]>
   export type FitnessReportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | StudentDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | FitnessReport$approvedByUserArgs<ExtArgs>
   }
   export type FitnessReportIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | StudentDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | FitnessReport$approvedByUserArgs<ExtArgs>
   }
   export type FitnessReportIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | StudentDefaultArgs<ExtArgs>
+    approvedByUser?: boolean | FitnessReport$approvedByUserArgs<ExtArgs>
   }
 
   export type $FitnessReportPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "FitnessReport"
     objects: {
       student: Prisma.$StudentPayload<ExtArgs>
+      approvedByUser: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -34708,7 +34967,7 @@ export namespace Prisma {
       evidenceKey: string | null
       approvedBy: string | null
       comment: string | null
-      status: string
+      status: $Enums.ApprovalStatus
       createdAt: Date
     }, ExtArgs["result"]["fitnessReport"]>
     composites: {}
@@ -35105,6 +35364,7 @@ export namespace Prisma {
   export interface Prisma__FitnessReportClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     student<T extends StudentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudentDefaultArgs<ExtArgs>>): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    approvedByUser<T extends FitnessReport$approvedByUserArgs<ExtArgs> = {}>(args?: Subset<T, FitnessReport$approvedByUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -35140,7 +35400,7 @@ export namespace Prisma {
     readonly evidenceKey: FieldRef<"FitnessReport", 'String'>
     readonly approvedBy: FieldRef<"FitnessReport", 'String'>
     readonly comment: FieldRef<"FitnessReport", 'String'>
-    readonly status: FieldRef<"FitnessReport", 'String'>
+    readonly status: FieldRef<"FitnessReport", 'ApprovalStatus'>
     readonly createdAt: FieldRef<"FitnessReport", 'DateTime'>
   }
     
@@ -35543,6 +35803,25 @@ export namespace Prisma {
   }
 
   /**
+   * FitnessReport.approvedByUser
+   */
+  export type FitnessReport$approvedByUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * FitnessReport without action
    */
   export type FitnessReportDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -35603,7 +35882,6 @@ export namespace Prisma {
     passwordHash: 'passwordHash',
     name: 'name',
     phone: 'phone',
-    role: 'role',
     roles: 'roles',
     schoolId: 'schoolId',
     branchId: 'branchId',
@@ -35682,6 +35960,7 @@ export namespace Prisma {
     memberNumber: 'memberNumber',
     status: 'status',
     currentRank: 'currentRank',
+    currentRankId: 'currentRankId',
     photoKey: 'photoKey',
     registrationData: 'registrationData',
     planId: 'planId',
@@ -35817,7 +36096,6 @@ export namespace Prisma {
     kanji: 'kanji',
     description: 'description',
     category: 'category',
-    rankId: 'rankId',
     order: 'order',
     movementsCount: 'movementsCount',
     embusen: 'embusen',
@@ -35868,6 +36146,7 @@ export namespace Prisma {
     description: 'description',
     monthlyHours: 'monthlyHours',
     price: 'price',
+    currency: 'currency',
     isUnlimited: 'isUnlimited',
     active: 'active',
     sortOrder: 'sortOrder',
@@ -36068,6 +36347,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Role[]'
+   */
+  export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Role'
    */
   export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
@@ -36075,9 +36361,30 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Role[]'
+   * Reference to a field of type 'Gender'
    */
-  export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
+  export type EnumGenderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Gender'>
+    
+
+
+  /**
+   * Reference to a field of type 'Gender[]'
+   */
+  export type ListEnumGenderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Gender[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'StudentStatus'
+   */
+  export type EnumStudentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StudentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'StudentStatus[]'
+   */
+  export type ListEnumStudentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StudentStatus[]'>
     
 
 
@@ -36127,6 +36434,20 @@ export namespace Prisma {
    * Reference to a field of type 'EnrollmentOrigin[]'
    */
   export type ListEnumEnrollmentOriginFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EnrollmentOrigin[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'EnrollmentStatus'
+   */
+  export type EnumEnrollmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EnrollmentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'EnrollmentStatus[]'
+   */
+  export type ListEnumEnrollmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EnrollmentStatus[]'>
     
 
 
@@ -36215,6 +36536,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Decimal'
+   */
+  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal[]'
+   */
+  export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+  /**
    * Reference to a field of type 'ClassAudience'
    */
   export type EnumClassAudienceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClassAudience'>
@@ -36229,6 +36564,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ClassEnrollmentStatus'
+   */
+  export type EnumClassEnrollmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClassEnrollmentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ClassEnrollmentStatus[]'
+   */
+  export type ListEnumClassEnrollmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClassEnrollmentStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'AttendanceStatus'
    */
   export type EnumAttendanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttendanceStatus'>
@@ -36239,6 +36588,20 @@ export namespace Prisma {
    * Reference to a field of type 'AttendanceStatus[]'
    */
   export type ListEnumAttendanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttendanceStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalStatus'
+   */
+  export type EnumApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApprovalStatus[]'
+   */
+  export type ListEnumApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalStatus[]'>
     
   /**
    * Deep Input Types
@@ -36393,7 +36756,6 @@ export namespace Prisma {
     passwordHash?: StringNullableFilter<"User"> | string | null
     name?: StringNullableFilter<"User"> | string | null
     phone?: StringNullableFilter<"User"> | string | null
-    role?: EnumRoleFilter<"User"> | $Enums.Role
     roles?: EnumRoleNullableListFilter<"User">
     schoolId?: StringNullableFilter<"User"> | string | null
     branchId?: StringNullableFilter<"User"> | string | null
@@ -36407,6 +36769,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentListRelationFilter
     rankPromotions?: StudentRankHistoryListRelationFilter
     techniqueEvaluations?: TechniqueEvaluationListRelationFilter
+    techniquesApproved?: StudentTechniqueListRelationFilter
+    achievementsApproved?: StudentAchievementListRelationFilter
+    fitnessReportsApproved?: FitnessReportListRelationFilter
     attendanceConfirmations?: AttendanceListRelationFilter
     emailVerificationTokens?: EmailVerificationTokenListRelationFilter
     passwordResetTokens?: PasswordResetTokenListRelationFilter
@@ -36421,7 +36786,6 @@ export namespace Prisma {
     passwordHash?: SortOrderInput | SortOrder
     name?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
-    role?: SortOrder
     roles?: SortOrder
     schoolId?: SortOrderInput | SortOrder
     branchId?: SortOrderInput | SortOrder
@@ -36435,6 +36799,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentOrderByRelationAggregateInput
     rankPromotions?: StudentRankHistoryOrderByRelationAggregateInput
     techniqueEvaluations?: TechniqueEvaluationOrderByRelationAggregateInput
+    techniquesApproved?: StudentTechniqueOrderByRelationAggregateInput
+    achievementsApproved?: StudentAchievementOrderByRelationAggregateInput
+    fitnessReportsApproved?: FitnessReportOrderByRelationAggregateInput
     attendanceConfirmations?: AttendanceOrderByRelationAggregateInput
     emailVerificationTokens?: EmailVerificationTokenOrderByRelationAggregateInput
     passwordResetTokens?: PasswordResetTokenOrderByRelationAggregateInput
@@ -36452,7 +36819,6 @@ export namespace Prisma {
     passwordHash?: StringNullableFilter<"User"> | string | null
     name?: StringNullableFilter<"User"> | string | null
     phone?: StringNullableFilter<"User"> | string | null
-    role?: EnumRoleFilter<"User"> | $Enums.Role
     roles?: EnumRoleNullableListFilter<"User">
     schoolId?: StringNullableFilter<"User"> | string | null
     branchId?: StringNullableFilter<"User"> | string | null
@@ -36466,6 +36832,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentListRelationFilter
     rankPromotions?: StudentRankHistoryListRelationFilter
     techniqueEvaluations?: TechniqueEvaluationListRelationFilter
+    techniquesApproved?: StudentTechniqueListRelationFilter
+    achievementsApproved?: StudentAchievementListRelationFilter
+    fitnessReportsApproved?: FitnessReportListRelationFilter
     attendanceConfirmations?: AttendanceListRelationFilter
     emailVerificationTokens?: EmailVerificationTokenListRelationFilter
     passwordResetTokens?: PasswordResetTokenListRelationFilter
@@ -36480,7 +36849,6 @@ export namespace Prisma {
     passwordHash?: SortOrderInput | SortOrder
     name?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
-    role?: SortOrder
     roles?: SortOrder
     schoolId?: SortOrderInput | SortOrder
     branchId?: SortOrderInput | SortOrder
@@ -36501,7 +36869,6 @@ export namespace Prisma {
     passwordHash?: StringNullableWithAggregatesFilter<"User"> | string | null
     name?: StringNullableWithAggregatesFilter<"User"> | string | null
     phone?: StringNullableWithAggregatesFilter<"User"> | string | null
-    role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     roles?: EnumRoleNullableListFilter<"User">
     schoolId?: StringNullableWithAggregatesFilter<"User"> | string | null
     branchId?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -36774,15 +37141,16 @@ export namespace Prisma {
     firstName?: StringFilter<"Student"> | string
     lastName?: StringFilter<"Student"> | string
     dateOfBirth?: DateTimeFilter<"Student"> | Date | string
-    gender?: StringNullableFilter<"Student"> | string | null
+    gender?: EnumGenderNullableFilter<"Student"> | $Enums.Gender | null
     email?: StringNullableFilter<"Student"> | string | null
     contactPhone?: StringNullableFilter<"Student"> | string | null
     medicalInfo?: StringNullableFilter<"Student"> | string | null
     emergencyContact?: StringNullableFilter<"Student"> | string | null
     enrollmentDate?: DateTimeFilter<"Student"> | Date | string
     memberNumber?: StringNullableFilter<"Student"> | string | null
-    status?: StringFilter<"Student"> | string
+    status?: EnumStudentStatusFilter<"Student"> | $Enums.StudentStatus
     currentRank?: StringNullableFilter<"Student"> | string | null
+    currentRankId?: StringNullableFilter<"Student"> | string | null
     photoKey?: StringNullableFilter<"Student"> | string | null
     registrationData?: JsonNullableFilter<"Student">
     planId?: StringNullableFilter<"Student"> | string | null
@@ -36792,6 +37160,7 @@ export namespace Prisma {
     isCompetitor?: BoolFilter<"Student"> | boolean
     createdAt?: DateTimeFilter<"Student"> | Date | string
     updatedAt?: DateTimeFilter<"Student"> | Date | string
+    currentRankRef?: XOR<BeltRankNullableScalarRelationFilter, BeltRankWhereInput> | null
     plan?: XOR<PlanNullableScalarRelationFilter, PlanWhereInput> | null
     school?: XOR<SchoolScalarRelationFilter, SchoolWhereInput>
     branch?: XOR<BranchScalarRelationFilter, BranchWhereInput>
@@ -36828,6 +37197,7 @@ export namespace Prisma {
     memberNumber?: SortOrderInput | SortOrder
     status?: SortOrder
     currentRank?: SortOrderInput | SortOrder
+    currentRankId?: SortOrderInput | SortOrder
     photoKey?: SortOrderInput | SortOrder
     registrationData?: SortOrderInput | SortOrder
     planId?: SortOrderInput | SortOrder
@@ -36837,6 +37207,7 @@ export namespace Prisma {
     isCompetitor?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    currentRankRef?: BeltRankOrderByWithRelationInput
     plan?: PlanOrderByWithRelationInput
     school?: SchoolOrderByWithRelationInput
     branch?: BranchOrderByWithRelationInput
@@ -36868,14 +37239,15 @@ export namespace Prisma {
     firstName?: StringFilter<"Student"> | string
     lastName?: StringFilter<"Student"> | string
     dateOfBirth?: DateTimeFilter<"Student"> | Date | string
-    gender?: StringNullableFilter<"Student"> | string | null
+    gender?: EnumGenderNullableFilter<"Student"> | $Enums.Gender | null
     email?: StringNullableFilter<"Student"> | string | null
     contactPhone?: StringNullableFilter<"Student"> | string | null
     medicalInfo?: StringNullableFilter<"Student"> | string | null
     emergencyContact?: StringNullableFilter<"Student"> | string | null
     enrollmentDate?: DateTimeFilter<"Student"> | Date | string
-    status?: StringFilter<"Student"> | string
+    status?: EnumStudentStatusFilter<"Student"> | $Enums.StudentStatus
     currentRank?: StringNullableFilter<"Student"> | string | null
+    currentRankId?: StringNullableFilter<"Student"> | string | null
     photoKey?: StringNullableFilter<"Student"> | string | null
     registrationData?: JsonNullableFilter<"Student">
     planId?: StringNullableFilter<"Student"> | string | null
@@ -36885,6 +37257,7 @@ export namespace Prisma {
     isCompetitor?: BoolFilter<"Student"> | boolean
     createdAt?: DateTimeFilter<"Student"> | Date | string
     updatedAt?: DateTimeFilter<"Student"> | Date | string
+    currentRankRef?: XOR<BeltRankNullableScalarRelationFilter, BeltRankWhereInput> | null
     plan?: XOR<PlanNullableScalarRelationFilter, PlanWhereInput> | null
     school?: XOR<SchoolScalarRelationFilter, SchoolWhereInput>
     branch?: XOR<BranchScalarRelationFilter, BranchWhereInput>
@@ -36921,6 +37294,7 @@ export namespace Prisma {
     memberNumber?: SortOrderInput | SortOrder
     status?: SortOrder
     currentRank?: SortOrderInput | SortOrder
+    currentRankId?: SortOrderInput | SortOrder
     photoKey?: SortOrderInput | SortOrder
     registrationData?: SortOrderInput | SortOrder
     planId?: SortOrderInput | SortOrder
@@ -36947,15 +37321,16 @@ export namespace Prisma {
     firstName?: StringWithAggregatesFilter<"Student"> | string
     lastName?: StringWithAggregatesFilter<"Student"> | string
     dateOfBirth?: DateTimeWithAggregatesFilter<"Student"> | Date | string
-    gender?: StringNullableWithAggregatesFilter<"Student"> | string | null
+    gender?: EnumGenderNullableWithAggregatesFilter<"Student"> | $Enums.Gender | null
     email?: StringNullableWithAggregatesFilter<"Student"> | string | null
     contactPhone?: StringNullableWithAggregatesFilter<"Student"> | string | null
     medicalInfo?: StringNullableWithAggregatesFilter<"Student"> | string | null
     emergencyContact?: StringNullableWithAggregatesFilter<"Student"> | string | null
     enrollmentDate?: DateTimeWithAggregatesFilter<"Student"> | Date | string
     memberNumber?: StringNullableWithAggregatesFilter<"Student"> | string | null
-    status?: StringWithAggregatesFilter<"Student"> | string
+    status?: EnumStudentStatusWithAggregatesFilter<"Student"> | $Enums.StudentStatus
     currentRank?: StringNullableWithAggregatesFilter<"Student"> | string | null
+    currentRankId?: StringNullableWithAggregatesFilter<"Student"> | string | null
     photoKey?: StringNullableWithAggregatesFilter<"Student"> | string | null
     registrationData?: JsonNullableWithAggregatesFilter<"Student">
     planId?: StringNullableWithAggregatesFilter<"Student"> | string | null
@@ -37036,7 +37411,7 @@ export namespace Prisma {
     studentId?: StringNullableFilter<"Enrollment"> | string | null
     contactEmail?: StringFilter<"Enrollment"> | string
     contactPhone?: StringNullableFilter<"Enrollment"> | string | null
-    status?: StringFilter<"Enrollment"> | string
+    status?: EnumEnrollmentStatusFilter<"Enrollment"> | $Enums.EnrollmentStatus
     notes?: StringNullableFilter<"Enrollment"> | string | null
     registrationData?: JsonNullableFilter<"Enrollment">
     createdAt?: DateTimeFilter<"Enrollment"> | Date | string
@@ -37088,7 +37463,7 @@ export namespace Prisma {
     studentId?: StringNullableFilter<"Enrollment"> | string | null
     contactEmail?: StringFilter<"Enrollment"> | string
     contactPhone?: StringNullableFilter<"Enrollment"> | string | null
-    status?: StringFilter<"Enrollment"> | string
+    status?: EnumEnrollmentStatusFilter<"Enrollment"> | $Enums.EnrollmentStatus
     notes?: StringNullableFilter<"Enrollment"> | string | null
     registrationData?: JsonNullableFilter<"Enrollment">
     createdAt?: DateTimeFilter<"Enrollment"> | Date | string
@@ -37137,7 +37512,7 @@ export namespace Prisma {
     studentId?: StringNullableWithAggregatesFilter<"Enrollment"> | string | null
     contactEmail?: StringWithAggregatesFilter<"Enrollment"> | string
     contactPhone?: StringNullableWithAggregatesFilter<"Enrollment"> | string | null
-    status?: StringWithAggregatesFilter<"Enrollment"> | string
+    status?: EnumEnrollmentStatusWithAggregatesFilter<"Enrollment"> | $Enums.EnrollmentStatus
     notes?: StringNullableWithAggregatesFilter<"Enrollment"> | string | null
     registrationData?: JsonNullableWithAggregatesFilter<"Enrollment">
     createdAt?: DateTimeWithAggregatesFilter<"Enrollment"> | Date | string
@@ -37225,7 +37600,7 @@ export namespace Prisma {
     OR?: StudentDocumentWhereInput[]
     NOT?: StudentDocumentWhereInput | StudentDocumentWhereInput[]
     id?: StringFilter<"StudentDocument"> | string
-    enrollmentId?: StringFilter<"StudentDocument"> | string
+    enrollmentId?: StringNullableFilter<"StudentDocument"> | string | null
     applicantId?: StringNullableFilter<"StudentDocument"> | string | null
     studentId?: StringNullableFilter<"StudentDocument"> | string | null
     type?: EnumStudentDocumentTypeFilter<"StudentDocument"> | $Enums.StudentDocumentType
@@ -37238,14 +37613,14 @@ export namespace Prisma {
     reviewedAt?: DateTimeNullableFilter<"StudentDocument"> | Date | string | null
     uploadedAt?: DateTimeFilter<"StudentDocument"> | Date | string
     updatedAt?: DateTimeFilter<"StudentDocument"> | Date | string
-    enrollment?: XOR<EnrollmentScalarRelationFilter, EnrollmentWhereInput>
+    enrollment?: XOR<EnrollmentNullableScalarRelationFilter, EnrollmentWhereInput> | null
     applicant?: XOR<EnrollmentApplicantNullableScalarRelationFilter, EnrollmentApplicantWhereInput> | null
     student?: XOR<StudentNullableScalarRelationFilter, StudentWhereInput> | null
   }
 
   export type StudentDocumentOrderByWithRelationInput = {
     id?: SortOrder
-    enrollmentId?: SortOrder
+    enrollmentId?: SortOrderInput | SortOrder
     applicantId?: SortOrderInput | SortOrder
     studentId?: SortOrderInput | SortOrder
     type?: SortOrder
@@ -37269,7 +37644,7 @@ export namespace Prisma {
     AND?: StudentDocumentWhereInput | StudentDocumentWhereInput[]
     OR?: StudentDocumentWhereInput[]
     NOT?: StudentDocumentWhereInput | StudentDocumentWhereInput[]
-    enrollmentId?: StringFilter<"StudentDocument"> | string
+    enrollmentId?: StringNullableFilter<"StudentDocument"> | string | null
     applicantId?: StringNullableFilter<"StudentDocument"> | string | null
     studentId?: StringNullableFilter<"StudentDocument"> | string | null
     type?: EnumStudentDocumentTypeFilter<"StudentDocument"> | $Enums.StudentDocumentType
@@ -37281,14 +37656,14 @@ export namespace Prisma {
     reviewedAt?: DateTimeNullableFilter<"StudentDocument"> | Date | string | null
     uploadedAt?: DateTimeFilter<"StudentDocument"> | Date | string
     updatedAt?: DateTimeFilter<"StudentDocument"> | Date | string
-    enrollment?: XOR<EnrollmentScalarRelationFilter, EnrollmentWhereInput>
+    enrollment?: XOR<EnrollmentNullableScalarRelationFilter, EnrollmentWhereInput> | null
     applicant?: XOR<EnrollmentApplicantNullableScalarRelationFilter, EnrollmentApplicantWhereInput> | null
     student?: XOR<StudentNullableScalarRelationFilter, StudentWhereInput> | null
   }, "id" | "storageKey">
 
   export type StudentDocumentOrderByWithAggregationInput = {
     id?: SortOrder
-    enrollmentId?: SortOrder
+    enrollmentId?: SortOrderInput | SortOrder
     applicantId?: SortOrderInput | SortOrder
     studentId?: SortOrderInput | SortOrder
     type?: SortOrder
@@ -37313,7 +37688,7 @@ export namespace Prisma {
     OR?: StudentDocumentScalarWhereWithAggregatesInput[]
     NOT?: StudentDocumentScalarWhereWithAggregatesInput | StudentDocumentScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"StudentDocument"> | string
-    enrollmentId?: StringWithAggregatesFilter<"StudentDocument"> | string
+    enrollmentId?: StringNullableWithAggregatesFilter<"StudentDocument"> | string | null
     applicantId?: StringNullableWithAggregatesFilter<"StudentDocument"> | string | null
     studentId?: StringNullableWithAggregatesFilter<"StudentDocument"> | string | null
     type?: EnumStudentDocumentTypeWithAggregatesFilter<"StudentDocument"> | $Enums.StudentDocumentType
@@ -37352,8 +37727,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"BeltRank"> | Date | string
     school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
     katas?: BeltRankKataListRelationFilter
-    techniques?: TechniqueListRelationFilter
     promotions?: StudentRankHistoryListRelationFilter
+    currentRankStudents?: StudentListRelationFilter
   }
 
   export type BeltRankOrderByWithRelationInput = {
@@ -37377,13 +37752,12 @@ export namespace Prisma {
     updatedAt?: SortOrder
     school?: SchoolOrderByWithRelationInput
     katas?: BeltRankKataOrderByRelationAggregateInput
-    techniques?: TechniqueOrderByRelationAggregateInput
     promotions?: StudentRankHistoryOrderByRelationAggregateInput
+    currentRankStudents?: StudentOrderByRelationAggregateInput
   }
 
   export type BeltRankWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    program_order?: BeltRankProgramOrderCompoundUniqueInput
     AND?: BeltRankWhereInput | BeltRankWhereInput[]
     OR?: BeltRankWhereInput[]
     NOT?: BeltRankWhereInput | BeltRankWhereInput[]
@@ -37406,9 +37780,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"BeltRank"> | Date | string
     school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
     katas?: BeltRankKataListRelationFilter
-    techniques?: TechniqueListRelationFilter
     promotions?: StudentRankHistoryListRelationFilter
-  }, "id" | "program_order">
+    currentRankStudents?: StudentListRelationFilter
+  }, "id">
 
   export type BeltRankOrderByWithAggregationInput = {
     id?: SortOrder
@@ -37602,7 +37976,6 @@ export namespace Prisma {
     kanji?: StringNullableFilter<"Technique"> | string | null
     description?: StringNullableFilter<"Technique"> | string | null
     category?: EnumTechniqueCategoryFilter<"Technique"> | $Enums.TechniqueCategory
-    rankId?: StringNullableFilter<"Technique"> | string | null
     order?: IntFilter<"Technique"> | number
     movementsCount?: IntNullableFilter<"Technique"> | number | null
     embusen?: StringNullableFilter<"Technique"> | string | null
@@ -37611,7 +37984,6 @@ export namespace Prisma {
     schoolId?: StringNullableFilter<"Technique"> | string | null
     createdAt?: DateTimeFilter<"Technique"> | Date | string
     updatedAt?: DateTimeFilter<"Technique"> | Date | string
-    rank?: XOR<BeltRankNullableScalarRelationFilter, BeltRankWhereInput> | null
     school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
     beltRankKatas?: BeltRankKataListRelationFilter
     students?: StudentTechniqueListRelationFilter
@@ -37624,7 +37996,6 @@ export namespace Prisma {
     kanji?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     category?: SortOrder
-    rankId?: SortOrderInput | SortOrder
     order?: SortOrder
     movementsCount?: SortOrderInput | SortOrder
     embusen?: SortOrderInput | SortOrder
@@ -37633,7 +38004,6 @@ export namespace Prisma {
     schoolId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    rank?: BeltRankOrderByWithRelationInput
     school?: SchoolOrderByWithRelationInput
     beltRankKatas?: BeltRankKataOrderByRelationAggregateInput
     students?: StudentTechniqueOrderByRelationAggregateInput
@@ -37649,7 +38019,6 @@ export namespace Prisma {
     kanji?: StringNullableFilter<"Technique"> | string | null
     description?: StringNullableFilter<"Technique"> | string | null
     category?: EnumTechniqueCategoryFilter<"Technique"> | $Enums.TechniqueCategory
-    rankId?: StringNullableFilter<"Technique"> | string | null
     order?: IntFilter<"Technique"> | number
     movementsCount?: IntNullableFilter<"Technique"> | number | null
     embusen?: StringNullableFilter<"Technique"> | string | null
@@ -37658,7 +38027,6 @@ export namespace Prisma {
     schoolId?: StringNullableFilter<"Technique"> | string | null
     createdAt?: DateTimeFilter<"Technique"> | Date | string
     updatedAt?: DateTimeFilter<"Technique"> | Date | string
-    rank?: XOR<BeltRankNullableScalarRelationFilter, BeltRankWhereInput> | null
     school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
     beltRankKatas?: BeltRankKataListRelationFilter
     students?: StudentTechniqueListRelationFilter
@@ -37671,7 +38039,6 @@ export namespace Prisma {
     kanji?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     category?: SortOrder
-    rankId?: SortOrderInput | SortOrder
     order?: SortOrder
     movementsCount?: SortOrderInput | SortOrder
     embusen?: SortOrderInput | SortOrder
@@ -37697,7 +38064,6 @@ export namespace Prisma {
     kanji?: StringNullableWithAggregatesFilter<"Technique"> | string | null
     description?: StringNullableWithAggregatesFilter<"Technique"> | string | null
     category?: EnumTechniqueCategoryWithAggregatesFilter<"Technique"> | $Enums.TechniqueCategory
-    rankId?: StringNullableWithAggregatesFilter<"Technique"> | string | null
     order?: IntWithAggregatesFilter<"Technique"> | number
     movementsCount?: IntNullableWithAggregatesFilter<"Technique"> | number | null
     embusen?: StringNullableWithAggregatesFilter<"Technique"> | string | null
@@ -37725,6 +38091,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"StudentTechnique"> | Date | string
     student?: XOR<StudentScalarRelationFilter, StudentWhereInput>
     technique?: XOR<TechniqueScalarRelationFilter, TechniqueWhereInput>
+    approvedByUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     evaluation?: XOR<TechniqueEvaluationNullableScalarRelationFilter, TechniqueEvaluationWhereInput> | null
   }
 
@@ -37742,6 +38109,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     student?: StudentOrderByWithRelationInput
     technique?: TechniqueOrderByWithRelationInput
+    approvedByUser?: UserOrderByWithRelationInput
     evaluation?: TechniqueEvaluationOrderByWithRelationInput
   }
 
@@ -37763,6 +38131,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"StudentTechnique"> | Date | string
     student?: XOR<StudentScalarRelationFilter, StudentWhereInput>
     technique?: XOR<TechniqueScalarRelationFilter, TechniqueWhereInput>
+    approvedByUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     evaluation?: XOR<TechniqueEvaluationNullableScalarRelationFilter, TechniqueEvaluationWhereInput> | null
   }, "id" | "studentId_techniqueId">
 
@@ -37885,7 +38254,8 @@ export namespace Prisma {
     name?: StringFilter<"Plan"> | string
     description?: StringNullableFilter<"Plan"> | string | null
     monthlyHours?: FloatFilter<"Plan"> | number
-    price?: FloatNullableFilter<"Plan"> | number | null
+    price?: DecimalNullableFilter<"Plan"> | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFilter<"Plan"> | string
     isUnlimited?: BoolFilter<"Plan"> | boolean
     active?: BoolFilter<"Plan"> | boolean
     sortOrder?: IntFilter<"Plan"> | number
@@ -37902,6 +38272,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     monthlyHours?: SortOrder
     price?: SortOrderInput | SortOrder
+    currency?: SortOrder
     isUnlimited?: SortOrder
     active?: SortOrder
     sortOrder?: SortOrder
@@ -37920,7 +38291,8 @@ export namespace Prisma {
     name?: StringFilter<"Plan"> | string
     description?: StringNullableFilter<"Plan"> | string | null
     monthlyHours?: FloatFilter<"Plan"> | number
-    price?: FloatNullableFilter<"Plan"> | number | null
+    price?: DecimalNullableFilter<"Plan"> | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFilter<"Plan"> | string
     isUnlimited?: BoolFilter<"Plan"> | boolean
     active?: BoolFilter<"Plan"> | boolean
     sortOrder?: IntFilter<"Plan"> | number
@@ -37937,6 +38309,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     monthlyHours?: SortOrder
     price?: SortOrderInput | SortOrder
+    currency?: SortOrder
     isUnlimited?: SortOrder
     active?: SortOrder
     sortOrder?: SortOrder
@@ -37958,7 +38331,8 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Plan"> | string
     description?: StringNullableWithAggregatesFilter<"Plan"> | string | null
     monthlyHours?: FloatWithAggregatesFilter<"Plan"> | number
-    price?: FloatNullableWithAggregatesFilter<"Plan"> | number | null
+    price?: DecimalNullableWithAggregatesFilter<"Plan"> | Decimal | DecimalJsLike | number | string | null
+    currency?: StringWithAggregatesFilter<"Plan"> | string
     isUnlimited?: BoolWithAggregatesFilter<"Plan"> | boolean
     active?: BoolWithAggregatesFilter<"Plan"> | boolean
     sortOrder?: IntWithAggregatesFilter<"Plan"> | number
@@ -37979,8 +38353,8 @@ export namespace Prisma {
     branchId?: StringFilter<"Class"> | string
     instructorId?: StringNullableFilter<"Class"> | string | null
     dayOfWeek?: IntFilter<"Class"> | number
-    startTime?: StringFilter<"Class"> | string
-    endTime?: StringFilter<"Class"> | string
+    startTime?: DateTimeFilter<"Class"> | Date | string
+    endTime?: DateTimeFilter<"Class"> | Date | string
     createdAt?: DateTimeFilter<"Class"> | Date | string
     updatedAt?: DateTimeFilter<"Class"> | Date | string
     branch?: XOR<BranchScalarRelationFilter, BranchWhereInput>
@@ -38022,8 +38396,8 @@ export namespace Prisma {
     branchId?: StringFilter<"Class"> | string
     instructorId?: StringNullableFilter<"Class"> | string | null
     dayOfWeek?: IntFilter<"Class"> | number
-    startTime?: StringFilter<"Class"> | string
-    endTime?: StringFilter<"Class"> | string
+    startTime?: DateTimeFilter<"Class"> | Date | string
+    endTime?: DateTimeFilter<"Class"> | Date | string
     createdAt?: DateTimeFilter<"Class"> | Date | string
     updatedAt?: DateTimeFilter<"Class"> | Date | string
     branch?: XOR<BranchScalarRelationFilter, BranchWhereInput>
@@ -38065,8 +38439,8 @@ export namespace Prisma {
     branchId?: StringWithAggregatesFilter<"Class"> | string
     instructorId?: StringNullableWithAggregatesFilter<"Class"> | string | null
     dayOfWeek?: IntWithAggregatesFilter<"Class"> | number
-    startTime?: StringWithAggregatesFilter<"Class"> | string
-    endTime?: StringWithAggregatesFilter<"Class"> | string
+    startTime?: DateTimeWithAggregatesFilter<"Class"> | Date | string
+    endTime?: DateTimeWithAggregatesFilter<"Class"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"Class"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Class"> | Date | string
   }
@@ -38078,7 +38452,7 @@ export namespace Prisma {
     id?: StringFilter<"ClassEnrollment"> | string
     classId?: StringFilter<"ClassEnrollment"> | string
     studentId?: StringFilter<"ClassEnrollment"> | string
-    status?: StringFilter<"ClassEnrollment"> | string
+    status?: EnumClassEnrollmentStatusFilter<"ClassEnrollment"> | $Enums.ClassEnrollmentStatus
     enrolledAt?: DateTimeFilter<"ClassEnrollment"> | Date | string
     endedAt?: DateTimeNullableFilter<"ClassEnrollment"> | Date | string | null
     notes?: StringNullableFilter<"ClassEnrollment"> | string | null
@@ -38110,7 +38484,7 @@ export namespace Prisma {
     NOT?: ClassEnrollmentWhereInput | ClassEnrollmentWhereInput[]
     classId?: StringFilter<"ClassEnrollment"> | string
     studentId?: StringFilter<"ClassEnrollment"> | string
-    status?: StringFilter<"ClassEnrollment"> | string
+    status?: EnumClassEnrollmentStatusFilter<"ClassEnrollment"> | $Enums.ClassEnrollmentStatus
     enrolledAt?: DateTimeFilter<"ClassEnrollment"> | Date | string
     endedAt?: DateTimeNullableFilter<"ClassEnrollment"> | Date | string | null
     notes?: StringNullableFilter<"ClassEnrollment"> | string | null
@@ -38142,7 +38516,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"ClassEnrollment"> | string
     classId?: StringWithAggregatesFilter<"ClassEnrollment"> | string
     studentId?: StringWithAggregatesFilter<"ClassEnrollment"> | string
-    status?: StringWithAggregatesFilter<"ClassEnrollment"> | string
+    status?: EnumClassEnrollmentStatusWithAggregatesFilter<"ClassEnrollment"> | $Enums.ClassEnrollmentStatus
     enrolledAt?: DateTimeWithAggregatesFilter<"ClassEnrollment"> | Date | string
     endedAt?: DateTimeNullableWithAggregatesFilter<"ClassEnrollment"> | Date | string | null
     notes?: StringNullableWithAggregatesFilter<"ClassEnrollment"> | string | null
@@ -38410,11 +38784,12 @@ export namespace Prisma {
     evidenceKey?: StringNullableFilter<"StudentAchievement"> | string | null
     approvedBy?: StringNullableFilter<"StudentAchievement"> | string | null
     comment?: StringNullableFilter<"StudentAchievement"> | string | null
-    status?: StringFilter<"StudentAchievement"> | string
+    status?: EnumApprovalStatusFilter<"StudentAchievement"> | $Enums.ApprovalStatus
     achievedAt?: DateTimeFilter<"StudentAchievement"> | Date | string
     createdAt?: DateTimeFilter<"StudentAchievement"> | Date | string
     student?: XOR<StudentScalarRelationFilter, StudentWhereInput>
     type?: XOR<AchievementTypeScalarRelationFilter, AchievementTypeWhereInput>
+    approvedByUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type StudentAchievementOrderByWithRelationInput = {
@@ -38429,6 +38804,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     student?: StudentOrderByWithRelationInput
     type?: AchievementTypeOrderByWithRelationInput
+    approvedByUser?: UserOrderByWithRelationInput
   }
 
   export type StudentAchievementWhereUniqueInput = Prisma.AtLeast<{
@@ -38441,11 +38817,12 @@ export namespace Prisma {
     evidenceKey?: StringNullableFilter<"StudentAchievement"> | string | null
     approvedBy?: StringNullableFilter<"StudentAchievement"> | string | null
     comment?: StringNullableFilter<"StudentAchievement"> | string | null
-    status?: StringFilter<"StudentAchievement"> | string
+    status?: EnumApprovalStatusFilter<"StudentAchievement"> | $Enums.ApprovalStatus
     achievedAt?: DateTimeFilter<"StudentAchievement"> | Date | string
     createdAt?: DateTimeFilter<"StudentAchievement"> | Date | string
     student?: XOR<StudentScalarRelationFilter, StudentWhereInput>
     type?: XOR<AchievementTypeScalarRelationFilter, AchievementTypeWhereInput>
+    approvedByUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id">
 
   export type StudentAchievementOrderByWithAggregationInput = {
@@ -38473,7 +38850,7 @@ export namespace Prisma {
     evidenceKey?: StringNullableWithAggregatesFilter<"StudentAchievement"> | string | null
     approvedBy?: StringNullableWithAggregatesFilter<"StudentAchievement"> | string | null
     comment?: StringNullableWithAggregatesFilter<"StudentAchievement"> | string | null
-    status?: StringWithAggregatesFilter<"StudentAchievement"> | string
+    status?: EnumApprovalStatusWithAggregatesFilter<"StudentAchievement"> | $Enums.ApprovalStatus
     achievedAt?: DateTimeWithAggregatesFilter<"StudentAchievement"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"StudentAchievement"> | Date | string
   }
@@ -38488,9 +38865,10 @@ export namespace Prisma {
     evidenceKey?: StringNullableFilter<"FitnessReport"> | string | null
     approvedBy?: StringNullableFilter<"FitnessReport"> | string | null
     comment?: StringNullableFilter<"FitnessReport"> | string | null
-    status?: StringFilter<"FitnessReport"> | string
+    status?: EnumApprovalStatusFilter<"FitnessReport"> | $Enums.ApprovalStatus
     createdAt?: DateTimeFilter<"FitnessReport"> | Date | string
     student?: XOR<StudentScalarRelationFilter, StudentWhereInput>
+    approvedByUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type FitnessReportOrderByWithRelationInput = {
@@ -38503,6 +38881,7 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     student?: StudentOrderByWithRelationInput
+    approvedByUser?: UserOrderByWithRelationInput
   }
 
   export type FitnessReportWhereUniqueInput = Prisma.AtLeast<{
@@ -38515,9 +38894,10 @@ export namespace Prisma {
     evidenceKey?: StringNullableFilter<"FitnessReport"> | string | null
     approvedBy?: StringNullableFilter<"FitnessReport"> | string | null
     comment?: StringNullableFilter<"FitnessReport"> | string | null
-    status?: StringFilter<"FitnessReport"> | string
+    status?: EnumApprovalStatusFilter<"FitnessReport"> | $Enums.ApprovalStatus
     createdAt?: DateTimeFilter<"FitnessReport"> | Date | string
     student?: XOR<StudentScalarRelationFilter, StudentWhereInput>
+    approvedByUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id">
 
   export type FitnessReportOrderByWithAggregationInput = {
@@ -38544,7 +38924,7 @@ export namespace Prisma {
     evidenceKey?: StringNullableWithAggregatesFilter<"FitnessReport"> | string | null
     approvedBy?: StringNullableWithAggregatesFilter<"FitnessReport"> | string | null
     comment?: StringNullableWithAggregatesFilter<"FitnessReport"> | string | null
-    status?: StringWithAggregatesFilter<"FitnessReport"> | string
+    status?: EnumApprovalStatusWithAggregatesFilter<"FitnessReport"> | $Enums.ApprovalStatus
     createdAt?: DateTimeWithAggregatesFilter<"FitnessReport"> | Date | string
   }
 
@@ -38707,7 +39087,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38719,6 +39098,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
@@ -38733,7 +39115,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     branchId?: string | null
@@ -38745,6 +39126,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
@@ -38759,7 +39143,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38771,6 +39154,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
@@ -38785,7 +39171,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -38797,6 +39182,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -38811,7 +39199,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     branchId?: string | null
@@ -38826,7 +39213,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38839,7 +39225,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39113,14 +39498,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -39130,6 +39515,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
@@ -39157,15 +39543,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -39193,14 +39580,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -39210,6 +39597,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
@@ -39237,15 +39625,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39277,15 +39666,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -39302,14 +39692,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -39330,15 +39720,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39406,7 +39797,7 @@ export namespace Prisma {
     quote?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -39430,7 +39821,7 @@ export namespace Prisma {
     studentId?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -39448,7 +39839,7 @@ export namespace Prisma {
     quote?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39472,7 +39863,7 @@ export namespace Prisma {
     studentId?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39493,7 +39884,7 @@ export namespace Prisma {
     studentId?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -39509,7 +39900,7 @@ export namespace Prisma {
     quote?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39528,7 +39919,7 @@ export namespace Prisma {
     studentId?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39626,14 +40017,14 @@ export namespace Prisma {
     reviewedAt?: Date | string | null
     uploadedAt?: Date | string
     updatedAt?: Date | string
-    enrollment: EnrollmentCreateNestedOneWithoutDocumentsInput
+    enrollment?: EnrollmentCreateNestedOneWithoutDocumentsInput
     applicant?: EnrollmentApplicantCreateNestedOneWithoutDocumentsInput
     student?: StudentCreateNestedOneWithoutDocumentsInput
   }
 
   export type StudentDocumentUncheckedCreateInput = {
     id?: string
-    enrollmentId: string
+    enrollmentId?: string | null
     applicantId?: string | null
     studentId?: string | null
     type: $Enums.StudentDocumentType
@@ -39660,14 +40051,14 @@ export namespace Prisma {
     reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    enrollment?: EnrollmentUpdateOneRequiredWithoutDocumentsNestedInput
+    enrollment?: EnrollmentUpdateOneWithoutDocumentsNestedInput
     applicant?: EnrollmentApplicantUpdateOneWithoutDocumentsNestedInput
     student?: StudentUpdateOneWithoutDocumentsNestedInput
   }
 
   export type StudentDocumentUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    enrollmentId?: StringFieldUpdateOperationsInput | string
+    enrollmentId?: NullableStringFieldUpdateOperationsInput | string | null
     applicantId?: NullableStringFieldUpdateOperationsInput | string | null
     studentId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumStudentDocumentTypeFieldUpdateOperationsInput | $Enums.StudentDocumentType
@@ -39684,7 +40075,7 @@ export namespace Prisma {
 
   export type StudentDocumentCreateManyInput = {
     id?: string
-    enrollmentId: string
+    enrollmentId?: string | null
     applicantId?: string | null
     studentId?: string | null
     type: $Enums.StudentDocumentType
@@ -39715,7 +40106,7 @@ export namespace Prisma {
 
   export type StudentDocumentUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    enrollmentId?: StringFieldUpdateOperationsInput | string
+    enrollmentId?: NullableStringFieldUpdateOperationsInput | string | null
     applicantId?: NullableStringFieldUpdateOperationsInput | string | null
     studentId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumStudentDocumentTypeFieldUpdateOperationsInput | $Enums.StudentDocumentType
@@ -39750,8 +40141,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     school?: SchoolCreateNestedOneWithoutBeltRanksInput
     katas?: BeltRankKataCreateNestedManyWithoutBeltRankInput
-    techniques?: TechniqueCreateNestedManyWithoutRankInput
     promotions?: StudentRankHistoryCreateNestedManyWithoutBeltRankInput
+    currentRankStudents?: StudentCreateNestedManyWithoutCurrentRankRefInput
   }
 
   export type BeltRankUncheckedCreateInput = {
@@ -39774,8 +40165,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     katas?: BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput
-    techniques?: TechniqueUncheckedCreateNestedManyWithoutRankInput
     promotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutBeltRankInput
+    currentRankStudents?: StudentUncheckedCreateNestedManyWithoutCurrentRankRefInput
   }
 
   export type BeltRankUpdateInput = {
@@ -39798,8 +40189,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     school?: SchoolUpdateOneWithoutBeltRanksNestedInput
     katas?: BeltRankKataUpdateManyWithoutBeltRankNestedInput
-    techniques?: TechniqueUpdateManyWithoutRankNestedInput
     promotions?: StudentRankHistoryUpdateManyWithoutBeltRankNestedInput
+    currentRankStudents?: StudentUpdateManyWithoutCurrentRankRefNestedInput
   }
 
   export type BeltRankUncheckedUpdateInput = {
@@ -39822,8 +40213,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     katas?: BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput
-    techniques?: TechniqueUncheckedUpdateManyWithoutRankNestedInput
     promotions?: StudentRankHistoryUncheckedUpdateManyWithoutBeltRankNestedInput
+    currentRankStudents?: StudentUncheckedUpdateManyWithoutCurrentRankRefNestedInput
   }
 
   export type BeltRankCreateManyInput = {
@@ -40023,7 +40414,6 @@ export namespace Prisma {
     videoUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    rank?: BeltRankCreateNestedOneWithoutTechniquesInput
     school?: SchoolCreateNestedOneWithoutTechniquesInput
     beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
     students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
@@ -40036,7 +40426,6 @@ export namespace Prisma {
     kanji?: string | null
     description?: string | null
     category?: $Enums.TechniqueCategory
-    rankId?: string | null
     order?: number
     movementsCount?: number | null
     embusen?: string | null
@@ -40063,7 +40452,6 @@ export namespace Prisma {
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    rank?: BeltRankUpdateOneWithoutTechniquesNestedInput
     school?: SchoolUpdateOneWithoutTechniquesNestedInput
     beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
@@ -40076,7 +40464,6 @@ export namespace Prisma {
     kanji?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
-    rankId?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40096,7 +40483,6 @@ export namespace Prisma {
     kanji?: string | null
     description?: string | null
     category?: $Enums.TechniqueCategory
-    rankId?: string | null
     order?: number
     movementsCount?: number | null
     embusen?: string | null
@@ -40130,7 +40516,6 @@ export namespace Prisma {
     kanji?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
-    rankId?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40144,7 +40529,6 @@ export namespace Prisma {
   export type StudentTechniqueCreateInput = {
     id?: string
     approved?: boolean
-    approvedBy?: string | null
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
@@ -40153,6 +40537,7 @@ export namespace Prisma {
     createdAt?: Date | string
     student: StudentCreateNestedOneWithoutTechniquesInput
     technique: TechniqueCreateNestedOneWithoutStudentsInput
+    approvedByUser?: UserCreateNestedOneWithoutTechniquesApprovedInput
     evaluation?: TechniqueEvaluationCreateNestedOneWithoutStudentTechniqueInput
   }
 
@@ -40174,7 +40559,6 @@ export namespace Prisma {
   export type StudentTechniqueUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     approved?: BoolFieldUpdateOperationsInput | boolean
-    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
@@ -40183,6 +40567,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentUpdateOneRequiredWithoutTechniquesNestedInput
     technique?: TechniqueUpdateOneRequiredWithoutStudentsNestedInput
+    approvedByUser?: UserUpdateOneWithoutTechniquesApprovedNestedInput
     evaluation?: TechniqueEvaluationUpdateOneWithoutStudentTechniqueNestedInput
   }
 
@@ -40218,7 +40603,6 @@ export namespace Prisma {
   export type StudentTechniqueUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     approved?: BoolFieldUpdateOperationsInput | boolean
-    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
@@ -40321,7 +40705,8 @@ export namespace Prisma {
     name: string
     description?: string | null
     monthlyHours?: number
-    price?: number | null
+    price?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
     isUnlimited?: boolean
     active?: boolean
     sortOrder?: number
@@ -40336,7 +40721,8 @@ export namespace Prisma {
     name: string
     description?: string | null
     monthlyHours?: number
-    price?: number | null
+    price?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
     isUnlimited?: boolean
     active?: boolean
     sortOrder?: number
@@ -40351,7 +40737,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     monthlyHours?: FloatFieldUpdateOperationsInput | number
-    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isUnlimited?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -40366,7 +40753,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     monthlyHours?: FloatFieldUpdateOperationsInput | number
-    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isUnlimited?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -40381,7 +40769,8 @@ export namespace Prisma {
     name: string
     description?: string | null
     monthlyHours?: number
-    price?: number | null
+    price?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
     isUnlimited?: boolean
     active?: boolean
     sortOrder?: number
@@ -40395,7 +40784,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     monthlyHours?: FloatFieldUpdateOperationsInput | number
-    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isUnlimited?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -40408,7 +40798,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     monthlyHours?: FloatFieldUpdateOperationsInput | number
-    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isUnlimited?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -40424,8 +40815,8 @@ export namespace Prisma {
     audience?: $Enums.ClassAudience
     active?: boolean
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
     branch: BranchCreateNestedOneWithoutClassesInput
@@ -40444,8 +40835,8 @@ export namespace Prisma {
     branchId: string
     instructorId?: string | null
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: ClassSessionUncheckedCreateNestedManyWithoutClassInput
@@ -40460,8 +40851,8 @@ export namespace Prisma {
     audience?: EnumClassAudienceFieldUpdateOperationsInput | $Enums.ClassAudience
     active?: BoolFieldUpdateOperationsInput | boolean
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneRequiredWithoutClassesNestedInput
@@ -40480,8 +40871,8 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     instructorId?: NullableStringFieldUpdateOperationsInput | string | null
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: ClassSessionUncheckedUpdateManyWithoutClassNestedInput
@@ -40498,8 +40889,8 @@ export namespace Prisma {
     branchId: string
     instructorId?: string | null
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -40511,8 +40902,8 @@ export namespace Prisma {
     audience?: EnumClassAudienceFieldUpdateOperationsInput | $Enums.ClassAudience
     active?: BoolFieldUpdateOperationsInput | boolean
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -40526,15 +40917,15 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     instructorId?: NullableStringFieldUpdateOperationsInput | string | null
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ClassEnrollmentCreateInput = {
     id?: string
-    status?: string
+    status?: $Enums.ClassEnrollmentStatus
     enrolledAt?: Date | string
     endedAt?: Date | string | null
     notes?: string | null
@@ -40548,7 +40939,7 @@ export namespace Prisma {
     id?: string
     classId: string
     studentId: string
-    status?: string
+    status?: $Enums.ClassEnrollmentStatus
     enrolledAt?: Date | string
     endedAt?: Date | string | null
     notes?: string | null
@@ -40558,7 +40949,7 @@ export namespace Prisma {
 
   export type ClassEnrollmentUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumClassEnrollmentStatusFieldUpdateOperationsInput | $Enums.ClassEnrollmentStatus
     enrolledAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40572,7 +40963,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     classId?: StringFieldUpdateOperationsInput | string
     studentId?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumClassEnrollmentStatusFieldUpdateOperationsInput | $Enums.ClassEnrollmentStatus
     enrolledAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40584,7 +40975,7 @@ export namespace Prisma {
     id?: string
     classId: string
     studentId: string
-    status?: string
+    status?: $Enums.ClassEnrollmentStatus
     enrolledAt?: Date | string
     endedAt?: Date | string | null
     notes?: string | null
@@ -40594,7 +40985,7 @@ export namespace Prisma {
 
   export type ClassEnrollmentUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumClassEnrollmentStatusFieldUpdateOperationsInput | $Enums.ClassEnrollmentStatus
     enrolledAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40606,7 +40997,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     classId?: StringFieldUpdateOperationsInput | string
     studentId?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumClassEnrollmentStatusFieldUpdateOperationsInput | $Enums.ClassEnrollmentStatus
     enrolledAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40874,13 +41265,13 @@ export namespace Prisma {
   export type StudentAchievementCreateInput = {
     id?: string
     evidenceKey?: string | null
-    approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     achievedAt?: Date | string
     createdAt?: Date | string
     student: StudentCreateNestedOneWithoutAchievementsInput
     type: AchievementTypeCreateNestedOneWithoutAchievementsInput
+    approvedByUser?: UserCreateNestedOneWithoutAchievementsApprovedInput
   }
 
   export type StudentAchievementUncheckedCreateInput = {
@@ -40890,7 +41281,7 @@ export namespace Prisma {
     evidenceKey?: string | null
     approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     achievedAt?: Date | string
     createdAt?: Date | string
   }
@@ -40898,13 +41289,13 @@ export namespace Prisma {
   export type StudentAchievementUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
-    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     achievedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentUpdateOneRequiredWithoutAchievementsNestedInput
     type?: AchievementTypeUpdateOneRequiredWithoutAchievementsNestedInput
+    approvedByUser?: UserUpdateOneWithoutAchievementsApprovedNestedInput
   }
 
   export type StudentAchievementUncheckedUpdateInput = {
@@ -40914,7 +41305,7 @@ export namespace Prisma {
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
     approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     achievedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -40926,7 +41317,7 @@ export namespace Prisma {
     evidenceKey?: string | null
     approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     achievedAt?: Date | string
     createdAt?: Date | string
   }
@@ -40934,9 +41325,8 @@ export namespace Prisma {
   export type StudentAchievementUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
-    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     achievedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -40948,7 +41338,7 @@ export namespace Prisma {
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
     approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     achievedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -40957,11 +41347,11 @@ export namespace Prisma {
     id?: string
     report: string
     evidenceKey?: string | null
-    approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     createdAt?: Date | string
     student: StudentCreateNestedOneWithoutFitnessReportsInput
+    approvedByUser?: UserCreateNestedOneWithoutFitnessReportsApprovedInput
   }
 
   export type FitnessReportUncheckedCreateInput = {
@@ -40971,7 +41361,7 @@ export namespace Prisma {
     evidenceKey?: string | null
     approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     createdAt?: Date | string
   }
 
@@ -40979,11 +41369,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     report?: StringFieldUpdateOperationsInput | string
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
-    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentUpdateOneRequiredWithoutFitnessReportsNestedInput
+    approvedByUser?: UserUpdateOneWithoutFitnessReportsApprovedNestedInput
   }
 
   export type FitnessReportUncheckedUpdateInput = {
@@ -40993,7 +41383,7 @@ export namespace Prisma {
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
     approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -41004,7 +41394,7 @@ export namespace Prisma {
     evidenceKey?: string | null
     approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     createdAt?: Date | string
   }
 
@@ -41012,9 +41402,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     report?: StringFieldUpdateOperationsInput | string
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
-    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -41025,7 +41414,7 @@ export namespace Prisma {
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
     approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -41253,13 +41642,6 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type EnumRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
-  }
-
   export type EnumRoleNullableListFilter<$PrismaModel = never> = {
     equals?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | null
     has?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel> | null
@@ -41306,6 +41688,24 @@ export namespace Prisma {
     none?: TechniqueEvaluationWhereInput
   }
 
+  export type StudentTechniqueListRelationFilter = {
+    every?: StudentTechniqueWhereInput
+    some?: StudentTechniqueWhereInput
+    none?: StudentTechniqueWhereInput
+  }
+
+  export type StudentAchievementListRelationFilter = {
+    every?: StudentAchievementWhereInput
+    some?: StudentAchievementWhereInput
+    none?: StudentAchievementWhereInput
+  }
+
+  export type FitnessReportListRelationFilter = {
+    every?: FitnessReportWhereInput
+    some?: FitnessReportWhereInput
+    none?: FitnessReportWhereInput
+  }
+
   export type AttendanceListRelationFilter = {
     every?: AttendanceWhereInput
     some?: AttendanceWhereInput
@@ -41347,6 +41747,18 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type StudentTechniqueOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StudentAchievementOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FitnessReportOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type AttendanceOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -41370,7 +41782,6 @@ export namespace Prisma {
     passwordHash?: SortOrder
     name?: SortOrder
     phone?: SortOrder
-    role?: SortOrder
     roles?: SortOrder
     schoolId?: SortOrder
     branchId?: SortOrder
@@ -41385,7 +41796,6 @@ export namespace Prisma {
     passwordHash?: SortOrder
     name?: SortOrder
     phone?: SortOrder
-    role?: SortOrder
     schoolId?: SortOrder
     branchId?: SortOrder
     createdAt?: SortOrder
@@ -41399,7 +41809,6 @@ export namespace Prisma {
     passwordHash?: SortOrder
     name?: SortOrder
     phone?: SortOrder
-    role?: SortOrder
     schoolId?: SortOrder
     branchId?: SortOrder
     createdAt?: SortOrder
@@ -41436,16 +41845,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRoleFilter<$PrismaModel>
-    _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
   export type UserScalarRelationFilter = {
@@ -41582,6 +41981,20 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
+
+  export type EnumGenderNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.Gender | EnumGenderFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumGenderNullableFilter<$PrismaModel> | $Enums.Gender | null
+  }
+
+  export type EnumStudentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.StudentStatus | EnumStudentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StudentStatus[] | ListEnumStudentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StudentStatus[] | ListEnumStudentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStudentStatusFilter<$PrismaModel> | $Enums.StudentStatus
+  }
   export type JsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -41618,6 +42031,11 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type BeltRankNullableScalarRelationFilter = {
+    is?: BeltRankWhereInput | null
+    isNot?: BeltRankWhereInput | null
+  }
+
   export type PlanNullableScalarRelationFilter = {
     is?: PlanWhereInput | null
     isNot?: PlanWhereInput | null
@@ -41626,24 +42044,6 @@ export namespace Prisma {
   export type BranchScalarRelationFilter = {
     is?: BranchWhereInput
     isNot?: BranchWhereInput
-  }
-
-  export type StudentAchievementListRelationFilter = {
-    every?: StudentAchievementWhereInput
-    some?: StudentAchievementWhereInput
-    none?: StudentAchievementWhereInput
-  }
-
-  export type StudentTechniqueListRelationFilter = {
-    every?: StudentTechniqueWhereInput
-    some?: StudentTechniqueWhereInput
-    none?: StudentTechniqueWhereInput
-  }
-
-  export type FitnessReportListRelationFilter = {
-    every?: FitnessReportWhereInput
-    some?: FitnessReportWhereInput
-    none?: FitnessReportWhereInput
   }
 
   export type ClassEnrollmentListRelationFilter = {
@@ -41661,18 +42061,6 @@ export namespace Prisma {
     every?: StudentDocumentWhereInput
     some?: StudentDocumentWhereInput
     none?: StudentDocumentWhereInput
-  }
-
-  export type StudentAchievementOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type StudentTechniqueOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type FitnessReportOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type ClassEnrollmentOrderByRelationAggregateInput = {
@@ -41701,6 +42089,7 @@ export namespace Prisma {
     memberNumber?: SortOrder
     status?: SortOrder
     currentRank?: SortOrder
+    currentRankId?: SortOrder
     photoKey?: SortOrder
     registrationData?: SortOrder
     planId?: SortOrder
@@ -41730,6 +42119,7 @@ export namespace Prisma {
     memberNumber?: SortOrder
     status?: SortOrder
     currentRank?: SortOrder
+    currentRankId?: SortOrder
     photoKey?: SortOrder
     planId?: SortOrder
     planStartDate?: SortOrder
@@ -41758,6 +42148,7 @@ export namespace Prisma {
     memberNumber?: SortOrder
     status?: SortOrder
     currentRank?: SortOrder
+    currentRankId?: SortOrder
     photoKey?: SortOrder
     planId?: SortOrder
     planStartDate?: SortOrder
@@ -41766,6 +42157,26 @@ export namespace Prisma {
     isCompetitor?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type EnumGenderNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Gender | EnumGenderFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumGenderNullableWithAggregatesFilter<$PrismaModel> | $Enums.Gender | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumGenderNullableFilter<$PrismaModel>
+    _max?: NestedEnumGenderNullableFilter<$PrismaModel>
+  }
+
+  export type EnumStudentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StudentStatus | EnumStudentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StudentStatus[] | ListEnumStudentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StudentStatus[] | ListEnumStudentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStudentStatusWithAggregatesFilter<$PrismaModel> | $Enums.StudentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStudentStatusFilter<$PrismaModel>
+    _max?: NestedEnumStudentStatusFilter<$PrismaModel>
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -41845,6 +42256,13 @@ export namespace Prisma {
     not?: NestedEnumEnrollmentOriginFilter<$PrismaModel> | $Enums.EnrollmentOrigin
   }
 
+  export type EnumEnrollmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.EnrollmentStatus | EnumEnrollmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EnrollmentStatus[] | ListEnumEnrollmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EnrollmentStatus[] | ListEnumEnrollmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEnrollmentStatusFilter<$PrismaModel> | $Enums.EnrollmentStatus
+  }
+
   export type EnrollmentApplicantListRelationFilter = {
     every?: EnrollmentApplicantWhereInput
     some?: EnrollmentApplicantWhereInput
@@ -41857,7 +42275,7 @@ export namespace Prisma {
 
   export type EnrollmentContactEmailStatusCompoundUniqueInput = {
     contactEmail: string
-    status: string
+    status: $Enums.EnrollmentStatus
   }
 
   export type EnrollmentCountOrderByAggregateInput = {
@@ -41923,6 +42341,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumEnrollmentOriginFilter<$PrismaModel>
     _max?: NestedEnumEnrollmentOriginFilter<$PrismaModel>
+  }
+
+  export type EnumEnrollmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EnrollmentStatus | EnumEnrollmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EnrollmentStatus[] | ListEnumEnrollmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EnrollmentStatus[] | ListEnumEnrollmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEnrollmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.EnrollmentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEnrollmentStatusFilter<$PrismaModel>
+    _max?: NestedEnumEnrollmentStatusFilter<$PrismaModel>
   }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -42033,6 +42461,11 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type EnrollmentNullableScalarRelationFilter = {
+    is?: EnrollmentWhereInput | null
+    isNot?: EnrollmentWhereInput | null
   }
 
   export type StudentDocumentCountOrderByAggregateInput = {
@@ -42156,11 +42589,6 @@ export namespace Prisma {
 
   export type BeltRankKataOrderByRelationAggregateInput = {
     _count?: SortOrder
-  }
-
-  export type BeltRankProgramOrderCompoundUniqueInput = {
-    program: $Enums.Program
-    order: number
   }
 
   export type BeltRankCountOrderByAggregateInput = {
@@ -42352,11 +42780,6 @@ export namespace Prisma {
     not?: NestedEnumTechniqueCategoryFilter<$PrismaModel> | $Enums.TechniqueCategory
   }
 
-  export type BeltRankNullableScalarRelationFilter = {
-    is?: BeltRankWhereInput | null
-    isNot?: BeltRankWhereInput | null
-  }
-
   export type TechniqueCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -42364,7 +42787,6 @@ export namespace Prisma {
     kanji?: SortOrder
     description?: SortOrder
     category?: SortOrder
-    rankId?: SortOrder
     order?: SortOrder
     movementsCount?: SortOrder
     embusen?: SortOrder
@@ -42387,7 +42809,6 @@ export namespace Prisma {
     kanji?: SortOrder
     description?: SortOrder
     category?: SortOrder
-    rankId?: SortOrder
     order?: SortOrder
     movementsCount?: SortOrder
     embusen?: SortOrder
@@ -42405,7 +42826,6 @@ export namespace Prisma {
     kanji?: SortOrder
     description?: SortOrder
     category?: SortOrder
-    rankId?: SortOrder
     order?: SortOrder
     movementsCount?: SortOrder
     embusen?: SortOrder
@@ -42564,15 +42984,15 @@ export namespace Prisma {
     score?: SortOrder
   }
 
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  export type DecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
   }
 
   export type PlanCountOrderByAggregateInput = {
@@ -42581,6 +43001,7 @@ export namespace Prisma {
     description?: SortOrder
     monthlyHours?: SortOrder
     price?: SortOrder
+    currency?: SortOrder
     isUnlimited?: SortOrder
     active?: SortOrder
     sortOrder?: SortOrder
@@ -42601,6 +43022,7 @@ export namespace Prisma {
     description?: SortOrder
     monthlyHours?: SortOrder
     price?: SortOrder
+    currency?: SortOrder
     isUnlimited?: SortOrder
     active?: SortOrder
     sortOrder?: SortOrder
@@ -42615,6 +43037,7 @@ export namespace Prisma {
     description?: SortOrder
     monthlyHours?: SortOrder
     price?: SortOrder
+    currency?: SortOrder
     isUnlimited?: SortOrder
     active?: SortOrder
     sortOrder?: SortOrder
@@ -42629,20 +43052,20 @@ export namespace Prisma {
     sortOrder?: SortOrder
   }
 
-  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+  export type DecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
   export type EnumClassAudienceFilter<$PrismaModel = never> = {
@@ -42725,6 +43148,13 @@ export namespace Prisma {
     _max?: NestedEnumClassAudienceFilter<$PrismaModel>
   }
 
+  export type EnumClassEnrollmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ClassEnrollmentStatus | EnumClassEnrollmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ClassEnrollmentStatus[] | ListEnumClassEnrollmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ClassEnrollmentStatus[] | ListEnumClassEnrollmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumClassEnrollmentStatusFilter<$PrismaModel> | $Enums.ClassEnrollmentStatus
+  }
+
   export type ClassScalarRelationFilter = {
     is?: ClassWhereInput
     isNot?: ClassWhereInput
@@ -42769,6 +43199,16 @@ export namespace Prisma {
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type EnumClassEnrollmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ClassEnrollmentStatus | EnumClassEnrollmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ClassEnrollmentStatus[] | ListEnumClassEnrollmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ClassEnrollmentStatus[] | ListEnumClassEnrollmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumClassEnrollmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.ClassEnrollmentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumClassEnrollmentStatusFilter<$PrismaModel>
+    _max?: NestedEnumClassEnrollmentStatusFilter<$PrismaModel>
   }
 
   export type ClassSessionClassIdDateCompoundUniqueInput = {
@@ -42929,6 +43369,13 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type EnumApprovalStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalStatus | EnumApprovalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalStatusFilter<$PrismaModel> | $Enums.ApprovalStatus
+  }
+
   export type AchievementTypeScalarRelationFilter = {
     is?: AchievementTypeWhereInput
     isNot?: AchievementTypeWhereInput
@@ -42968,6 +43415,16 @@ export namespace Prisma {
     status?: SortOrder
     achievedAt?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type EnumApprovalStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalStatus | EnumApprovalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalStatusWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumApprovalStatusFilter<$PrismaModel>
+    _max?: NestedEnumApprovalStatusFilter<$PrismaModel>
   }
 
   export type FitnessReportCountOrderByAggregateInput = {
@@ -43585,6 +44042,27 @@ export namespace Prisma {
     connect?: TechniqueEvaluationWhereUniqueInput | TechniqueEvaluationWhereUniqueInput[]
   }
 
+  export type StudentTechniqueCreateNestedManyWithoutApprovedByUserInput = {
+    create?: XOR<StudentTechniqueCreateWithoutApprovedByUserInput, StudentTechniqueUncheckedCreateWithoutApprovedByUserInput> | StudentTechniqueCreateWithoutApprovedByUserInput[] | StudentTechniqueUncheckedCreateWithoutApprovedByUserInput[]
+    connectOrCreate?: StudentTechniqueCreateOrConnectWithoutApprovedByUserInput | StudentTechniqueCreateOrConnectWithoutApprovedByUserInput[]
+    createMany?: StudentTechniqueCreateManyApprovedByUserInputEnvelope
+    connect?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
+  }
+
+  export type StudentAchievementCreateNestedManyWithoutApprovedByUserInput = {
+    create?: XOR<StudentAchievementCreateWithoutApprovedByUserInput, StudentAchievementUncheckedCreateWithoutApprovedByUserInput> | StudentAchievementCreateWithoutApprovedByUserInput[] | StudentAchievementUncheckedCreateWithoutApprovedByUserInput[]
+    connectOrCreate?: StudentAchievementCreateOrConnectWithoutApprovedByUserInput | StudentAchievementCreateOrConnectWithoutApprovedByUserInput[]
+    createMany?: StudentAchievementCreateManyApprovedByUserInputEnvelope
+    connect?: StudentAchievementWhereUniqueInput | StudentAchievementWhereUniqueInput[]
+  }
+
+  export type FitnessReportCreateNestedManyWithoutApprovedByUserInput = {
+    create?: XOR<FitnessReportCreateWithoutApprovedByUserInput, FitnessReportUncheckedCreateWithoutApprovedByUserInput> | FitnessReportCreateWithoutApprovedByUserInput[] | FitnessReportUncheckedCreateWithoutApprovedByUserInput[]
+    connectOrCreate?: FitnessReportCreateOrConnectWithoutApprovedByUserInput | FitnessReportCreateOrConnectWithoutApprovedByUserInput[]
+    createMany?: FitnessReportCreateManyApprovedByUserInputEnvelope
+    connect?: FitnessReportWhereUniqueInput | FitnessReportWhereUniqueInput[]
+  }
+
   export type AttendanceCreateNestedManyWithoutConfirmedByInput = {
     create?: XOR<AttendanceCreateWithoutConfirmedByInput, AttendanceUncheckedCreateWithoutConfirmedByInput> | AttendanceCreateWithoutConfirmedByInput[] | AttendanceUncheckedCreateWithoutConfirmedByInput[]
     connectOrCreate?: AttendanceCreateOrConnectWithoutConfirmedByInput | AttendanceCreateOrConnectWithoutConfirmedByInput[]
@@ -43660,6 +44138,27 @@ export namespace Prisma {
     connect?: TechniqueEvaluationWhereUniqueInput | TechniqueEvaluationWhereUniqueInput[]
   }
 
+  export type StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput = {
+    create?: XOR<StudentTechniqueCreateWithoutApprovedByUserInput, StudentTechniqueUncheckedCreateWithoutApprovedByUserInput> | StudentTechniqueCreateWithoutApprovedByUserInput[] | StudentTechniqueUncheckedCreateWithoutApprovedByUserInput[]
+    connectOrCreate?: StudentTechniqueCreateOrConnectWithoutApprovedByUserInput | StudentTechniqueCreateOrConnectWithoutApprovedByUserInput[]
+    createMany?: StudentTechniqueCreateManyApprovedByUserInputEnvelope
+    connect?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
+  }
+
+  export type StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput = {
+    create?: XOR<StudentAchievementCreateWithoutApprovedByUserInput, StudentAchievementUncheckedCreateWithoutApprovedByUserInput> | StudentAchievementCreateWithoutApprovedByUserInput[] | StudentAchievementUncheckedCreateWithoutApprovedByUserInput[]
+    connectOrCreate?: StudentAchievementCreateOrConnectWithoutApprovedByUserInput | StudentAchievementCreateOrConnectWithoutApprovedByUserInput[]
+    createMany?: StudentAchievementCreateManyApprovedByUserInputEnvelope
+    connect?: StudentAchievementWhereUniqueInput | StudentAchievementWhereUniqueInput[]
+  }
+
+  export type FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput = {
+    create?: XOR<FitnessReportCreateWithoutApprovedByUserInput, FitnessReportUncheckedCreateWithoutApprovedByUserInput> | FitnessReportCreateWithoutApprovedByUserInput[] | FitnessReportUncheckedCreateWithoutApprovedByUserInput[]
+    connectOrCreate?: FitnessReportCreateOrConnectWithoutApprovedByUserInput | FitnessReportCreateOrConnectWithoutApprovedByUserInput[]
+    createMany?: FitnessReportCreateManyApprovedByUserInputEnvelope
+    connect?: FitnessReportWhereUniqueInput | FitnessReportWhereUniqueInput[]
+  }
+
   export type AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput = {
     create?: XOR<AttendanceCreateWithoutConfirmedByInput, AttendanceUncheckedCreateWithoutConfirmedByInput> | AttendanceCreateWithoutConfirmedByInput[] | AttendanceUncheckedCreateWithoutConfirmedByInput[]
     connectOrCreate?: AttendanceCreateOrConnectWithoutConfirmedByInput | AttendanceCreateOrConnectWithoutConfirmedByInput[]
@@ -43701,10 +44200,6 @@ export namespace Prisma {
 
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
-  }
-
-  export type EnumRoleFieldUpdateOperationsInput = {
-    set?: $Enums.Role
   }
 
   export type UserUpdaterolesInput = {
@@ -43806,6 +44301,48 @@ export namespace Prisma {
     update?: TechniqueEvaluationUpdateWithWhereUniqueWithoutEvaluatorInput | TechniqueEvaluationUpdateWithWhereUniqueWithoutEvaluatorInput[]
     updateMany?: TechniqueEvaluationUpdateManyWithWhereWithoutEvaluatorInput | TechniqueEvaluationUpdateManyWithWhereWithoutEvaluatorInput[]
     deleteMany?: TechniqueEvaluationScalarWhereInput | TechniqueEvaluationScalarWhereInput[]
+  }
+
+  export type StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput = {
+    create?: XOR<StudentTechniqueCreateWithoutApprovedByUserInput, StudentTechniqueUncheckedCreateWithoutApprovedByUserInput> | StudentTechniqueCreateWithoutApprovedByUserInput[] | StudentTechniqueUncheckedCreateWithoutApprovedByUserInput[]
+    connectOrCreate?: StudentTechniqueCreateOrConnectWithoutApprovedByUserInput | StudentTechniqueCreateOrConnectWithoutApprovedByUserInput[]
+    upsert?: StudentTechniqueUpsertWithWhereUniqueWithoutApprovedByUserInput | StudentTechniqueUpsertWithWhereUniqueWithoutApprovedByUserInput[]
+    createMany?: StudentTechniqueCreateManyApprovedByUserInputEnvelope
+    set?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
+    disconnect?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
+    delete?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
+    connect?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
+    update?: StudentTechniqueUpdateWithWhereUniqueWithoutApprovedByUserInput | StudentTechniqueUpdateWithWhereUniqueWithoutApprovedByUserInput[]
+    updateMany?: StudentTechniqueUpdateManyWithWhereWithoutApprovedByUserInput | StudentTechniqueUpdateManyWithWhereWithoutApprovedByUserInput[]
+    deleteMany?: StudentTechniqueScalarWhereInput | StudentTechniqueScalarWhereInput[]
+  }
+
+  export type StudentAchievementUpdateManyWithoutApprovedByUserNestedInput = {
+    create?: XOR<StudentAchievementCreateWithoutApprovedByUserInput, StudentAchievementUncheckedCreateWithoutApprovedByUserInput> | StudentAchievementCreateWithoutApprovedByUserInput[] | StudentAchievementUncheckedCreateWithoutApprovedByUserInput[]
+    connectOrCreate?: StudentAchievementCreateOrConnectWithoutApprovedByUserInput | StudentAchievementCreateOrConnectWithoutApprovedByUserInput[]
+    upsert?: StudentAchievementUpsertWithWhereUniqueWithoutApprovedByUserInput | StudentAchievementUpsertWithWhereUniqueWithoutApprovedByUserInput[]
+    createMany?: StudentAchievementCreateManyApprovedByUserInputEnvelope
+    set?: StudentAchievementWhereUniqueInput | StudentAchievementWhereUniqueInput[]
+    disconnect?: StudentAchievementWhereUniqueInput | StudentAchievementWhereUniqueInput[]
+    delete?: StudentAchievementWhereUniqueInput | StudentAchievementWhereUniqueInput[]
+    connect?: StudentAchievementWhereUniqueInput | StudentAchievementWhereUniqueInput[]
+    update?: StudentAchievementUpdateWithWhereUniqueWithoutApprovedByUserInput | StudentAchievementUpdateWithWhereUniqueWithoutApprovedByUserInput[]
+    updateMany?: StudentAchievementUpdateManyWithWhereWithoutApprovedByUserInput | StudentAchievementUpdateManyWithWhereWithoutApprovedByUserInput[]
+    deleteMany?: StudentAchievementScalarWhereInput | StudentAchievementScalarWhereInput[]
+  }
+
+  export type FitnessReportUpdateManyWithoutApprovedByUserNestedInput = {
+    create?: XOR<FitnessReportCreateWithoutApprovedByUserInput, FitnessReportUncheckedCreateWithoutApprovedByUserInput> | FitnessReportCreateWithoutApprovedByUserInput[] | FitnessReportUncheckedCreateWithoutApprovedByUserInput[]
+    connectOrCreate?: FitnessReportCreateOrConnectWithoutApprovedByUserInput | FitnessReportCreateOrConnectWithoutApprovedByUserInput[]
+    upsert?: FitnessReportUpsertWithWhereUniqueWithoutApprovedByUserInput | FitnessReportUpsertWithWhereUniqueWithoutApprovedByUserInput[]
+    createMany?: FitnessReportCreateManyApprovedByUserInputEnvelope
+    set?: FitnessReportWhereUniqueInput | FitnessReportWhereUniqueInput[]
+    disconnect?: FitnessReportWhereUniqueInput | FitnessReportWhereUniqueInput[]
+    delete?: FitnessReportWhereUniqueInput | FitnessReportWhereUniqueInput[]
+    connect?: FitnessReportWhereUniqueInput | FitnessReportWhereUniqueInput[]
+    update?: FitnessReportUpdateWithWhereUniqueWithoutApprovedByUserInput | FitnessReportUpdateWithWhereUniqueWithoutApprovedByUserInput[]
+    updateMany?: FitnessReportUpdateManyWithWhereWithoutApprovedByUserInput | FitnessReportUpdateManyWithWhereWithoutApprovedByUserInput[]
+    deleteMany?: FitnessReportScalarWhereInput | FitnessReportScalarWhereInput[]
   }
 
   export type AttendanceUpdateManyWithoutConfirmedByNestedInput = {
@@ -43952,6 +44489,48 @@ export namespace Prisma {
     update?: TechniqueEvaluationUpdateWithWhereUniqueWithoutEvaluatorInput | TechniqueEvaluationUpdateWithWhereUniqueWithoutEvaluatorInput[]
     updateMany?: TechniqueEvaluationUpdateManyWithWhereWithoutEvaluatorInput | TechniqueEvaluationUpdateManyWithWhereWithoutEvaluatorInput[]
     deleteMany?: TechniqueEvaluationScalarWhereInput | TechniqueEvaluationScalarWhereInput[]
+  }
+
+  export type StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput = {
+    create?: XOR<StudentTechniqueCreateWithoutApprovedByUserInput, StudentTechniqueUncheckedCreateWithoutApprovedByUserInput> | StudentTechniqueCreateWithoutApprovedByUserInput[] | StudentTechniqueUncheckedCreateWithoutApprovedByUserInput[]
+    connectOrCreate?: StudentTechniqueCreateOrConnectWithoutApprovedByUserInput | StudentTechniqueCreateOrConnectWithoutApprovedByUserInput[]
+    upsert?: StudentTechniqueUpsertWithWhereUniqueWithoutApprovedByUserInput | StudentTechniqueUpsertWithWhereUniqueWithoutApprovedByUserInput[]
+    createMany?: StudentTechniqueCreateManyApprovedByUserInputEnvelope
+    set?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
+    disconnect?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
+    delete?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
+    connect?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
+    update?: StudentTechniqueUpdateWithWhereUniqueWithoutApprovedByUserInput | StudentTechniqueUpdateWithWhereUniqueWithoutApprovedByUserInput[]
+    updateMany?: StudentTechniqueUpdateManyWithWhereWithoutApprovedByUserInput | StudentTechniqueUpdateManyWithWhereWithoutApprovedByUserInput[]
+    deleteMany?: StudentTechniqueScalarWhereInput | StudentTechniqueScalarWhereInput[]
+  }
+
+  export type StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput = {
+    create?: XOR<StudentAchievementCreateWithoutApprovedByUserInput, StudentAchievementUncheckedCreateWithoutApprovedByUserInput> | StudentAchievementCreateWithoutApprovedByUserInput[] | StudentAchievementUncheckedCreateWithoutApprovedByUserInput[]
+    connectOrCreate?: StudentAchievementCreateOrConnectWithoutApprovedByUserInput | StudentAchievementCreateOrConnectWithoutApprovedByUserInput[]
+    upsert?: StudentAchievementUpsertWithWhereUniqueWithoutApprovedByUserInput | StudentAchievementUpsertWithWhereUniqueWithoutApprovedByUserInput[]
+    createMany?: StudentAchievementCreateManyApprovedByUserInputEnvelope
+    set?: StudentAchievementWhereUniqueInput | StudentAchievementWhereUniqueInput[]
+    disconnect?: StudentAchievementWhereUniqueInput | StudentAchievementWhereUniqueInput[]
+    delete?: StudentAchievementWhereUniqueInput | StudentAchievementWhereUniqueInput[]
+    connect?: StudentAchievementWhereUniqueInput | StudentAchievementWhereUniqueInput[]
+    update?: StudentAchievementUpdateWithWhereUniqueWithoutApprovedByUserInput | StudentAchievementUpdateWithWhereUniqueWithoutApprovedByUserInput[]
+    updateMany?: StudentAchievementUpdateManyWithWhereWithoutApprovedByUserInput | StudentAchievementUpdateManyWithWhereWithoutApprovedByUserInput[]
+    deleteMany?: StudentAchievementScalarWhereInput | StudentAchievementScalarWhereInput[]
+  }
+
+  export type FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput = {
+    create?: XOR<FitnessReportCreateWithoutApprovedByUserInput, FitnessReportUncheckedCreateWithoutApprovedByUserInput> | FitnessReportCreateWithoutApprovedByUserInput[] | FitnessReportUncheckedCreateWithoutApprovedByUserInput[]
+    connectOrCreate?: FitnessReportCreateOrConnectWithoutApprovedByUserInput | FitnessReportCreateOrConnectWithoutApprovedByUserInput[]
+    upsert?: FitnessReportUpsertWithWhereUniqueWithoutApprovedByUserInput | FitnessReportUpsertWithWhereUniqueWithoutApprovedByUserInput[]
+    createMany?: FitnessReportCreateManyApprovedByUserInputEnvelope
+    set?: FitnessReportWhereUniqueInput | FitnessReportWhereUniqueInput[]
+    disconnect?: FitnessReportWhereUniqueInput | FitnessReportWhereUniqueInput[]
+    delete?: FitnessReportWhereUniqueInput | FitnessReportWhereUniqueInput[]
+    connect?: FitnessReportWhereUniqueInput | FitnessReportWhereUniqueInput[]
+    update?: FitnessReportUpdateWithWhereUniqueWithoutApprovedByUserInput | FitnessReportUpdateWithWhereUniqueWithoutApprovedByUserInput[]
+    updateMany?: FitnessReportUpdateManyWithWhereWithoutApprovedByUserInput | FitnessReportUpdateManyWithWhereWithoutApprovedByUserInput[]
+    deleteMany?: FitnessReportScalarWhereInput | FitnessReportScalarWhereInput[]
   }
 
   export type AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput = {
@@ -44103,6 +44682,12 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutInstructorProfileInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutInstructorProfileInput, UserUpdateWithoutInstructorProfileInput>, UserUncheckedUpdateWithoutInstructorProfileInput>
+  }
+
+  export type BeltRankCreateNestedOneWithoutCurrentRankStudentsInput = {
+    create?: XOR<BeltRankCreateWithoutCurrentRankStudentsInput, BeltRankUncheckedCreateWithoutCurrentRankStudentsInput>
+    connectOrCreate?: BeltRankCreateOrConnectWithoutCurrentRankStudentsInput
+    connect?: BeltRankWhereUniqueInput
   }
 
   export type PlanCreateNestedOneWithoutStudentsInput = {
@@ -44287,12 +44872,30 @@ export namespace Prisma {
     connect?: StudentDocumentWhereUniqueInput | StudentDocumentWhereUniqueInput[]
   }
 
+  export type NullableEnumGenderFieldUpdateOperationsInput = {
+    set?: $Enums.Gender | null
+  }
+
+  export type EnumStudentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.StudentStatus
+  }
+
   export type EnumScholarshipTypeFieldUpdateOperationsInput = {
     set?: $Enums.ScholarshipType
   }
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput = {
+    create?: XOR<BeltRankCreateWithoutCurrentRankStudentsInput, BeltRankUncheckedCreateWithoutCurrentRankStudentsInput>
+    connectOrCreate?: BeltRankCreateOrConnectWithoutCurrentRankStudentsInput
+    upsert?: BeltRankUpsertWithoutCurrentRankStudentsInput
+    disconnect?: BeltRankWhereInput | boolean
+    delete?: BeltRankWhereInput | boolean
+    connect?: BeltRankWhereUniqueInput
+    update?: XOR<XOR<BeltRankUpdateToOneWithWhereWithoutCurrentRankStudentsInput, BeltRankUpdateWithoutCurrentRankStudentsInput>, BeltRankUncheckedUpdateWithoutCurrentRankStudentsInput>
   }
 
   export type PlanUpdateOneWithoutStudentsNestedInput = {
@@ -44719,6 +45322,10 @@ export namespace Prisma {
     set?: $Enums.EnrollmentOrigin
   }
 
+  export type EnumEnrollmentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.EnrollmentStatus
+  }
+
   export type SchoolUpdateOneWithoutEnrollmentsNestedInput = {
     create?: XOR<SchoolCreateWithoutEnrollmentsInput, SchoolUncheckedCreateWithoutEnrollmentsInput>
     connectOrCreate?: SchoolCreateOrConnectWithoutEnrollmentsInput
@@ -44911,10 +45518,12 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type EnrollmentUpdateOneRequiredWithoutDocumentsNestedInput = {
+  export type EnrollmentUpdateOneWithoutDocumentsNestedInput = {
     create?: XOR<EnrollmentCreateWithoutDocumentsInput, EnrollmentUncheckedCreateWithoutDocumentsInput>
     connectOrCreate?: EnrollmentCreateOrConnectWithoutDocumentsInput
     upsert?: EnrollmentUpsertWithoutDocumentsInput
+    disconnect?: EnrollmentWhereInput | boolean
+    delete?: EnrollmentWhereInput | boolean
     connect?: EnrollmentWhereUniqueInput
     update?: XOR<XOR<EnrollmentUpdateToOneWithWhereWithoutDocumentsInput, EnrollmentUpdateWithoutDocumentsInput>, EnrollmentUncheckedUpdateWithoutDocumentsInput>
   }
@@ -44952,18 +45561,18 @@ export namespace Prisma {
     connect?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
   }
 
-  export type TechniqueCreateNestedManyWithoutRankInput = {
-    create?: XOR<TechniqueCreateWithoutRankInput, TechniqueUncheckedCreateWithoutRankInput> | TechniqueCreateWithoutRankInput[] | TechniqueUncheckedCreateWithoutRankInput[]
-    connectOrCreate?: TechniqueCreateOrConnectWithoutRankInput | TechniqueCreateOrConnectWithoutRankInput[]
-    createMany?: TechniqueCreateManyRankInputEnvelope
-    connect?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
-  }
-
   export type StudentRankHistoryCreateNestedManyWithoutBeltRankInput = {
     create?: XOR<StudentRankHistoryCreateWithoutBeltRankInput, StudentRankHistoryUncheckedCreateWithoutBeltRankInput> | StudentRankHistoryCreateWithoutBeltRankInput[] | StudentRankHistoryUncheckedCreateWithoutBeltRankInput[]
     connectOrCreate?: StudentRankHistoryCreateOrConnectWithoutBeltRankInput | StudentRankHistoryCreateOrConnectWithoutBeltRankInput[]
     createMany?: StudentRankHistoryCreateManyBeltRankInputEnvelope
     connect?: StudentRankHistoryWhereUniqueInput | StudentRankHistoryWhereUniqueInput[]
+  }
+
+  export type StudentCreateNestedManyWithoutCurrentRankRefInput = {
+    create?: XOR<StudentCreateWithoutCurrentRankRefInput, StudentUncheckedCreateWithoutCurrentRankRefInput> | StudentCreateWithoutCurrentRankRefInput[] | StudentUncheckedCreateWithoutCurrentRankRefInput[]
+    connectOrCreate?: StudentCreateOrConnectWithoutCurrentRankRefInput | StudentCreateOrConnectWithoutCurrentRankRefInput[]
+    createMany?: StudentCreateManyCurrentRankRefInputEnvelope
+    connect?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
   }
 
   export type BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput = {
@@ -44973,18 +45582,18 @@ export namespace Prisma {
     connect?: BeltRankKataWhereUniqueInput | BeltRankKataWhereUniqueInput[]
   }
 
-  export type TechniqueUncheckedCreateNestedManyWithoutRankInput = {
-    create?: XOR<TechniqueCreateWithoutRankInput, TechniqueUncheckedCreateWithoutRankInput> | TechniqueCreateWithoutRankInput[] | TechniqueUncheckedCreateWithoutRankInput[]
-    connectOrCreate?: TechniqueCreateOrConnectWithoutRankInput | TechniqueCreateOrConnectWithoutRankInput[]
-    createMany?: TechniqueCreateManyRankInputEnvelope
-    connect?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
-  }
-
   export type StudentRankHistoryUncheckedCreateNestedManyWithoutBeltRankInput = {
     create?: XOR<StudentRankHistoryCreateWithoutBeltRankInput, StudentRankHistoryUncheckedCreateWithoutBeltRankInput> | StudentRankHistoryCreateWithoutBeltRankInput[] | StudentRankHistoryUncheckedCreateWithoutBeltRankInput[]
     connectOrCreate?: StudentRankHistoryCreateOrConnectWithoutBeltRankInput | StudentRankHistoryCreateOrConnectWithoutBeltRankInput[]
     createMany?: StudentRankHistoryCreateManyBeltRankInputEnvelope
     connect?: StudentRankHistoryWhereUniqueInput | StudentRankHistoryWhereUniqueInput[]
+  }
+
+  export type StudentUncheckedCreateNestedManyWithoutCurrentRankRefInput = {
+    create?: XOR<StudentCreateWithoutCurrentRankRefInput, StudentUncheckedCreateWithoutCurrentRankRefInput> | StudentCreateWithoutCurrentRankRefInput[] | StudentUncheckedCreateWithoutCurrentRankRefInput[]
+    connectOrCreate?: StudentCreateOrConnectWithoutCurrentRankRefInput | StudentCreateOrConnectWithoutCurrentRankRefInput[]
+    createMany?: StudentCreateManyCurrentRankRefInputEnvelope
+    connect?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
   }
 
   export type EnumProgramFieldUpdateOperationsInput = {
@@ -45023,20 +45632,6 @@ export namespace Prisma {
     deleteMany?: BeltRankKataScalarWhereInput | BeltRankKataScalarWhereInput[]
   }
 
-  export type TechniqueUpdateManyWithoutRankNestedInput = {
-    create?: XOR<TechniqueCreateWithoutRankInput, TechniqueUncheckedCreateWithoutRankInput> | TechniqueCreateWithoutRankInput[] | TechniqueUncheckedCreateWithoutRankInput[]
-    connectOrCreate?: TechniqueCreateOrConnectWithoutRankInput | TechniqueCreateOrConnectWithoutRankInput[]
-    upsert?: TechniqueUpsertWithWhereUniqueWithoutRankInput | TechniqueUpsertWithWhereUniqueWithoutRankInput[]
-    createMany?: TechniqueCreateManyRankInputEnvelope
-    set?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
-    disconnect?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
-    delete?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
-    connect?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
-    update?: TechniqueUpdateWithWhereUniqueWithoutRankInput | TechniqueUpdateWithWhereUniqueWithoutRankInput[]
-    updateMany?: TechniqueUpdateManyWithWhereWithoutRankInput | TechniqueUpdateManyWithWhereWithoutRankInput[]
-    deleteMany?: TechniqueScalarWhereInput | TechniqueScalarWhereInput[]
-  }
-
   export type StudentRankHistoryUpdateManyWithoutBeltRankNestedInput = {
     create?: XOR<StudentRankHistoryCreateWithoutBeltRankInput, StudentRankHistoryUncheckedCreateWithoutBeltRankInput> | StudentRankHistoryCreateWithoutBeltRankInput[] | StudentRankHistoryUncheckedCreateWithoutBeltRankInput[]
     connectOrCreate?: StudentRankHistoryCreateOrConnectWithoutBeltRankInput | StudentRankHistoryCreateOrConnectWithoutBeltRankInput[]
@@ -45049,6 +45644,20 @@ export namespace Prisma {
     update?: StudentRankHistoryUpdateWithWhereUniqueWithoutBeltRankInput | StudentRankHistoryUpdateWithWhereUniqueWithoutBeltRankInput[]
     updateMany?: StudentRankHistoryUpdateManyWithWhereWithoutBeltRankInput | StudentRankHistoryUpdateManyWithWhereWithoutBeltRankInput[]
     deleteMany?: StudentRankHistoryScalarWhereInput | StudentRankHistoryScalarWhereInput[]
+  }
+
+  export type StudentUpdateManyWithoutCurrentRankRefNestedInput = {
+    create?: XOR<StudentCreateWithoutCurrentRankRefInput, StudentUncheckedCreateWithoutCurrentRankRefInput> | StudentCreateWithoutCurrentRankRefInput[] | StudentUncheckedCreateWithoutCurrentRankRefInput[]
+    connectOrCreate?: StudentCreateOrConnectWithoutCurrentRankRefInput | StudentCreateOrConnectWithoutCurrentRankRefInput[]
+    upsert?: StudentUpsertWithWhereUniqueWithoutCurrentRankRefInput | StudentUpsertWithWhereUniqueWithoutCurrentRankRefInput[]
+    createMany?: StudentCreateManyCurrentRankRefInputEnvelope
+    set?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    disconnect?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    delete?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    connect?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    update?: StudentUpdateWithWhereUniqueWithoutCurrentRankRefInput | StudentUpdateWithWhereUniqueWithoutCurrentRankRefInput[]
+    updateMany?: StudentUpdateManyWithWhereWithoutCurrentRankRefInput | StudentUpdateManyWithWhereWithoutCurrentRankRefInput[]
+    deleteMany?: StudentScalarWhereInput | StudentScalarWhereInput[]
   }
 
   export type BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput = {
@@ -45065,20 +45674,6 @@ export namespace Prisma {
     deleteMany?: BeltRankKataScalarWhereInput | BeltRankKataScalarWhereInput[]
   }
 
-  export type TechniqueUncheckedUpdateManyWithoutRankNestedInput = {
-    create?: XOR<TechniqueCreateWithoutRankInput, TechniqueUncheckedCreateWithoutRankInput> | TechniqueCreateWithoutRankInput[] | TechniqueUncheckedCreateWithoutRankInput[]
-    connectOrCreate?: TechniqueCreateOrConnectWithoutRankInput | TechniqueCreateOrConnectWithoutRankInput[]
-    upsert?: TechniqueUpsertWithWhereUniqueWithoutRankInput | TechniqueUpsertWithWhereUniqueWithoutRankInput[]
-    createMany?: TechniqueCreateManyRankInputEnvelope
-    set?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
-    disconnect?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
-    delete?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
-    connect?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
-    update?: TechniqueUpdateWithWhereUniqueWithoutRankInput | TechniqueUpdateWithWhereUniqueWithoutRankInput[]
-    updateMany?: TechniqueUpdateManyWithWhereWithoutRankInput | TechniqueUpdateManyWithWhereWithoutRankInput[]
-    deleteMany?: TechniqueScalarWhereInput | TechniqueScalarWhereInput[]
-  }
-
   export type StudentRankHistoryUncheckedUpdateManyWithoutBeltRankNestedInput = {
     create?: XOR<StudentRankHistoryCreateWithoutBeltRankInput, StudentRankHistoryUncheckedCreateWithoutBeltRankInput> | StudentRankHistoryCreateWithoutBeltRankInput[] | StudentRankHistoryUncheckedCreateWithoutBeltRankInput[]
     connectOrCreate?: StudentRankHistoryCreateOrConnectWithoutBeltRankInput | StudentRankHistoryCreateOrConnectWithoutBeltRankInput[]
@@ -45091,6 +45686,20 @@ export namespace Prisma {
     update?: StudentRankHistoryUpdateWithWhereUniqueWithoutBeltRankInput | StudentRankHistoryUpdateWithWhereUniqueWithoutBeltRankInput[]
     updateMany?: StudentRankHistoryUpdateManyWithWhereWithoutBeltRankInput | StudentRankHistoryUpdateManyWithWhereWithoutBeltRankInput[]
     deleteMany?: StudentRankHistoryScalarWhereInput | StudentRankHistoryScalarWhereInput[]
+  }
+
+  export type StudentUncheckedUpdateManyWithoutCurrentRankRefNestedInput = {
+    create?: XOR<StudentCreateWithoutCurrentRankRefInput, StudentUncheckedCreateWithoutCurrentRankRefInput> | StudentCreateWithoutCurrentRankRefInput[] | StudentUncheckedCreateWithoutCurrentRankRefInput[]
+    connectOrCreate?: StudentCreateOrConnectWithoutCurrentRankRefInput | StudentCreateOrConnectWithoutCurrentRankRefInput[]
+    upsert?: StudentUpsertWithWhereUniqueWithoutCurrentRankRefInput | StudentUpsertWithWhereUniqueWithoutCurrentRankRefInput[]
+    createMany?: StudentCreateManyCurrentRankRefInputEnvelope
+    set?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    disconnect?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    delete?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    connect?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
+    update?: StudentUpdateWithWhereUniqueWithoutCurrentRankRefInput | StudentUpdateWithWhereUniqueWithoutCurrentRankRefInput[]
+    updateMany?: StudentUpdateManyWithWhereWithoutCurrentRankRefInput | StudentUpdateManyWithWhereWithoutCurrentRankRefInput[]
+    deleteMany?: StudentScalarWhereInput | StudentScalarWhereInput[]
   }
 
   export type BeltRankCreateNestedOneWithoutKatasInput = {
@@ -45165,12 +45774,6 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRankPromotionsInput, UserUpdateWithoutRankPromotionsInput>, UserUncheckedUpdateWithoutRankPromotionsInput>
   }
 
-  export type BeltRankCreateNestedOneWithoutTechniquesInput = {
-    create?: XOR<BeltRankCreateWithoutTechniquesInput, BeltRankUncheckedCreateWithoutTechniquesInput>
-    connectOrCreate?: BeltRankCreateOrConnectWithoutTechniquesInput
-    connect?: BeltRankWhereUniqueInput
-  }
-
   export type SchoolCreateNestedOneWithoutTechniquesInput = {
     create?: XOR<SchoolCreateWithoutTechniquesInput, SchoolUncheckedCreateWithoutTechniquesInput>
     connectOrCreate?: SchoolCreateOrConnectWithoutTechniquesInput
@@ -45207,16 +45810,6 @@ export namespace Prisma {
 
   export type EnumTechniqueCategoryFieldUpdateOperationsInput = {
     set?: $Enums.TechniqueCategory
-  }
-
-  export type BeltRankUpdateOneWithoutTechniquesNestedInput = {
-    create?: XOR<BeltRankCreateWithoutTechniquesInput, BeltRankUncheckedCreateWithoutTechniquesInput>
-    connectOrCreate?: BeltRankCreateOrConnectWithoutTechniquesInput
-    upsert?: BeltRankUpsertWithoutTechniquesInput
-    disconnect?: BeltRankWhereInput | boolean
-    delete?: BeltRankWhereInput | boolean
-    connect?: BeltRankWhereUniqueInput
-    update?: XOR<XOR<BeltRankUpdateToOneWithWhereWithoutTechniquesInput, BeltRankUpdateWithoutTechniquesInput>, BeltRankUncheckedUpdateWithoutTechniquesInput>
   }
 
   export type SchoolUpdateOneWithoutTechniquesNestedInput = {
@@ -45297,6 +45890,12 @@ export namespace Prisma {
     connect?: TechniqueWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutTechniquesApprovedInput = {
+    create?: XOR<UserCreateWithoutTechniquesApprovedInput, UserUncheckedCreateWithoutTechniquesApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTechniquesApprovedInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type TechniqueEvaluationCreateNestedOneWithoutStudentTechniqueInput = {
     create?: XOR<TechniqueEvaluationCreateWithoutStudentTechniqueInput, TechniqueEvaluationUncheckedCreateWithoutStudentTechniqueInput>
     connectOrCreate?: TechniqueEvaluationCreateOrConnectWithoutStudentTechniqueInput
@@ -45331,6 +45930,16 @@ export namespace Prisma {
     upsert?: TechniqueUpsertWithoutStudentsInput
     connect?: TechniqueWhereUniqueInput
     update?: XOR<XOR<TechniqueUpdateToOneWithWhereWithoutStudentsInput, TechniqueUpdateWithoutStudentsInput>, TechniqueUncheckedUpdateWithoutStudentsInput>
+  }
+
+  export type UserUpdateOneWithoutTechniquesApprovedNestedInput = {
+    create?: XOR<UserCreateWithoutTechniquesApprovedInput, UserUncheckedCreateWithoutTechniquesApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTechniquesApprovedInput
+    upsert?: UserUpsertWithoutTechniquesApprovedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTechniquesApprovedInput, UserUpdateWithoutTechniquesApprovedInput>, UserUncheckedUpdateWithoutTechniquesApprovedInput>
   }
 
   export type TechniqueEvaluationUpdateOneWithoutStudentTechniqueNestedInput = {
@@ -45401,12 +46010,12 @@ export namespace Prisma {
     connect?: StudentWhereUniqueInput | StudentWhereUniqueInput[]
   }
 
-  export type NullableFloatFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type NullableDecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string | null
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
   }
 
   export type SchoolUpdateOneWithoutPlansNestedInput = {
@@ -45617,6 +46226,10 @@ export namespace Prisma {
     create?: XOR<StudentCreateWithoutClassEnrollmentsInput, StudentUncheckedCreateWithoutClassEnrollmentsInput>
     connectOrCreate?: StudentCreateOrConnectWithoutClassEnrollmentsInput
     connect?: StudentWhereUniqueInput
+  }
+
+  export type EnumClassEnrollmentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ClassEnrollmentStatus
   }
 
   export type ClassUpdateOneRequiredWithoutEnrollmentsNestedInput = {
@@ -45875,6 +46488,16 @@ export namespace Prisma {
     connect?: AchievementTypeWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutAchievementsApprovedInput = {
+    create?: XOR<UserCreateWithoutAchievementsApprovedInput, UserUncheckedCreateWithoutAchievementsApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAchievementsApprovedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumApprovalStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ApprovalStatus
+  }
+
   export type StudentUpdateOneRequiredWithoutAchievementsNestedInput = {
     create?: XOR<StudentCreateWithoutAchievementsInput, StudentUncheckedCreateWithoutAchievementsInput>
     connectOrCreate?: StudentCreateOrConnectWithoutAchievementsInput
@@ -45891,10 +46514,26 @@ export namespace Prisma {
     update?: XOR<XOR<AchievementTypeUpdateToOneWithWhereWithoutAchievementsInput, AchievementTypeUpdateWithoutAchievementsInput>, AchievementTypeUncheckedUpdateWithoutAchievementsInput>
   }
 
+  export type UserUpdateOneWithoutAchievementsApprovedNestedInput = {
+    create?: XOR<UserCreateWithoutAchievementsApprovedInput, UserUncheckedCreateWithoutAchievementsApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAchievementsApprovedInput
+    upsert?: UserUpsertWithoutAchievementsApprovedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAchievementsApprovedInput, UserUpdateWithoutAchievementsApprovedInput>, UserUncheckedUpdateWithoutAchievementsApprovedInput>
+  }
+
   export type StudentCreateNestedOneWithoutFitnessReportsInput = {
     create?: XOR<StudentCreateWithoutFitnessReportsInput, StudentUncheckedCreateWithoutFitnessReportsInput>
     connectOrCreate?: StudentCreateOrConnectWithoutFitnessReportsInput
     connect?: StudentWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutFitnessReportsApprovedInput = {
+    create?: XOR<UserCreateWithoutFitnessReportsApprovedInput, UserUncheckedCreateWithoutFitnessReportsApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFitnessReportsApprovedInput
+    connect?: UserWhereUniqueInput
   }
 
   export type StudentUpdateOneRequiredWithoutFitnessReportsNestedInput = {
@@ -45903,6 +46542,16 @@ export namespace Prisma {
     upsert?: StudentUpsertWithoutFitnessReportsInput
     connect?: StudentWhereUniqueInput
     update?: XOR<XOR<StudentUpdateToOneWithWhereWithoutFitnessReportsInput, StudentUpdateWithoutFitnessReportsInput>, StudentUncheckedUpdateWithoutFitnessReportsInput>
+  }
+
+  export type UserUpdateOneWithoutFitnessReportsApprovedNestedInput = {
+    create?: XOR<UserCreateWithoutFitnessReportsApprovedInput, UserUncheckedCreateWithoutFitnessReportsApprovedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFitnessReportsApprovedInput
+    upsert?: UserUpsertWithoutFitnessReportsApprovedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFitnessReportsApprovedInput, UserUpdateWithoutFitnessReportsApprovedInput>, UserUncheckedUpdateWithoutFitnessReportsApprovedInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -45997,13 +46646,6 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type NestedEnumRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
-  }
-
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -46046,14 +46688,18 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRoleFilter<$PrismaModel>
-    _max?: NestedEnumRoleFilter<$PrismaModel>
+  export type NestedEnumGenderNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.Gender | EnumGenderFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumGenderNullableFilter<$PrismaModel> | $Enums.Gender | null
+  }
+
+  export type NestedEnumStudentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.StudentStatus | EnumStudentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StudentStatus[] | ListEnumStudentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StudentStatus[] | ListEnumStudentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStudentStatusFilter<$PrismaModel> | $Enums.StudentStatus
   }
 
   export type NestedEnumScholarshipTypeFilter<$PrismaModel = never> = {
@@ -46066,6 +46712,26 @@ export namespace Prisma {
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedEnumGenderNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Gender | EnumGenderFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumGenderNullableWithAggregatesFilter<$PrismaModel> | $Enums.Gender | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumGenderNullableFilter<$PrismaModel>
+    _max?: NestedEnumGenderNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumStudentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StudentStatus | EnumStudentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StudentStatus[] | ListEnumStudentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StudentStatus[] | ListEnumStudentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStudentStatusWithAggregatesFilter<$PrismaModel> | $Enums.StudentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStudentStatusFilter<$PrismaModel>
+    _max?: NestedEnumStudentStatusFilter<$PrismaModel>
   }
   export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -46116,6 +46782,13 @@ export namespace Prisma {
     not?: NestedEnumEnrollmentOriginFilter<$PrismaModel> | $Enums.EnrollmentOrigin
   }
 
+  export type NestedEnumEnrollmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.EnrollmentStatus | EnumEnrollmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EnrollmentStatus[] | ListEnumEnrollmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EnrollmentStatus[] | ListEnumEnrollmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEnrollmentStatusFilter<$PrismaModel> | $Enums.EnrollmentStatus
+  }
+
   export type NestedEnumEnrollmentOriginWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.EnrollmentOrigin | EnumEnrollmentOriginFieldRefInput<$PrismaModel>
     in?: $Enums.EnrollmentOrigin[] | ListEnumEnrollmentOriginFieldRefInput<$PrismaModel>
@@ -46124,6 +46797,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumEnrollmentOriginFilter<$PrismaModel>
     _max?: NestedEnumEnrollmentOriginFilter<$PrismaModel>
+  }
+
+  export type NestedEnumEnrollmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EnrollmentStatus | EnumEnrollmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EnrollmentStatus[] | ListEnumEnrollmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EnrollmentStatus[] | ListEnumEnrollmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEnrollmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.EnrollmentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEnrollmentStatusFilter<$PrismaModel>
+    _max?: NestedEnumEnrollmentStatusFilter<$PrismaModel>
   }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -46287,20 +46970,31 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+  export type NestedDecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type NestedDecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumClassAudienceFilter<$PrismaModel = never> = {
@@ -46320,6 +47014,23 @@ export namespace Prisma {
     _max?: NestedEnumClassAudienceFilter<$PrismaModel>
   }
 
+  export type NestedEnumClassEnrollmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ClassEnrollmentStatus | EnumClassEnrollmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ClassEnrollmentStatus[] | ListEnumClassEnrollmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ClassEnrollmentStatus[] | ListEnumClassEnrollmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumClassEnrollmentStatusFilter<$PrismaModel> | $Enums.ClassEnrollmentStatus
+  }
+
+  export type NestedEnumClassEnrollmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ClassEnrollmentStatus | EnumClassEnrollmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ClassEnrollmentStatus[] | ListEnumClassEnrollmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ClassEnrollmentStatus[] | ListEnumClassEnrollmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumClassEnrollmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.ClassEnrollmentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumClassEnrollmentStatusFilter<$PrismaModel>
+    _max?: NestedEnumClassEnrollmentStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumAttendanceStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.AttendanceStatus | EnumAttendanceStatusFieldRefInput<$PrismaModel>
     in?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
@@ -46335,6 +47046,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAttendanceStatusFilter<$PrismaModel>
     _max?: NestedEnumAttendanceStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumApprovalStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalStatus | EnumApprovalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalStatusFilter<$PrismaModel> | $Enums.ApprovalStatus
+  }
+
+  export type NestedEnumApprovalStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApprovalStatus | EnumApprovalStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApprovalStatus[] | ListEnumApprovalStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumApprovalStatusWithAggregatesFilter<$PrismaModel> | $Enums.ApprovalStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumApprovalStatusFilter<$PrismaModel>
+    _max?: NestedEnumApprovalStatusFilter<$PrismaModel>
   }
 
   export type BranchCreateWithoutSchoolInput = {
@@ -46376,7 +47104,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -46387,6 +47114,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
@@ -46401,7 +47131,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     branchId?: string | null
     createdAt?: Date | string
@@ -46412,6 +47141,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
@@ -46434,14 +47166,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -46451,6 +47183,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
     user?: UserCreateNestedOneWithoutStudentProfileInput
@@ -46476,15 +47209,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -46526,7 +47260,7 @@ export namespace Prisma {
     quote?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -46548,7 +47282,7 @@ export namespace Prisma {
     studentId?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -46586,8 +47320,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     katas?: BeltRankKataCreateNestedManyWithoutBeltRankInput
-    techniques?: TechniqueCreateNestedManyWithoutRankInput
     promotions?: StudentRankHistoryCreateNestedManyWithoutBeltRankInput
+    currentRankStudents?: StudentCreateNestedManyWithoutCurrentRankRefInput
   }
 
   export type BeltRankUncheckedCreateWithoutSchoolInput = {
@@ -46609,8 +47343,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     katas?: BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput
-    techniques?: TechniqueUncheckedCreateNestedManyWithoutRankInput
     promotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutBeltRankInput
+    currentRankStudents?: StudentUncheckedCreateNestedManyWithoutCurrentRankRefInput
   }
 
   export type BeltRankCreateOrConnectWithoutSchoolInput = {
@@ -46637,7 +47371,6 @@ export namespace Prisma {
     videoUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    rank?: BeltRankCreateNestedOneWithoutTechniquesInput
     beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
     students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
   }
@@ -46649,7 +47382,6 @@ export namespace Prisma {
     kanji?: string | null
     description?: string | null
     category?: $Enums.TechniqueCategory
-    rankId?: string | null
     order?: number
     movementsCount?: number | null
     embusen?: string | null
@@ -46702,7 +47434,8 @@ export namespace Prisma {
     name: string
     description?: string | null
     monthlyHours?: number
-    price?: number | null
+    price?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
     isUnlimited?: boolean
     active?: boolean
     sortOrder?: number
@@ -46716,7 +47449,8 @@ export namespace Prisma {
     name: string
     description?: string | null
     monthlyHours?: number
-    price?: number | null
+    price?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
     isUnlimited?: boolean
     active?: boolean
     sortOrder?: number
@@ -46788,7 +47522,6 @@ export namespace Prisma {
     passwordHash?: StringNullableFilter<"User"> | string | null
     name?: StringNullableFilter<"User"> | string | null
     phone?: StringNullableFilter<"User"> | string | null
-    role?: EnumRoleFilter<"User"> | $Enums.Role
     roles?: EnumRoleNullableListFilter<"User">
     schoolId?: StringNullableFilter<"User"> | string | null
     branchId?: StringNullableFilter<"User"> | string | null
@@ -46824,15 +47557,16 @@ export namespace Prisma {
     firstName?: StringFilter<"Student"> | string
     lastName?: StringFilter<"Student"> | string
     dateOfBirth?: DateTimeFilter<"Student"> | Date | string
-    gender?: StringNullableFilter<"Student"> | string | null
+    gender?: EnumGenderNullableFilter<"Student"> | $Enums.Gender | null
     email?: StringNullableFilter<"Student"> | string | null
     contactPhone?: StringNullableFilter<"Student"> | string | null
     medicalInfo?: StringNullableFilter<"Student"> | string | null
     emergencyContact?: StringNullableFilter<"Student"> | string | null
     enrollmentDate?: DateTimeFilter<"Student"> | Date | string
     memberNumber?: StringNullableFilter<"Student"> | string | null
-    status?: StringFilter<"Student"> | string
+    status?: EnumStudentStatusFilter<"Student"> | $Enums.StudentStatus
     currentRank?: StringNullableFilter<"Student"> | string | null
+    currentRankId?: StringNullableFilter<"Student"> | string | null
     photoKey?: StringNullableFilter<"Student"> | string | null
     registrationData?: JsonNullableFilter<"Student">
     planId?: StringNullableFilter<"Student"> | string | null
@@ -46875,7 +47609,7 @@ export namespace Prisma {
     studentId?: StringNullableFilter<"Enrollment"> | string | null
     contactEmail?: StringFilter<"Enrollment"> | string
     contactPhone?: StringNullableFilter<"Enrollment"> | string | null
-    status?: StringFilter<"Enrollment"> | string
+    status?: EnumEnrollmentStatusFilter<"Enrollment"> | $Enums.EnrollmentStatus
     notes?: StringNullableFilter<"Enrollment"> | string | null
     registrationData?: JsonNullableFilter<"Enrollment">
     createdAt?: DateTimeFilter<"Enrollment"> | Date | string
@@ -46948,7 +47682,6 @@ export namespace Prisma {
     kanji?: StringNullableFilter<"Technique"> | string | null
     description?: StringNullableFilter<"Technique"> | string | null
     category?: EnumTechniqueCategoryFilter<"Technique"> | $Enums.TechniqueCategory
-    rankId?: StringNullableFilter<"Technique"> | string | null
     order?: IntFilter<"Technique"> | number
     movementsCount?: IntNullableFilter<"Technique"> | number | null
     embusen?: StringNullableFilter<"Technique"> | string | null
@@ -47010,7 +47743,8 @@ export namespace Prisma {
     name?: StringFilter<"Plan"> | string
     description?: StringNullableFilter<"Plan"> | string | null
     monthlyHours?: FloatFilter<"Plan"> | number
-    price?: FloatNullableFilter<"Plan"> | number | null
+    price?: DecimalNullableFilter<"Plan"> | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFilter<"Plan"> | string
     isUnlimited?: BoolFilter<"Plan"> | boolean
     active?: BoolFilter<"Plan"> | boolean
     sortOrder?: IntFilter<"Plan"> | number
@@ -47059,7 +47793,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -47070,6 +47803,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
@@ -47084,7 +47820,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     createdAt?: Date | string
@@ -47095,6 +47830,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
@@ -47117,14 +47855,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -47134,6 +47872,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     user?: UserCreateNestedOneWithoutStudentProfileInput
@@ -47159,15 +47898,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -47209,7 +47949,7 @@ export namespace Prisma {
     quote?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -47231,7 +47971,7 @@ export namespace Prisma {
     studentId?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -47257,8 +47997,8 @@ export namespace Prisma {
     audience?: $Enums.ClassAudience
     active?: boolean
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
     instructor?: UserCreateNestedOneWithoutClassesInput
@@ -47275,8 +48015,8 @@ export namespace Prisma {
     active?: boolean
     instructorId?: string | null
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: ClassSessionUncheckedCreateNestedManyWithoutClassInput
@@ -47409,8 +48149,8 @@ export namespace Prisma {
     branchId?: StringFilter<"Class"> | string
     instructorId?: StringNullableFilter<"Class"> | string | null
     dayOfWeek?: IntFilter<"Class"> | number
-    startTime?: StringFilter<"Class"> | string
-    endTime?: StringFilter<"Class"> | string
+    startTime?: DateTimeFilter<"Class"> | Date | string
+    endTime?: DateTimeFilter<"Class"> | Date | string
     createdAt?: DateTimeFilter<"Class"> | Date | string
     updatedAt?: DateTimeFilter<"Class"> | Date | string
   }
@@ -47501,14 +48241,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -47518,6 +48258,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
@@ -47543,15 +48284,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -47606,14 +48348,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -47623,6 +48365,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
@@ -47648,15 +48391,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -47746,6 +48490,106 @@ export namespace Prisma {
 
   export type TechniqueEvaluationCreateManyEvaluatorInputEnvelope = {
     data: TechniqueEvaluationCreateManyEvaluatorInput | TechniqueEvaluationCreateManyEvaluatorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StudentTechniqueCreateWithoutApprovedByUserInput = {
+    id?: string
+    approved?: boolean
+    approvedAt?: Date | string | null
+    inPractice?: boolean
+    practiceHours?: number
+    lastPracticeDate?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    student: StudentCreateNestedOneWithoutTechniquesInput
+    technique: TechniqueCreateNestedOneWithoutStudentsInput
+    evaluation?: TechniqueEvaluationCreateNestedOneWithoutStudentTechniqueInput
+  }
+
+  export type StudentTechniqueUncheckedCreateWithoutApprovedByUserInput = {
+    id?: string
+    studentId: string
+    techniqueId: string
+    approved?: boolean
+    approvedAt?: Date | string | null
+    inPractice?: boolean
+    practiceHours?: number
+    lastPracticeDate?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    evaluation?: TechniqueEvaluationUncheckedCreateNestedOneWithoutStudentTechniqueInput
+  }
+
+  export type StudentTechniqueCreateOrConnectWithoutApprovedByUserInput = {
+    where: StudentTechniqueWhereUniqueInput
+    create: XOR<StudentTechniqueCreateWithoutApprovedByUserInput, StudentTechniqueUncheckedCreateWithoutApprovedByUserInput>
+  }
+
+  export type StudentTechniqueCreateManyApprovedByUserInputEnvelope = {
+    data: StudentTechniqueCreateManyApprovedByUserInput | StudentTechniqueCreateManyApprovedByUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StudentAchievementCreateWithoutApprovedByUserInput = {
+    id?: string
+    evidenceKey?: string | null
+    comment?: string | null
+    status?: $Enums.ApprovalStatus
+    achievedAt?: Date | string
+    createdAt?: Date | string
+    student: StudentCreateNestedOneWithoutAchievementsInput
+    type: AchievementTypeCreateNestedOneWithoutAchievementsInput
+  }
+
+  export type StudentAchievementUncheckedCreateWithoutApprovedByUserInput = {
+    id?: string
+    studentId: string
+    typeId: string
+    evidenceKey?: string | null
+    comment?: string | null
+    status?: $Enums.ApprovalStatus
+    achievedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type StudentAchievementCreateOrConnectWithoutApprovedByUserInput = {
+    where: StudentAchievementWhereUniqueInput
+    create: XOR<StudentAchievementCreateWithoutApprovedByUserInput, StudentAchievementUncheckedCreateWithoutApprovedByUserInput>
+  }
+
+  export type StudentAchievementCreateManyApprovedByUserInputEnvelope = {
+    data: StudentAchievementCreateManyApprovedByUserInput | StudentAchievementCreateManyApprovedByUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FitnessReportCreateWithoutApprovedByUserInput = {
+    id?: string
+    report: string
+    evidenceKey?: string | null
+    comment?: string | null
+    status?: $Enums.ApprovalStatus
+    createdAt?: Date | string
+    student: StudentCreateNestedOneWithoutFitnessReportsInput
+  }
+
+  export type FitnessReportUncheckedCreateWithoutApprovedByUserInput = {
+    id?: string
+    studentId: string
+    report: string
+    evidenceKey?: string | null
+    comment?: string | null
+    status?: $Enums.ApprovalStatus
+    createdAt?: Date | string
+  }
+
+  export type FitnessReportCreateOrConnectWithoutApprovedByUserInput = {
+    where: FitnessReportWhereUniqueInput
+    create: XOR<FitnessReportCreateWithoutApprovedByUserInput, FitnessReportUncheckedCreateWithoutApprovedByUserInput>
+  }
+
+  export type FitnessReportCreateManyApprovedByUserInputEnvelope = {
+    data: FitnessReportCreateManyApprovedByUserInput | FitnessReportCreateManyApprovedByUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -47888,8 +48732,8 @@ export namespace Prisma {
     audience?: $Enums.ClassAudience
     active?: boolean
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
     branch: BranchCreateNestedOneWithoutClassesInput
@@ -47906,8 +48750,8 @@ export namespace Prisma {
     active?: boolean
     branchId: string
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: ClassSessionUncheckedCreateNestedManyWithoutClassInput
@@ -48040,14 +48884,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -48057,6 +48901,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
@@ -48082,15 +48927,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48213,6 +49059,100 @@ export namespace Prisma {
     evaluatedAt?: DateTimeFilter<"TechniqueEvaluation"> | Date | string
     createdAt?: DateTimeFilter<"TechniqueEvaluation"> | Date | string
     updatedAt?: DateTimeFilter<"TechniqueEvaluation"> | Date | string
+  }
+
+  export type StudentTechniqueUpsertWithWhereUniqueWithoutApprovedByUserInput = {
+    where: StudentTechniqueWhereUniqueInput
+    update: XOR<StudentTechniqueUpdateWithoutApprovedByUserInput, StudentTechniqueUncheckedUpdateWithoutApprovedByUserInput>
+    create: XOR<StudentTechniqueCreateWithoutApprovedByUserInput, StudentTechniqueUncheckedCreateWithoutApprovedByUserInput>
+  }
+
+  export type StudentTechniqueUpdateWithWhereUniqueWithoutApprovedByUserInput = {
+    where: StudentTechniqueWhereUniqueInput
+    data: XOR<StudentTechniqueUpdateWithoutApprovedByUserInput, StudentTechniqueUncheckedUpdateWithoutApprovedByUserInput>
+  }
+
+  export type StudentTechniqueUpdateManyWithWhereWithoutApprovedByUserInput = {
+    where: StudentTechniqueScalarWhereInput
+    data: XOR<StudentTechniqueUpdateManyMutationInput, StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserInput>
+  }
+
+  export type StudentTechniqueScalarWhereInput = {
+    AND?: StudentTechniqueScalarWhereInput | StudentTechniqueScalarWhereInput[]
+    OR?: StudentTechniqueScalarWhereInput[]
+    NOT?: StudentTechniqueScalarWhereInput | StudentTechniqueScalarWhereInput[]
+    id?: StringFilter<"StudentTechnique"> | string
+    studentId?: StringFilter<"StudentTechnique"> | string
+    techniqueId?: StringFilter<"StudentTechnique"> | string
+    approved?: BoolFilter<"StudentTechnique"> | boolean
+    approvedBy?: StringNullableFilter<"StudentTechnique"> | string | null
+    approvedAt?: DateTimeNullableFilter<"StudentTechnique"> | Date | string | null
+    inPractice?: BoolFilter<"StudentTechnique"> | boolean
+    practiceHours?: FloatFilter<"StudentTechnique"> | number
+    lastPracticeDate?: DateTimeNullableFilter<"StudentTechnique"> | Date | string | null
+    notes?: StringNullableFilter<"StudentTechnique"> | string | null
+    createdAt?: DateTimeFilter<"StudentTechnique"> | Date | string
+  }
+
+  export type StudentAchievementUpsertWithWhereUniqueWithoutApprovedByUserInput = {
+    where: StudentAchievementWhereUniqueInput
+    update: XOR<StudentAchievementUpdateWithoutApprovedByUserInput, StudentAchievementUncheckedUpdateWithoutApprovedByUserInput>
+    create: XOR<StudentAchievementCreateWithoutApprovedByUserInput, StudentAchievementUncheckedCreateWithoutApprovedByUserInput>
+  }
+
+  export type StudentAchievementUpdateWithWhereUniqueWithoutApprovedByUserInput = {
+    where: StudentAchievementWhereUniqueInput
+    data: XOR<StudentAchievementUpdateWithoutApprovedByUserInput, StudentAchievementUncheckedUpdateWithoutApprovedByUserInput>
+  }
+
+  export type StudentAchievementUpdateManyWithWhereWithoutApprovedByUserInput = {
+    where: StudentAchievementScalarWhereInput
+    data: XOR<StudentAchievementUpdateManyMutationInput, StudentAchievementUncheckedUpdateManyWithoutApprovedByUserInput>
+  }
+
+  export type StudentAchievementScalarWhereInput = {
+    AND?: StudentAchievementScalarWhereInput | StudentAchievementScalarWhereInput[]
+    OR?: StudentAchievementScalarWhereInput[]
+    NOT?: StudentAchievementScalarWhereInput | StudentAchievementScalarWhereInput[]
+    id?: StringFilter<"StudentAchievement"> | string
+    studentId?: StringFilter<"StudentAchievement"> | string
+    typeId?: StringFilter<"StudentAchievement"> | string
+    evidenceKey?: StringNullableFilter<"StudentAchievement"> | string | null
+    approvedBy?: StringNullableFilter<"StudentAchievement"> | string | null
+    comment?: StringNullableFilter<"StudentAchievement"> | string | null
+    status?: EnumApprovalStatusFilter<"StudentAchievement"> | $Enums.ApprovalStatus
+    achievedAt?: DateTimeFilter<"StudentAchievement"> | Date | string
+    createdAt?: DateTimeFilter<"StudentAchievement"> | Date | string
+  }
+
+  export type FitnessReportUpsertWithWhereUniqueWithoutApprovedByUserInput = {
+    where: FitnessReportWhereUniqueInput
+    update: XOR<FitnessReportUpdateWithoutApprovedByUserInput, FitnessReportUncheckedUpdateWithoutApprovedByUserInput>
+    create: XOR<FitnessReportCreateWithoutApprovedByUserInput, FitnessReportUncheckedCreateWithoutApprovedByUserInput>
+  }
+
+  export type FitnessReportUpdateWithWhereUniqueWithoutApprovedByUserInput = {
+    where: FitnessReportWhereUniqueInput
+    data: XOR<FitnessReportUpdateWithoutApprovedByUserInput, FitnessReportUncheckedUpdateWithoutApprovedByUserInput>
+  }
+
+  export type FitnessReportUpdateManyWithWhereWithoutApprovedByUserInput = {
+    where: FitnessReportScalarWhereInput
+    data: XOR<FitnessReportUpdateManyMutationInput, FitnessReportUncheckedUpdateManyWithoutApprovedByUserInput>
+  }
+
+  export type FitnessReportScalarWhereInput = {
+    AND?: FitnessReportScalarWhereInput | FitnessReportScalarWhereInput[]
+    OR?: FitnessReportScalarWhereInput[]
+    NOT?: FitnessReportScalarWhereInput | FitnessReportScalarWhereInput[]
+    id?: StringFilter<"FitnessReport"> | string
+    studentId?: StringFilter<"FitnessReport"> | string
+    report?: StringFilter<"FitnessReport"> | string
+    evidenceKey?: StringNullableFilter<"FitnessReport"> | string | null
+    approvedBy?: StringNullableFilter<"FitnessReport"> | string | null
+    comment?: StringNullableFilter<"FitnessReport"> | string | null
+    status?: EnumApprovalStatusFilter<"FitnessReport"> | $Enums.ApprovalStatus
+    createdAt?: DateTimeFilter<"FitnessReport"> | Date | string
   }
 
   export type AttendanceUpsertWithWhereUniqueWithoutConfirmedByInput = {
@@ -48363,7 +49303,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -48375,6 +49314,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -48388,7 +49330,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     branchId?: string | null
@@ -48400,6 +49341,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -48429,7 +49373,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48441,6 +49384,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -48454,7 +49400,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48466,6 +49411,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -48479,7 +49427,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -48491,6 +49438,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -48504,7 +49454,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     branchId?: string | null
@@ -48516,6 +49465,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -48545,7 +49497,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48557,6 +49508,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -48570,7 +49524,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48582,6 +49535,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -48593,14 +49549,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -48610,6 +49566,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
@@ -48636,15 +49593,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -48678,7 +49636,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -48690,6 +49647,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
@@ -48703,7 +49663,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     branchId?: string | null
@@ -48715,6 +49674,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
@@ -48742,14 +49704,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -48759,6 +49721,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
@@ -48785,15 +49748,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48833,7 +49797,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48845,6 +49808,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
@@ -48858,7 +49824,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48870,6 +49835,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -48883,7 +49851,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -48894,6 +49861,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
@@ -48908,7 +49878,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     branchId?: string | null
@@ -48919,6 +49888,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
@@ -48949,7 +49921,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48960,6 +49931,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
@@ -48974,7 +49948,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48985,6 +49958,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -48992,12 +49968,64 @@ export namespace Prisma {
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
+  export type BeltRankCreateWithoutCurrentRankStudentsInput = {
+    id?: string
+    program?: $Enums.Program
+    name: string
+    kyuDan?: string | null
+    japaneseName?: string | null
+    kanji?: string | null
+    order: number
+    beltColor?: string | null
+    beltSecondaryColor?: string | null
+    isMaximumRank?: boolean
+    estimatedDurationMonths?: number | null
+    description?: string | null
+    minMonths?: number | null
+    maxMonths?: number | null
+    minAttendancePercent?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutBeltRanksInput
+    katas?: BeltRankKataCreateNestedManyWithoutBeltRankInput
+    promotions?: StudentRankHistoryCreateNestedManyWithoutBeltRankInput
+  }
+
+  export type BeltRankUncheckedCreateWithoutCurrentRankStudentsInput = {
+    id?: string
+    program?: $Enums.Program
+    name: string
+    kyuDan?: string | null
+    japaneseName?: string | null
+    kanji?: string | null
+    order: number
+    beltColor?: string | null
+    beltSecondaryColor?: string | null
+    isMaximumRank?: boolean
+    estimatedDurationMonths?: number | null
+    description?: string | null
+    schoolId?: string | null
+    minMonths?: number | null
+    maxMonths?: number | null
+    minAttendancePercent?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    katas?: BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput
+    promotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutBeltRankInput
+  }
+
+  export type BeltRankCreateOrConnectWithoutCurrentRankStudentsInput = {
+    where: BeltRankWhereUniqueInput
+    create: XOR<BeltRankCreateWithoutCurrentRankStudentsInput, BeltRankUncheckedCreateWithoutCurrentRankStudentsInput>
+  }
+
   export type PlanCreateWithoutStudentsInput = {
     id?: string
     name: string
     description?: string | null
     monthlyHours?: number
-    price?: number | null
+    price?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
     isUnlimited?: boolean
     active?: boolean
     sortOrder?: number
@@ -49011,7 +50039,8 @@ export namespace Prisma {
     name: string
     description?: string | null
     monthlyHours?: number
-    price?: number | null
+    price?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
     isUnlimited?: boolean
     active?: boolean
     sortOrder?: number
@@ -49092,7 +50121,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -49103,6 +50131,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
@@ -49117,7 +50148,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     branchId?: string | null
@@ -49128,6 +50158,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
@@ -49147,7 +50180,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -49158,6 +50190,9 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
@@ -49172,7 +50207,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     branchId?: string | null
@@ -49183,6 +50217,9 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
@@ -49226,7 +50263,7 @@ export namespace Prisma {
     quote?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -49248,7 +50285,7 @@ export namespace Prisma {
     quote?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -49320,12 +50357,12 @@ export namespace Prisma {
   export type StudentAchievementCreateWithoutStudentInput = {
     id?: string
     evidenceKey?: string | null
-    approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     achievedAt?: Date | string
     createdAt?: Date | string
     type: AchievementTypeCreateNestedOneWithoutAchievementsInput
+    approvedByUser?: UserCreateNestedOneWithoutAchievementsApprovedInput
   }
 
   export type StudentAchievementUncheckedCreateWithoutStudentInput = {
@@ -49334,7 +50371,7 @@ export namespace Prisma {
     evidenceKey?: string | null
     approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     achievedAt?: Date | string
     createdAt?: Date | string
   }
@@ -49352,7 +50389,6 @@ export namespace Prisma {
   export type StudentTechniqueCreateWithoutStudentInput = {
     id?: string
     approved?: boolean
-    approvedBy?: string | null
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
@@ -49360,6 +50396,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     technique: TechniqueCreateNestedOneWithoutStudentsInput
+    approvedByUser?: UserCreateNestedOneWithoutTechniquesApprovedInput
     evaluation?: TechniqueEvaluationCreateNestedOneWithoutStudentTechniqueInput
   }
 
@@ -49391,10 +50428,10 @@ export namespace Prisma {
     id?: string
     report: string
     evidenceKey?: string | null
-    approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     createdAt?: Date | string
+    approvedByUser?: UserCreateNestedOneWithoutFitnessReportsApprovedInput
   }
 
   export type FitnessReportUncheckedCreateWithoutStudentInput = {
@@ -49403,7 +50440,7 @@ export namespace Prisma {
     evidenceKey?: string | null
     approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     createdAt?: Date | string
   }
 
@@ -49419,7 +50456,7 @@ export namespace Prisma {
 
   export type ClassEnrollmentCreateWithoutStudentInput = {
     id?: string
-    status?: string
+    status?: $Enums.ClassEnrollmentStatus
     enrolledAt?: Date | string
     endedAt?: Date | string | null
     notes?: string | null
@@ -49431,7 +50468,7 @@ export namespace Prisma {
   export type ClassEnrollmentUncheckedCreateWithoutStudentInput = {
     id?: string
     classId: string
-    status?: string
+    status?: $Enums.ClassEnrollmentStatus
     enrolledAt?: Date | string
     endedAt?: Date | string | null
     notes?: string | null
@@ -49548,13 +50585,13 @@ export namespace Prisma {
     reviewedAt?: Date | string | null
     uploadedAt?: Date | string
     updatedAt?: Date | string
-    enrollment: EnrollmentCreateNestedOneWithoutDocumentsInput
+    enrollment?: EnrollmentCreateNestedOneWithoutDocumentsInput
     applicant?: EnrollmentApplicantCreateNestedOneWithoutDocumentsInput
   }
 
   export type StudentDocumentUncheckedCreateWithoutStudentInput = {
     id?: string
-    enrollmentId: string
+    enrollmentId?: string | null
     applicantId?: string | null
     type: $Enums.StudentDocumentType
     status?: $Enums.StudentDocumentStatus
@@ -49578,6 +50615,63 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type BeltRankUpsertWithoutCurrentRankStudentsInput = {
+    update: XOR<BeltRankUpdateWithoutCurrentRankStudentsInput, BeltRankUncheckedUpdateWithoutCurrentRankStudentsInput>
+    create: XOR<BeltRankCreateWithoutCurrentRankStudentsInput, BeltRankUncheckedCreateWithoutCurrentRankStudentsInput>
+    where?: BeltRankWhereInput
+  }
+
+  export type BeltRankUpdateToOneWithWhereWithoutCurrentRankStudentsInput = {
+    where?: BeltRankWhereInput
+    data: XOR<BeltRankUpdateWithoutCurrentRankStudentsInput, BeltRankUncheckedUpdateWithoutCurrentRankStudentsInput>
+  }
+
+  export type BeltRankUpdateWithoutCurrentRankStudentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
+    name?: StringFieldUpdateOperationsInput | string
+    kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
+    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
+    kanji?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    beltColor?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSecondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isMaximumRank?: BoolFieldUpdateOperationsInput | boolean
+    estimatedDurationMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutBeltRanksNestedInput
+    katas?: BeltRankKataUpdateManyWithoutBeltRankNestedInput
+    promotions?: StudentRankHistoryUpdateManyWithoutBeltRankNestedInput
+  }
+
+  export type BeltRankUncheckedUpdateWithoutCurrentRankStudentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
+    name?: StringFieldUpdateOperationsInput | string
+    kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
+    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
+    kanji?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    beltColor?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSecondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
+    isMaximumRank?: BoolFieldUpdateOperationsInput | boolean
+    estimatedDurationMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    minMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
+    minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    katas?: BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput
+    promotions?: StudentRankHistoryUncheckedUpdateManyWithoutBeltRankNestedInput
+  }
+
   export type PlanUpsertWithoutStudentsInput = {
     update: XOR<PlanUpdateWithoutStudentsInput, PlanUncheckedUpdateWithoutStudentsInput>
     create: XOR<PlanCreateWithoutStudentsInput, PlanUncheckedCreateWithoutStudentsInput>
@@ -49594,7 +50688,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     monthlyHours?: FloatFieldUpdateOperationsInput | number
-    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isUnlimited?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -49608,7 +50703,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     monthlyHours?: FloatFieldUpdateOperationsInput | number
-    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isUnlimited?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -49707,7 +50803,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49718,6 +50813,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
@@ -49732,7 +50830,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49743,6 +50840,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -49768,7 +50868,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49779,6 +50878,9 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
@@ -49793,7 +50895,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49804,6 +50905,9 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -49875,21 +50979,6 @@ export namespace Prisma {
     data: XOR<StudentAchievementUpdateManyMutationInput, StudentAchievementUncheckedUpdateManyWithoutStudentInput>
   }
 
-  export type StudentAchievementScalarWhereInput = {
-    AND?: StudentAchievementScalarWhereInput | StudentAchievementScalarWhereInput[]
-    OR?: StudentAchievementScalarWhereInput[]
-    NOT?: StudentAchievementScalarWhereInput | StudentAchievementScalarWhereInput[]
-    id?: StringFilter<"StudentAchievement"> | string
-    studentId?: StringFilter<"StudentAchievement"> | string
-    typeId?: StringFilter<"StudentAchievement"> | string
-    evidenceKey?: StringNullableFilter<"StudentAchievement"> | string | null
-    approvedBy?: StringNullableFilter<"StudentAchievement"> | string | null
-    comment?: StringNullableFilter<"StudentAchievement"> | string | null
-    status?: StringFilter<"StudentAchievement"> | string
-    achievedAt?: DateTimeFilter<"StudentAchievement"> | Date | string
-    createdAt?: DateTimeFilter<"StudentAchievement"> | Date | string
-  }
-
   export type StudentTechniqueUpsertWithWhereUniqueWithoutStudentInput = {
     where: StudentTechniqueWhereUniqueInput
     update: XOR<StudentTechniqueUpdateWithoutStudentInput, StudentTechniqueUncheckedUpdateWithoutStudentInput>
@@ -49906,23 +50995,6 @@ export namespace Prisma {
     data: XOR<StudentTechniqueUpdateManyMutationInput, StudentTechniqueUncheckedUpdateManyWithoutStudentInput>
   }
 
-  export type StudentTechniqueScalarWhereInput = {
-    AND?: StudentTechniqueScalarWhereInput | StudentTechniqueScalarWhereInput[]
-    OR?: StudentTechniqueScalarWhereInput[]
-    NOT?: StudentTechniqueScalarWhereInput | StudentTechniqueScalarWhereInput[]
-    id?: StringFilter<"StudentTechnique"> | string
-    studentId?: StringFilter<"StudentTechnique"> | string
-    techniqueId?: StringFilter<"StudentTechnique"> | string
-    approved?: BoolFilter<"StudentTechnique"> | boolean
-    approvedBy?: StringNullableFilter<"StudentTechnique"> | string | null
-    approvedAt?: DateTimeNullableFilter<"StudentTechnique"> | Date | string | null
-    inPractice?: BoolFilter<"StudentTechnique"> | boolean
-    practiceHours?: FloatFilter<"StudentTechnique"> | number
-    lastPracticeDate?: DateTimeNullableFilter<"StudentTechnique"> | Date | string | null
-    notes?: StringNullableFilter<"StudentTechnique"> | string | null
-    createdAt?: DateTimeFilter<"StudentTechnique"> | Date | string
-  }
-
   export type FitnessReportUpsertWithWhereUniqueWithoutStudentInput = {
     where: FitnessReportWhereUniqueInput
     update: XOR<FitnessReportUpdateWithoutStudentInput, FitnessReportUncheckedUpdateWithoutStudentInput>
@@ -49937,20 +51009,6 @@ export namespace Prisma {
   export type FitnessReportUpdateManyWithWhereWithoutStudentInput = {
     where: FitnessReportScalarWhereInput
     data: XOR<FitnessReportUpdateManyMutationInput, FitnessReportUncheckedUpdateManyWithoutStudentInput>
-  }
-
-  export type FitnessReportScalarWhereInput = {
-    AND?: FitnessReportScalarWhereInput | FitnessReportScalarWhereInput[]
-    OR?: FitnessReportScalarWhereInput[]
-    NOT?: FitnessReportScalarWhereInput | FitnessReportScalarWhereInput[]
-    id?: StringFilter<"FitnessReport"> | string
-    studentId?: StringFilter<"FitnessReport"> | string
-    report?: StringFilter<"FitnessReport"> | string
-    evidenceKey?: StringNullableFilter<"FitnessReport"> | string | null
-    approvedBy?: StringNullableFilter<"FitnessReport"> | string | null
-    comment?: StringNullableFilter<"FitnessReport"> | string | null
-    status?: StringFilter<"FitnessReport"> | string
-    createdAt?: DateTimeFilter<"FitnessReport"> | Date | string
   }
 
   export type ClassEnrollmentUpsertWithWhereUniqueWithoutStudentInput = {
@@ -49976,7 +51034,7 @@ export namespace Prisma {
     id?: StringFilter<"ClassEnrollment"> | string
     classId?: StringFilter<"ClassEnrollment"> | string
     studentId?: StringFilter<"ClassEnrollment"> | string
-    status?: StringFilter<"ClassEnrollment"> | string
+    status?: EnumClassEnrollmentStatusFilter<"ClassEnrollment"> | $Enums.ClassEnrollmentStatus
     enrolledAt?: DateTimeFilter<"ClassEnrollment"> | Date | string
     endedAt?: DateTimeNullableFilter<"ClassEnrollment"> | Date | string | null
     notes?: StringNullableFilter<"ClassEnrollment"> | string | null
@@ -50070,7 +51128,7 @@ export namespace Prisma {
     OR?: StudentDocumentScalarWhereInput[]
     NOT?: StudentDocumentScalarWhereInput | StudentDocumentScalarWhereInput[]
     id?: StringFilter<"StudentDocument"> | string
-    enrollmentId?: StringFilter<"StudentDocument"> | string
+    enrollmentId?: StringNullableFilter<"StudentDocument"> | string | null
     applicantId?: StringNullableFilter<"StudentDocument"> | string | null
     studentId?: StringNullableFilter<"StudentDocument"> | string | null
     type?: EnumStudentDocumentTypeFilter<"StudentDocument"> | $Enums.StudentDocumentType
@@ -50092,7 +51150,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -50103,6 +51160,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
@@ -50117,7 +51177,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     branchId?: string | null
@@ -50128,6 +51187,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
@@ -50145,14 +51207,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -50162,6 +51224,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
@@ -50188,15 +51251,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -50241,7 +51305,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50252,6 +51315,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
@@ -50266,7 +51332,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50277,6 +51342,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -50300,14 +51368,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -50317,6 +51385,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
@@ -50343,15 +51412,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50438,14 +51508,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -50455,6 +51525,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
@@ -50481,15 +51552,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -50678,14 +51750,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -50695,6 +51767,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
@@ -50721,15 +51794,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50806,7 +51880,7 @@ export namespace Prisma {
     quote?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -50829,7 +51903,7 @@ export namespace Prisma {
     studentId?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -50847,14 +51921,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -50864,6 +51938,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
@@ -50890,15 +51965,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -50937,13 +52013,13 @@ export namespace Prisma {
     reviewedAt?: Date | string | null
     uploadedAt?: Date | string
     updatedAt?: Date | string
-    enrollment: EnrollmentCreateNestedOneWithoutDocumentsInput
+    enrollment?: EnrollmentCreateNestedOneWithoutDocumentsInput
     student?: StudentCreateNestedOneWithoutDocumentsInput
   }
 
   export type StudentDocumentUncheckedCreateWithoutApplicantInput = {
     id?: string
-    enrollmentId: string
+    enrollmentId?: string | null
     studentId?: string | null
     type: $Enums.StudentDocumentType
     status?: $Enums.StudentDocumentStatus
@@ -50987,7 +52063,7 @@ export namespace Prisma {
     quote?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51010,7 +52086,7 @@ export namespace Prisma {
     studentId?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51034,14 +52110,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -51051,6 +52127,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
@@ -51077,15 +52154,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51132,7 +52210,7 @@ export namespace Prisma {
     quote?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -51155,7 +52233,7 @@ export namespace Prisma {
     studentId?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -51200,14 +52278,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -51217,6 +52295,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
@@ -51243,15 +52322,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -51298,7 +52378,7 @@ export namespace Prisma {
     quote?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51321,7 +52401,7 @@ export namespace Prisma {
     studentId?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51378,14 +52458,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -51395,6 +52475,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
@@ -51421,15 +52502,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51506,54 +52588,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type TechniqueCreateWithoutRankInput = {
-    id?: string
-    name: string
-    japaneseName?: string | null
-    kanji?: string | null
-    description?: string | null
-    category?: $Enums.TechniqueCategory
-    order?: number
-    movementsCount?: number | null
-    embusen?: string | null
-    difficulty?: string | null
-    videoUrl?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    school?: SchoolCreateNestedOneWithoutTechniquesInput
-    beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
-    students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
-  }
-
-  export type TechniqueUncheckedCreateWithoutRankInput = {
-    id?: string
-    name: string
-    japaneseName?: string | null
-    kanji?: string | null
-    description?: string | null
-    category?: $Enums.TechniqueCategory
-    order?: number
-    movementsCount?: number | null
-    embusen?: string | null
-    difficulty?: string | null
-    videoUrl?: string | null
-    schoolId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
-    students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
-  }
-
-  export type TechniqueCreateOrConnectWithoutRankInput = {
-    where: TechniqueWhereUniqueInput
-    create: XOR<TechniqueCreateWithoutRankInput, TechniqueUncheckedCreateWithoutRankInput>
-  }
-
-  export type TechniqueCreateManyRankInputEnvelope = {
-    data: TechniqueCreateManyRankInput | TechniqueCreateManyRankInput[]
-    skipDuplicates?: boolean
-  }
-
   export type StudentRankHistoryCreateWithoutBeltRankInput = {
     id?: string
     promotedAt?: Date | string
@@ -51581,6 +52615,96 @@ export namespace Prisma {
 
   export type StudentRankHistoryCreateManyBeltRankInputEnvelope = {
     data: StudentRankHistoryCreateManyBeltRankInput | StudentRankHistoryCreateManyBeltRankInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StudentCreateWithoutCurrentRankRefInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    gender?: $Enums.Gender | null
+    email?: string | null
+    contactPhone?: string | null
+    medicalInfo?: string | null
+    emergencyContact?: string | null
+    enrollmentDate?: Date | string
+    memberNumber?: string | null
+    status?: $Enums.StudentStatus
+    currentRank?: string | null
+    photoKey?: string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planStartDate?: Date | string | null
+    scholarshipType?: $Enums.ScholarshipType
+    scholarshipNote?: string | null
+    isCompetitor?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    plan?: PlanCreateNestedOneWithoutStudentsInput
+    school: SchoolCreateNestedOneWithoutStudentsInput
+    branch: BranchCreateNestedOneWithoutStudentsInput
+    user?: UserCreateNestedOneWithoutStudentProfileInput
+    guardian?: UserCreateNestedOneWithoutGuardianOfStudentsInput
+    guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
+    enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
+    attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
+    techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
+    classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
+    rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
+    enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
+    invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
+    documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentUncheckedCreateWithoutCurrentRankRefInput = {
+    id?: string
+    userId?: string | null
+    guardianId?: string | null
+    schoolId: string
+    branchId: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    gender?: $Enums.Gender | null
+    email?: string | null
+    contactPhone?: string | null
+    medicalInfo?: string | null
+    emergencyContact?: string | null
+    enrollmentDate?: Date | string
+    memberNumber?: string | null
+    status?: $Enums.StudentStatus
+    currentRank?: string | null
+    photoKey?: string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planId?: string | null
+    planStartDate?: Date | string | null
+    scholarshipType?: $Enums.ScholarshipType
+    scholarshipNote?: string | null
+    isCompetitor?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
+    techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
+    classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
+    rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
+    enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
+    invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
+    documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentCreateOrConnectWithoutCurrentRankRefInput = {
+    where: StudentWhereUniqueInput
+    create: XOR<StudentCreateWithoutCurrentRankRefInput, StudentUncheckedCreateWithoutCurrentRankRefInput>
+  }
+
+  export type StudentCreateManyCurrentRankRefInputEnvelope = {
+    data: StudentCreateManyCurrentRankRefInput | StudentCreateManyCurrentRankRefInput[]
     skipDuplicates?: boolean
   }
 
@@ -51649,22 +52773,6 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"BeltRankKata"> | Date | string
   }
 
-  export type TechniqueUpsertWithWhereUniqueWithoutRankInput = {
-    where: TechniqueWhereUniqueInput
-    update: XOR<TechniqueUpdateWithoutRankInput, TechniqueUncheckedUpdateWithoutRankInput>
-    create: XOR<TechniqueCreateWithoutRankInput, TechniqueUncheckedCreateWithoutRankInput>
-  }
-
-  export type TechniqueUpdateWithWhereUniqueWithoutRankInput = {
-    where: TechniqueWhereUniqueInput
-    data: XOR<TechniqueUpdateWithoutRankInput, TechniqueUncheckedUpdateWithoutRankInput>
-  }
-
-  export type TechniqueUpdateManyWithWhereWithoutRankInput = {
-    where: TechniqueScalarWhereInput
-    data: XOR<TechniqueUpdateManyMutationInput, TechniqueUncheckedUpdateManyWithoutRankInput>
-  }
-
   export type StudentRankHistoryUpsertWithWhereUniqueWithoutBeltRankInput = {
     where: StudentRankHistoryWhereUniqueInput
     update: XOR<StudentRankHistoryUpdateWithoutBeltRankInput, StudentRankHistoryUncheckedUpdateWithoutBeltRankInput>
@@ -51679,6 +52787,22 @@ export namespace Prisma {
   export type StudentRankHistoryUpdateManyWithWhereWithoutBeltRankInput = {
     where: StudentRankHistoryScalarWhereInput
     data: XOR<StudentRankHistoryUpdateManyMutationInput, StudentRankHistoryUncheckedUpdateManyWithoutBeltRankInput>
+  }
+
+  export type StudentUpsertWithWhereUniqueWithoutCurrentRankRefInput = {
+    where: StudentWhereUniqueInput
+    update: XOR<StudentUpdateWithoutCurrentRankRefInput, StudentUncheckedUpdateWithoutCurrentRankRefInput>
+    create: XOR<StudentCreateWithoutCurrentRankRefInput, StudentUncheckedCreateWithoutCurrentRankRefInput>
+  }
+
+  export type StudentUpdateWithWhereUniqueWithoutCurrentRankRefInput = {
+    where: StudentWhereUniqueInput
+    data: XOR<StudentUpdateWithoutCurrentRankRefInput, StudentUncheckedUpdateWithoutCurrentRankRefInput>
+  }
+
+  export type StudentUpdateManyWithWhereWithoutCurrentRankRefInput = {
+    where: StudentScalarWhereInput
+    data: XOR<StudentUpdateManyMutationInput, StudentUncheckedUpdateManyWithoutCurrentRankRefInput>
   }
 
   export type BeltRankCreateWithoutKatasInput = {
@@ -51700,8 +52824,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     school?: SchoolCreateNestedOneWithoutBeltRanksInput
-    techniques?: TechniqueCreateNestedManyWithoutRankInput
     promotions?: StudentRankHistoryCreateNestedManyWithoutBeltRankInput
+    currentRankStudents?: StudentCreateNestedManyWithoutCurrentRankRefInput
   }
 
   export type BeltRankUncheckedCreateWithoutKatasInput = {
@@ -51723,8 +52847,8 @@ export namespace Prisma {
     minAttendancePercent?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    techniques?: TechniqueUncheckedCreateNestedManyWithoutRankInput
     promotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutBeltRankInput
+    currentRankStudents?: StudentUncheckedCreateNestedManyWithoutCurrentRankRefInput
   }
 
   export type BeltRankCreateOrConnectWithoutKatasInput = {
@@ -51746,7 +52870,6 @@ export namespace Prisma {
     videoUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    rank?: BeltRankCreateNestedOneWithoutTechniquesInput
     school?: SchoolCreateNestedOneWithoutTechniquesInput
     students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
   }
@@ -51758,7 +52881,6 @@ export namespace Prisma {
     kanji?: string | null
     description?: string | null
     category?: $Enums.TechniqueCategory
-    rankId?: string | null
     order?: number
     movementsCount?: number | null
     embusen?: string | null
@@ -51805,8 +52927,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     school?: SchoolUpdateOneWithoutBeltRanksNestedInput
-    techniques?: TechniqueUpdateManyWithoutRankNestedInput
     promotions?: StudentRankHistoryUpdateManyWithoutBeltRankNestedInput
+    currentRankStudents?: StudentUpdateManyWithoutCurrentRankRefNestedInput
   }
 
   export type BeltRankUncheckedUpdateWithoutKatasInput = {
@@ -51828,8 +52950,8 @@ export namespace Prisma {
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    techniques?: TechniqueUncheckedUpdateManyWithoutRankNestedInput
     promotions?: StudentRankHistoryUncheckedUpdateManyWithoutBeltRankNestedInput
+    currentRankStudents?: StudentUncheckedUpdateManyWithoutCurrentRankRefNestedInput
   }
 
   export type TechniqueUpsertWithoutBeltRankKatasInput = {
@@ -51857,7 +52979,6 @@ export namespace Prisma {
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    rank?: BeltRankUpdateOneWithoutTechniquesNestedInput
     school?: SchoolUpdateOneWithoutTechniquesNestedInput
     students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
   }
@@ -51869,7 +52990,6 @@ export namespace Prisma {
     kanji?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
-    rankId?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51886,14 +53006,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -51903,6 +53023,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
@@ -51929,15 +53050,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -51984,7 +53106,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     school?: SchoolCreateNestedOneWithoutBeltRanksInput
     katas?: BeltRankKataCreateNestedManyWithoutBeltRankInput
-    techniques?: TechniqueCreateNestedManyWithoutRankInput
+    currentRankStudents?: StudentCreateNestedManyWithoutCurrentRankRefInput
   }
 
   export type BeltRankUncheckedCreateWithoutPromotionsInput = {
@@ -52007,7 +53129,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     katas?: BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput
-    techniques?: TechniqueUncheckedCreateNestedManyWithoutRankInput
+    currentRankStudents?: StudentUncheckedCreateNestedManyWithoutCurrentRankRefInput
   }
 
   export type BeltRankCreateOrConnectWithoutPromotionsInput = {
@@ -52022,7 +53144,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -52033,6 +53154,9 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
     guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
     techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
@@ -52047,7 +53171,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     branchId?: string | null
@@ -52058,6 +53181,9 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
     guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
@@ -52086,14 +53212,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -52103,6 +53229,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
@@ -52129,15 +53256,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52190,7 +53318,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     school?: SchoolUpdateOneWithoutBeltRanksNestedInput
     katas?: BeltRankKataUpdateManyWithoutBeltRankNestedInput
-    techniques?: TechniqueUpdateManyWithoutRankNestedInput
+    currentRankStudents?: StudentUpdateManyWithoutCurrentRankRefNestedInput
   }
 
   export type BeltRankUncheckedUpdateWithoutPromotionsInput = {
@@ -52213,7 +53341,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     katas?: BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput
-    techniques?: TechniqueUncheckedUpdateManyWithoutRankNestedInput
+    currentRankStudents?: StudentUncheckedUpdateManyWithoutCurrentRankRefNestedInput
   }
 
   export type UserUpsertWithoutRankPromotionsInput = {
@@ -52234,7 +53362,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52245,6 +53372,9 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
     guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
     techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
@@ -52259,7 +53389,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52270,62 +53399,14 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
     guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
-  }
-
-  export type BeltRankCreateWithoutTechniquesInput = {
-    id?: string
-    program?: $Enums.Program
-    name: string
-    kyuDan?: string | null
-    japaneseName?: string | null
-    kanji?: string | null
-    order: number
-    beltColor?: string | null
-    beltSecondaryColor?: string | null
-    isMaximumRank?: boolean
-    estimatedDurationMonths?: number | null
-    description?: string | null
-    minMonths?: number | null
-    maxMonths?: number | null
-    minAttendancePercent?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    school?: SchoolCreateNestedOneWithoutBeltRanksInput
-    katas?: BeltRankKataCreateNestedManyWithoutBeltRankInput
-    promotions?: StudentRankHistoryCreateNestedManyWithoutBeltRankInput
-  }
-
-  export type BeltRankUncheckedCreateWithoutTechniquesInput = {
-    id?: string
-    program?: $Enums.Program
-    name: string
-    kyuDan?: string | null
-    japaneseName?: string | null
-    kanji?: string | null
-    order: number
-    beltColor?: string | null
-    beltSecondaryColor?: string | null
-    isMaximumRank?: boolean
-    estimatedDurationMonths?: number | null
-    description?: string | null
-    schoolId?: string | null
-    minMonths?: number | null
-    maxMonths?: number | null
-    minAttendancePercent?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    katas?: BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput
-    promotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutBeltRankInput
-  }
-
-  export type BeltRankCreateOrConnectWithoutTechniquesInput = {
-    where: BeltRankWhereUniqueInput
-    create: XOR<BeltRankCreateWithoutTechniquesInput, BeltRankUncheckedCreateWithoutTechniquesInput>
   }
 
   export type SchoolCreateWithoutTechniquesInput = {
@@ -52386,7 +53467,6 @@ export namespace Prisma {
   export type StudentTechniqueCreateWithoutTechniqueInput = {
     id?: string
     approved?: boolean
-    approvedBy?: string | null
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
@@ -52394,6 +53474,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     student: StudentCreateNestedOneWithoutTechniquesInput
+    approvedByUser?: UserCreateNestedOneWithoutTechniquesApprovedInput
     evaluation?: TechniqueEvaluationCreateNestedOneWithoutStudentTechniqueInput
   }
 
@@ -52419,63 +53500,6 @@ export namespace Prisma {
   export type StudentTechniqueCreateManyTechniqueInputEnvelope = {
     data: StudentTechniqueCreateManyTechniqueInput | StudentTechniqueCreateManyTechniqueInput[]
     skipDuplicates?: boolean
-  }
-
-  export type BeltRankUpsertWithoutTechniquesInput = {
-    update: XOR<BeltRankUpdateWithoutTechniquesInput, BeltRankUncheckedUpdateWithoutTechniquesInput>
-    create: XOR<BeltRankCreateWithoutTechniquesInput, BeltRankUncheckedCreateWithoutTechniquesInput>
-    where?: BeltRankWhereInput
-  }
-
-  export type BeltRankUpdateToOneWithWhereWithoutTechniquesInput = {
-    where?: BeltRankWhereInput
-    data: XOR<BeltRankUpdateWithoutTechniquesInput, BeltRankUncheckedUpdateWithoutTechniquesInput>
-  }
-
-  export type BeltRankUpdateWithoutTechniquesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
-    name?: StringFieldUpdateOperationsInput | string
-    kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
-    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
-    kanji?: NullableStringFieldUpdateOperationsInput | string | null
-    order?: IntFieldUpdateOperationsInput | number
-    beltColor?: NullableStringFieldUpdateOperationsInput | string | null
-    beltSecondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
-    isMaximumRank?: BoolFieldUpdateOperationsInput | boolean
-    estimatedDurationMonths?: NullableIntFieldUpdateOperationsInput | number | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    minMonths?: NullableIntFieldUpdateOperationsInput | number | null
-    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
-    minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    school?: SchoolUpdateOneWithoutBeltRanksNestedInput
-    katas?: BeltRankKataUpdateManyWithoutBeltRankNestedInput
-    promotions?: StudentRankHistoryUpdateManyWithoutBeltRankNestedInput
-  }
-
-  export type BeltRankUncheckedUpdateWithoutTechniquesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    program?: EnumProgramFieldUpdateOperationsInput | $Enums.Program
-    name?: StringFieldUpdateOperationsInput | string
-    kyuDan?: NullableStringFieldUpdateOperationsInput | string | null
-    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
-    kanji?: NullableStringFieldUpdateOperationsInput | string | null
-    order?: IntFieldUpdateOperationsInput | number
-    beltColor?: NullableStringFieldUpdateOperationsInput | string | null
-    beltSecondaryColor?: NullableStringFieldUpdateOperationsInput | string | null
-    isMaximumRank?: BoolFieldUpdateOperationsInput | boolean
-    estimatedDurationMonths?: NullableIntFieldUpdateOperationsInput | number | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
-    minMonths?: NullableIntFieldUpdateOperationsInput | number | null
-    maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
-    minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    katas?: BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput
-    promotions?: StudentRankHistoryUncheckedUpdateManyWithoutBeltRankNestedInput
   }
 
   export type SchoolUpsertWithoutTechniquesInput = {
@@ -52554,14 +53578,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -52571,6 +53595,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
@@ -52597,15 +53622,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -52646,7 +53672,6 @@ export namespace Prisma {
     videoUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    rank?: BeltRankCreateNestedOneWithoutTechniquesInput
     school?: SchoolCreateNestedOneWithoutTechniquesInput
     beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
   }
@@ -52658,7 +53683,6 @@ export namespace Prisma {
     kanji?: string | null
     description?: string | null
     category?: $Enums.TechniqueCategory
-    rankId?: string | null
     order?: number
     movementsCount?: number | null
     embusen?: string | null
@@ -52673,6 +53697,65 @@ export namespace Prisma {
   export type TechniqueCreateOrConnectWithoutStudentsInput = {
     where: TechniqueWhereUniqueInput
     create: XOR<TechniqueCreateWithoutStudentsInput, TechniqueUncheckedCreateWithoutStudentsInput>
+  }
+
+  export type UserCreateWithoutTechniquesApprovedInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutUsersInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    instructorProfile?: InstructorProfileCreateNestedOneWithoutUserInput
+    studentProfile?: StudentCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    classes?: ClassCreateNestedManyWithoutInstructorInput
+  }
+
+  export type UserUncheckedCreateWithoutTechniquesApprovedInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    schoolId?: string | null
+    branchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    instructorProfile?: InstructorProfileUncheckedCreateNestedOneWithoutUserInput
+    studentProfile?: StudentUncheckedCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
+  }
+
+  export type UserCreateOrConnectWithoutTechniquesApprovedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTechniquesApprovedInput, UserUncheckedCreateWithoutTechniquesApprovedInput>
   }
 
   export type TechniqueEvaluationCreateWithoutStudentTechniqueInput = {
@@ -52716,14 +53799,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -52733,6 +53816,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
@@ -52759,15 +53843,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52814,7 +53899,6 @@ export namespace Prisma {
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    rank?: BeltRankUpdateOneWithoutTechniquesNestedInput
     school?: SchoolUpdateOneWithoutTechniquesNestedInput
     beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
   }
@@ -52826,7 +53910,6 @@ export namespace Prisma {
     kanji?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
-    rankId?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52836,6 +53919,71 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
+  }
+
+  export type UserUpsertWithoutTechniquesApprovedInput = {
+    update: XOR<UserUpdateWithoutTechniquesApprovedInput, UserUncheckedUpdateWithoutTechniquesApprovedInput>
+    create: XOR<UserCreateWithoutTechniquesApprovedInput, UserUncheckedCreateWithoutTechniquesApprovedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTechniquesApprovedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTechniquesApprovedInput, UserUncheckedUpdateWithoutTechniquesApprovedInput>
+  }
+
+  export type UserUpdateWithoutTechniquesApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutUsersNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    instructorProfile?: InstructorProfileUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    classes?: ClassUpdateManyWithoutInstructorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTechniquesApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    instructorProfile?: InstructorProfileUncheckedUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUncheckedUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
   export type TechniqueEvaluationUpsertWithoutStudentTechniqueInput = {
@@ -52872,7 +54020,6 @@ export namespace Prisma {
   export type StudentTechniqueCreateWithoutEvaluationInput = {
     id?: string
     approved?: boolean
-    approvedBy?: string | null
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
@@ -52881,6 +54028,7 @@ export namespace Prisma {
     createdAt?: Date | string
     student: StudentCreateNestedOneWithoutTechniquesInput
     technique: TechniqueCreateNestedOneWithoutStudentsInput
+    approvedByUser?: UserCreateNestedOneWithoutTechniquesApprovedInput
   }
 
   export type StudentTechniqueUncheckedCreateWithoutEvaluationInput = {
@@ -52909,7 +54057,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -52920,6 +54067,9 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
     guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
@@ -52934,7 +54084,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     branchId?: string | null
@@ -52945,6 +54094,9 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
     guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
@@ -52971,7 +54123,6 @@ export namespace Prisma {
   export type StudentTechniqueUpdateWithoutEvaluationInput = {
     id?: StringFieldUpdateOperationsInput | string
     approved?: BoolFieldUpdateOperationsInput | boolean
-    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
@@ -52980,6 +54131,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentUpdateOneRequiredWithoutTechniquesNestedInput
     technique?: TechniqueUpdateOneRequiredWithoutStudentsNestedInput
+    approvedByUser?: UserUpdateOneWithoutTechniquesApprovedNestedInput
   }
 
   export type StudentTechniqueUncheckedUpdateWithoutEvaluationInput = {
@@ -53014,7 +54166,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -53025,6 +54176,9 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
     guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
@@ -53039,7 +54193,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53050,6 +54203,9 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
     guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -53095,14 +54251,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -53112,6 +54268,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
     user?: UserCreateNestedOneWithoutStudentProfileInput
@@ -53138,15 +54295,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planStartDate?: Date | string | null
@@ -53267,7 +54425,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -53279,6 +54436,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
@@ -53292,7 +54452,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     branchId?: string | null
@@ -53304,6 +54463,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
@@ -53343,7 +54505,7 @@ export namespace Prisma {
 
   export type ClassEnrollmentCreateWithoutClassInput = {
     id?: string
-    status?: string
+    status?: $Enums.ClassEnrollmentStatus
     enrolledAt?: Date | string
     endedAt?: Date | string | null
     notes?: string | null
@@ -53355,7 +54517,7 @@ export namespace Prisma {
   export type ClassEnrollmentUncheckedCreateWithoutClassInput = {
     id?: string
     studentId: string
-    status?: string
+    status?: $Enums.ClassEnrollmentStatus
     enrolledAt?: Date | string
     endedAt?: Date | string | null
     notes?: string | null
@@ -53474,7 +54636,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -53486,6 +54647,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
@@ -53499,7 +54663,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53511,6 +54674,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -53583,8 +54749,8 @@ export namespace Prisma {
     audience?: $Enums.ClassAudience
     active?: boolean
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
     branch: BranchCreateNestedOneWithoutClassesInput
@@ -53602,8 +54768,8 @@ export namespace Prisma {
     branchId: string
     instructorId?: string | null
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: ClassSessionUncheckedCreateNestedManyWithoutClassInput
@@ -53620,14 +54786,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -53637,6 +54803,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
@@ -53663,15 +54830,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -53716,8 +54884,8 @@ export namespace Prisma {
     audience?: EnumClassAudienceFieldUpdateOperationsInput | $Enums.ClassAudience
     active?: BoolFieldUpdateOperationsInput | boolean
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneRequiredWithoutClassesNestedInput
@@ -53735,8 +54903,8 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     instructorId?: NullableStringFieldUpdateOperationsInput | string | null
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: ClassSessionUncheckedUpdateManyWithoutClassNestedInput
@@ -53759,14 +54927,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -53776,6 +54944,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
@@ -53802,15 +54971,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53839,8 +55009,8 @@ export namespace Prisma {
     audience?: $Enums.ClassAudience
     active?: boolean
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
     branch: BranchCreateNestedOneWithoutClassesInput
@@ -53858,8 +55028,8 @@ export namespace Prisma {
     branchId: string
     instructorId?: string | null
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
     enrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutClassInput
@@ -53939,8 +55109,8 @@ export namespace Prisma {
     audience?: EnumClassAudienceFieldUpdateOperationsInput | $Enums.ClassAudience
     active?: BoolFieldUpdateOperationsInput | boolean
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneRequiredWithoutClassesNestedInput
@@ -53958,8 +55128,8 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     instructorId?: NullableStringFieldUpdateOperationsInput | string | null
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     enrollments?: ClassEnrollmentUncheckedUpdateManyWithoutClassNestedInput
@@ -54008,14 +55178,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -54025,6 +55195,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
@@ -54051,15 +55222,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -54093,8 +55265,8 @@ export namespace Prisma {
     audience?: $Enums.ClassAudience
     active?: boolean
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
     branch: BranchCreateNestedOneWithoutClassesInput
@@ -54112,8 +55284,8 @@ export namespace Prisma {
     branchId: string
     instructorId?: string | null
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: ClassSessionUncheckedCreateNestedManyWithoutClassInput
@@ -54222,7 +55394,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -54234,6 +55405,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -54247,7 +55421,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     branchId?: string | null
@@ -54259,6 +55432,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
     rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -54313,14 +55489,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -54330,6 +55506,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
@@ -54356,15 +55533,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54404,8 +55582,8 @@ export namespace Prisma {
     audience?: EnumClassAudienceFieldUpdateOperationsInput | $Enums.ClassAudience
     active?: BoolFieldUpdateOperationsInput | boolean
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneRequiredWithoutClassesNestedInput
@@ -54423,8 +55601,8 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     instructorId?: NullableStringFieldUpdateOperationsInput | string | null
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: ClassSessionUncheckedUpdateManyWithoutClassNestedInput
@@ -54551,7 +55729,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -54563,6 +55740,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -54576,7 +55756,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54588,6 +55767,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -54630,12 +55812,12 @@ export namespace Prisma {
   export type StudentAchievementCreateWithoutTypeInput = {
     id?: string
     evidenceKey?: string | null
-    approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     achievedAt?: Date | string
     createdAt?: Date | string
     student: StudentCreateNestedOneWithoutAchievementsInput
+    approvedByUser?: UserCreateNestedOneWithoutAchievementsApprovedInput
   }
 
   export type StudentAchievementUncheckedCreateWithoutTypeInput = {
@@ -54644,7 +55826,7 @@ export namespace Prisma {
     evidenceKey?: string | null
     approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     achievedAt?: Date | string
     createdAt?: Date | string
   }
@@ -54719,14 +55901,14 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -54736,6 +55918,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
@@ -54762,15 +55945,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -54818,6 +56002,65 @@ export namespace Prisma {
     create: XOR<AchievementTypeCreateWithoutAchievementsInput, AchievementTypeUncheckedCreateWithoutAchievementsInput>
   }
 
+  export type UserCreateWithoutAchievementsApprovedInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutUsersInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    instructorProfile?: InstructorProfileCreateNestedOneWithoutUserInput
+    studentProfile?: StudentCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    classes?: ClassCreateNestedManyWithoutInstructorInput
+  }
+
+  export type UserUncheckedCreateWithoutAchievementsApprovedInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    schoolId?: string | null
+    branchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    instructorProfile?: InstructorProfileUncheckedCreateNestedOneWithoutUserInput
+    studentProfile?: StudentUncheckedCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
+  }
+
+  export type UserCreateOrConnectWithoutAchievementsApprovedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAchievementsApprovedInput, UserUncheckedCreateWithoutAchievementsApprovedInput>
+  }
+
   export type StudentUpsertWithoutAchievementsInput = {
     update: XOR<StudentUpdateWithoutAchievementsInput, StudentUncheckedUpdateWithoutAchievementsInput>
     create: XOR<StudentCreateWithoutAchievementsInput, StudentUncheckedCreateWithoutAchievementsInput>
@@ -54834,14 +56077,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -54851,6 +56094,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
@@ -54877,15 +56121,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54934,19 +56179,84 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type UserUpsertWithoutAchievementsApprovedInput = {
+    update: XOR<UserUpdateWithoutAchievementsApprovedInput, UserUncheckedUpdateWithoutAchievementsApprovedInput>
+    create: XOR<UserCreateWithoutAchievementsApprovedInput, UserUncheckedCreateWithoutAchievementsApprovedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAchievementsApprovedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAchievementsApprovedInput, UserUncheckedUpdateWithoutAchievementsApprovedInput>
+  }
+
+  export type UserUpdateWithoutAchievementsApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutUsersNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    instructorProfile?: InstructorProfileUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    classes?: ClassUpdateManyWithoutInstructorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAchievementsApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    instructorProfile?: InstructorProfileUncheckedUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUncheckedUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
+  }
+
   export type StudentCreateWithoutFitnessReportsInput = {
     id?: string
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -54956,6 +56266,7 @@ export namespace Prisma {
     isCompetitor?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
     plan?: PlanCreateNestedOneWithoutStudentsInput
     school: SchoolCreateNestedOneWithoutStudentsInput
     branch: BranchCreateNestedOneWithoutStudentsInput
@@ -54982,15 +56293,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -55017,6 +56329,65 @@ export namespace Prisma {
     create: XOR<StudentCreateWithoutFitnessReportsInput, StudentUncheckedCreateWithoutFitnessReportsInput>
   }
 
+  export type UserCreateWithoutFitnessReportsApprovedInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutUsersInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    instructorProfile?: InstructorProfileCreateNestedOneWithoutUserInput
+    studentProfile?: StudentCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    classes?: ClassCreateNestedManyWithoutInstructorInput
+  }
+
+  export type UserUncheckedCreateWithoutFitnessReportsApprovedInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    schoolId?: string | null
+    branchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    instructorProfile?: InstructorProfileUncheckedCreateNestedOneWithoutUserInput
+    studentProfile?: StudentUncheckedCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
+  }
+
+  export type UserCreateOrConnectWithoutFitnessReportsApprovedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutFitnessReportsApprovedInput, UserUncheckedCreateWithoutFitnessReportsApprovedInput>
+  }
+
   export type StudentUpsertWithoutFitnessReportsInput = {
     update: XOR<StudentUpdateWithoutFitnessReportsInput, StudentUncheckedUpdateWithoutFitnessReportsInput>
     create: XOR<StudentCreateWithoutFitnessReportsInput, StudentUncheckedCreateWithoutFitnessReportsInput>
@@ -55033,14 +56404,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -55050,6 +56421,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
@@ -55076,15 +56448,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55106,6 +56479,71 @@ export namespace Prisma {
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
   }
 
+  export type UserUpsertWithoutFitnessReportsApprovedInput = {
+    update: XOR<UserUpdateWithoutFitnessReportsApprovedInput, UserUncheckedUpdateWithoutFitnessReportsApprovedInput>
+    create: XOR<UserCreateWithoutFitnessReportsApprovedInput, UserUncheckedCreateWithoutFitnessReportsApprovedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutFitnessReportsApprovedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutFitnessReportsApprovedInput, UserUncheckedUpdateWithoutFitnessReportsApprovedInput>
+  }
+
+  export type UserUpdateWithoutFitnessReportsApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutUsersNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    instructorProfile?: InstructorProfileUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    classes?: ClassUpdateManyWithoutInstructorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutFitnessReportsApprovedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    instructorProfile?: InstructorProfileUncheckedUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUncheckedUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
+  }
+
   export type BranchCreateManySchoolInput = {
     id?: string
     name: string
@@ -55120,7 +56558,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     branchId?: string | null
     createdAt?: Date | string
@@ -55135,15 +56572,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -55166,7 +56604,7 @@ export namespace Prisma {
     studentId?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -55200,7 +56638,6 @@ export namespace Prisma {
     kanji?: string | null
     description?: string | null
     category?: $Enums.TechniqueCategory
-    rankId?: string | null
     order?: number
     movementsCount?: number | null
     embusen?: string | null
@@ -55222,7 +56659,8 @@ export namespace Prisma {
     name: string
     description?: string | null
     monthlyHours?: number
-    price?: number | null
+    price?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
     isUnlimited?: boolean
     active?: boolean
     sortOrder?: number
@@ -55266,7 +56704,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55277,6 +56714,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
@@ -55291,7 +56731,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55302,6 +56741,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -55316,7 +56758,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55328,14 +56769,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -55345,6 +56786,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
     user?: UserUpdateOneWithoutStudentProfileNestedInput
@@ -55370,15 +56812,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55409,15 +56852,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55438,7 +56882,7 @@ export namespace Prisma {
     quote?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55460,7 +56904,7 @@ export namespace Prisma {
     studentId?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55480,7 +56924,7 @@ export namespace Prisma {
     studentId?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55506,8 +56950,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     katas?: BeltRankKataUpdateManyWithoutBeltRankNestedInput
-    techniques?: TechniqueUpdateManyWithoutRankNestedInput
     promotions?: StudentRankHistoryUpdateManyWithoutBeltRankNestedInput
+    currentRankStudents?: StudentUpdateManyWithoutCurrentRankRefNestedInput
   }
 
   export type BeltRankUncheckedUpdateWithoutSchoolInput = {
@@ -55529,8 +56973,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     katas?: BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput
-    techniques?: TechniqueUncheckedUpdateManyWithoutRankNestedInput
     promotions?: StudentRankHistoryUncheckedUpdateManyWithoutBeltRankNestedInput
+    currentRankStudents?: StudentUncheckedUpdateManyWithoutCurrentRankRefNestedInput
   }
 
   export type BeltRankUncheckedUpdateManyWithoutSchoolInput = {
@@ -55567,7 +57011,6 @@ export namespace Prisma {
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    rank?: BeltRankUpdateOneWithoutTechniquesNestedInput
     beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
   }
@@ -55579,7 +57022,6 @@ export namespace Prisma {
     kanji?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
-    rankId?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55598,7 +57040,6 @@ export namespace Prisma {
     kanji?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
-    rankId?: NullableStringFieldUpdateOperationsInput | string | null
     order?: IntFieldUpdateOperationsInput | number
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55636,7 +57077,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     monthlyHours?: FloatFieldUpdateOperationsInput | number
-    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isUnlimited?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -55650,7 +57092,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     monthlyHours?: FloatFieldUpdateOperationsInput | number
-    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isUnlimited?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -55664,7 +57107,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     monthlyHours?: FloatFieldUpdateOperationsInput | number
-    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
     isUnlimited?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
@@ -55679,7 +57123,6 @@ export namespace Prisma {
     passwordHash?: string | null
     name?: string | null
     phone?: string | null
-    role?: $Enums.Role
     roles?: UserCreaterolesInput | $Enums.Role[]
     schoolId?: string | null
     createdAt?: Date | string
@@ -55694,15 +57137,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -55725,7 +57169,7 @@ export namespace Prisma {
     studentId?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -55740,8 +57184,8 @@ export namespace Prisma {
     active?: boolean
     instructorId?: string | null
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -55753,7 +57197,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55764,6 +57207,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
@@ -55778,7 +57224,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55789,6 +57234,9 @@ export namespace Prisma {
     guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
     rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
     techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -55803,7 +57251,6 @@ export namespace Prisma {
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     roles?: UserUpdaterolesInput | $Enums.Role[]
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55815,14 +57262,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -55832,6 +57279,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     user?: UserUpdateOneWithoutStudentProfileNestedInput
@@ -55857,15 +57305,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55896,15 +57345,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55925,7 +57375,7 @@ export namespace Prisma {
     quote?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55947,7 +57397,7 @@ export namespace Prisma {
     studentId?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55967,7 +57417,7 @@ export namespace Prisma {
     studentId?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55981,8 +57431,8 @@ export namespace Prisma {
     audience?: EnumClassAudienceFieldUpdateOperationsInput | $Enums.ClassAudience
     active?: BoolFieldUpdateOperationsInput | boolean
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     instructor?: UserUpdateOneWithoutClassesNestedInput
@@ -55999,8 +57449,8 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     instructorId?: NullableStringFieldUpdateOperationsInput | string | null
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: ClassSessionUncheckedUpdateManyWithoutClassNestedInput
@@ -56016,8 +57466,8 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     instructorId?: NullableStringFieldUpdateOperationsInput | string | null
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -56036,15 +57486,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: string | null
@@ -56074,6 +57525,40 @@ export namespace Prisma {
     evaluatedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type StudentTechniqueCreateManyApprovedByUserInput = {
+    id?: string
+    studentId: string
+    techniqueId: string
+    approved?: boolean
+    approvedAt?: Date | string | null
+    inPractice?: boolean
+    practiceHours?: number
+    lastPracticeDate?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type StudentAchievementCreateManyApprovedByUserInput = {
+    id?: string
+    studentId: string
+    typeId: string
+    evidenceKey?: string | null
+    comment?: string | null
+    status?: $Enums.ApprovalStatus
+    achievedAt?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type FitnessReportCreateManyApprovedByUserInput = {
+    id?: string
+    studentId: string
+    report: string
+    evidenceKey?: string | null
+    comment?: string | null
+    status?: $Enums.ApprovalStatus
+    createdAt?: Date | string
   }
 
   export type AttendanceCreateManyConfirmedByInput = {
@@ -56129,8 +57614,8 @@ export namespace Prisma {
     active?: boolean
     branchId: string
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTime: Date | string
+    endTime: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -56158,14 +57643,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -56175,6 +57660,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     plan?: PlanUpdateOneWithoutStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
@@ -56200,15 +57686,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56239,15 +57726,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56317,6 +57805,110 @@ export namespace Prisma {
     evaluatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StudentTechniqueUpdateWithoutApprovedByUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    approved?: BoolFieldUpdateOperationsInput | boolean
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inPractice?: BoolFieldUpdateOperationsInput | boolean
+    practiceHours?: FloatFieldUpdateOperationsInput | number
+    lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentUpdateOneRequiredWithoutTechniquesNestedInput
+    technique?: TechniqueUpdateOneRequiredWithoutStudentsNestedInput
+    evaluation?: TechniqueEvaluationUpdateOneWithoutStudentTechniqueNestedInput
+  }
+
+  export type StudentTechniqueUncheckedUpdateWithoutApprovedByUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    techniqueId?: StringFieldUpdateOperationsInput | string
+    approved?: BoolFieldUpdateOperationsInput | boolean
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inPractice?: BoolFieldUpdateOperationsInput | boolean
+    practiceHours?: FloatFieldUpdateOperationsInput | number
+    lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    evaluation?: TechniqueEvaluationUncheckedUpdateOneWithoutStudentTechniqueNestedInput
+  }
+
+  export type StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    techniqueId?: StringFieldUpdateOperationsInput | string
+    approved?: BoolFieldUpdateOperationsInput | boolean
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inPractice?: BoolFieldUpdateOperationsInput | boolean
+    practiceHours?: FloatFieldUpdateOperationsInput | number
+    lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StudentAchievementUpdateWithoutApprovedByUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    achievedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentUpdateOneRequiredWithoutAchievementsNestedInput
+    type?: AchievementTypeUpdateOneRequiredWithoutAchievementsNestedInput
+  }
+
+  export type StudentAchievementUncheckedUpdateWithoutApprovedByUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    achievedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StudentAchievementUncheckedUpdateManyWithoutApprovedByUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    achievedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FitnessReportUpdateWithoutApprovedByUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    report?: StringFieldUpdateOperationsInput | string
+    evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentUpdateOneRequiredWithoutFitnessReportsNestedInput
+  }
+
+  export type FitnessReportUncheckedUpdateWithoutApprovedByUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    report?: StringFieldUpdateOperationsInput | string
+    evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FitnessReportUncheckedUpdateManyWithoutApprovedByUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    report?: StringFieldUpdateOperationsInput | string
+    evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AttendanceUpdateWithoutConfirmedByInput = {
@@ -56463,8 +58055,8 @@ export namespace Prisma {
     audience?: EnumClassAudienceFieldUpdateOperationsInput | $Enums.ClassAudience
     active?: BoolFieldUpdateOperationsInput | boolean
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneRequiredWithoutClassesNestedInput
@@ -56481,8 +58073,8 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     branchId?: StringFieldUpdateOperationsInput | string
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: ClassSessionUncheckedUpdateManyWithoutClassNestedInput
@@ -56498,8 +58090,8 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     branchId?: StringFieldUpdateOperationsInput | string
     dayOfWeek?: IntFieldUpdateOperationsInput | number
-    startTime?: StringFieldUpdateOperationsInput | string
-    endTime?: StringFieldUpdateOperationsInput | string
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -56521,7 +58113,7 @@ export namespace Prisma {
     quote?: string | null
     contactEmail: string
     contactPhone?: string | null
-    status?: string
+    status?: $Enums.EnrollmentStatus
     notes?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -56553,7 +58145,7 @@ export namespace Prisma {
     evidenceKey?: string | null
     approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     achievedAt?: Date | string
     createdAt?: Date | string
   }
@@ -56577,14 +58169,14 @@ export namespace Prisma {
     evidenceKey?: string | null
     approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     createdAt?: Date | string
   }
 
   export type ClassEnrollmentCreateManyStudentInput = {
     id?: string
     classId: string
-    status?: string
+    status?: $Enums.ClassEnrollmentStatus
     enrolledAt?: Date | string
     endedAt?: Date | string | null
     notes?: string | null
@@ -56614,7 +58206,7 @@ export namespace Prisma {
 
   export type StudentDocumentCreateManyStudentInput = {
     id?: string
-    enrollmentId: string
+    enrollmentId?: string | null
     applicantId?: string | null
     type: $Enums.StudentDocumentType
     status?: $Enums.StudentDocumentStatus
@@ -56655,7 +58247,7 @@ export namespace Prisma {
     quote?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56677,7 +58269,7 @@ export namespace Prisma {
     quote?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56697,7 +58289,7 @@ export namespace Prisma {
     quote?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: StringFieldUpdateOperationsInput | string
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumEnrollmentStatusFieldUpdateOperationsInput | $Enums.EnrollmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56766,12 +58358,12 @@ export namespace Prisma {
   export type StudentAchievementUpdateWithoutStudentInput = {
     id?: StringFieldUpdateOperationsInput | string
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
-    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     achievedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: AchievementTypeUpdateOneRequiredWithoutAchievementsNestedInput
+    approvedByUser?: UserUpdateOneWithoutAchievementsApprovedNestedInput
   }
 
   export type StudentAchievementUncheckedUpdateWithoutStudentInput = {
@@ -56780,7 +58372,7 @@ export namespace Prisma {
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
     approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     achievedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -56791,7 +58383,7 @@ export namespace Prisma {
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
     approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     achievedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -56799,7 +58391,6 @@ export namespace Prisma {
   export type StudentTechniqueUpdateWithoutStudentInput = {
     id?: StringFieldUpdateOperationsInput | string
     approved?: BoolFieldUpdateOperationsInput | boolean
-    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
@@ -56807,6 +58398,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     technique?: TechniqueUpdateOneRequiredWithoutStudentsNestedInput
+    approvedByUser?: UserUpdateOneWithoutTechniquesApprovedNestedInput
     evaluation?: TechniqueEvaluationUpdateOneWithoutStudentTechniqueNestedInput
   }
 
@@ -56841,10 +58433,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     report?: StringFieldUpdateOperationsInput | string
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
-    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedByUser?: UserUpdateOneWithoutFitnessReportsApprovedNestedInput
   }
 
   export type FitnessReportUncheckedUpdateWithoutStudentInput = {
@@ -56853,7 +58445,7 @@ export namespace Prisma {
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
     approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -56863,13 +58455,13 @@ export namespace Prisma {
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
     approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ClassEnrollmentUpdateWithoutStudentInput = {
     id?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumClassEnrollmentStatusFieldUpdateOperationsInput | $Enums.ClassEnrollmentStatus
     enrolledAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56881,7 +58473,7 @@ export namespace Prisma {
   export type ClassEnrollmentUncheckedUpdateWithoutStudentInput = {
     id?: StringFieldUpdateOperationsInput | string
     classId?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumClassEnrollmentStatusFieldUpdateOperationsInput | $Enums.ClassEnrollmentStatus
     enrolledAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56892,7 +58484,7 @@ export namespace Prisma {
   export type ClassEnrollmentUncheckedUpdateManyWithoutStudentInput = {
     id?: StringFieldUpdateOperationsInput | string
     classId?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumClassEnrollmentStatusFieldUpdateOperationsInput | $Enums.ClassEnrollmentStatus
     enrolledAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56972,13 +58564,13 @@ export namespace Prisma {
     reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    enrollment?: EnrollmentUpdateOneRequiredWithoutDocumentsNestedInput
+    enrollment?: EnrollmentUpdateOneWithoutDocumentsNestedInput
     applicant?: EnrollmentApplicantUpdateOneWithoutDocumentsNestedInput
   }
 
   export type StudentDocumentUncheckedUpdateWithoutStudentInput = {
     id?: StringFieldUpdateOperationsInput | string
-    enrollmentId?: StringFieldUpdateOperationsInput | string
+    enrollmentId?: NullableStringFieldUpdateOperationsInput | string | null
     applicantId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumStudentDocumentTypeFieldUpdateOperationsInput | $Enums.StudentDocumentType
     status?: EnumStudentDocumentStatusFieldUpdateOperationsInput | $Enums.StudentDocumentStatus
@@ -56994,7 +58586,7 @@ export namespace Prisma {
 
   export type StudentDocumentUncheckedUpdateManyWithoutStudentInput = {
     id?: StringFieldUpdateOperationsInput | string
-    enrollmentId?: StringFieldUpdateOperationsInput | string
+    enrollmentId?: NullableStringFieldUpdateOperationsInput | string | null
     applicantId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumStudentDocumentTypeFieldUpdateOperationsInput | $Enums.StudentDocumentType
     status?: EnumStudentDocumentStatusFieldUpdateOperationsInput | $Enums.StudentDocumentStatus
@@ -57116,7 +58708,7 @@ export namespace Prisma {
 
   export type StudentDocumentCreateManyApplicantInput = {
     id?: string
-    enrollmentId: string
+    enrollmentId?: string | null
     studentId?: string | null
     type: $Enums.StudentDocumentType
     status?: $Enums.StudentDocumentStatus
@@ -57142,13 +58734,13 @@ export namespace Prisma {
     reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     uploadedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    enrollment?: EnrollmentUpdateOneRequiredWithoutDocumentsNestedInput
+    enrollment?: EnrollmentUpdateOneWithoutDocumentsNestedInput
     student?: StudentUpdateOneWithoutDocumentsNestedInput
   }
 
   export type StudentDocumentUncheckedUpdateWithoutApplicantInput = {
     id?: StringFieldUpdateOperationsInput | string
-    enrollmentId?: StringFieldUpdateOperationsInput | string
+    enrollmentId?: NullableStringFieldUpdateOperationsInput | string | null
     studentId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumStudentDocumentTypeFieldUpdateOperationsInput | $Enums.StudentDocumentType
     status?: EnumStudentDocumentStatusFieldUpdateOperationsInput | $Enums.StudentDocumentStatus
@@ -57164,7 +58756,7 @@ export namespace Prisma {
 
   export type StudentDocumentUncheckedUpdateManyWithoutApplicantInput = {
     id?: StringFieldUpdateOperationsInput | string
-    enrollmentId?: StringFieldUpdateOperationsInput | string
+    enrollmentId?: NullableStringFieldUpdateOperationsInput | string | null
     studentId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumStudentDocumentTypeFieldUpdateOperationsInput | $Enums.StudentDocumentType
     status?: EnumStudentDocumentStatusFieldUpdateOperationsInput | $Enums.StudentDocumentStatus
@@ -57184,23 +58776,6 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
-  export type TechniqueCreateManyRankInput = {
-    id?: string
-    name: string
-    japaneseName?: string | null
-    kanji?: string | null
-    description?: string | null
-    category?: $Enums.TechniqueCategory
-    order?: number
-    movementsCount?: number | null
-    embusen?: string | null
-    difficulty?: string | null
-    videoUrl?: string | null
-    schoolId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
   export type StudentRankHistoryCreateManyBeltRankInput = {
     id?: string
     studentId: string
@@ -57209,6 +58784,35 @@ export namespace Prisma {
     examinerName?: string | null
     notes?: string | null
     createdAt?: Date | string
+  }
+
+  export type StudentCreateManyCurrentRankRefInput = {
+    id?: string
+    userId?: string | null
+    guardianId?: string | null
+    schoolId: string
+    branchId: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    gender?: $Enums.Gender | null
+    email?: string | null
+    contactPhone?: string | null
+    medicalInfo?: string | null
+    emergencyContact?: string | null
+    enrollmentDate?: Date | string
+    memberNumber?: string | null
+    status?: $Enums.StudentStatus
+    currentRank?: string | null
+    photoKey?: string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planId?: string | null
+    planStartDate?: Date | string | null
+    scholarshipType?: $Enums.ScholarshipType
+    scholarshipNote?: string | null
+    isCompetitor?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type BeltRankKataUpdateWithoutBeltRankInput = {
@@ -57227,61 +58831,6 @@ export namespace Prisma {
     kataId?: StringFieldUpdateOperationsInput | string
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type TechniqueUpdateWithoutRankInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
-    kanji?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
-    order?: IntFieldUpdateOperationsInput | number
-    movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
-    embusen?: NullableStringFieldUpdateOperationsInput | string | null
-    difficulty?: NullableStringFieldUpdateOperationsInput | string | null
-    videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    school?: SchoolUpdateOneWithoutTechniquesNestedInput
-    beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
-    students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
-  }
-
-  export type TechniqueUncheckedUpdateWithoutRankInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
-    kanji?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
-    order?: IntFieldUpdateOperationsInput | number
-    movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
-    embusen?: NullableStringFieldUpdateOperationsInput | string | null
-    difficulty?: NullableStringFieldUpdateOperationsInput | string | null
-    videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
-    students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
-  }
-
-  export type TechniqueUncheckedUpdateManyWithoutRankInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
-    kanji?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
-    order?: IntFieldUpdateOperationsInput | number
-    movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
-    embusen?: NullableStringFieldUpdateOperationsInput | string | null
-    difficulty?: NullableStringFieldUpdateOperationsInput | string | null
-    videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StudentRankHistoryUpdateWithoutBeltRankInput = {
@@ -57312,6 +58861,115 @@ export namespace Prisma {
     examinerName?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StudentUpdateWithoutCurrentRankRefInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
+    currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    photoKey?: NullableStringFieldUpdateOperationsInput | string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
+    scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
+    isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    plan?: PlanUpdateOneWithoutStudentsNestedInput
+    school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
+    branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
+    user?: UserUpdateOneWithoutStudentProfileNestedInput
+    guardian?: UserUpdateOneWithoutGuardianOfStudentsNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
+    attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
+    techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
+    classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
+    rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
+    enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
+    invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
+    documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+  }
+
+  export type StudentUncheckedUpdateWithoutCurrentRankRefInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    guardianId?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolId?: StringFieldUpdateOperationsInput | string
+    branchId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
+    currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    photoKey?: NullableStringFieldUpdateOperationsInput | string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planId?: NullableStringFieldUpdateOperationsInput | string | null
+    planStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
+    scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
+    isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+    attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
+    techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
+    classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+    rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
+    enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
+    invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
+    documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+  }
+
+  export type StudentUncheckedUpdateManyWithoutCurrentRankRefInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    guardianId?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolId?: StringFieldUpdateOperationsInput | string
+    branchId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
+    currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    photoKey?: NullableStringFieldUpdateOperationsInput | string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planId?: NullableStringFieldUpdateOperationsInput | string | null
+    planStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
+    scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
+    isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BeltRankKataCreateManyKataInput = {
@@ -57354,7 +59012,6 @@ export namespace Prisma {
   export type StudentTechniqueUpdateWithoutTechniqueInput = {
     id?: StringFieldUpdateOperationsInput | string
     approved?: BoolFieldUpdateOperationsInput | boolean
-    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
@@ -57362,6 +59019,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentUpdateOneRequiredWithoutTechniquesNestedInput
+    approvedByUser?: UserUpdateOneWithoutTechniquesApprovedNestedInput
     evaluation?: TechniqueEvaluationUpdateOneWithoutStudentTechniqueNestedInput
   }
 
@@ -57401,15 +59059,16 @@ export namespace Prisma {
     firstName: string
     lastName: string
     dateOfBirth: Date | string
-    gender?: string | null
+    gender?: $Enums.Gender | null
     email?: string | null
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
-    status?: string
+    status?: $Enums.StudentStatus
     currentRank?: string | null
+    currentRankId?: string | null
     photoKey?: string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planStartDate?: Date | string | null
@@ -57425,14 +59084,14 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
@@ -57442,6 +59101,7 @@ export namespace Prisma {
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
     school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
     user?: UserUpdateOneWithoutStudentProfileNestedInput
@@ -57468,15 +59128,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -57507,15 +59168,16 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
     currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
     photoKey?: NullableStringFieldUpdateOperationsInput | string | null
     registrationData?: NullableJsonNullValueInput | InputJsonValue
     planStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -57536,7 +59198,7 @@ export namespace Prisma {
   export type ClassEnrollmentCreateManyClassInput = {
     id?: string
     studentId: string
-    status?: string
+    status?: $Enums.ClassEnrollmentStatus
     enrolledAt?: Date | string
     endedAt?: Date | string | null
     notes?: string | null
@@ -57588,7 +59250,7 @@ export namespace Prisma {
 
   export type ClassEnrollmentUpdateWithoutClassInput = {
     id?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumClassEnrollmentStatusFieldUpdateOperationsInput | $Enums.ClassEnrollmentStatus
     enrolledAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -57600,7 +59262,7 @@ export namespace Prisma {
   export type ClassEnrollmentUncheckedUpdateWithoutClassInput = {
     id?: StringFieldUpdateOperationsInput | string
     studentId?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumClassEnrollmentStatusFieldUpdateOperationsInput | $Enums.ClassEnrollmentStatus
     enrolledAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -57611,7 +59273,7 @@ export namespace Prisma {
   export type ClassEnrollmentUncheckedUpdateManyWithoutClassInput = {
     id?: StringFieldUpdateOperationsInput | string
     studentId?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumClassEnrollmentStatusFieldUpdateOperationsInput | $Enums.ClassEnrollmentStatus
     enrolledAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -57762,7 +59424,7 @@ export namespace Prisma {
     evidenceKey?: string | null
     approvedBy?: string | null
     comment?: string | null
-    status?: string
+    status?: $Enums.ApprovalStatus
     achievedAt?: Date | string
     createdAt?: Date | string
   }
@@ -57770,12 +59432,12 @@ export namespace Prisma {
   export type StudentAchievementUpdateWithoutTypeInput = {
     id?: StringFieldUpdateOperationsInput | string
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
-    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     achievedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentUpdateOneRequiredWithoutAchievementsNestedInput
+    approvedByUser?: UserUpdateOneWithoutAchievementsApprovedNestedInput
   }
 
   export type StudentAchievementUncheckedUpdateWithoutTypeInput = {
@@ -57784,7 +59446,7 @@ export namespace Prisma {
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
     approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     achievedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -57795,7 +59457,7 @@ export namespace Prisma {
     evidenceKey?: NullableStringFieldUpdateOperationsInput | string | null
     approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
     comment?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     achievedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

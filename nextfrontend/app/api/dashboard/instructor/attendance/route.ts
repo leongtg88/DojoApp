@@ -1,8 +1,9 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
-import { classHours } from '@/lib/dashboard/balance'
+import { classHours, formatTime } from '@/lib/dashboard/balance'
 import type { AttendanceStatus } from '@/lib/generated/prisma'
+import { ClassEnrollmentStatus } from '@/lib/generated/prisma'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -64,14 +65,14 @@ export async function POST(request: Request) {
   }
 
   const enrolled = await db.classEnrollment.findMany({
-    where: { classId, status: 'ACTIVE' },
+    where: { classId, status: ClassEnrollmentStatus.ACTIVE },
     select: { studentId: true },
   })
   const enrolledStudentIds = new Set(enrolled.map(({ studentId }) => studentId))
 
   const sessionDate = new Date(`${date}T00:00:00.000Z`)
   const dayAfter = new Date(sessionDate.getTime() + 86_400_000)
-  const defaultHours = classHours(scheduledClass)
+  const defaultHours = classHours({ startTime: formatTime(scheduledClass.startTime), endTime: formatTime(scheduledClass.endTime) })
 
   await db.$transaction(async (transaction) => {
     const classSession = await transaction.classSession.upsert({

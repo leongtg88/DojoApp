@@ -62,7 +62,7 @@ export async function PATCH(request: Request, { params }: PlanRouteContext) {
     },
   })
 
-  return NextResponse.json({ plan: updated })
+  return NextResponse.json({ plan: { ...updated, price: updated.price?.toNumber() ?? null } })
 }
 
 export async function DELETE(_request: Request, { params }: PlanRouteContext) {

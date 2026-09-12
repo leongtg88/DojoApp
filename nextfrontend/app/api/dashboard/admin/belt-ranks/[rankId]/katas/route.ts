@@ -56,15 +56,6 @@ export async function PUT(request: Request, { params }: RankKatasContext) {
           }),
         ]
       : []),
-    // Compatibilidad: mantiene Technique.rankId como "grado base" sincronizado.
-    db.technique.updateMany({
-      where: { rankId: rank.id, id: { notIn: techniqueIds } },
-      data: { rankId: null },
-    }),
-    db.technique.updateMany({
-      where: { id: { in: techniqueIds }, rankId: null },
-      data: { rankId: rank.id },
-    }),
   ])
 
   return NextResponse.json({ ok: true })

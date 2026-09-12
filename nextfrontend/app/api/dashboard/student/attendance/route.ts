@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
-import { resolveClassByTime, classHours } from '@/lib/dashboard/balance'
+import { resolveClassByTime, classHours, formatTime } from '@/lib/dashboard/balance'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -79,7 +79,10 @@ export async function POST(request: Request) {
       endTime: true,
     },
   })
-  const resolvedClass = resolveClassByTime(scheduledClasses, now)
+  const resolvedClass = resolveClassByTime(
+    scheduledClasses.map(({ startTime, endTime, ...cls }) => ({ ...cls, startTime: formatTime(startTime), endTime: formatTime(endTime) })),
+    now,
+  )
   const referenceIds = new Set(student.classEnrollments.map((entry) => entry.classId))
 
   const attendance = await db.attendance.create({

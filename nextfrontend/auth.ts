@@ -64,7 +64,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // inscripción (tiene al menos un enrolment). Las cuentas sin
         // inscripción (auto-registradas o huérfanas) quedan bloqueadas:
         // el acceso es exclusivo por invitación de la escuela.
-        if (user.role === 'STUDENT') {
+        if (user.roles.includes('STUDENT')) {
           const studentWithEnrollment = await db.student.findFirst({
             where: {
               userId: user.id,
@@ -82,7 +82,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           id: user.id,
           email: user.email,
           name: user.name,
-          role: user.role,
           roles: user.roles as DashboardRole[],
         }
       },
@@ -93,7 +92,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
-        token.role = user.role
         token.roles = user.roles as DashboardRole[]
       }
 
@@ -103,10 +101,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (session.user) {
         session.user.id = String(token.id)
-        session.user.role = String(token.role)
-        const tokenRoles = (token.roles ?? []) as DashboardRole[]
-        const fallbackRoles = token.role ? [String(token.role) as DashboardRole] : []
-        session.user.roles = tokenRoles.length > 0 ? tokenRoles : (fallbackRoles as DashboardRole[])
+        session.user.roles = (token.roles ?? []) as DashboardRole[]
       }
 
       return session

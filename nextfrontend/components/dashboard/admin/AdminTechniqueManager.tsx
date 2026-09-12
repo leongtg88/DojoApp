@@ -29,7 +29,6 @@ interface TechniqueForm {
     movementsCount: string
     embusen: string
     videoUrl: string
-    rankId: string
 }
 
 const EMPTY_TECHNIQUE_FORM: TechniqueForm = {
@@ -42,7 +41,6 @@ const EMPTY_TECHNIQUE_FORM: TechniqueForm = {
     movementsCount: '',
     embusen: '',
     videoUrl: '',
-    rankId: '',
 }
 
 export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManagerProps) {
@@ -82,7 +80,6 @@ export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManag
             movementsCount: technique.movementsCount != null ? String(technique.movementsCount) : '',
             embusen: technique.embusen ?? '',
             videoUrl: technique.videoUrl ?? '',
-            rankId: technique.rankId ?? '',
         })
         setError(null)
         setIsDialogOpen(true)
@@ -102,7 +99,6 @@ export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManag
             movementsCount: form.movementsCount === '' ? null : Number(form.movementsCount),
             embusen: form.embusen.trim() || null,
             videoUrl: form.videoUrl.trim() || null,
-            rankId: form.rankId || null,
         }
         const response = await fetch(
             editingTechnique ? `/api/dashboard/admin/techniques/${editingTechnique.id}` : '/api/dashboard/admin/techniques',
@@ -180,7 +176,7 @@ export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManag
                 ) : (
                     <ul className="divide-y divide-neutral-800">
                         {visibleTechniques.map((technique) => {
-                            const rank = ranks.find(({ id }) => id === technique.rankId)
+                            const rank = technique.rankIds.length > 0 ? ranks.find(({ id }) => id === technique.rankIds[0]) : undefined
                             return (
                                 <li className="flex items-start justify-between gap-4 px-5 py-4" key={technique.id}>
                                     <div className="min-w-0">
@@ -203,7 +199,7 @@ export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManag
             {error && <p className="mt-4 text-sm font-medium text-red-400">{error}</p>}
 
             {isDialogOpen && (
-                <TechniqueDialog form={form} isNew={!editingTechnique} onChange={setForm} onClose={() => setIsDialogOpen(false)} onSubmit={submitTechnique} ranks={ranks} saving={saving} />
+                <TechniqueDialog form={form} isNew={!editingTechnique} onChange={setForm} onClose={() => setIsDialogOpen(false)} onSubmit={submitTechnique} saving={saving} />
             )}
         </main>
     )
@@ -215,7 +211,6 @@ function TechniqueDialog({
     onChange,
     onClose,
     onSubmit,
-    ranks,
     saving,
 }: {
     form: TechniqueForm
@@ -223,7 +218,6 @@ function TechniqueDialog({
     onChange: (form: TechniqueForm) => void
     onClose: () => void
     onSubmit: (event: React.FormEvent<HTMLFormElement>) => Promise<unknown>
-    ranks: AdminBeltRankSummary[]
     saving: boolean
 }) {
     function set<K extends keyof TechniqueForm>(key: K, value: TechniqueForm[K]) {
@@ -253,7 +247,6 @@ function TechniqueDialog({
                         <label className="text-xs font-semibold text-neutral-300" htmlFor="technique-movements">N.º de movimientos<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="technique-movements" min="0" onChange={(event) => set('movementsCount', event.target.value)} type="number" value={form.movementsCount} /></label>
                         <label className="text-xs font-semibold text-neutral-300" htmlFor="technique-embusen">Embusen<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="technique-embusen" onChange={(event) => set('embusen', event.target.value)} placeholder="H" value={form.embusen} /></label>
                     </div>
-                    <label className="text-xs font-semibold text-neutral-300" htmlFor="technique-rank">Grado asociado<select className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="technique-rank" onChange={(event) => set('rankId', event.target.value)} value={form.rankId}><option value="">Sin grado</option>{ranks.map((rank) => <option key={rank.id} value={rank.id}>{rank.kyuDan ? `${rank.kyuDan} · ` : ''}{rank.name}</option>)}</select></label>
                     <label className="text-xs font-semibold text-neutral-300" htmlFor="technique-video">URL de video de referencia<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="technique-video" onChange={(event) => set('videoUrl', event.target.value)} placeholder="https://..." value={form.videoUrl} /></label>
                     <label className="text-xs font-semibold text-neutral-300" htmlFor="technique-desc">Descripción y requisitos<textarea className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm font-normal text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="technique-desc" onChange={(event) => set('description', event.target.value)} placeholder="Detalle técnico de la ejecución" rows={3} value={form.description} /></label>
                 </div>

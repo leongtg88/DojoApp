@@ -9,7 +9,7 @@ const updateStudentSchema = z.object({
   firstName: z.string().trim().min(2).max(80).optional(),
   lastName: z.string().trim().min(2).max(120).optional(),
   dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  gender: z.enum(['female', 'male']).nullable().optional(),
+  gender: z.enum(['FEMALE', 'MALE']).nullable().optional(),
   contactPhone: z.string().trim().max(30).nullable().optional(),
   medicalInfo: z.string().trim().max(2_000).nullable().optional(),
   emergencyContact: z.string().trim().max(500).nullable().optional(),

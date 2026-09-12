@@ -15,7 +15,6 @@ const createTechniqueSchema = z.object({
   embusen: z.string().trim().max(50).optional().nullable(),
   difficulty: z.string().trim().max(50).optional().nullable(),
   videoUrl: z.url().optional().nullable(),
-  rankId: z.string().trim().min(1).optional().nullable(),
 })
 
 export async function GET(request: Request) {
@@ -37,9 +36,9 @@ export async function GET(request: Request) {
   const techniques = await db.technique.findMany({
     where: {
       OR: scope.isSuperAdmin ? undefined : [{ schoolId: scope.schoolId }, { schoolId: null }],
-      ...(rankId ? { rankId } : {}),
+      ...(rankId ? { beltRankKatas: { some: { beltRankId: rankId } } } : {}),
     },
-    orderBy: [{ rankId: 'asc' }, { order: 'asc' }, { name: 'asc' }],
+    orderBy: [{ order: 'asc' }, { name: 'asc' }],
   })
 
   return NextResponse.json({ techniques })
@@ -68,14 +67,6 @@ export async function POST(request: Request) {
   const aggregate = await db.technique.aggregate({ _max: { order: true } })
   const order = result.data.order ?? (aggregate._max.order ?? 0) + 1
 
-  if (result.data.rankId) {
-    const rank = await db.beltRank.findFirst({ where: { id: result.data.rankId } })
-
-    if (!rank || (!scope.isSuperAdmin && rank.schoolId !== scope.schoolId)) {
-      return NextResponse.json({ error: 'Grado no encontrado' }, { status: 404 })
-    }
-  }
-
   const technique = await db.technique.create({
     data: {
       name: result.data.name,
@@ -88,7 +79,6 @@ export async function POST(request: Request) {
       embusen: result.data.embusen ?? null,
       difficulty: result.data.difficulty ?? null,
       videoUrl: result.data.videoUrl ?? null,
-      rankId: result.data.rankId ?? null,
       schoolId: scope.schoolId ?? null,
     },
   })

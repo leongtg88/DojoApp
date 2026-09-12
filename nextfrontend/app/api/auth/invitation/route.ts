@@ -98,7 +98,6 @@ export async function POST(request: NextRequest) {
           email: parsed.data.email,
           emailVerified: new Date(),
           passwordHash,
-          role: Role.STUDENT,
           roles: [Role.STUDENT],
           schoolId: invitation.student.schoolId,
           branchId: invitation.student.branchId,

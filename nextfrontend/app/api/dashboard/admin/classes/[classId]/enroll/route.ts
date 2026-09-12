@@ -1,4 +1,4 @@
-import { Prisma } from '@/lib/generated/prisma'
+import { Prisma, ClassEnrollmentStatus } from '@/lib/generated/prisma'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
@@ -105,8 +105,8 @@ export async function DELETE(request: Request, { params }: EnrollRouteContext) {
   const now = new Date()
 
   await db.classEnrollment.updateMany({
-    where: { classId, studentId: { in: studentIds }, status: 'ACTIVE' },
-    data: { status: 'ENDED', endedAt: now },
+    where: { classId, studentId: { in: studentIds }, status: ClassEnrollmentStatus.ACTIVE },
+    data: { status: ClassEnrollmentStatus.ENDED, endedAt: now },
   })
 
   return NextResponse.json({ ok: true })

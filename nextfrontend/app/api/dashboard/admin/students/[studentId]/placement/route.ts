@@ -1,3 +1,4 @@
+import { ClassEnrollmentStatus } from '@/lib/generated/prisma'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
@@ -96,7 +97,7 @@ export async function PUT(request: Request, { params }: PlacementRouteContext) {
     })
 
     const existing = await transaction.classEnrollment.findMany({
-      where: { studentId: student.id, status: 'ACTIVE' },
+      where: { studentId: student.id, status: ClassEnrollmentStatus.ACTIVE },
       select: { classId: true },
     })
     const existingIds = new Set(existing.map((entry) => entry.classId))
@@ -108,15 +109,15 @@ export async function PUT(request: Request, { params }: PlacementRouteContext) {
 
     if (toAdd.length > 0) {
       await transaction.classEnrollment.createMany({
-        data: toAdd.map((classId) => ({ classId, studentId: student.id, status: 'ACTIVE' as const })),
+        data: toAdd.map((classId) => ({ classId, studentId: student.id, status: ClassEnrollmentStatus.ACTIVE })),
         skipDuplicates: true,
       })
     }
 
     if (toRemove.length > 0) {
       await transaction.classEnrollment.updateMany({
-        where: { studentId: student.id, classId: { in: toRemove }, status: 'ACTIVE' },
-        data: { status: 'ENDED', endedAt: now },
+        where: { studentId: student.id, classId: { in: toRemove }, status: ClassEnrollmentStatus.ACTIVE },
+        data: { status: ClassEnrollmentStatus.ENDED, endedAt: now },
       })
     }
   })

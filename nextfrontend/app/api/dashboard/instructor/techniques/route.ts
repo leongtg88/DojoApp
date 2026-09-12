@@ -113,7 +113,7 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: 'La técnica no está asignada al alumno' }, { status: 404 })
   }
 
-  const data: Prisma.StudentTechniqueUpdateInput = { notes: result.data.notes }
+  const data: Prisma.StudentTechniqueUncheckedUpdateInput = { notes: result.data.notes }
 
   if (result.data.approved !== undefined) {
     data.approved = result.data.approved

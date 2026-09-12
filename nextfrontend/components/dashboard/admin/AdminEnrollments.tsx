@@ -18,12 +18,12 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [dateOfBirth, setDateOfBirth] = useState('')
-    const [gender, setGender] = useState<'female' | 'male' | ''>('')
+    const [gender, setGender] = useState<'FEMALE' | 'MALE' | ''>('')
     const [applicantId, setApplicantId] = useState('')
 
-    function sexoToGender(sexo: unknown): 'female' | 'male' | '' {
-        if (sexo === 'Femenino') return 'female'
-        if (sexo === 'Masculino') return 'male'
+    function sexoToGender(sexo: unknown): 'FEMALE' | 'MALE' | '' {
+        if (sexo === 'Femenino') return 'FEMALE'
+        if (sexo === 'Masculino') return 'MALE'
         return ''
     }
 
@@ -161,10 +161,10 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                                 <input className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="dateOfBirth" onChange={(event) => setDateOfBirth(event.target.value)} required type="date" value={dateOfBirth} />
                             </label>
                             <label className="text-sm font-semibold text-neutral-200" htmlFor="gender">Sexo
-                                <select className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="gender" onChange={(event) => setGender(event.target.value as 'female' | 'male' | '')} value={gender}>
-                                    <option value="">No especificado</option>
-                                    <option value="female">Femenino</option>
-                                    <option value="male">Masculino</option>
+<select className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="gender" onChange={(event) => setGender(event.target.value as 'FEMALE' | 'MALE' | '')} value={gender}>
+                                    <option value="">Seleccionar</option>
+                                    <option value="FEMALE">Femenino</option>
+                                    <option value="MALE">Masculino</option>
                                 </select>
                             </label>
                         </div>

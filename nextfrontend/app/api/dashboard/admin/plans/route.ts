@@ -40,6 +40,7 @@ export async function GET() {
       description: true,
       monthlyHours: true,
       price: true,
+      currency: true,
       isUnlimited: true,
       active: true,
       sortOrder: true,
@@ -47,7 +48,13 @@ export async function GET() {
     },
   })
 
-  return NextResponse.json({ plans })
+  return NextResponse.json({
+    plans: plans.map(({ _count, price, ...plan }) => ({
+      ...plan,
+      price: price?.toNumber() ?? null,
+      studentCount: _count.students,
+    })),
+  })
 }
 
 export async function POST(request: Request) {
@@ -89,5 +96,5 @@ export async function POST(request: Request) {
     },
   })
 
-  return NextResponse.json({ plan }, { status: 201 })
+  return NextResponse.json({ plan: { ...plan, price: plan.price?.toNumber() ?? null } }, { status: 201 })
 }

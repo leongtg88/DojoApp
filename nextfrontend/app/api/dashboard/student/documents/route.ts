@@ -38,7 +38,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const student = await getStudentId()
-  if (!student?.enrollmentId) return NextResponse.json({ error: 'No se encontró el expediente de inscripción' }, { status: 409 })
+  if (!student) return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
 
   const formData = await request.formData().catch(() => null)
   const type = formData?.get('type')
@@ -52,7 +52,9 @@ export async function POST(request: Request) {
     await uploadPrivateDocument(storageKey, file)
     const document = await db.$transaction(async (transaction) => {
       await transaction.studentDocument.updateMany({ where: { studentId: student.id, type: type as typeof documentTypes[number], status: { in: ['PENDING', 'APPROVED', 'REJECTED'] } }, data: { status: 'EXPIRED' } })
-      return transaction.studentDocument.create({ data: { enrollmentId: student.enrollmentId, studentId: student.id, type: type as typeof documentTypes[number], fileName: file.name, storageKey, mimeType: file.type, fileSize: file.size } })
+      return transaction.studentDocument.create({
+        data: { enrollmentId: student.enrollmentId, studentId: student.id, type: type as typeof documentTypes[number], fileName: file.name, storageKey, mimeType: file.type, fileSize: file.size },
+      })
     })
     return NextResponse.json({ ok: true, id: document.id })
   } catch (uploadError) {

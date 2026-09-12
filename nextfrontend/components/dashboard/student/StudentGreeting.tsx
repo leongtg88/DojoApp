@@ -9,7 +9,7 @@ interface StudentGreetingProps {
 export function StudentGreeting({ profile }: StudentGreetingProps) {
     const fullName = `${profile.firstName} ${profile.lastName}`
     const initials = `${profile.firstName.charAt(0)}${profile.lastName.charAt(0)}`.toUpperCase()
-    const saludo = profile.gender === 'female' ? 'Bienvenida' : profile.gender === 'male' ? 'Bienvenido' : 'Bienvenido(a)'
+    const saludo = profile.gender === 'FEMALE' ? 'Bienvenida' : profile.gender === 'MALE' ? 'Bienvenido' : 'Bienvenido(a)'
 
     return (
         <section className="flex flex-col justify-between gap-5 border-b border-neutral-800 pb-6 sm:flex-row sm:items-end">

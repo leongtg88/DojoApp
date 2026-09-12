@@ -1,8 +1,14 @@
 import { db } from '@/lib/db'
+import { ClassEnrollmentStatus, StudentStatus, EnrollmentStatus } from '@/lib/generated/prisma'
 import { computeBirthdays } from '@/lib/dashboard/birthdays'
 import { ageFromDob, programForAge } from '@/lib/dashboard/program'
-import { computeBalance, monthRange } from '@/lib/dashboard/balance'
+import { computeBalance, formatTime, monthRange } from '@/lib/dashboard/balance'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
+
+function techniqueWithRanks<T extends { beltRankKatas: { beltRankId: string }[] }>(technique: T) {
+  const { beltRankKatas, ...rest } = technique
+  return { ...rest, rankIds: beltRankKatas.map(({ beltRankId }) => beltRankId) }
+}
 import type {
   AdminBalanceRow,
   AdminDashboardSummary,
@@ -13,7 +19,6 @@ import type {
   AdminScheduleSummary,
   AdminStudentDetail,
   AdminStudentSummary,
-  AdminTechniqueSummary,
   AttendanceRecord,
   DashboardBirthday,
   InstructorAttendanceBoardData,
@@ -36,7 +41,7 @@ export async function getAdminDashboardSummary(userId: string): Promise<AdminDas
     db.class.count({ where: classWhere }),
     db.classEnrollment.count({
       where: {
-        status: 'ACTIVE',
+        status: ClassEnrollmentStatus.ACTIVE,
         ...(scope.isSuperAdmin ? {} : { student: { schoolId: scope.schoolId! } }),
       },
     }),
@@ -48,7 +53,7 @@ export async function getAdminDashboardSummary(userId: string): Promise<AdminDas
       })
       const enrolledStudentIds = (
         await db.classEnrollment.findMany({
-          where: { status: 'ACTIVE', ...(scope.isSuperAdmin ? {} : { student: { schoolId: scope.schoolId! } }) },
+          where: { status: ClassEnrollmentStatus.ACTIVE, ...(scope.isSuperAdmin ? {} : { student: { schoolId: scope.schoolId! } }) },
           select: { studentId: true },
         })
       )
@@ -93,7 +98,7 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       scholarshipNote: true,
       isCompetitor: true,
       classEnrollments: {
-        where: { status: 'ACTIVE' },
+        where: { status: ClassEnrollmentStatus.ACTIVE },
         select: { class: { select: { name: true } } },
       },
       techniques: {
@@ -115,7 +120,7 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
               embusen: true,
               movementsCount: true,
               videoUrl: true,
-              rankId: true,
+              beltRankKatas: { select: { beltRankId: true }, orderBy: { order: 'asc' } },
             },
           },
         },
@@ -174,7 +179,7 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       isCompetitor: student.isCompetitor,
       needsPlan: !student.plan?.id,
       needsSchedule: student.classEnrollments.length === 0,
-      techniques: student.techniques.map(({ technique }) => ({ ...technique })),
+      techniques: student.techniques.map(({ technique }) => techniqueWithRanks(technique)),
       studentCount: student.techniques.length,
       kataMasteredCount: student.techniques.filter(({ approved }) => approved).length,
       kataTotalCount: student.techniques.length,
@@ -197,7 +202,7 @@ export async function getAdminPendingEnrollmentCount(userId: string): Promise<nu
   return db.enrollment.count({
     where: {
       ...(scopeSchoolFilter(scope)),
-      status: 'PENDING',
+      status: EnrollmentStatus.PENDING,
     },
   })
 }
@@ -212,7 +217,7 @@ export async function getAdminEnrollments(userId: string): Promise<AdminEnrollme
   const enrollments = await db.enrollment.findMany({
     where: {
       ...(scopeSchoolFilter(scope)),
-      status: 'PENDING',
+      status: EnrollmentStatus.PENDING,
     },
     orderBy: { createdAt: 'desc' },
     select: {
@@ -261,7 +266,7 @@ export async function getAdminBeltRanks(userId: string): Promise<AdminBeltRankSu
       minAttendancePercent: true,
       estimatedDurationMonths: true,
       description: true,
-      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, rankId: true } } } },
+      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, beltRankKatas: { select: { beltRankId: true }, orderBy: { order: 'asc' } } } } } },
       _count: { select: { promotions: true } },
     },
   })
@@ -272,7 +277,7 @@ export async function getAdminBeltRanks(userId: string): Promise<AdminBeltRankSu
     where: {
       currentRank: { in: rankNames },
       ...(scopeSchoolFilter(scope)),
-      status: 'ACTIVE',
+      status: StudentStatus.ACTIVE,
     },
     _count: { _all: true },
   })
@@ -296,7 +301,7 @@ export async function getAdminBeltRanks(userId: string): Promise<AdminBeltRankSu
     description: rank.description,
     techniqueCount: rank.katas.length,
     studentCount: countByRankName.get(rank.name) ?? 0,
-    techniques: rank.katas.map(({ kata }) => ({ ...kata })),
+    techniques: rank.katas.map(({ kata }) => techniqueWithRanks(kata)),
   }))
 }
 
@@ -321,16 +326,16 @@ export async function getAdminCurriculum(userId: string): Promise<AdminCurriculu
       category: true,
       order: true,
       difficulty: true,
-      embusen: true,
-      movementsCount: true,
-      videoUrl: true,
-      rankId: true,
-    },
+embusen: true,
+movementsCount: true,
+              videoUrl: true,
+              beltRankKatas: { select: { beltRankId: true }, orderBy: { order: 'asc' } },
+            },
   })
 
   return {
     ranks: ranks ?? [],
-    techniques: techniques.map((technique) => ({ ...technique })) as AdminTechniqueSummary[],
+    techniques: techniques.map(techniqueWithRanks),
   }
 }
 
@@ -382,7 +387,7 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
       scholarshipNote: true,
       isCompetitor: true,
       classEnrollments: {
-        where: { status: 'ACTIVE' },
+        where: { status: ClassEnrollmentStatus.ACTIVE },
         select: { class: { select: { id: true, name: true } } },
       },
     documents: {
@@ -410,7 +415,7 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
               embusen: true,
               movementsCount: true,
               videoUrl: true,
-              rankId: true,
+              beltRankKatas: { select: { beltRankId: true }, orderBy: { order: 'asc' } },
             },
           },
         },
@@ -457,7 +462,7 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
       minAttendancePercent: true,
       estimatedDurationMonths: true,
       description: true,
-      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, rankId: true } } } },
+      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, beltRankKatas: { select: { beltRankId: true }, orderBy: { order: 'asc' } } } } } },
       _count: { select: { katas: true } },
     },
   })
@@ -506,7 +511,7 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
       description: rank.description,
       techniqueCount: rank._count.katas,
       studentCount: 0,
-      techniques: rank.katas.map(({ kata }) => ({ ...kata })),
+techniques: rank.katas.map(({ kata }) => techniqueWithRanks(kata)),
     })),
     rankHistory: student.rankHistory.map((entry) => ({
       id: entry.id,
@@ -525,7 +530,7 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
       inPractice: entry.inPractice,
       practiceHours: entry.practiceHours,
       notes: entry.notes,
-      technique: { ...entry.technique },
+      technique: techniqueWithRanks(entry.technique),
     })),
     rankAwardedAt: student.rankHistory[0]?.promotedAt.toISOString() ?? null,
     attendancePercent: Math.min(100, Math.round((attendedCount / TARGET_ATTENDANCES) * 100)),
@@ -646,13 +651,13 @@ export async function getAdminUpcomingBirthdays(userId: string): Promise<Dashboa
     db.student.findMany({
       where: {
         ...(scopeSchoolFilter(scope)),
-        status: 'ACTIVE',
+        status: StudentStatus.ACTIVE,
       },
       select: { id: true, firstName: true, lastName: true, dateOfBirth: true, currentRank: true },
     }),
     db.user.findMany({
       where: {
-        role: 'INSTRUCTOR',
+        roles: { has: 'INSTRUCTOR' },
         ...(scopeSchoolFilter(scope)),
         instructorProfile: { isNot: null },
       },
@@ -707,7 +712,11 @@ export async function getAdminPlans(userId: string): Promise<PlanSummary[] | nul
     },
   })
 
-  return plans.map(({ _count, ...plan }) => ({ ...plan, studentCount: _count.students }))
+  return plans.map(({ _count, price, ...plan }) => ({
+    ...plan,
+    price: price?.toNumber() ?? null,
+    studentCount: _count.students,
+  }))
 }
 
 export async function getAdminSchedules(userId: string): Promise<AdminScheduleSummary[] | null> {
@@ -731,12 +740,14 @@ export async function getAdminSchedules(userId: string): Promise<AdminScheduleSu
       endTime: true,
       branch: { select: { id: true, name: true } },
       instructor: { select: { id: true, name: true } },
-      _count: { select: { enrollments: { where: { status: 'ACTIVE' } } } },
+      _count: { select: { enrollments: { where: { status: ClassEnrollmentStatus.ACTIVE } } } },
     },
   })
 
-  return classes.map(({ branch, instructor, _count, ...scheduledClass }) => ({
+  return classes.map(({ branch, instructor, _count, startTime, endTime, ...scheduledClass }) => ({
     ...scheduledClass,
+    startTime: formatTime(startTime),
+    endTime: formatTime(endTime),
     branchId: branch.id,
     branchName: branch.name,
     instructorId: instructor?.id ?? null,
@@ -757,7 +768,7 @@ export async function getAdminBalanceReport(userId: string): Promise<AdminBalanc
   const students = await db.student.findMany({
     where: {
       ...scopeSchoolFilter(scope),
-      status: 'ACTIVE',
+      status: StudentStatus.ACTIVE,
     },
     orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
     select: {

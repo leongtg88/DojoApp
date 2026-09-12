@@ -9,7 +9,7 @@ export interface AdminScope {
 export async function getAdminScope(userId: string): Promise<AdminScope | null> {
   const user = await db.user.findUnique({
     where: { id: userId },
-    select: { role: true, roles: true, schoolId: true },
+    select: { roles: true, schoolId: true },
   })
 
   if (!user || !hasRole(user, 'SCHOOL_ADMIN') && !hasRole(user, 'SUPERADMIN')) {
