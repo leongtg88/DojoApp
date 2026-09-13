@@ -27,7 +27,7 @@ export function InstructorDashboardOverview({ birthdays, classes, students }: In
                     <Users aria-hidden="true" className="size-5 text-emerald-400" />
                     <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-neutral-400">Estudiantes activos</p>
                     <p className="mt-1 text-3xl font-bold text-white">{students.length}</p>
-                    <p className="mt-2 text-sm text-neutral-400">Ver alumnos inscritos en tus clases.</p>
+                    <p className="mt-2 text-sm text-neutral-400">Ver alumnos activos de tu escuela.</p>
                 </Link>
             </section>
             <BirthdayWidget birthdays={birthdays} />

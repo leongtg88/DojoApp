@@ -30,8 +30,8 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
     return (
         <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
             <p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">Panel de instructor</p>
-            <h1 className="mt-2 font-display text-3xl font-extrabold text-white">Mis estudiantes</h1>
-            <p className="mt-2 text-sm text-neutral-400">Alumnos inscritos activamente en tus clases.</p>
+            <h1 className="mt-2 font-display text-3xl font-extrabold text-white">Estudiantes de la escuela</h1>
+            <p className="mt-2 text-sm text-neutral-400">Alumnos activos de tu escuela.</p>
 
             {students.length > 0 && (
                 <section className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -55,7 +55,7 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
             {students.length === 0 ? (
                 <section className="mt-7 rounded-lg border border-dashed border-neutral-700 bg-[#161b22] px-5 py-10 text-center">
                     <Users aria-hidden="true" className="mx-auto size-7 text-cyan-400" />
-                    <p className="mt-3 text-sm font-semibold text-white">No hay alumnos activos en tus clases.</p>
+                    <p className="mt-3 text-sm font-semibold text-white">No hay alumnos activos en tu escuela.</p>
                 </section>
             ) : (
                 <section className="mt-7 rounded-lg border border-neutral-800 bg-[#161b22] shadow-sm">

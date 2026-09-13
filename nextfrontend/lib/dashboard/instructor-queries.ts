@@ -15,6 +15,28 @@ import type {
   InstructorTechniqueReview,
 } from '@/types/dashboard'
 
+/**
+ * Resuelve la escuela del instructor: primero su perfil y, si no está asignada,
+ * se deriva de la sede de sus clases.
+ */
+export async function getInstructorSchoolId(userId: string): Promise<string | null> {
+  const instructor = await db.user.findUnique({
+    where: { id: userId },
+    select: { schoolId: true },
+  })
+
+  if (instructor?.schoolId) {
+    return instructor.schoolId
+  }
+
+  const scheduledClass = await db.class.findFirst({
+    where: { instructorId: userId },
+    select: { branch: { select: { schoolId: true } } },
+  })
+
+  return scheduledClass?.branch.schoolId ?? null
+}
+
 export async function getInstructorClasses(userId: string): Promise<InstructorClassSummary[]> {
   const classes = await db.class.findMany({
     where: { instructorId: userId, active: true },
@@ -49,15 +71,16 @@ export async function getInstructorClasses(userId: string): Promise<InstructorCl
 }
 
 export async function getInstructorStudents(userId: string): Promise<InstructorStudentSummary[]> {
+  const schoolId = await getInstructorSchoolId(userId)
+
+  if (!schoolId) {
+    return []
+  }
+
   const students = await db.student.findMany({
     where: {
+      schoolId,
       status: StudentStatus.ACTIVE,
-      classEnrollments: {
-        some: {
-          status: ClassEnrollmentStatus.ACTIVE,
-          class: { instructorId: userId },
-        },
-      },
     },
     orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
     select: {
@@ -68,10 +91,7 @@ export async function getInstructorStudents(userId: string): Promise<InstructorS
       schoolId: true,
       status: true,
       classEnrollments: {
-        where: {
-          status: ClassEnrollmentStatus.ACTIVE,
-          class: { instructorId: userId },
-        },
+        where: { status: ClassEnrollmentStatus.ACTIVE },
         select: { class: { select: { name: true } } },
       },
       techniques: {
@@ -268,16 +288,17 @@ export async function getInstructorTechniqueReview(
   userId: string,
   studentId: string,
 ): Promise<InstructorTechniqueReview | null> {
+  const schoolId = await getInstructorSchoolId(userId)
+
+  if (!schoolId) {
+    return null
+  }
+
   const student = await db.student.findFirst({
     where: {
       id: studentId,
       status: StudentStatus.ACTIVE,
-      classEnrollments: {
-        some: {
-          status: ClassEnrollmentStatus.ACTIVE,
-          class: { instructorId: userId },
-        },
-      },
+      schoolId,
     },
     select: {
       id: true,
@@ -339,16 +360,17 @@ export async function getInstructorKataAssignment(
   userId: string,
   studentId: string,
 ): Promise<InstructorKataAssignmentData | null> {
+  const schoolId = await getInstructorSchoolId(userId)
+
+  if (!schoolId) {
+    return null
+  }
+
   const student = await db.student.findFirst({
     where: {
       id: studentId,
       status: StudentStatus.ACTIVE,
-      classEnrollments: {
-        some: {
-          status: ClassEnrollmentStatus.ACTIVE,
-          class: { instructorId: userId },
-        },
-      },
+      schoolId,
     },
     select: {
       id: true,
@@ -432,24 +454,16 @@ export async function getInstructorStudentsSearch(
   userId: string,
   query: string,
 ): Promise<InstructorStudentSearchResult[]> {
-  const [instructor, classes] = await Promise.all([
-    db.user.findUnique({
-      where: { id: userId },
-      select: { schoolId: true },
-    }),
-    db.class.findMany({
-      where: { instructorId: userId },
-      select: { id: true, branch: { select: { schoolId: true } } },
-    }),
-  ])
-
-  // La escuela puede venir del perfil del instructor o, si no está asignada,
-  // derivarse de la sede de sus clases.
-  const schoolId = instructor?.schoolId ?? classes[0]?.branch.schoolId ?? null
+  const schoolId = await getInstructorSchoolId(userId)
 
   if (!schoolId) {
     return []
   }
+
+  const classes = await db.class.findMany({
+    where: { instructorId: userId },
+    select: { id: true },
+  })
 
   const classIds = classes.map(({ id }) => id)
   const enrollments = await db.classEnrollment.findMany({

@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
+import { getInstructorSchoolId } from '@/lib/dashboard/instructor-queries'
 import { NextResponse } from 'next/server'
 import { Prisma } from '@/lib/generated/prisma'
 import { z } from 'zod'
@@ -19,15 +20,17 @@ const techniqueUpdateSchema = techniqueAssignmentSchema.extend({
 })
 
 async function findInstructorStudent(userId: string, studentId: string) {
+  const schoolId = await getInstructorSchoolId(userId)
+
+  if (!schoolId) {
+    return null
+  }
+
   return db.student.findFirst({
     where: {
       id: studentId,
-      classEnrollments: {
-        some: {
-          status: 'ACTIVE',
-          class: { instructorId: userId },
-        },
-      },
+      schoolId,
+      status: 'ACTIVE',
     },
     select: { id: true, schoolId: true },
   })
