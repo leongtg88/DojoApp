@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminBeltRanks } from '@/lib/dashboard/admin-queries'
+import { fillRankKatasFromCurriculum } from '@/lib/dashboard/kata-curriculum'
 import { getAdminScope } from '@/lib/dashboard/scope'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -92,6 +93,8 @@ export async function POST(request: Request) {
       schoolId: scope.schoolId ?? null,
     },
   })
+
+  await fillRankKatasFromCurriculum(scope, { id: rank.id, program: rank.program, order: rank.order })
 
   return NextResponse.json({ rank }, { status: 201 })
 }

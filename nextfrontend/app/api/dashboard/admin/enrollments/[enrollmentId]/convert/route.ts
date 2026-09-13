@@ -3,6 +3,8 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasAnyRole, hasRole } from '@/lib/auth/roles'
 import { ageFromDob, programForAge } from '@/lib/dashboard/program'
+import { resolveProgressionKataIds } from '@/lib/dashboard/kata-curriculum'
+import type { Program } from '@/lib/curriculum/programs'
 import { buildStudentExportRecord } from '@/lib/dashboard/student-export'
 import { postToN8n } from '@/lib/integrations/n8n'
 import { NextResponse } from 'next/server'
@@ -83,19 +85,27 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
   const applicantSexo = (applicant?.profileData as { sexo?: string } | null)?.sexo
   const applicantGender = applicantSexo === 'Femenino' ? 'FEMALE' : applicantSexo === 'Masculino' ? 'MALE' : null
   const gender = input.gender ?? applicantGender ?? null
+  const dateOfBirth = new Date(`${input.dateOfBirth}T00:00:00.000Z`)
+
+  // Nuevo estudiante entra como cinturón blanco según su programa (edad).
+  const defaultRank = await db.beltRank.findFirst({
+    where: {
+      program: programForAge(ageFromDob(dateOfBirth)),
+      order: 1,
+      OR: [{ schoolId: enrollment.schoolId! }, { schoolId: null }],
+    },
+    select: { id: true, name: true, program: true, order: true },
+  })
+
+  const techniqueIds = defaultRank
+    ? await resolveProgressionKataIds({
+        schoolId: enrollment.schoolId!,
+        program: defaultRank.program as Program,
+        order: defaultRank.order,
+      })
+    : []
+
   const student = await db.$transaction(async (transaction) => {
-    const dateOfBirth = new Date(`${input.dateOfBirth}T00:00:00.000Z`)
-
-    // Nuevo estudiante entra como cinturón blanco según su programa (edad).
-    const defaultRank = await transaction.beltRank.findFirst({
-      where: {
-        program: programForAge(ageFromDob(dateOfBirth)),
-        order: 1,
-        OR: [{ schoolId: enrollment.schoolId! }, { schoolId: null }],
-      },
-      select: { id: true, name: true },
-    })
-
     const createdStudent = await transaction.student.create({
       data: {
         schoolId: enrollment.schoolId!,
@@ -123,6 +133,13 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
           promotedBy: session.user.id,
         },
       })
+
+      if (techniqueIds.length > 0) {
+        await transaction.studentTechnique.createMany({
+          data: techniqueIds.map((techniqueId) => ({ studentId: createdStudent.id, techniqueId })),
+          skipDuplicates: true,
+        })
+      }
     }
 
   if (applicant) {

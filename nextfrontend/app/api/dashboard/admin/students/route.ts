@@ -2,6 +2,8 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
 import { resolveDefaultRank } from '@/lib/dashboard/program'
+import { resolveProgressionKataIds } from '@/lib/dashboard/kata-curriculum'
+import type { Program } from '@/lib/curriculum/programs'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -63,7 +65,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Sucursal no disponible para tu alcance' }, { status: 403 })
   }
 
-  let rank: { id: string; name: string; techniqueIds: string[] } | null = null
+  let rank: { id: string; name: string; program: Program; order: number } | null = null
 
   if (beltRankId) {
     const beltRank = await db.beltRank.findFirst({
@@ -71,25 +73,25 @@ export async function POST(request: Request) {
         id: beltRankId,
         ...(scope.isSuperAdmin ? {} : { OR: [{ schoolId: branch.schoolId }, { schoolId: null }] }),
       },
-      select: {
-        id: true,
-        name: true,
-        katas: { select: { kataId: true }, orderBy: { order: 'asc' } },
-      },
+      select: { id: true, name: true, program: true, order: true },
     })
 
     if (!beltRank) {
       return NextResponse.json({ error: 'Grado inicial no disponible para esta escuela' }, { status: 400 })
     }
 
-    rank = { id: beltRank.id, name: beltRank.name, techniqueIds: beltRank.katas.map(({ kataId }) => kataId) }
+    rank = beltRank
   } else {
     // Nuevo alumno entra como cinturón blanco según su programa (edad).
     const defaultRank = await resolveDefaultRank(branch.schoolId, new Date(`${input.dateOfBirth}T00:00:00.000Z`))
     if (defaultRank) {
-      rank = { id: defaultRank.id, name: defaultRank.name, techniqueIds: defaultRank.katas.map(({ kataId }) => kataId) }
+      rank = { id: defaultRank.id, name: defaultRank.name, program: defaultRank.program as Program, order: defaultRank.order }
     }
   }
+
+  const techniqueIds = rank
+    ? await resolveProgressionKataIds({ schoolId: branch.schoolId, program: rank.program, order: rank.order })
+    : []
 
   const memberNumber = await buildMemberNumber(branch.schoolId)
 
@@ -124,9 +126,9 @@ export async function POST(request: Request) {
         where: { id: created.id },
         data: { currentRank: rank.name },
       })
-      if (rank.techniqueIds.length > 0) {
+      if (techniqueIds.length > 0) {
         await transaction.studentTechnique.createMany({
-          data: rank.techniqueIds.map((techniqueId) => ({ studentId: created.id, techniqueId })),
+          data: techniqueIds.map((techniqueId) => ({ studentId: created.id, techniqueId })),
         })
       }
     }

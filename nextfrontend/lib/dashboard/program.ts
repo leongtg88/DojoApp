@@ -33,6 +33,7 @@ export async function resolveDefaultRank(schoolId: string, dateOfBirth: Date) {
       id: true,
       name: true,
       program: true,
+      order: true,
       katas: { select: { kataId: true }, orderBy: { order: 'asc' } },
     },
   })

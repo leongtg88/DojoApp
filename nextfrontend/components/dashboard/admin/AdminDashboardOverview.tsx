@@ -45,7 +45,7 @@ export function AdminDashboardOverview({ summary, birthdays }: AdminDashboardOve
                     </Link>
                 </div>
             </section>
-            <BirthdayWidget birthdays={birthdays} />
+            <BirthdayWidget birthdays={birthdays} roleFilter="student" />
         </main>
     )
 }

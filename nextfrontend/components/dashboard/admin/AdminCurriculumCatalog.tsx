@@ -70,6 +70,7 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
     const [isKataDialogOpen, setIsKataDialogOpen] = useState(false)
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [notice, setNotice] = useState<string | null>(null)
 
     const selectedRank = ranks.find(({ id }) => id === selectedRankId) ?? ranks[0]
     const totalTechniques = ranks.reduce((total, rank) => total + rank.techniqueCount, 0)
@@ -190,11 +191,42 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
     const assignedIds = new Set(selectedRank?.techniques.map(({ id }) => id) ?? [])
     const unassignedTechniques = catalog.filter(({ id }) => !assignedIds.has(id))
 
+    async function applyOfficialCurriculum() {
+        if (!window.confirm('¿Aplicar el currículo oficial a los grados que aún no tienen katas? No se modificarán los grados ya configurados.')) return
+        setSaving(true)
+        setError(null)
+        setNotice(null)
+        const response = await fetch('/api/dashboard/admin/belt-ranks/apply-curriculum', { method: 'POST' })
+        setSaving(false)
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => null)
+            setError(data?.error ?? 'No fue posible aplicar el currículo.')
+            return
+        }
+
+        const data = await response.json().catch(() => null) as { ranksUpdated?: number; linksCreated?: number; missingKatas?: string[] } | null
+        const parts = [`${data?.ranksUpdated ?? 0} grados completados`, `${data?.linksCreated ?? 0} katas asociadas`]
+        if (data?.missingKatas?.length) {
+            parts.push(`Faltan en el catálogo: ${data.missingKatas.join(', ')}`)
+        }
+        setNotice(parts.join(' · '))
+        router.refresh()
+    }
+
     return (
         <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-            <p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">Administración</p>
-            <h1 className="mt-2 font-display text-3xl font-extrabold text-white">Grados y técnicas</h1>
-            <p className="mt-2 text-sm text-neutral-400">Catálogo curricular configurado para tu escuela.</p>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                    <p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">Administración</p>
+                    <h1 className="mt-2 font-display text-3xl font-extrabold text-white">Grados y técnicas</h1>
+                    <p className="mt-2 text-sm text-neutral-400">Catálogo curricular configurado para tu escuela.</p>
+                </div>
+                <button className="inline-flex items-center gap-2 self-start rounded-md border border-cyan-500/40 bg-cyan-950/30 px-4 py-2.5 text-sm font-semibold text-cyan-200 transition-colors hover:bg-cyan-900/50 disabled:opacity-60" disabled={saving} onClick={applyOfficialCurriculum} type="button">
+                    {saving ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <ListChecks aria-hidden="true" className="size-4" />}
+                    Aplicar currículo oficial
+                </button>
+            </div>
 
             {ranks.length === 0 ? (
                 <section className="mt-7 rounded-lg border border-dashed border-neutral-700 bg-[#161b22] px-5 py-10 text-center">
@@ -294,6 +326,7 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
             )}
 
             {error && <p className="mt-4 text-sm font-medium text-red-400">{error}</p>}
+            {notice && <p className="mt-4 text-sm font-medium text-emerald-400">{notice}</p>}
 
             {isRankDialogOpen && (
                 <RankDialog form={rankForm} isNew={!editingRank} onChange={setRankForm} onClose={() => setIsRankDialogOpen(false)} onSubmit={submitRank} saving={saving} />

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, type ReactNode } from 'react'
-import { Award, CalendarDays, Check, FileSpreadsheet, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
+import { Award, BookOpenCheck, CalendarDays, Check, FileSpreadsheet, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
 import { InvitationLinkModal } from './InvitationLinkModal'
 import { DAY_LABELS } from '@/lib/dashboard/balance'
@@ -477,6 +477,8 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 	const [deletingStudent, setDeletingStudent] = useState<AdminStudentSummary | null>(null)
 	const [isDeleting, setIsDeleting] = useState(false)
 	const [isExporting, setIsExporting] = useState(false)
+	const [isApplyingKatas, setIsApplyingKatas] = useState(false)
+	const [katasNotice, setKatasNotice] = useState<string | null>(null)
 	const [actionError, setActionError] = useState<string | null>(null)
 
 	const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
@@ -567,6 +569,23 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 		}
 	}
 
+	async function handleApplyKatas() {
+		setIsApplyingKatas(true)
+		setActionError(null)
+		setKatasNotice(null)
+		try {
+			const response = await fetch('/api/dashboard/admin/students/apply-katas', { method: 'POST' })
+			const payload = await response.json().catch(() => ({})) as { error?: string; studentsProcessed?: number; linksAdded?: number }
+			if (!response.ok) throw new Error(payload.error ?? 'No fue posible asignar las katas.')
+			setKatasNotice(`${payload.studentsProcessed ?? 0} alumnos actualizados · ${payload.linksAdded ?? 0} katas asignadas`)
+			router.refresh()
+		} catch (reason: unknown) {
+			setActionError(reason instanceof Error ? reason.message : 'No fue posible asignar las katas.')
+		} finally {
+			setIsApplyingKatas(false)
+		}
+	}
+
 	function handleDelete(student: AdminStudentSummary) {
 		setIsDeleting(true)
 		setActionError(null)
@@ -596,6 +615,10 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 						{isExporting ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <FileSpreadsheet aria-hidden="true" className="size-4" />}
 						{isExporting ? 'Exportando…' : 'Exportar Excel'}
 					</button>
+					<button type="button" onClick={handleApplyKatas} disabled={isApplyingKatas || students.length === 0} className="inline-flex items-center gap-2 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-4 py-2.5 text-sm font-semibold text-cyan-200 transition-colors hover:bg-cyan-900/50 disabled:opacity-50">
+						{isApplyingKatas ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <BookOpenCheck aria-hidden="true" className="size-4" />}
+						{isApplyingKatas ? 'Asignando…' : 'Asignar katas por grado'}
+					</button>
 					<button type="button" onClick={() => setIsCreateOpen(true)} className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] hover:bg-cyan-400">
 						<Plus className="size-4" />Nuevo alumno
 					</button>
@@ -603,6 +626,7 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 			</div>
 
 			{actionError && <p className="mt-4 rounded-md border border-red-900/40 bg-red-950/20 px-3 py-2 text-sm font-medium text-red-300">{actionError}</p>}
+			{katasNotice && <p className="mt-4 rounded-md border border-emerald-900/40 bg-emerald-950/20 px-3 py-2 text-sm font-medium text-emerald-300">{katasNotice}</p>}
 
 			{students.length === 0 ? (
 				<section className="mt-7 rounded-lg border border-dashed border-neutral-700 bg-[#161b22] px-5 py-10 text-center">

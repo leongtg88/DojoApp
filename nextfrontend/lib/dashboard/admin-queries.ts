@@ -667,29 +667,19 @@ export async function getAdminUpcomingBirthdays(userId: string): Promise<Dashboa
     return null
   }
 
-  const [students, instructors] = await Promise.all([
-    db.student.findMany({
-      where: {
-        ...(scopeSchoolFilter(scope)),
-        status: StudentStatus.ACTIVE,
-      },
-      select: { id: true, firstName: true, lastName: true, dateOfBirth: true, currentRank: true },
-    }),
-    db.user.findMany({
-      where: {
-        roles: { has: 'INSTRUCTOR' },
-        ...(scopeSchoolFilter(scope)),
-        instructorProfile: { isNot: null },
-      },
-      select: { id: true, name: true, instructorProfile: { select: { bio: true } } },
-    }),
-  ])
+  const students = await db.student.findMany({
+    where: {
+      ...(scopeSchoolFilter(scope)),
+      status: StudentStatus.ACTIVE,
+    },
+    select: { id: true, firstName: true, lastName: true, dateOfBirth: true, currentRank: true },
+  })
 
   const ranks = await db.beltRank.findMany({ select: { name: true, kyuDan: true } })
   const rankByName = new Map(ranks.map((rank) => [rank.name, rank]))
 
-  return computeBirthdays([
-    ...students.map((student) => {
+  return computeBirthdays(
+    students.map((student) => {
       const rank = rankByName.get(student.currentRank ?? '')
       return {
         id: student.id,
@@ -699,14 +689,7 @@ export async function getAdminUpcomingBirthdays(userId: string): Promise<Dashboa
         detail: rank ? `${rank.name} (${rank.kyuDan ?? ''})`.trim() : 'Alumno',
       }
     }),
-    ...instructors.map((instructor) => ({
-      id: instructor.id,
-      name: instructor.name ?? 'Instructor',
-      role: 'instructor' as const,
-      birthDate: new Date(),
-      detail: instructor.instructorProfile?.bio?.slice(0, 40) ?? 'Sensei',
-    })),
-  ])
+  )
 }
 
 export async function getAdminPlans(userId: string): Promise<PlanSummary[] | null> {

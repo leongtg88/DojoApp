@@ -1,6 +1,8 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasAnyRole, hasRole } from '@/lib/auth/roles'
+import { resolveProgressionKataIds } from '@/lib/dashboard/kata-curriculum'
+import type { Program } from '@/lib/curriculum/programs'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -62,7 +64,7 @@ export async function POST(request: Request, { params }: PromotionRouteContext) 
       id: true,
       name: true,
       order: true,
-      katas: { select: { kataId: true }, orderBy: { order: 'asc' } },
+      program: true,
     },
   })
 
@@ -85,7 +87,11 @@ export async function POST(request: Request, { params }: PromotionRouteContext) 
   }
 
   const promotedAt = new Date(`${result.data.promotedAt}T00:00:00.000Z`)
-  const techniqueIds = newRank.katas.map(({ kataId }) => kataId)
+  const techniqueIds = await resolveProgressionKataIds({
+    schoolId: student.schoolId,
+    program: newRank.program as Program,
+    order: newRank.order,
+  })
 
   await db.$transaction([
     db.student.update({
