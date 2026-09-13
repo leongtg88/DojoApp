@@ -101,7 +101,7 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       isCompetitor: true,
       classEnrollments: {
         where: { status: ClassEnrollmentStatus.ACTIVE },
-        select: { class: { select: { name: true } } },
+        select: { class: { select: { id: true, name: true } } },
       },
       techniques: {
         select: {
@@ -174,6 +174,7 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       accountStatus: student.userId ? 'ACTIVO' : student.invitationTokens.length > 0 ? 'INVITADO' : 'SIN_CUENTA',
       branchName: student.branch.name,
       activeClassNames: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.name),
+      activeScheduleIds: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.id),
       planId: student.plan?.id ?? null,
       planName: student.plan?.name ?? null,
       scholarshipType: student.scholarshipType as ScholarshipType,

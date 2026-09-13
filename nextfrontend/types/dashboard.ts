@@ -170,6 +170,7 @@ export interface AdminStudentSummary {
 	accountStatus: 'SIN_CUENTA' | 'INVITADO' | 'ACTIVO'
 	branchName: string
 	activeClassNames: string[],
+	activeScheduleIds: string[],
 	planId: string | null,
 	planName: string | null,
 	scholarshipType: ScholarshipType,

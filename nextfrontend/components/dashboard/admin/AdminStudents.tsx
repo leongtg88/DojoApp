@@ -3,10 +3,11 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, type ReactNode } from 'react'
-import { Award, Check, FileSpreadsheet, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
+import { Award, CalendarDays, Check, FileSpreadsheet, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
 import { InvitationLinkModal } from './InvitationLinkModal'
-import type { AdminBeltRankSummary, AdminStudentSummary } from '@/types/dashboard'
+import { DAY_LABELS } from '@/lib/dashboard/balance'
+import type { AdminBeltRankSummary, AdminStudentSummary, PlanSummary, ScholarshipType, ScheduleOption } from '@/types/dashboard'
 
 interface AdminStudentsProps {
 	students: AdminStudentSummary[]
@@ -39,6 +40,13 @@ const emptyForm: StudentFormState = {
 	emergencyContact: '',
 	branchId: '',
 	beltRankId: '',
+}
+
+const SCHOLARSHIP_LABELS: Record<ScholarshipType, string> = {
+	NONE: 'Sin beca',
+	ECONOMIC: 'Beca económica',
+	MERIT: 'Beca por mérito',
+	COMPETITOR: 'Beca competidor',
 }
 
 function statusBadgeClass(status: string) {
@@ -108,6 +116,13 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 	const [form, setForm] = useState<StudentFormState>(emptyForm)
 	const [ranks, setRanks] = useState<AdminBeltRankSummary[]>([])
 	const [branches, setBranches] = useState<BranchOption[]>([])
+	const [plans, setPlans] = useState<PlanSummary[]>([])
+	const [schedules, setSchedules] = useState<ScheduleOption[]>([])
+	const [planId, setPlanId] = useState('')
+	const [scheduleIds, setScheduleIds] = useState<string[]>([])
+	const [scholarshipType, setScholarshipType] = useState<ScholarshipType>('NONE')
+	const [scholarshipNote, setScholarshipNote] = useState('')
+	const [isCompetitor, setIsCompetitor] = useState(false)
 	const [isDirty, setIsDirty] = useState(false)
 	const [isLoadingOptions, setIsLoadingOptions] = useState(false)
 	const [isSaving, setIsSaving] = useState(false)
@@ -133,6 +148,11 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 					}
 				: emptyForm,
 		)
+		setPlanId(mode === 'edit' && student ? student.planId ?? '' : '')
+		setScheduleIds(mode === 'edit' && student ? student.activeScheduleIds ?? [] : [])
+		setScholarshipType(mode === 'edit' && student ? student.scholarshipType : 'NONE')
+		setScholarshipNote(mode === 'edit' && student ? student.scholarshipNote ?? '' : '')
+		setIsCompetitor(mode === 'edit' && student ? student.isCompetitor : false)
 		setIsDirty(false)
 		setError(null)
 	}
@@ -143,12 +163,16 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 		Promise.all([
 			fetch('/api/dashboard/admin/belt-ranks').then((response) => response.json()),
 			fetch('/api/dashboard/admin/branches').then((response) => response.json()),
+			fetch('/api/dashboard/admin/plans').then((response) => response.json()),
+			fetch('/api/dashboard/admin/classes').then((response) => response.json()),
 		])
-			.then(([ranksResponse, branchesResponse]) => {
+			.then(([ranksResponse, branchesResponse, plansResponse, schedulesResponse]) => {
 				setRanks(ranksResponse.ranks ?? [])
 				setBranches(branchesResponse.branches ?? [])
+				setPlans(plansResponse.plans ?? [])
+				setSchedules(schedulesResponse.classes ?? [])
 			})
-			.catch(() => setError('No fue posible cargar grados y sucursales.'))
+			.catch(() => setError('No fue posible cargar grados, sucursales, planes y horarios.'))
 			.finally(() => setIsLoadingOptions(false))
 	}, [open])
 
@@ -162,62 +186,102 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 		setIsDirty(true)
 	}
 
-	function handleCreate() {
+	function toggleSchedule(id: string) {
+		setScheduleIds((current) => (current.includes(id) ? current.filter((item) => item !== id) : [...current, id]))
+		setIsDirty(true)
+	}
+
+	async function savePlacement(studentId: string) {
+		const response = await fetch(`/api/dashboard/admin/students/${studentId}/placement`, {
+			method: 'PUT',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				planId: planId || null,
+				scheduleIds,
+				scholarshipType,
+				scholarshipNote: scholarshipNote.trim() || null,
+				isCompetitor,
+			}),
+		})
+		const payload = await response.json().catch(() => ({}))
+		if (!response.ok) throw new Error(payload.error ?? 'No fue posible guardar el plan y los horarios.')
+	}
+
+	async function handleCreate() {
 		if (!form.firstName.trim() || !form.lastName.trim() || !form.dateOfBirth || !form.branchId) {
 			setError('Completa nombre, apellido, fecha de nacimiento y sucursal.')
 			return
 		}
 		setIsSaving(true)
 		setError(null)
-		fetch('/api/dashboard/admin/students', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				firstName: form.firstName.trim(),
-				lastName: form.lastName.trim(),
-				dateOfBirth: form.dateOfBirth,
-				gender: form.gender || null,
-				contactPhone: form.contactPhone.trim() || null,
-				medicalInfo: form.medicalInfo.trim() || null,
-				emergencyContact: form.emergencyContact.trim() || null,
-				branchId: form.branchId,
-				beltRankId: form.beltRankId || null,
-			}),
-		})
-			.then(async (response) => {
-				const payload = await response.json().catch(() => ({}))
-				if (!response.ok) throw new Error(payload.error ?? 'No fue posible registrar el alumno.')
-				router.refresh()
-				onSaved()
+		try {
+			const response = await fetch('/api/dashboard/admin/students', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					firstName: form.firstName.trim(),
+					lastName: form.lastName.trim(),
+					dateOfBirth: form.dateOfBirth,
+					gender: form.gender || null,
+					contactPhone: form.contactPhone.trim() || null,
+					medicalInfo: form.medicalInfo.trim() || null,
+					emergencyContact: form.emergencyContact.trim() || null,
+					branchId: form.branchId,
+					beltRankId: form.beltRankId || null,
+				}),
 			})
-			.catch((reason: Error) => setError(reason.message))
-			.finally(() => setIsSaving(false))
+			const payload = await response.json().catch(() => ({}))
+			if (!response.ok) throw new Error(payload.error ?? 'No fue posible registrar el alumno.')
+			if (payload.studentId && (planId || scheduleIds.length > 0 || scholarshipType !== 'NONE' || isCompetitor)) {
+				await savePlacement(payload.studentId)
+			}
+			router.refresh()
+			onSaved()
+		} catch (reason: unknown) {
+			setError(reason instanceof Error ? reason.message : 'No fue posible registrar el alumno.')
+		} finally {
+			setIsSaving(false)
+		}
 	}
 
-	function handleUpdate() {
+	async function handleUpdate() {
+		if (!student) return
 		setIsSaving(true)
 		setError(null)
-		fetch(`/api/dashboard/admin/students/${student?.id}`, {
-			method: 'PATCH',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				firstName: form.firstName.trim() || undefined,
-				lastName: form.lastName.trim() || undefined,
-				gender: form.gender || null,
-				contactPhone: form.contactPhone.trim() || null,
-				medicalInfo: form.medicalInfo.trim() || null,
-				emergencyContact: form.emergencyContact.trim() || null,
-			}),
-		})
-			.then(async (response) => {
-				const payload = await response.json().catch(() => ({}))
-				if (!response.ok) throw new Error(payload.error ?? 'No fue posible actualizar el alumno.')
-				router.refresh()
-				onSaved()
+		try {
+			const response = await fetch(`/api/dashboard/admin/students/${student.id}`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					firstName: form.firstName.trim() || undefined,
+					lastName: form.lastName.trim() || undefined,
+					gender: form.gender || null,
+					contactPhone: form.contactPhone.trim() || null,
+					medicalInfo: form.medicalInfo.trim() || null,
+					emergencyContact: form.emergencyContact.trim() || null,
+				}),
 			})
-			.catch((reason: Error) => setError(reason.message))
-			.finally(() => setIsSaving(false))
+			const payload = await response.json().catch(() => ({}))
+			if (!response.ok) throw new Error(payload.error ?? 'No fue posible actualizar el alumno.')
+			await savePlacement(student.id)
+			router.refresh()
+			onSaved()
+		} catch (reason: unknown) {
+			setError(reason instanceof Error ? reason.message : 'No fue posible actualizar el alumno.')
+		} finally {
+			setIsSaving(false)
+		}
 	}
+
+	const groupedSchedules = new Map<number, ScheduleOption[]>()
+	for (const schedule of schedules) {
+		if (!schedule.active) continue
+		const list = groupedSchedules.get(schedule.dayOfWeek) ?? []
+		list.push(schedule)
+		groupedSchedules.set(schedule.dayOfWeek, list)
+	}
+	const selectablePlans = plans.filter((plan) => plan.active || plan.id === planId)
+
 
 	function requestClose() {
 		if (isDirty) setConfirmClose(true)
@@ -309,6 +373,63 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 							Contacto de emergencia
 							<input id="student-emergency" value={form.emergencyContact} onChange={(event) => updateField('emergencyContact', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" />
 						</label>
+						<div className="mt-1 border-t border-neutral-800 pt-4 sm:col-span-2">
+							<p className="flex items-center gap-2 text-sm font-bold text-white">
+								<CalendarDays className="h-4 w-4 text-cyan-400" />Plan, horarios y beca
+							</p>
+
+							<label className="mt-3 block text-xs font-semibold text-neutral-300" htmlFor="student-plan">
+								Plan de mensualidad
+								<select id="student-plan" value={planId} onChange={(event) => { setPlanId(event.target.value); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white">
+									<option value="">Sin plan asignado</option>
+									{selectablePlans.map((plan) => (
+										<option key={plan.id} value={plan.id}>
+											{plan.name} · {plan.isUnlimited ? 'ilimitado' : `${plan.monthlyHours} h/mes`}
+										</option>
+									))}
+								</select>
+							</label>
+
+							<div className="mt-3">
+								<p className="text-xs font-semibold text-neutral-300">Horarios de referencia</p>
+								<div className="mt-1.5 grid gap-2 sm:grid-cols-2">
+									{[...groupedSchedules.entries()].sort(([a], [b]) => a - b).map(([day, blocks]) => (
+										<div key={day} className="rounded-md border border-neutral-800 bg-[#0d1117] p-2.5">
+											<p className="mb-1.5 text-xs font-bold text-neutral-300">{DAY_LABELS[day]}</p>
+											<div className="space-y-1">
+												{blocks.map((schedule) => (
+													<label key={schedule.id} className="flex items-center gap-2 text-xs text-neutral-200">
+														<input type="checkbox" checked={scheduleIds.includes(schedule.id)} onChange={() => toggleSchedule(schedule.id)} className="size-4 accent-cyan-500" />
+														<span>{schedule.name}</span>
+														<span className="ml-auto text-[11px] text-neutral-500">{schedule.startTime}</span>
+													</label>
+												))}
+											</div>
+										</div>
+									))}
+									{groupedSchedules.size === 0 && <p className="text-xs text-neutral-500">No hay horarios activos.</p>}
+								</div>
+							</div>
+
+							<div className="mt-3 grid gap-3 sm:grid-cols-2">
+								<label className="block text-xs font-semibold text-neutral-300" htmlFor="student-scholarship">
+									Tipo de beca
+									<select id="student-scholarship" value={scholarshipType} onChange={(event) => { setScholarshipType(event.target.value as ScholarshipType); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white">
+										{(Object.keys(SCHOLARSHIP_LABELS) as ScholarshipType[]).map((type) => (
+											<option key={type} value={type}>{SCHOLARSHIP_LABELS[type]}</option>
+										))}
+									</select>
+								</label>
+								<label className="mt-5 flex items-center gap-2 text-xs text-neutral-300">
+									<input type="checkbox" checked={isCompetitor} onChange={(event) => { setIsCompetitor(event.target.checked); setIsDirty(true) }} className="size-4 accent-cyan-500" />
+									Competidor (alto rendimiento)
+								</label>
+								<label className="block text-xs font-semibold text-neutral-300 sm:col-span-2" htmlFor="student-scholarship-note">
+									Nota de la beca
+									<input id="student-scholarship-note" value={scholarshipNote} onChange={(event) => { setScholarshipNote(event.target.value); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" placeholder="Ej: apoyo económico por situación familiar" />
+								</label>
+							</div>
+						</div>
 					</div>
 					{error && <p className="rounded-md border border-red-900/40 bg-red-950/20 px-3 py-2 text-sm font-medium text-red-300">{error}</p>}
 				</div>
