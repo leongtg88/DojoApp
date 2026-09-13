@@ -356,13 +356,15 @@ export async function getStudentDocuments(userId: string): Promise<StudentDocume
 }
 
 const BELT_COLORS: Record<string, string> = {
-  'Blanco': '#e5e7eb',
   'Amarillo': '#facc15',
   'Naranja': '#f97316',
+  'Morado': '#9c27b0',
   'Verde': '#16a34a',
   'Azul': '#2563eb',
   'Marrón': '#6b4226',
+  'Café': '#795548',
   'Negro': '#17181a',
+  'Blanco': '#e5e7eb',
 }
 
 function beltColorFor(name: string | null): string | null {
