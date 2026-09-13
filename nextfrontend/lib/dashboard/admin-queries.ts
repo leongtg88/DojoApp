@@ -482,13 +482,19 @@ documents: {
       _count: { select: { katas: true } },
     },
   })
-  const currentRankOrder =
-    ranks.find(({ name }) => name === student.currentRank)?.order ??
-    (student.dateOfBirth
-      ? ranks.find(({ program, order }) => program === programForAge(ageFromDob(new Date(student.dateOfBirth))) && order === 1)?.order
-      : null) ??
+  const studentProgram = student.dateOfBirth
+    ? programForAge(ageFromDob(new Date(student.dateOfBirth)))
+    : 'ADULT'
+  const currentRankRow =
+    ranks.find(({ name }) => name === student.currentRank) ??
+    ranks.find(({ program, order }) => program === studentProgram && order === 1) ??
     null
-  const nextBeltRank = currentRankOrder !== null ? ranks.find(({ order }) => order === currentRankOrder + 1) : null
+  const currentRankOrder = currentRankRow?.order ?? null
+  const program = currentRankRow?.program ?? studentProgram
+  const nextBeltRank =
+    currentRankOrder !== null
+      ? ranks.find(({ program: rankProgram, order }) => rankProgram === program && order === currentRankOrder + 1)
+      : null
   const TARGET_ATTENDANCES = 30
   const attendedCount = student._count.attendances
 

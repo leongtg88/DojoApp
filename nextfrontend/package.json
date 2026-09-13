@@ -8,6 +8,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "icons": "node scripts/generate-icons.mjs",
+    "sync:curriculum": "tsx prisma/sync-curriculum.ts",
     "lint": "eslint",
     "postinstall": "prisma generate"
   },

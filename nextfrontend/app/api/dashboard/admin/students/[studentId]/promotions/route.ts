@@ -48,7 +48,7 @@ export async function POST(request: Request, { params }: PromotionRouteContext) 
       id: studentId,
       ...(hasRole(admin, 'SUPERADMIN') ? {} : { schoolId: admin.schoolId! }),
     },
-    select: { id: true, schoolId: true, currentRank: true },
+    select: { id: true, schoolId: true, currentRank: true, currentRankId: true },
   })
 
   if (!student) {
@@ -72,17 +72,23 @@ export async function POST(request: Request, { params }: PromotionRouteContext) 
     return NextResponse.json({ error: 'Grado no disponible para este alumno' }, { status: 400 })
   }
 
-  const currentRank = student.currentRank
+  const currentRank = student.currentRankId
     ? await db.beltRank.findFirst({
-        where: {
-          name: student.currentRank,
-          OR: [{ schoolId: student.schoolId }, { schoolId: null }],
-        },
-        select: { order: true },
+        where: { id: student.currentRankId },
+        select: { order: true, program: true },
       })
-    : null
+    : student.currentRank
+      ? await db.beltRank.findFirst({
+          where: {
+            name: student.currentRank,
+            program: newRank.program,
+            OR: [{ schoolId: student.schoolId }, { schoolId: null }],
+          },
+          select: { order: true, program: true },
+        })
+      : null
 
-  if (currentRank && newRank.order <= currentRank.order) {
+  if (currentRank && (currentRank.program !== newRank.program || newRank.order <= currentRank.order)) {
     return NextResponse.json({ error: 'El nuevo grado debe ser superior al grado actual' }, { status: 409 })
   }
 
