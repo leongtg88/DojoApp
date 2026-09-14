@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp, Clock, MessageSquare, Search, Star, Timer } from 'lucide-react'
 import type { KataProgressItem, KataStatus } from '@/types/dashboard'
 import { KataBadge } from './KataBadge'
+import { KataBeltChip } from '../shared/KataBeltChip'
 
 type StatusFilter = 'ALL' | KataStatus
 
@@ -128,6 +129,7 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                                             )}
                                         </div>
                                         <p className="mt-1 text-sm text-neutral-400">{kata.rankName ?? 'Programa del dojo'}</p>
+                                        {kata.level && <div className="mt-1"><KataBeltChip beltColor={kata.beltColor} beltSecondaryColor={kata.beltSecondaryColor} level={kata.level} /></div>}
                                     </div>
                                     <button
                                         className="inline-flex items-center gap-1 self-start text-xs font-semibold text-cyan-300 hover:text-cyan-100"

@@ -387,23 +387,36 @@ model StudentRankHistory {
 }
 
 model Technique {
-  id             String             @id @default(cuid())
-  name           String // nombre de la técnica (kata, kihon, etc.)
-  japaneseName   String?
-  kanji          String?
-  description    String?
-  category       TechniqueCategory  @default(KIHON)
-  order          Int                @default(0) // orden pedagógico dentro del grado
-  movementsCount Int?
-  embusen        String? // patrón de desplazamiento (I, H, Cruz...)
-  difficulty     String? // Básica, Intermedia, Avanzada
-  videoUrl       String?
-  schoolId       String?
-  school         School?            @relation(fields: [schoolId], references: [id])
-  beltRankKatas  BeltRankKata[]
-  students       StudentTechnique[]
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
+  id                 String             @id @default(cuid())
+  name               String // nombre de la técnica (kata, kihon, etc.)
+  japaneseName       String?
+  kanji              String?
+  description        String?
+  category           TechniqueCategory  @default(KIHON)
+  order              Int                @default(0) // orden pedagógico dentro del grado
+  movementsCount     Int? // katas: movimientos; kumite: pasos/técnicas; bunkai: secuencias
+  embusen            String? // patrón de desplazamiento (I, H, Cruz...) — solo kata
+  difficulty         String? // Básica, Intermedia, Avanzada
+  videoUrl           String?
+  // Campos específicos por categoría
+  repetitionsCount   Int? // kihon: número de repeticiones
+  stance             String? // kihon: posición / guardia (Zenkutsu Dachi...)
+  level              String? // kihon: nivel (Jodan, Chudan, Gedan)
+  kumiteType         String? // kumite: Kihon Ippon, Jiyu Ippon, Jiyu Kumite, Shiai...
+  distance           String? // kumite: distancia (Toma, Chika Ma, Ma...)
+  role               String? // kumite: rol (Aka, Ao, Tori, Uke)
+  applicationType    String? // bunkai: tipo de aplicación (Defensa personal, Proyección...)
+  originKataId       String? // bunkai: kata de origen
+  originKata         Technique?         @relation("BunkaiOrigin", fields: [originKataId], references: [id], onDelete: SetNull)
+  bunkaiApplications Technique[]        @relation("BunkaiOrigin")
+  schoolId           String?
+  school             School?            @relation(fields: [schoolId], references: [id])
+  beltRankKatas      BeltRankKata[]
+  students           StudentTechnique[]
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([originKataId])
 }
 
 model StudentTechnique {

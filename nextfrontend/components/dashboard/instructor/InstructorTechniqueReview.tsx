@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CheckCheck, CircleDashed, ClipboardCheck, Clock, Info, Loader2, Plus, RefreshCw, Save, Search, Star, X } from 'lucide-react'
 import type { InstructorTechniqueReview as TechniqueReview, StudentTechnique, TechniqueStatus } from '@/types/dashboard'
+import { KataBeltChip } from '../shared/KataBeltChip'
 
 interface InstructorTechniqueReviewProps {
     review: TechniqueReview
@@ -194,6 +195,7 @@ function TechniqueRow({
                 <div className="min-w-0">
                     <p className="text-xs font-semibold uppercase tracking-wide text-cyan-400">{technique.category}</p>
                     <p className="mt-1 text-sm font-semibold text-white">{technique.name}</p>
+                    {technique.level && <div className="mt-1"><KataBeltChip beltColor={technique.beltColor} beltSecondaryColor={technique.beltSecondaryColor} level={technique.level} /></div>}
                     {technique.description && <p className="mt-1 text-sm text-neutral-400">{technique.description}</p>}
                     {technique.practiceHours > 0 && <p className="mt-1.5 text-xs font-semibold text-neutral-300"><Clock aria-hidden="true" className="mr-1 inline size-3.5 text-cyan-400" />{technique.practiceHours}h de práctica</p>}
                 </div>

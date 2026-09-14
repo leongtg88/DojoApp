@@ -15,6 +15,14 @@ const createTechniqueSchema = z.object({
   embusen: z.string().trim().max(50).optional().nullable(),
   difficulty: z.string().trim().max(50).optional().nullable(),
   videoUrl: z.url().optional().nullable(),
+  repetitionsCount: z.number().int().min(0).optional().nullable(),
+  stance: z.string().trim().max(100).optional().nullable(),
+  level: z.string().trim().max(50).optional().nullable(),
+  kumiteType: z.string().trim().max(100).optional().nullable(),
+  distance: z.string().trim().max(50).optional().nullable(),
+  role: z.string().trim().max(50).optional().nullable(),
+  applicationType: z.string().trim().max(100).optional().nullable(),
+  originKataId: z.string().trim().min(1).optional().nullable(),
 })
 
 export async function GET(request: Request) {
@@ -64,6 +72,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Datos de técnica no válidos' }, { status: 400 })
   }
 
+  if (result.data.originKataId) {
+    const originKata = await db.technique.findFirst({
+      where: {
+        id: result.data.originKataId,
+        category: 'KATA',
+        ...(scope.isSuperAdmin ? {} : { OR: [{ schoolId: scope.schoolId }, { schoolId: null }] }),
+      },
+      select: { id: true },
+    })
+
+    if (!originKata) {
+      return NextResponse.json({ error: 'La kata de origen no es válida' }, { status: 400 })
+    }
+  }
+
   const aggregate = await db.technique.aggregate({ _max: { order: true } })
   const order = result.data.order ?? (aggregate._max.order ?? 0) + 1
 
@@ -79,6 +102,14 @@ export async function POST(request: Request) {
       embusen: result.data.embusen ?? null,
       difficulty: result.data.difficulty ?? null,
       videoUrl: result.data.videoUrl ?? null,
+      repetitionsCount: result.data.repetitionsCount ?? null,
+      stance: result.data.stance ?? null,
+      level: result.data.level ?? null,
+      kumiteType: result.data.kumiteType ?? null,
+      distance: result.data.distance ?? null,
+      role: result.data.role ?? null,
+      applicationType: result.data.applicationType ?? null,
+      originKataId: result.data.originKataId ?? null,
       schoolId: scope.schoolId ?? null,
     },
   })

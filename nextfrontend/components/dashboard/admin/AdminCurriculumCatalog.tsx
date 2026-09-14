@@ -5,11 +5,13 @@ import { useState } from 'react'
 import { BookOpen, CheckSquare, Clock, GraduationCap, ListChecks, Loader2, MoveDown, MoveUp, Pencil, Plus, Rows3, ShieldCheck, Square, Trash2, Users, X } from 'lucide-react'
 import { RankCatalog } from '../shared/RankCatalog'
 import { ADULT_RANKS, BELT_COLORS, YOUTH_RANKS } from '@/lib/curriculum/programs'
+import { techniqueMetaLine } from '@/lib/dashboard/technique-format'
 import type { AdminBeltRankSummary, AdminTechniqueSummary, TechniqueCategory } from '@/types/dashboard'
 
 interface AdminCurriculumCatalogProps {
     ranks: AdminBeltRankSummary[]
     techniques: AdminTechniqueSummary[]
+    canReorder?: boolean
 }
 
 const CATEGORY_LABELS: Record<TechniqueCategory, string> = {
@@ -27,6 +29,7 @@ interface RankForm {
     japaneseName: string
     kanji: string
     beltColor: string
+    beltSecondaryColor: string
     estimatedDurationMonths: string
     minMonths: string
     maxMonths: string
@@ -42,6 +45,7 @@ const EMPTY_RANK_FORM: RankForm = {
     japaneseName: '',
     kanji: '',
     beltColor: '',
+    beltSecondaryColor: '',
     estimatedDurationMonths: '',
     minMonths: '',
     maxMonths: '',
@@ -60,7 +64,7 @@ function rankMetaFor(form: RankForm) {
     return RANK_META_BY_PROGRAM[form.program].get(orderNum) ?? null
 }
 
-export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalog }: AdminCurriculumCatalogProps) {
+export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalog, canReorder = false }: AdminCurriculumCatalogProps) {
     const router = useRouter()
     const ranks = initialRanks
     const [selectedRankId, setSelectedRankId] = useState(initialRanks[0]?.id ?? '')
@@ -92,6 +96,7 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
             japaneseName: rank.japaneseName ?? '',
             kanji: rank.kanji ?? '',
             beltColor: rank.beltColor ?? '',
+            beltSecondaryColor: rank.beltSecondaryColor ?? '',
             estimatedDurationMonths: rank.estimatedDurationMonths != null ? String(rank.estimatedDurationMonths) : '',
             minMonths: rank.minMonths != null ? String(rank.minMonths) : '',
             maxMonths: rank.maxMonths != null ? String(rank.maxMonths) : '',
@@ -114,6 +119,7 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
             japaneseName: rankForm.japaneseName.trim() || null,
             kanji: rankForm.kanji.trim() || null,
             beltColor: rankForm.beltColor || null,
+            beltSecondaryColor: rankForm.beltSecondaryColor || null,
             estimatedDurationMonths: rankForm.estimatedDurationMonths === '' ? null : Number(rankForm.estimatedDurationMonths),
             minMonths: rankForm.minMonths === '' ? null : Number(rankForm.minMonths),
             maxMonths: rankForm.maxMonths === '' ? null : Number(rankForm.maxMonths),
@@ -191,6 +197,24 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
     const assignedIds = new Set(selectedRank?.techniques.map(({ id }) => id) ?? [])
     const unassignedTechniques = catalog.filter(({ id }) => !assignedIds.has(id))
 
+    async function reorderRanks(program: 'ADULT' | 'YOUTH', orderedIds: string[]) {
+        setSaving(true)
+        setError(null)
+        const response = await fetch('/api/dashboard/admin/belt-ranks/reorder', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ program, rankIds: orderedIds }),
+        })
+        setSaving(false)
+
+        if (!response.ok) {
+            const data = await response.json().catch(() => null)
+            setError(data?.error ?? 'No fue posible reordenar los grados.')
+        }
+
+        router.refresh()
+    }
+
     async function applyOfficialCurriculum() {
         if (!window.confirm('¿Aplicar el currículo oficial a los grados que aún no tienen katas? No se modificarán los grados ya configurados.')) return
         setSaving(true)
@@ -243,12 +267,14 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
 
                     <section className="mt-5 rounded-lg border border-neutral-800 bg-[#161b22] p-4 shadow-sm">
                         <RankCatalog
+                            canReorder={canReorder}
                             onAddRank={openCreateRank}
                             onDeleteRank={(rankId) => {
                                 const rank = ranks.find(({ id }) => id === rankId)
                                 if (rank) void deleteRank(rank)
                             }}
                             onEditRank={openEditRank}
+                            onReorderRanks={reorderRanks}
                             onSelectRank={setSelectedRankId}
                             ranks={ranks}
                             selectedRankId={selectedRankId}
@@ -305,8 +331,8 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
                                             <li className="flex items-center justify-between gap-3 px-4 py-3" key={technique.id}>
                                                 <div className="min-w-0">
                                                     <p className="truncate text-sm font-semibold text-white">{technique.name}{technique.japaneseName ? <span className="ml-1.5 text-xs font-normal text-neutral-400">{technique.japaneseName}</span> : ''}</p>
-                                                    <p className="mt-0.5 text-xs text-neutral-400">{CATEGORY_LABELS[technique.category]}{technique.difficulty ? ` · ${technique.difficulty}` : ''}{technique.movementsCount != null ? ` · ${technique.movementsCount} movimientos` : ''}</p>
-                                                </div>
+                                                     <p className="mt-0.5 text-xs text-neutral-400">{techniqueMetaLine(technique)}</p>
+                                                 </div>
                                                 <div className="flex shrink-0 items-center gap-1">
                                                     <button aria-label={`Mover ${technique.name} hacia arriba`} className="rounded p-1.5 text-neutral-500 transition-colors hover:bg-neutral-800 hover:text-white disabled:cursor-not-allowed disabled:opacity-40" disabled={index === 0 || saving} onClick={() => reorderTechnique(technique.id, 'up')} type="button"><MoveUp aria-hidden="true" className="size-4" /></button>
                                                     <button aria-label={`Mover ${technique.name} hacia abajo`} className="rounded p-1.5 text-neutral-500 transition-colors hover:bg-neutral-800 hover:text-white disabled:cursor-not-allowed disabled:opacity-40" disabled={index === selectedRank.techniques.length - 1 || saving} onClick={() => reorderTechnique(technique.id, 'down')} type="button"><MoveDown aria-hidden="true" className="size-4" /></button>
@@ -373,6 +399,17 @@ function RankDialog({
         onChange(next)
     }
 
+    const selectedBeltColorLabel = BELT_COLORS.find((option) => option.value === form.beltColor && (option.secondary ?? '') === (form.beltSecondaryColor || ''))?.label ?? ''
+
+    function setBeltColor(label: string) {
+        const option = BELT_COLORS.find((entry) => entry.label === label)
+        if (!option) {
+            onChange({ ...form, beltColor: '', beltSecondaryColor: '' })
+            return
+        }
+        onChange({ ...form, beltColor: option.value, beltSecondaryColor: option.secondary ?? '' })
+    }
+
     return (
         <div aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm" role="dialog">
             <form className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-xl border border-neutral-800 bg-[#161616] p-6 shadow-2xl" onSubmit={onSubmit}>
@@ -401,8 +438,8 @@ function RankDialog({
                         <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-kanji">Kanji<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-kanji" onChange={(event) => set('kanji', event.target.value)} placeholder="八級" value={form.kanji} /></label>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
-                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-color">Color de cinturón<select className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-color" onChange={(event) => set('beltColor', event.target.value)} value={form.beltColor}>{form.beltColor ? null : <option value="">Selecciona un color…</option>}{BELT_COLORS.map(({ label, value }) => <option key={value} value={value}>{label}</option>)}</select></label>
-                        <div className="flex items-end gap-3"><span aria-hidden="true" className="mb-1.5 inline-block h-7 w-14 rounded-sm border border-white/30" style={{ backgroundColor: form.beltColor || '#3f3f46' }} /><span className="mb-1.5 text-xs text-neutral-500">{form.beltColor || 'Sin color'}</span></div>
+                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-color">Color de cinturón<select className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-color" onChange={(event) => setBeltColor(event.target.value)} value={selectedBeltColorLabel}><option value="">Selecciona un color…</option>{BELT_COLORS.map(({ label }) => <option key={label} value={label}>{label}</option>)}</select></label>
+                        <div className="flex items-end gap-3"><span aria-hidden="true" className="relative mb-1.5 inline-block h-7 w-14 overflow-hidden rounded-sm border border-white/30" style={{ backgroundColor: form.beltColor || '#3f3f46' }}>{form.beltSecondaryColor && <span className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2" style={{ backgroundColor: form.beltSecondaryColor }} />}</span><span className="mb-1.5 text-xs text-neutral-500">{selectedBeltColorLabel || 'Sin color'}</span></div>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-3">
                         <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-duration">Permanencia mínima (meses)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-duration" min="0" onChange={(event) => set('estimatedDurationMonths', event.target.value)} type="number" value={form.estimatedDurationMonths} /></label>

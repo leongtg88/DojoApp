@@ -6,9 +6,9 @@ import { computeBalance, formatTime, monthRange } from '@/lib/dashboard/balance'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
 import { buildStudentRegistrationView } from '@/lib/dashboard/registration-data'
 
-function techniqueWithRanks<T extends { beltRankKatas: { beltRankId: string }[] }>(technique: T) {
-  const { beltRankKatas, ...rest } = technique
-  return { ...rest, rankIds: beltRankKatas.map(({ beltRankId }) => beltRankId) }
+function techniqueWithRanks<T extends { beltRankKatas: { beltRankId: string }[]; originKata?: { name: string } | null }>(technique: T) {
+  const { beltRankKatas, originKata, ...rest } = technique
+  return { ...rest, rankIds: beltRankKatas.map(({ beltRankId }) => beltRankId), originKataName: originKata?.name ?? null }
 }
 import type {
   AdminBalanceRow,
@@ -122,7 +122,16 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
               embusen: true,
               movementsCount: true,
               videoUrl: true,
-              beltRankKatas: { select: { beltRankId: true }, orderBy: { order: 'asc' } },
+              repetitionsCount: true,
+              stance: true,
+              level: true,
+              kumiteType: true,
+              distance: true,
+              role: true,
+              applicationType: true,
+              originKataId: true,
+              originKata: { select: { name: true } },
+              beltRankKatas: { select: { beltRankId: true }, orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }, { order: 'asc' }] },
             },
           },
         },
@@ -269,7 +278,7 @@ export async function getAdminBeltRanks(userId: string): Promise<AdminBeltRankSu
       minAttendancePercent: true,
       estimatedDurationMonths: true,
       description: true,
-      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, beltRankKatas: { select: { beltRankId: true }, orderBy: { order: 'asc' } } } } } },
+      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, repetitionsCount: true, stance: true, level: true, kumiteType: true, distance: true, role: true, applicationType: true, originKataId: true, originKata: { select: { name: true } }, beltRankKatas: { select: { beltRankId: true }, orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }, { order: 'asc' }] } } } } },
       _count: { select: { promotions: true } },
     },
   })
@@ -329,11 +338,20 @@ export async function getAdminCurriculum(userId: string): Promise<AdminCurriculu
       category: true,
       order: true,
       difficulty: true,
-embusen: true,
-movementsCount: true,
-              videoUrl: true,
-              beltRankKatas: { select: { beltRankId: true }, orderBy: { order: 'asc' } },
-            },
+      embusen: true,
+      movementsCount: true,
+      videoUrl: true,
+      repetitionsCount: true,
+      stance: true,
+      level: true,
+      kumiteType: true,
+      distance: true,
+      role: true,
+      applicationType: true,
+      originKataId: true,
+      originKata: { select: { name: true } },
+      beltRankKatas: { select: { beltRankId: true }, orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }, { order: 'asc' }] },
+    },
   })
 
   return {
@@ -431,7 +449,16 @@ documents: {
               embusen: true,
               movementsCount: true,
               videoUrl: true,
-              beltRankKatas: { select: { beltRankId: true }, orderBy: { order: 'asc' } },
+              repetitionsCount: true,
+              stance: true,
+              level: true,
+              kumiteType: true,
+              distance: true,
+              role: true,
+              applicationType: true,
+              originKataId: true,
+              originKata: { select: { name: true } },
+              beltRankKatas: { select: { beltRankId: true }, orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }, { order: 'asc' }] },
             },
           },
         },
@@ -478,7 +505,7 @@ documents: {
       minAttendancePercent: true,
       estimatedDurationMonths: true,
       description: true,
-      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, beltRankKatas: { select: { beltRankId: true }, orderBy: { order: 'asc' } } } } } },
+      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, repetitionsCount: true, stance: true, level: true, kumiteType: true, distance: true, role: true, applicationType: true, originKataId: true, originKata: { select: { name: true } }, beltRankKatas: { select: { beltRankId: true }, orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }, { order: 'asc' }] } } } } },
       _count: { select: { katas: true } },
     },
   })

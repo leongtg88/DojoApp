@@ -1,8 +1,12 @@
 'use client'
 
+import { useEffect, useRef, useState } from 'react'
+import { Reorder } from 'motion/react'
 import { BeltRankIndicator } from './BeltRankIndicator'
-import { CheckCircle2, Edit2, Plus, Trash2 } from 'lucide-react'
+import { CheckCircle2, Edit2, GripVertical, Plus, Trash2 } from 'lucide-react'
 import type { AdminBeltRankSummary } from '@/types/dashboard'
+
+type Program = 'ADULT' | 'YOUTH'
 
 interface RankCatalogProps {
 	ranks: AdminBeltRankSummary[]
@@ -11,8 +15,26 @@ interface RankCatalogProps {
 	onEditRank?: (rank: AdminBeltRankSummary) => void
 	onDeleteRank?: (rankId: string) => void
 	onAddRank?: () => void
+	onReorderRanks?: (program: Program, orderedIds: string[]) => void
+	canReorder?: boolean
 	className?: string
 	id?: string
+}
+
+const PROGRAM_GROUPS: { program: Program; label: string }[] = [
+	{ program: 'ADULT', label: 'Adultos' },
+	{ program: 'YOUTH', label: 'Niños' },
+]
+
+function sortByOrder(list: AdminBeltRankSummary[]) {
+	return [...list].sort((a, b) => a.order - b.order)
+}
+
+function buildGroups(ranks: AdminBeltRankSummary[]): Record<Program, AdminBeltRankSummary[]> {
+	return {
+		ADULT: sortByOrder(ranks.filter((rank) => rank.program === 'ADULT')),
+		YOUTH: sortByOrder(ranks.filter((rank) => rank.program === 'YOUTH')),
+	}
 }
 
 export function RankCatalog({
@@ -22,17 +44,31 @@ export function RankCatalog({
 	onEditRank,
 	onDeleteRank,
 	onAddRank,
+	onReorderRanks,
+	canReorder = false,
 	className = '',
 	id,
 }: RankCatalogProps) {
-	const sortedRanks = [...ranks].sort((a, b) => a.order - b.order)
+	const ranksSignature = ranks.map((rank) => `${rank.id}:${rank.order}`).join('|')
+	const [groups, setGroups] = useState<Record<Program, AdminBeltRankSummary[]>>(() => buildGroups(ranks))
+	const [syncedSignature, setSyncedSignature] = useState(ranksSignature)
+
+	if (syncedSignature !== ranksSignature) {
+		setSyncedSignature(ranksSignature)
+		setGroups(buildGroups(ranks))
+	}
+
+	function handleReorder(program: Program, next: AdminBeltRankSummary[]) {
+		setGroups((previous) => ({ ...previous, [program]: next }))
+		onReorderRanks?.(program, next.map((rank) => rank.id))
+	}
 
 	return (
-		<div id={id} className={`space-y-2 ${className}`}>
+		<div id={id} className={`space-y-4 ${className}`}>
 			<div className="flex items-center justify-between px-1">
 				<div className="flex items-center gap-2">
 					<span className="text-xs font-bold uppercase tracking-wider text-neutral-400">Escalafón Oficial de Cinturones</span>
-					<span className="text-xs text-neutral-500">({sortedRanks.length} grados configurados)</span>
+					<span className="text-xs text-neutral-500">({ranks.length} grados configurados)</span>
 				</div>
 				{onAddRank && (
 					<button
@@ -46,26 +82,95 @@ export function RankCatalog({
 				)}
 			</div>
 
-			<div className="flex items-stretch gap-3 overflow-x-auto pb-2 pt-1">
-				{sortedRanks.map((rank) => {
+			{PROGRAM_GROUPS.map(({ program, label }) => {
+				const list = groups[program]
+				if (list.length === 0) return null
+
+				return (
+					<div className="space-y-2" key={program}>
+						<p className="px-1 text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+							{label} <span className="font-medium normal-case text-neutral-600">({list.length})</span>
+						</p>
+						<RankRow
+							canReorder={canReorder}
+							list={list}
+							onDeleteRank={onDeleteRank}
+							onEditRank={onEditRank}
+							onReorder={(next) => handleReorder(program, next)}
+							onSelectRank={onSelectRank}
+							selectedRankId={selectedRankId}
+						/>
+					</div>
+				)
+			})}
+		</div>
+	)
+}
+
+function RankRow({
+	canReorder,
+	list,
+	onDeleteRank,
+	onEditRank,
+	onReorder,
+	onSelectRank,
+	selectedRankId,
+}: {
+	canReorder: boolean
+	list: AdminBeltRankSummary[]
+	onDeleteRank?: (rankId: string) => void
+	onEditRank?: (rank: AdminBeltRankSummary) => void
+	onReorder: (next: AdminBeltRankSummary[]) => void
+	onSelectRank: (rankId: string) => void
+	selectedRankId: string
+}) {
+	const scrollRef = useRef<HTMLDivElement | null>(null)
+
+	useEffect(() => {
+		const element = scrollRef.current
+		if (!element) return
+		const node: HTMLDivElement = element
+
+		function handleWheel(event: WheelEvent) {
+			if (event.deltaY === 0) return
+			if (node.scrollWidth <= node.clientWidth) return
+			event.preventDefault()
+			node.scrollLeft += event.deltaY
+		}
+
+		node.addEventListener('wheel', handleWheel, { passive: false })
+		return () => node.removeEventListener('wheel', handleWheel)
+	}, [])
+
+	return (
+		<div ref={scrollRef} className="overflow-x-auto overscroll-x-contain pb-2 pt-1">
+			<Reorder.Group as="div" axis="x" className="flex items-stretch gap-3" onReorder={onReorder} values={list}>
+				{list.map((rank) => {
 					const isSelected = rank.id === selectedRankId
 
 					return (
-						<div
-							key={rank.id}
-							className={`flex w-48 shrink-0 flex-col justify-between rounded-xl border p-3.5 text-left transition-all ${
+						<Reorder.Item
+							as="div"
+							className={`flex w-48 shrink-0 flex-col justify-between rounded-xl border p-3.5 text-left transition-colors ${canReorder ? 'cursor-grab active:cursor-grabbing' : ''} ${
 								isSelected
 									? 'border-cyan-500 bg-[#161b22] shadow-md ring-1 ring-cyan-500/30'
 									: 'border-neutral-800 bg-[#161b22] opacity-90 shadow-sm hover:opacity-100 hover:bg-[#1b2130]'
 							}`}
+							dragListener={canReorder}
+							key={rank.id}
 							onClick={() => onSelectRank(rank.id)}
+							value={rank}
 						>
 							<div className="mb-3 flex items-center justify-between gap-2">
 								<div className="flex items-center gap-2">
 									<BeltRankIndicator rank={rank} size="sm" />
 									<span className={`text-xs font-bold ${isSelected ? 'text-cyan-400' : 'text-neutral-400'}`}>{rank.kyuDan}</span>
 								</div>
-								{isSelected && <CheckCircle2 className="h-4 w-4 shrink-0 text-cyan-400" />}
+								{canReorder ? (
+									<GripVertical aria-hidden="true" className="h-4 w-4 shrink-0 text-neutral-600" />
+								) : isSelected ? (
+									<CheckCircle2 className="h-4 w-4 shrink-0 text-cyan-400" />
+								) : null}
 							</div>
 
 							<div>
@@ -113,10 +218,10 @@ export function RankCatalog({
 									)}
 								</div>
 							)}
-						</div>
+						</Reorder.Item>
 					)
 				})}
-			</div>
+			</Reorder.Group>
 		</div>
 	)
 }

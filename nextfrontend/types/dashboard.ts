@@ -81,6 +81,9 @@ export interface StudentTechnique {
 	name: string
 	description: string | null
 	category: TechniqueCategory
+	level: string | null
+	beltColor: string | null
+	beltSecondaryColor: string | null
 	status: TechniqueStatus
 	approvedAt: string | null
 	notes: string | null
@@ -353,6 +356,9 @@ export interface KataProgressItem {
 	lastPracticeDate: string | null
 	evaluatedBy: string | null
 	rankName: string | null
+	level: string | null
+	beltColor: string | null
+	beltSecondaryColor: string | null
 	requiredForGrade: boolean
 }
 
@@ -434,6 +440,15 @@ export interface AdminTechniqueSummary {
 	embusen: string | null
 	movementsCount: number | null
 	videoUrl: string | null
+	repetitionsCount: number | null
+	stance: string | null
+	level: string | null
+	kumiteType: string | null
+	distance: string | null
+	role: string | null
+	applicationType: string | null
+	originKataId: string | null
+	originKataName: string | null
 	rankIds: string[]
 }
 
@@ -545,6 +560,8 @@ export interface InstructorKataGrade {
 	rankName: string
 	kyuDan: string | null
 	order: number
+	beltColor: string | null
+	beltSecondaryColor: string | null
 	isMaximumRank: boolean
 	katas: InstructorKataGradeItem[]
 }

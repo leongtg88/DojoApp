@@ -32,10 +32,13 @@ export function BeltRankIndicator({
 	id,
 }: BeltRankIndicatorProps) {
 	const displayColor = color || rank?.beltColor || '#FACC15'
-	const displaySecColor = secondaryColor || rank?.beltSecondaryColor || '#CA8A04'
+	const displaySecColor = secondaryColor || rank?.beltSecondaryColor || '#FFFFFF'
 	const displayName = name || rank?.name || 'Cinturón'
 	const displayKyuDan = kyuDan || rank?.kyuDan || ''
 	const isDan = rank?.isMaximumRank || displayKyuDan.toLowerCase().includes('dan')
+	const hasSecondary = Boolean(secondaryColor || rank?.beltSecondaryColor)
+	const isBlack = isDan || displayColor.toLowerCase() === '#212121'
+	const blackContrast = isBlack ? '0 0 0 1px rgba(255,255,255,0.65), 0 0 6px rgba(255,255,255,0.35)' : undefined
 
 	const heightClasses = {
 		sm: 'h-2.5 w-10',
@@ -48,9 +51,9 @@ export function BeltRankIndicator({
 			<div
 				id={id}
 				className={`relative w-full h-7 rounded-lg overflow-hidden flex items-center justify-between px-3 ${className}`}
-				style={{ backgroundColor: displayColor }}
+				style={{ backgroundColor: displayColor, boxShadow: blackContrast }}
 			>
-				<div className="absolute inset-y-0 left-0 right-0 h-1 my-auto opacity-35" style={{ backgroundColor: isDan ? '#B8B070' : displaySecColor }} />
+				{hasSecondary && <div className="absolute inset-y-0 left-0 right-0 my-auto h-1.5" style={{ backgroundColor: displaySecColor }} />}
 				<div className="relative z-10 flex items-center justify-between w-full">
 					<span className="font-bold text-xs tracking-wider uppercase" style={{ color: isDan ? '#FFFFFF' : '#18181B' }}>
 						{displayKyuDan} {displayName}
@@ -67,9 +70,9 @@ export function BeltRankIndicator({
 		<div id={id} className={`inline-flex items-center gap-2 ${className}`}>
 			<div
 				className={`relative rounded-[2px] overflow-hidden flex items-center justify-end px-0.5 border border-black/10 ${heightClasses[size]}`}
-				style={{ backgroundColor: displayColor }}
+				style={{ backgroundColor: displayColor, boxShadow: blackContrast }}
 			>
-				<div className="absolute inset-y-0 left-0 right-0 h-0.5 my-auto opacity-40" style={{ backgroundColor: displaySecColor }} />
+				{hasSecondary && <div className="absolute inset-y-0 left-0 right-0 my-auto h-[3px]" style={{ backgroundColor: displaySecColor }} />}
 				<div className="relative z-10 w-1.5 h-full bg-[#18181B] flex items-center justify-center">
 					<span className="w-0.5 h-2 rounded-[1px]" style={{ backgroundColor: isDan ? '#B8B070' : displayColor }} />
 				</div>

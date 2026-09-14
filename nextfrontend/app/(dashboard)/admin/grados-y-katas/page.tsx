@@ -3,7 +3,7 @@ import { AdminCurriculumCatalog } from '@/components/dashboard/admin/AdminCurric
 import { AdminTechniqueManager } from '@/components/dashboard/admin/AdminTechniqueManager'
 import { getAdminCurriculum } from '@/lib/dashboard/admin-queries'
 import { redirect } from 'next/navigation'
-import { hasAnyRole } from '@/lib/auth/roles'
+import { hasAnyRole, hasRole } from '@/lib/auth/roles'
 
 export default async function AdminCurriculumPage() {
     const session = await auth()
@@ -21,7 +21,7 @@ export default async function AdminCurriculumPage() {
 
     return (
         <>
-            <AdminCurriculumCatalog ranks={curriculum.ranks} techniques={curriculum.techniques} />
+            <AdminCurriculumCatalog canReorder={hasRole(session.user, 'SUPERADMIN')} ranks={curriculum.ranks} techniques={curriculum.techniques} />
             <div className="mt-8 border-t border-neutral-800" />
             <AdminTechniqueManager ranks={curriculum.ranks} techniques={curriculum.techniques} />
         </>

@@ -3,6 +3,7 @@ import { ClassEnrollmentStatus, StudentStatus } from '@/lib/generated/prisma'
 import { formatTime } from '@/lib/dashboard/balance'
 import { computeBirthdays } from '@/lib/dashboard/birthdays'
 import { ageFromDob, programForAge } from '@/lib/dashboard/program'
+import { introLevelFromBeltRankKatas } from '@/lib/dashboard/kata-level'
 import type {
   AttendanceRecord,
   DashboardBirthday,
@@ -306,8 +307,22 @@ export async function getInstructorTechniqueReview(
       lastName: true,
       currentRank: true,
       schoolId: true,
+      dateOfBirth: true,
       techniques: {
-        include: { technique: true, evaluation: { include: { evaluator: { select: { name: true } } } } },
+        include: {
+          technique: {
+            include: {
+              beltRankKatas: {
+                select: {
+                  order: true,
+                  beltRank: { select: { name: true, program: true, order: true, beltColor: true, beltSecondaryColor: true } },
+                },
+                orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }],
+              },
+            },
+          },
+          evaluation: { include: { evaluator: { select: { name: true } } } },
+        },
         orderBy: { createdAt: 'desc' },
       },
     },
@@ -316,6 +331,8 @@ export async function getInstructorTechniqueReview(
   if (!student) {
     return null
   }
+
+  const program = programForAge(ageFromDob(student.dateOfBirth))
 
   const availableTechniques = await db.technique.findMany({
     where: {
@@ -332,22 +349,28 @@ export async function getInstructorTechniqueReview(
       lastName: student.lastName,
       currentRank: student.currentRank,
     },
-    techniques: student.techniques.map(({ approved, approvedAt, inPractice, notes, practiceHours, technique, evaluation }) => ({
-      id: technique.id,
-      name: technique.name,
-      description: technique.description,
-      category: technique.category,
-      status: approved ? 'APPROVED' : inPractice ? 'IN_PROGRESS' : 'PENDING',
-      approvedAt: approvedAt?.toISOString() ?? null,
-      notes,
-      practiceHours,
-      evaluation: evaluation ? {
-        score: evaluation.score,
-        feedback: evaluation.feedback,
-        evaluatedAt: evaluation.evaluatedAt.toISOString(),
-        evaluatorName: evaluation.evaluator.name,
-      } : null,
-    })),
+    techniques: student.techniques.map(({ approved, approvedAt, inPractice, notes, practiceHours, technique, evaluation }) => {
+      const level = introLevelFromBeltRankKatas(technique.beltRankKatas, program)
+      return {
+        id: technique.id,
+        name: technique.name,
+        description: technique.description,
+        category: technique.category,
+        level: level?.level ?? null,
+        beltColor: level?.beltColor ?? null,
+        beltSecondaryColor: level?.beltSecondaryColor ?? null,
+        status: approved ? 'APPROVED' : inPractice ? 'IN_PROGRESS' : 'PENDING',
+        approvedAt: approvedAt?.toISOString() ?? null,
+        notes,
+        practiceHours,
+        evaluation: evaluation ? {
+          score: evaluation.score,
+          feedback: evaluation.feedback,
+          evaluatedAt: evaluation.evaluatedAt.toISOString(),
+          evaluatorName: evaluation.evaluator.name,
+        } : null,
+      }
+    }),
     availableTechniques,
   }
 }
@@ -398,6 +421,8 @@ export async function getInstructorKataAssignment(
       kyuDan: true,
       order: true,
       isMaximumRank: true,
+      beltColor: true,
+      beltSecondaryColor: true,
       katas: {
         orderBy: { order: 'asc' },
         select: {
@@ -435,6 +460,8 @@ export async function getInstructorKataAssignment(
       rankName: rank.name,
       kyuDan: rank.kyuDan,
       order: rank.order,
+      beltColor: rank.beltColor,
+      beltSecondaryColor: rank.beltSecondaryColor,
       isMaximumRank: rank.isMaximumRank,
       katas: rank.katas.map(({ kata }) => ({
         id: kata.id,

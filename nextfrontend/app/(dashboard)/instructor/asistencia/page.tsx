@@ -31,6 +31,15 @@ export default async function InstructorAttendancePage({ searchParams }: Instruc
             <h1 className="mt-2 font-display text-3xl font-extrabold text-white">Asistencia</h1>
             <p className="mt-2 text-sm text-neutral-400">Pase de lista por clase y revisión de los punch-ins de tus alumnos.</p>
 
+             <section className="mt-10">
+                <p className="text-xs font-semibold uppercase tracking-wide text-cyan-400">Punch-ins de tus alumnos</p>
+                <h2 className="mt-1 font-display text-xl font-bold text-white">Revisión de marcaciones</h2>
+                <div className="mt-4">
+                    <InstructorAttendanceBoard data={board} />
+                </div>
+            </section>
+            
+            
             <form className="mt-7 flex flex-wrap items-end gap-3 rounded-lg border border-neutral-800 bg-[#161b22] p-5" method="get">
                 <label className="flex min-w-52 flex-1 flex-col gap-1.5 text-sm font-semibold text-neutral-200" htmlFor="classId">
                     Clase
@@ -51,13 +60,6 @@ export default async function InstructorAttendancePage({ searchParams }: Instruc
                 <p className="mt-6 rounded-lg border border-dashed border-neutral-700 bg-[#161b22] px-5 py-8 text-sm text-neutral-400">No tienes clases asignadas o no puedes acceder a la clase solicitada.</p>
             )}
 
-            <section className="mt-10">
-                <p className="text-xs font-semibold uppercase tracking-wide text-cyan-400">Punch-ins de tus alumnos</p>
-                <h2 className="mt-1 font-display text-xl font-bold text-white">Revisión de marcaciones</h2>
-                <div className="mt-4">
-                    <InstructorAttendanceBoard data={board} />
-                </div>
-            </section>
         </main>
     )
 }

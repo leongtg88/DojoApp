@@ -3880,11 +3880,13 @@ export namespace Prisma {
    */
 
   export type TechniqueCountOutputType = {
+    bunkaiApplications: number
     beltRankKatas: number
     students: number
   }
 
   export type TechniqueCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bunkaiApplications?: boolean | TechniqueCountOutputTypeCountBunkaiApplicationsArgs
     beltRankKatas?: boolean | TechniqueCountOutputTypeCountBeltRankKatasArgs
     students?: boolean | TechniqueCountOutputTypeCountStudentsArgs
   }
@@ -3898,6 +3900,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the TechniqueCountOutputType
      */
     select?: TechniqueCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TechniqueCountOutputType without action
+   */
+  export type TechniqueCountOutputTypeCountBunkaiApplicationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TechniqueWhereInput
   }
 
   /**
@@ -22646,11 +22655,13 @@ export namespace Prisma {
   export type TechniqueAvgAggregateOutputType = {
     order: number | null
     movementsCount: number | null
+    repetitionsCount: number | null
   }
 
   export type TechniqueSumAggregateOutputType = {
     order: number | null
     movementsCount: number | null
+    repetitionsCount: number | null
   }
 
   export type TechniqueMinAggregateOutputType = {
@@ -22665,6 +22676,14 @@ export namespace Prisma {
     embusen: string | null
     difficulty: string | null
     videoUrl: string | null
+    repetitionsCount: number | null
+    stance: string | null
+    level: string | null
+    kumiteType: string | null
+    distance: string | null
+    role: string | null
+    applicationType: string | null
+    originKataId: string | null
     schoolId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -22682,6 +22701,14 @@ export namespace Prisma {
     embusen: string | null
     difficulty: string | null
     videoUrl: string | null
+    repetitionsCount: number | null
+    stance: string | null
+    level: string | null
+    kumiteType: string | null
+    distance: string | null
+    role: string | null
+    applicationType: string | null
+    originKataId: string | null
     schoolId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -22699,6 +22726,14 @@ export namespace Prisma {
     embusen: number
     difficulty: number
     videoUrl: number
+    repetitionsCount: number
+    stance: number
+    level: number
+    kumiteType: number
+    distance: number
+    role: number
+    applicationType: number
+    originKataId: number
     schoolId: number
     createdAt: number
     updatedAt: number
@@ -22709,11 +22744,13 @@ export namespace Prisma {
   export type TechniqueAvgAggregateInputType = {
     order?: true
     movementsCount?: true
+    repetitionsCount?: true
   }
 
   export type TechniqueSumAggregateInputType = {
     order?: true
     movementsCount?: true
+    repetitionsCount?: true
   }
 
   export type TechniqueMinAggregateInputType = {
@@ -22728,6 +22765,14 @@ export namespace Prisma {
     embusen?: true
     difficulty?: true
     videoUrl?: true
+    repetitionsCount?: true
+    stance?: true
+    level?: true
+    kumiteType?: true
+    distance?: true
+    role?: true
+    applicationType?: true
+    originKataId?: true
     schoolId?: true
     createdAt?: true
     updatedAt?: true
@@ -22745,6 +22790,14 @@ export namespace Prisma {
     embusen?: true
     difficulty?: true
     videoUrl?: true
+    repetitionsCount?: true
+    stance?: true
+    level?: true
+    kumiteType?: true
+    distance?: true
+    role?: true
+    applicationType?: true
+    originKataId?: true
     schoolId?: true
     createdAt?: true
     updatedAt?: true
@@ -22762,6 +22815,14 @@ export namespace Prisma {
     embusen?: true
     difficulty?: true
     videoUrl?: true
+    repetitionsCount?: true
+    stance?: true
+    level?: true
+    kumiteType?: true
+    distance?: true
+    role?: true
+    applicationType?: true
+    originKataId?: true
     schoolId?: true
     createdAt?: true
     updatedAt?: true
@@ -22866,6 +22927,14 @@ export namespace Prisma {
     embusen: string | null
     difficulty: string | null
     videoUrl: string | null
+    repetitionsCount: number | null
+    stance: string | null
+    level: string | null
+    kumiteType: string | null
+    distance: string | null
+    role: string | null
+    applicationType: string | null
+    originKataId: string | null
     schoolId: string | null
     createdAt: Date
     updatedAt: Date
@@ -22902,9 +22971,19 @@ export namespace Prisma {
     embusen?: boolean
     difficulty?: boolean
     videoUrl?: boolean
+    repetitionsCount?: boolean
+    stance?: boolean
+    level?: boolean
+    kumiteType?: boolean
+    distance?: boolean
+    role?: boolean
+    applicationType?: boolean
+    originKataId?: boolean
     schoolId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    originKata?: boolean | Technique$originKataArgs<ExtArgs>
+    bunkaiApplications?: boolean | Technique$bunkaiApplicationsArgs<ExtArgs>
     school?: boolean | Technique$schoolArgs<ExtArgs>
     beltRankKatas?: boolean | Technique$beltRankKatasArgs<ExtArgs>
     students?: boolean | Technique$studentsArgs<ExtArgs>
@@ -22923,9 +23002,18 @@ export namespace Prisma {
     embusen?: boolean
     difficulty?: boolean
     videoUrl?: boolean
+    repetitionsCount?: boolean
+    stance?: boolean
+    level?: boolean
+    kumiteType?: boolean
+    distance?: boolean
+    role?: boolean
+    applicationType?: boolean
+    originKataId?: boolean
     schoolId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    originKata?: boolean | Technique$originKataArgs<ExtArgs>
     school?: boolean | Technique$schoolArgs<ExtArgs>
   }, ExtArgs["result"]["technique"]>
 
@@ -22941,9 +23029,18 @@ export namespace Prisma {
     embusen?: boolean
     difficulty?: boolean
     videoUrl?: boolean
+    repetitionsCount?: boolean
+    stance?: boolean
+    level?: boolean
+    kumiteType?: boolean
+    distance?: boolean
+    role?: boolean
+    applicationType?: boolean
+    originKataId?: boolean
     schoolId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    originKata?: boolean | Technique$originKataArgs<ExtArgs>
     school?: boolean | Technique$schoolArgs<ExtArgs>
   }, ExtArgs["result"]["technique"]>
 
@@ -22959,28 +23056,42 @@ export namespace Prisma {
     embusen?: boolean
     difficulty?: boolean
     videoUrl?: boolean
+    repetitionsCount?: boolean
+    stance?: boolean
+    level?: boolean
+    kumiteType?: boolean
+    distance?: boolean
+    role?: boolean
+    applicationType?: boolean
+    originKataId?: boolean
     schoolId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type TechniqueOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "japaneseName" | "kanji" | "description" | "category" | "order" | "movementsCount" | "embusen" | "difficulty" | "videoUrl" | "schoolId" | "createdAt" | "updatedAt", ExtArgs["result"]["technique"]>
+  export type TechniqueOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "japaneseName" | "kanji" | "description" | "category" | "order" | "movementsCount" | "embusen" | "difficulty" | "videoUrl" | "repetitionsCount" | "stance" | "level" | "kumiteType" | "distance" | "role" | "applicationType" | "originKataId" | "schoolId" | "createdAt" | "updatedAt", ExtArgs["result"]["technique"]>
   export type TechniqueInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    originKata?: boolean | Technique$originKataArgs<ExtArgs>
+    bunkaiApplications?: boolean | Technique$bunkaiApplicationsArgs<ExtArgs>
     school?: boolean | Technique$schoolArgs<ExtArgs>
     beltRankKatas?: boolean | Technique$beltRankKatasArgs<ExtArgs>
     students?: boolean | Technique$studentsArgs<ExtArgs>
     _count?: boolean | TechniqueCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TechniqueIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    originKata?: boolean | Technique$originKataArgs<ExtArgs>
     school?: boolean | Technique$schoolArgs<ExtArgs>
   }
   export type TechniqueIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    originKata?: boolean | Technique$originKataArgs<ExtArgs>
     school?: boolean | Technique$schoolArgs<ExtArgs>
   }
 
   export type $TechniquePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Technique"
     objects: {
+      originKata: Prisma.$TechniquePayload<ExtArgs> | null
+      bunkaiApplications: Prisma.$TechniquePayload<ExtArgs>[]
       school: Prisma.$SchoolPayload<ExtArgs> | null
       beltRankKatas: Prisma.$BeltRankKataPayload<ExtArgs>[]
       students: Prisma.$StudentTechniquePayload<ExtArgs>[]
@@ -22997,6 +23108,14 @@ export namespace Prisma {
       embusen: string | null
       difficulty: string | null
       videoUrl: string | null
+      repetitionsCount: number | null
+      stance: string | null
+      level: string | null
+      kumiteType: string | null
+      distance: string | null
+      role: string | null
+      applicationType: string | null
+      originKataId: string | null
       schoolId: string | null
       createdAt: Date
       updatedAt: Date
@@ -23394,6 +23513,8 @@ export namespace Prisma {
    */
   export interface Prisma__TechniqueClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    originKata<T extends Technique$originKataArgs<ExtArgs> = {}>(args?: Subset<T, Technique$originKataArgs<ExtArgs>>): Prisma__TechniqueClient<$Result.GetResult<Prisma.$TechniquePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    bunkaiApplications<T extends Technique$bunkaiApplicationsArgs<ExtArgs> = {}>(args?: Subset<T, Technique$bunkaiApplicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TechniquePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     school<T extends Technique$schoolArgs<ExtArgs> = {}>(args?: Subset<T, Technique$schoolArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     beltRankKatas<T extends Technique$beltRankKatasArgs<ExtArgs> = {}>(args?: Subset<T, Technique$beltRankKatasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     students<T extends Technique$studentsArgs<ExtArgs> = {}>(args?: Subset<T, Technique$studentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentTechniquePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -23437,6 +23558,14 @@ export namespace Prisma {
     readonly embusen: FieldRef<"Technique", 'String'>
     readonly difficulty: FieldRef<"Technique", 'String'>
     readonly videoUrl: FieldRef<"Technique", 'String'>
+    readonly repetitionsCount: FieldRef<"Technique", 'Int'>
+    readonly stance: FieldRef<"Technique", 'String'>
+    readonly level: FieldRef<"Technique", 'String'>
+    readonly kumiteType: FieldRef<"Technique", 'String'>
+    readonly distance: FieldRef<"Technique", 'String'>
+    readonly role: FieldRef<"Technique", 'String'>
+    readonly applicationType: FieldRef<"Technique", 'String'>
+    readonly originKataId: FieldRef<"Technique", 'String'>
     readonly schoolId: FieldRef<"Technique", 'String'>
     readonly createdAt: FieldRef<"Technique", 'DateTime'>
     readonly updatedAt: FieldRef<"Technique", 'DateTime'>
@@ -23838,6 +23967,49 @@ export namespace Prisma {
      * Limit how many Techniques to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Technique.originKata
+   */
+  export type Technique$originKataArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Technique
+     */
+    select?: TechniqueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Technique
+     */
+    omit?: TechniqueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniqueInclude<ExtArgs> | null
+    where?: TechniqueWhereInput
+  }
+
+  /**
+   * Technique.bunkaiApplications
+   */
+  export type Technique$bunkaiApplicationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Technique
+     */
+    select?: TechniqueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Technique
+     */
+    omit?: TechniqueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniqueInclude<ExtArgs> | null
+    where?: TechniqueWhereInput
+    orderBy?: TechniqueOrderByWithRelationInput | TechniqueOrderByWithRelationInput[]
+    cursor?: TechniqueWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TechniqueScalarFieldEnum | TechniqueScalarFieldEnum[]
   }
 
   /**
@@ -36101,6 +36273,14 @@ export namespace Prisma {
     embusen: 'embusen',
     difficulty: 'difficulty',
     videoUrl: 'videoUrl',
+    repetitionsCount: 'repetitionsCount',
+    stance: 'stance',
+    level: 'level',
+    kumiteType: 'kumiteType',
+    distance: 'distance',
+    role: 'role',
+    applicationType: 'applicationType',
+    originKataId: 'originKataId',
     schoolId: 'schoolId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -37981,9 +38161,19 @@ export namespace Prisma {
     embusen?: StringNullableFilter<"Technique"> | string | null
     difficulty?: StringNullableFilter<"Technique"> | string | null
     videoUrl?: StringNullableFilter<"Technique"> | string | null
+    repetitionsCount?: IntNullableFilter<"Technique"> | number | null
+    stance?: StringNullableFilter<"Technique"> | string | null
+    level?: StringNullableFilter<"Technique"> | string | null
+    kumiteType?: StringNullableFilter<"Technique"> | string | null
+    distance?: StringNullableFilter<"Technique"> | string | null
+    role?: StringNullableFilter<"Technique"> | string | null
+    applicationType?: StringNullableFilter<"Technique"> | string | null
+    originKataId?: StringNullableFilter<"Technique"> | string | null
     schoolId?: StringNullableFilter<"Technique"> | string | null
     createdAt?: DateTimeFilter<"Technique"> | Date | string
     updatedAt?: DateTimeFilter<"Technique"> | Date | string
+    originKata?: XOR<TechniqueNullableScalarRelationFilter, TechniqueWhereInput> | null
+    bunkaiApplications?: TechniqueListRelationFilter
     school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
     beltRankKatas?: BeltRankKataListRelationFilter
     students?: StudentTechniqueListRelationFilter
@@ -38001,9 +38191,19 @@ export namespace Prisma {
     embusen?: SortOrderInput | SortOrder
     difficulty?: SortOrderInput | SortOrder
     videoUrl?: SortOrderInput | SortOrder
+    repetitionsCount?: SortOrderInput | SortOrder
+    stance?: SortOrderInput | SortOrder
+    level?: SortOrderInput | SortOrder
+    kumiteType?: SortOrderInput | SortOrder
+    distance?: SortOrderInput | SortOrder
+    role?: SortOrderInput | SortOrder
+    applicationType?: SortOrderInput | SortOrder
+    originKataId?: SortOrderInput | SortOrder
     schoolId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    originKata?: TechniqueOrderByWithRelationInput
+    bunkaiApplications?: TechniqueOrderByRelationAggregateInput
     school?: SchoolOrderByWithRelationInput
     beltRankKatas?: BeltRankKataOrderByRelationAggregateInput
     students?: StudentTechniqueOrderByRelationAggregateInput
@@ -38024,9 +38224,19 @@ export namespace Prisma {
     embusen?: StringNullableFilter<"Technique"> | string | null
     difficulty?: StringNullableFilter<"Technique"> | string | null
     videoUrl?: StringNullableFilter<"Technique"> | string | null
+    repetitionsCount?: IntNullableFilter<"Technique"> | number | null
+    stance?: StringNullableFilter<"Technique"> | string | null
+    level?: StringNullableFilter<"Technique"> | string | null
+    kumiteType?: StringNullableFilter<"Technique"> | string | null
+    distance?: StringNullableFilter<"Technique"> | string | null
+    role?: StringNullableFilter<"Technique"> | string | null
+    applicationType?: StringNullableFilter<"Technique"> | string | null
+    originKataId?: StringNullableFilter<"Technique"> | string | null
     schoolId?: StringNullableFilter<"Technique"> | string | null
     createdAt?: DateTimeFilter<"Technique"> | Date | string
     updatedAt?: DateTimeFilter<"Technique"> | Date | string
+    originKata?: XOR<TechniqueNullableScalarRelationFilter, TechniqueWhereInput> | null
+    bunkaiApplications?: TechniqueListRelationFilter
     school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
     beltRankKatas?: BeltRankKataListRelationFilter
     students?: StudentTechniqueListRelationFilter
@@ -38044,6 +38254,14 @@ export namespace Prisma {
     embusen?: SortOrderInput | SortOrder
     difficulty?: SortOrderInput | SortOrder
     videoUrl?: SortOrderInput | SortOrder
+    repetitionsCount?: SortOrderInput | SortOrder
+    stance?: SortOrderInput | SortOrder
+    level?: SortOrderInput | SortOrder
+    kumiteType?: SortOrderInput | SortOrder
+    distance?: SortOrderInput | SortOrder
+    role?: SortOrderInput | SortOrder
+    applicationType?: SortOrderInput | SortOrder
+    originKataId?: SortOrderInput | SortOrder
     schoolId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -38069,6 +38287,14 @@ export namespace Prisma {
     embusen?: StringNullableWithAggregatesFilter<"Technique"> | string | null
     difficulty?: StringNullableWithAggregatesFilter<"Technique"> | string | null
     videoUrl?: StringNullableWithAggregatesFilter<"Technique"> | string | null
+    repetitionsCount?: IntNullableWithAggregatesFilter<"Technique"> | number | null
+    stance?: StringNullableWithAggregatesFilter<"Technique"> | string | null
+    level?: StringNullableWithAggregatesFilter<"Technique"> | string | null
+    kumiteType?: StringNullableWithAggregatesFilter<"Technique"> | string | null
+    distance?: StringNullableWithAggregatesFilter<"Technique"> | string | null
+    role?: StringNullableWithAggregatesFilter<"Technique"> | string | null
+    applicationType?: StringNullableWithAggregatesFilter<"Technique"> | string | null
+    originKataId?: StringNullableWithAggregatesFilter<"Technique"> | string | null
     schoolId?: StringNullableWithAggregatesFilter<"Technique"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Technique"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Technique"> | Date | string
@@ -40412,8 +40638,17 @@ export namespace Prisma {
     embusen?: string | null
     difficulty?: string | null
     videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    originKata?: TechniqueCreateNestedOneWithoutBunkaiApplicationsInput
+    bunkaiApplications?: TechniqueCreateNestedManyWithoutOriginKataInput
     school?: SchoolCreateNestedOneWithoutTechniquesInput
     beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
     students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
@@ -40431,9 +40666,18 @@ export namespace Prisma {
     embusen?: string | null
     difficulty?: string | null
     videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
+    originKataId?: string | null
     schoolId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    bunkaiApplications?: TechniqueUncheckedCreateNestedManyWithoutOriginKataInput
     beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
     students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
   }
@@ -40450,8 +40694,17 @@ export namespace Prisma {
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    originKata?: TechniqueUpdateOneWithoutBunkaiApplicationsNestedInput
+    bunkaiApplications?: TechniqueUpdateManyWithoutOriginKataNestedInput
     school?: SchoolUpdateOneWithoutTechniquesNestedInput
     beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
@@ -40469,9 +40722,18 @@ export namespace Prisma {
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
+    originKataId?: NullableStringFieldUpdateOperationsInput | string | null
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bunkaiApplications?: TechniqueUncheckedUpdateManyWithoutOriginKataNestedInput
     beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
   }
@@ -40488,6 +40750,14 @@ export namespace Prisma {
     embusen?: string | null
     difficulty?: string | null
     videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
+    originKataId?: string | null
     schoolId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -40505,6 +40775,13 @@ export namespace Prisma {
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -40521,6 +40798,14 @@ export namespace Prisma {
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
+    originKataId?: NullableStringFieldUpdateOperationsInput | string | null
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42780,6 +43065,11 @@ export namespace Prisma {
     not?: NestedEnumTechniqueCategoryFilter<$PrismaModel> | $Enums.TechniqueCategory
   }
 
+  export type TechniqueNullableScalarRelationFilter = {
+    is?: TechniqueWhereInput | null
+    isNot?: TechniqueWhereInput | null
+  }
+
   export type TechniqueCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -42792,6 +43082,14 @@ export namespace Prisma {
     embusen?: SortOrder
     difficulty?: SortOrder
     videoUrl?: SortOrder
+    repetitionsCount?: SortOrder
+    stance?: SortOrder
+    level?: SortOrder
+    kumiteType?: SortOrder
+    distance?: SortOrder
+    role?: SortOrder
+    applicationType?: SortOrder
+    originKataId?: SortOrder
     schoolId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -42800,6 +43098,7 @@ export namespace Prisma {
   export type TechniqueAvgOrderByAggregateInput = {
     order?: SortOrder
     movementsCount?: SortOrder
+    repetitionsCount?: SortOrder
   }
 
   export type TechniqueMaxOrderByAggregateInput = {
@@ -42814,6 +43113,14 @@ export namespace Prisma {
     embusen?: SortOrder
     difficulty?: SortOrder
     videoUrl?: SortOrder
+    repetitionsCount?: SortOrder
+    stance?: SortOrder
+    level?: SortOrder
+    kumiteType?: SortOrder
+    distance?: SortOrder
+    role?: SortOrder
+    applicationType?: SortOrder
+    originKataId?: SortOrder
     schoolId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -42831,6 +43138,14 @@ export namespace Prisma {
     embusen?: SortOrder
     difficulty?: SortOrder
     videoUrl?: SortOrder
+    repetitionsCount?: SortOrder
+    stance?: SortOrder
+    level?: SortOrder
+    kumiteType?: SortOrder
+    distance?: SortOrder
+    role?: SortOrder
+    applicationType?: SortOrder
+    originKataId?: SortOrder
     schoolId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -42839,6 +43154,7 @@ export namespace Prisma {
   export type TechniqueSumOrderByAggregateInput = {
     order?: SortOrder
     movementsCount?: SortOrder
+    repetitionsCount?: SortOrder
   }
 
   export type EnumTechniqueCategoryWithAggregatesFilter<$PrismaModel = never> = {
@@ -45774,6 +46090,19 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRankPromotionsInput, UserUpdateWithoutRankPromotionsInput>, UserUncheckedUpdateWithoutRankPromotionsInput>
   }
 
+  export type TechniqueCreateNestedOneWithoutBunkaiApplicationsInput = {
+    create?: XOR<TechniqueCreateWithoutBunkaiApplicationsInput, TechniqueUncheckedCreateWithoutBunkaiApplicationsInput>
+    connectOrCreate?: TechniqueCreateOrConnectWithoutBunkaiApplicationsInput
+    connect?: TechniqueWhereUniqueInput
+  }
+
+  export type TechniqueCreateNestedManyWithoutOriginKataInput = {
+    create?: XOR<TechniqueCreateWithoutOriginKataInput, TechniqueUncheckedCreateWithoutOriginKataInput> | TechniqueCreateWithoutOriginKataInput[] | TechniqueUncheckedCreateWithoutOriginKataInput[]
+    connectOrCreate?: TechniqueCreateOrConnectWithoutOriginKataInput | TechniqueCreateOrConnectWithoutOriginKataInput[]
+    createMany?: TechniqueCreateManyOriginKataInputEnvelope
+    connect?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
+  }
+
   export type SchoolCreateNestedOneWithoutTechniquesInput = {
     create?: XOR<SchoolCreateWithoutTechniquesInput, SchoolUncheckedCreateWithoutTechniquesInput>
     connectOrCreate?: SchoolCreateOrConnectWithoutTechniquesInput
@@ -45794,6 +46123,13 @@ export namespace Prisma {
     connect?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
   }
 
+  export type TechniqueUncheckedCreateNestedManyWithoutOriginKataInput = {
+    create?: XOR<TechniqueCreateWithoutOriginKataInput, TechniqueUncheckedCreateWithoutOriginKataInput> | TechniqueCreateWithoutOriginKataInput[] | TechniqueUncheckedCreateWithoutOriginKataInput[]
+    connectOrCreate?: TechniqueCreateOrConnectWithoutOriginKataInput | TechniqueCreateOrConnectWithoutOriginKataInput[]
+    createMany?: TechniqueCreateManyOriginKataInputEnvelope
+    connect?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
+  }
+
   export type BeltRankKataUncheckedCreateNestedManyWithoutKataInput = {
     create?: XOR<BeltRankKataCreateWithoutKataInput, BeltRankKataUncheckedCreateWithoutKataInput> | BeltRankKataCreateWithoutKataInput[] | BeltRankKataUncheckedCreateWithoutKataInput[]
     connectOrCreate?: BeltRankKataCreateOrConnectWithoutKataInput | BeltRankKataCreateOrConnectWithoutKataInput[]
@@ -45810,6 +46146,30 @@ export namespace Prisma {
 
   export type EnumTechniqueCategoryFieldUpdateOperationsInput = {
     set?: $Enums.TechniqueCategory
+  }
+
+  export type TechniqueUpdateOneWithoutBunkaiApplicationsNestedInput = {
+    create?: XOR<TechniqueCreateWithoutBunkaiApplicationsInput, TechniqueUncheckedCreateWithoutBunkaiApplicationsInput>
+    connectOrCreate?: TechniqueCreateOrConnectWithoutBunkaiApplicationsInput
+    upsert?: TechniqueUpsertWithoutBunkaiApplicationsInput
+    disconnect?: TechniqueWhereInput | boolean
+    delete?: TechniqueWhereInput | boolean
+    connect?: TechniqueWhereUniqueInput
+    update?: XOR<XOR<TechniqueUpdateToOneWithWhereWithoutBunkaiApplicationsInput, TechniqueUpdateWithoutBunkaiApplicationsInput>, TechniqueUncheckedUpdateWithoutBunkaiApplicationsInput>
+  }
+
+  export type TechniqueUpdateManyWithoutOriginKataNestedInput = {
+    create?: XOR<TechniqueCreateWithoutOriginKataInput, TechniqueUncheckedCreateWithoutOriginKataInput> | TechniqueCreateWithoutOriginKataInput[] | TechniqueUncheckedCreateWithoutOriginKataInput[]
+    connectOrCreate?: TechniqueCreateOrConnectWithoutOriginKataInput | TechniqueCreateOrConnectWithoutOriginKataInput[]
+    upsert?: TechniqueUpsertWithWhereUniqueWithoutOriginKataInput | TechniqueUpsertWithWhereUniqueWithoutOriginKataInput[]
+    createMany?: TechniqueCreateManyOriginKataInputEnvelope
+    set?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
+    disconnect?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
+    delete?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
+    connect?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
+    update?: TechniqueUpdateWithWhereUniqueWithoutOriginKataInput | TechniqueUpdateWithWhereUniqueWithoutOriginKataInput[]
+    updateMany?: TechniqueUpdateManyWithWhereWithoutOriginKataInput | TechniqueUpdateManyWithWhereWithoutOriginKataInput[]
+    deleteMany?: TechniqueScalarWhereInput | TechniqueScalarWhereInput[]
   }
 
   export type SchoolUpdateOneWithoutTechniquesNestedInput = {
@@ -45848,6 +46208,20 @@ export namespace Prisma {
     update?: StudentTechniqueUpdateWithWhereUniqueWithoutTechniqueInput | StudentTechniqueUpdateWithWhereUniqueWithoutTechniqueInput[]
     updateMany?: StudentTechniqueUpdateManyWithWhereWithoutTechniqueInput | StudentTechniqueUpdateManyWithWhereWithoutTechniqueInput[]
     deleteMany?: StudentTechniqueScalarWhereInput | StudentTechniqueScalarWhereInput[]
+  }
+
+  export type TechniqueUncheckedUpdateManyWithoutOriginKataNestedInput = {
+    create?: XOR<TechniqueCreateWithoutOriginKataInput, TechniqueUncheckedCreateWithoutOriginKataInput> | TechniqueCreateWithoutOriginKataInput[] | TechniqueUncheckedCreateWithoutOriginKataInput[]
+    connectOrCreate?: TechniqueCreateOrConnectWithoutOriginKataInput | TechniqueCreateOrConnectWithoutOriginKataInput[]
+    upsert?: TechniqueUpsertWithWhereUniqueWithoutOriginKataInput | TechniqueUpsertWithWhereUniqueWithoutOriginKataInput[]
+    createMany?: TechniqueCreateManyOriginKataInputEnvelope
+    set?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
+    disconnect?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
+    delete?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
+    connect?: TechniqueWhereUniqueInput | TechniqueWhereUniqueInput[]
+    update?: TechniqueUpdateWithWhereUniqueWithoutOriginKataInput | TechniqueUpdateWithWhereUniqueWithoutOriginKataInput[]
+    updateMany?: TechniqueUpdateManyWithWhereWithoutOriginKataInput | TechniqueUpdateManyWithWhereWithoutOriginKataInput[]
+    deleteMany?: TechniqueScalarWhereInput | TechniqueScalarWhereInput[]
   }
 
   export type BeltRankKataUncheckedUpdateManyWithoutKataNestedInput = {
@@ -47369,8 +47743,17 @@ export namespace Prisma {
     embusen?: string | null
     difficulty?: string | null
     videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    originKata?: TechniqueCreateNestedOneWithoutBunkaiApplicationsInput
+    bunkaiApplications?: TechniqueCreateNestedManyWithoutOriginKataInput
     beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
     students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
   }
@@ -47387,8 +47770,17 @@ export namespace Prisma {
     embusen?: string | null
     difficulty?: string | null
     videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
+    originKataId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    bunkaiApplications?: TechniqueUncheckedCreateNestedManyWithoutOriginKataInput
     beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
     students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
   }
@@ -47687,6 +48079,14 @@ export namespace Prisma {
     embusen?: StringNullableFilter<"Technique"> | string | null
     difficulty?: StringNullableFilter<"Technique"> | string | null
     videoUrl?: StringNullableFilter<"Technique"> | string | null
+    repetitionsCount?: IntNullableFilter<"Technique"> | number | null
+    stance?: StringNullableFilter<"Technique"> | string | null
+    level?: StringNullableFilter<"Technique"> | string | null
+    kumiteType?: StringNullableFilter<"Technique"> | string | null
+    distance?: StringNullableFilter<"Technique"> | string | null
+    role?: StringNullableFilter<"Technique"> | string | null
+    applicationType?: StringNullableFilter<"Technique"> | string | null
+    originKataId?: StringNullableFilter<"Technique"> | string | null
     schoolId?: StringNullableFilter<"Technique"> | string | null
     createdAt?: DateTimeFilter<"Technique"> | Date | string
     updatedAt?: DateTimeFilter<"Technique"> | Date | string
@@ -52868,8 +53268,17 @@ export namespace Prisma {
     embusen?: string | null
     difficulty?: string | null
     videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    originKata?: TechniqueCreateNestedOneWithoutBunkaiApplicationsInput
+    bunkaiApplications?: TechniqueCreateNestedManyWithoutOriginKataInput
     school?: SchoolCreateNestedOneWithoutTechniquesInput
     students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
   }
@@ -52886,9 +53295,18 @@ export namespace Prisma {
     embusen?: string | null
     difficulty?: string | null
     videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
+    originKataId?: string | null
     schoolId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    bunkaiApplications?: TechniqueUncheckedCreateNestedManyWithoutOriginKataInput
     students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
   }
 
@@ -52977,8 +53395,17 @@ export namespace Prisma {
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    originKata?: TechniqueUpdateOneWithoutBunkaiApplicationsNestedInput
+    bunkaiApplications?: TechniqueUpdateManyWithoutOriginKataNestedInput
     school?: SchoolUpdateOneWithoutTechniquesNestedInput
     students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
   }
@@ -52995,9 +53422,18 @@ export namespace Prisma {
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
+    originKataId?: NullableStringFieldUpdateOperationsInput | string | null
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bunkaiApplications?: TechniqueUncheckedUpdateManyWithoutOriginKataNestedInput
     students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
   }
 
@@ -53409,6 +53845,129 @@ export namespace Prisma {
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
+  export type TechniqueCreateWithoutBunkaiApplicationsInput = {
+    id?: string
+    name: string
+    japaneseName?: string | null
+    kanji?: string | null
+    description?: string | null
+    category?: $Enums.TechniqueCategory
+    order?: number
+    movementsCount?: number | null
+    embusen?: string | null
+    difficulty?: string | null
+    videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    originKata?: TechniqueCreateNestedOneWithoutBunkaiApplicationsInput
+    school?: SchoolCreateNestedOneWithoutTechniquesInput
+    beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
+    students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
+  }
+
+  export type TechniqueUncheckedCreateWithoutBunkaiApplicationsInput = {
+    id?: string
+    name: string
+    japaneseName?: string | null
+    kanji?: string | null
+    description?: string | null
+    category?: $Enums.TechniqueCategory
+    order?: number
+    movementsCount?: number | null
+    embusen?: string | null
+    difficulty?: string | null
+    videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
+    originKataId?: string | null
+    schoolId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
+    students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
+  }
+
+  export type TechniqueCreateOrConnectWithoutBunkaiApplicationsInput = {
+    where: TechniqueWhereUniqueInput
+    create: XOR<TechniqueCreateWithoutBunkaiApplicationsInput, TechniqueUncheckedCreateWithoutBunkaiApplicationsInput>
+  }
+
+  export type TechniqueCreateWithoutOriginKataInput = {
+    id?: string
+    name: string
+    japaneseName?: string | null
+    kanji?: string | null
+    description?: string | null
+    category?: $Enums.TechniqueCategory
+    order?: number
+    movementsCount?: number | null
+    embusen?: string | null
+    difficulty?: string | null
+    videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bunkaiApplications?: TechniqueCreateNestedManyWithoutOriginKataInput
+    school?: SchoolCreateNestedOneWithoutTechniquesInput
+    beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
+    students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
+  }
+
+  export type TechniqueUncheckedCreateWithoutOriginKataInput = {
+    id?: string
+    name: string
+    japaneseName?: string | null
+    kanji?: string | null
+    description?: string | null
+    category?: $Enums.TechniqueCategory
+    order?: number
+    movementsCount?: number | null
+    embusen?: string | null
+    difficulty?: string | null
+    videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
+    schoolId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bunkaiApplications?: TechniqueUncheckedCreateNestedManyWithoutOriginKataInput
+    beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
+    students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
+  }
+
+  export type TechniqueCreateOrConnectWithoutOriginKataInput = {
+    where: TechniqueWhereUniqueInput
+    create: XOR<TechniqueCreateWithoutOriginKataInput, TechniqueUncheckedCreateWithoutOriginKataInput>
+  }
+
+  export type TechniqueCreateManyOriginKataInputEnvelope = {
+    data: TechniqueCreateManyOriginKataInput | TechniqueCreateManyOriginKataInput[]
+    skipDuplicates?: boolean
+  }
+
   export type SchoolCreateWithoutTechniquesInput = {
     id?: string
     name: string
@@ -53500,6 +54059,87 @@ export namespace Prisma {
   export type StudentTechniqueCreateManyTechniqueInputEnvelope = {
     data: StudentTechniqueCreateManyTechniqueInput | StudentTechniqueCreateManyTechniqueInput[]
     skipDuplicates?: boolean
+  }
+
+  export type TechniqueUpsertWithoutBunkaiApplicationsInput = {
+    update: XOR<TechniqueUpdateWithoutBunkaiApplicationsInput, TechniqueUncheckedUpdateWithoutBunkaiApplicationsInput>
+    create: XOR<TechniqueCreateWithoutBunkaiApplicationsInput, TechniqueUncheckedCreateWithoutBunkaiApplicationsInput>
+    where?: TechniqueWhereInput
+  }
+
+  export type TechniqueUpdateToOneWithWhereWithoutBunkaiApplicationsInput = {
+    where?: TechniqueWhereInput
+    data: XOR<TechniqueUpdateWithoutBunkaiApplicationsInput, TechniqueUncheckedUpdateWithoutBunkaiApplicationsInput>
+  }
+
+  export type TechniqueUpdateWithoutBunkaiApplicationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
+    kanji?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
+    order?: IntFieldUpdateOperationsInput | number
+    movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    embusen?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableStringFieldUpdateOperationsInput | string | null
+    videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    originKata?: TechniqueUpdateOneWithoutBunkaiApplicationsNestedInput
+    school?: SchoolUpdateOneWithoutTechniquesNestedInput
+    beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
+    students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
+  }
+
+  export type TechniqueUncheckedUpdateWithoutBunkaiApplicationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
+    kanji?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
+    order?: IntFieldUpdateOperationsInput | number
+    movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    embusen?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableStringFieldUpdateOperationsInput | string | null
+    videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
+    originKataId?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
+    students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
+  }
+
+  export type TechniqueUpsertWithWhereUniqueWithoutOriginKataInput = {
+    where: TechniqueWhereUniqueInput
+    update: XOR<TechniqueUpdateWithoutOriginKataInput, TechniqueUncheckedUpdateWithoutOriginKataInput>
+    create: XOR<TechniqueCreateWithoutOriginKataInput, TechniqueUncheckedCreateWithoutOriginKataInput>
+  }
+
+  export type TechniqueUpdateWithWhereUniqueWithoutOriginKataInput = {
+    where: TechniqueWhereUniqueInput
+    data: XOR<TechniqueUpdateWithoutOriginKataInput, TechniqueUncheckedUpdateWithoutOriginKataInput>
+  }
+
+  export type TechniqueUpdateManyWithWhereWithoutOriginKataInput = {
+    where: TechniqueScalarWhereInput
+    data: XOR<TechniqueUpdateManyMutationInput, TechniqueUncheckedUpdateManyWithoutOriginKataInput>
   }
 
   export type SchoolUpsertWithoutTechniquesInput = {
@@ -53670,8 +54310,17 @@ export namespace Prisma {
     embusen?: string | null
     difficulty?: string | null
     videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    originKata?: TechniqueCreateNestedOneWithoutBunkaiApplicationsInput
+    bunkaiApplications?: TechniqueCreateNestedManyWithoutOriginKataInput
     school?: SchoolCreateNestedOneWithoutTechniquesInput
     beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
   }
@@ -53688,9 +54337,18 @@ export namespace Prisma {
     embusen?: string | null
     difficulty?: string | null
     videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
+    originKataId?: string | null
     schoolId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    bunkaiApplications?: TechniqueUncheckedCreateNestedManyWithoutOriginKataInput
     beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
   }
 
@@ -53897,8 +54555,17 @@ export namespace Prisma {
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    originKata?: TechniqueUpdateOneWithoutBunkaiApplicationsNestedInput
+    bunkaiApplications?: TechniqueUpdateManyWithoutOriginKataNestedInput
     school?: SchoolUpdateOneWithoutTechniquesNestedInput
     beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
   }
@@ -53915,9 +54582,18 @@ export namespace Prisma {
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
+    originKataId?: NullableStringFieldUpdateOperationsInput | string | null
     schoolId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bunkaiApplications?: TechniqueUncheckedUpdateManyWithoutOriginKataNestedInput
     beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
   }
 
@@ -56643,6 +57319,14 @@ export namespace Prisma {
     embusen?: string | null
     difficulty?: string | null
     videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
+    originKataId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -57009,8 +57693,17 @@ export namespace Prisma {
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    originKata?: TechniqueUpdateOneWithoutBunkaiApplicationsNestedInput
+    bunkaiApplications?: TechniqueUpdateManyWithoutOriginKataNestedInput
     beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
   }
@@ -57027,8 +57720,17 @@ export namespace Prisma {
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
+    originKataId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bunkaiApplications?: TechniqueUncheckedUpdateManyWithoutOriginKataNestedInput
     beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
   }
@@ -57045,6 +57747,14 @@ export namespace Prisma {
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
     videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
+    originKataId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -58972,6 +59682,30 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TechniqueCreateManyOriginKataInput = {
+    id?: string
+    name: string
+    japaneseName?: string | null
+    kanji?: string | null
+    description?: string | null
+    category?: $Enums.TechniqueCategory
+    order?: number
+    movementsCount?: number | null
+    embusen?: string | null
+    difficulty?: string | null
+    videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
+    schoolId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type BeltRankKataCreateManyKataInput = {
     beltRankId: string
     order?: number
@@ -58989,6 +59723,84 @@ export namespace Prisma {
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
+  }
+
+  export type TechniqueUpdateWithoutOriginKataInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
+    kanji?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
+    order?: IntFieldUpdateOperationsInput | number
+    movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    embusen?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableStringFieldUpdateOperationsInput | string | null
+    videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bunkaiApplications?: TechniqueUpdateManyWithoutOriginKataNestedInput
+    school?: SchoolUpdateOneWithoutTechniquesNestedInput
+    beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
+    students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
+  }
+
+  export type TechniqueUncheckedUpdateWithoutOriginKataInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
+    kanji?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
+    order?: IntFieldUpdateOperationsInput | number
+    movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    embusen?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableStringFieldUpdateOperationsInput | string | null
+    videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bunkaiApplications?: TechniqueUncheckedUpdateManyWithoutOriginKataNestedInput
+    beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
+    students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
+  }
+
+  export type TechniqueUncheckedUpdateManyWithoutOriginKataInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
+    kanji?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
+    order?: IntFieldUpdateOperationsInput | number
+    movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    embusen?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableStringFieldUpdateOperationsInput | string | null
+    videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BeltRankKataUpdateWithoutKataInput = {

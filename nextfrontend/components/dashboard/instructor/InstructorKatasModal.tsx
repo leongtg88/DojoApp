@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { BookOpenCheck, CheckCircle2, ChevronDown, Loader2, Save, X } from 'lucide-react'
 import type { InstructorKataAssignmentData, InstructorKataGrade } from '@/types/dashboard'
+import { baseBeltLevelForColor } from '@/lib/curriculum/programs'
+import { KataBeltChip } from '../shared/KataBeltChip'
 
 interface InstructorKatasModalProps {
     open: boolean
@@ -125,13 +127,14 @@ export function InstructorKatasModal({ open, studentId, studentName, onClose }: 
                                 const assignedInGrade = grade.katas.filter(({ assigned }) => assigned).length
                                 return (
                                     <div key={grade.rankId} className="overflow-hidden rounded-md border border-neutral-800 bg-[#0d1117]">
-                                        <button type="button" onClick={() => toggleGrade(grade.rankId)} className="flex w-full items-center justify-between gap-2 px-4 py-3 text-left hover:bg-neutral-800/50">
-                                            <span className="flex items-center gap-2 text-sm font-semibold text-white">
-                                                <ChevronDown aria-hidden="true" className={`size-4 text-neutral-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-                                                {grade.isMaximumRank ? 'Grado máximo' : `Grado ${grade.order}`} {grade.kyuDan ? `· ${grade.kyuDan}` : ''}
-                                            </span>
-                                            <span className="text-xs text-neutral-400">{assignedInGrade}/{grade.katas.length}</span>
-                                        </button>
+                                         <button type="button" onClick={() => toggleGrade(grade.rankId)} className="flex w-full items-center justify-between gap-2 px-4 py-3 text-left hover:bg-neutral-800/50">
+                                             <span className="flex items-center gap-2 text-sm font-semibold text-white">
+                                                 <ChevronDown aria-hidden="true" className={`size-4 text-neutral-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                                                 <KataBeltChip beltColor={grade.beltColor} beltSecondaryColor={grade.beltSecondaryColor} level={baseBeltLevelForColor(grade.beltColor)} />
+                                                 {grade.isMaximumRank ? 'Grado máximo' : `Grado ${grade.order}`} {grade.kyuDan ? `· ${grade.kyuDan}` : ''}
+                                             </span>
+                                             <span className="text-xs text-neutral-400">{assignedInGrade}/{grade.katas.length}</span>
+                                         </button>
                                         {isOpen && (
                                             <div className="divide-y divide-neutral-800/60 border-t border-neutral-800">
                                                 {grade.katas.map((kata) => (
@@ -143,8 +146,8 @@ export function InstructorKatasModal({ open, studentId, studentName, onClose }: 
                                                             className="size-4 accent-cyan-500"
                                                         />
                                                         <div className="min-w-0 flex-1">
-                                                            <p className="truncate text-sm text-white">{kata.name}{kata.kanji ? <span className="ml-1.5 text-neutral-500">{kata.kanji}</span> : null}</p>
-                                                            {kata.description && <p className="truncate text-[11px] text-neutral-500">{kata.description}</p>}
+                                                             <p className="truncate text-sm text-white">{kata.name}{kata.kanji ? <span className="ml-1.5 text-neutral-500">{kata.kanji}</span> : null}</p>
+                                                             {kata.description && <p className="truncate text-[11px] text-neutral-500">{kata.description}</p>}
                                                         </div>
                                                         {kata.status === 'APPROVED' && (
                                                             <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-200">

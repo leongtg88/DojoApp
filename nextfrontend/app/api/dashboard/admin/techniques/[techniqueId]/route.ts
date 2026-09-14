@@ -15,6 +15,14 @@ const updateTechniqueSchema = z.object({
   embusen: z.string().trim().max(50).optional().nullable(),
   difficulty: z.string().trim().max(50).optional().nullable(),
   videoUrl: z.url().optional().nullable(),
+  repetitionsCount: z.number().int().min(0).optional().nullable(),
+  stance: z.string().trim().max(100).optional().nullable(),
+  level: z.string().trim().max(50).optional().nullable(),
+  kumiteType: z.string().trim().max(100).optional().nullable(),
+  distance: z.string().trim().max(50).optional().nullable(),
+  role: z.string().trim().max(50).optional().nullable(),
+  applicationType: z.string().trim().max(100).optional().nullable(),
+  originKataId: z.string().trim().min(1).optional().nullable(),
 })
 
 interface TechniqueRouteContext {
@@ -46,6 +54,21 @@ export async function PATCH(request: Request, { params }: TechniqueRouteContext)
 
   if (!technique || (!scope.isSuperAdmin && technique.schoolId !== scope.schoolId)) {
     return NextResponse.json({ error: 'Técnica no encontrada' }, { status: 404 })
+  }
+
+  if (result.data.originKataId) {
+    const originKata = await db.technique.findFirst({
+      where: {
+        id: result.data.originKataId,
+        category: 'KATA',
+        ...(scope.isSuperAdmin ? {} : { OR: [{ schoolId: scope.schoolId }, { schoolId: null }] }),
+      },
+      select: { id: true },
+    })
+
+    if (!originKata) {
+      return NextResponse.json({ error: 'La kata de origen no es válida' }, { status: 400 })
+    }
   }
 
   const data = Object.fromEntries(

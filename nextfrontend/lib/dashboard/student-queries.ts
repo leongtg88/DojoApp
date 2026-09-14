@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { ClassEnrollmentStatus } from '@/lib/generated/prisma'
 import { ageFromDob, programForAge, resolveDefaultRank } from '@/lib/dashboard/program'
 import { computeBalance, formatTime, monthRange, pendingRecoveries } from '@/lib/dashboard/balance'
+import { introLevelFromBeltRankKatas } from '@/lib/dashboard/kata-level'
 import type {
   StudentAttendanceRecord,
   StudentAttendancePunchData,
@@ -104,6 +105,9 @@ export async function getStudentDashboardSummary(
       name: technique.name,
       description: technique.description,
       category: technique.category,
+      level: null,
+      beltColor: null,
+      beltSecondaryColor: null,
       status: techniqueStatus(approved, inPractice),
       approvedAt: approvedAt?.toISOString() ?? null,
       notes,
@@ -362,7 +366,6 @@ const BELT_COLORS: Record<string, string> = {
   'Verde': '#16a34a',
   'Azul': '#2563eb',
   'Marrón': '#6b4226',
-  'Café': '#795548',
   'Negro': '#17181a',
   'Blanco': '#e5e7eb',
 }
@@ -392,7 +395,13 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
         include: {
           technique: {
             include: {
-              beltRankKatas: { include: { beltRank: { select: { name: true } } } },
+              beltRankKatas: {
+                select: {
+                  order: true,
+                  beltRank: { select: { name: true, program: true, order: true, beltColor: true, beltSecondaryColor: true } },
+                },
+                orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }],
+              },
             },
           },
           evaluation: { include: { evaluator: { select: { name: true } } } },
@@ -445,6 +454,7 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
     .filter(({ technique }) => technique.category === 'KATA')
     .map(({ technique, approved, inPractice, practiceHours, lastPracticeDate, notes, evaluation, approvedAt }) => {
       const requiredForGrade = gradeKataIds.includes(technique.id)
+      const level = introLevelFromBeltRankKatas(technique.beltRankKatas, currentProgram)
       return {
         id: technique.id,
         name: technique.name,
@@ -455,7 +465,10 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
         lastFeedback: notes,
         lastPracticeDate: lastPracticeDate?.toISOString() ?? approvedAt?.toISOString() ?? null,
         evaluatedBy: evaluation?.evaluator.name ?? null,
-        rankName: technique.beltRankKatas[0]?.beltRank.name ?? null,
+        rankName: level?.rankName ?? null,
+        level: level?.level ?? null,
+        beltColor: level?.beltColor ?? null,
+        beltSecondaryColor: level?.beltSecondaryColor ?? null,
         requiredForGrade,
       } satisfies KataProgressItem
     })
