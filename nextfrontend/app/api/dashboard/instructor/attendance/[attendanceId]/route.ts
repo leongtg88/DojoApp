@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
+import { notifyAssignment } from '@/lib/notifications/create'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -92,6 +93,14 @@ export async function PATCH(request: Request, { params }: AttendanceRouteContext
     data,
     include: { confirmedBy: { select: { name: true } } },
   })
+
+  if (result.data.action === 'confirm') {
+    await notifyAssignment({
+      type: 'ATTENDANCE_CONFIRMED',
+      studentId: attendance.student.id,
+      count: 1,
+    })
+  }
 
   return NextResponse.json({
     record: {

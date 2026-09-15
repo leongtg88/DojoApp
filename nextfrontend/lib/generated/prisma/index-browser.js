@@ -461,6 +461,20 @@ exports.Prisma.FitnessReportScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  studentId: 'studentId',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  link: 'link',
+  data: 'data',
+  priority: 'priority',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -584,6 +598,28 @@ exports.ApprovalStatus = exports.$Enums.ApprovalStatus = {
   REJECTED: 'REJECTED'
 };
 
+exports.NotificationType = exports.$Enums.NotificationType = {
+  TECHNIQUES_ASSIGNED: 'TECHNIQUES_ASSIGNED',
+  TECHNIQUES_REMOVED: 'TECHNIQUES_REMOVED',
+  RANK_PROMOTED: 'RANK_PROMOTED',
+  KATAS_UNLOCKED: 'KATAS_UNLOCKED',
+  CLASS_ENROLLED: 'CLASS_ENROLLED',
+  CLASS_REMOVED: 'CLASS_REMOVED',
+  PLAN_ASSIGNED: 'PLAN_ASSIGNED',
+  SCHOLARSHIP_ASSIGNED: 'SCHOLARSHIP_ASSIGNED',
+  DOCUMENT_APPROVED: 'DOCUMENT_APPROVED',
+  DOCUMENT_REJECTED: 'DOCUMENT_REJECTED',
+  ATTENDANCE_CONFIRMED: 'ATTENDANCE_CONFIRMED',
+  TECHNIQUE_APPROVED: 'TECHNIQUE_APPROVED',
+  TECHNIQUE_EVALUATED: 'TECHNIQUE_EVALUATED'
+};
+
+exports.NotificationPriority = exports.$Enums.NotificationPriority = {
+  INFO: 'INFO',
+  ACTION: 'ACTION',
+  URGENT: 'URGENT'
+};
+
 exports.Prisma.ModelName = {
   School: 'School',
   Branch: 'Branch',
@@ -610,7 +646,8 @@ exports.Prisma.ModelName = {
   Attendance: 'Attendance',
   AchievementType: 'AchievementType',
   StudentAchievement: 'StudentAchievement',
-  FitnessReport: 'FitnessReport'
+  FitnessReport: 'FitnessReport',
+  Notification: 'Notification'
 };
 
 /**

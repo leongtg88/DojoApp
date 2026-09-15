@@ -2,6 +2,7 @@ import { ClassEnrollmentStatus } from '@/lib/generated/prisma'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
+import { notifyAssignment } from '@/lib/notifications/create'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -13,6 +14,13 @@ const placementSchema = z.object({
   isCompetitor: z.boolean(),
   planStartDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
 })
+
+const SCHOLARSHIP_LABELS: Record<'NONE' | 'ECONOMIC' | 'MERIT' | 'COMPETITOR', string> = {
+  NONE: 'sin beca',
+  ECONOMIC: 'una beca económica',
+  MERIT: 'una beca por mérito',
+  COMPETITOR: 'una beca de competidor',
+}
 
 interface PlacementRouteContext {
   params: Promise<{ studentId: string }>
@@ -40,7 +48,7 @@ export async function PUT(request: Request, { params }: PlacementRouteContext) {
   const { studentId } = await params
   const student = await db.student.findFirst({
     where: { id: studentId, ...scopeSchoolFilter(scope) },
-    select: { id: true, planId: true },
+    select: { id: true, planId: true, scholarshipType: true },
   })
 
   if (!student) {
@@ -48,6 +56,7 @@ export async function PUT(request: Request, { params }: PlacementRouteContext) {
   }
 
   const data = result.data
+  let planName: string | null = null
 
   if (data.planId) {
     const plan = await db.plan.findFirst({
@@ -55,12 +64,14 @@ export async function PUT(request: Request, { params }: PlacementRouteContext) {
         id: data.planId,
         ...(scope.isSuperAdmin ? {} : { OR: [{ schoolId: scope.schoolId }, { schoolId: null }] }),
       },
-      select: { id: true },
+      select: { id: true, name: true },
     })
 
     if (!plan) {
       return NextResponse.json({ error: 'El plan no pertenece a esta escuela' }, { status: 400 })
     }
+
+    planName = plan.name
   }
 
   if (data.scheduleIds.length > 0) {
@@ -78,11 +89,27 @@ export async function PUT(request: Request, { params }: PlacementRouteContext) {
   }
 
   const planChanged = student.planId !== data.planId
+  const scholarshipChanged = student.scholarshipType !== data.scholarshipType
   const planStartDate = data.planStartDate
     ? new Date(`${data.planStartDate}T00:00:00.000Z`)
     : planChanged
       ? new Date()
       : undefined
+
+  const existingEnrollments = await db.classEnrollment.findMany({
+    where: { studentId: student.id, status: ClassEnrollmentStatus.ACTIVE },
+    select: { classId: true },
+  })
+  const existingIds = new Set(existingEnrollments.map((entry) => entry.classId))
+  const desiredIds = new Set(data.scheduleIds)
+  const toAdd = [...desiredIds].filter((classId) => !existingIds.has(classId))
+  const toRemove = [...existingIds].filter((classId) => !desiredIds.has(classId))
+
+  const affectedClasses = await db.class.findMany({
+    where: { id: { in: [...toAdd, ...toRemove] } },
+    select: { id: true, name: true },
+  })
+  const classNameById = new Map(affectedClasses.map((entry) => [entry.id, entry.name]))
 
   await db.$transaction(async (transaction) => {
     await transaction.student.update({
@@ -96,16 +123,7 @@ export async function PUT(request: Request, { params }: PlacementRouteContext) {
       },
     })
 
-    const existing = await transaction.classEnrollment.findMany({
-      where: { studentId: student.id, status: ClassEnrollmentStatus.ACTIVE },
-      select: { classId: true },
-    })
-    const existingIds = new Set(existing.map((entry) => entry.classId))
-    const desiredIds = new Set(data.scheduleIds)
     const now = new Date()
-
-    const toAdd = [...desiredIds].filter((classId) => !existingIds.has(classId))
-    const toRemove = [...existingIds].filter((classId) => !desiredIds.has(classId))
 
     if (toAdd.length > 0) {
       await transaction.classEnrollment.createMany({
@@ -121,6 +139,42 @@ export async function PUT(request: Request, { params }: PlacementRouteContext) {
       })
     }
   })
+
+  if (planChanged && data.planId) {
+    await notifyAssignment({
+      type: 'PLAN_ASSIGNED',
+      studentId: student.id,
+      data: { planName: planName ?? 'nuevo plan' },
+    })
+  }
+
+  if (scholarshipChanged && data.scholarshipType !== 'NONE') {
+    await notifyAssignment({
+      type: 'SCHOLARSHIP_ASSIGNED',
+      studentId: student.id,
+      data: { scholarshipName: SCHOLARSHIP_LABELS[data.scholarshipType] },
+    })
+  }
+
+  await Promise.all(
+    toAdd.map((classId) =>
+      notifyAssignment({
+        type: 'CLASS_ENROLLED',
+        studentId: student.id,
+        data: { className: classNameById.get(classId) ?? 'un nuevo horario' },
+      }),
+    ),
+  )
+
+  await Promise.all(
+    toRemove.map((classId) =>
+      notifyAssignment({
+        type: 'CLASS_REMOVED',
+        studentId: student.id,
+        data: { className: classNameById.get(classId) ?? 'un horario' },
+      }),
+    ),
+  )
 
   return NextResponse.json({ ok: true, studentId: student.id })
 }

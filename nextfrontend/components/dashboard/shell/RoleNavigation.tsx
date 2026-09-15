@@ -1,6 +1,7 @@
 'use client'
 
 import {
+    Bell,
     BookOpenCheck,
     CalendarDays,
     ClipboardCheck,
@@ -28,6 +29,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/estudiante/progreso', label: 'Mi progreso', icon: GraduationCap },
         { href: '/dashboard/estudiante/horario', label: 'Horario', icon: CalendarDays },
         { href: '/dashboard/estudiante/asistencia', label: 'Asistencia', icon: ClipboardCheck },
+        { href: '/dashboard/notificaciones', label: 'Notificaciones', icon: Bell },
     ],
     INSTRUCTOR: [
         { href: '/dashboard/instructor', label: 'Resumen', icon: LayoutDashboard },
@@ -36,6 +38,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/instructor/asistencia', label: 'Asistencia', icon: ClipboardCheck },
         { href: '/dashboard/instructor/evaluaciones', label: 'Evaluaciones', icon: BookOpenCheck },
         { href: '/dashboard/instructor/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
+        { href: '/dashboard/notificaciones', label: 'Notificaciones', icon: Bell },
     ],
     SCHOOL_ADMIN: [
         { href: '/dashboard/admin', label: 'Resumen', icon: LayoutDashboard },
@@ -47,6 +50,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/admin/balance', label: 'Balance de horas', icon: Clock3 },
         { href: '/dashboard/admin/asistencia', label: 'Asistencia', icon: CalendarDays },
         { href: '/dashboard/admin/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
+        { href: '/dashboard/notificaciones', label: 'Notificaciones', icon: Bell },
     ],
     SUPERADMIN: [
         { href: '/dashboard/admin', label: 'Resumen', icon: LayoutDashboard },
@@ -58,6 +62,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/admin/balance', label: 'Balance de horas', icon: Clock3 },
         { href: '/dashboard/admin/asistencia', label: 'Asistencia', icon: CalendarDays },
         { href: '/dashboard/admin/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
+        { href: '/dashboard/notificaciones', label: 'Notificaciones', icon: Bell },
     ],
 }
 

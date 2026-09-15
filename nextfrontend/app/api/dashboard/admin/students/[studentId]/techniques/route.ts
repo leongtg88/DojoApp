@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
+import { notifyAssignment } from '@/lib/notifications/create'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -86,6 +87,14 @@ export async function PUT(request: Request, { params }: UpdateStudentTechniquesR
 
     return { added: addedCount, removed: toRemove.length, skipped }
   })
+
+  if (added > 0) {
+    await notifyAssignment({ type: 'TECHNIQUES_ASSIGNED', studentId: student.id, count: added })
+  }
+
+  if (removed > 0) {
+    await notifyAssignment({ type: 'TECHNIQUES_REMOVED', studentId: student.id, count: removed })
+  }
 
   return NextResponse.json({ ok: true, added, removed, skipped })
 }

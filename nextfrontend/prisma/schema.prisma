@@ -104,6 +104,7 @@ model User {
   emailVerificationTokens EmailVerificationToken[]
   passwordResetTokens     PasswordResetToken[]
   acceptedInvitations     StudentInvitationToken[]
+  notifications           Notification[]
   classes                 Class[]                  @relation("instructor")
   createdAt               DateTime                 @default(now())
   updatedAt               DateTime                 @updatedAt
@@ -205,6 +206,7 @@ model Student {
   enrollmentApplicant EnrollmentApplicant?
   invitationTokens    StudentInvitationToken[]
   documents           StudentDocument[]
+  notifications       Notification[]
   createdAt           DateTime                 @default(now())
   updatedAt           DateTime                 @updatedAt
 
@@ -622,4 +624,47 @@ model FitnessReport {
   createdAt      DateTime       @default(now())
 
   @@index([approvedBy])
+}
+
+// ==================== Notificaciones ====================
+enum NotificationType {
+  TECHNIQUES_ASSIGNED
+  TECHNIQUES_REMOVED
+  RANK_PROMOTED
+  KATAS_UNLOCKED
+  CLASS_ENROLLED
+  CLASS_REMOVED
+  PLAN_ASSIGNED
+  SCHOLARSHIP_ASSIGNED
+  DOCUMENT_APPROVED
+  DOCUMENT_REJECTED
+  ATTENDANCE_CONFIRMED
+  TECHNIQUE_APPROVED
+  TECHNIQUE_EVALUATED
+}
+
+enum NotificationPriority {
+  INFO
+  ACTION
+  URGENT
+}
+
+model Notification {
+  id        String               @id @default(cuid())
+  userId    String // destinatario (alumno o tutor)
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studentId String? // alumno referido por la notificación
+  student   Student?             @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  type      NotificationType
+  title     String
+  body      String
+  link      String? // ruta interna del portal
+  data      Json? // metadatos (techniqueIds, beltRankId, classId...)
+  priority  NotificationPriority @default(INFO)
+  readAt    DateTime?
+  createdAt DateTime             @default(now())
+
+  @@index([userId, readAt])
+  @@index([userId, createdAt])
+  @@index([studentId])
 }

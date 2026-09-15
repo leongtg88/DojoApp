@@ -15,9 +15,15 @@ interface CurriculumApplicationSummary {
   missingKatas: string[]
 }
 
+interface StudentKataAssignment {
+  studentId: string
+  added: number
+}
+
 interface StudentKataSummary {
   studentsProcessed: number
   linksAdded: number
+  assignments: StudentKataAssignment[]
 }
 
 async function loadTechniqueLookup(scope: AdminScope): Promise<TechniqueLookup> {
@@ -185,6 +191,7 @@ export async function assignCurriculumKatasToStudents(scope: AdminScope): Promis
 
   let studentsProcessed = 0
   let linksAdded = 0
+  const assignments: StudentKataAssignment[] = []
 
   for (const student of students) {
     let program: Program
@@ -235,7 +242,11 @@ export async function assignCurriculumKatasToStudents(scope: AdminScope): Promis
 
     studentsProcessed += 1
     linksAdded += result.count
+
+    if (result.count > 0) {
+      assignments.push({ studentId: student.id, added: result.count })
+    }
   }
 
-  return { studentsProcessed, linksAdded }
+  return { studentsProcessed, linksAdded, assignments }
 }

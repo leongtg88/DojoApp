@@ -2,6 +2,7 @@ import { Prisma, ClassEnrollmentStatus } from '@/lib/generated/prisma'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
+import { notifyAssignment } from '@/lib/notifications/create'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -39,7 +40,7 @@ export async function POST(request: Request, { params }: EnrollRouteContext) {
   const { classId } = await params
   const existing = await db.class.findFirst({
     where: { id: classId, ...classScopeFilter(scope) },
-    select: { id: true },
+    select: { id: true, name: true },
   })
 
   if (!existing) {
@@ -69,6 +70,12 @@ export async function POST(request: Request, { params }: EnrollRouteContext) {
     ),
   )
 
+  await Promise.all(
+    studentIds.map((studentId) =>
+      notifyAssignment({ type: 'CLASS_ENROLLED', studentId, data: { className: existing.name } }),
+    ),
+  )
+
   return NextResponse.json({ ok: true, enrolled: studentIds.length }, { status: 201 })
 }
 
@@ -94,7 +101,7 @@ export async function DELETE(request: Request, { params }: EnrollRouteContext) {
   const { classId } = await params
   const existing = await db.class.findFirst({
     where: { id: classId, ...classScopeFilter(scope) },
-    select: { id: true },
+    select: { id: true, name: true },
   })
 
   if (!existing) {
@@ -108,6 +115,12 @@ export async function DELETE(request: Request, { params }: EnrollRouteContext) {
     where: { classId, studentId: { in: studentIds }, status: ClassEnrollmentStatus.ACTIVE },
     data: { status: ClassEnrollmentStatus.ENDED, endedAt: now },
   })
+
+  await Promise.all(
+    studentIds.map((studentId) =>
+      notifyAssignment({ type: 'CLASS_REMOVED', studentId, data: { className: existing.name } }),
+    ),
+  )
 
   return NextResponse.json({ ok: true })
 }

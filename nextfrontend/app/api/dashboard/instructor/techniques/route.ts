@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
 import { getInstructorSchoolId } from '@/lib/dashboard/instructor-queries'
+import { notifyAssignment } from '@/lib/notifications/create'
 import { NextResponse } from 'next/server'
 import { Prisma } from '@/lib/generated/prisma'
 import { z } from 'zod'
@@ -152,6 +153,26 @@ export async function PATCH(request: Request) {
       })
     }
   })
+
+  const technique = await db.technique.findUnique({
+    where: { id: result.data.techniqueId },
+    select: { name: true },
+  })
+  const techniqueName = technique?.name ?? 'la técnica'
+
+  if (result.data.approved === true) {
+    await notifyAssignment({
+      type: 'TECHNIQUE_APPROVED',
+      studentId: student.id,
+      data: { techniqueName },
+    })
+  } else if (result.data.score !== undefined && result.data.score !== null) {
+    await notifyAssignment({
+      type: 'TECHNIQUE_EVALUATED',
+      studentId: student.id,
+      data: { techniqueName, score: result.data.score },
+    })
+  }
 
   return NextResponse.json({ ok: true })
 }

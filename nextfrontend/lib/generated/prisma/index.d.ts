@@ -143,6 +143,11 @@ export type StudentAchievement = $Result.DefaultSelection<Prisma.$StudentAchieve
  * 
  */
 export type FitnessReport = $Result.DefaultSelection<Prisma.$FitnessReportPayload>
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
 
 /**
  * Enums
@@ -283,6 +288,34 @@ export const ScholarshipType: {
 
 export type ScholarshipType = (typeof ScholarshipType)[keyof typeof ScholarshipType]
 
+
+export const NotificationType: {
+  TECHNIQUES_ASSIGNED: 'TECHNIQUES_ASSIGNED',
+  TECHNIQUES_REMOVED: 'TECHNIQUES_REMOVED',
+  RANK_PROMOTED: 'RANK_PROMOTED',
+  KATAS_UNLOCKED: 'KATAS_UNLOCKED',
+  CLASS_ENROLLED: 'CLASS_ENROLLED',
+  CLASS_REMOVED: 'CLASS_REMOVED',
+  PLAN_ASSIGNED: 'PLAN_ASSIGNED',
+  SCHOLARSHIP_ASSIGNED: 'SCHOLARSHIP_ASSIGNED',
+  DOCUMENT_APPROVED: 'DOCUMENT_APPROVED',
+  DOCUMENT_REJECTED: 'DOCUMENT_REJECTED',
+  ATTENDANCE_CONFIRMED: 'ATTENDANCE_CONFIRMED',
+  TECHNIQUE_APPROVED: 'TECHNIQUE_APPROVED',
+  TECHNIQUE_EVALUATED: 'TECHNIQUE_EVALUATED'
+};
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const NotificationPriority: {
+  INFO: 'INFO',
+  ACTION: 'ACTION',
+  URGENT: 'URGENT'
+};
+
+export type NotificationPriority = (typeof NotificationPriority)[keyof typeof NotificationPriority]
+
 }
 
 export type Role = $Enums.Role
@@ -340,6 +373,14 @@ export const AttendanceStatus: typeof $Enums.AttendanceStatus
 export type ScholarshipType = $Enums.ScholarshipType
 
 export const ScholarshipType: typeof $Enums.ScholarshipType
+
+export type NotificationType = $Enums.NotificationType
+
+export const NotificationType: typeof $Enums.NotificationType
+
+export type NotificationPriority = $Enums.NotificationPriority
+
+export const NotificationPriority: typeof $Enums.NotificationPriority
 
 /**
  * ##  Prisma Client ʲˢ
@@ -721,6 +762,16 @@ export class PrismaClient<
     * ```
     */
   get fitnessReport(): Prisma.FitnessReportDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Notifications
+    * const notifications = await prisma.notification.findMany()
+    * ```
+    */
+  get notification(): Prisma.NotificationDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1193,7 +1244,8 @@ export namespace Prisma {
     Attendance: 'Attendance',
     AchievementType: 'AchievementType',
     StudentAchievement: 'StudentAchievement',
-    FitnessReport: 'FitnessReport'
+    FitnessReport: 'FitnessReport',
+    Notification: 'Notification'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1209,7 +1261,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport"
+      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3137,6 +3189,80 @@ export namespace Prisma {
           }
         }
       }
+      Notification: {
+        payload: Prisma.$NotificationPayload<ExtArgs>
+        fields: Prisma.NotificationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.NotificationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NotificationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          findFirst: {
+            args: Prisma.NotificationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NotificationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          findMany: {
+            args: Prisma.NotificationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+          }
+          create: {
+            args: Prisma.NotificationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          createMany: {
+            args: Prisma.NotificationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.NotificationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+          }
+          delete: {
+            args: Prisma.NotificationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          update: {
+            args: Prisma.NotificationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          deleteMany: {
+            args: Prisma.NotificationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NotificationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.NotificationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+          }
+          upsert: {
+            args: Prisma.NotificationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          aggregate: {
+            args: Prisma.NotificationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNotification>
+          }
+          groupBy: {
+            args: Prisma.NotificationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NotificationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NotificationCountArgs<ExtArgs>
+            result: $Utils.Optional<NotificationCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3286,6 +3412,7 @@ export namespace Prisma {
     achievementType?: AchievementTypeOmit
     studentAchievement?: StudentAchievementOmit
     fitnessReport?: FitnessReportOmit
+    notification?: NotificationOmit
   }
 
   /* Types for Logging */
@@ -3529,6 +3656,7 @@ export namespace Prisma {
     emailVerificationTokens: number
     passwordResetTokens: number
     acceptedInvitations: number
+    notifications: number
     classes: number
   }
 
@@ -3544,6 +3672,7 @@ export namespace Prisma {
     emailVerificationTokens?: boolean | UserCountOutputTypeCountEmailVerificationTokensArgs
     passwordResetTokens?: boolean | UserCountOutputTypeCountPasswordResetTokensArgs
     acceptedInvitations?: boolean | UserCountOutputTypeCountAcceptedInvitationsArgs
+    notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
     classes?: boolean | UserCountOutputTypeCountClassesArgs
   }
 
@@ -3638,6 +3767,13 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountClassesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ClassWhereInput
   }
@@ -3658,6 +3794,7 @@ export namespace Prisma {
     rankHistory: number
     invitationTokens: number
     documents: number
+    notifications: number
   }
 
   export type StudentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3671,6 +3808,7 @@ export namespace Prisma {
     rankHistory?: boolean | StudentCountOutputTypeCountRankHistoryArgs
     invitationTokens?: boolean | StudentCountOutputTypeCountInvitationTokensArgs
     documents?: boolean | StudentCountOutputTypeCountDocumentsArgs
+    notifications?: boolean | StudentCountOutputTypeCountNotificationsArgs
   }
 
   // Custom InputTypes
@@ -3752,6 +3890,13 @@ export namespace Prisma {
    */
   export type StudentCountOutputTypeCountDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StudentDocumentWhereInput
+  }
+
+  /**
+   * StudentCountOutputType without action
+   */
+  export type StudentCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationWhereInput
   }
 
 
@@ -6728,6 +6873,7 @@ export namespace Prisma {
     emailVerificationTokens?: boolean | User$emailVerificationTokensArgs<ExtArgs>
     passwordResetTokens?: boolean | User$passwordResetTokensArgs<ExtArgs>
     acceptedInvitations?: boolean | User$acceptedInvitationsArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
     classes?: boolean | User$classesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -6795,6 +6941,7 @@ export namespace Prisma {
     emailVerificationTokens?: boolean | User$emailVerificationTokensArgs<ExtArgs>
     passwordResetTokens?: boolean | User$passwordResetTokensArgs<ExtArgs>
     acceptedInvitations?: boolean | User$acceptedInvitationsArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
     classes?: boolean | User$classesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -6825,6 +6972,7 @@ export namespace Prisma {
       emailVerificationTokens: Prisma.$EmailVerificationTokenPayload<ExtArgs>[]
       passwordResetTokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
       acceptedInvitations: Prisma.$StudentInvitationTokenPayload<ExtArgs>[]
+      notifications: Prisma.$NotificationPayload<ExtArgs>[]
       classes: Prisma.$ClassPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -7248,6 +7396,7 @@ export namespace Prisma {
     emailVerificationTokens<T extends User$emailVerificationTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$emailVerificationTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     passwordResetTokens<T extends User$passwordResetTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$passwordResetTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     acceptedInvitations<T extends User$acceptedInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$acceptedInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentInvitationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     classes<T extends User$classesArgs<ExtArgs> = {}>(args?: Subset<T, User$classesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClassPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -8027,6 +8176,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StudentInvitationTokenScalarFieldEnum | StudentInvitationTokenScalarFieldEnum[]
+  }
+
+  /**
+   * User.notifications
+   */
+  export type User$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    cursor?: NotificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
   }
 
   /**
@@ -12778,6 +12951,7 @@ export namespace Prisma {
     enrollmentApplicant?: boolean | Student$enrollmentApplicantArgs<ExtArgs>
     invitationTokens?: boolean | Student$invitationTokensArgs<ExtArgs>
     documents?: boolean | Student$documentsArgs<ExtArgs>
+    notifications?: boolean | Student$notificationsArgs<ExtArgs>
     _count?: boolean | StudentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["student"]>
 
@@ -12902,6 +13076,7 @@ export namespace Prisma {
     enrollmentApplicant?: boolean | Student$enrollmentApplicantArgs<ExtArgs>
     invitationTokens?: boolean | Student$invitationTokensArgs<ExtArgs>
     documents?: boolean | Student$documentsArgs<ExtArgs>
+    notifications?: boolean | Student$notificationsArgs<ExtArgs>
     _count?: boolean | StudentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StudentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12941,6 +13116,7 @@ export namespace Prisma {
       enrollmentApplicant: Prisma.$EnrollmentApplicantPayload<ExtArgs> | null
       invitationTokens: Prisma.$StudentInvitationTokenPayload<ExtArgs>[]
       documents: Prisma.$StudentDocumentPayload<ExtArgs>[]
+      notifications: Prisma.$NotificationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -13381,6 +13557,7 @@ export namespace Prisma {
     enrollmentApplicant<T extends Student$enrollmentApplicantArgs<ExtArgs> = {}>(args?: Subset<T, Student$enrollmentApplicantArgs<ExtArgs>>): Prisma__EnrollmentApplicantClient<$Result.GetResult<Prisma.$EnrollmentApplicantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     invitationTokens<T extends Student$invitationTokensArgs<ExtArgs> = {}>(args?: Subset<T, Student$invitationTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentInvitationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     documents<T extends Student$documentsArgs<ExtArgs> = {}>(args?: Subset<T, Student$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    notifications<T extends Student$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Student$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14170,6 +14347,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StudentDocumentScalarFieldEnum | StudentDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * Student.notifications
+   */
+  export type Student$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    cursor?: NotificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
   }
 
   /**
@@ -36013,6 +36214,1170 @@ export namespace Prisma {
 
 
   /**
+   * Model Notification
+   */
+
+  export type AggregateNotification = {
+    _count: NotificationCountAggregateOutputType | null
+    _min: NotificationMinAggregateOutputType | null
+    _max: NotificationMaxAggregateOutputType | null
+  }
+
+  export type NotificationMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    studentId: string | null
+    type: $Enums.NotificationType | null
+    title: string | null
+    body: string | null
+    link: string | null
+    priority: $Enums.NotificationPriority | null
+    readAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type NotificationMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    studentId: string | null
+    type: $Enums.NotificationType | null
+    title: string | null
+    body: string | null
+    link: string | null
+    priority: $Enums.NotificationPriority | null
+    readAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type NotificationCountAggregateOutputType = {
+    id: number
+    userId: number
+    studentId: number
+    type: number
+    title: number
+    body: number
+    link: number
+    data: number
+    priority: number
+    readAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type NotificationMinAggregateInputType = {
+    id?: true
+    userId?: true
+    studentId?: true
+    type?: true
+    title?: true
+    body?: true
+    link?: true
+    priority?: true
+    readAt?: true
+    createdAt?: true
+  }
+
+  export type NotificationMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    studentId?: true
+    type?: true
+    title?: true
+    body?: true
+    link?: true
+    priority?: true
+    readAt?: true
+    createdAt?: true
+  }
+
+  export type NotificationCountAggregateInputType = {
+    id?: true
+    userId?: true
+    studentId?: true
+    type?: true
+    title?: true
+    body?: true
+    link?: true
+    data?: true
+    priority?: true
+    readAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type NotificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Notification to aggregate.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Notifications
+    **/
+    _count?: true | NotificationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NotificationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NotificationMaxAggregateInputType
+  }
+
+  export type GetNotificationAggregateType<T extends NotificationAggregateArgs> = {
+        [P in keyof T & keyof AggregateNotification]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNotification[P]>
+      : GetScalarType<T[P], AggregateNotification[P]>
+  }
+
+
+
+
+  export type NotificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithAggregationInput | NotificationOrderByWithAggregationInput[]
+    by: NotificationScalarFieldEnum[] | NotificationScalarFieldEnum
+    having?: NotificationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NotificationCountAggregateInputType | true
+    _min?: NotificationMinAggregateInputType
+    _max?: NotificationMaxAggregateInputType
+  }
+
+  export type NotificationGroupByOutputType = {
+    id: string
+    userId: string
+    studentId: string | null
+    type: $Enums.NotificationType
+    title: string
+    body: string
+    link: string | null
+    data: JsonValue | null
+    priority: $Enums.NotificationPriority
+    readAt: Date | null
+    createdAt: Date
+    _count: NotificationCountAggregateOutputType | null
+    _min: NotificationMinAggregateOutputType | null
+    _max: NotificationMaxAggregateOutputType | null
+  }
+
+  type GetNotificationGroupByPayload<T extends NotificationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NotificationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NotificationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NotificationGroupByOutputType[P]>
+            : GetScalarType<T[P], NotificationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type NotificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    studentId?: boolean
+    type?: boolean
+    title?: boolean
+    body?: boolean
+    link?: boolean
+    data?: boolean
+    priority?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    student?: boolean | Notification$studentArgs<ExtArgs>
+  }, ExtArgs["result"]["notification"]>
+
+  export type NotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    studentId?: boolean
+    type?: boolean
+    title?: boolean
+    body?: boolean
+    link?: boolean
+    data?: boolean
+    priority?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    student?: boolean | Notification$studentArgs<ExtArgs>
+  }, ExtArgs["result"]["notification"]>
+
+  export type NotificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    studentId?: boolean
+    type?: boolean
+    title?: boolean
+    body?: boolean
+    link?: boolean
+    data?: boolean
+    priority?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    student?: boolean | Notification$studentArgs<ExtArgs>
+  }, ExtArgs["result"]["notification"]>
+
+  export type NotificationSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    studentId?: boolean
+    type?: boolean
+    title?: boolean
+    body?: boolean
+    link?: boolean
+    data?: boolean
+    priority?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "studentId" | "type" | "title" | "body" | "link" | "data" | "priority" | "readAt" | "createdAt", ExtArgs["result"]["notification"]>
+  export type NotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    student?: boolean | Notification$studentArgs<ExtArgs>
+  }
+  export type NotificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    student?: boolean | Notification$studentArgs<ExtArgs>
+  }
+  export type NotificationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    student?: boolean | Notification$studentArgs<ExtArgs>
+  }
+
+  export type $NotificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Notification"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      student: Prisma.$StudentPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      studentId: string | null
+      type: $Enums.NotificationType
+      title: string
+      body: string
+      link: string | null
+      data: Prisma.JsonValue | null
+      priority: $Enums.NotificationPriority
+      readAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["notification"]>
+    composites: {}
+  }
+
+  type NotificationGetPayload<S extends boolean | null | undefined | NotificationDefaultArgs> = $Result.GetResult<Prisma.$NotificationPayload, S>
+
+  type NotificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<NotificationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: NotificationCountAggregateInputType | true
+    }
+
+  export interface NotificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Notification'], meta: { name: 'Notification' } }
+    /**
+     * Find zero or one Notification that matches the filter.
+     * @param {NotificationFindUniqueArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends NotificationFindUniqueArgs>(args: SelectSubset<T, NotificationFindUniqueArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Notification that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {NotificationFindUniqueOrThrowArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends NotificationFindUniqueOrThrowArgs>(args: SelectSubset<T, NotificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Notification that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindFirstArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends NotificationFindFirstArgs>(args?: SelectSubset<T, NotificationFindFirstArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Notification that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindFirstOrThrowArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends NotificationFindFirstOrThrowArgs>(args?: SelectSubset<T, NotificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Notifications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Notifications
+     * const notifications = await prisma.notification.findMany()
+     * 
+     * // Get first 10 Notifications
+     * const notifications = await prisma.notification.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const notificationWithIdOnly = await prisma.notification.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends NotificationFindManyArgs>(args?: SelectSubset<T, NotificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Notification.
+     * @param {NotificationCreateArgs} args - Arguments to create a Notification.
+     * @example
+     * // Create one Notification
+     * const Notification = await prisma.notification.create({
+     *   data: {
+     *     // ... data to create a Notification
+     *   }
+     * })
+     * 
+     */
+    create<T extends NotificationCreateArgs>(args: SelectSubset<T, NotificationCreateArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Notifications.
+     * @param {NotificationCreateManyArgs} args - Arguments to create many Notifications.
+     * @example
+     * // Create many Notifications
+     * const notification = await prisma.notification.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends NotificationCreateManyArgs>(args?: SelectSubset<T, NotificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Notifications and returns the data saved in the database.
+     * @param {NotificationCreateManyAndReturnArgs} args - Arguments to create many Notifications.
+     * @example
+     * // Create many Notifications
+     * const notification = await prisma.notification.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Notifications and only return the `id`
+     * const notificationWithIdOnly = await prisma.notification.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends NotificationCreateManyAndReturnArgs>(args?: SelectSubset<T, NotificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Notification.
+     * @param {NotificationDeleteArgs} args - Arguments to delete one Notification.
+     * @example
+     * // Delete one Notification
+     * const Notification = await prisma.notification.delete({
+     *   where: {
+     *     // ... filter to delete one Notification
+     *   }
+     * })
+     * 
+     */
+    delete<T extends NotificationDeleteArgs>(args: SelectSubset<T, NotificationDeleteArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Notification.
+     * @param {NotificationUpdateArgs} args - Arguments to update one Notification.
+     * @example
+     * // Update one Notification
+     * const notification = await prisma.notification.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends NotificationUpdateArgs>(args: SelectSubset<T, NotificationUpdateArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Notifications.
+     * @param {NotificationDeleteManyArgs} args - Arguments to filter Notifications to delete.
+     * @example
+     * // Delete a few Notifications
+     * const { count } = await prisma.notification.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends NotificationDeleteManyArgs>(args?: SelectSubset<T, NotificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Notifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Notifications
+     * const notification = await prisma.notification.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends NotificationUpdateManyArgs>(args: SelectSubset<T, NotificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Notifications and returns the data updated in the database.
+     * @param {NotificationUpdateManyAndReturnArgs} args - Arguments to update many Notifications.
+     * @example
+     * // Update many Notifications
+     * const notification = await prisma.notification.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Notifications and only return the `id`
+     * const notificationWithIdOnly = await prisma.notification.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends NotificationUpdateManyAndReturnArgs>(args: SelectSubset<T, NotificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Notification.
+     * @param {NotificationUpsertArgs} args - Arguments to update or create a Notification.
+     * @example
+     * // Update or create a Notification
+     * const notification = await prisma.notification.upsert({
+     *   create: {
+     *     // ... data to create a Notification
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Notification we want to update
+     *   }
+     * })
+     */
+    upsert<T extends NotificationUpsertArgs>(args: SelectSubset<T, NotificationUpsertArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Notifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationCountArgs} args - Arguments to filter Notifications to count.
+     * @example
+     * // Count the number of Notifications
+     * const count = await prisma.notification.count({
+     *   where: {
+     *     // ... the filter for the Notifications we want to count
+     *   }
+     * })
+    **/
+    count<T extends NotificationCountArgs>(
+      args?: Subset<T, NotificationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NotificationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Notification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NotificationAggregateArgs>(args: Subset<T, NotificationAggregateArgs>): Prisma.PrismaPromise<GetNotificationAggregateType<T>>
+
+    /**
+     * Group by Notification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends NotificationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: NotificationGroupByArgs['orderBy'] }
+        : { orderBy?: NotificationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, NotificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNotificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Notification model
+   */
+  readonly fields: NotificationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Notification.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__NotificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    student<T extends Notification$studentArgs<ExtArgs> = {}>(args?: Subset<T, Notification$studentArgs<ExtArgs>>): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Notification model
+   */
+  interface NotificationFieldRefs {
+    readonly id: FieldRef<"Notification", 'String'>
+    readonly userId: FieldRef<"Notification", 'String'>
+    readonly studentId: FieldRef<"Notification", 'String'>
+    readonly type: FieldRef<"Notification", 'NotificationType'>
+    readonly title: FieldRef<"Notification", 'String'>
+    readonly body: FieldRef<"Notification", 'String'>
+    readonly link: FieldRef<"Notification", 'String'>
+    readonly data: FieldRef<"Notification", 'Json'>
+    readonly priority: FieldRef<"Notification", 'NotificationPriority'>
+    readonly readAt: FieldRef<"Notification", 'DateTime'>
+    readonly createdAt: FieldRef<"Notification", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Notification findUnique
+   */
+  export type NotificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification findUniqueOrThrow
+   */
+  export type NotificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification findFirst
+   */
+  export type NotificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Notifications.
+     */
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification findFirstOrThrow
+   */
+  export type NotificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Notifications.
+     */
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification findMany
+   */
+  export type NotificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notifications to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Notifications.
+     */
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification create
+   */
+  export type NotificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Notification.
+     */
+    data: XOR<NotificationCreateInput, NotificationUncheckedCreateInput>
+  }
+
+  /**
+   * Notification createMany
+   */
+  export type NotificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Notifications.
+     */
+    data: NotificationCreateManyInput | NotificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Notification createManyAndReturn
+   */
+  export type NotificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * The data used to create many Notifications.
+     */
+    data: NotificationCreateManyInput | NotificationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Notification update
+   */
+  export type NotificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Notification.
+     */
+    data: XOR<NotificationUpdateInput, NotificationUncheckedUpdateInput>
+    /**
+     * Choose, which Notification to update.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification updateMany
+   */
+  export type NotificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Notifications.
+     */
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which Notifications to update
+     */
+    where?: NotificationWhereInput
+    /**
+     * Limit how many Notifications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Notification updateManyAndReturn
+   */
+  export type NotificationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * The data used to update Notifications.
+     */
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which Notifications to update
+     */
+    where?: NotificationWhereInput
+    /**
+     * Limit how many Notifications to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Notification upsert
+   */
+  export type NotificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Notification to update in case it exists.
+     */
+    where: NotificationWhereUniqueInput
+    /**
+     * In case the Notification found by the `where` argument doesn't exist, create a new Notification with this data.
+     */
+    create: XOR<NotificationCreateInput, NotificationUncheckedCreateInput>
+    /**
+     * In case the Notification was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<NotificationUpdateInput, NotificationUncheckedUpdateInput>
+  }
+
+  /**
+   * Notification delete
+   */
+  export type NotificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter which Notification to delete.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification deleteMany
+   */
+  export type NotificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Notifications to delete
+     */
+    where?: NotificationWhereInput
+    /**
+     * Limit how many Notifications to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Notification.student
+   */
+  export type Notification$studentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Student
+     */
+    select?: StudentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Student
+     */
+    omit?: StudentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
+    where?: StudentWhereInput
+  }
+
+  /**
+   * Notification without action
+   */
+  export type NotificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -36445,6 +37810,23 @@ export namespace Prisma {
   export type FitnessReportScalarFieldEnum = (typeof FitnessReportScalarFieldEnum)[keyof typeof FitnessReportScalarFieldEnum]
 
 
+  export const NotificationScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    studentId: 'studentId',
+    type: 'type',
+    title: 'title',
+    body: 'body',
+    link: 'link',
+    data: 'data',
+    priority: 'priority',
+    readAt: 'readAt',
+    createdAt: 'createdAt'
+  };
+
+  export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -36783,6 +38165,34 @@ export namespace Prisma {
    */
   export type ListEnumApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalStatus[]'>
     
+
+
+  /**
+   * Reference to a field of type 'NotificationType'
+   */
+  export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType'>
+    
+
+
+  /**
+   * Reference to a field of type 'NotificationType[]'
+   */
+  export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'NotificationPriority'
+   */
+  export type EnumNotificationPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationPriority'>
+    
+
+
+  /**
+   * Reference to a field of type 'NotificationPriority[]'
+   */
+  export type ListEnumNotificationPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationPriority[]'>
+    
   /**
    * Deep Input Types
    */
@@ -36956,6 +38366,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenListRelationFilter
     passwordResetTokens?: PasswordResetTokenListRelationFilter
     acceptedInvitations?: StudentInvitationTokenListRelationFilter
+    notifications?: NotificationListRelationFilter
     classes?: ClassListRelationFilter
   }
 
@@ -36986,6 +38397,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenOrderByRelationAggregateInput
     passwordResetTokens?: PasswordResetTokenOrderByRelationAggregateInput
     acceptedInvitations?: StudentInvitationTokenOrderByRelationAggregateInput
+    notifications?: NotificationOrderByRelationAggregateInput
     classes?: ClassOrderByRelationAggregateInput
   }
 
@@ -37019,6 +38431,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenListRelationFilter
     passwordResetTokens?: PasswordResetTokenListRelationFilter
     acceptedInvitations?: StudentInvitationTokenListRelationFilter
+    notifications?: NotificationListRelationFilter
     classes?: ClassListRelationFilter
   }, "id" | "email">
 
@@ -37357,6 +38770,7 @@ export namespace Prisma {
     enrollmentApplicant?: XOR<EnrollmentApplicantNullableScalarRelationFilter, EnrollmentApplicantWhereInput> | null
     invitationTokens?: StudentInvitationTokenListRelationFilter
     documents?: StudentDocumentListRelationFilter
+    notifications?: NotificationListRelationFilter
   }
 
   export type StudentOrderByWithRelationInput = {
@@ -37404,6 +38818,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantOrderByWithRelationInput
     invitationTokens?: StudentInvitationTokenOrderByRelationAggregateInput
     documents?: StudentDocumentOrderByRelationAggregateInput
+    notifications?: NotificationOrderByRelationAggregateInput
   }
 
   export type StudentWhereUniqueInput = Prisma.AtLeast<{
@@ -37454,6 +38869,7 @@ export namespace Prisma {
     enrollmentApplicant?: XOR<EnrollmentApplicantNullableScalarRelationFilter, EnrollmentApplicantWhereInput> | null
     invitationTokens?: StudentInvitationTokenListRelationFilter
     documents?: StudentDocumentListRelationFilter
+    notifications?: NotificationListRelationFilter
   }, "id" | "userId" | "memberNumber">
 
   export type StudentOrderByWithAggregationInput = {
@@ -39154,6 +40570,94 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"FitnessReport"> | Date | string
   }
 
+  export type NotificationWhereInput = {
+    AND?: NotificationWhereInput | NotificationWhereInput[]
+    OR?: NotificationWhereInput[]
+    NOT?: NotificationWhereInput | NotificationWhereInput[]
+    id?: StringFilter<"Notification"> | string
+    userId?: StringFilter<"Notification"> | string
+    studentId?: StringNullableFilter<"Notification"> | string | null
+    type?: EnumNotificationTypeFilter<"Notification"> | $Enums.NotificationType
+    title?: StringFilter<"Notification"> | string
+    body?: StringFilter<"Notification"> | string
+    link?: StringNullableFilter<"Notification"> | string | null
+    data?: JsonNullableFilter<"Notification">
+    priority?: EnumNotificationPriorityFilter<"Notification"> | $Enums.NotificationPriority
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    createdAt?: DateTimeFilter<"Notification"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    student?: XOR<StudentNullableScalarRelationFilter, StudentWhereInput> | null
+  }
+
+  export type NotificationOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    studentId?: SortOrderInput | SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    link?: SortOrderInput | SortOrder
+    data?: SortOrderInput | SortOrder
+    priority?: SortOrder
+    readAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    student?: StudentOrderByWithRelationInput
+  }
+
+  export type NotificationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: NotificationWhereInput | NotificationWhereInput[]
+    OR?: NotificationWhereInput[]
+    NOT?: NotificationWhereInput | NotificationWhereInput[]
+    userId?: StringFilter<"Notification"> | string
+    studentId?: StringNullableFilter<"Notification"> | string | null
+    type?: EnumNotificationTypeFilter<"Notification"> | $Enums.NotificationType
+    title?: StringFilter<"Notification"> | string
+    body?: StringFilter<"Notification"> | string
+    link?: StringNullableFilter<"Notification"> | string | null
+    data?: JsonNullableFilter<"Notification">
+    priority?: EnumNotificationPriorityFilter<"Notification"> | $Enums.NotificationPriority
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    createdAt?: DateTimeFilter<"Notification"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    student?: XOR<StudentNullableScalarRelationFilter, StudentWhereInput> | null
+  }, "id">
+
+  export type NotificationOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    studentId?: SortOrderInput | SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    link?: SortOrderInput | SortOrder
+    data?: SortOrderInput | SortOrder
+    priority?: SortOrder
+    readAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: NotificationCountOrderByAggregateInput
+    _max?: NotificationMaxOrderByAggregateInput
+    _min?: NotificationMinOrderByAggregateInput
+  }
+
+  export type NotificationScalarWhereWithAggregatesInput = {
+    AND?: NotificationScalarWhereWithAggregatesInput | NotificationScalarWhereWithAggregatesInput[]
+    OR?: NotificationScalarWhereWithAggregatesInput[]
+    NOT?: NotificationScalarWhereWithAggregatesInput | NotificationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Notification"> | string
+    userId?: StringWithAggregatesFilter<"Notification"> | string
+    studentId?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    type?: EnumNotificationTypeWithAggregatesFilter<"Notification"> | $Enums.NotificationType
+    title?: StringWithAggregatesFilter<"Notification"> | string
+    body?: StringWithAggregatesFilter<"Notification"> | string
+    link?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    data?: JsonNullableWithAggregatesFilter<"Notification">
+    priority?: EnumNotificationPriorityWithAggregatesFilter<"Notification"> | $Enums.NotificationPriority
+    readAt?: DateTimeNullableWithAggregatesFilter<"Notification"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
+  }
+
   export type SchoolCreateInput = {
     id?: string
     name: string
@@ -39331,6 +40835,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -39359,6 +40864,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -39387,6 +40893,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -39415,6 +40922,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -39758,6 +41266,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateInput = {
@@ -39799,6 +41308,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUpdateInput = {
@@ -39840,6 +41350,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateInput = {
@@ -39881,6 +41392,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentCreateManyInput = {
@@ -41703,6 +43215,102 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type NotificationCreateInput = {
+    id?: string
+    type: $Enums.NotificationType
+    title: string
+    body: string
+    link?: string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: $Enums.NotificationPriority
+    readAt?: Date | string | null
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutNotificationsInput
+    student?: StudentCreateNestedOneWithoutNotificationsInput
+  }
+
+  export type NotificationUncheckedCreateInput = {
+    id?: string
+    userId: string
+    studentId?: string | null
+    type: $Enums.NotificationType
+    title: string
+    body: string
+    link?: string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: $Enums.NotificationPriority
+    readAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type NotificationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: EnumNotificationPriorityFieldUpdateOperationsInput | $Enums.NotificationPriority
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutNotificationsNestedInput
+    student?: StudentUpdateOneWithoutNotificationsNestedInput
+  }
+
+  export type NotificationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    studentId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: EnumNotificationPriorityFieldUpdateOperationsInput | $Enums.NotificationPriority
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationCreateManyInput = {
+    id?: string
+    userId: string
+    studentId?: string | null
+    type: $Enums.NotificationType
+    title: string
+    body: string
+    link?: string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: $Enums.NotificationPriority
+    readAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type NotificationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: EnumNotificationPriorityFieldUpdateOperationsInput | $Enums.NotificationPriority
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    studentId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: EnumNotificationPriorityFieldUpdateOperationsInput | $Enums.NotificationPriority
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -42015,6 +43623,12 @@ export namespace Prisma {
     none?: StudentInvitationTokenWhereInput
   }
 
+  export type NotificationListRelationFilter = {
+    every?: NotificationWhereInput
+    some?: NotificationWhereInput
+    none?: NotificationWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -42057,6 +43671,10 @@ export namespace Prisma {
   }
 
   export type StudentInvitationTokenOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type NotificationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -43776,6 +45394,80 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type EnumNotificationTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationTypeFilter<$PrismaModel> | $Enums.NotificationType
+  }
+
+  export type EnumNotificationPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationPriority | EnumNotificationPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationPriority[] | ListEnumNotificationPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationPriority[] | ListEnumNotificationPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationPriorityFilter<$PrismaModel> | $Enums.NotificationPriority
+  }
+
+  export type NotificationCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    studentId?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    link?: SortOrder
+    data?: SortOrder
+    priority?: SortOrder
+    readAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type NotificationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    studentId?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    link?: SortOrder
+    priority?: SortOrder
+    readAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type NotificationMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    studentId?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    link?: SortOrder
+    priority?: SortOrder
+    readAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumNotificationTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationTypeWithAggregatesFilter<$PrismaModel> | $Enums.NotificationType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationTypeFilter<$PrismaModel>
+    _max?: NestedEnumNotificationTypeFilter<$PrismaModel>
+  }
+
+  export type EnumNotificationPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationPriority | EnumNotificationPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationPriority[] | ListEnumNotificationPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationPriority[] | ListEnumNotificationPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationPriorityWithAggregatesFilter<$PrismaModel> | $Enums.NotificationPriority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationPriorityFilter<$PrismaModel>
+    _max?: NestedEnumNotificationPriorityFilter<$PrismaModel>
+  }
+
   export type BranchCreateNestedManyWithoutSchoolInput = {
     create?: XOR<BranchCreateWithoutSchoolInput, BranchUncheckedCreateWithoutSchoolInput> | BranchCreateWithoutSchoolInput[] | BranchUncheckedCreateWithoutSchoolInput[]
     connectOrCreate?: BranchCreateOrConnectWithoutSchoolInput | BranchCreateOrConnectWithoutSchoolInput[]
@@ -44407,6 +46099,13 @@ export namespace Prisma {
     connect?: StudentInvitationTokenWhereUniqueInput | StudentInvitationTokenWhereUniqueInput[]
   }
 
+  export type NotificationCreateNestedManyWithoutUserInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
   export type ClassCreateNestedManyWithoutInstructorInput = {
     create?: XOR<ClassCreateWithoutInstructorInput, ClassUncheckedCreateWithoutInstructorInput> | ClassCreateWithoutInstructorInput[] | ClassUncheckedCreateWithoutInstructorInput[]
     connectOrCreate?: ClassCreateOrConnectWithoutInstructorInput | ClassCreateOrConnectWithoutInstructorInput[]
@@ -44501,6 +46200,13 @@ export namespace Prisma {
     connectOrCreate?: StudentInvitationTokenCreateOrConnectWithoutUsedByInput | StudentInvitationTokenCreateOrConnectWithoutUsedByInput[]
     createMany?: StudentInvitationTokenCreateManyUsedByInputEnvelope
     connect?: StudentInvitationTokenWhereUniqueInput | StudentInvitationTokenWhereUniqueInput[]
+  }
+
+  export type NotificationUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
   export type ClassUncheckedCreateNestedManyWithoutInstructorInput = {
@@ -44717,6 +46423,20 @@ export namespace Prisma {
     deleteMany?: StudentInvitationTokenScalarWhereInput | StudentInvitationTokenScalarWhereInput[]
   }
 
+  export type NotificationUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutUserInput | NotificationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
   export type ClassUpdateManyWithoutInstructorNestedInput = {
     create?: XOR<ClassCreateWithoutInstructorInput, ClassUncheckedCreateWithoutInstructorInput> | ClassCreateWithoutInstructorInput[] | ClassUncheckedCreateWithoutInstructorInput[]
     connectOrCreate?: ClassCreateOrConnectWithoutInstructorInput | ClassCreateOrConnectWithoutInstructorInput[]
@@ -44903,6 +46623,20 @@ export namespace Prisma {
     update?: StudentInvitationTokenUpdateWithWhereUniqueWithoutUsedByInput | StudentInvitationTokenUpdateWithWhereUniqueWithoutUsedByInput[]
     updateMany?: StudentInvitationTokenUpdateManyWithWhereWithoutUsedByInput | StudentInvitationTokenUpdateManyWithWhereWithoutUsedByInput[]
     deleteMany?: StudentInvitationTokenScalarWhereInput | StudentInvitationTokenScalarWhereInput[]
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutUserInput | NotificationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
   export type ClassUncheckedUpdateManyWithoutInstructorNestedInput = {
@@ -45112,6 +46846,13 @@ export namespace Prisma {
     connect?: StudentDocumentWhereUniqueInput | StudentDocumentWhereUniqueInput[]
   }
 
+  export type NotificationCreateNestedManyWithoutStudentInput = {
+    create?: XOR<NotificationCreateWithoutStudentInput, NotificationUncheckedCreateWithoutStudentInput> | NotificationCreateWithoutStudentInput[] | NotificationUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutStudentInput | NotificationCreateOrConnectWithoutStudentInput[]
+    createMany?: NotificationCreateManyStudentInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
   export type GuardianStudentUncheckedCreateNestedManyWithoutStudentInput = {
     create?: XOR<GuardianStudentCreateWithoutStudentInput, GuardianStudentUncheckedCreateWithoutStudentInput> | GuardianStudentCreateWithoutStudentInput[] | GuardianStudentUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: GuardianStudentCreateOrConnectWithoutStudentInput | GuardianStudentCreateOrConnectWithoutStudentInput[]
@@ -45186,6 +46927,13 @@ export namespace Prisma {
     connectOrCreate?: StudentDocumentCreateOrConnectWithoutStudentInput | StudentDocumentCreateOrConnectWithoutStudentInput[]
     createMany?: StudentDocumentCreateManyStudentInputEnvelope
     connect?: StudentDocumentWhereUniqueInput | StudentDocumentWhereUniqueInput[]
+  }
+
+  export type NotificationUncheckedCreateNestedManyWithoutStudentInput = {
+    create?: XOR<NotificationCreateWithoutStudentInput, NotificationUncheckedCreateWithoutStudentInput> | NotificationCreateWithoutStudentInput[] | NotificationUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutStudentInput | NotificationCreateOrConnectWithoutStudentInput[]
+    createMany?: NotificationCreateManyStudentInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
   export type NullableEnumGenderFieldUpdateOperationsInput = {
@@ -45410,6 +47158,20 @@ export namespace Prisma {
     deleteMany?: StudentDocumentScalarWhereInput | StudentDocumentScalarWhereInput[]
   }
 
+  export type NotificationUpdateManyWithoutStudentNestedInput = {
+    create?: XOR<NotificationCreateWithoutStudentInput, NotificationUncheckedCreateWithoutStudentInput> | NotificationCreateWithoutStudentInput[] | NotificationUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutStudentInput | NotificationCreateOrConnectWithoutStudentInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutStudentInput | NotificationUpsertWithWhereUniqueWithoutStudentInput[]
+    createMany?: NotificationCreateManyStudentInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutStudentInput | NotificationUpdateWithWhereUniqueWithoutStudentInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutStudentInput | NotificationUpdateManyWithWhereWithoutStudentInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
   export type GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput = {
     create?: XOR<GuardianStudentCreateWithoutStudentInput, GuardianStudentUncheckedCreateWithoutStudentInput> | GuardianStudentCreateWithoutStudentInput[] | GuardianStudentUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: GuardianStudentCreateOrConnectWithoutStudentInput | GuardianStudentCreateOrConnectWithoutStudentInput[]
@@ -45558,6 +47320,20 @@ export namespace Prisma {
     update?: StudentDocumentUpdateWithWhereUniqueWithoutStudentInput | StudentDocumentUpdateWithWhereUniqueWithoutStudentInput[]
     updateMany?: StudentDocumentUpdateManyWithWhereWithoutStudentInput | StudentDocumentUpdateManyWithWhereWithoutStudentInput[]
     deleteMany?: StudentDocumentScalarWhereInput | StudentDocumentScalarWhereInput[]
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutStudentNestedInput = {
+    create?: XOR<NotificationCreateWithoutStudentInput, NotificationUncheckedCreateWithoutStudentInput> | NotificationCreateWithoutStudentInput[] | NotificationUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutStudentInput | NotificationCreateOrConnectWithoutStudentInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutStudentInput | NotificationUpsertWithWhereUniqueWithoutStudentInput[]
+    createMany?: NotificationCreateManyStudentInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutStudentInput | NotificationUpdateWithWhereUniqueWithoutStudentInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutStudentInput | NotificationUpdateManyWithWhereWithoutStudentInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutGuardiansInput = {
@@ -46928,6 +48704,44 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFitnessReportsApprovedInput, UserUpdateWithoutFitnessReportsApprovedInput>, UserUncheckedUpdateWithoutFitnessReportsApprovedInput>
   }
 
+  export type UserCreateNestedOneWithoutNotificationsInput = {
+    create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type StudentCreateNestedOneWithoutNotificationsInput = {
+    create?: XOR<StudentCreateWithoutNotificationsInput, StudentUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: StudentCreateOrConnectWithoutNotificationsInput
+    connect?: StudentWhereUniqueInput
+  }
+
+  export type EnumNotificationTypeFieldUpdateOperationsInput = {
+    set?: $Enums.NotificationType
+  }
+
+  export type EnumNotificationPriorityFieldUpdateOperationsInput = {
+    set?: $Enums.NotificationPriority
+  }
+
+  export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+    create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
+    upsert?: UserUpsertWithoutNotificationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationsInput, UserUpdateWithoutNotificationsInput>, UserUncheckedUpdateWithoutNotificationsInput>
+  }
+
+  export type StudentUpdateOneWithoutNotificationsNestedInput = {
+    create?: XOR<StudentCreateWithoutNotificationsInput, StudentUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: StudentCreateOrConnectWithoutNotificationsInput
+    upsert?: StudentUpsertWithoutNotificationsInput
+    disconnect?: StudentWhereInput | boolean
+    delete?: StudentWhereInput | boolean
+    connect?: StudentWhereUniqueInput
+    update?: XOR<XOR<StudentUpdateToOneWithWhereWithoutNotificationsInput, StudentUpdateWithoutNotificationsInput>, StudentUncheckedUpdateWithoutNotificationsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -47439,6 +49253,40 @@ export namespace Prisma {
     _max?: NestedEnumApprovalStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumNotificationTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationTypeFilter<$PrismaModel> | $Enums.NotificationType
+  }
+
+  export type NestedEnumNotificationPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationPriority | EnumNotificationPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationPriority[] | ListEnumNotificationPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationPriority[] | ListEnumNotificationPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationPriorityFilter<$PrismaModel> | $Enums.NotificationPriority
+  }
+
+  export type NestedEnumNotificationTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationTypeWithAggregatesFilter<$PrismaModel> | $Enums.NotificationType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationTypeFilter<$PrismaModel>
+    _max?: NestedEnumNotificationTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumNotificationPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationPriority | EnumNotificationPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationPriority[] | ListEnumNotificationPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationPriority[] | ListEnumNotificationPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationPriorityWithAggregatesFilter<$PrismaModel> | $Enums.NotificationPriority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationPriorityFilter<$PrismaModel>
+    _max?: NestedEnumNotificationPriorityFilter<$PrismaModel>
+  }
+
   export type BranchCreateWithoutSchoolInput = {
     id?: string
     name: string
@@ -47495,6 +49343,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -47522,6 +49371,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -47573,6 +49423,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutSchoolInput = {
@@ -47613,6 +49464,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutSchoolInput = {
@@ -48210,6 +50062,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -48237,6 +50090,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -48288,6 +50142,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutBranchInput = {
@@ -48328,6 +50183,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutBranchInput = {
@@ -48674,6 +50530,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutUserInput = {
@@ -48714,6 +50571,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutUserInput = {
@@ -48781,6 +50639,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutGuardianInput = {
@@ -48821,6 +50680,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutGuardianInput = {
@@ -49125,6 +50985,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type NotificationCreateWithoutUserInput = {
+    id?: string
+    type: $Enums.NotificationType
+    title: string
+    body: string
+    link?: string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: $Enums.NotificationPriority
+    readAt?: Date | string | null
+    createdAt?: Date | string
+    student?: StudentCreateNestedOneWithoutNotificationsInput
+  }
+
+  export type NotificationUncheckedCreateWithoutUserInput = {
+    id?: string
+    studentId?: string | null
+    type: $Enums.NotificationType
+    title: string
+    body: string
+    link?: string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: $Enums.NotificationPriority
+    readAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type NotificationCreateOrConnectWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    create: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput>
+  }
+
+  export type NotificationCreateManyUserInputEnvelope = {
+    data: NotificationCreateManyUserInput | NotificationCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ClassCreateWithoutInstructorInput = {
     id?: string
     name: string
@@ -49317,6 +51213,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutUserInput = {
@@ -49357,6 +51254,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type GuardianStudentUpsertWithWhereUniqueWithoutGuardianInput = {
@@ -49680,6 +51578,39 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"StudentInvitationToken"> | Date | string
   }
 
+  export type NotificationUpsertWithWhereUniqueWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    update: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
+    create: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput>
+  }
+
+  export type NotificationUpdateWithWhereUniqueWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    data: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
+  }
+
+  export type NotificationUpdateManyWithWhereWithoutUserInput = {
+    where: NotificationScalarWhereInput
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type NotificationScalarWhereInput = {
+    AND?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+    OR?: NotificationScalarWhereInput[]
+    NOT?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+    id?: StringFilter<"Notification"> | string
+    userId?: StringFilter<"Notification"> | string
+    studentId?: StringNullableFilter<"Notification"> | string | null
+    type?: EnumNotificationTypeFilter<"Notification"> | $Enums.NotificationType
+    title?: StringFilter<"Notification"> | string
+    body?: StringFilter<"Notification"> | string
+    link?: StringNullableFilter<"Notification"> | string | null
+    data?: JsonNullableFilter<"Notification">
+    priority?: EnumNotificationPriorityFilter<"Notification"> | $Enums.NotificationPriority
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    createdAt?: DateTimeFilter<"Notification"> | Date | string
+  }
+
   export type ClassUpsertWithWhereUniqueWithoutInstructorInput = {
     where: ClassWhereUniqueInput
     update: XOR<ClassUpdateWithoutInstructorInput, ClassUncheckedUpdateWithoutInstructorInput>
@@ -49720,6 +51651,7 @@ export namespace Prisma {
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -49747,6 +51679,7 @@ export namespace Prisma {
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -49790,6 +51723,7 @@ export namespace Prisma {
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -49817,6 +51751,7 @@ export namespace Prisma {
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -49844,6 +51779,7 @@ export namespace Prisma {
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -49871,6 +51807,7 @@ export namespace Prisma {
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -49914,6 +51851,7 @@ export namespace Prisma {
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -49941,6 +51879,7 @@ export namespace Prisma {
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -49982,6 +51921,7 @@ export namespace Prisma {
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutInvitationTokensInput = {
@@ -50022,6 +51962,7 @@ export namespace Prisma {
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutInvitationTokensInput = {
@@ -50053,6 +51994,7 @@ export namespace Prisma {
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -50080,6 +52022,7 @@ export namespace Prisma {
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -50137,6 +52080,7 @@ export namespace Prisma {
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutInvitationTokensInput = {
@@ -50177,6 +52121,7 @@ export namespace Prisma {
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type UserUpsertWithoutAcceptedInvitationsInput = {
@@ -50214,6 +52159,7 @@ export namespace Prisma {
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -50241,6 +52187,7 @@ export namespace Prisma {
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -50268,6 +52215,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -50295,6 +52243,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -50338,6 +52287,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -50365,6 +52315,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -50538,6 +52489,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -50565,6 +52517,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -50597,6 +52550,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -50624,6 +52578,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -51015,6 +52970,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type NotificationCreateWithoutStudentInput = {
+    id?: string
+    type: $Enums.NotificationType
+    title: string
+    body: string
+    link?: string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: $Enums.NotificationPriority
+    readAt?: Date | string | null
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutNotificationsInput
+  }
+
+  export type NotificationUncheckedCreateWithoutStudentInput = {
+    id?: string
+    userId: string
+    type: $Enums.NotificationType
+    title: string
+    body: string
+    link?: string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: $Enums.NotificationPriority
+    readAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type NotificationCreateOrConnectWithoutStudentInput = {
+    where: NotificationWhereUniqueInput
+    create: XOR<NotificationCreateWithoutStudentInput, NotificationUncheckedCreateWithoutStudentInput>
+  }
+
+  export type NotificationCreateManyStudentInputEnvelope = {
+    data: NotificationCreateManyStudentInput | NotificationCreateManyStudentInput[]
+    skipDuplicates?: boolean
+  }
+
   export type BeltRankUpsertWithoutCurrentRankStudentsInput = {
     update: XOR<BeltRankUpdateWithoutCurrentRankStudentsInput, BeltRankUncheckedUpdateWithoutCurrentRankStudentsInput>
     create: XOR<BeltRankCreateWithoutCurrentRankStudentsInput, BeltRankUncheckedCreateWithoutCurrentRankStudentsInput>
@@ -51220,6 +53211,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -51247,6 +53239,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -51285,6 +53278,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -51312,6 +53306,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -51543,6 +53538,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"StudentDocument"> | Date | string
   }
 
+  export type NotificationUpsertWithWhereUniqueWithoutStudentInput = {
+    where: NotificationWhereUniqueInput
+    update: XOR<NotificationUpdateWithoutStudentInput, NotificationUncheckedUpdateWithoutStudentInput>
+    create: XOR<NotificationCreateWithoutStudentInput, NotificationUncheckedCreateWithoutStudentInput>
+  }
+
+  export type NotificationUpdateWithWhereUniqueWithoutStudentInput = {
+    where: NotificationWhereUniqueInput
+    data: XOR<NotificationUpdateWithoutStudentInput, NotificationUncheckedUpdateWithoutStudentInput>
+  }
+
+  export type NotificationUpdateManyWithWhereWithoutStudentInput = {
+    where: NotificationScalarWhereInput
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutStudentInput>
+  }
+
   export type UserCreateWithoutGuardiansInput = {
     id?: string
     email: string
@@ -51567,6 +53578,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -51594,6 +53606,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -51640,6 +53653,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutGuardiansInput = {
@@ -51680,6 +53694,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutGuardiansInput = {
@@ -51722,6 +53737,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -51749,6 +53765,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -51801,6 +53818,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutGuardiansInput = {
@@ -51841,6 +53859,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type SchoolCreateWithoutEnrollmentsInput = {
@@ -51941,6 +53960,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutEnrollmentsInput = {
@@ -51981,6 +54001,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutEnrollmentsInput = {
@@ -52183,6 +54204,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutEnrollmentsInput = {
@@ -52223,6 +54245,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type EnrollmentApplicantUpsertWithWhereUniqueWithoutEnrollmentInput = {
@@ -52354,6 +54377,7 @@ export namespace Prisma {
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutEnrollmentApplicantInput = {
@@ -52394,6 +54418,7 @@ export namespace Prisma {
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutEnrollmentApplicantInput = {
@@ -52543,6 +54568,7 @@ export namespace Prisma {
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutEnrollmentApplicantInput = {
@@ -52583,6 +54609,7 @@ export namespace Prisma {
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentDocumentUpsertWithWhereUniqueWithoutApplicantInput = {
@@ -52711,6 +54738,7 @@ export namespace Prisma {
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutDocumentsInput = {
@@ -52751,6 +54779,7 @@ export namespace Prisma {
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutDocumentsInput = {
@@ -52891,6 +54920,7 @@ export namespace Prisma {
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutDocumentsInput = {
@@ -52931,6 +54961,7 @@ export namespace Prisma {
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type SchoolCreateWithoutBeltRanksInput = {
@@ -53056,6 +55087,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutCurrentRankRefInput = {
@@ -53096,6 +55128,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutCurrentRankRefInput = {
@@ -53475,6 +55508,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutRankHistoryInput = {
@@ -53515,6 +55549,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutRankHistoryInput = {
@@ -53597,6 +55632,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -53624,6 +55660,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -53681,6 +55718,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutRankHistoryInput = {
@@ -53721,6 +55759,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type BeltRankUpsertWithoutPromotionsInput = {
@@ -53815,6 +55854,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -53842,6 +55882,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -54251,6 +56292,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutTechniquesInput = {
@@ -54291,6 +56333,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutTechniquesInput = {
@@ -54381,6 +56424,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -54408,6 +56452,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -54490,6 +56535,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutTechniquesInput = {
@@ -54530,6 +56576,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type TechniqueUpsertWithoutStudentsInput = {
@@ -54632,6 +56679,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -54659,6 +56707,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -54750,6 +56799,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -54777,6 +56827,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -54859,6 +56910,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -54886,6 +56938,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -54960,6 +57013,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutPlanInput = {
@@ -55000,6 +57054,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutPlanInput = {
@@ -55119,6 +57174,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutClassesInput = {
@@ -55146,6 +57202,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutClassesInput = {
@@ -55330,6 +57387,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClassesInput = {
@@ -55357,6 +57415,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ClassSessionUpsertWithWhereUniqueWithoutClassInput = {
@@ -55495,6 +57554,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutClassEnrollmentsInput = {
@@ -55535,6 +57595,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutClassEnrollmentsInput = {
@@ -55636,6 +57697,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutClassEnrollmentsInput = {
@@ -55676,6 +57738,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type ClassCreateWithoutSessionsInput = {
@@ -55887,6 +57950,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutAttendancesInput = {
@@ -55927,6 +57991,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutAttendancesInput = {
@@ -56087,6 +58152,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -56114,6 +58180,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -56198,6 +58265,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutAttendancesInput = {
@@ -56238,6 +58306,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type ClassUpsertWithoutAttendancesInput = {
@@ -56422,6 +58491,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -56449,6 +58519,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -56610,6 +58681,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutAchievementsInput = {
@@ -56650,6 +58722,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutAchievementsInput = {
@@ -56702,6 +58775,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -56729,6 +58803,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -56786,6 +58861,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutAchievementsInput = {
@@ -56826,6 +58902,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type AchievementTypeUpsertWithoutAchievementsInput = {
@@ -56890,6 +58967,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -56917,6 +58995,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -56958,6 +59037,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutFitnessReportsInput = {
@@ -56998,6 +59078,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutFitnessReportsInput = {
@@ -57029,6 +59110,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -57056,6 +59138,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -57113,6 +59196,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutFitnessReportsInput = {
@@ -57153,6 +59237,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type UserUpsertWithoutFitnessReportsApprovedInput = {
@@ -57190,6 +59275,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -57217,7 +59303,316 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
+  }
+
+  export type UserCreateWithoutNotificationsInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutUsersInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    instructorProfile?: InstructorProfileCreateNestedOneWithoutUserInput
+    studentProfile?: StudentCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    classes?: ClassCreateNestedManyWithoutInstructorInput
+  }
+
+  export type UserUncheckedCreateWithoutNotificationsInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    schoolId?: string | null
+    branchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    instructorProfile?: InstructorProfileUncheckedCreateNestedOneWithoutUserInput
+    studentProfile?: StudentUncheckedCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
+  }
+
+  export type UserCreateOrConnectWithoutNotificationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+  }
+
+  export type StudentCreateWithoutNotificationsInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    gender?: $Enums.Gender | null
+    email?: string | null
+    contactPhone?: string | null
+    medicalInfo?: string | null
+    emergencyContact?: string | null
+    enrollmentDate?: Date | string
+    memberNumber?: string | null
+    status?: $Enums.StudentStatus
+    currentRank?: string | null
+    photoKey?: string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planStartDate?: Date | string | null
+    scholarshipType?: $Enums.ScholarshipType
+    scholarshipNote?: string | null
+    isCompetitor?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
+    plan?: PlanCreateNestedOneWithoutStudentsInput
+    school: SchoolCreateNestedOneWithoutStudentsInput
+    branch: BranchCreateNestedOneWithoutStudentsInput
+    user?: UserCreateNestedOneWithoutStudentProfileInput
+    guardian?: UserCreateNestedOneWithoutGuardianOfStudentsInput
+    guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
+    enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
+    attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
+    techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
+    classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
+    rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
+    enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
+    invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
+    documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentUncheckedCreateWithoutNotificationsInput = {
+    id?: string
+    userId?: string | null
+    guardianId?: string | null
+    schoolId: string
+    branchId: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    gender?: $Enums.Gender | null
+    email?: string | null
+    contactPhone?: string | null
+    medicalInfo?: string | null
+    emergencyContact?: string | null
+    enrollmentDate?: Date | string
+    memberNumber?: string | null
+    status?: $Enums.StudentStatus
+    currentRank?: string | null
+    currentRankId?: string | null
+    photoKey?: string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planId?: string | null
+    planStartDate?: Date | string | null
+    scholarshipType?: $Enums.ScholarshipType
+    scholarshipNote?: string | null
+    isCompetitor?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
+    techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
+    classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
+    rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
+    enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
+    invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
+    documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentCreateOrConnectWithoutNotificationsInput = {
+    where: StudentWhereUniqueInput
+    create: XOR<StudentCreateWithoutNotificationsInput, StudentUncheckedCreateWithoutNotificationsInput>
+  }
+
+  export type UserUpsertWithoutNotificationsInput = {
+    update: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
+    create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
+  }
+
+  export type UserUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutUsersNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    instructorProfile?: InstructorProfileUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    classes?: ClassUpdateManyWithoutInstructorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    instructorProfile?: InstructorProfileUncheckedUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUncheckedUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
+  }
+
+  export type StudentUpsertWithoutNotificationsInput = {
+    update: XOR<StudentUpdateWithoutNotificationsInput, StudentUncheckedUpdateWithoutNotificationsInput>
+    create: XOR<StudentCreateWithoutNotificationsInput, StudentUncheckedCreateWithoutNotificationsInput>
+    where?: StudentWhereInput
+  }
+
+  export type StudentUpdateToOneWithWhereWithoutNotificationsInput = {
+    where?: StudentWhereInput
+    data: XOR<StudentUpdateWithoutNotificationsInput, StudentUncheckedUpdateWithoutNotificationsInput>
+  }
+
+  export type StudentUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
+    currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    photoKey?: NullableStringFieldUpdateOperationsInput | string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
+    scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
+    isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
+    plan?: PlanUpdateOneWithoutStudentsNestedInput
+    school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
+    branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
+    user?: UserUpdateOneWithoutStudentProfileNestedInput
+    guardian?: UserUpdateOneWithoutGuardianOfStudentsNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
+    attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
+    techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
+    classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
+    rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
+    enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
+    invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
+    documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+  }
+
+  export type StudentUncheckedUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    guardianId?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolId?: StringFieldUpdateOperationsInput | string
+    branchId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
+    currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
+    photoKey?: NullableStringFieldUpdateOperationsInput | string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planId?: NullableStringFieldUpdateOperationsInput | string | null
+    planStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
+    scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
+    isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+    attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
+    techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
+    classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+    rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
+    enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
+    invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
+    documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type BranchCreateManySchoolInput = {
@@ -57405,6 +59800,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -57432,6 +59828,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -57486,6 +59883,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutSchoolInput = {
@@ -57526,6 +59924,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateManyWithoutSchoolInput = {
@@ -57924,6 +60323,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -57951,6 +60351,7 @@ export namespace Prisma {
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -58005,6 +60406,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutBranchInput = {
@@ -58045,6 +60447,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateManyWithoutBranchInput = {
@@ -58316,6 +60719,19 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type NotificationCreateManyUserInput = {
+    id?: string
+    studentId?: string | null
+    type: $Enums.NotificationType
+    title: string
+    body: string
+    link?: string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: $Enums.NotificationPriority
+    readAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
   export type ClassCreateManyInstructorInput = {
     id?: string
     name: string
@@ -58386,6 +60802,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutGuardianInput = {
@@ -58426,6 +60843,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateManyWithoutGuardianInput = {
@@ -58758,6 +61176,45 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type NotificationUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: EnumNotificationPriorityFieldUpdateOperationsInput | $Enums.NotificationPriority
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentUpdateOneWithoutNotificationsNestedInput
+  }
+
+  export type NotificationUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: EnumNotificationPriorityFieldUpdateOperationsInput | $Enums.NotificationPriority
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: EnumNotificationPriorityFieldUpdateOperationsInput | $Enums.NotificationPriority
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ClassUpdateWithoutInstructorInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -58928,6 +61385,19 @@ export namespace Prisma {
     reviewedAt?: Date | string | null
     uploadedAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type NotificationCreateManyStudentInput = {
+    id?: string
+    userId: string
+    type: $Enums.NotificationType
+    title: string
+    body: string
+    link?: string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: $Enums.NotificationPriority
+    readAt?: Date | string | null
+    createdAt?: Date | string
   }
 
   export type GuardianStudentUpdateWithoutStudentInput = {
@@ -59310,6 +61780,45 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type NotificationUpdateWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: EnumNotificationPriorityFieldUpdateOperationsInput | $Enums.NotificationPriority
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutNotificationsNestedInput
+  }
+
+  export type NotificationUncheckedUpdateWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: EnumNotificationPriorityFieldUpdateOperationsInput | $Enums.NotificationPriority
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    data?: NullableJsonNullValueInput | InputJsonValue
+    priority?: EnumNotificationPriorityFieldUpdateOperationsInput | $Enums.NotificationPriority
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type EnrollmentApplicantCreateManyEnrollmentInput = {
     id?: string
     studentId?: string | null
@@ -59611,6 +62120,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutCurrentRankRefInput = {
@@ -59651,6 +62161,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateManyWithoutCurrentRankRefInput = {
@@ -59929,6 +62440,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutPlanInput = {
@@ -59969,6 +62481,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateManyWithoutPlanInput = {

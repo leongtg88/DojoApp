@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasAnyRole, hasRole } from '@/lib/auth/roles'
 import { resolveProgressionKataIds } from '@/lib/dashboard/kata-curriculum'
+import { notifyAssignment } from '@/lib/notifications/create'
 import type { Program } from '@/lib/curriculum/programs'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -123,6 +124,21 @@ export async function POST(request: Request, { params }: PromotionRouteContext) 
         ]
       : []),
   ])
+
+  await notifyAssignment({
+    type: 'RANK_PROMOTED',
+    studentId: student.id,
+    data: { rankName: newRank.name },
+  })
+
+  if (techniqueIds.length > 0) {
+    await notifyAssignment({
+      type: 'KATAS_UNLOCKED',
+      studentId: student.id,
+      count: techniqueIds.length,
+      data: { rankName: newRank.name },
+    })
+  }
 
   return NextResponse.json({ ok: true })
 }

@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
+import { notifyAssignment } from '@/lib/notifications/create'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -59,7 +60,7 @@ export async function POST(request: Request) {
         { session: { class: { instructorId: session.user.id } } },
       ],
     },
-    select: { id: true },
+    select: { id: true, studentId: true },
   })
 
   const now = new Date()
@@ -70,6 +71,17 @@ export async function POST(request: Request) {
       data: { status: 'CONFIRMED', confirmedById: session.user.id, confirmedAt: now },
     })
   }
+
+  const countsByStudent = new Map<string, number>()
+  for (const { studentId } of pending) {
+    countsByStudent.set(studentId, (countsByStudent.get(studentId) ?? 0) + 1)
+  }
+
+  await Promise.all(
+    [...countsByStudent].map(([studentId, count]) =>
+      notifyAssignment({ type: 'ATTENDANCE_CONFIRMED', studentId, count }),
+    ),
+  )
 
   return NextResponse.json({ confirmed: pending.length })
 }

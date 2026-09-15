@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasAnyRole, hasRole } from '@/lib/auth/roles'
 import { createPrivateDocumentUrl } from '@/lib/document-storage'
+import { notifyAssignment } from '@/lib/notifications/create'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -13,6 +14,15 @@ const reviewSchema = z.object({
     context.addIssue({ code: 'custom', message: 'El rechazo requiere una observación', path: ['reviewNotes'] })
   }
 })
+
+const DOCUMENT_TYPE_LABELS: Record<'PROFILE_PHOTO' | 'IDENTITY' | 'BIRTH_CERTIFICATE' | 'PASSPORT' | 'MEDICAL_CERTIFICATE' | 'OTHER', string> = {
+  PROFILE_PHOTO: 'Tu foto de perfil',
+  IDENTITY: 'Tu documento de identidad',
+  BIRTH_CERTIFICATE: 'Tu acta de nacimiento',
+  PASSPORT: 'Tu pasaporte',
+  MEDICAL_CERTIFICATE: 'Tu certificado médico',
+  OTHER: 'Tu documento',
+}
 
 interface DocumentRouteContext {
   params: Promise<{ studentId: string; documentId: string }>
@@ -29,7 +39,7 @@ async function findScopedDocument(context: DocumentRouteContext) {
 
   return db.studentDocument.findFirst({
     where: { id: documentId, studentId, student: hasRole(admin, 'SUPERADMIN') ? {} : { schoolId: admin.schoolId! } },
-    select: { id: true, storageKey: true },
+    select: { id: true, storageKey: true, studentId: true, type: true },
   })
 }
 
@@ -56,5 +66,23 @@ export async function PATCH(request: Request, context: DocumentRouteContext) {
     where: { id: document.id },
     data: { status: result.data.status, reviewNotes: result.data.reviewNotes, reviewedAt: new Date() },
   })
+
+  const documentName = DOCUMENT_TYPE_LABELS[document.type]
+  const targetStudentId = document.studentId
+
+  if (targetStudentId && result.data.status === 'APPROVED') {
+    await notifyAssignment({
+      type: 'DOCUMENT_APPROVED',
+      studentId: targetStudentId,
+      data: { documentName },
+    })
+  } else if (targetStudentId && result.data.status === 'REJECTED') {
+    await notifyAssignment({
+      type: 'DOCUMENT_REJECTED',
+      studentId: targetStudentId,
+      data: { documentName, reviewNotes: result.data.reviewNotes ?? '' },
+    })
+  }
+
   return NextResponse.json({ ok: true })
 }
