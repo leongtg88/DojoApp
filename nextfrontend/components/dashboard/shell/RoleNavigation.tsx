@@ -5,6 +5,7 @@ import {
     CalendarDays,
     ClipboardCheck,
     Clock3,
+    FileSearch,
     GraduationCap,
     LayoutDashboard,
     ListChecks,
@@ -34,10 +35,12 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/instructor/estudiantes', label: 'Estudiantes', icon: Users },
         { href: '/dashboard/instructor/asistencia', label: 'Asistencia', icon: ClipboardCheck },
         { href: '/dashboard/instructor/evaluaciones', label: 'Evaluaciones', icon: BookOpenCheck },
+        { href: '/dashboard/instructor/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
     ],
     SCHOOL_ADMIN: [
         { href: '/dashboard/admin', label: 'Resumen', icon: LayoutDashboard },
         { href: '/dashboard/admin/alumnos', label: 'Alumnos', icon: Users },
+        { href: '/dashboard/admin/alumnos/detalle', label: 'Detalles Alumno', icon: FileSearch },
         { href: '/dashboard/admin/inscripciones', label: 'Inscripciones', icon: ClipboardCheck },
         { href: '/dashboard/admin/planes', label: 'Planes', icon: ListChecks },
         { href: '/dashboard/admin/horarios', label: 'Horarios', icon: CalendarDays },
@@ -48,6 +51,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
     SUPERADMIN: [
         { href: '/dashboard/admin', label: 'Resumen', icon: LayoutDashboard },
         { href: '/dashboard/admin/alumnos', label: 'Alumnos', icon: Users },
+        { href: '/dashboard/admin/alumnos/detalle', label: 'Detalles Alumno', icon: FileSearch },
         { href: '/dashboard/admin/inscripciones', label: 'Inscripciones', icon: ClipboardCheck },
         { href: '/dashboard/admin/planes', label: 'Planes', icon: ListChecks },
         { href: '/dashboard/admin/horarios', label: 'Horarios', icon: CalendarDays },

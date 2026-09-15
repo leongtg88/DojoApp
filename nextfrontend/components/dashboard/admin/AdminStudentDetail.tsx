@@ -3,9 +3,10 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { ArrowLeft, Award, BookOpen, CalendarDays, ClipboardList, GraduationCap, History, Loader2, Mail, MapPin, Phone, ShieldCheck, Stethoscope, Trash2, Users } from 'lucide-react'
+import { ArrowLeft, Award, BookOpen, CalendarDays, ClipboardList, FileSpreadsheet, FileText, FolderArchive, GraduationCap, History, Loader2, Mail, MapPin, Phone, ShieldCheck, Stethoscope, Trash2, Users } from 'lucide-react'
 import { AdminPlacementModal } from './AdminPlacementModal'
 import { AdminStudentDocuments } from './AdminStudentDocuments'
+import { AdminStudentMedia } from './AdminStudentMedia'
 import { AssignRankDialog } from '../dojo/AssignRankDialog'
 import { KataAssignmentDialog } from '../dojo/KataAssignmentDialog'
 import { KataBadge } from '../dojo/KataBadge'
@@ -15,7 +16,10 @@ import type { AdminStudentDetail as StudentDetail } from '@/types/dashboard'
 
 interface AdminStudentDetailProps {
 	student: StudentDetail
+	embedded?: boolean
 }
+
+type ExportKind = 'excel' | 'zip'
 
 type DetailTab = 'katas' | 'attendance' | 'inscripcion' | 'medical'
 
@@ -35,9 +39,24 @@ const ORIGIN_LABELS: Record<string, string> = {
 	MANUAL: 'Registro manual',
 }
 
-export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
+const ATTENDANCE_STATUS_LABELS: Record<string, string> = {
+	PENDING: 'Pendiente',
+	CONFIRMED: 'Confirmada',
+	REJECTED: 'Rechazada',
+	JUSTIFIED: 'Justificada',
+}
+
+function attendanceStatusClass(status: string) {
+	if (status === 'CONFIRMED') return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
+	if (status === 'JUSTIFIED') return 'border-cyan-500/30 bg-cyan-500/10 text-cyan-200'
+	if (status === 'REJECTED') return 'border-red-500/30 bg-red-500/10 text-red-200'
+	return 'border-neutral-700 bg-[#0d1117] text-neutral-300'
+}
+
+export function AdminStudentDetail({ student, embedded = false }: AdminStudentDetailProps) {
 	const router = useRouter()
 	const [activeTab, setActiveTab] = useState<DetailTab>('katas')
+	const [exporting, setExporting] = useState<ExportKind | null>(null)
 	const [isAssignRankOpen, setIsAssignRankOpen] = useState(false)
 	const [isKataAssignOpen, setIsKataAssignOpen] = useState(false)
 	const [isInviteConfirmOpen, setIsInviteConfirmOpen] = useState(false)
@@ -96,6 +115,45 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 		}
 	}
 
+	async function handleExport(kind: ExportKind) {
+		setExporting(kind)
+		setActionError(null)
+		try {
+			const path = kind === 'excel'
+				? `/api/dashboard/admin/students/${student.id}/export`
+				: `/api/dashboard/admin/students/${student.id}/export/zip`
+			const response = await fetch(path)
+			if (!response.ok) {
+				const payload = await response.json().catch(() => ({})) as { error?: string }
+				throw new Error(payload.error ?? 'No fue posible exportar la ficha.')
+			}
+			const blob = await response.blob()
+			const objectUrl = URL.createObjectURL(blob)
+			const link = document.createElement('a')
+			link.href = objectUrl
+			const base = `${student.firstName}-${student.lastName}`
+				.normalize('NFKD')
+				.replace(/[\u0300-\u036f]/g, '')
+				.replace(/[^A-Za-z0-9]+/g, '-')
+				.replace(/-+/g, '-')
+				.replace(/^-|-$/g, '')
+				.toLowerCase()
+			link.download = `expediente-${base || student.id}.${kind === 'excel' ? 'xlsx' : 'zip'}`
+			document.body.appendChild(link)
+			link.click()
+			link.remove()
+			URL.revokeObjectURL(objectUrl)
+		} catch (reason: unknown) {
+			setActionError(reason instanceof Error ? reason.message : 'No fue posible exportar la ficha.')
+		} finally {
+			setExporting(null)
+		}
+	}
+
+	function handlePrint() {
+		window.open(`/dashboard/admin/alumnos/detalle/imprimir?studentId=${student.id}`, '_blank', 'noopener,noreferrer')
+	}
+
 	const currentRankInfo = student.currentRank ? student.availableRanks.find((rank) => rank.name === student.currentRank) : undefined
 	const nextRank = student.nextRankName ? student.availableRanks.find((rank) => rank.name === student.nextRankName) : undefined
 	const requiredKatas = nextRank?.techniques ?? []
@@ -108,12 +166,27 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 	const assignedTechniqueIds = student.techniques.map((entry) => entry.technique.id)
 
 	return (
-		<main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+		<div className={embedded ? 'w-full' : 'mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8'} role={embedded ? undefined : 'main'}>
 			<div className="flex flex-wrap items-center justify-between gap-3">
-				<Link className="inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-400 hover:text-cyan-300" href="/dashboard/admin/alumnos">
-					<ArrowLeft aria-hidden="true" className="size-4" />Volver al padrón
-				</Link>
-				<div className="flex items-center gap-2">
+				{embedded ? (
+					<span className="inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-400">
+						<FileText aria-hidden="true" className="size-4 text-cyan-400" />Expediente completo
+					</span>
+				) : (
+					<Link className="inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-400 hover:text-cyan-300" href="/dashboard/admin/alumnos">
+						<ArrowLeft aria-hidden="true" className="size-4" />Volver al padrón
+					</Link>
+				)}
+				<div className="flex flex-wrap items-center gap-2">
+					<button type="button" onClick={() => handleExport('excel')} disabled={exporting !== null} className="inline-flex items-center gap-2 rounded-md border border-neutral-700 bg-[#0d1117] px-3.5 py-2 text-xs font-semibold text-neutral-200 transition-colors hover:bg-neutral-800 hover:text-white disabled:opacity-50">
+						{exporting === 'excel' ? <Loader2 className="size-4 animate-spin" /> : <FileSpreadsheet className="size-4" />}Excel
+					</button>
+					<button type="button" onClick={() => handleExport('zip')} disabled={exporting !== null} className="inline-flex items-center gap-2 rounded-md border border-neutral-700 bg-[#0d1117] px-3.5 py-2 text-xs font-semibold text-neutral-200 transition-colors hover:bg-neutral-800 hover:text-white disabled:opacity-50">
+						{exporting === 'zip' ? <Loader2 className="size-4 animate-spin" /> : <FolderArchive className="size-4" />}ZIP con archivos
+					</button>
+					<button type="button" onClick={handlePrint} className="inline-flex items-center gap-2 rounded-md border border-neutral-700 bg-[#0d1117] px-3.5 py-2 text-xs font-semibold text-neutral-200 transition-colors hover:bg-neutral-800 hover:text-white">
+						<FileText className="size-4" />Imprimir / PDF
+					</button>
 					{student.accountStatus !== 'ACTIVO' && student.email && (
 						<button type="button" onClick={() => setIsInviteConfirmOpen(true)} className="inline-flex items-center gap-2 rounded-md border border-cyan-500/40 bg-[#0d1117] px-3.5 py-2 text-xs font-semibold text-cyan-200 transition-colors hover:bg-cyan-500/10 hover:text-cyan-100">
 							<Mail className="size-4" />{student.accountStatus === 'INVITADO' ? 'Reenviar invitación' : 'Invitar'}
@@ -310,27 +383,62 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 			)}
 
 			{activeTab === 'attendance' && (
-				<section className="mt-5 rounded-lg border border-neutral-800 bg-[#161b22] p-5 shadow-sm">
-					<div className="flex items-center gap-2">
-						<CalendarDays aria-hidden="true" className="size-4 text-cyan-400" />
-						<h2 className="font-display text-base font-bold text-white">Resumen de asistencia al tatami</h2>
-					</div>
-					<div className="mt-4 grid gap-4 sm:grid-cols-3">
-						<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
-							<p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Porcentaje</p>
-							<p className="mt-1 text-2xl font-extrabold text-white">{student.attendancePercent ?? 0}%</p>
+				<div className="mt-5 space-y-5">
+					<section className="rounded-lg border border-neutral-800 bg-[#161b22] p-5 shadow-sm">
+						<div className="flex items-center gap-2">
+							<CalendarDays aria-hidden="true" className="size-4 text-cyan-400" />
+							<h2 className="font-display text-base font-bold text-white">Resumen de asistencia al tatami</h2>
 						</div>
-						<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
-							<p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Registros confirmados</p>
-							<p className="mt-1 text-2xl font-extrabold text-white">{student.attendedCount}</p>
+						<div className="mt-4 grid gap-4 sm:grid-cols-3">
+							<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
+								<p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Porcentaje</p>
+								<p className="mt-1 text-2xl font-extrabold text-white">{student.attendancePercent ?? 0}%</p>
+							</div>
+							<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
+								<p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Registros confirmados</p>
+								<p className="mt-1 text-2xl font-extrabold text-white">{student.attendedCount}</p>
+							</div>
+							<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
+								<p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Meta de referencia</p>
+								<p className="mt-1 text-2xl font-extrabold text-white">{student.targetAttendances}</p>
+								<p className="mt-1 text-[11px] text-neutral-400">Base para el cómputo de porcentaje.</p>
+							</div>
 						</div>
-						<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
-							<p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Meta de referencia</p>
-							<p className="mt-1 text-2xl font-extrabold text-white">{student.targetAttendances}</p>
-							<p className="mt-1 text-[11px] text-neutral-400">Base para el cómputo de porcentaje.</p>
+					</section>
+
+					<section className="rounded-lg border border-neutral-800 bg-[#161b22] p-5 shadow-sm">
+						<div className="flex items-center justify-between">
+							<div className="flex items-center gap-2">
+								<History aria-hidden="true" className="size-4 text-cyan-400" />
+								<h2 className="font-display text-base font-bold text-white">Historial de asistencias</h2>
+							</div>
+							<span className="text-xs font-bold text-neutral-400">{student.attendanceHistory.length} registros</span>
 						</div>
-					</div>
-				</section>
+						{student.attendanceHistory.length === 0 ? (
+							<p className="mt-4 rounded-md border border-dashed border-neutral-700 bg-[#0d1117] px-4 py-8 text-center text-sm text-neutral-400">Sin asistencias registradas.</p>
+						) : (
+							<div className="mt-4 divide-y divide-neutral-800 overflow-hidden rounded-lg border border-neutral-800 bg-[#0d1117]">
+								{student.attendanceHistory.map((entry) => (
+									<div key={entry.id} className="flex flex-wrap items-center justify-between gap-3 p-3 text-xs">
+										<div className="flex items-center gap-3">
+											<span className={`size-2 shrink-0 rounded-full ${entry.present ? 'bg-emerald-400' : 'bg-red-400'}`} />
+											<div>
+												<p className="font-bold text-white">{formatDateTime(entry.date)}</p>
+												<p className="text-[11px] text-neutral-400">
+													{entry.className ?? 'Sin clase'} · {entry.hoursTrained} h{entry.sessionType ? ` · ${entry.sessionType}` : ''}
+												</p>
+												{entry.confirmedByName && <p className="text-[11px] text-neutral-500">Confirmada por {entry.confirmedByName}</p>}
+											</div>
+										</div>
+										<span className={`rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${attendanceStatusClass(entry.status)}`}>
+											{ATTENDANCE_STATUS_LABELS[entry.status] ?? entry.status}
+										</span>
+									</div>
+								))}
+							</div>
+						)}
+					</section>
+				</div>
 			)}
 
 			{activeTab === 'inscripcion' && (
@@ -425,6 +533,8 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 					</div>
 				</section>
 			)}
+
+			<AdminStudentMedia key={student.id} documents={student.documents} />
 
 			<AdminStudentDocuments documents={student.documents} studentId={student.id} />
 
@@ -544,6 +654,6 @@ export function AdminStudentDetail({ student }: AdminStudentDetailProps) {
 				url={invitationLink?.url ?? ''}
 				onClose={() => setInvitationLink(null)}
 			/>
-		</main>
+		</div>
 	)
 }

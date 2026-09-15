@@ -102,14 +102,25 @@ export async function uploadPrivateDocument(storageKey: string, file: File) {
   }
 }
 
-export async function createPrivateDocumentUrl(storageKey: string) {
-  const { data, error } = await getStorageClient().storage.from(bucketName).createSignedUrl(storageKey, 60)
+export async function createPrivateDocumentUrl(storageKey: string, expiresIn = 60) {
+  const { data, error } = await getStorageClient().storage.from(bucketName).createSignedUrl(storageKey, expiresIn)
 
   if (error || !data) {
     throw new Error(describeStorageError(error ?? { message: 'respuesta vacía' }))
   }
 
   return data.signedUrl
+}
+
+export async function downloadPrivateDocument(storageKey: string): Promise<{ buffer: Buffer; contentType: string }> {
+  const { data, error } = await getStorageClient().storage.from(bucketName).download(storageKey)
+
+  if (error || !data) {
+    throw new Error(describeStorageError(error ?? { message: 'respuesta vacía' }))
+  }
+
+  const buffer = Buffer.from(await data.arrayBuffer())
+  return { buffer, contentType: data.type || 'application/octet-stream' }
 }
 
 export async function deletePrivateDocuments(storageKeys: string[]) {

@@ -19,12 +19,15 @@ export function DashboardSidebar({ onSignOut, activeRole, roles, userName, pendi
     const pathname = usePathname()
     const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount)
     const activeHref = getPanelHref(activeRole)
+    const currentHref = navigation
+        .filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))
+        .sort((a, b) => b.href.length - a.href.length)[0]?.href
     const switchOptions = getRolePanelOptions(roles).filter((option) => option.href !== activeHref)
     const initials = (userName ?? 'Usuario').split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()
     const roleLabel = activeRole === 'STUDENT' ? 'Estudiante' : activeRole === 'INSTRUCTOR' ? 'Instructor' : 'Administrador'
 
     return (
-        <aside className="hidden w-64 shrink-0 border-r border-neutral-800 bg-[#161b22] p-5 md:flex md:min-h-[calc(100vh-4rem)] md:flex-col">
+        <aside className="hidden w-64 shrink-0 border-r border-neutral-800 bg-[#161b22] p-5 md:flex md:min-h-[calc(100vh-4rem)] md:flex-col print:hidden">
             <div className="mb-7 flex items-center gap-3 border border-neutral-700 bg-[#0d1117] p-3.5 shadow-sm">
                 <span aria-hidden="true" className="flex size-11 shrink-0 items-center justify-center rounded-full bg-cyan-500/20 font-display text-sm font-extrabold text-cyan-100">{initials}</span>
                 <div className="min-w-0"><p className="truncate text-sm font-bold text-white">{userName ?? 'Usuario'}</p><p className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-cyan-400">{roleLabel}</p><span className="mt-1 inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-300"><span aria-hidden="true" className="size-1.5 rounded-full bg-emerald-400" />Activo</span></div>
@@ -33,7 +36,7 @@ export function DashboardSidebar({ onSignOut, activeRole, roles, userName, pendi
             <nav className="flex flex-1 flex-col gap-1.5" aria-label="Navegación del dashboard">
                 <p className="mb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-neutral-500">Navegación</p>
                 {navigation.map(({ href, icon: Icon, label, badge }) => {
-                    const active = pathname === href || (href !== navigation[0]?.href && pathname.startsWith(`${href}/`))
+                    const active = href === currentHref
 
                     return (
                         <Link

@@ -4,7 +4,9 @@ import { formatTime } from '@/lib/dashboard/balance'
 import { computeBirthdays } from '@/lib/dashboard/birthdays'
 import { ageFromDob, programForAge } from '@/lib/dashboard/program'
 import { introLevelFromBeltRankKatas } from '@/lib/dashboard/kata-level'
+import { getCurriculumForSchool } from '@/lib/dashboard/curriculum-queries'
 import type {
+  AdminCurriculumData,
   AttendanceRecord,
   DashboardBirthday,
   InstructorAttendanceBoardData,
@@ -36,6 +38,19 @@ export async function getInstructorSchoolId(userId: string): Promise<string | nu
   })
 
   return scheduledClass?.branch.schoolId ?? null
+}
+
+/**
+ * Currículo (grados y katas) de la escuela del instructor, en solo lectura.
+ */
+export async function getInstructorCurriculum(userId: string): Promise<AdminCurriculumData | null> {
+  const schoolId = await getInstructorSchoolId(userId)
+
+  if (!schoolId) {
+    return null
+  }
+
+  return getCurriculumForSchool(schoolId)
 }
 
 export async function getInstructorClasses(userId: string): Promise<InstructorClassSummary[]> {

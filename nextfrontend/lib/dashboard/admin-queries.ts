@@ -4,7 +4,9 @@ import { computeBirthdays } from '@/lib/dashboard/birthdays'
 import { ageFromDob, programForAge } from '@/lib/dashboard/program'
 import { computeBalance, formatTime, monthRange } from '@/lib/dashboard/balance'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
+import { getCurriculumForSchool } from '@/lib/dashboard/curriculum-queries'
 import { buildStudentRegistrationView } from '@/lib/dashboard/registration-data'
+import { createPrivateDocumentUrl } from '@/lib/document-storage'
 
 function techniqueWithRanks<T extends { beltRankKatas: { beltRankId: string }[]; originKata?: { name: string } | null }>(technique: T) {
   const { beltRankKatas, originKata, ...rest } = technique
@@ -18,6 +20,7 @@ import type {
   AdminCurriculumData,
   AdminEnrollmentSummary,
   AdminInstructor,
+  AdminInstructorCandidate,
   AdminScheduleSummary,
   AdminStudentDetail,
   AdminStudentSummary,
@@ -259,62 +262,8 @@ export async function getAdminBeltRanks(userId: string): Promise<AdminBeltRankSu
     return null
   }
 
-  const ranks = await db.beltRank.findMany({
-    where: scope.isSuperAdmin ? {} : { OR: [{ schoolId: scope.schoolId! }, { schoolId: null }] },
-    orderBy: [{ program: 'asc' }, { order: 'asc' }],
-    select: {
-      id: true,
-      program: true,
-      name: true,
-      order: true,
-      kyuDan: true,
-      japaneseName: true,
-      kanji: true,
-      beltColor: true,
-      beltSecondaryColor: true,
-      isMaximumRank: true,
-      minMonths: true,
-      maxMonths: true,
-      minAttendancePercent: true,
-      estimatedDurationMonths: true,
-      description: true,
-      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, repetitionsCount: true, stance: true, level: true, kumiteType: true, distance: true, role: true, applicationType: true, originKataId: true, originKata: { select: { name: true } }, beltRankKatas: { select: { beltRankId: true }, orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }, { order: 'asc' }] } } } } },
-      _count: { select: { promotions: true } },
-    },
-  })
-
-  const rankNames = ranks.map(({ name }) => name)
-  const studentCounts = await db.student.groupBy({
-    by: ['currentRank'],
-    where: {
-      currentRank: { in: rankNames },
-      ...(scopeSchoolFilter(scope)),
-      status: StudentStatus.ACTIVE,
-    },
-    _count: { _all: true },
-  })
-  const countByRankName = new Map(studentCounts.map(({ currentRank, _count }) => [currentRank, _count._all]))
-
-  return ranks.map((rank) => ({
-    id: rank.id,
-    program: rank.program,
-    name: rank.name,
-    order: rank.order,
-    kyuDan: rank.kyuDan,
-    japaneseName: rank.japaneseName,
-    kanji: rank.kanji,
-    beltColor: rank.beltColor,
-    beltSecondaryColor: rank.beltSecondaryColor,
-    isMaximumRank: rank.isMaximumRank,
-    minMonths: rank.minMonths,
-    maxMonths: rank.maxMonths,
-    minAttendancePercent: rank.minAttendancePercent,
-    estimatedDurationMonths: rank.estimatedDurationMonths,
-    description: rank.description,
-    techniqueCount: rank.katas.length,
-    studentCount: countByRankName.get(rank.name) ?? 0,
-    techniques: rank.katas.map(({ kata }) => techniqueWithRanks(kata)),
-  }))
+  const { ranks } = await getCurriculumForSchool(scope.isSuperAdmin ? null : scope.schoolId)
+  return ranks
 }
 
 export async function getAdminCurriculum(userId: string): Promise<AdminCurriculumData | null> {
@@ -324,40 +273,7 @@ export async function getAdminCurriculum(userId: string): Promise<AdminCurriculu
     return null
   }
 
-  const ranks = await getAdminBeltRanks(userId)
-
-  const techniques = await db.technique.findMany({
-    where: scope.isSuperAdmin ? {} : { OR: [{ schoolId: scope.schoolId! }, { schoolId: null }] },
-    orderBy: [{ order: 'asc' }, { name: 'asc' }],
-    select: {
-      id: true,
-      name: true,
-      japaneseName: true,
-      kanji: true,
-      description: true,
-      category: true,
-      order: true,
-      difficulty: true,
-      embusen: true,
-      movementsCount: true,
-      videoUrl: true,
-      repetitionsCount: true,
-      stance: true,
-      level: true,
-      kumiteType: true,
-      distance: true,
-      role: true,
-      applicationType: true,
-      originKataId: true,
-      originKata: { select: { name: true } },
-      beltRankKatas: { select: { beltRankId: true }, orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }, { order: 'asc' }] },
-    },
-  })
-
-  return {
-    ranks: ranks ?? [],
-    techniques: techniques.map(techniqueWithRanks),
-  }
+  return getCurriculumForSchool(scope.isSuperAdmin ? null : scope.schoolId)
 }
 
 export async function getAdminStudentDetail(userId: string, studentId: string): Promise<AdminStudentDetail | null> {
@@ -414,7 +330,7 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
       },
 documents: {
 	    orderBy: { uploadedAt: 'desc' },
-	    select: { id: true, type: true, status: true, fileName: true, mimeType: true, fileSize: true, reviewNotes: true, uploadedAt: true },
+	    select: { id: true, type: true, status: true, fileName: true, storageKey: true, mimeType: true, fileSize: true, reviewNotes: true, uploadedAt: true },
 	    },
       enrollments: {
         orderBy: { createdAt: 'desc' },
@@ -466,6 +382,21 @@ documents: {
       _count: {
         select: {
           attendances: { where: { status: 'CONFIRMED' } },
+        },
+      },
+      attendances: {
+        orderBy: { date: 'desc' },
+        take: 200,
+        select: {
+          id: true,
+          date: true,
+          present: true,
+          hoursTrained: true,
+          sessionType: true,
+          status: true,
+          notes: true,
+          class: { select: { name: true } },
+          confirmedBy: { select: { name: true } },
         },
       },
       rankHistory: {
@@ -525,10 +456,25 @@ documents: {
   const TARGET_ATTENDANCES = 30
   const attendedCount = student._count.attendances
 
+  const documents = await Promise.all(
+    student.documents.map(async ({ storageKey, ...document }) => {
+      let url: string | null = null
+      if (document.mimeType.startsWith('image/')) {
+        try {
+          url = await createPrivateDocumentUrl(storageKey, 600)
+        } catch (error) {
+          console.error('Error generando URL firmada para documento:', document.id, error)
+        }
+      }
+      return { ...document, uploadedAt: document.uploadedAt.toISOString(), url }
+    }),
+  )
+
   return {
     id: student.id,
     firstName: student.firstName,
     lastName: student.lastName,
+    gender: student.gender,
     memberNumber: student.memberNumber,
     currentRank: student.currentRank,
     currentRankOrder,
@@ -541,7 +487,7 @@ documents: {
     enrollmentDate: student.enrollmentDate?.toISOString() ?? null,
     medicalInfo: student.medicalInfo,
     emergencyContact: student.emergencyContact,
-	 documents: student.documents.map((document) => ({ ...document, uploadedAt: document.uploadedAt.toISOString() })),
+    documents,
     availableRanks: ranks.map((rank) => ({
       id: rank.id,
       program: rank.program,
@@ -580,6 +526,17 @@ techniques: rank.katas.map(({ kata }) => techniqueWithRanks(kata)),
       practiceHours: entry.practiceHours,
       notes: entry.notes,
       technique: techniqueWithRanks(entry.technique),
+    })),
+    attendanceHistory: student.attendances.map((entry) => ({
+      id: entry.id,
+      date: entry.date.toISOString(),
+      present: entry.present,
+      hoursTrained: entry.hoursTrained,
+      sessionType: entry.sessionType,
+      status: entry.status,
+      className: entry.class?.name ?? null,
+      confirmedByName: entry.confirmedBy?.name ?? null,
+      notes: entry.notes,
     })),
     rankAwardedAt: student.rankHistory[0]?.promotedAt.toISOString() ?? null,
     attendancePercent: Math.min(100, Math.round((attendedCount / TARGET_ATTENDANCES) * 100)),
@@ -775,6 +732,42 @@ export async function getAdminInstructors(userId: string): Promise<AdminInstruct
     id: instructor.id,
     name: instructor.name ?? instructor.email,
   }))
+}
+
+export async function getAdminInstructorCandidates(userId: string): Promise<AdminInstructorCandidate[] | null> {
+  const scope = await getAdminScope(userId)
+
+  if (!scope) {
+    return null
+  }
+
+  const students = await db.student.findMany({
+    where: {
+      ...scopeSchoolFilter(scope),
+      userId: { not: null },
+    },
+    orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      memberNumber: true,
+      currentRank: true,
+      user: { select: { id: true, email: true, roles: true } },
+    },
+  })
+
+  return students
+    .filter((student) => student.user !== null)
+    .map((student) => ({
+      studentId: student.id,
+      userId: student.user!.id,
+      name: `${student.firstName} ${student.lastName}`.trim(),
+      email: student.user!.email,
+      memberNumber: student.memberNumber,
+      currentRank: student.currentRank,
+      isInstructor: student.user!.roles.includes('INSTRUCTOR'),
+    }))
 }
 
 export async function getAdminSchedules(userId: string): Promise<AdminScheduleSummary[] | null> {

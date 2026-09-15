@@ -1,14 +1,16 @@
 import Link from 'next/link'
 import { CalendarDays, GraduationCap, TriangleAlert, Users } from 'lucide-react'
 import { BirthdayWidget } from '@/components/dashboard/shared/BirthdayWidget'
-import type { AdminDashboardSummary, DashboardBirthday } from '@/types/dashboard'
+import { AdminInstructorRoles } from './AdminInstructorRoles'
+import type { AdminDashboardSummary, AdminInstructorCandidate, DashboardBirthday } from '@/types/dashboard'
 
 interface AdminDashboardOverviewProps {
     summary: AdminDashboardSummary
     birthdays: DashboardBirthday[]
+    instructorCandidates: AdminInstructorCandidate[]
 }
 
-export function AdminDashboardOverview({ summary, birthdays }: AdminDashboardOverviewProps) {
+export function AdminDashboardOverview({ summary, birthdays, instructorCandidates }: AdminDashboardOverviewProps) {
     return (
         <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
             <p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">Administración</p>
@@ -45,6 +47,7 @@ export function AdminDashboardOverview({ summary, birthdays }: AdminDashboardOve
                     </Link>
                 </div>
             </section>
+            <AdminInstructorRoles candidates={instructorCandidates} />
             <BirthdayWidget birthdays={birthdays} roleFilter="student" />
         </main>
     )

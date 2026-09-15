@@ -72,7 +72,7 @@ export default function Navbar() {
               onClick={requestAppInstall}
               aria-label="Instalar la app"
               title="Instalar la app"
-              className="flex size-10 items-center justify-center rounded-lg border border-brand-accent/20 bg-brand-accent/10 text-brand-accent hover:bg-brand-accent hover:text-black transition-colors"
+              className="hidden min-[1200px]:flex size-10 items-center justify-center rounded-lg border border-brand-accent/20 bg-brand-accent/10 text-brand-accent hover:bg-brand-accent hover:text-black transition-colors"
             >
               <Smartphone aria-hidden="true" className="size-4" />
             </button>
@@ -87,7 +87,7 @@ export default function Navbar() {
           </Link>
           <button
             onClick={() => handleOpenEnrollment('adult')}
-            className="bg-brand-accent/10 border border-brand-accent/20 hover:bg-brand-accent hover:text-black text-brand-accent font-bold px-2.5 sm:px-4 py-2 rounded-xl text-[10px] sm:text-xs transition-all cursor-pointer active:scale-95 uppercase tracking-wide whitespace-nowrap"
+            className="hidden min-[1200px]:flex bg-brand-accent/10 border border-brand-accent/20 hover:bg-brand-accent hover:text-black text-brand-accent font-bold px-2.5 sm:px-4 py-2 rounded-xl text-[10px] sm:text-xs transition-all cursor-pointer active:scale-95 uppercase tracking-wide whitespace-nowrap"
           >
             CLASE DEMO GRATIS
           </button>

@@ -74,6 +74,7 @@ export interface StudentDocumentSummary {
 	fileSize: number
 	reviewNotes: string | null
 	uploadedAt: string
+	url?: string | null
 }
 
 export interface StudentTechnique {
@@ -202,6 +203,16 @@ export interface AdminDashboardSummary {
 	}
 }
 
+export interface AdminInstructorCandidate {
+	studentId: string
+	userId: string
+	name: string
+	email: string
+	memberNumber: string | null
+	currentRank: string | null
+	isInstructor: boolean
+}
+
 export interface AdminEnrollmentSummary {
 	id: string
 	applicantName: string | null
@@ -257,10 +268,23 @@ export interface AdminStudentTechnique {
 	technique: AdminTechniqueSummary
 }
 
+export interface AdminStudentAttendanceRecord {
+	id: string
+	date: string
+	present: boolean
+	hoursTrained: number
+	sessionType: string | null
+	status: string
+	className: string | null
+	confirmedByName: string | null
+	notes: string | null
+}
+
 export interface AdminStudentDetail {
 	id: string
 	firstName: string
 	lastName: string
+	gender: string | null
 	memberNumber: string | null
 	currentRank: string | null
 	currentRankOrder: number | null
@@ -277,6 +301,7 @@ export interface AdminStudentDetail {
 	rankHistory: AdminRankHistoryEntry[]
 	availableRanks: AdminBeltRankSummary[]
 	techniques: AdminStudentTechnique[]
+	attendanceHistory: AdminStudentAttendanceRecord[]
 	rankAwardedAt: string | null
 	attendancePercent: number | null
 	attendedCount: number
