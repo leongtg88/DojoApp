@@ -163,23 +163,132 @@ export const ADULT_RANKS: CurriculumRank[] = [
 
   { id: 'belt-adult-11-marron-oscuro', order: 11, name: 'Marrón-Negra', kyuDan: '1ST KYU', japaneseName: 'Ik-kyu', kanji: '一級', beltColor: '#5D4037', beltSecondaryColor: '#212121', minMonths: 30, maxMonths: 31, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin'] },
 
-  { id: 'belt-adult-12-negro', order: 12, name: 'Shodan', kyuDan: 'SHODAN (1ST DAN)', japaneseName: '1st Dan', kanji: '初段', beltColor: '#212121', description: '1er Dan. Edad mínima 18 años. 36 meses mínimos o a discreción del Sensei.', minMonths: 36, maxMonths: 43, isMaximumRank: false, katas: ['Bassai Sho', 'Kosokun Sho', 'Matsukaze', 'Matsumura Rohai', 'Heiku', 'Sanseiru'] },
-
-  { id: 'belt-adult-13-nidan', order: 13, name: 'Nidan', kyuDan: 'NIDAN (2ND DAN)', japaneseName: '2nd Dan', kanji: '弐段', beltColor: '#212121', description: '2do Dan. Edad mínima 20 años. 24 meses mínimos o a discreción del Sensei.', minMonths: 24, maxMonths: null, isMaximumRank: false, katas: ['Chinto', 'Nipaipo', 'Rohai Nidan', 'Tensho', 'Paiku', 'Annanko'] },
-
-  { id: 'belt-adult-14-sandan', order: 14, name: 'Sandan', kyuDan: 'SANDAN (3RD DAN)', japaneseName: '3rd Dan', kanji: '参段', beltColor: '#212121', description: '3er Dan. Edad mínima 23 años. 36 meses mínimos o a discreción del Sensei.', minMonths: 36, maxMonths: null, isMaximumRank: false, katas: ['Gojushiho', 'Tomari no Bassai', 'Seisan', 'Shiho Kosokun', 'Saifa', 'Shisochin'] },
-
-  { id: 'belt-adult-15-yondan', order: 15, name: 'Yondan', kyuDan: 'YONDAN (4TH DAN)', japaneseName: '4th Dan', kanji: '四段', beltColor: '#212121', description: '4to Dan. Edad mínima 27 años. 48 meses mínimos o a discreción del Sensei.', minMonths: 48, maxMonths: null, isMaximumRank: false, katas: ['Juroku', 'Anan', 'Suparinpei', 'Unshu', 'Arakaki Sochin', 'Shinpa'] },
-
-  { id: 'belt-adult-16-godan', order: 16, name: 'Godan', kyuDan: 'GODAN (5TH DAN)', japaneseName: '5th Dan', kanji: '五段', beltColor: '#212121', description: '5to Dan. Edad mínima 32 años. 60 meses mínimos o a discreción del Sensei.', minMonths: 60, maxMonths: null, isMaximumRank: false, katas: ['Chibana no Kusanku', 'Anan Dai', 'Pachu', 'Ohan', 'Chatanyara Kusanku', 'Wanshu', 'Naihanchin Shodan'] },
-
-  { id: 'belt-adult-17-rokkudan', order: 17, name: 'Rokkudan', kyuDan: 'ROKKUDAN (6TH DAN)', japaneseName: '6th Dan', kanji: '六段', beltColor: '#212121', description: '6to Dan. Edad mínima 48 años. 72 meses mínimos o a discreción del Sensei.', minMonths: 72, maxMonths: null, isMaximumRank: false, katas: ['Pappuren', 'Ohan Dai', 'Myojo', 'Chinte', 'Ishimine no Bassai', 'Naihanchin Nidan'] },
-
-  { id: 'belt-adult-18-nanadan', order: 18, name: 'Nanadan', kyuDan: 'NANADAN (7TH DAN)', japaneseName: '7th Dan', kanji: '七段', beltColor: '#212121', description: '7mo Dan. Edad mínima 55 años. 84 meses mínimos o a discreción del Sensei.', minMonths: 84, maxMonths: null, isMaximumRank: false, katas: ['Hakkaku', 'Nepai', 'Seiryu', 'Oyadomari no Bassai', 'Naihanchin Sandan'] },
-
-  { id: 'belt-adult-19-hachidan', order: 19, name: 'Hachidan', kyuDan: 'HACHIDAN (8TH DAN)', japaneseName: '8th Dan', kanji: '八段', beltColor: '#212121', description: '8vo Dan. Edad mínima 63 años. 96 meses mínimos o a discreción del Sensei.', minMonths: 96, maxMonths: null, isMaximumRank: false, katas: ['Happo Sho', 'Hakutsuru', 'Haffa'] },
-
-  { id: 'belt-adult-20-kyudan', order: 20, name: 'Kyudan', kyuDan: 'KYUDAN (9TH DAN)', japaneseName: '9th Dan', kanji: '九段', beltColor: '#212121', description: '9no Dan. Edad mínima 72 años. 108 meses mínimos o a discreción del Sensei.', minMonths: 108, maxMonths: null, isMaximumRank: true, katas: [] },
+ { 
+    id: 'belt-adult-12-negro', 
+    order: 12, 
+    name: 'Shodan', 
+    kyuDan: 'SHODAN (1ST DAN)', 
+    japaneseName: '1st Dan', 
+    kanji: '初段', 
+    beltColor: '#212121', 
+    description: '1er Dan. Edad mínima 18 años. 12 meses mínimos o a discreción del Sensei.', 
+    minMonths: 12, 
+    maxMonths: null, 
+    isMaximumRank: false, 
+    katas: ['Bassai Dai', 'Seienchin', 'Kosokun Dai', 'Niseishi', 'Kururunfa', 'Seipai', 'Sanchin'] 
+  },
+  { 
+    id: 'belt-adult-13-nidan', 
+    order: 13, 
+    name: 'Nidan', 
+    kyuDan: 'NIDAN (2ND DAN)', 
+    japaneseName: '2nd Dan', 
+    kanji: '弐段', 
+    beltColor: '#212121', 
+    description: '2do Dan. Edad mínima 20 años. 24 meses mínimos o a discreción del Sensei.', 
+    minMonths: 24, 
+    maxMonths: null, 
+    isMaximumRank: false, 
+    katas: ['Bassai Sho', 'Kosokun Sho', 'Matsukaze', 'Matsumura Rohai', 'Heiku', 'Sanseiru'] 
+  },
+  { 
+    id: 'belt-adult-14-sandan', 
+    order: 14, 
+    name: 'Sandan', 
+    kyuDan: 'SANDAN (3RD DAN)', 
+    japaneseName: '3rd Dan', 
+    kanji: '参段', 
+    beltColor: '#212121', 
+    description: '3er Dan. Edad mínima 23 años. 36 meses mínimos o a discreción del Sensei.', 
+    minMonths: 36, 
+    maxMonths: null, 
+    isMaximumRank: false, 
+    katas: ['Chinto', 'Nipaipo', 'Rohai Nidan', 'Tensho', 'Paiku', 'Annanko'] 
+  },
+  { 
+    id: 'belt-adult-15-yondan', 
+    order: 15, 
+    name: 'Yondan', 
+    kyuDan: 'YONDAN (4TH DAN)', 
+    japaneseName: '4th Dan', 
+    kanji: '四段', 
+    beltColor: '#212121', 
+    description: '4to Dan. Edad mínima 27 años. 48 meses mínimos o a discreción del Sensei.', 
+    minMonths: 48, 
+    maxMonths: null, 
+    isMaximumRank: false, 
+    katas: ['Gojushiho', 'Tomari no Bassai', 'Seisan', 'Shiho Kosokun', 'Saifa', 'Shisochin'] 
+  },
+  { 
+    id: 'belt-adult-16-godan', 
+    order: 16, 
+    name: 'Godan', 
+    kyuDan: 'GODAN (5TH DAN)', 
+    japaneseName: '5th Dan', 
+    kanji: '五段', 
+    beltColor: '#212121', 
+    description: '5to Dan. Edad mínima 32 años. 60 meses mínimos o a discreción del Sensei.', 
+    minMonths: 60, 
+    maxMonths: null, 
+    isMaximumRank: false, 
+    katas: ['Juroku', 'Anan', 'Suparinpei', 'Unshu', 'Arakaki Sochin', 'Shinpa'] 
+  },
+  { 
+    id: 'belt-adult-17-rokkudan', 
+    order: 17, 
+    name: 'Rokkudan', 
+    kyuDan: 'ROKKUDAN (6TH DAN)', 
+    japaneseName: '6th Dan', 
+    kanji: '六段', 
+    beltColor: '#212121', 
+    description: '6to Dan. Edad mínima 48 años. 72 meses mínimos o a discreción del Sensei.', 
+    minMonths: 72, 
+    maxMonths: null, 
+    isMaximumRank: false, 
+    katas: ['Chibana no Kusanku', 'Anan Dai', 'Pachu', 'Ohan', 'Chatanyara Kusanku', 'Wanshu', 'Naihanchin Shodan'] 
+  },
+  { 
+    id: 'belt-adult-18-nanadan', 
+    order: 18, 
+    name: 'Nanadan', 
+    kyuDan: 'NANADAN (7TH DAN)', 
+    japaneseName: '7th Dan', 
+    kanji: '七段', 
+    beltColor: '#212121', 
+    description: '7mo Dan. Edad mínima 55 años. 84 meses mínimos o a discreción del Sensei.', 
+    minMonths: 84, 
+    maxMonths: null, 
+    isMaximumRank: false, 
+    katas: ['Pappuren', 'Ohan Dai', 'Myojo', 'Chinte', 'Ishimine no Bassai', 'Naihanchin Nidan'] 
+  },
+  { 
+    id: 'belt-adult-19-hachidan', 
+    order: 19, 
+    name: 'Hachidan', 
+    kyuDan: 'HACHIDAN (8TH DAN)', 
+    japaneseName: '8th Dan', 
+    kanji: '八段', 
+    beltColor: '#212121', 
+    description: '8vo Dan. Edad mínima 63 años. 96 meses mínimos o a discreción del Sensei.', 
+    minMonths: 96, 
+    maxMonths: null, 
+    isMaximumRank: false, 
+    katas: ['Hakkaku', 'Nepai', 'Seiryu', 'Oyadomari no Bassai', 'Naihanchin Sandan'] 
+  },
+  { 
+    id: 'belt-adult-20-kyudan', 
+    order: 20, 
+    name: 'Kyudan', 
+    kyuDan: 'KYUDAN (9TH DAN)', 
+    japaneseName: '9th Dan', 
+    kanji: '九段', 
+    beltColor: '#212121', 
+    description: '9no Dan. Edad mínima 72 años. 108 meses mínimos o a discreción del Sensei.', 
+    minMonths: 108, 
+    maxMonths: null, 
+    isMaximumRank: true, 
+    katas: ['Happo Sho', 'Hakutsuru', 'Haffa'] 
+  },
 ]
 
 export const YOUTH_RANKS: CurriculumRank[] = [

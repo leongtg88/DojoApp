@@ -703,7 +703,7 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 														<span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-cyan-500/15 font-display text-sm font-extrabold text-cyan-100">{initials}</span>
 														<div className="min-w-0">
 															<div className="flex flex-wrap items-center gap-2">
-																<p className="truncate text-sm font-bold text-white">{student.firstName} {student.lastName}</p>
+																<Link href={`/dashboard/admin/alumnos/${student.id}`} title={`Ver ficha de ${student.firstName} ${student.lastName}`} className="truncate rounded text-sm font-bold text-white transition-colors hover:text-cyan-300 hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400">{student.firstName} {student.lastName}</Link>
 															</div>
 															<p className="mt-1 font-mono text-xs text-neutral-400">{student.memberNumber ?? '—'}</p>
 														</div>

@@ -892,7 +892,7 @@ const ToseiGusokuForm = () => {
                 onRemove={handleAdultoFotoRemove}
               />
               <FileDropZone
-                label="Identificación (Cédula y/o Pasaporte) *"
+                label="Identificación (Cédula y Pasaporte) *"
                 files={formData.identAdulto}
                 previews={formData.identAdultoPreview}
                 error={errors.identAdulto}

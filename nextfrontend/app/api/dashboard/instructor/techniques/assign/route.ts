@@ -61,16 +61,16 @@ export async function PUT(request: Request) {
 
   const desired = new Set(requestedIds)
 
-  const { added, removed } = await db.$transaction(async (transaction) => {
+  const { added, removed, skipped } = await db.$transaction(async (transaction) => {
     const existing = await transaction.studentTechnique.findMany({
-      where: { studentId: student.id, techniqueId: { in: requestedIds } },
+      where: { studentId: student.id },
       select: { id: true, techniqueId: true, approved: true, evaluation: { select: { id: true } } },
     })
     const existingByTechnique = new Map(existing.map((entry) => [entry.techniqueId, entry]))
 
-    const toRemove = existing
-      .filter((entry) => !desired.has(entry.techniqueId) && !entry.approved && entry.evaluation === null)
-      .map((entry) => entry.id)
+    const unmarked = existing.filter((entry) => !desired.has(entry.techniqueId))
+    const toRemove = unmarked.filter((entry) => !entry.approved && entry.evaluation === null).map((entry) => entry.id)
+    const skipped = unmarked.length - toRemove.length
 
     if (toRemove.length > 0) {
       await transaction.studentTechnique.deleteMany({ where: { id: { in: toRemove } } })
@@ -87,8 +87,8 @@ export async function PUT(request: Request) {
       addedCount = creation.count
     }
 
-    return { added: addedCount, removed: toRemove.length }
+    return { added: addedCount, removed: toRemove.length, skipped }
   })
 
-  return NextResponse.json({ ok: true, added, removed })
+  return NextResponse.json({ ok: true, added, removed, skipped })
 }

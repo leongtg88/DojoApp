@@ -156,14 +156,16 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 
 	const currentRankInfo = student.currentRank ? student.availableRanks.find((rank) => rank.name === student.currentRank) : undefined
 	const nextRank = student.nextRankName ? student.availableRanks.find((rank) => rank.name === student.nextRankName) : undefined
-	const requiredKatas = nextRank?.techniques ?? []
+	const assignedTechniqueIds = new Set(student.techniques.map((entry) => entry.technique.id))
+	const nextRankTechniques = nextRank?.techniques ?? []
+	const requiredKatas = nextRankTechniques.filter((technique) => assignedTechniqueIds.has(technique.id))
 	const masteredCount = student.techniques.filter(({ approved }) => approved).length
 	const masteredTowardNext = student.techniques.filter((entry) => entry.approved && requiredKatas.some((required) => required.id === entry.technique.id)).length
 	const nextRankPercent = requiredKatas.length > 0 ? Math.round((masteredTowardNext / requiredKatas.length) * 100) : 0
 	const eligibleRanks = student.availableRanks.filter((rank) => rank.order > (student.currentRankOrder ?? 0))
 
 	const availableTechniques = [...new Map(student.availableRanks.flatMap((rank) => rank.techniques).map((technique) => [technique.id, technique])).values()]
-	const assignedTechniqueIds = student.techniques.map((entry) => entry.technique.id)
+	const assignedTechniques = student.techniques.map((entry) => ({ id: entry.technique.id, approved: entry.approved }))
 
 	return (
 		<div className={embedded ? 'w-full' : 'mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8'} role={embedded ? undefined : 'main'}>
@@ -311,14 +313,24 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 						<div className="flex flex-wrap items-start justify-between gap-2">
 							<div>
 								<h2 className="font-display text-base font-bold text-white">Katas requeridas hacia {student.nextRankName ?? 'el grado máximo'}</h2>
-								<p className="mt-1 text-xs text-neutral-400">Estas katas determinan el {nextRankPercent}% de avance al siguiente grado.</p>
+								<p className="mt-1 text-xs text-neutral-400">Se muestran las katas del plan del grado que el alumno tiene marcadas en su expediente. Desmarcar una kata en &ldquo;Asignar katas&rdquo; la quita de aquí.</p>
 							</div>
 							<span className="text-xs font-semibold text-cyan-300">{masteredTowardNext} de {requiredKatas.length} dominadas</span>
 						</div>
 						{requiredKatas.length === 0 ? (
-							<p className="mt-4 rounded-md border border-dashed border-neutral-700 bg-[#0d1117] px-4 py-8 text-center text-sm text-neutral-400">
-								No hay katas vinculadas a {student.nextRankName ?? 'este grado'}. Usa la opción &ldquo;Asignar katas&rdquo; desde la gestión de grados.
-							</p>
+							<div className="mt-4 rounded-md border border-dashed border-neutral-700 bg-[#0d1117] px-4 py-8 text-center text-sm text-neutral-400">
+								{nextRankTechniques.length === 0 ? (
+									<>
+										El grado {student.nextRankName ?? 'siguiente'} no tiene katas en el plan. Configúralas en{' '}
+										<Link className="font-semibold text-cyan-300 hover:text-cyan-200" href="/dashboard/admin/grados-y-katas">Grados y katas</Link>.
+									</>
+								) : (
+									<>
+										El alumno no tiene marcadas katas del plan de {student.nextRankName ?? 'este grado'}. Usa &ldquo;Asignar katas&rdquo; para seleccionarlas o revisa el plan en{' '}
+										<Link className="font-semibold text-cyan-300 hover:text-cyan-200" href="/dashboard/admin/grados-y-katas">Grados y katas</Link>.
+									</>
+								)}
+							</div>
 						) : (
 							<div className="mt-4 divide-y divide-neutral-800 overflow-hidden rounded-lg border border-neutral-800 bg-[#0d1117]">
 								{requiredKatas.map((required) => {
@@ -586,7 +598,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 				studentName={studentFullName}
 				isOpen={isKataAssignOpen}
 				onClose={() => setIsKataAssignOpen(false)}
-				assignedTechniqueIds={assignedTechniqueIds}
+				assignedTechniques={assignedTechniques}
 				availableTechniques={availableTechniques}
 			/>
 
