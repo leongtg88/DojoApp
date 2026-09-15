@@ -1,0 +1,4 @@
+# No subir secretos en el deploy
+.env
+.env.*
+!.env.example

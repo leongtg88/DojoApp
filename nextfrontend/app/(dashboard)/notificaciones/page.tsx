@@ -12,5 +12,5 @@ export default async function NotificationsPage() {
 
   const page = await listNotifications(session.user.id, 20)
 
-  return <NotificationsCenter initialItems={page.items} initialNextCursor={page.nextCursor} />
+  return <NotificationsCenter initialItems={page.items} initialNextCursor={page.nextCursor} initialUnreadCount={page.unreadCount} />
 }

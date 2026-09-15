@@ -173,6 +173,11 @@ export interface AdminStudentSummary {
 	email: string | null
 	accountStatus: 'SIN_CUENTA' | 'INVITADO' | 'ACTIVO'
 	branchName: string
+	branchId: string | null
+	dateOfBirth: string | null
+	contactPhone: string | null
+	medicalInfo: string | null
+	emergencyContact: string | null
 	activeClassNames: string[],
 	activeScheduleIds: string[],
 	planId: string | null,

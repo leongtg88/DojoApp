@@ -1,0 +1,7 @@
+#!/bin/sh
+# Hook gestionado (versionado en .githooks). Se activa con:
+#   git config core.hooksPath .githooks
+# Bloquea commits que incluyan secretos o archivos .env reales.
+
+root="$(git rev-parse --show-toplevel)"
+node "$root/nextfrontend/scripts/guard-env.mjs"

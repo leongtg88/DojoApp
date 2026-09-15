@@ -61,9 +61,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         // Un alumno solo puede entrar si su expediente proviene de una
-        // inscripción (tiene al menos un enrolment). Las cuentas sin
-        // inscripción (auto-registradas o huérfanas) quedan bloqueadas:
-        // el acceso es exclusivo por invitación de la escuela.
+        // inscripción. Las cuentas sin expediente (auto-registradas u
+        // huérfanas) quedan bloqueadas: el acceso es exclusivo por invitación
+        // de la escuela. Un expediente puede venir de la conversión de una
+        // inscripción (relación `enrollments` en el enrollment principal) o de
+        // un aspirante familiar (relación `enrollmentApplicant`), por lo que se
+        // aceptan ambas.
         // El gate aplica SOLO a cuentas cuyo único rol es STUDENT: el staff
         // multirol (admin/instructor) nunca queda bloqueado por este chequeo.
         const staffRoles = user.roles.filter((role) => role !== 'STUDENT')
@@ -71,7 +74,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const studentWithEnrollment = await db.student.findFirst({
             where: {
               userId: user.id,
-              enrollments: { some: {} },
+              OR: [
+                { enrollments: { some: {} } },
+                { enrollmentApplicant: { isNot: null } },
+              ],
             },
             select: { id: true },
           })

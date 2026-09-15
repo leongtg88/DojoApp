@@ -1,0 +1,4 @@
+# Secretos: no indexar con Continue
+.env
+.env.*
+!.env.example

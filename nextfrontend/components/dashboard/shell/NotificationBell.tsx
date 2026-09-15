@@ -13,6 +13,7 @@ interface NotificationBellProps {
 interface NotificationResponse {
     items: NotificationView[]
     nextCursor: string | null
+    unreadCount: number
 }
 
 export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellProps) {
@@ -34,7 +35,7 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
                 if (!active) return
 
                 setItems(data.items)
-                setUnreadCount(data.items.filter((item) => item.readAt === null).length)
+                setUnreadCount(data.unreadCount)
             } catch (error) {
                 console.error('[notifications] No fue posible cargar las notificaciones', error)
             }
@@ -131,7 +132,7 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
                             <Link
                                 className={`flex gap-2.5 border-b border-neutral-800/60 px-3 py-2.5 transition-colors last:border-b-0 hover:bg-neutral-800/50 ${item.readAt === null ? 'bg-cyan-500/5' : ''
                                     }`}
-                                href="/dashboard/notificaciones"
+                                href={item.link ?? '/dashboard/notificaciones'}
                                 key={item.id}
                                 onClick={() => void handleOpenNotification(item)}
                             >

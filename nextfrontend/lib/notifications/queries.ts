@@ -15,6 +15,7 @@ export interface NotificationView {
 interface NotificationCursorPage {
   items: NotificationView[]
   nextCursor: string | null
+  unreadCount: number
 }
 
 function toView(notification: {
@@ -48,12 +49,15 @@ export async function listNotifications(
   limit = 20,
   cursor?: string | null,
 ): Promise<NotificationCursorPage> {
-  const notifications = await db.notification.findMany({
-    where: { userId },
-    orderBy: { createdAt: 'desc' },
-    take: limit + 1,
-    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
-  })
+  const [notifications, unreadCount] = await Promise.all([
+    db.notification.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+    }),
+    getUnreadNotificationCount(userId),
+  ])
 
   const hasMore = notifications.length > limit
   const items = (hasMore ? notifications.slice(0, limit) : notifications).map(toView)
@@ -61,6 +65,7 @@ export async function listNotifications(
   return {
     items,
     nextCursor: hasMore ? (items[items.length - 1]?.id ?? null) : null,
+    unreadCount,
   }
 }
 

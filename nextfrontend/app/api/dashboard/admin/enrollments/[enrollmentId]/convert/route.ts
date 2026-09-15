@@ -106,26 +106,52 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
     : []
 
   const student = await db.$transaction(async (transaction) => {
-    const createdStudent = await transaction.student.create({
-      data: {
+    // Evita duplicar expedientes si la solicitud se reenvió y se convirtió otra vez:
+    // reutiliza un alumno existente de la misma escuela con igual nombre y fecha de nacimiento.
+    const existingStudent = await transaction.student.findFirst({
+      where: {
         schoolId: enrollment.schoolId!,
-        branchId: enrollment.branchId!,
-        firstName: input.firstName,
-        lastName: input.lastName,
+        firstName: { equals: input.firstName, mode: 'insensitive' },
+        lastName: { equals: input.lastName, mode: 'insensitive' },
         dateOfBirth,
-        gender,
-        email: enrollment.contactEmail,
-        contactPhone: input.contactPhone ?? enrollment.contactPhone,
-        medicalInfo: input.medicalInfo,
-        emergencyContact: input.emergencyContact,
-        currentRank: defaultRank?.name ?? null,
-        currentRankId: defaultRank?.id ?? null,
-        registrationData: (applicant?.profileData ?? enrollment.registrationData) ?? Prisma.JsonNull,
       },
-      select: { id: true },
+      select: { id: true, email: true, contactPhone: true, medicalInfo: true, emergencyContact: true, gender: true },
     })
 
-    if (defaultRank) {
+    const createdStudent = existingStudent
+      ? await transaction.student.update({
+          where: { id: existingStudent.id },
+          data: {
+            email: existingStudent.email ?? enrollment.contactEmail,
+            contactPhone: existingStudent.contactPhone ?? input.contactPhone ?? enrollment.contactPhone,
+            medicalInfo: existingStudent.medicalInfo ?? input.medicalInfo,
+            emergencyContact: existingStudent.emergencyContact ?? input.emergencyContact,
+            gender: existingStudent.gender ?? gender,
+          },
+          select: { id: true },
+        })
+      : await transaction.student.create({
+          data: {
+            schoolId: enrollment.schoolId!,
+            branchId: enrollment.branchId!,
+            firstName: input.firstName,
+            lastName: input.lastName,
+            dateOfBirth,
+            gender,
+            email: enrollment.contactEmail,
+            contactPhone: input.contactPhone ?? enrollment.contactPhone,
+            medicalInfo: input.medicalInfo,
+            emergencyContact: input.emergencyContact,
+            currentRank: defaultRank?.name ?? null,
+            currentRankId: defaultRank?.id ?? null,
+            registrationData: (applicant?.profileData ?? enrollment.registrationData) ?? Prisma.JsonNull,
+          },
+          select: { id: true },
+        })
+
+    // Solo se inicia el grado/plan de katas para expedientes nuevos; un alumno
+    // reutilizado conserva su historial de grados y técnicas.
+    if (!existingStudent && defaultRank) {
       await transaction.studentRankHistory.create({
         data: {
           studentId: createdStudent.id,

@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 
     const existingUser = await db.user.findUnique({
       where: { email: parsed.data.email },
-      select: { id: true },
+      select: { id: true, studentProfile: { select: { id: true } } },
     })
 
     // Si el estudiante ya tiene una cuenta de acceso y no coincide con quien acepta la invitación.
@@ -71,6 +71,16 @@ export async function POST(request: NextRequest) {
     // Ya existe una cuenta con este correo pero el estudiante aún no está vinculado:
     // se vincula la cuenta existente para activar el dashboard en lugar de crear otra.
     if (existingUser) {
+      // El correo ya pertenece a una cuenta vinculada a OTRO alumno (p. ej. hermanos
+      // que comparten el correo de contacto). `Student.userId` es único, así que no se
+      // puede reasignar; se devuelve un error claro en lugar de fallar por constraint.
+      if (existingUser.studentProfile && existingUser.studentProfile.id !== invitation.studentId) {
+        return NextResponse.json(
+          { error: 'Este correo ya está vinculado a otro alumno. Cada alumno necesita su propio correo para crear su cuenta.' },
+          { status: 409 },
+        )
+      }
+
       await db.$transaction(async (transaction) => {
         await transaction.student.update({
           where: { id: invitation.studentId },

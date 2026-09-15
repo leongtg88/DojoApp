@@ -138,12 +138,12 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 				? {
 						firstName: student.firstName,
 						lastName: student.lastName,
-						dateOfBirth: '',
+						dateOfBirth: student.dateOfBirth ?? '',
 						gender: student.gender ?? '',
-						contactPhone: '',
-						medicalInfo: '',
-						emergencyContact: '',
-						branchId: '',
+						contactPhone: student.contactPhone ?? '',
+						medicalInfo: student.medicalInfo ?? '',
+						emergencyContact: student.emergencyContact ?? '',
+						branchId: student.branchId ?? '',
 						beltRankId: '',
 					}
 				: emptyForm,
@@ -255,6 +255,7 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 				body: JSON.stringify({
 					firstName: form.firstName.trim() || undefined,
 					lastName: form.lastName.trim() || undefined,
+					dateOfBirth: form.dateOfBirth || undefined,
 					gender: form.gender || null,
 					contactPhone: form.contactPhone.trim() || null,
 					medicalInfo: form.medicalInfo.trim() || null,
@@ -343,7 +344,7 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 						</label>
 						<label className="text-sm font-semibold text-neutral-200" htmlFor="student-branch">
 							Sucursal *
-							<select id="student-branch" value={form.branchId} onChange={(event) => updateField('branchId', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white">
+							<select id="student-branch" value={form.branchId} disabled={mode === 'edit'} onChange={(event) => updateField('branchId', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white disabled:cursor-not-allowed disabled:opacity-60">
 								<option value="">Selecciona una sucursal</option>
 								{branches.map((branch) => (
 									<option key={branch.id} value={branch.id}>{branch.name}</option>

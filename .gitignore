@@ -1,0 +1,4 @@
+# Secretos / entorno — nunca versionar
+.env
+.env.*
+!.env.example

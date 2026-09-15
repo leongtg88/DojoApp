@@ -9,24 +9,26 @@ import { NOTIFICATION_PRIORITY_LABELS, NOTIFICATION_PRIORITY_STYLES, formatNotif
 interface NotificationsCenterProps {
     initialItems: NotificationView[]
     initialNextCursor: string | null
+    initialUnreadCount: number
 }
 
 interface NotificationResponse {
     items: NotificationView[]
     nextCursor: string | null
+    unreadCount: number
 }
 
-export function NotificationsCenter({ initialItems, initialNextCursor }: NotificationsCenterProps) {
+export function NotificationsCenter({ initialItems, initialNextCursor, initialUnreadCount }: NotificationsCenterProps) {
     const [items, setItems] = useState(initialItems)
     const [nextCursor, setNextCursor] = useState(initialNextCursor)
+    const [unreadCount, setUnreadCount] = useState(initialUnreadCount)
     const [loadingMore, setLoadingMore] = useState(false)
-
-    const unreadCount = items.filter((item) => item.readAt === null).length
 
     async function handleMarkAllRead() {
         try {
             await fetch('/api/dashboard/notifications', { method: 'PATCH' })
             setItems((current) => current.map((item) => ({ ...item, readAt: item.readAt ?? new Date().toISOString() })))
+            setUnreadCount(0)
         } catch (error) {
             console.error('[notifications] No fue posible marcar como leídas', error)
         }
@@ -38,6 +40,7 @@ export function NotificationsCenter({ initialItems, initialNextCursor }: Notific
         setItems((current) =>
             current.map((item) => (item.id === notification.id ? { ...item, readAt: new Date().toISOString() } : item)),
         )
+        setUnreadCount((current) => Math.max(0, current - 1))
 
         try {
             await fetch(`/api/dashboard/notifications/${notification.id}`, { method: 'PATCH' })

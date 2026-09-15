@@ -1,0 +1,4 @@
+# Secretos: no indexar con Codeium/Windsurf
+.env
+.env.*
+!.env.example

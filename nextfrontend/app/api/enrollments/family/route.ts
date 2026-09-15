@@ -184,19 +184,42 @@ export async function POST(request: Request) {
   try {
     enrollment = await db.enrollment.upsert({
       where: { contactEmail_status: { contactEmail: input.email.toLowerCase(), status: 'PENDING' } },
-      update: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, interest, registrationData: input.registrationData as Prisma.InputJsonValue, applicants: { deleteMany: {} } },
+      update: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, interest, registrationData: input.registrationData as Prisma.InputJsonValue, applicants: { deleteMany: { studentId: null } } },
       create: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactEmail: input.email.toLowerCase(), contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, interest, registrationData: input.registrationData as Prisma.InputJsonValue },
       select: { id: true },
     })
 
-    const applicants = await Promise.all(input.applicants.map((applicant) => db.enrollmentApplicant.create({ data: { enrollmentId: enrollment.id, name: applicant.name, dateOfBirth: new Date(`${applicant.dateOfBirth}T00:00:00.000Z`), profileData: applicant.profileData as Prisma.InputJsonValue }, select: { id: true } })))
+    // Aspirantes ya convertidos en alumnos: se conservan y se reutilizan en el
+    // mismo orden del formulario en lugar de recrearlos (evita duplicados y
+    // que pierdan sus documentos al reenviar la solicitud).
+    const existingConverted = await db.enrollmentApplicant.findMany({
+      where: { enrollmentId: enrollment.id, studentId: { not: null } },
+      select: { id: true, name: true, dateOfBirth: true },
+    })
+
+    const applicants: { id: string; reused: boolean }[] = await Promise.all(
+      input.applicants.map(async (applicant) => {
+        const dateOfBirth = new Date(`${applicant.dateOfBirth}T00:00:00.000Z`)
+        const match = existingConverted.find(
+          (entry) => entry.name.trim().toLowerCase() === applicant.name.trim().toLowerCase() && entry.dateOfBirth.getTime() === dateOfBirth.getTime(),
+        )
+        if (match) {
+          return { id: match.id, reused: true }
+        }
+        const created = await db.enrollmentApplicant.create({
+          data: { enrollmentId: enrollment.id, name: applicant.name, dateOfBirth, profileData: applicant.profileData as Prisma.InputJsonValue },
+          select: { id: true },
+        })
+        return { id: created.id, reused: false }
+      }),
+    )
 
     try {
       for (const [key, value] of formData.entries()) {
         if (!key.startsWith('document-') || !(value instanceof File)) continue
         const [, applicantIndex, type] = key.split('-')
         const applicant = applicants[Number(applicantIndex)]
-        if (!applicant) continue
+        if (!applicant || applicant.reused) continue
         let storageKey = ''
         try {
           storageKey = `enrollments/${enrollment.id}/${applicant.id}/${crypto.randomUUID()}-${sanitizeStorageName(value.name)}`
