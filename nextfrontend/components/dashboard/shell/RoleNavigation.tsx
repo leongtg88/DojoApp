@@ -66,10 +66,14 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
     ],
 }
 
-export function getRoleNavigation(role: DashboardRole, pendingEnrollmentCount = 0) {
-    return navigationByRole[role].map((item) =>
-        item.href === '/dashboard/admin/inscripciones' && pendingEnrollmentCount > 0
-            ? { ...item, badge: pendingEnrollmentCount }
-            : item
-    )
+export function getRoleNavigation(role: DashboardRole, pendingEnrollmentCount = 0, pendingDocumentCount = 0) {
+    return navigationByRole[role].map((item) => {
+        if (item.href === '/dashboard/admin/inscripciones' && pendingEnrollmentCount > 0) {
+            return { ...item, badge: pendingEnrollmentCount }
+        }
+        if (item.href === '/dashboard/admin/alumnos' && pendingDocumentCount > 0) {
+            return { ...item, badge: pendingDocumentCount }
+        }
+        return item
+    })
 }

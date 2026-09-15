@@ -9,6 +9,7 @@ export interface NotificationContent {
 
 export interface NotificationContext {
   studentName: string
+  studentId: string
   count: number
   data: Record<string, unknown>
 }
@@ -19,6 +20,7 @@ const PROGRESS_LINK = '/dashboard/estudiante/progreso'
 const SCHEDULE_LINK = '/dashboard/estudiante/horario'
 const ATTENDANCE_LINK = '/dashboard/estudiante/asistencia'
 const PROFILE_LINK = '/dashboard/estudiante/perfil'
+const ADMIN_STUDENTS_LINK = '/dashboard/admin/alumnos'
 
 function readString(data: Record<string, unknown>, key: string): string | null {
   const value = data[key]
@@ -118,6 +120,15 @@ const builders: Record<NotificationType, NotificationBuilder> = {
       title: 'Documento rechazado',
       body: reason ? `${documentName} fue rechazado: ${reason}` : `${documentName} fue rechazado.`,
       link: PROFILE_LINK,
+      priority: 'ACTION',
+    }
+  },
+  DOCUMENT_UPLOADED: ({ studentName, studentId, data }) => {
+    const documentName = readString(data, 'documentName') ?? 'un documento'
+    return {
+      title: 'Documento subido',
+      body: `${studentName} subió ${documentName}. Revísalo para aprobarlo o rechazarlo.`,
+      link: `${ADMIN_STUDENTS_LINK}/${studentId}`,
       priority: 'ACTION',
     }
   },

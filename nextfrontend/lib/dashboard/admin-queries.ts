@@ -1,5 +1,5 @@
 import { db } from '@/lib/db'
-import { ClassEnrollmentStatus, StudentStatus, EnrollmentStatus } from '@/lib/generated/prisma'
+import { ClassEnrollmentStatus, StudentStatus, EnrollmentStatus, StudentDocumentStatus } from '@/lib/generated/prisma'
 import { computeBirthdays } from '@/lib/dashboard/birthdays'
 import { ageFromDob, programForAge } from '@/lib/dashboard/program'
 import { computeBalance, formatTime, monthRange } from '@/lib/dashboard/balance'
@@ -228,6 +228,22 @@ export async function getAdminPendingEnrollmentCount(userId: string): Promise<nu
     where: {
       ...(scopeSchoolFilter(scope)),
       status: EnrollmentStatus.PENDING,
+    },
+  })
+}
+
+export async function getAdminPendingDocumentCount(userId: string): Promise<number> {
+  const scope = await getAdminScope(userId)
+
+  if (!scope) {
+    return 0
+  }
+
+  return db.studentDocument.count({
+    where: {
+      status: StudentDocumentStatus.PENDING,
+      studentId: { not: null },
+      ...(scope.isSuperAdmin ? {} : { student: { schoolId: scope.schoolId! } }),
     },
   })
 }

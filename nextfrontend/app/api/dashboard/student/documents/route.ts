@@ -2,9 +2,18 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
 import { createPrivateDocumentUrl, uploadPrivateDocument, sanitizeStorageName } from '@/lib/document-storage'
+import { notifySchoolStaff } from '@/lib/notifications/create'
 import { NextResponse } from 'next/server'
 
 const documentTypes = ['PROFILE_PHOTO', 'IDENTITY', 'BIRTH_CERTIFICATE', 'PASSPORT', 'MEDICAL_CERTIFICATE', 'OTHER'] as const
+const DOCUMENT_TYPE_LABELS: Record<typeof documentTypes[number], string> = {
+  PROFILE_PHOTO: 'la foto de perfil',
+  IDENTITY: 'el documento de identidad',
+  BIRTH_CERTIFICATE: 'el acta de nacimiento',
+  PASSPORT: 'el pasaporte',
+  MEDICAL_CERTIFICATE: 'el certificado médico',
+  OTHER: 'un documento',
+}
 const allowedMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
 const maxFileSize = 5 * 1024 * 1024
 
@@ -56,7 +65,25 @@ export async function POST(request: Request) {
         data: { enrollmentId: student.enrollmentId, studentId: student.id, type: type as typeof documentTypes[number], fileName: file.name, storageKey, mimeType: file.type, fileSize: file.size },
       })
     })
-    return NextResponse.json({ ok: true, id: document.id })
+    await notifySchoolStaff({
+      type: 'DOCUMENT_UPLOADED',
+      studentId: student.id,
+      data: { documentName: DOCUMENT_TYPE_LABELS[type as typeof documentTypes[number]] },
+    })
+    return NextResponse.json({
+      ok: true,
+      id: document.id,
+      document: {
+        id: document.id,
+        type: document.type,
+        status: document.status,
+        fileName: document.fileName,
+        mimeType: document.mimeType,
+        fileSize: document.fileSize,
+        reviewNotes: document.reviewNotes,
+        uploadedAt: document.uploadedAt.toISOString(),
+      },
+    })
   } catch (uploadError) {
     console.error('Error guardando documento de estudiante:', uploadError)
     const detail = uploadError instanceof Error ? uploadError.message : 'No fue posible guardar el documento'

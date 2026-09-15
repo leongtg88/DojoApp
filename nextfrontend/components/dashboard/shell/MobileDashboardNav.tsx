@@ -8,11 +8,12 @@ import { getRoleNavigation } from './RoleNavigation'
 interface MobileDashboardNavProps {
     activeRole: DashboardRole
     pendingEnrollmentCount?: number
+    pendingDocumentCount?: number
 }
 
-export function MobileDashboardNav({ activeRole, pendingEnrollmentCount = 0 }: MobileDashboardNavProps) {
+export function MobileDashboardNav({ activeRole, pendingEnrollmentCount = 0, pendingDocumentCount = 0 }: MobileDashboardNavProps) {
     const pathname = usePathname()
-    const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount)
+    const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount, pendingDocumentCount)
     const currentHref = navigation
         .filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))
         .sort((a, b) => b.href.length - a.href.length)[0]?.href

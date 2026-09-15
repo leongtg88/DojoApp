@@ -548,7 +548,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 
 			<AdminStudentMedia key={student.id} documents={student.documents} />
 
-			<AdminStudentDocuments documents={student.documents} studentId={student.id} />
+			<AdminStudentDocuments key={student.id} documents={student.documents} studentId={student.id} />
 
 			<section className="mt-7 rounded-lg border border-neutral-800 bg-[#161b22] shadow-sm">
 				<div className="flex items-center justify-between border-b border-neutral-800 px-5 py-4">

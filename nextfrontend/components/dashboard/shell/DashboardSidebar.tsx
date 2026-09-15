@@ -13,11 +13,12 @@ interface DashboardSidebarProps {
     roles: DashboardRole[]
     userName: string | null | undefined
     pendingEnrollmentCount?: number
+    pendingDocumentCount?: number
 }
 
-export function DashboardSidebar({ onSignOut, activeRole, roles, userName, pendingEnrollmentCount = 0 }: DashboardSidebarProps) {
+export function DashboardSidebar({ onSignOut, activeRole, roles, userName, pendingEnrollmentCount = 0, pendingDocumentCount = 0 }: DashboardSidebarProps) {
     const pathname = usePathname()
-    const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount)
+    const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount, pendingDocumentCount)
     const activeHref = getPanelHref(activeRole)
     const currentHref = navigation
         .filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))
