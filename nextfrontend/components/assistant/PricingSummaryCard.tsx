@@ -352,7 +352,7 @@ export default function PricingSummaryCard({ draft }: { draft: EnrollmentDraft }
 
   return (
     <div className="max-w-[100%]  md:max-w-[85%] rounded-2xl border border-white/10 bg-zinc-800 p-3 text-sm shadow-sm">
-      <h4 className="font-semibold text-white">Resumen de tu cotización</h4>
+      <h4 className="font-semibold text-white">Resumen de precios</h4>
 
       <div className="mt-3 space-y-3 text-gray-300">
         <section>

@@ -137,11 +137,11 @@ HORARIO_NEXT_FROM_COTIZACION['Volver'] = 'clase_prueba_from_cotizacion';
 export const flow: Record<string, FlowNode> = {
   welcome: {
     message: 'Hola 👋, soy el asistente de Tosei Gusoku. ¿En qué puedo ayudarte hoy?',
-    quickReplies: ['Clase de prueba', 'Horarios', 'Precios & cotización', 'Qué necesito para empezar'],
+    quickReplies: ['Clase de prueba', 'Horarios', 'Precios', 'Qué necesito para empezar'],
     next: {
       'Clase de prueba': 'clase_prueba_confirm',
       Horarios: 'horarios',
-      'Precios & cotización': 'precio_nombre',
+      'Precios': 'precio_nombre',
       'Qué necesito para empezar': 'que_necesito',
     },
   },
@@ -161,7 +161,7 @@ export const flow: Record<string, FlowNode> = {
 
   clase_prueba_from_cotizacion: {
     getMessage: (draft) => {
-      const lines = ['Vamos a agendar tu clase de prueba. Usaremos estos datos de contacto de la cotización:'];
+      const lines = ['Vamos a agendar tu clase de prueba. Usaremos estos datos de contacto que nos diste:'];
       if (draft.whatsapp) lines.push(`\n📱 WhatsApp: ${draft.whatsapp}`);
       if (draft.email) lines.push(`📧 Email: ${draft.email}`);
       lines.push('\n¿Los usamos?');
@@ -381,11 +381,11 @@ export const flow: Record<string, FlowNode> = {
 
 
     ],
-    quickReplies: ['Descuentos familiares', 'Clases a domicilio', 'Quiero cotización', 'Reservar clase de prueba', 'Volver a precios', 'Volver al inicio'],
+    quickReplies: ['Descuentos familiares', 'Clases a domicilio', 'Ver precios', 'Reservar clase de prueba', 'Volver a precios', 'Volver al inicio'],
     next: {
       'Descuentos familiares': 'precios_familia',
       'Clases a domicilio': 'precios_domicilio',
-      'Quiero cotización': 'precio_nombre',
+      'Ver precios': 'precio_nombre',
       'Reservar clase de prueba': 'clase_prueba_confirm',
       'Volver a precios': 'precios',
       'Volver al inicio': 'welcome',
@@ -402,11 +402,11 @@ export const flow: Record<string, FlowNode> = {
       { kind: 'price', title: '3 hermanos 8+', value: 'RD$9,000/mes total', description: 'RD$3,000 c/u (ahorro RD$900). Inscripción: 1.5x.', badge: 'AHORRO RD$900' },
       { kind: 'price', title: 'Padre + hijo 5-7 años', value: 'RD$6,400/mes total', description: 'RD$3,200 c/u (ahorro RD$700). Inscripción 2x1.', badge: '2x1 INSCRIPCIÓN' },
     ],
-    quickReplies: ['Planes base', 'Clases a domicilio', 'Solicitar cotización por WhatsApp', 'Volver a precios', 'Volver al inicio'],
+    quickReplies: ['Planes base', 'Clases a domicilio', 'Solicitar precios por WhatsApp', 'Volver a precios', 'Volver al inicio'],
     next: {
       'Planes base': 'precios_base',
       'Clases a domicilio': 'precios_domicilio',
-      'Solicitar cotización por WhatsApp': 'cotizacion_whatsapp',
+      'Solicitar precios por WhatsApp': 'cotizacion_whatsapp',
       'Volver a precios': 'precios',
       'Volver al inicio': 'welcome',
     },
@@ -421,11 +421,11 @@ export const flow: Record<string, FlowNode> = {
       { kind: 'price', title: '8 sesiones grupo (2 alumnos)', value: 'RD$10,400/mes', description: 'RD$650/alumno/sesión · 8 sesiones' },
       { kind: 'price', title: '8 sesiones grupo (4 alumnos)', value: 'RD$14,400/mes', description: 'RD$450/alumno/sesión · 8 sesiones', badge: 'GRUPO' },
     ],
-    quickReplies: ['Planes base', 'Clases privadas', 'Solicitar cotización por WhatsApp', 'Volver a precios', 'Volver al inicio'],
+    quickReplies: ['Planes base', 'Clases privadas', 'Solicitar precios por WhatsApp', 'Volver a precios', 'Volver al inicio'],
     next: {
       'Planes base': 'precios_base',
       'Clases privadas': 'precios_privadas',
-      'Solicitar cotización por WhatsApp': 'cotizacion_whatsapp',
+      'Solicitar precios por WhatsApp': 'cotizacion_whatsapp',
       'Volver a precios': 'precios',
       'Volver al inicio': 'welcome',
     },
@@ -451,10 +451,10 @@ export const flow: Record<string, FlowNode> = {
       { kind: 'price', title: 'Por fin de semana', value: 'RD$2,000', description: 'Sábado + Domingo · 6 horas totales (3h c/u)' },
       { kind: 'price', title: 'Paquete mensual', value: 'RD$7,000/mes', description: '4 fines de semana · Pago único', badge: 'MEJOR VALOR' },
     ],
-    quickReplies: ['Clases privadas', 'Quiero cotización', 'Volver a precios', 'Volver al inicio'],
+    quickReplies: ['Clases privadas', 'Ver precios', 'Volver a precios', 'Volver al inicio'],
     next: {
       'Clases privadas': 'precios_privadas',
-      'Quiero cotización': 'precio_nombre',
+      'Ver precios': 'precio_nombre',
       'Volver a precios': 'precios',
       'Volver al inicio': 'welcome',
     },
@@ -479,18 +479,18 @@ export const flow: Record<string, FlowNode> = {
         originalPrice: 'RD$16,000', badge: '20% OFF',
       },
     ],
-    quickReplies: ['Planes base', 'Alto rendimiento', 'Quiero cotización', 'Volver a precios', 'Volver al inicio'],
+    quickReplies: ['Planes base', 'Alto rendimiento', 'Ver precios', 'Volver a precios', 'Volver al inicio'],
     next: {
       'Planes base': 'precios_base',
       'Alto rendimiento': 'precios_alto_rendimiento',
-      'Quiero cotización': 'precio_nombre',
+      'Ver precios': 'precio_nombre',
       'Volver a precios': 'precios',
       'Volver al inicio': 'welcome',
     },
   },
 
   cotizacion_whatsapp: {
-    message: 'Te estamos conectando con el equipo para enviarte una cotización personalizada.',
+    message: 'Te estamos conectando con el equipo para darte precios personalizados.',
     effect: { openWhatsApp: true, waText: 'quote' },
     quickReplies: ['Volver al inicio'],
     next: {
@@ -502,7 +502,7 @@ export const flow: Record<string, FlowNode> = {
      FLUJO COTIZACIÓN / SELECCIÓN DE PRECIO
   ─────────────────────────── */
   precio_nombre: {
-    message: 'Perfecto, vamos a armar tu cotización. Primero necesito algunos datos.\n\n¿Cuál es tu nombre completo?',
+    message: 'Perfecto, vamos a preparar tus precios. Primero necesito algunos datos.\n\n¿Cuál es tu nombre completo?',
     input: true,
     validation: 'name',
     placeholder: 'Ej. María Pérez',
@@ -605,7 +605,7 @@ export const flow: Record<string, FlowNode> = {
   },
 
   precio_resumen: {
-    message: 'Revisa tu cotización antes de enviar. Todo incluye carnet de federación, sello de uniforme y uniforme de principiante.',
+    message: 'Revisa tus precios antes de enviar. Todo incluye carnet de federación, sello de uniforme y uniforme de principiante.',
     summary: true,
     store: (draft, option) => {
       if (option === 'Agendar clase de cortesía') {
@@ -647,7 +647,7 @@ export const flow: Record<string, FlowNode> = {
   },
 
   precio_whatsapp_send: {
-    message: 'Abriendo WhatsApp con tu cotización completa...',
+    message: 'Abriendo WhatsApp con tus precios...',
     effect: { openWhatsApp: true, waText: 'cotizacion' },
     quickReplies: ['Volver al inicio'],
     next: {

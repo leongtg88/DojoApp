@@ -175,10 +175,10 @@ export default function Navbar() {
                   )}
                 </div>
               </div>
-              <div className="py-2 px-6 inline-block bg-current backdrop-blur-sm shadow-xl/30 border hover-color-change hover:bg-white hover:text-gray-700 font-regular rounded-lg mt-auto" style={{ animation: "border-color-change 10s infinite linear" }}>
+              <div className="py-2 px-6 inline-block bg-current backdrop-blur-sm shadow-xl/30 border border-current hover:bg-white hover:border-white hover:text-gray-700 font-regular rounded-lg mt-auto transition-colors duration-300" style={{ animation: "color-change 10s infinite linear" }}>
                 <button
                   onClick={() => handleOpenEnrollment('adult')}
-                  className="block w-full text-center text-gray-700 hover:text-white hover:bg-white text-sm text-center font-semibold 2xl:text-base transition-colors duration-300 cursor-pointer">
+                  className="block w-full text-center text-gray-700 text-sm font-semibold 2xl:text-base cursor-pointer">
                   RESERVAR CLASE DEMO
                 </button>
               </div>

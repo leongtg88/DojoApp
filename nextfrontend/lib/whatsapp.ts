@@ -64,7 +64,7 @@ export function buildCotizacionLink(data: CotizacionPayload): string {
 
 export function buildCotizacionText(data: CotizacionPayload): string {
   const lines = [
-    'Hola Sensei, quiero una cotización en Tosei Gusoku ',
+    'Hola Sensei, quiero información de precios en Tosei Gusoku ',
     '',
     ' Datos:',
     `- Nombre: ${data.nombre}`,
@@ -119,7 +119,7 @@ export function buildEnrollmentWithCotizacionLink(enrollment: WhatsAppPayload, c
 
   const cotizacionText = buildCotizacionText(cotizacion);
 
-  return buildWhatsAppTextLink(`${enrollmentText}\n\n---\n\nCotización previa:\n${cotizacionText}`);
+  return buildWhatsAppTextLink(`${enrollmentText}\n\n---\n\nPrecios previos:\n${cotizacionText}`);
 }
 
 export function buildWhatsAppTextLink(text: string): string {
@@ -127,4 +127,4 @@ export function buildWhatsAppTextLink(text: string): string {
 }
 
 export const WA_GENERIC_TEXT = 'Hola Sensei, quiero información sobre las clases de Tosei Gusoku 🙏';
-export const WA_QUOTE_TEXT = 'Hola Sensei, me gustaría recibir una cotización de los planes de Tosei Gusoku 🙏';
+export const WA_QUOTE_TEXT = 'Hola Sensei, me gustaría recibir los precios de los planes de Tosei Gusoku 🙏';

@@ -1,8 +1,8 @@
 // app/terminos/page.jsx (o pages/terminos.js en Pages Router)
-export default function TerminosLegales() {
+export default function TerminosLegales({ embedded = false }: { embedded?: boolean }) {
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className={embedded ? '' : 'min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'}>
+      <div className={embedded ? '' : 'max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden'}>
         {/* Encabezado */}
         <div className="bg-red-700 px-6 py-8 sm:px-10">
           <h1 className="text-3xl font-bold text-white text-center sm:text-4xl">

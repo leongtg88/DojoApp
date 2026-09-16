@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { MOCK_BENEFITS } from '@/lib/types';
 import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES, mimeForExtension } from '@/lib/file-validation';
 import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake, FileText, ChevronDown } from 'lucide-react';
+import LegalConsentModal from '@/components/LegalConsentModal';
 
 const heroImageDesktop = '/assets/BannerbgHero19080x1080.webp';
 const LogoCuadradoBlanco = '/assets/LogoCuadradoBlanco.svg';
@@ -337,6 +338,7 @@ const ToseiGusokuForm = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [isLegalModalOpen, setIsLegalModalOpen] = useState(false);
 
   useEffect(() => {
     if (isSuccess) window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -704,17 +706,12 @@ const ToseiGusokuForm = () => {
     if (step > 1) setStep(step - 1);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!validateStep1()) { setStep(1); return; }
-    if (!validateStep2()) { setStep(2); return; }
-    if (!validateStep3()) return;
-
+  const submitEnrollment = async () => {
     const applicants = formData.tipoRegistro === 'adulto'
       ? [{ name: formData.nombreAdulto, dateOfBirth: formData.fechaNacimientoAdulto, profileData: { sexo: formData.sexoAdulto, bloodType: formData.tipoSangreAdulto, height: formData.alturaAdulto, pantSize: formData.tallaPantalonAdulto, shirtSize: formData.tallaCamisetaAdulto, address: formData.direccionAdulto, nationalId: formData.cedula, medicalInfo: formData.condicionMedica } }]
       : formData.hijos.map((hijo) => ({ name: hijo.nombre, dateOfBirth: hijo.fechaNacimiento, profileData: { sexo: hijo.sexo, bloodType: hijo.tipoSangre, height: hijo.altura, pantSize: hijo.tallaPantalon, shirtSize: hijo.tallaCamiseta, medicalInfo: formData.condicionMedica } }));
     const uploadData = new FormData();
-    uploadData.append('payload', JSON.stringify({ email: formData.email, phone: formData.tipoRegistro === 'adulto' ? formData.telefonoContacto : formData.telefonoMadre, applicants, registrationData: { tipoRegistro: formData.tipoRegistro, nombreMadre: formData.nombreMadre, telefonoMadre: formData.telefonoMadre, nombrePadre: formData.nombrePadre, telefonoPadre: formData.telefonoPadre, direccionPadres: formData.direccionPadres, condicionMedica: formData.condicionMedica, horasPractica: formData.horasPractica, espacioCasa: formData.espacioCasa, compromisoDiario: formData.compromisoDiario, asistenciaPadre: formData.asistenciaPadre, metodoMotivacion: formData.metodoMotivacion, razonesKarate: formData.razonesKarate, compromisoObstaculos: formData.compromisoObstaculos, aceptoPago: formData.aceptoPago, aceptoMultas: formData.aceptoMultas, aceptoPagosParciales: formData.aceptoPagosParciales, aceptoPagoIninterrumpido: formData.aceptoPagoIninterrumpido, aceptoDerechoAdmision: formData.aceptoDerechoAdmision, aceptoPoliticas: formData.aceptoPoliticas } }));
+    uploadData.append('payload', JSON.stringify({ email: formData.email, phone: formData.tipoRegistro === 'adulto' ? formData.telefonoContacto : formData.telefonoMadre, applicants, registrationData: { tipoRegistro: formData.tipoRegistro, nombreMadre: formData.nombreMadre, telefonoMadre: formData.telefonoMadre, nombrePadre: formData.nombrePadre, telefonoPadre: formData.telefonoPadre, direccionPadres: formData.direccionPadres, condicionMedica: formData.condicionMedica, horasPractica: formData.horasPractica, espacioCasa: formData.espacioCasa, compromisoDiario: formData.compromisoDiario, asistenciaPadre: formData.asistenciaPadre, metodoMotivacion: formData.metodoMotivacion, razonesKarate: formData.razonesKarate, compromisoObstaculos: formData.compromisoObstaculos, aceptoPago: formData.aceptoPago, aceptoMultas: formData.aceptoMultas, aceptoPagosParciales: formData.aceptoPagosParciales, aceptoPagoIninterrumpido: formData.aceptoPagoIninterrumpido, aceptoDerechoAdmision: formData.aceptoDerechoAdmision, aceptoPoliticas: formData.aceptoPoliticas, aceptoTerminosLegales: true, terminosLegalesAceptadosEn: new Date().toISOString() } }));
     if (formData.tipoRegistro === 'adulto') {
       if (formData.fotoAdulto) uploadData.append('document-0-PROFILE_PHOTO', formData.fotoAdulto);
       formData.identAdulto.forEach((file) => uploadData.append('document-0-IDENTITY', file));
@@ -744,11 +741,26 @@ const ToseiGusokuForm = () => {
     setIsSuccess(true);
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validateStep1()) { setStep(1); return; }
+    if (!validateStep2()) { setStep(2); return; }
+    if (!validateStep3()) return;
+    setSubmitError('');
+    setIsLegalModalOpen(true);
+  };
+
+  const handleLegalAccept = () => {
+    setIsLegalModalOpen(false);
+    void submitEnrollment();
+  };
+
   const handleStart = () => {
     setShowForm(true);
     setStep(1);
     setErrors({});
     setSubmitError('');
+    setIsLegalModalOpen(false);
     setFormData(createInitialFormData());
   };
 
@@ -1310,6 +1322,12 @@ const ToseiGusokuForm = () => {
           </div>
         </div>
       )}
+
+      <LegalConsentModal
+        isOpen={isLegalModalOpen}
+        onClose={() => setIsLegalModalOpen(false)}
+        onAccept={handleLegalAccept}
+      />
     </>
   );
 };

@@ -61,12 +61,12 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
 
       {/* Sucursal */}
       <section id="sucursal" className="py-15 max-w-7xl mx-auto px-8 sm:px-6 md:px-[50px] scroll-mt-24">
-        <div className="text-left">
+        <div id="contacto" className="text-left scroll-mt-24">
           <span className="inline-block px-3 py-1 bg-brand-accent/10 text-brand-accent rounded-full text-xs font-bold font-display uppercase">Sede Santo Domingo</span>
           <h3 className="text-3xl sm:text-4xl pb-8 font-extrabold font-display text-gray-900">Sucursal 27 de Feb.</h3>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          <div id="contacto" className="lg:col-span-5 space-y-6 text-left backdrop-blur-xs scroll-mt-24">
+          <div className="lg:col-span-5 space-y-6 text-left backdrop-blur-xs">
             <p className="text-sm sm:text-base text-gray-900 leading-5 md:leading-relaxed font-sans">
               Visítanos en nuestras instalaciones principales. Ofrecemos <span className="font-semibold">un área de entrenamiento climatizada con vestidores y baños,</span> secretaría de atención personalizada y zona de espera para padres.
             </p>
