@@ -741,7 +741,7 @@ const ToseiGusokuForm = () => {
       return;
     }
     setIsSuccess(true);
-    meta.track('Lead', { content_name: 'Inscripción', currency: 'DOP' });
+    meta.track('Lead', { value: 3000, currency: 'DOP' });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
