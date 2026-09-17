@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@adkit/meta-pixel-next": "^1.1.2",
+    "@next/third-parties": "^16.3.5",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "@prisma/client-runtime-utils": "^7.10.0",

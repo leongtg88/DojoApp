@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import Script from 'next/script';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { Montserrat, Open_Sans } from 'next/font/google';
 import './globals.css';
 import { MetaPixel } from '@adkit/meta-pixel-next';
@@ -108,20 +108,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es" suppressHydrationWarning>
       <body suppressHydrationWarning className={`${montserrat.variable} ${openSans.variable} min-h-screen bg-white text-[#dee2f0] flex flex-col font-sans relative antialiased selection:bg-brand-accent selection:text-gray-700`}>
         <PwaRegister />
-        <Script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-N2E7P2YLV0"
-          strategy="afterInteractive"
-        />
-        <Script id="gtag-init" strategy="afterInteractive">
-          {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-N2E7P2YLV0');`}
-        </Script>
         <AppChrome>
           <MetaPixel>{children}</MetaPixel>
         </AppChrome>
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID ?? 'G-53QPVLVTCP'} />
       </body>
     </html>
   );
