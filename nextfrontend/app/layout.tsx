@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import { Montserrat, Open_Sans } from 'next/font/google';
 import './globals.css';
+import { MetaPixel } from '@adkit/meta-pixel-next';
 import { AppChrome } from '@/components/AppChrome';
 import { PwaRegister } from '@/components/PwaRegister';
 
@@ -118,7 +119,9 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-N2E7P2YLV0');`}
         </Script>
-        <AppChrome>{children}</AppChrome>
+        <AppChrome>
+          <MetaPixel>{children}</MetaPixel>
+        </AppChrome>
       </body>
     </html>
   );
