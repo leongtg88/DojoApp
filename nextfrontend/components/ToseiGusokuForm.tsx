@@ -2,6 +2,7 @@
 
 import { Fragment, useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useMetaPixel } from '@adkit/meta-pixel-next';
 import { MOCK_BENEFITS } from '@/lib/types';
 import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES, mimeForExtension } from '@/lib/file-validation';
 import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake, FileText, ChevronDown } from 'lucide-react';
@@ -276,6 +277,7 @@ const WelcomeScreen = ({ onStart, onNavigateToHome }: { onStart: () => void; onN
 // ========== COMPONENTE PRINCIPAL ==========
 const ToseiGusokuForm = () => {
   const router = useRouter();
+  const meta = useMetaPixel();
   const [showForm, setShowForm] = useState(false);
   const [step, setStep] = useState(1);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -739,6 +741,7 @@ const ToseiGusokuForm = () => {
       return;
     }
     setIsSuccess(true);
+    meta.track('Lead', { content_name: 'Inscripción', currency: 'DOP' });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
