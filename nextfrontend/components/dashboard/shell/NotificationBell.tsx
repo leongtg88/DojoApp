@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { Bell, CheckCheck } from 'lucide-react'
+import { Bell, BellOff, BellRing, CheckCheck } from 'lucide-react'
 import type { NotificationView } from '@/lib/notifications/queries'
 import { NOTIFICATION_PRIORITY_STYLES, formatNotificationRelative } from '@/lib/notifications/format'
 
@@ -16,10 +16,34 @@ interface NotificationResponse {
     unreadCount: number
 }
 
+type PushState = 'loading' | 'unsupported' | 'denied' | 'subscribed' | 'unsubscribed'
+
+const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+    const rawData = atob(base64)
+    const outputArray = new Uint8Array(rawData.length)
+    for (let i = 0; i < rawData.length; i++) {
+        outputArray[i] = rawData.charCodeAt(i)
+    }
+    return outputArray
+}
+
+function resolvePushState(): PushState {
+    if (typeof window === 'undefined') return 'loading'
+    if (!VAPID_PUBLIC_KEY || !('serviceWorker' in navigator) || !('PushManager' in window)) return 'unsupported'
+    if (Notification.permission === 'denied') return 'denied'
+    return 'loading'
+}
+
 export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellProps) {
     const [open, setOpen] = useState(false)
     const [unreadCount, setUnreadCount] = useState(initialUnreadCount)
     const [items, setItems] = useState<NotificationView[]>([])
+    const [pushState, setPushState] = useState<PushState>(resolvePushState)
+    const [pushBusy, setPushBusy] = useState(false)
     const containerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -47,6 +71,26 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
             active = false
         }
     }, [])
+
+    useEffect(() => {
+        if (pushState !== 'loading') return
+        if (!VAPID_PUBLIC_KEY) return
+
+        let active = true
+        navigator.serviceWorker.ready
+            .then((registration) => registration.pushManager.getSubscription())
+            .then((subscription) => {
+                if (active) setPushState(subscription ? 'subscribed' : 'unsubscribed')
+            })
+            .catch(() => {
+                if (active) setPushState('unsupported')
+            })
+
+        return () => {
+            active = false
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [VAPID_PUBLIC_KEY])
 
     useEffect(() => {
         if (!open) return
@@ -89,6 +133,68 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
             console.error('[notifications] No fue posible marcar la notificación', error)
         }
     }
+
+    async function subscribePush() {
+        if (!VAPID_PUBLIC_KEY) return
+        setPushBusy(true)
+        try {
+            const permission = await Notification.requestPermission()
+            if (permission !== 'granted') {
+                setPushState(permission === 'denied' ? 'denied' : 'unsubscribed')
+                return
+            }
+
+            const registration = await navigator.serviceWorker.ready
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as BufferSource,
+            })
+
+            const response = await fetch('/api/push/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(subscription.toJSON()),
+            })
+
+            if (!response.ok) throw new Error('No fue posible guardar la suscripción')
+            setPushState('subscribed')
+        } catch (error) {
+            console.error('[push] Error al activar las notificaciones', error)
+        } finally {
+            setPushBusy(false)
+        }
+    }
+
+    async function unsubscribePush() {
+        setPushBusy(true)
+        try {
+            const registration = await navigator.serviceWorker.ready
+            const subscription = await registration.pushManager.getSubscription()
+            if (subscription) {
+                await fetch('/api/push/unsubscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ endpoint: subscription.endpoint }),
+                })
+                await subscription.unsubscribe()
+            }
+            setPushState('unsubscribed')
+        } catch (error) {
+            console.error('[push] Error al desactivar las notificaciones', error)
+        } finally {
+            setPushBusy(false)
+        }
+    }
+
+    const showPushRow = pushState !== 'loading' && pushState !== 'unsupported'
+    const pushSubscribed = pushState === 'subscribed'
+    const pushDisabled = pushBusy || pushState === 'denied'
+    const pushLabel =
+        pushState === 'denied'
+            ? 'Notificaciones push bloqueadas en el navegador'
+            : pushSubscribed
+                ? 'Desactivar notificaciones push'
+                : 'Activar notificaciones push'
 
     return (
         <div className="relative" ref={containerRef}>
@@ -150,6 +256,24 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
                             </Link>
                         ))}
                     </div>
+
+                    {showPushRow && (
+                        <button
+                            className="flex w-full items-center gap-2 border-t border-neutral-800 px-3 py-2 text-left text-[11px] font-semibold text-neutral-400 transition-colors hover:bg-neutral-800/50 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                            disabled={pushDisabled}
+                            onClick={() => void (pushSubscribed ? unsubscribePush() : subscribePush())}
+                            type="button"
+                        >
+                            {pushState === 'denied' ? (
+                                <BellOff aria-hidden="true" className="size-3.5 shrink-0" />
+                            ) : pushSubscribed ? (
+                                <BellRing aria-hidden="true" className="size-3.5 shrink-0 text-cyan-400" />
+                            ) : (
+                                <Bell aria-hidden="true" className="size-3.5 shrink-0" />
+                            )}
+                            <span>{pushLabel}</span>
+                        </button>
+                    )}
 
                     <Link
                         className="block border-t border-neutral-800 px-3 py-2 text-center text-[11px] font-bold uppercase tracking-wide text-cyan-400 transition-colors hover:bg-neutral-800/50 hover:text-cyan-300"
