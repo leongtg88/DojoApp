@@ -1,6 +1,8 @@
 import { db } from '@/lib/db'
 import { buildEnrollmentExportRecord } from '@/lib/dashboard/student-export'
 import { postToN8n } from '@/lib/integrations/n8n'
+import { notifyEnrollmentByTelegram } from '@/lib/integrations/telegram'
+import { sendPushToSchoolAdmins } from '@/lib/push/web-push'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -77,6 +79,19 @@ export async function POST(request: Request) {
       createdAt: new Date(),
     }),
   )
+
+  await sendPushToSchoolAdmins(branch.schoolId, {
+    title: 'Nueva inscripción',
+    body: `${data.nombre} · ${data.whatsapp || email}`,
+    url: '/dashboard/admin',
+  })
+
+  await notifyEnrollmentByTelegram({
+    applicantName: data.nombre,
+    phone: data.whatsapp || null,
+    email,
+    interest: data.programa || data.tipo,
+  })
 
   return NextResponse.json({ ok: true, id: enrollment.id })
 }

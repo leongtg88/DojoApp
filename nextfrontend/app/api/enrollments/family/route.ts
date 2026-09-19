@@ -4,6 +4,8 @@ import { uploadPrivateDocument, sanitizeStorageName } from '@/lib/document-stora
 import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES, mimeForExtension, sniffMimeType } from '@/lib/file-validation'
 import { buildEnrollmentExportRecord } from '@/lib/dashboard/student-export'
 import { postToN8n } from '@/lib/integrations/n8n'
+import { notifyEnrollmentByTelegram } from '@/lib/integrations/telegram'
+import { sendPushToSchoolAdmins } from '@/lib/push/web-push'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -260,6 +262,19 @@ export async function POST(request: Request) {
       })),
     }),
   )
+
+  await sendPushToSchoolAdmins(branch.schoolId, {
+    title: 'Nueva inscripción',
+    body: `${input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`} · ${input.phone}`,
+    url: '/dashboard/admin',
+  })
+
+  await notifyEnrollmentByTelegram({
+    applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`,
+    phone: input.phone,
+    email: input.email,
+    interest,
+  })
 
   return NextResponse.json({ ok: true, id: enrollment.id })
 }

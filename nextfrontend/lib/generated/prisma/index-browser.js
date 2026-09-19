@@ -475,6 +475,16 @@ exports.Prisma.NotificationScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.PushSubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  endpoint: 'endpoint',
+  p256dh: 'p256dh',
+  auth: 'auth',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -648,7 +658,8 @@ exports.Prisma.ModelName = {
   AchievementType: 'AchievementType',
   StudentAchievement: 'StudentAchievement',
   FitnessReport: 'FitnessReport',
-  Notification: 'Notification'
+  Notification: 'Notification',
+  PushSubscription: 'PushSubscription'
 };
 
 /**
