@@ -4,7 +4,15 @@
 
 import { execFileSync } from 'node:child_process'
 
-const git = (args) => execFileSync('git', args, { encoding: 'utf8' })
+const git = (args) => execFileSync('git', args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
+
+// Rutas generadas/ruido que nunca contienen secretos propios: se omiten del escaneo.
+const GENERATED_PATTERNS = [
+  /(^|\/)lib\/generated\//,
+  /(^|\/)pnpm-lock\.yaml$/,
+  /\.tsbuildinfo$/,
+]
+const isGenerated = (path) => GENERATED_PATTERNS.some((re) => re.test(path))
 
 const SECRET_PATTERNS = [
   ['Clave secreta de Supabase (sb_secret_)', /sb_secret_[A-Za-z0-9_-]{10,}/],
@@ -44,7 +52,14 @@ for (const file of staged) {
 }
 
 // 2) Contenido agregado en el diff staged: patrones de secreto de alta confianza
-const diff = git(['diff', '--cached', '-U0', '--no-color'])
+let diff = ''
+try {
+  diff = git(['diff', '--cached', '-U0', '--no-color'])
+} catch (error) {
+  console.error('\n[guard-env] No fue posible leer el diff staged (¿diff demasiado grande?).')
+  console.error('Detalle:', error instanceof Error ? error.message : error)
+  process.exit(1)
+}
 let currentFile = null
 for (const line of diff.split('\n')) {
   if (line.startsWith('+++ b/')) {
@@ -53,6 +68,7 @@ for (const line of diff.split('\n')) {
   }
   if (!line.startsWith('+') || line.startsWith('+++') || !currentFile) continue
   if (isEnvExample(currentFile)) continue // los ejemplos pueden llevar placeholders
+  if (isGenerated(currentFile)) continue // archivos generados: sin secretos propios
   const text = line.slice(1)
   for (const [name, re] of SECRET_PATTERNS) {
     if (re.test(text)) {
