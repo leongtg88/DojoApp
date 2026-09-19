@@ -288,6 +288,7 @@ exports.Prisma.BeltRankScalarFieldEnum = {
   minMonths: 'minMonths',
   maxMonths: 'maxMonths',
   minAttendancePercent: 'minAttendancePercent',
+  examDay: 'examDay',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -485,6 +486,27 @@ exports.Prisma.PushSubscriptionScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.HolidayScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  date: 'date',
+  recurring: 'recurring',
+  schoolId: 'schoolId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ExamConvocationScalarFieldEnum = {
+  id: 'id',
+  schoolId: 'schoolId',
+  date: 'date',
+  examDay: 'examDay',
+  label: 'label',
+  notes: 'notes',
+  confirmed: 'confirmed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -575,6 +597,11 @@ exports.Program = exports.$Enums.Program = {
   YOUTH: 'YOUTH'
 };
 
+exports.ExamDay = exports.$Enums.ExamDay = {
+  SATURDAY: 'SATURDAY',
+  SUNDAY: 'SUNDAY'
+};
+
 exports.TechniqueCategory = exports.$Enums.TechniqueCategory = {
   KIHON: 'KIHON',
   KATA: 'KATA',
@@ -659,7 +686,9 @@ exports.Prisma.ModelName = {
   StudentAchievement: 'StudentAchievement',
   FitnessReport: 'FitnessReport',
   Notification: 'Notification',
-  PushSubscription: 'PushSubscription'
+  PushSubscription: 'PushSubscription',
+  Holiday: 'Holiday',
+  ExamConvocation: 'ExamConvocation'
 };
 
 /**

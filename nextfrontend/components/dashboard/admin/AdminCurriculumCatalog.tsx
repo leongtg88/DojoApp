@@ -33,6 +33,7 @@ interface RankForm {
     estimatedDurationMonths: string
     minMonths: string
     maxMonths: string
+    examDay: '' | 'SATURDAY' | 'SUNDAY'
     isMaximumRank: boolean
     description: string
 }
@@ -49,6 +50,7 @@ const EMPTY_RANK_FORM: RankForm = {
     estimatedDurationMonths: '',
     minMonths: '',
     maxMonths: '',
+    examDay: '',
     isMaximumRank: false,
     description: '',
 }
@@ -100,6 +102,7 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
             estimatedDurationMonths: rank.estimatedDurationMonths != null ? String(rank.estimatedDurationMonths) : '',
             minMonths: rank.minMonths != null ? String(rank.minMonths) : '',
             maxMonths: rank.maxMonths != null ? String(rank.maxMonths) : '',
+            examDay: rank.examDay ?? '',
             isMaximumRank: rank.isMaximumRank,
             description: rank.description ?? '',
         })
@@ -123,6 +126,7 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
             estimatedDurationMonths: rankForm.estimatedDurationMonths === '' ? null : Number(rankForm.estimatedDurationMonths),
             minMonths: rankForm.minMonths === '' ? null : Number(rankForm.minMonths),
             maxMonths: rankForm.maxMonths === '' ? null : Number(rankForm.maxMonths),
+            examDay: rankForm.examDay || null,
             isMaximumRank: rankForm.isMaximumRank,
             description: rankForm.description.trim() || null,
         }
@@ -446,6 +450,7 @@ function RankDialog({
                         <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-min-months">Mínimo por edad (meses)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-min-months" min="0" onChange={(event) => set('minMonths', event.target.value)} type="number" value={form.minMonths} /></label>
                         <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-max-months">Máximo por edad (meses)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-max-months" min="0" onChange={(event) => set('maxMonths', event.target.value)} type="number" value={form.maxMonths} /></label>
                     </div>
+                    <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-exam-day">Día de examen<select className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-exam-day" onChange={(event) => set('examDay', event.target.value as RankForm['examDay'])} value={form.examDay}><option value="">Sin definir</option><option value="SATURDAY">Sábado (principiantes)</option><option value="SUNDAY">Domingo (avanzados)</option></select></label>
                     <label className="flex items-center gap-2 text-xs font-semibold text-neutral-300" htmlFor="rank-max"><input checked={form.isMaximumRank} className="size-4 accent-cyan-500" id="rank-max" onChange={(event) => set('isMaximumRank', event.target.checked)} type="checkbox" />Grado máximo del escalafón</label>
                     <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-desc">Descripción<textarea className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm font-normal text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-desc" onChange={(event) => set('description', event.target.value)} placeholder="Requisitos y notas del grado" rows={3} value={form.description} /></label>
                 </div>

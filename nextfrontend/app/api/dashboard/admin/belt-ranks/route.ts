@@ -21,6 +21,7 @@ const createRankSchema = z.object({
   minMonths: z.number().int().min(0).optional().nullable(),
   maxMonths: z.number().int().min(0).optional().nullable(),
   minAttendancePercent: z.number().int().min(0).max(100).optional().nullable(),
+  examDay: z.enum(['SATURDAY', 'SUNDAY']).optional().nullable(),
 })
 
 export async function GET() {
@@ -90,6 +91,7 @@ export async function POST(request: Request) {
       minMonths: result.data.minMonths ?? null,
       maxMonths: result.data.maxMonths ?? null,
       minAttendancePercent: result.data.minAttendancePercent ?? null,
+      examDay: result.data.examDay ?? null,
       schoolId: scope.schoolId ?? null,
     },
   })

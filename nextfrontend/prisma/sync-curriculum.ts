@@ -1,7 +1,7 @@
 import { PrismaClient } from '@/lib/generated/prisma'
 import { PrismaPg } from '@prisma/adapter-pg'
 import dotenv from 'dotenv'
-import { ADULT_RANKS, YOUTH_RANKS, KATAS, type Program } from '@/lib/curriculum/programs'
+import { ADULT_RANKS, YOUTH_RANKS, KATAS, examDayForRank, type Program } from '@/lib/curriculum/programs'
 
 dotenv.config({ path: '.env.local' })
 
@@ -65,6 +65,7 @@ async function main() {
         maxMonths: rank.maxMonths,
         estimatedDurationMonths: rank.maxMonths ?? rank.minMonths,
         minAttendancePercent: 80,
+        examDay: examDayForRank(program, rank.order),
         schoolId: null,
       }
 

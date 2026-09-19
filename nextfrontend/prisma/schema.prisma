@@ -20,6 +20,8 @@ model School {
   techniques       Technique[]
   achievementTypes AchievementType[]
   plans            Plan[]
+  holidays         Holiday[]
+  examConvocations ExamConvocation[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 }
@@ -334,6 +336,12 @@ enum Program {
   YOUTH // 11-17
 }
 
+// Día habitual de convocatoria a examen de grado (principiantes sábado, avanzados domingo).
+enum ExamDay {
+  SATURDAY
+  SUNDAY
+}
+
 model BeltRank {
   id                      String               @id @default(cuid())
   program                 Program              @default(ADULT)
@@ -351,6 +359,7 @@ model BeltRank {
   minMonths               Int? // permanencia mínima para examen
   maxMonths               Int? // permanencia máxima estimada para el grado
   minAttendancePercent    Int? // asistencia mínima exigida para examen
+  examDay                 ExamDay? // día habitual de convocatoria (null = sin examen definido)
   school                  School?              @relation(fields: [schoolId], references: [id])
   katas                   BeltRankKata[]
   promotions              StudentRankHistory[]
@@ -683,4 +692,36 @@ model PushSubscription {
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+// ==================== Calendario dojo (feriados y convocatorias) ====================
+model Holiday {
+  id        String   @id @default(cuid())
+  name      String
+  date      DateTime // fecha observada (día no laborable)
+  recurring Boolean  @default(false) // se repite cada año en la misma fecha
+  schoolId  String?
+  school    School?  @relation(fields: [schoolId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([date, schoolId])
+  @@index([schoolId, date])
+}
+
+// Fecha real confirmada de examen. Si no hay una para el cuatrimestre del alumno,
+// se muestra la fecha tentativa calculada desde BeltRank.examDay.
+model ExamConvocation {
+  id        String   @id @default(cuid())
+  schoolId  String
+  school    School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  date      DateTime
+  examDay   ExamDay
+  label     String?
+  notes     String?
+  confirmed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([schoolId, date, examDay])
+  @@index([schoolId, date])
 }

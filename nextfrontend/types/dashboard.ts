@@ -247,6 +247,7 @@ export interface AdminBeltRankSummary {
 	minAttendancePercent: number | null
 	estimatedDurationMonths: number | null
 	description: string | null
+	examDay: ExamDay | null
 	techniqueCount: number
 	studentCount: number
 	techniques: AdminTechniqueSummary[]
@@ -392,6 +393,37 @@ export interface KataProgressItem {
 	requiredForGrade: boolean
 }
 
+export type ExamDay = 'SATURDAY' | 'SUNDAY'
+
+export type GradoMetric = 'KATAS' | 'ASISTENCIA' | 'PERMANENCIA'
+
+export interface CuatrimestreProgress {
+	year: number
+	index: number
+	label: string
+	start: string
+	end: string
+	expectedKatas: number
+	approvedKatas: number
+	expectedHours: number
+	attendedHours: number
+	absences: number
+	maxMonthAbsences: number
+	excessMonth: string | null
+	exceededAbsenceLimit: boolean
+	isCurrent: boolean
+	isFuture: boolean
+	examDate: string | null
+	examTentative: boolean
+}
+
+export interface NextExamInfo {
+	date: string
+	examDay: ExamDay
+	cuatrimestreLabel: string
+	tentative: boolean
+}
+
 export interface GradoProgressData {
 	currentRankName: string | null
 	currentRankOrder: number | null
@@ -402,14 +434,37 @@ export interface GradoProgressData {
 	attendance: AttendanceSummary
 	minAttendancePercent: number
 	monthsInRank: number
+	monthsInRankEstimated: boolean
 	minMonths: number
 	overallPercent: number
 	isEligible: boolean
+	examDay: ExamDay | null
+	nextExam: NextExamInfo | null
+	cuatrimestres: CuatrimestreProgress[]
+	maxAbsencesPerMonth: number
+	examRightLost: boolean
+	bottleneck: GradoMetric | null
 }
 
 export interface StudentKataProgressSummary {
 	grado: GradoProgressData
 	katas: KataProgressItem[]
+}
+
+export interface HolidaySummary {
+	id: string
+	name: string
+	date: string
+	recurring: boolean
+}
+
+export interface ExamConvocationSummary {
+	id: string
+	date: string
+	examDay: ExamDay
+	label: string | null
+	notes: string | null
+	confirmed: boolean
 }
 
 export interface StudentPracticeNote {

@@ -3,6 +3,7 @@
 import {
     Bell,
     BookOpenCheck,
+    CalendarClock,
     CalendarDays,
     ClipboardCheck,
     Clock3,
@@ -47,6 +48,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/admin/inscripciones', label: 'Inscripciones', icon: ClipboardCheck },
         { href: '/dashboard/admin/planes', label: 'Planes', icon: ListChecks },
         { href: '/dashboard/admin/horarios', label: 'Horarios', icon: CalendarDays },
+        { href: '/dashboard/admin/calendario', label: 'Calendario', icon: CalendarClock },
         { href: '/dashboard/admin/balance', label: 'Balance de horas', icon: Clock3 },
         { href: '/dashboard/admin/asistencia', label: 'Asistencia', icon: CalendarDays },
         { href: '/dashboard/admin/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
@@ -59,6 +61,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/admin/inscripciones', label: 'Inscripciones', icon: ClipboardCheck },
         { href: '/dashboard/admin/planes', label: 'Planes', icon: ListChecks },
         { href: '/dashboard/admin/horarios', label: 'Horarios', icon: CalendarDays },
+        { href: '/dashboard/admin/calendario', label: 'Calendario', icon: CalendarClock },
         { href: '/dashboard/admin/balance', label: 'Balance de horas', icon: Clock3 },
         { href: '/dashboard/admin/asistencia', label: 'Asistencia', icon: CalendarDays },
         { href: '/dashboard/admin/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },

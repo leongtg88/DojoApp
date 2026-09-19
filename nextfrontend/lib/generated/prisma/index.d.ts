@@ -153,6 +153,16 @@ export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
  * 
  */
 export type PushSubscription = $Result.DefaultSelection<Prisma.$PushSubscriptionPayload>
+/**
+ * Model Holiday
+ * 
+ */
+export type Holiday = $Result.DefaultSelection<Prisma.$HolidayPayload>
+/**
+ * Model ExamConvocation
+ * 
+ */
+export type ExamConvocation = $Result.DefaultSelection<Prisma.$ExamConvocationPayload>
 
 /**
  * Enums
@@ -265,6 +275,14 @@ export const Program: {
 export type Program = (typeof Program)[keyof typeof Program]
 
 
+export const ExamDay: {
+  SATURDAY: 'SATURDAY',
+  SUNDAY: 'SUNDAY'
+};
+
+export type ExamDay = (typeof ExamDay)[keyof typeof ExamDay]
+
+
 export const ClassAudience: {
   ADULTS: 'ADULTS',
   CHILDREN: 'CHILDREN',
@@ -367,6 +385,10 @@ export const TechniqueCategory: typeof $Enums.TechniqueCategory
 export type Program = $Enums.Program
 
 export const Program: typeof $Enums.Program
+
+export type ExamDay = $Enums.ExamDay
+
+export const ExamDay: typeof $Enums.ExamDay
 
 export type ClassAudience = $Enums.ClassAudience
 
@@ -788,6 +810,26 @@ export class PrismaClient<
     * ```
     */
   get pushSubscription(): Prisma.PushSubscriptionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.holiday`: Exposes CRUD operations for the **Holiday** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Holidays
+    * const holidays = await prisma.holiday.findMany()
+    * ```
+    */
+  get holiday(): Prisma.HolidayDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.examConvocation`: Exposes CRUD operations for the **ExamConvocation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ExamConvocations
+    * const examConvocations = await prisma.examConvocation.findMany()
+    * ```
+    */
+  get examConvocation(): Prisma.ExamConvocationDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1262,7 +1304,9 @@ export namespace Prisma {
     StudentAchievement: 'StudentAchievement',
     FitnessReport: 'FitnessReport',
     Notification: 'Notification',
-    PushSubscription: 'PushSubscription'
+    PushSubscription: 'PushSubscription',
+    Holiday: 'Holiday',
+    ExamConvocation: 'ExamConvocation'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1278,7 +1322,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "pushSubscription"
+      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "pushSubscription" | "holiday" | "examConvocation"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3354,6 +3398,154 @@ export namespace Prisma {
           }
         }
       }
+      Holiday: {
+        payload: Prisma.$HolidayPayload<ExtArgs>
+        fields: Prisma.HolidayFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.HolidayFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HolidayPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.HolidayFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HolidayPayload>
+          }
+          findFirst: {
+            args: Prisma.HolidayFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HolidayPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.HolidayFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HolidayPayload>
+          }
+          findMany: {
+            args: Prisma.HolidayFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HolidayPayload>[]
+          }
+          create: {
+            args: Prisma.HolidayCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HolidayPayload>
+          }
+          createMany: {
+            args: Prisma.HolidayCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.HolidayCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HolidayPayload>[]
+          }
+          delete: {
+            args: Prisma.HolidayDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HolidayPayload>
+          }
+          update: {
+            args: Prisma.HolidayUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HolidayPayload>
+          }
+          deleteMany: {
+            args: Prisma.HolidayDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.HolidayUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.HolidayUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HolidayPayload>[]
+          }
+          upsert: {
+            args: Prisma.HolidayUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HolidayPayload>
+          }
+          aggregate: {
+            args: Prisma.HolidayAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateHoliday>
+          }
+          groupBy: {
+            args: Prisma.HolidayGroupByArgs<ExtArgs>
+            result: $Utils.Optional<HolidayGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.HolidayCountArgs<ExtArgs>
+            result: $Utils.Optional<HolidayCountAggregateOutputType> | number
+          }
+        }
+      }
+      ExamConvocation: {
+        payload: Prisma.$ExamConvocationPayload<ExtArgs>
+        fields: Prisma.ExamConvocationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ExamConvocationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExamConvocationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ExamConvocationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExamConvocationPayload>
+          }
+          findFirst: {
+            args: Prisma.ExamConvocationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExamConvocationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ExamConvocationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExamConvocationPayload>
+          }
+          findMany: {
+            args: Prisma.ExamConvocationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExamConvocationPayload>[]
+          }
+          create: {
+            args: Prisma.ExamConvocationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExamConvocationPayload>
+          }
+          createMany: {
+            args: Prisma.ExamConvocationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ExamConvocationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExamConvocationPayload>[]
+          }
+          delete: {
+            args: Prisma.ExamConvocationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExamConvocationPayload>
+          }
+          update: {
+            args: Prisma.ExamConvocationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExamConvocationPayload>
+          }
+          deleteMany: {
+            args: Prisma.ExamConvocationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ExamConvocationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ExamConvocationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExamConvocationPayload>[]
+          }
+          upsert: {
+            args: Prisma.ExamConvocationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExamConvocationPayload>
+          }
+          aggregate: {
+            args: Prisma.ExamConvocationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateExamConvocation>
+          }
+          groupBy: {
+            args: Prisma.ExamConvocationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ExamConvocationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ExamConvocationCountArgs<ExtArgs>
+            result: $Utils.Optional<ExamConvocationCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3505,6 +3697,8 @@ export namespace Prisma {
     fitnessReport?: FitnessReportOmit
     notification?: NotificationOmit
     pushSubscription?: PushSubscriptionOmit
+    holiday?: HolidayOmit
+    examConvocation?: ExamConvocationOmit
   }
 
   /* Types for Logging */
@@ -3593,6 +3787,8 @@ export namespace Prisma {
     techniques: number
     achievementTypes: number
     plans: number
+    holidays: number
+    examConvocations: number
   }
 
   export type SchoolCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3604,6 +3800,8 @@ export namespace Prisma {
     techniques?: boolean | SchoolCountOutputTypeCountTechniquesArgs
     achievementTypes?: boolean | SchoolCountOutputTypeCountAchievementTypesArgs
     plans?: boolean | SchoolCountOutputTypeCountPlansArgs
+    holidays?: boolean | SchoolCountOutputTypeCountHolidaysArgs
+    examConvocations?: boolean | SchoolCountOutputTypeCountExamConvocationsArgs
   }
 
   // Custom InputTypes
@@ -3671,6 +3869,20 @@ export namespace Prisma {
    */
   export type SchoolCountOutputTypeCountPlansArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PlanWhereInput
+  }
+
+  /**
+   * SchoolCountOutputType without action
+   */
+  export type SchoolCountOutputTypeCountHolidaysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: HolidayWhereInput
+  }
+
+  /**
+   * SchoolCountOutputType without action
+   */
+  export type SchoolCountOutputTypeCountExamConvocationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExamConvocationWhereInput
   }
 
 
@@ -4480,6 +4692,8 @@ export namespace Prisma {
     techniques?: boolean | School$techniquesArgs<ExtArgs>
     achievementTypes?: boolean | School$achievementTypesArgs<ExtArgs>
     plans?: boolean | School$plansArgs<ExtArgs>
+    holidays?: boolean | School$holidaysArgs<ExtArgs>
+    examConvocations?: boolean | School$examConvocationsArgs<ExtArgs>
     _count?: boolean | SchoolCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["school"]>
 
@@ -4514,6 +4728,8 @@ export namespace Prisma {
     techniques?: boolean | School$techniquesArgs<ExtArgs>
     achievementTypes?: boolean | School$achievementTypesArgs<ExtArgs>
     plans?: boolean | School$plansArgs<ExtArgs>
+    holidays?: boolean | School$holidaysArgs<ExtArgs>
+    examConvocations?: boolean | School$examConvocationsArgs<ExtArgs>
     _count?: boolean | SchoolCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SchoolIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4530,6 +4746,8 @@ export namespace Prisma {
       techniques: Prisma.$TechniquePayload<ExtArgs>[]
       achievementTypes: Prisma.$AchievementTypePayload<ExtArgs>[]
       plans: Prisma.$PlanPayload<ExtArgs>[]
+      holidays: Prisma.$HolidayPayload<ExtArgs>[]
+      examConvocations: Prisma.$ExamConvocationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4938,6 +5156,8 @@ export namespace Prisma {
     techniques<T extends School$techniquesArgs<ExtArgs> = {}>(args?: Subset<T, School$techniquesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TechniquePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     achievementTypes<T extends School$achievementTypesArgs<ExtArgs> = {}>(args?: Subset<T, School$achievementTypesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AchievementTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     plans<T extends School$plansArgs<ExtArgs> = {}>(args?: Subset<T, School$plansArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    holidays<T extends School$holidaysArgs<ExtArgs> = {}>(args?: Subset<T, School$holidaysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    examConvocations<T extends School$examConvocationsArgs<ExtArgs> = {}>(args?: Subset<T, School$examConvocationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExamConvocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5553,6 +5773,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PlanScalarFieldEnum | PlanScalarFieldEnum[]
+  }
+
+  /**
+   * School.holidays
+   */
+  export type School$holidaysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Holiday
+     */
+    select?: HolidaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Holiday
+     */
+    omit?: HolidayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HolidayInclude<ExtArgs> | null
+    where?: HolidayWhereInput
+    orderBy?: HolidayOrderByWithRelationInput | HolidayOrderByWithRelationInput[]
+    cursor?: HolidayWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: HolidayScalarFieldEnum | HolidayScalarFieldEnum[]
+  }
+
+  /**
+   * School.examConvocations
+   */
+  export type School$examConvocationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExamConvocation
+     */
+    select?: ExamConvocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExamConvocation
+     */
+    omit?: ExamConvocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExamConvocationInclude<ExtArgs> | null
+    where?: ExamConvocationWhereInput
+    orderBy?: ExamConvocationOrderByWithRelationInput | ExamConvocationOrderByWithRelationInput[]
+    cursor?: ExamConvocationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExamConvocationScalarFieldEnum | ExamConvocationScalarFieldEnum[]
   }
 
   /**
@@ -19399,6 +19667,7 @@ export namespace Prisma {
     minMonths: number | null
     maxMonths: number | null
     minAttendancePercent: number | null
+    examDay: $Enums.ExamDay | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -19420,6 +19689,7 @@ export namespace Prisma {
     minMonths: number | null
     maxMonths: number | null
     minAttendancePercent: number | null
+    examDay: $Enums.ExamDay | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -19441,6 +19711,7 @@ export namespace Prisma {
     minMonths: number
     maxMonths: number
     minAttendancePercent: number
+    examDay: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -19480,6 +19751,7 @@ export namespace Prisma {
     minMonths?: true
     maxMonths?: true
     minAttendancePercent?: true
+    examDay?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -19501,6 +19773,7 @@ export namespace Prisma {
     minMonths?: true
     maxMonths?: true
     minAttendancePercent?: true
+    examDay?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -19522,6 +19795,7 @@ export namespace Prisma {
     minMonths?: true
     maxMonths?: true
     minAttendancePercent?: true
+    examDay?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -19630,6 +19904,7 @@ export namespace Prisma {
     minMonths: number | null
     maxMonths: number | null
     minAttendancePercent: number | null
+    examDay: $Enums.ExamDay | null
     createdAt: Date
     updatedAt: Date
     _count: BeltRankCountAggregateOutputType | null
@@ -19670,6 +19945,7 @@ export namespace Prisma {
     minMonths?: boolean
     maxMonths?: boolean
     minAttendancePercent?: boolean
+    examDay?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     school?: boolean | BeltRank$schoolArgs<ExtArgs>
@@ -19696,6 +19972,7 @@ export namespace Prisma {
     minMonths?: boolean
     maxMonths?: boolean
     minAttendancePercent?: boolean
+    examDay?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     school?: boolean | BeltRank$schoolArgs<ExtArgs>
@@ -19718,6 +19995,7 @@ export namespace Prisma {
     minMonths?: boolean
     maxMonths?: boolean
     minAttendancePercent?: boolean
+    examDay?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     school?: boolean | BeltRank$schoolArgs<ExtArgs>
@@ -19740,11 +20018,12 @@ export namespace Prisma {
     minMonths?: boolean
     maxMonths?: boolean
     minAttendancePercent?: boolean
+    examDay?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type BeltRankOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "program" | "name" | "kyuDan" | "japaneseName" | "kanji" | "order" | "beltColor" | "beltSecondaryColor" | "isMaximumRank" | "estimatedDurationMonths" | "description" | "schoolId" | "minMonths" | "maxMonths" | "minAttendancePercent" | "createdAt" | "updatedAt", ExtArgs["result"]["beltRank"]>
+  export type BeltRankOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "program" | "name" | "kyuDan" | "japaneseName" | "kanji" | "order" | "beltColor" | "beltSecondaryColor" | "isMaximumRank" | "estimatedDurationMonths" | "description" | "schoolId" | "minMonths" | "maxMonths" | "minAttendancePercent" | "examDay" | "createdAt" | "updatedAt", ExtArgs["result"]["beltRank"]>
   export type BeltRankInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     school?: boolean | BeltRank$schoolArgs<ExtArgs>
     katas?: boolean | BeltRank$katasArgs<ExtArgs>
@@ -19784,6 +20063,7 @@ export namespace Prisma {
       minMonths: number | null
       maxMonths: number | null
       minAttendancePercent: number | null
+      examDay: $Enums.ExamDay | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["beltRank"]>
@@ -20229,6 +20509,7 @@ export namespace Prisma {
     readonly minMonths: FieldRef<"BeltRank", 'Int'>
     readonly maxMonths: FieldRef<"BeltRank", 'Int'>
     readonly minAttendancePercent: FieldRef<"BeltRank", 'Int'>
+    readonly examDay: FieldRef<"BeltRank", 'ExamDay'>
     readonly createdAt: FieldRef<"BeltRank", 'DateTime'>
     readonly updatedAt: FieldRef<"BeltRank", 'DateTime'>
   }
@@ -38596,6 +38877,2216 @@ export namespace Prisma {
 
 
   /**
+   * Model Holiday
+   */
+
+  export type AggregateHoliday = {
+    _count: HolidayCountAggregateOutputType | null
+    _min: HolidayMinAggregateOutputType | null
+    _max: HolidayMaxAggregateOutputType | null
+  }
+
+  export type HolidayMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    date: Date | null
+    recurring: boolean | null
+    schoolId: string | null
+    createdAt: Date | null
+  }
+
+  export type HolidayMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    date: Date | null
+    recurring: boolean | null
+    schoolId: string | null
+    createdAt: Date | null
+  }
+
+  export type HolidayCountAggregateOutputType = {
+    id: number
+    name: number
+    date: number
+    recurring: number
+    schoolId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type HolidayMinAggregateInputType = {
+    id?: true
+    name?: true
+    date?: true
+    recurring?: true
+    schoolId?: true
+    createdAt?: true
+  }
+
+  export type HolidayMaxAggregateInputType = {
+    id?: true
+    name?: true
+    date?: true
+    recurring?: true
+    schoolId?: true
+    createdAt?: true
+  }
+
+  export type HolidayCountAggregateInputType = {
+    id?: true
+    name?: true
+    date?: true
+    recurring?: true
+    schoolId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type HolidayAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Holiday to aggregate.
+     */
+    where?: HolidayWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Holidays to fetch.
+     */
+    orderBy?: HolidayOrderByWithRelationInput | HolidayOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: HolidayWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Holidays from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Holidays.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Holidays
+    **/
+    _count?: true | HolidayCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: HolidayMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: HolidayMaxAggregateInputType
+  }
+
+  export type GetHolidayAggregateType<T extends HolidayAggregateArgs> = {
+        [P in keyof T & keyof AggregateHoliday]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateHoliday[P]>
+      : GetScalarType<T[P], AggregateHoliday[P]>
+  }
+
+
+
+
+  export type HolidayGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: HolidayWhereInput
+    orderBy?: HolidayOrderByWithAggregationInput | HolidayOrderByWithAggregationInput[]
+    by: HolidayScalarFieldEnum[] | HolidayScalarFieldEnum
+    having?: HolidayScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: HolidayCountAggregateInputType | true
+    _min?: HolidayMinAggregateInputType
+    _max?: HolidayMaxAggregateInputType
+  }
+
+  export type HolidayGroupByOutputType = {
+    id: string
+    name: string
+    date: Date
+    recurring: boolean
+    schoolId: string | null
+    createdAt: Date
+    _count: HolidayCountAggregateOutputType | null
+    _min: HolidayMinAggregateOutputType | null
+    _max: HolidayMaxAggregateOutputType | null
+  }
+
+  type GetHolidayGroupByPayload<T extends HolidayGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<HolidayGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof HolidayGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], HolidayGroupByOutputType[P]>
+            : GetScalarType<T[P], HolidayGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type HolidaySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    date?: boolean
+    recurring?: boolean
+    schoolId?: boolean
+    createdAt?: boolean
+    school?: boolean | Holiday$schoolArgs<ExtArgs>
+  }, ExtArgs["result"]["holiday"]>
+
+  export type HolidaySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    date?: boolean
+    recurring?: boolean
+    schoolId?: boolean
+    createdAt?: boolean
+    school?: boolean | Holiday$schoolArgs<ExtArgs>
+  }, ExtArgs["result"]["holiday"]>
+
+  export type HolidaySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    date?: boolean
+    recurring?: boolean
+    schoolId?: boolean
+    createdAt?: boolean
+    school?: boolean | Holiday$schoolArgs<ExtArgs>
+  }, ExtArgs["result"]["holiday"]>
+
+  export type HolidaySelectScalar = {
+    id?: boolean
+    name?: boolean
+    date?: boolean
+    recurring?: boolean
+    schoolId?: boolean
+    createdAt?: boolean
+  }
+
+  export type HolidayOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "date" | "recurring" | "schoolId" | "createdAt", ExtArgs["result"]["holiday"]>
+  export type HolidayInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    school?: boolean | Holiday$schoolArgs<ExtArgs>
+  }
+  export type HolidayIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    school?: boolean | Holiday$schoolArgs<ExtArgs>
+  }
+  export type HolidayIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    school?: boolean | Holiday$schoolArgs<ExtArgs>
+  }
+
+  export type $HolidayPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Holiday"
+    objects: {
+      school: Prisma.$SchoolPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      date: Date
+      recurring: boolean
+      schoolId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["holiday"]>
+    composites: {}
+  }
+
+  type HolidayGetPayload<S extends boolean | null | undefined | HolidayDefaultArgs> = $Result.GetResult<Prisma.$HolidayPayload, S>
+
+  type HolidayCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<HolidayFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: HolidayCountAggregateInputType | true
+    }
+
+  export interface HolidayDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Holiday'], meta: { name: 'Holiday' } }
+    /**
+     * Find zero or one Holiday that matches the filter.
+     * @param {HolidayFindUniqueArgs} args - Arguments to find a Holiday
+     * @example
+     * // Get one Holiday
+     * const holiday = await prisma.holiday.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends HolidayFindUniqueArgs>(args: SelectSubset<T, HolidayFindUniqueArgs<ExtArgs>>): Prisma__HolidayClient<$Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Holiday that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {HolidayFindUniqueOrThrowArgs} args - Arguments to find a Holiday
+     * @example
+     * // Get one Holiday
+     * const holiday = await prisma.holiday.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends HolidayFindUniqueOrThrowArgs>(args: SelectSubset<T, HolidayFindUniqueOrThrowArgs<ExtArgs>>): Prisma__HolidayClient<$Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Holiday that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HolidayFindFirstArgs} args - Arguments to find a Holiday
+     * @example
+     * // Get one Holiday
+     * const holiday = await prisma.holiday.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends HolidayFindFirstArgs>(args?: SelectSubset<T, HolidayFindFirstArgs<ExtArgs>>): Prisma__HolidayClient<$Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Holiday that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HolidayFindFirstOrThrowArgs} args - Arguments to find a Holiday
+     * @example
+     * // Get one Holiday
+     * const holiday = await prisma.holiday.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends HolidayFindFirstOrThrowArgs>(args?: SelectSubset<T, HolidayFindFirstOrThrowArgs<ExtArgs>>): Prisma__HolidayClient<$Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Holidays that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HolidayFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Holidays
+     * const holidays = await prisma.holiday.findMany()
+     * 
+     * // Get first 10 Holidays
+     * const holidays = await prisma.holiday.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const holidayWithIdOnly = await prisma.holiday.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends HolidayFindManyArgs>(args?: SelectSubset<T, HolidayFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Holiday.
+     * @param {HolidayCreateArgs} args - Arguments to create a Holiday.
+     * @example
+     * // Create one Holiday
+     * const Holiday = await prisma.holiday.create({
+     *   data: {
+     *     // ... data to create a Holiday
+     *   }
+     * })
+     * 
+     */
+    create<T extends HolidayCreateArgs>(args: SelectSubset<T, HolidayCreateArgs<ExtArgs>>): Prisma__HolidayClient<$Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Holidays.
+     * @param {HolidayCreateManyArgs} args - Arguments to create many Holidays.
+     * @example
+     * // Create many Holidays
+     * const holiday = await prisma.holiday.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends HolidayCreateManyArgs>(args?: SelectSubset<T, HolidayCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Holidays and returns the data saved in the database.
+     * @param {HolidayCreateManyAndReturnArgs} args - Arguments to create many Holidays.
+     * @example
+     * // Create many Holidays
+     * const holiday = await prisma.holiday.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Holidays and only return the `id`
+     * const holidayWithIdOnly = await prisma.holiday.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends HolidayCreateManyAndReturnArgs>(args?: SelectSubset<T, HolidayCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Holiday.
+     * @param {HolidayDeleteArgs} args - Arguments to delete one Holiday.
+     * @example
+     * // Delete one Holiday
+     * const Holiday = await prisma.holiday.delete({
+     *   where: {
+     *     // ... filter to delete one Holiday
+     *   }
+     * })
+     * 
+     */
+    delete<T extends HolidayDeleteArgs>(args: SelectSubset<T, HolidayDeleteArgs<ExtArgs>>): Prisma__HolidayClient<$Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Holiday.
+     * @param {HolidayUpdateArgs} args - Arguments to update one Holiday.
+     * @example
+     * // Update one Holiday
+     * const holiday = await prisma.holiday.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends HolidayUpdateArgs>(args: SelectSubset<T, HolidayUpdateArgs<ExtArgs>>): Prisma__HolidayClient<$Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Holidays.
+     * @param {HolidayDeleteManyArgs} args - Arguments to filter Holidays to delete.
+     * @example
+     * // Delete a few Holidays
+     * const { count } = await prisma.holiday.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends HolidayDeleteManyArgs>(args?: SelectSubset<T, HolidayDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Holidays.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HolidayUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Holidays
+     * const holiday = await prisma.holiday.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends HolidayUpdateManyArgs>(args: SelectSubset<T, HolidayUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Holidays and returns the data updated in the database.
+     * @param {HolidayUpdateManyAndReturnArgs} args - Arguments to update many Holidays.
+     * @example
+     * // Update many Holidays
+     * const holiday = await prisma.holiday.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Holidays and only return the `id`
+     * const holidayWithIdOnly = await prisma.holiday.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends HolidayUpdateManyAndReturnArgs>(args: SelectSubset<T, HolidayUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Holiday.
+     * @param {HolidayUpsertArgs} args - Arguments to update or create a Holiday.
+     * @example
+     * // Update or create a Holiday
+     * const holiday = await prisma.holiday.upsert({
+     *   create: {
+     *     // ... data to create a Holiday
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Holiday we want to update
+     *   }
+     * })
+     */
+    upsert<T extends HolidayUpsertArgs>(args: SelectSubset<T, HolidayUpsertArgs<ExtArgs>>): Prisma__HolidayClient<$Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Holidays.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HolidayCountArgs} args - Arguments to filter Holidays to count.
+     * @example
+     * // Count the number of Holidays
+     * const count = await prisma.holiday.count({
+     *   where: {
+     *     // ... the filter for the Holidays we want to count
+     *   }
+     * })
+    **/
+    count<T extends HolidayCountArgs>(
+      args?: Subset<T, HolidayCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], HolidayCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Holiday.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HolidayAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends HolidayAggregateArgs>(args: Subset<T, HolidayAggregateArgs>): Prisma.PrismaPromise<GetHolidayAggregateType<T>>
+
+    /**
+     * Group by Holiday.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HolidayGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends HolidayGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: HolidayGroupByArgs['orderBy'] }
+        : { orderBy?: HolidayGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, HolidayGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetHolidayGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Holiday model
+   */
+  readonly fields: HolidayFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Holiday.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__HolidayClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    school<T extends Holiday$schoolArgs<ExtArgs> = {}>(args?: Subset<T, Holiday$schoolArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Holiday model
+   */
+  interface HolidayFieldRefs {
+    readonly id: FieldRef<"Holiday", 'String'>
+    readonly name: FieldRef<"Holiday", 'String'>
+    readonly date: FieldRef<"Holiday", 'DateTime'>
+    readonly recurring: FieldRef<"Holiday", 'Boolean'>
+    readonly schoolId: FieldRef<"Holiday", 'String'>
+    readonly createdAt: FieldRef<"Holiday", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Holiday findUnique
+   */
+  export type HolidayFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Holiday
+     */
+    select?: HolidaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Holiday
+     */
+    omit?: HolidayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HolidayInclude<ExtArgs> | null
+    /**
+     * Filter, which Holiday to fetch.
+     */
+    where: HolidayWhereUniqueInput
+  }
+
+  /**
+   * Holiday findUniqueOrThrow
+   */
+  export type HolidayFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Holiday
+     */
+    select?: HolidaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Holiday
+     */
+    omit?: HolidayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HolidayInclude<ExtArgs> | null
+    /**
+     * Filter, which Holiday to fetch.
+     */
+    where: HolidayWhereUniqueInput
+  }
+
+  /**
+   * Holiday findFirst
+   */
+  export type HolidayFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Holiday
+     */
+    select?: HolidaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Holiday
+     */
+    omit?: HolidayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HolidayInclude<ExtArgs> | null
+    /**
+     * Filter, which Holiday to fetch.
+     */
+    where?: HolidayWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Holidays to fetch.
+     */
+    orderBy?: HolidayOrderByWithRelationInput | HolidayOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Holidays.
+     */
+    cursor?: HolidayWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Holidays from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Holidays.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Holidays.
+     */
+    distinct?: HolidayScalarFieldEnum | HolidayScalarFieldEnum[]
+  }
+
+  /**
+   * Holiday findFirstOrThrow
+   */
+  export type HolidayFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Holiday
+     */
+    select?: HolidaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Holiday
+     */
+    omit?: HolidayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HolidayInclude<ExtArgs> | null
+    /**
+     * Filter, which Holiday to fetch.
+     */
+    where?: HolidayWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Holidays to fetch.
+     */
+    orderBy?: HolidayOrderByWithRelationInput | HolidayOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Holidays.
+     */
+    cursor?: HolidayWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Holidays from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Holidays.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Holidays.
+     */
+    distinct?: HolidayScalarFieldEnum | HolidayScalarFieldEnum[]
+  }
+
+  /**
+   * Holiday findMany
+   */
+  export type HolidayFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Holiday
+     */
+    select?: HolidaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Holiday
+     */
+    omit?: HolidayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HolidayInclude<ExtArgs> | null
+    /**
+     * Filter, which Holidays to fetch.
+     */
+    where?: HolidayWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Holidays to fetch.
+     */
+    orderBy?: HolidayOrderByWithRelationInput | HolidayOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Holidays.
+     */
+    cursor?: HolidayWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Holidays from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Holidays.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Holidays.
+     */
+    distinct?: HolidayScalarFieldEnum | HolidayScalarFieldEnum[]
+  }
+
+  /**
+   * Holiday create
+   */
+  export type HolidayCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Holiday
+     */
+    select?: HolidaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Holiday
+     */
+    omit?: HolidayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HolidayInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Holiday.
+     */
+    data: XOR<HolidayCreateInput, HolidayUncheckedCreateInput>
+  }
+
+  /**
+   * Holiday createMany
+   */
+  export type HolidayCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Holidays.
+     */
+    data: HolidayCreateManyInput | HolidayCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Holiday createManyAndReturn
+   */
+  export type HolidayCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Holiday
+     */
+    select?: HolidaySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Holiday
+     */
+    omit?: HolidayOmit<ExtArgs> | null
+    /**
+     * The data used to create many Holidays.
+     */
+    data: HolidayCreateManyInput | HolidayCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HolidayIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Holiday update
+   */
+  export type HolidayUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Holiday
+     */
+    select?: HolidaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Holiday
+     */
+    omit?: HolidayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HolidayInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Holiday.
+     */
+    data: XOR<HolidayUpdateInput, HolidayUncheckedUpdateInput>
+    /**
+     * Choose, which Holiday to update.
+     */
+    where: HolidayWhereUniqueInput
+  }
+
+  /**
+   * Holiday updateMany
+   */
+  export type HolidayUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Holidays.
+     */
+    data: XOR<HolidayUpdateManyMutationInput, HolidayUncheckedUpdateManyInput>
+    /**
+     * Filter which Holidays to update
+     */
+    where?: HolidayWhereInput
+    /**
+     * Limit how many Holidays to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Holiday updateManyAndReturn
+   */
+  export type HolidayUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Holiday
+     */
+    select?: HolidaySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Holiday
+     */
+    omit?: HolidayOmit<ExtArgs> | null
+    /**
+     * The data used to update Holidays.
+     */
+    data: XOR<HolidayUpdateManyMutationInput, HolidayUncheckedUpdateManyInput>
+    /**
+     * Filter which Holidays to update
+     */
+    where?: HolidayWhereInput
+    /**
+     * Limit how many Holidays to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HolidayIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Holiday upsert
+   */
+  export type HolidayUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Holiday
+     */
+    select?: HolidaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Holiday
+     */
+    omit?: HolidayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HolidayInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Holiday to update in case it exists.
+     */
+    where: HolidayWhereUniqueInput
+    /**
+     * In case the Holiday found by the `where` argument doesn't exist, create a new Holiday with this data.
+     */
+    create: XOR<HolidayCreateInput, HolidayUncheckedCreateInput>
+    /**
+     * In case the Holiday was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<HolidayUpdateInput, HolidayUncheckedUpdateInput>
+  }
+
+  /**
+   * Holiday delete
+   */
+  export type HolidayDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Holiday
+     */
+    select?: HolidaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Holiday
+     */
+    omit?: HolidayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HolidayInclude<ExtArgs> | null
+    /**
+     * Filter which Holiday to delete.
+     */
+    where: HolidayWhereUniqueInput
+  }
+
+  /**
+   * Holiday deleteMany
+   */
+  export type HolidayDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Holidays to delete
+     */
+    where?: HolidayWhereInput
+    /**
+     * Limit how many Holidays to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Holiday.school
+   */
+  export type Holiday$schoolArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the School
+     */
+    select?: SchoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the School
+     */
+    omit?: SchoolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolInclude<ExtArgs> | null
+    where?: SchoolWhereInput
+  }
+
+  /**
+   * Holiday without action
+   */
+  export type HolidayDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Holiday
+     */
+    select?: HolidaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Holiday
+     */
+    omit?: HolidayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HolidayInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ExamConvocation
+   */
+
+  export type AggregateExamConvocation = {
+    _count: ExamConvocationCountAggregateOutputType | null
+    _min: ExamConvocationMinAggregateOutputType | null
+    _max: ExamConvocationMaxAggregateOutputType | null
+  }
+
+  export type ExamConvocationMinAggregateOutputType = {
+    id: string | null
+    schoolId: string | null
+    date: Date | null
+    examDay: $Enums.ExamDay | null
+    label: string | null
+    notes: string | null
+    confirmed: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ExamConvocationMaxAggregateOutputType = {
+    id: string | null
+    schoolId: string | null
+    date: Date | null
+    examDay: $Enums.ExamDay | null
+    label: string | null
+    notes: string | null
+    confirmed: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ExamConvocationCountAggregateOutputType = {
+    id: number
+    schoolId: number
+    date: number
+    examDay: number
+    label: number
+    notes: number
+    confirmed: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ExamConvocationMinAggregateInputType = {
+    id?: true
+    schoolId?: true
+    date?: true
+    examDay?: true
+    label?: true
+    notes?: true
+    confirmed?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ExamConvocationMaxAggregateInputType = {
+    id?: true
+    schoolId?: true
+    date?: true
+    examDay?: true
+    label?: true
+    notes?: true
+    confirmed?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ExamConvocationCountAggregateInputType = {
+    id?: true
+    schoolId?: true
+    date?: true
+    examDay?: true
+    label?: true
+    notes?: true
+    confirmed?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ExamConvocationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ExamConvocation to aggregate.
+     */
+    where?: ExamConvocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExamConvocations to fetch.
+     */
+    orderBy?: ExamConvocationOrderByWithRelationInput | ExamConvocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ExamConvocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExamConvocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExamConvocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ExamConvocations
+    **/
+    _count?: true | ExamConvocationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ExamConvocationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ExamConvocationMaxAggregateInputType
+  }
+
+  export type GetExamConvocationAggregateType<T extends ExamConvocationAggregateArgs> = {
+        [P in keyof T & keyof AggregateExamConvocation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateExamConvocation[P]>
+      : GetScalarType<T[P], AggregateExamConvocation[P]>
+  }
+
+
+
+
+  export type ExamConvocationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExamConvocationWhereInput
+    orderBy?: ExamConvocationOrderByWithAggregationInput | ExamConvocationOrderByWithAggregationInput[]
+    by: ExamConvocationScalarFieldEnum[] | ExamConvocationScalarFieldEnum
+    having?: ExamConvocationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ExamConvocationCountAggregateInputType | true
+    _min?: ExamConvocationMinAggregateInputType
+    _max?: ExamConvocationMaxAggregateInputType
+  }
+
+  export type ExamConvocationGroupByOutputType = {
+    id: string
+    schoolId: string
+    date: Date
+    examDay: $Enums.ExamDay
+    label: string | null
+    notes: string | null
+    confirmed: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: ExamConvocationCountAggregateOutputType | null
+    _min: ExamConvocationMinAggregateOutputType | null
+    _max: ExamConvocationMaxAggregateOutputType | null
+  }
+
+  type GetExamConvocationGroupByPayload<T extends ExamConvocationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ExamConvocationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ExamConvocationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ExamConvocationGroupByOutputType[P]>
+            : GetScalarType<T[P], ExamConvocationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ExamConvocationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    schoolId?: boolean
+    date?: boolean
+    examDay?: boolean
+    label?: boolean
+    notes?: boolean
+    confirmed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    school?: boolean | SchoolDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["examConvocation"]>
+
+  export type ExamConvocationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    schoolId?: boolean
+    date?: boolean
+    examDay?: boolean
+    label?: boolean
+    notes?: boolean
+    confirmed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    school?: boolean | SchoolDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["examConvocation"]>
+
+  export type ExamConvocationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    schoolId?: boolean
+    date?: boolean
+    examDay?: boolean
+    label?: boolean
+    notes?: boolean
+    confirmed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    school?: boolean | SchoolDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["examConvocation"]>
+
+  export type ExamConvocationSelectScalar = {
+    id?: boolean
+    schoolId?: boolean
+    date?: boolean
+    examDay?: boolean
+    label?: boolean
+    notes?: boolean
+    confirmed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ExamConvocationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "schoolId" | "date" | "examDay" | "label" | "notes" | "confirmed" | "createdAt" | "updatedAt", ExtArgs["result"]["examConvocation"]>
+  export type ExamConvocationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    school?: boolean | SchoolDefaultArgs<ExtArgs>
+  }
+  export type ExamConvocationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    school?: boolean | SchoolDefaultArgs<ExtArgs>
+  }
+  export type ExamConvocationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    school?: boolean | SchoolDefaultArgs<ExtArgs>
+  }
+
+  export type $ExamConvocationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ExamConvocation"
+    objects: {
+      school: Prisma.$SchoolPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      schoolId: string
+      date: Date
+      examDay: $Enums.ExamDay
+      label: string | null
+      notes: string | null
+      confirmed: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["examConvocation"]>
+    composites: {}
+  }
+
+  type ExamConvocationGetPayload<S extends boolean | null | undefined | ExamConvocationDefaultArgs> = $Result.GetResult<Prisma.$ExamConvocationPayload, S>
+
+  type ExamConvocationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ExamConvocationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ExamConvocationCountAggregateInputType | true
+    }
+
+  export interface ExamConvocationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ExamConvocation'], meta: { name: 'ExamConvocation' } }
+    /**
+     * Find zero or one ExamConvocation that matches the filter.
+     * @param {ExamConvocationFindUniqueArgs} args - Arguments to find a ExamConvocation
+     * @example
+     * // Get one ExamConvocation
+     * const examConvocation = await prisma.examConvocation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ExamConvocationFindUniqueArgs>(args: SelectSubset<T, ExamConvocationFindUniqueArgs<ExtArgs>>): Prisma__ExamConvocationClient<$Result.GetResult<Prisma.$ExamConvocationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ExamConvocation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ExamConvocationFindUniqueOrThrowArgs} args - Arguments to find a ExamConvocation
+     * @example
+     * // Get one ExamConvocation
+     * const examConvocation = await prisma.examConvocation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ExamConvocationFindUniqueOrThrowArgs>(args: SelectSubset<T, ExamConvocationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExamConvocationClient<$Result.GetResult<Prisma.$ExamConvocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ExamConvocation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExamConvocationFindFirstArgs} args - Arguments to find a ExamConvocation
+     * @example
+     * // Get one ExamConvocation
+     * const examConvocation = await prisma.examConvocation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ExamConvocationFindFirstArgs>(args?: SelectSubset<T, ExamConvocationFindFirstArgs<ExtArgs>>): Prisma__ExamConvocationClient<$Result.GetResult<Prisma.$ExamConvocationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ExamConvocation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExamConvocationFindFirstOrThrowArgs} args - Arguments to find a ExamConvocation
+     * @example
+     * // Get one ExamConvocation
+     * const examConvocation = await prisma.examConvocation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ExamConvocationFindFirstOrThrowArgs>(args?: SelectSubset<T, ExamConvocationFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExamConvocationClient<$Result.GetResult<Prisma.$ExamConvocationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ExamConvocations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExamConvocationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ExamConvocations
+     * const examConvocations = await prisma.examConvocation.findMany()
+     * 
+     * // Get first 10 ExamConvocations
+     * const examConvocations = await prisma.examConvocation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const examConvocationWithIdOnly = await prisma.examConvocation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ExamConvocationFindManyArgs>(args?: SelectSubset<T, ExamConvocationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExamConvocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ExamConvocation.
+     * @param {ExamConvocationCreateArgs} args - Arguments to create a ExamConvocation.
+     * @example
+     * // Create one ExamConvocation
+     * const ExamConvocation = await prisma.examConvocation.create({
+     *   data: {
+     *     // ... data to create a ExamConvocation
+     *   }
+     * })
+     * 
+     */
+    create<T extends ExamConvocationCreateArgs>(args: SelectSubset<T, ExamConvocationCreateArgs<ExtArgs>>): Prisma__ExamConvocationClient<$Result.GetResult<Prisma.$ExamConvocationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ExamConvocations.
+     * @param {ExamConvocationCreateManyArgs} args - Arguments to create many ExamConvocations.
+     * @example
+     * // Create many ExamConvocations
+     * const examConvocation = await prisma.examConvocation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ExamConvocationCreateManyArgs>(args?: SelectSubset<T, ExamConvocationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ExamConvocations and returns the data saved in the database.
+     * @param {ExamConvocationCreateManyAndReturnArgs} args - Arguments to create many ExamConvocations.
+     * @example
+     * // Create many ExamConvocations
+     * const examConvocation = await prisma.examConvocation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ExamConvocations and only return the `id`
+     * const examConvocationWithIdOnly = await prisma.examConvocation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ExamConvocationCreateManyAndReturnArgs>(args?: SelectSubset<T, ExamConvocationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExamConvocationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ExamConvocation.
+     * @param {ExamConvocationDeleteArgs} args - Arguments to delete one ExamConvocation.
+     * @example
+     * // Delete one ExamConvocation
+     * const ExamConvocation = await prisma.examConvocation.delete({
+     *   where: {
+     *     // ... filter to delete one ExamConvocation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ExamConvocationDeleteArgs>(args: SelectSubset<T, ExamConvocationDeleteArgs<ExtArgs>>): Prisma__ExamConvocationClient<$Result.GetResult<Prisma.$ExamConvocationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ExamConvocation.
+     * @param {ExamConvocationUpdateArgs} args - Arguments to update one ExamConvocation.
+     * @example
+     * // Update one ExamConvocation
+     * const examConvocation = await prisma.examConvocation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ExamConvocationUpdateArgs>(args: SelectSubset<T, ExamConvocationUpdateArgs<ExtArgs>>): Prisma__ExamConvocationClient<$Result.GetResult<Prisma.$ExamConvocationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ExamConvocations.
+     * @param {ExamConvocationDeleteManyArgs} args - Arguments to filter ExamConvocations to delete.
+     * @example
+     * // Delete a few ExamConvocations
+     * const { count } = await prisma.examConvocation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ExamConvocationDeleteManyArgs>(args?: SelectSubset<T, ExamConvocationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ExamConvocations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExamConvocationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ExamConvocations
+     * const examConvocation = await prisma.examConvocation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ExamConvocationUpdateManyArgs>(args: SelectSubset<T, ExamConvocationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ExamConvocations and returns the data updated in the database.
+     * @param {ExamConvocationUpdateManyAndReturnArgs} args - Arguments to update many ExamConvocations.
+     * @example
+     * // Update many ExamConvocations
+     * const examConvocation = await prisma.examConvocation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ExamConvocations and only return the `id`
+     * const examConvocationWithIdOnly = await prisma.examConvocation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ExamConvocationUpdateManyAndReturnArgs>(args: SelectSubset<T, ExamConvocationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExamConvocationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ExamConvocation.
+     * @param {ExamConvocationUpsertArgs} args - Arguments to update or create a ExamConvocation.
+     * @example
+     * // Update or create a ExamConvocation
+     * const examConvocation = await prisma.examConvocation.upsert({
+     *   create: {
+     *     // ... data to create a ExamConvocation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ExamConvocation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ExamConvocationUpsertArgs>(args: SelectSubset<T, ExamConvocationUpsertArgs<ExtArgs>>): Prisma__ExamConvocationClient<$Result.GetResult<Prisma.$ExamConvocationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ExamConvocations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExamConvocationCountArgs} args - Arguments to filter ExamConvocations to count.
+     * @example
+     * // Count the number of ExamConvocations
+     * const count = await prisma.examConvocation.count({
+     *   where: {
+     *     // ... the filter for the ExamConvocations we want to count
+     *   }
+     * })
+    **/
+    count<T extends ExamConvocationCountArgs>(
+      args?: Subset<T, ExamConvocationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ExamConvocationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ExamConvocation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExamConvocationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ExamConvocationAggregateArgs>(args: Subset<T, ExamConvocationAggregateArgs>): Prisma.PrismaPromise<GetExamConvocationAggregateType<T>>
+
+    /**
+     * Group by ExamConvocation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExamConvocationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ExamConvocationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ExamConvocationGroupByArgs['orderBy'] }
+        : { orderBy?: ExamConvocationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ExamConvocationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExamConvocationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ExamConvocation model
+   */
+  readonly fields: ExamConvocationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ExamConvocation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ExamConvocationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    school<T extends SchoolDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SchoolDefaultArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ExamConvocation model
+   */
+  interface ExamConvocationFieldRefs {
+    readonly id: FieldRef<"ExamConvocation", 'String'>
+    readonly schoolId: FieldRef<"ExamConvocation", 'String'>
+    readonly date: FieldRef<"ExamConvocation", 'DateTime'>
+    readonly examDay: FieldRef<"ExamConvocation", 'ExamDay'>
+    readonly label: FieldRef<"ExamConvocation", 'String'>
+    readonly notes: FieldRef<"ExamConvocation", 'String'>
+    readonly confirmed: FieldRef<"ExamConvocation", 'Boolean'>
+    readonly createdAt: FieldRef<"ExamConvocation", 'DateTime'>
+    readonly updatedAt: FieldRef<"ExamConvocation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ExamConvocation findUnique
+   */
+  export type ExamConvocationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExamConvocation
+     */
+    select?: ExamConvocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExamConvocation
+     */
+    omit?: ExamConvocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExamConvocationInclude<ExtArgs> | null
+    /**
+     * Filter, which ExamConvocation to fetch.
+     */
+    where: ExamConvocationWhereUniqueInput
+  }
+
+  /**
+   * ExamConvocation findUniqueOrThrow
+   */
+  export type ExamConvocationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExamConvocation
+     */
+    select?: ExamConvocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExamConvocation
+     */
+    omit?: ExamConvocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExamConvocationInclude<ExtArgs> | null
+    /**
+     * Filter, which ExamConvocation to fetch.
+     */
+    where: ExamConvocationWhereUniqueInput
+  }
+
+  /**
+   * ExamConvocation findFirst
+   */
+  export type ExamConvocationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExamConvocation
+     */
+    select?: ExamConvocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExamConvocation
+     */
+    omit?: ExamConvocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExamConvocationInclude<ExtArgs> | null
+    /**
+     * Filter, which ExamConvocation to fetch.
+     */
+    where?: ExamConvocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExamConvocations to fetch.
+     */
+    orderBy?: ExamConvocationOrderByWithRelationInput | ExamConvocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ExamConvocations.
+     */
+    cursor?: ExamConvocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExamConvocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExamConvocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExamConvocations.
+     */
+    distinct?: ExamConvocationScalarFieldEnum | ExamConvocationScalarFieldEnum[]
+  }
+
+  /**
+   * ExamConvocation findFirstOrThrow
+   */
+  export type ExamConvocationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExamConvocation
+     */
+    select?: ExamConvocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExamConvocation
+     */
+    omit?: ExamConvocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExamConvocationInclude<ExtArgs> | null
+    /**
+     * Filter, which ExamConvocation to fetch.
+     */
+    where?: ExamConvocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExamConvocations to fetch.
+     */
+    orderBy?: ExamConvocationOrderByWithRelationInput | ExamConvocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ExamConvocations.
+     */
+    cursor?: ExamConvocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExamConvocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExamConvocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExamConvocations.
+     */
+    distinct?: ExamConvocationScalarFieldEnum | ExamConvocationScalarFieldEnum[]
+  }
+
+  /**
+   * ExamConvocation findMany
+   */
+  export type ExamConvocationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExamConvocation
+     */
+    select?: ExamConvocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExamConvocation
+     */
+    omit?: ExamConvocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExamConvocationInclude<ExtArgs> | null
+    /**
+     * Filter, which ExamConvocations to fetch.
+     */
+    where?: ExamConvocationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExamConvocations to fetch.
+     */
+    orderBy?: ExamConvocationOrderByWithRelationInput | ExamConvocationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ExamConvocations.
+     */
+    cursor?: ExamConvocationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExamConvocations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExamConvocations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExamConvocations.
+     */
+    distinct?: ExamConvocationScalarFieldEnum | ExamConvocationScalarFieldEnum[]
+  }
+
+  /**
+   * ExamConvocation create
+   */
+  export type ExamConvocationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExamConvocation
+     */
+    select?: ExamConvocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExamConvocation
+     */
+    omit?: ExamConvocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExamConvocationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ExamConvocation.
+     */
+    data: XOR<ExamConvocationCreateInput, ExamConvocationUncheckedCreateInput>
+  }
+
+  /**
+   * ExamConvocation createMany
+   */
+  export type ExamConvocationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ExamConvocations.
+     */
+    data: ExamConvocationCreateManyInput | ExamConvocationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ExamConvocation createManyAndReturn
+   */
+  export type ExamConvocationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExamConvocation
+     */
+    select?: ExamConvocationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExamConvocation
+     */
+    omit?: ExamConvocationOmit<ExtArgs> | null
+    /**
+     * The data used to create many ExamConvocations.
+     */
+    data: ExamConvocationCreateManyInput | ExamConvocationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExamConvocationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ExamConvocation update
+   */
+  export type ExamConvocationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExamConvocation
+     */
+    select?: ExamConvocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExamConvocation
+     */
+    omit?: ExamConvocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExamConvocationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ExamConvocation.
+     */
+    data: XOR<ExamConvocationUpdateInput, ExamConvocationUncheckedUpdateInput>
+    /**
+     * Choose, which ExamConvocation to update.
+     */
+    where: ExamConvocationWhereUniqueInput
+  }
+
+  /**
+   * ExamConvocation updateMany
+   */
+  export type ExamConvocationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ExamConvocations.
+     */
+    data: XOR<ExamConvocationUpdateManyMutationInput, ExamConvocationUncheckedUpdateManyInput>
+    /**
+     * Filter which ExamConvocations to update
+     */
+    where?: ExamConvocationWhereInput
+    /**
+     * Limit how many ExamConvocations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ExamConvocation updateManyAndReturn
+   */
+  export type ExamConvocationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExamConvocation
+     */
+    select?: ExamConvocationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExamConvocation
+     */
+    omit?: ExamConvocationOmit<ExtArgs> | null
+    /**
+     * The data used to update ExamConvocations.
+     */
+    data: XOR<ExamConvocationUpdateManyMutationInput, ExamConvocationUncheckedUpdateManyInput>
+    /**
+     * Filter which ExamConvocations to update
+     */
+    where?: ExamConvocationWhereInput
+    /**
+     * Limit how many ExamConvocations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExamConvocationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ExamConvocation upsert
+   */
+  export type ExamConvocationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExamConvocation
+     */
+    select?: ExamConvocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExamConvocation
+     */
+    omit?: ExamConvocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExamConvocationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ExamConvocation to update in case it exists.
+     */
+    where: ExamConvocationWhereUniqueInput
+    /**
+     * In case the ExamConvocation found by the `where` argument doesn't exist, create a new ExamConvocation with this data.
+     */
+    create: XOR<ExamConvocationCreateInput, ExamConvocationUncheckedCreateInput>
+    /**
+     * In case the ExamConvocation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ExamConvocationUpdateInput, ExamConvocationUncheckedUpdateInput>
+  }
+
+  /**
+   * ExamConvocation delete
+   */
+  export type ExamConvocationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExamConvocation
+     */
+    select?: ExamConvocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExamConvocation
+     */
+    omit?: ExamConvocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExamConvocationInclude<ExtArgs> | null
+    /**
+     * Filter which ExamConvocation to delete.
+     */
+    where: ExamConvocationWhereUniqueInput
+  }
+
+  /**
+   * ExamConvocation deleteMany
+   */
+  export type ExamConvocationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ExamConvocations to delete
+     */
+    where?: ExamConvocationWhereInput
+    /**
+     * Limit how many ExamConvocations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ExamConvocation without action
+   */
+  export type ExamConvocationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExamConvocation
+     */
+    select?: ExamConvocationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExamConvocation
+     */
+    omit?: ExamConvocationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExamConvocationInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -38813,6 +41304,7 @@ export namespace Prisma {
     minMonths: 'minMonths',
     maxMonths: 'maxMonths',
     minAttendancePercent: 'minAttendancePercent',
+    examDay: 'examDay',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -39058,6 +41550,33 @@ export namespace Prisma {
   export type PushSubscriptionScalarFieldEnum = (typeof PushSubscriptionScalarFieldEnum)[keyof typeof PushSubscriptionScalarFieldEnum]
 
 
+  export const HolidayScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    date: 'date',
+    recurring: 'recurring',
+    schoolId: 'schoolId',
+    createdAt: 'createdAt'
+  };
+
+  export type HolidayScalarFieldEnum = (typeof HolidayScalarFieldEnum)[keyof typeof HolidayScalarFieldEnum]
+
+
+  export const ExamConvocationScalarFieldEnum: {
+    id: 'id',
+    schoolId: 'schoolId',
+    date: 'date',
+    examDay: 'examDay',
+    label: 'label',
+    notes: 'notes',
+    confirmed: 'confirmed',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ExamConvocationScalarFieldEnum = (typeof ExamConvocationScalarFieldEnum)[keyof typeof ExamConvocationScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -39301,6 +41820,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ExamDay'
+   */
+  export type EnumExamDayFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExamDay'>
+    
+
+
+  /**
+   * Reference to a field of type 'ExamDay[]'
+   */
+  export type ListEnumExamDayFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExamDay[]'>
+    
+
+
+  /**
    * Reference to a field of type 'TechniqueCategory'
    */
   export type EnumTechniqueCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TechniqueCategory'>
@@ -39445,6 +41978,8 @@ export namespace Prisma {
     techniques?: TechniqueListRelationFilter
     achievementTypes?: AchievementTypeListRelationFilter
     plans?: PlanListRelationFilter
+    holidays?: HolidayListRelationFilter
+    examConvocations?: ExamConvocationListRelationFilter
   }
 
   export type SchoolOrderByWithRelationInput = {
@@ -39460,6 +41995,8 @@ export namespace Prisma {
     techniques?: TechniqueOrderByRelationAggregateInput
     achievementTypes?: AchievementTypeOrderByRelationAggregateInput
     plans?: PlanOrderByRelationAggregateInput
+    holidays?: HolidayOrderByRelationAggregateInput
+    examConvocations?: ExamConvocationOrderByRelationAggregateInput
   }
 
   export type SchoolWhereUniqueInput = Prisma.AtLeast<{
@@ -39478,6 +42015,8 @@ export namespace Prisma {
     techniques?: TechniqueListRelationFilter
     achievementTypes?: AchievementTypeListRelationFilter
     plans?: PlanListRelationFilter
+    holidays?: HolidayListRelationFilter
+    examConvocations?: ExamConvocationListRelationFilter
   }, "id">
 
   export type SchoolOrderByWithAggregationInput = {
@@ -40553,6 +43092,7 @@ export namespace Prisma {
     minMonths?: IntNullableFilter<"BeltRank"> | number | null
     maxMonths?: IntNullableFilter<"BeltRank"> | number | null
     minAttendancePercent?: IntNullableFilter<"BeltRank"> | number | null
+    examDay?: EnumExamDayNullableFilter<"BeltRank"> | $Enums.ExamDay | null
     createdAt?: DateTimeFilter<"BeltRank"> | Date | string
     updatedAt?: DateTimeFilter<"BeltRank"> | Date | string
     school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
@@ -40578,6 +43118,7 @@ export namespace Prisma {
     minMonths?: SortOrderInput | SortOrder
     maxMonths?: SortOrderInput | SortOrder
     minAttendancePercent?: SortOrderInput | SortOrder
+    examDay?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     school?: SchoolOrderByWithRelationInput
@@ -40606,6 +43147,7 @@ export namespace Prisma {
     minMonths?: IntNullableFilter<"BeltRank"> | number | null
     maxMonths?: IntNullableFilter<"BeltRank"> | number | null
     minAttendancePercent?: IntNullableFilter<"BeltRank"> | number | null
+    examDay?: EnumExamDayNullableFilter<"BeltRank"> | $Enums.ExamDay | null
     createdAt?: DateTimeFilter<"BeltRank"> | Date | string
     updatedAt?: DateTimeFilter<"BeltRank"> | Date | string
     school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
@@ -40631,6 +43173,7 @@ export namespace Prisma {
     minMonths?: SortOrderInput | SortOrder
     maxMonths?: SortOrderInput | SortOrder
     minAttendancePercent?: SortOrderInput | SortOrder
+    examDay?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: BeltRankCountOrderByAggregateInput
@@ -40660,6 +43203,7 @@ export namespace Prisma {
     minMonths?: IntNullableWithAggregatesFilter<"BeltRank"> | number | null
     maxMonths?: IntNullableWithAggregatesFilter<"BeltRank"> | number | null
     minAttendancePercent?: IntNullableWithAggregatesFilter<"BeltRank"> | number | null
+    examDay?: EnumExamDayNullableWithAggregatesFilter<"BeltRank"> | $Enums.ExamDay | null
     createdAt?: DateTimeWithAggregatesFilter<"BeltRank"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"BeltRank"> | Date | string
   }
@@ -41957,6 +44501,143 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"PushSubscription"> | Date | string
   }
 
+  export type HolidayWhereInput = {
+    AND?: HolidayWhereInput | HolidayWhereInput[]
+    OR?: HolidayWhereInput[]
+    NOT?: HolidayWhereInput | HolidayWhereInput[]
+    id?: StringFilter<"Holiday"> | string
+    name?: StringFilter<"Holiday"> | string
+    date?: DateTimeFilter<"Holiday"> | Date | string
+    recurring?: BoolFilter<"Holiday"> | boolean
+    schoolId?: StringNullableFilter<"Holiday"> | string | null
+    createdAt?: DateTimeFilter<"Holiday"> | Date | string
+    school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
+  }
+
+  export type HolidayOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    date?: SortOrder
+    recurring?: SortOrder
+    schoolId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    school?: SchoolOrderByWithRelationInput
+  }
+
+  export type HolidayWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    date_schoolId?: HolidayDateSchoolIdCompoundUniqueInput
+    AND?: HolidayWhereInput | HolidayWhereInput[]
+    OR?: HolidayWhereInput[]
+    NOT?: HolidayWhereInput | HolidayWhereInput[]
+    name?: StringFilter<"Holiday"> | string
+    date?: DateTimeFilter<"Holiday"> | Date | string
+    recurring?: BoolFilter<"Holiday"> | boolean
+    schoolId?: StringNullableFilter<"Holiday"> | string | null
+    createdAt?: DateTimeFilter<"Holiday"> | Date | string
+    school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
+  }, "id" | "date_schoolId">
+
+  export type HolidayOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    date?: SortOrder
+    recurring?: SortOrder
+    schoolId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: HolidayCountOrderByAggregateInput
+    _max?: HolidayMaxOrderByAggregateInput
+    _min?: HolidayMinOrderByAggregateInput
+  }
+
+  export type HolidayScalarWhereWithAggregatesInput = {
+    AND?: HolidayScalarWhereWithAggregatesInput | HolidayScalarWhereWithAggregatesInput[]
+    OR?: HolidayScalarWhereWithAggregatesInput[]
+    NOT?: HolidayScalarWhereWithAggregatesInput | HolidayScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Holiday"> | string
+    name?: StringWithAggregatesFilter<"Holiday"> | string
+    date?: DateTimeWithAggregatesFilter<"Holiday"> | Date | string
+    recurring?: BoolWithAggregatesFilter<"Holiday"> | boolean
+    schoolId?: StringNullableWithAggregatesFilter<"Holiday"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Holiday"> | Date | string
+  }
+
+  export type ExamConvocationWhereInput = {
+    AND?: ExamConvocationWhereInput | ExamConvocationWhereInput[]
+    OR?: ExamConvocationWhereInput[]
+    NOT?: ExamConvocationWhereInput | ExamConvocationWhereInput[]
+    id?: StringFilter<"ExamConvocation"> | string
+    schoolId?: StringFilter<"ExamConvocation"> | string
+    date?: DateTimeFilter<"ExamConvocation"> | Date | string
+    examDay?: EnumExamDayFilter<"ExamConvocation"> | $Enums.ExamDay
+    label?: StringNullableFilter<"ExamConvocation"> | string | null
+    notes?: StringNullableFilter<"ExamConvocation"> | string | null
+    confirmed?: BoolFilter<"ExamConvocation"> | boolean
+    createdAt?: DateTimeFilter<"ExamConvocation"> | Date | string
+    updatedAt?: DateTimeFilter<"ExamConvocation"> | Date | string
+    school?: XOR<SchoolScalarRelationFilter, SchoolWhereInput>
+  }
+
+  export type ExamConvocationOrderByWithRelationInput = {
+    id?: SortOrder
+    schoolId?: SortOrder
+    date?: SortOrder
+    examDay?: SortOrder
+    label?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    confirmed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    school?: SchoolOrderByWithRelationInput
+  }
+
+  export type ExamConvocationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    schoolId_date_examDay?: ExamConvocationSchoolIdDateExamDayCompoundUniqueInput
+    AND?: ExamConvocationWhereInput | ExamConvocationWhereInput[]
+    OR?: ExamConvocationWhereInput[]
+    NOT?: ExamConvocationWhereInput | ExamConvocationWhereInput[]
+    schoolId?: StringFilter<"ExamConvocation"> | string
+    date?: DateTimeFilter<"ExamConvocation"> | Date | string
+    examDay?: EnumExamDayFilter<"ExamConvocation"> | $Enums.ExamDay
+    label?: StringNullableFilter<"ExamConvocation"> | string | null
+    notes?: StringNullableFilter<"ExamConvocation"> | string | null
+    confirmed?: BoolFilter<"ExamConvocation"> | boolean
+    createdAt?: DateTimeFilter<"ExamConvocation"> | Date | string
+    updatedAt?: DateTimeFilter<"ExamConvocation"> | Date | string
+    school?: XOR<SchoolScalarRelationFilter, SchoolWhereInput>
+  }, "id" | "schoolId_date_examDay">
+
+  export type ExamConvocationOrderByWithAggregationInput = {
+    id?: SortOrder
+    schoolId?: SortOrder
+    date?: SortOrder
+    examDay?: SortOrder
+    label?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    confirmed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ExamConvocationCountOrderByAggregateInput
+    _max?: ExamConvocationMaxOrderByAggregateInput
+    _min?: ExamConvocationMinOrderByAggregateInput
+  }
+
+  export type ExamConvocationScalarWhereWithAggregatesInput = {
+    AND?: ExamConvocationScalarWhereWithAggregatesInput | ExamConvocationScalarWhereWithAggregatesInput[]
+    OR?: ExamConvocationScalarWhereWithAggregatesInput[]
+    NOT?: ExamConvocationScalarWhereWithAggregatesInput | ExamConvocationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ExamConvocation"> | string
+    schoolId?: StringWithAggregatesFilter<"ExamConvocation"> | string
+    date?: DateTimeWithAggregatesFilter<"ExamConvocation"> | Date | string
+    examDay?: EnumExamDayWithAggregatesFilter<"ExamConvocation"> | $Enums.ExamDay
+    label?: StringNullableWithAggregatesFilter<"ExamConvocation"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"ExamConvocation"> | string | null
+    confirmed?: BoolWithAggregatesFilter<"ExamConvocation"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"ExamConvocation"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ExamConvocation"> | Date | string
+  }
+
   export type SchoolCreateInput = {
     id?: string
     name: string
@@ -41970,6 +44651,8 @@ export namespace Prisma {
     techniques?: TechniqueCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
     plans?: PlanCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateInput = {
@@ -41985,6 +44668,8 @@ export namespace Prisma {
     techniques?: TechniqueUncheckedCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUpdateInput = {
@@ -42000,6 +44685,8 @@ export namespace Prisma {
     techniques?: TechniqueUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
     plans?: PlanUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateInput = {
@@ -42015,6 +44702,8 @@ export namespace Prisma {
     techniques?: TechniqueUncheckedUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolCreateManyInput = {
@@ -43178,6 +45867,7 @@ export namespace Prisma {
     minMonths?: number | null
     maxMonths?: number | null
     minAttendancePercent?: number | null
+    examDay?: $Enums.ExamDay | null
     createdAt?: Date | string
     updatedAt?: Date | string
     school?: SchoolCreateNestedOneWithoutBeltRanksInput
@@ -43203,6 +45893,7 @@ export namespace Prisma {
     minMonths?: number | null
     maxMonths?: number | null
     minAttendancePercent?: number | null
+    examDay?: $Enums.ExamDay | null
     createdAt?: Date | string
     updatedAt?: Date | string
     katas?: BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput
@@ -43226,6 +45917,7 @@ export namespace Prisma {
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
     maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    examDay?: NullableEnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     school?: SchoolUpdateOneWithoutBeltRanksNestedInput
@@ -43251,6 +45943,7 @@ export namespace Prisma {
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
     maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    examDay?: NullableEnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     katas?: BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput
@@ -43275,6 +45968,7 @@ export namespace Prisma {
     minMonths?: number | null
     maxMonths?: number | null
     minAttendancePercent?: number | null
+    examDay?: $Enums.ExamDay | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -43295,6 +45989,7 @@ export namespace Prisma {
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
     maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    examDay?: NullableEnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -43316,6 +46011,7 @@ export namespace Prisma {
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
     maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    examDay?: NullableEnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -44683,6 +47379,151 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type HolidayCreateInput = {
+    id?: string
+    name: string
+    date: Date | string
+    recurring?: boolean
+    createdAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutHolidaysInput
+  }
+
+  export type HolidayUncheckedCreateInput = {
+    id?: string
+    name: string
+    date: Date | string
+    recurring?: boolean
+    schoolId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type HolidayUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurring?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutHolidaysNestedInput
+  }
+
+  export type HolidayUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurring?: BoolFieldUpdateOperationsInput | boolean
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HolidayCreateManyInput = {
+    id?: string
+    name: string
+    date: Date | string
+    recurring?: boolean
+    schoolId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type HolidayUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurring?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HolidayUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurring?: BoolFieldUpdateOperationsInput | boolean
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExamConvocationCreateInput = {
+    id?: string
+    date: Date | string
+    examDay: $Enums.ExamDay
+    label?: string | null
+    notes?: string | null
+    confirmed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school: SchoolCreateNestedOneWithoutExamConvocationsInput
+  }
+
+  export type ExamConvocationUncheckedCreateInput = {
+    id?: string
+    schoolId: string
+    date: Date | string
+    examDay: $Enums.ExamDay
+    label?: string | null
+    notes?: string | null
+    confirmed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExamConvocationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    examDay?: EnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneRequiredWithoutExamConvocationsNestedInput
+  }
+
+  export type ExamConvocationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    schoolId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    examDay?: EnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExamConvocationCreateManyInput = {
+    id?: string
+    schoolId: string
+    date: Date | string
+    examDay: $Enums.ExamDay
+    label?: string | null
+    notes?: string | null
+    confirmed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExamConvocationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    examDay?: EnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExamConvocationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    schoolId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    examDay?: EnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -44757,6 +47598,18 @@ export namespace Prisma {
     none?: PlanWhereInput
   }
 
+  export type HolidayListRelationFilter = {
+    every?: HolidayWhereInput
+    some?: HolidayWhereInput
+    none?: HolidayWhereInput
+  }
+
+  export type ExamConvocationListRelationFilter = {
+    every?: ExamConvocationWhereInput
+    some?: ExamConvocationWhereInput
+    none?: ExamConvocationWhereInput
+  }
+
   export type BranchOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -44786,6 +47639,14 @@ export namespace Prisma {
   }
 
   export type PlanOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type HolidayOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ExamConvocationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -45866,6 +48727,13 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type EnumExamDayNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExamDay | EnumExamDayFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumExamDayNullableFilter<$PrismaModel> | $Enums.ExamDay | null
+  }
+
   export type BeltRankKataListRelationFilter = {
     every?: BeltRankKataWhereInput
     some?: BeltRankKataWhereInput
@@ -45893,6 +48761,7 @@ export namespace Prisma {
     minMonths?: SortOrder
     maxMonths?: SortOrder
     minAttendancePercent?: SortOrder
+    examDay?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -45922,6 +48791,7 @@ export namespace Prisma {
     minMonths?: SortOrder
     maxMonths?: SortOrder
     minAttendancePercent?: SortOrder
+    examDay?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -45943,6 +48813,7 @@ export namespace Prisma {
     minMonths?: SortOrder
     maxMonths?: SortOrder
     minAttendancePercent?: SortOrder
+    examDay?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -45979,6 +48850,16 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type EnumExamDayNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExamDay | EnumExamDayFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumExamDayNullableWithAggregatesFilter<$PrismaModel> | $Enums.ExamDay | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumExamDayNullableFilter<$PrismaModel>
+    _max?: NestedEnumExamDayNullableFilter<$PrismaModel>
   }
 
   export type BeltRankScalarRelationFilter = {
@@ -46880,6 +49761,97 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type HolidayDateSchoolIdCompoundUniqueInput = {
+    date: Date | string
+    schoolId: string
+  }
+
+  export type HolidayCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    date?: SortOrder
+    recurring?: SortOrder
+    schoolId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type HolidayMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    date?: SortOrder
+    recurring?: SortOrder
+    schoolId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type HolidayMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    date?: SortOrder
+    recurring?: SortOrder
+    schoolId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumExamDayFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExamDay | EnumExamDayFieldRefInput<$PrismaModel>
+    in?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel>
+    not?: NestedEnumExamDayFilter<$PrismaModel> | $Enums.ExamDay
+  }
+
+  export type ExamConvocationSchoolIdDateExamDayCompoundUniqueInput = {
+    schoolId: string
+    date: Date | string
+    examDay: $Enums.ExamDay
+  }
+
+  export type ExamConvocationCountOrderByAggregateInput = {
+    id?: SortOrder
+    schoolId?: SortOrder
+    date?: SortOrder
+    examDay?: SortOrder
+    label?: SortOrder
+    notes?: SortOrder
+    confirmed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ExamConvocationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    schoolId?: SortOrder
+    date?: SortOrder
+    examDay?: SortOrder
+    label?: SortOrder
+    notes?: SortOrder
+    confirmed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ExamConvocationMinOrderByAggregateInput = {
+    id?: SortOrder
+    schoolId?: SortOrder
+    date?: SortOrder
+    examDay?: SortOrder
+    label?: SortOrder
+    notes?: SortOrder
+    confirmed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumExamDayWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExamDay | EnumExamDayFieldRefInput<$PrismaModel>
+    in?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel>
+    not?: NestedEnumExamDayWithAggregatesFilter<$PrismaModel> | $Enums.ExamDay
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumExamDayFilter<$PrismaModel>
+    _max?: NestedEnumExamDayFilter<$PrismaModel>
+  }
+
   export type BranchCreateNestedManyWithoutSchoolInput = {
     create?: XOR<BranchCreateWithoutSchoolInput, BranchUncheckedCreateWithoutSchoolInput> | BranchCreateWithoutSchoolInput[] | BranchUncheckedCreateWithoutSchoolInput[]
     connectOrCreate?: BranchCreateOrConnectWithoutSchoolInput | BranchCreateOrConnectWithoutSchoolInput[]
@@ -46936,6 +49908,20 @@ export namespace Prisma {
     connect?: PlanWhereUniqueInput | PlanWhereUniqueInput[]
   }
 
+  export type HolidayCreateNestedManyWithoutSchoolInput = {
+    create?: XOR<HolidayCreateWithoutSchoolInput, HolidayUncheckedCreateWithoutSchoolInput> | HolidayCreateWithoutSchoolInput[] | HolidayUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: HolidayCreateOrConnectWithoutSchoolInput | HolidayCreateOrConnectWithoutSchoolInput[]
+    createMany?: HolidayCreateManySchoolInputEnvelope
+    connect?: HolidayWhereUniqueInput | HolidayWhereUniqueInput[]
+  }
+
+  export type ExamConvocationCreateNestedManyWithoutSchoolInput = {
+    create?: XOR<ExamConvocationCreateWithoutSchoolInput, ExamConvocationUncheckedCreateWithoutSchoolInput> | ExamConvocationCreateWithoutSchoolInput[] | ExamConvocationUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: ExamConvocationCreateOrConnectWithoutSchoolInput | ExamConvocationCreateOrConnectWithoutSchoolInput[]
+    createMany?: ExamConvocationCreateManySchoolInputEnvelope
+    connect?: ExamConvocationWhereUniqueInput | ExamConvocationWhereUniqueInput[]
+  }
+
   export type BranchUncheckedCreateNestedManyWithoutSchoolInput = {
     create?: XOR<BranchCreateWithoutSchoolInput, BranchUncheckedCreateWithoutSchoolInput> | BranchCreateWithoutSchoolInput[] | BranchUncheckedCreateWithoutSchoolInput[]
     connectOrCreate?: BranchCreateOrConnectWithoutSchoolInput | BranchCreateOrConnectWithoutSchoolInput[]
@@ -46990,6 +49976,20 @@ export namespace Prisma {
     connectOrCreate?: PlanCreateOrConnectWithoutSchoolInput | PlanCreateOrConnectWithoutSchoolInput[]
     createMany?: PlanCreateManySchoolInputEnvelope
     connect?: PlanWhereUniqueInput | PlanWhereUniqueInput[]
+  }
+
+  export type HolidayUncheckedCreateNestedManyWithoutSchoolInput = {
+    create?: XOR<HolidayCreateWithoutSchoolInput, HolidayUncheckedCreateWithoutSchoolInput> | HolidayCreateWithoutSchoolInput[] | HolidayUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: HolidayCreateOrConnectWithoutSchoolInput | HolidayCreateOrConnectWithoutSchoolInput[]
+    createMany?: HolidayCreateManySchoolInputEnvelope
+    connect?: HolidayWhereUniqueInput | HolidayWhereUniqueInput[]
+  }
+
+  export type ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput = {
+    create?: XOR<ExamConvocationCreateWithoutSchoolInput, ExamConvocationUncheckedCreateWithoutSchoolInput> | ExamConvocationCreateWithoutSchoolInput[] | ExamConvocationUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: ExamConvocationCreateOrConnectWithoutSchoolInput | ExamConvocationCreateOrConnectWithoutSchoolInput[]
+    createMany?: ExamConvocationCreateManySchoolInputEnvelope
+    connect?: ExamConvocationWhereUniqueInput | ExamConvocationWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -47112,6 +50112,34 @@ export namespace Prisma {
     deleteMany?: PlanScalarWhereInput | PlanScalarWhereInput[]
   }
 
+  export type HolidayUpdateManyWithoutSchoolNestedInput = {
+    create?: XOR<HolidayCreateWithoutSchoolInput, HolidayUncheckedCreateWithoutSchoolInput> | HolidayCreateWithoutSchoolInput[] | HolidayUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: HolidayCreateOrConnectWithoutSchoolInput | HolidayCreateOrConnectWithoutSchoolInput[]
+    upsert?: HolidayUpsertWithWhereUniqueWithoutSchoolInput | HolidayUpsertWithWhereUniqueWithoutSchoolInput[]
+    createMany?: HolidayCreateManySchoolInputEnvelope
+    set?: HolidayWhereUniqueInput | HolidayWhereUniqueInput[]
+    disconnect?: HolidayWhereUniqueInput | HolidayWhereUniqueInput[]
+    delete?: HolidayWhereUniqueInput | HolidayWhereUniqueInput[]
+    connect?: HolidayWhereUniqueInput | HolidayWhereUniqueInput[]
+    update?: HolidayUpdateWithWhereUniqueWithoutSchoolInput | HolidayUpdateWithWhereUniqueWithoutSchoolInput[]
+    updateMany?: HolidayUpdateManyWithWhereWithoutSchoolInput | HolidayUpdateManyWithWhereWithoutSchoolInput[]
+    deleteMany?: HolidayScalarWhereInput | HolidayScalarWhereInput[]
+  }
+
+  export type ExamConvocationUpdateManyWithoutSchoolNestedInput = {
+    create?: XOR<ExamConvocationCreateWithoutSchoolInput, ExamConvocationUncheckedCreateWithoutSchoolInput> | ExamConvocationCreateWithoutSchoolInput[] | ExamConvocationUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: ExamConvocationCreateOrConnectWithoutSchoolInput | ExamConvocationCreateOrConnectWithoutSchoolInput[]
+    upsert?: ExamConvocationUpsertWithWhereUniqueWithoutSchoolInput | ExamConvocationUpsertWithWhereUniqueWithoutSchoolInput[]
+    createMany?: ExamConvocationCreateManySchoolInputEnvelope
+    set?: ExamConvocationWhereUniqueInput | ExamConvocationWhereUniqueInput[]
+    disconnect?: ExamConvocationWhereUniqueInput | ExamConvocationWhereUniqueInput[]
+    delete?: ExamConvocationWhereUniqueInput | ExamConvocationWhereUniqueInput[]
+    connect?: ExamConvocationWhereUniqueInput | ExamConvocationWhereUniqueInput[]
+    update?: ExamConvocationUpdateWithWhereUniqueWithoutSchoolInput | ExamConvocationUpdateWithWhereUniqueWithoutSchoolInput[]
+    updateMany?: ExamConvocationUpdateManyWithWhereWithoutSchoolInput | ExamConvocationUpdateManyWithWhereWithoutSchoolInput[]
+    deleteMany?: ExamConvocationScalarWhereInput | ExamConvocationScalarWhereInput[]
+  }
+
   export type BranchUncheckedUpdateManyWithoutSchoolNestedInput = {
     create?: XOR<BranchCreateWithoutSchoolInput, BranchUncheckedCreateWithoutSchoolInput> | BranchCreateWithoutSchoolInput[] | BranchUncheckedCreateWithoutSchoolInput[]
     connectOrCreate?: BranchCreateOrConnectWithoutSchoolInput | BranchCreateOrConnectWithoutSchoolInput[]
@@ -47222,6 +50250,34 @@ export namespace Prisma {
     update?: PlanUpdateWithWhereUniqueWithoutSchoolInput | PlanUpdateWithWhereUniqueWithoutSchoolInput[]
     updateMany?: PlanUpdateManyWithWhereWithoutSchoolInput | PlanUpdateManyWithWhereWithoutSchoolInput[]
     deleteMany?: PlanScalarWhereInput | PlanScalarWhereInput[]
+  }
+
+  export type HolidayUncheckedUpdateManyWithoutSchoolNestedInput = {
+    create?: XOR<HolidayCreateWithoutSchoolInput, HolidayUncheckedCreateWithoutSchoolInput> | HolidayCreateWithoutSchoolInput[] | HolidayUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: HolidayCreateOrConnectWithoutSchoolInput | HolidayCreateOrConnectWithoutSchoolInput[]
+    upsert?: HolidayUpsertWithWhereUniqueWithoutSchoolInput | HolidayUpsertWithWhereUniqueWithoutSchoolInput[]
+    createMany?: HolidayCreateManySchoolInputEnvelope
+    set?: HolidayWhereUniqueInput | HolidayWhereUniqueInput[]
+    disconnect?: HolidayWhereUniqueInput | HolidayWhereUniqueInput[]
+    delete?: HolidayWhereUniqueInput | HolidayWhereUniqueInput[]
+    connect?: HolidayWhereUniqueInput | HolidayWhereUniqueInput[]
+    update?: HolidayUpdateWithWhereUniqueWithoutSchoolInput | HolidayUpdateWithWhereUniqueWithoutSchoolInput[]
+    updateMany?: HolidayUpdateManyWithWhereWithoutSchoolInput | HolidayUpdateManyWithWhereWithoutSchoolInput[]
+    deleteMany?: HolidayScalarWhereInput | HolidayScalarWhereInput[]
+  }
+
+  export type ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput = {
+    create?: XOR<ExamConvocationCreateWithoutSchoolInput, ExamConvocationUncheckedCreateWithoutSchoolInput> | ExamConvocationCreateWithoutSchoolInput[] | ExamConvocationUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: ExamConvocationCreateOrConnectWithoutSchoolInput | ExamConvocationCreateOrConnectWithoutSchoolInput[]
+    upsert?: ExamConvocationUpsertWithWhereUniqueWithoutSchoolInput | ExamConvocationUpsertWithWhereUniqueWithoutSchoolInput[]
+    createMany?: ExamConvocationCreateManySchoolInputEnvelope
+    set?: ExamConvocationWhereUniqueInput | ExamConvocationWhereUniqueInput[]
+    disconnect?: ExamConvocationWhereUniqueInput | ExamConvocationWhereUniqueInput[]
+    delete?: ExamConvocationWhereUniqueInput | ExamConvocationWhereUniqueInput[]
+    connect?: ExamConvocationWhereUniqueInput | ExamConvocationWhereUniqueInput[]
+    update?: ExamConvocationUpdateWithWhereUniqueWithoutSchoolInput | ExamConvocationUpdateWithWhereUniqueWithoutSchoolInput[]
+    updateMany?: ExamConvocationUpdateManyWithWhereWithoutSchoolInput | ExamConvocationUpdateManyWithWhereWithoutSchoolInput[]
+    deleteMany?: ExamConvocationScalarWhereInput | ExamConvocationScalarWhereInput[]
   }
 
   export type SchoolCreateNestedOneWithoutBranchesInput = {
@@ -49154,6 +52210,10 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type NullableEnumExamDayFieldUpdateOperationsInput = {
+    set?: $Enums.ExamDay | null
+  }
+
   export type SchoolUpdateOneWithoutBeltRanksNestedInput = {
     create?: XOR<SchoolCreateWithoutBeltRanksInput, SchoolUncheckedCreateWithoutBeltRanksInput>
     connectOrCreate?: SchoolCreateOrConnectWithoutBeltRanksInput
@@ -50210,6 +53270,40 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPushSubscriptionsInput, UserUpdateWithoutPushSubscriptionsInput>, UserUncheckedUpdateWithoutPushSubscriptionsInput>
   }
 
+  export type SchoolCreateNestedOneWithoutHolidaysInput = {
+    create?: XOR<SchoolCreateWithoutHolidaysInput, SchoolUncheckedCreateWithoutHolidaysInput>
+    connectOrCreate?: SchoolCreateOrConnectWithoutHolidaysInput
+    connect?: SchoolWhereUniqueInput
+  }
+
+  export type SchoolUpdateOneWithoutHolidaysNestedInput = {
+    create?: XOR<SchoolCreateWithoutHolidaysInput, SchoolUncheckedCreateWithoutHolidaysInput>
+    connectOrCreate?: SchoolCreateOrConnectWithoutHolidaysInput
+    upsert?: SchoolUpsertWithoutHolidaysInput
+    disconnect?: SchoolWhereInput | boolean
+    delete?: SchoolWhereInput | boolean
+    connect?: SchoolWhereUniqueInput
+    update?: XOR<XOR<SchoolUpdateToOneWithWhereWithoutHolidaysInput, SchoolUpdateWithoutHolidaysInput>, SchoolUncheckedUpdateWithoutHolidaysInput>
+  }
+
+  export type SchoolCreateNestedOneWithoutExamConvocationsInput = {
+    create?: XOR<SchoolCreateWithoutExamConvocationsInput, SchoolUncheckedCreateWithoutExamConvocationsInput>
+    connectOrCreate?: SchoolCreateOrConnectWithoutExamConvocationsInput
+    connect?: SchoolWhereUniqueInput
+  }
+
+  export type EnumExamDayFieldUpdateOperationsInput = {
+    set?: $Enums.ExamDay
+  }
+
+  export type SchoolUpdateOneRequiredWithoutExamConvocationsNestedInput = {
+    create?: XOR<SchoolCreateWithoutExamConvocationsInput, SchoolUncheckedCreateWithoutExamConvocationsInput>
+    connectOrCreate?: SchoolCreateOrConnectWithoutExamConvocationsInput
+    upsert?: SchoolUpsertWithoutExamConvocationsInput
+    connect?: SchoolWhereUniqueInput
+    update?: XOR<XOR<SchoolUpdateToOneWithWhereWithoutExamConvocationsInput, SchoolUpdateWithoutExamConvocationsInput>, SchoolUncheckedUpdateWithoutExamConvocationsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -50556,6 +53650,13 @@ export namespace Prisma {
     not?: NestedEnumProgramFilter<$PrismaModel> | $Enums.Program
   }
 
+  export type NestedEnumExamDayNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExamDay | EnumExamDayFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumExamDayNullableFilter<$PrismaModel> | $Enums.ExamDay | null
+  }
+
   export type NestedEnumProgramWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.Program | EnumProgramFieldRefInput<$PrismaModel>
     in?: $Enums.Program[] | ListEnumProgramFieldRefInput<$PrismaModel>
@@ -50591,6 +53692,16 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedEnumExamDayNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExamDay | EnumExamDayFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumExamDayNullableWithAggregatesFilter<$PrismaModel> | $Enums.ExamDay | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumExamDayNullableFilter<$PrismaModel>
+    _max?: NestedEnumExamDayNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumTechniqueCategoryFilter<$PrismaModel = never> = {
@@ -50753,6 +53864,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumNotificationPriorityFilter<$PrismaModel>
     _max?: NestedEnumNotificationPriorityFilter<$PrismaModel>
+  }
+
+  export type NestedEnumExamDayFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExamDay | EnumExamDayFieldRefInput<$PrismaModel>
+    in?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel>
+    not?: NestedEnumExamDayFilter<$PrismaModel> | $Enums.ExamDay
+  }
+
+  export type NestedEnumExamDayWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExamDay | EnumExamDayFieldRefInput<$PrismaModel>
+    in?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel>
+    not?: NestedEnumExamDayWithAggregatesFilter<$PrismaModel> | $Enums.ExamDay
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumExamDayFilter<$PrismaModel>
+    _max?: NestedEnumExamDayFilter<$PrismaModel>
   }
 
   export type BranchCreateWithoutSchoolInput = {
@@ -51013,6 +54141,7 @@ export namespace Prisma {
     minMonths?: number | null
     maxMonths?: number | null
     minAttendancePercent?: number | null
+    examDay?: $Enums.ExamDay | null
     createdAt?: Date | string
     updatedAt?: Date | string
     katas?: BeltRankKataCreateNestedManyWithoutBeltRankInput
@@ -51036,6 +54165,7 @@ export namespace Prisma {
     minMonths?: number | null
     maxMonths?: number | null
     minAttendancePercent?: number | null
+    examDay?: $Enums.ExamDay | null
     createdAt?: Date | string
     updatedAt?: Date | string
     katas?: BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput
@@ -51180,6 +54310,64 @@ export namespace Prisma {
 
   export type PlanCreateManySchoolInputEnvelope = {
     data: PlanCreateManySchoolInput | PlanCreateManySchoolInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type HolidayCreateWithoutSchoolInput = {
+    id?: string
+    name: string
+    date: Date | string
+    recurring?: boolean
+    createdAt?: Date | string
+  }
+
+  export type HolidayUncheckedCreateWithoutSchoolInput = {
+    id?: string
+    name: string
+    date: Date | string
+    recurring?: boolean
+    createdAt?: Date | string
+  }
+
+  export type HolidayCreateOrConnectWithoutSchoolInput = {
+    where: HolidayWhereUniqueInput
+    create: XOR<HolidayCreateWithoutSchoolInput, HolidayUncheckedCreateWithoutSchoolInput>
+  }
+
+  export type HolidayCreateManySchoolInputEnvelope = {
+    data: HolidayCreateManySchoolInput | HolidayCreateManySchoolInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ExamConvocationCreateWithoutSchoolInput = {
+    id?: string
+    date: Date | string
+    examDay: $Enums.ExamDay
+    label?: string | null
+    notes?: string | null
+    confirmed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExamConvocationUncheckedCreateWithoutSchoolInput = {
+    id?: string
+    date: Date | string
+    examDay: $Enums.ExamDay
+    label?: string | null
+    notes?: string | null
+    confirmed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ExamConvocationCreateOrConnectWithoutSchoolInput = {
+    where: ExamConvocationWhereUniqueInput
+    create: XOR<ExamConvocationCreateWithoutSchoolInput, ExamConvocationUncheckedCreateWithoutSchoolInput>
+  }
+
+  export type ExamConvocationCreateManySchoolInputEnvelope = {
+    data: ExamConvocationCreateManySchoolInput | ExamConvocationCreateManySchoolInput[]
     skipDuplicates?: boolean
   }
 
@@ -51366,6 +54554,7 @@ export namespace Prisma {
     minMonths?: IntNullableFilter<"BeltRank"> | number | null
     maxMonths?: IntNullableFilter<"BeltRank"> | number | null
     minAttendancePercent?: IntNullableFilter<"BeltRank"> | number | null
+    examDay?: EnumExamDayNullableFilter<"BeltRank"> | $Enums.ExamDay | null
     createdAt?: DateTimeFilter<"BeltRank"> | Date | string
     updatedAt?: DateTimeFilter<"BeltRank"> | Date | string
   }
@@ -51475,6 +54664,65 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Plan"> | Date | string
   }
 
+  export type HolidayUpsertWithWhereUniqueWithoutSchoolInput = {
+    where: HolidayWhereUniqueInput
+    update: XOR<HolidayUpdateWithoutSchoolInput, HolidayUncheckedUpdateWithoutSchoolInput>
+    create: XOR<HolidayCreateWithoutSchoolInput, HolidayUncheckedCreateWithoutSchoolInput>
+  }
+
+  export type HolidayUpdateWithWhereUniqueWithoutSchoolInput = {
+    where: HolidayWhereUniqueInput
+    data: XOR<HolidayUpdateWithoutSchoolInput, HolidayUncheckedUpdateWithoutSchoolInput>
+  }
+
+  export type HolidayUpdateManyWithWhereWithoutSchoolInput = {
+    where: HolidayScalarWhereInput
+    data: XOR<HolidayUpdateManyMutationInput, HolidayUncheckedUpdateManyWithoutSchoolInput>
+  }
+
+  export type HolidayScalarWhereInput = {
+    AND?: HolidayScalarWhereInput | HolidayScalarWhereInput[]
+    OR?: HolidayScalarWhereInput[]
+    NOT?: HolidayScalarWhereInput | HolidayScalarWhereInput[]
+    id?: StringFilter<"Holiday"> | string
+    name?: StringFilter<"Holiday"> | string
+    date?: DateTimeFilter<"Holiday"> | Date | string
+    recurring?: BoolFilter<"Holiday"> | boolean
+    schoolId?: StringNullableFilter<"Holiday"> | string | null
+    createdAt?: DateTimeFilter<"Holiday"> | Date | string
+  }
+
+  export type ExamConvocationUpsertWithWhereUniqueWithoutSchoolInput = {
+    where: ExamConvocationWhereUniqueInput
+    update: XOR<ExamConvocationUpdateWithoutSchoolInput, ExamConvocationUncheckedUpdateWithoutSchoolInput>
+    create: XOR<ExamConvocationCreateWithoutSchoolInput, ExamConvocationUncheckedCreateWithoutSchoolInput>
+  }
+
+  export type ExamConvocationUpdateWithWhereUniqueWithoutSchoolInput = {
+    where: ExamConvocationWhereUniqueInput
+    data: XOR<ExamConvocationUpdateWithoutSchoolInput, ExamConvocationUncheckedUpdateWithoutSchoolInput>
+  }
+
+  export type ExamConvocationUpdateManyWithWhereWithoutSchoolInput = {
+    where: ExamConvocationScalarWhereInput
+    data: XOR<ExamConvocationUpdateManyMutationInput, ExamConvocationUncheckedUpdateManyWithoutSchoolInput>
+  }
+
+  export type ExamConvocationScalarWhereInput = {
+    AND?: ExamConvocationScalarWhereInput | ExamConvocationScalarWhereInput[]
+    OR?: ExamConvocationScalarWhereInput[]
+    NOT?: ExamConvocationScalarWhereInput | ExamConvocationScalarWhereInput[]
+    id?: StringFilter<"ExamConvocation"> | string
+    schoolId?: StringFilter<"ExamConvocation"> | string
+    date?: DateTimeFilter<"ExamConvocation"> | Date | string
+    examDay?: EnumExamDayFilter<"ExamConvocation"> | $Enums.ExamDay
+    label?: StringNullableFilter<"ExamConvocation"> | string | null
+    notes?: StringNullableFilter<"ExamConvocation"> | string | null
+    confirmed?: BoolFilter<"ExamConvocation"> | boolean
+    createdAt?: DateTimeFilter<"ExamConvocation"> | Date | string
+    updatedAt?: DateTimeFilter<"ExamConvocation"> | Date | string
+  }
+
   export type SchoolCreateWithoutBranchesInput = {
     id?: string
     name: string
@@ -51487,6 +54735,8 @@ export namespace Prisma {
     techniques?: TechniqueCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
     plans?: PlanCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutBranchesInput = {
@@ -51501,6 +54751,8 @@ export namespace Prisma {
     techniques?: TechniqueUncheckedCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutBranchesInput = {
@@ -51785,6 +55037,8 @@ export namespace Prisma {
     techniques?: TechniqueUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
     plans?: PlanUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutBranchesInput = {
@@ -51799,6 +55053,8 @@ export namespace Prisma {
     techniques?: TechniqueUncheckedUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutBranchInput = {
@@ -51895,6 +55151,8 @@ export namespace Prisma {
     techniques?: TechniqueCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
     plans?: PlanCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutUsersInput = {
@@ -51909,6 +55167,8 @@ export namespace Prisma {
     techniques?: TechniqueUncheckedCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutUsersInput = {
@@ -52588,6 +55848,8 @@ export namespace Prisma {
     techniques?: TechniqueUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
     plans?: PlanUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutUsersInput = {
@@ -52602,6 +55864,8 @@ export namespace Prisma {
     techniques?: TechniqueUncheckedUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BranchUpsertWithoutUsersInput = {
@@ -53880,6 +57144,7 @@ export namespace Prisma {
     minMonths?: number | null
     maxMonths?: number | null
     minAttendancePercent?: number | null
+    examDay?: $Enums.ExamDay | null
     createdAt?: Date | string
     updatedAt?: Date | string
     school?: SchoolCreateNestedOneWithoutBeltRanksInput
@@ -53904,6 +57169,7 @@ export namespace Prisma {
     minMonths?: number | null
     maxMonths?: number | null
     minAttendancePercent?: number | null
+    examDay?: $Enums.ExamDay | null
     createdAt?: Date | string
     updatedAt?: Date | string
     katas?: BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput
@@ -53962,6 +57228,8 @@ export namespace Prisma {
     techniques?: TechniqueCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
     plans?: PlanCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutStudentsInput = {
@@ -53976,6 +57244,8 @@ export namespace Prisma {
     techniques?: TechniqueUncheckedCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutStudentsInput = {
@@ -54582,6 +57852,7 @@ export namespace Prisma {
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
     maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    examDay?: NullableEnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     school?: SchoolUpdateOneWithoutBeltRanksNestedInput
@@ -54606,6 +57877,7 @@ export namespace Prisma {
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
     maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    examDay?: NullableEnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     katas?: BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput
@@ -54676,6 +57948,8 @@ export namespace Prisma {
     techniques?: TechniqueUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
     plans?: PlanUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutStudentsInput = {
@@ -54690,6 +57964,8 @@ export namespace Prisma {
     techniques?: TechniqueUncheckedUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BranchUpsertWithoutStudentsInput = {
@@ -55431,6 +58707,8 @@ export namespace Prisma {
     techniques?: TechniqueCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
     plans?: PlanCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutEnrollmentsInput = {
@@ -55445,6 +58723,8 @@ export namespace Prisma {
     techniques?: TechniqueUncheckedCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutEnrollmentsInput = {
@@ -55663,6 +58943,8 @@ export namespace Prisma {
     techniques?: TechniqueUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
     plans?: PlanUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutEnrollmentsInput = {
@@ -55677,6 +58959,8 @@ export namespace Prisma {
     techniques?: TechniqueUncheckedUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BranchUpsertWithoutEnrollmentsInput = {
@@ -56533,6 +59817,8 @@ export namespace Prisma {
     techniques?: TechniqueCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
     plans?: PlanCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutBeltRanksInput = {
@@ -56547,6 +59833,8 @@ export namespace Prisma {
     techniques?: TechniqueUncheckedCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutBeltRanksInput = {
@@ -56721,6 +60009,8 @@ export namespace Prisma {
     techniques?: TechniqueUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
     plans?: PlanUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutBeltRanksInput = {
@@ -56735,6 +60025,8 @@ export namespace Prisma {
     techniques?: TechniqueUncheckedUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BeltRankKataUpsertWithWhereUniqueWithoutBeltRankInput = {
@@ -56811,6 +60103,7 @@ export namespace Prisma {
     minMonths?: number | null
     maxMonths?: number | null
     minAttendancePercent?: number | null
+    examDay?: $Enums.ExamDay | null
     createdAt?: Date | string
     updatedAt?: Date | string
     school?: SchoolCreateNestedOneWithoutBeltRanksInput
@@ -56835,6 +60128,7 @@ export namespace Prisma {
     minMonths?: number | null
     maxMonths?: number | null
     minAttendancePercent?: number | null
+    examDay?: $Enums.ExamDay | null
     createdAt?: Date | string
     updatedAt?: Date | string
     promotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutBeltRankInput
@@ -56932,6 +60226,7 @@ export namespace Prisma {
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
     maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    examDay?: NullableEnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     school?: SchoolUpdateOneWithoutBeltRanksNestedInput
@@ -56956,6 +60251,7 @@ export namespace Prisma {
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
     maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    examDay?: NullableEnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     promotions?: StudentRankHistoryUncheckedUpdateManyWithoutBeltRankNestedInput
@@ -57130,6 +60426,7 @@ export namespace Prisma {
     minMonths?: number | null
     maxMonths?: number | null
     minAttendancePercent?: number | null
+    examDay?: $Enums.ExamDay | null
     createdAt?: Date | string
     updatedAt?: Date | string
     school?: SchoolCreateNestedOneWithoutBeltRanksInput
@@ -57154,6 +60451,7 @@ export namespace Prisma {
     minMonths?: number | null
     maxMonths?: number | null
     minAttendancePercent?: number | null
+    examDay?: $Enums.ExamDay | null
     createdAt?: Date | string
     updatedAt?: Date | string
     katas?: BeltRankKataUncheckedCreateNestedManyWithoutBeltRankInput
@@ -57348,6 +60646,7 @@ export namespace Prisma {
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
     maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    examDay?: NullableEnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     school?: SchoolUpdateOneWithoutBeltRanksNestedInput
@@ -57372,6 +60671,7 @@ export namespace Prisma {
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
     maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    examDay?: NullableEnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     katas?: BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput
@@ -57582,6 +60882,8 @@ export namespace Prisma {
     beltRanks?: BeltRankCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
     plans?: PlanCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutTechniquesInput = {
@@ -57596,6 +60898,8 @@ export namespace Prisma {
     beltRanks?: BeltRankUncheckedCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutTechniquesInput = {
@@ -57767,6 +61071,8 @@ export namespace Prisma {
     beltRanks?: BeltRankUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
     plans?: PlanUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutTechniquesInput = {
@@ -57781,6 +61087,8 @@ export namespace Prisma {
     beltRanks?: BeltRankUncheckedUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BeltRankKataUpsertWithWhereUniqueWithoutKataInput = {
@@ -58523,6 +61831,8 @@ export namespace Prisma {
     beltRanks?: BeltRankCreateNestedManyWithoutSchoolInput
     techniques?: TechniqueCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutPlansInput = {
@@ -58537,6 +61847,8 @@ export namespace Prisma {
     beltRanks?: BeltRankUncheckedCreateNestedManyWithoutSchoolInput
     techniques?: TechniqueUncheckedCreateNestedManyWithoutSchoolInput
     achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutPlansInput = {
@@ -58659,6 +61971,8 @@ export namespace Prisma {
     beltRanks?: BeltRankUpdateManyWithoutSchoolNestedInput
     techniques?: TechniqueUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutPlansInput = {
@@ -58673,6 +61987,8 @@ export namespace Prisma {
     beltRanks?: BeltRankUncheckedUpdateManyWithoutSchoolNestedInput
     techniques?: TechniqueUncheckedUpdateManyWithoutSchoolNestedInput
     achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type StudentUpsertWithWhereUniqueWithoutPlanInput = {
@@ -60112,6 +63428,8 @@ export namespace Prisma {
     beltRanks?: BeltRankCreateNestedManyWithoutSchoolInput
     techniques?: TechniqueCreateNestedManyWithoutSchoolInput
     plans?: PlanCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutAchievementTypesInput = {
@@ -60126,6 +63444,8 @@ export namespace Prisma {
     beltRanks?: BeltRankUncheckedCreateNestedManyWithoutSchoolInput
     techniques?: TechniqueUncheckedCreateNestedManyWithoutSchoolInput
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutAchievementTypesInput = {
@@ -60188,6 +63508,8 @@ export namespace Prisma {
     beltRanks?: BeltRankUpdateManyWithoutSchoolNestedInput
     techniques?: TechniqueUpdateManyWithoutSchoolNestedInput
     plans?: PlanUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutAchievementTypesInput = {
@@ -60202,6 +63524,8 @@ export namespace Prisma {
     beltRanks?: BeltRankUncheckedUpdateManyWithoutSchoolNestedInput
     techniques?: TechniqueUncheckedUpdateManyWithoutSchoolNestedInput
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type StudentAchievementUpsertWithWhereUniqueWithoutTypeInput = {
@@ -61336,6 +64660,166 @@ export namespace Prisma {
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
+  export type SchoolCreateWithoutHolidaysInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branches?: BranchCreateNestedManyWithoutSchoolInput
+    users?: UserCreateNestedManyWithoutSchoolInput
+    students?: StudentCreateNestedManyWithoutSchoolInput
+    enrollments?: EnrollmentCreateNestedManyWithoutSchoolInput
+    beltRanks?: BeltRankCreateNestedManyWithoutSchoolInput
+    techniques?: TechniqueCreateNestedManyWithoutSchoolInput
+    achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
+    plans?: PlanCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
+  }
+
+  export type SchoolUncheckedCreateWithoutHolidaysInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branches?: BranchUncheckedCreateNestedManyWithoutSchoolInput
+    users?: UserUncheckedCreateNestedManyWithoutSchoolInput
+    students?: StudentUncheckedCreateNestedManyWithoutSchoolInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutSchoolInput
+    beltRanks?: BeltRankUncheckedCreateNestedManyWithoutSchoolInput
+    techniques?: TechniqueUncheckedCreateNestedManyWithoutSchoolInput
+    achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
+    plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
+  }
+
+  export type SchoolCreateOrConnectWithoutHolidaysInput = {
+    where: SchoolWhereUniqueInput
+    create: XOR<SchoolCreateWithoutHolidaysInput, SchoolUncheckedCreateWithoutHolidaysInput>
+  }
+
+  export type SchoolUpsertWithoutHolidaysInput = {
+    update: XOR<SchoolUpdateWithoutHolidaysInput, SchoolUncheckedUpdateWithoutHolidaysInput>
+    create: XOR<SchoolCreateWithoutHolidaysInput, SchoolUncheckedCreateWithoutHolidaysInput>
+    where?: SchoolWhereInput
+  }
+
+  export type SchoolUpdateToOneWithWhereWithoutHolidaysInput = {
+    where?: SchoolWhereInput
+    data: XOR<SchoolUpdateWithoutHolidaysInput, SchoolUncheckedUpdateWithoutHolidaysInput>
+  }
+
+  export type SchoolUpdateWithoutHolidaysInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branches?: BranchUpdateManyWithoutSchoolNestedInput
+    users?: UserUpdateManyWithoutSchoolNestedInput
+    students?: StudentUpdateManyWithoutSchoolNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutSchoolNestedInput
+    beltRanks?: BeltRankUpdateManyWithoutSchoolNestedInput
+    techniques?: TechniqueUpdateManyWithoutSchoolNestedInput
+    achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
+    plans?: PlanUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
+  }
+
+  export type SchoolUncheckedUpdateWithoutHolidaysInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branches?: BranchUncheckedUpdateManyWithoutSchoolNestedInput
+    users?: UserUncheckedUpdateManyWithoutSchoolNestedInput
+    students?: StudentUncheckedUpdateManyWithoutSchoolNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutSchoolNestedInput
+    beltRanks?: BeltRankUncheckedUpdateManyWithoutSchoolNestedInput
+    techniques?: TechniqueUncheckedUpdateManyWithoutSchoolNestedInput
+    achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
+    plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
+  }
+
+  export type SchoolCreateWithoutExamConvocationsInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branches?: BranchCreateNestedManyWithoutSchoolInput
+    users?: UserCreateNestedManyWithoutSchoolInput
+    students?: StudentCreateNestedManyWithoutSchoolInput
+    enrollments?: EnrollmentCreateNestedManyWithoutSchoolInput
+    beltRanks?: BeltRankCreateNestedManyWithoutSchoolInput
+    techniques?: TechniqueCreateNestedManyWithoutSchoolInput
+    achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
+    plans?: PlanCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayCreateNestedManyWithoutSchoolInput
+  }
+
+  export type SchoolUncheckedCreateWithoutExamConvocationsInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branches?: BranchUncheckedCreateNestedManyWithoutSchoolInput
+    users?: UserUncheckedCreateNestedManyWithoutSchoolInput
+    students?: StudentUncheckedCreateNestedManyWithoutSchoolInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutSchoolInput
+    beltRanks?: BeltRankUncheckedCreateNestedManyWithoutSchoolInput
+    techniques?: TechniqueUncheckedCreateNestedManyWithoutSchoolInput
+    achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
+    plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
+  }
+
+  export type SchoolCreateOrConnectWithoutExamConvocationsInput = {
+    where: SchoolWhereUniqueInput
+    create: XOR<SchoolCreateWithoutExamConvocationsInput, SchoolUncheckedCreateWithoutExamConvocationsInput>
+  }
+
+  export type SchoolUpsertWithoutExamConvocationsInput = {
+    update: XOR<SchoolUpdateWithoutExamConvocationsInput, SchoolUncheckedUpdateWithoutExamConvocationsInput>
+    create: XOR<SchoolCreateWithoutExamConvocationsInput, SchoolUncheckedCreateWithoutExamConvocationsInput>
+    where?: SchoolWhereInput
+  }
+
+  export type SchoolUpdateToOneWithWhereWithoutExamConvocationsInput = {
+    where?: SchoolWhereInput
+    data: XOR<SchoolUpdateWithoutExamConvocationsInput, SchoolUncheckedUpdateWithoutExamConvocationsInput>
+  }
+
+  export type SchoolUpdateWithoutExamConvocationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branches?: BranchUpdateManyWithoutSchoolNestedInput
+    users?: UserUpdateManyWithoutSchoolNestedInput
+    students?: StudentUpdateManyWithoutSchoolNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutSchoolNestedInput
+    beltRanks?: BeltRankUpdateManyWithoutSchoolNestedInput
+    techniques?: TechniqueUpdateManyWithoutSchoolNestedInput
+    achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
+    plans?: PlanUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUpdateManyWithoutSchoolNestedInput
+  }
+
+  export type SchoolUncheckedUpdateWithoutExamConvocationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branches?: BranchUncheckedUpdateManyWithoutSchoolNestedInput
+    users?: UserUncheckedUpdateManyWithoutSchoolNestedInput
+    students?: StudentUncheckedUpdateManyWithoutSchoolNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutSchoolNestedInput
+    beltRanks?: BeltRankUncheckedUpdateManyWithoutSchoolNestedInput
+    techniques?: TechniqueUncheckedUpdateManyWithoutSchoolNestedInput
+    achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
+    plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
+  }
+
   export type BranchCreateManySchoolInput = {
     id?: string
     name: string
@@ -61419,6 +64903,7 @@ export namespace Prisma {
     minMonths?: number | null
     maxMonths?: number | null
     minAttendancePercent?: number | null
+    examDay?: $Enums.ExamDay | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -61464,6 +64949,25 @@ export namespace Prisma {
     isUnlimited?: boolean
     active?: boolean
     sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HolidayCreateManySchoolInput = {
+    id?: string
+    name: string
+    date: Date | string
+    recurring?: boolean
+    createdAt?: Date | string
+  }
+
+  export type ExamConvocationCreateManySchoolInput = {
+    id?: string
+    date: Date | string
+    examDay: $Enums.ExamDay
+    label?: string | null
+    notes?: string | null
+    confirmed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -61753,6 +65257,7 @@ export namespace Prisma {
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
     maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    examDay?: NullableEnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     katas?: BeltRankKataUpdateManyWithoutBeltRankNestedInput
@@ -61776,6 +65281,7 @@ export namespace Prisma {
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
     maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    examDay?: NullableEnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     katas?: BeltRankKataUncheckedUpdateManyWithoutBeltRankNestedInput
@@ -61799,6 +65305,7 @@ export namespace Prisma {
     minMonths?: NullableIntFieldUpdateOperationsInput | number | null
     maxMonths?: NullableIntFieldUpdateOperationsInput | number | null
     minAttendancePercent?: NullableIntFieldUpdateOperationsInput | number | null
+    examDay?: NullableEnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -61944,6 +65451,63 @@ export namespace Prisma {
     isUnlimited?: BoolFieldUpdateOperationsInput | boolean
     active?: BoolFieldUpdateOperationsInput | boolean
     sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HolidayUpdateWithoutSchoolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurring?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HolidayUncheckedUpdateWithoutSchoolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurring?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HolidayUncheckedUpdateManyWithoutSchoolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurring?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExamConvocationUpdateWithoutSchoolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    examDay?: EnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExamConvocationUncheckedUpdateWithoutSchoolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    examDay?: EnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExamConvocationUncheckedUpdateManyWithoutSchoolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    examDay?: EnumExamDayFieldUpdateOperationsInput | $Enums.ExamDay
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    confirmed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

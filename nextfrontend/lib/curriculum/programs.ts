@@ -333,3 +333,14 @@ export const RANKS_BY_PROGRAM: Record<Program, CurriculumRank[]> = {
   ADULT: ADULT_RANKS,
   YOUTH: YOUTH_RANKS,
 }
+
+export type ExamDayValue = 'SATURDAY' | 'SUNDAY'
+
+/**
+ * Día de convocatoria sugerido por grado: principiantes (YOUTH o hasta 8.º grado)
+ * sábado y avanzados domingo. Editable por grado desde el panel de administración.
+ */
+export function examDayForRank(program: Program, order: number): ExamDayValue {
+  if (program === 'YOUTH') return 'SATURDAY'
+  return order <= 8 ? 'SATURDAY' : 'SUNDAY'
+}

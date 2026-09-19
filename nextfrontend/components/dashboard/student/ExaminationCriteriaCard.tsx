@@ -66,10 +66,14 @@ export function ExaminationCriteriaCard({ grado }: ExaminationCriteriaCardProps)
             </div>
 
             <p className="mt-4 flex items-center gap-2 rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2.5 text-xs text-neutral-400">
-                <CheckCircle2 aria-hidden="true" className={`size-4 shrink-0 ${grado.isEligible ? 'text-emerald-400' : 'text-cyan-400'}`} />
-                {grado.isEligible
-                    ? 'Registro activo: ya puedes solicitar tu mesa de examen con el instructor.'
-                    : 'En preparación regular. Los requisitos específicos del examen se confirman con tu instructor.'}
+                <CheckCircle2 aria-hidden="true" className={`size-4 shrink-0 ${grado.isEligible ? 'text-emerald-400' : grado.examRightLost ? 'text-red-400' : 'text-cyan-400'}`} />
+                {grado.examRightLost
+                    ? `Derecho a examen suspendido: superaste el máximo de ${grado.maxAbsencesPerMonth} faltas en un mes.`
+                    : grado.isEligible
+                        ? 'Registro activo: ya puedes solicitar tu mesa de examen con el instructor.'
+                        : grado.nextExam
+                            ? `En preparación regular. Próxima convocatoria: ${new Date(grado.nextExam.date).toLocaleDateString('es-DO', { day: 'numeric', month: 'long', year: 'numeric' })}.`
+                            : 'En preparación regular. Los requisitos específicos del examen se confirman con tu instructor.'}
             </p>
         </section>
     )

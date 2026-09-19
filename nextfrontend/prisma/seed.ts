@@ -2,7 +2,8 @@ import { PrismaClient, Role, ClassAudience } from '@/lib/generated/prisma'
 import { PrismaPg } from '@prisma/adapter-pg'
 import bcrypt from 'bcryptjs'
 import dotenv from 'dotenv'
-import { ADULT_RANKS, YOUTH_RANKS, KATAS, type Program } from '@/lib/curriculum/programs'
+import { ADULT_RANKS, YOUTH_RANKS, KATAS, examDayForRank, type Program } from '@/lib/curriculum/programs'
+import { dominicanHolidays } from '@/lib/dashboard/holidays'
 
 dotenv.config({ path: '.env.local' })
 
@@ -24,6 +25,23 @@ async function main() {
     update: {},
     create: { id: 'tosei-gusoku-main-branch', name: 'Sucursal principal', schoolId: school.id },
   })
+
+  // ============ FERIADOS (RD, global) ============
+  // Se siembran para poder verlos/ajustarlos desde el admin. El cálculo de horas
+  // disponibles también aplica los feriados oficiales aunque no estén en la BD.
+  const currentYear = new Date().getFullYear()
+  for (const year of [currentYear, currentYear + 1]) {
+    for (const holiday of dominicanHolidays(year)) {
+      const month = String(holiday.date.getMonth() + 1).padStart(2, '0')
+      const day = String(holiday.date.getDate()).padStart(2, '0')
+      const id = `holiday-${year}-${month}-${day}`
+      await db.holiday.upsert({
+        where: { id },
+        update: { name: holiday.name, date: holiday.date, recurring: false },
+        create: { id, name: holiday.name, date: holiday.date, recurring: false, schoolId: null },
+      })
+    }
+  }
 
   // ============ PLANES / MENSUALIDADES ============
   const PLANS = [
@@ -90,6 +108,7 @@ async function main() {
           maxMonths: rank.maxMonths,
           estimatedDurationMonths: rank.maxMonths ?? rank.minMonths,
           minAttendancePercent: 80,
+          examDay: examDayForRank(program, rank.order),
           schoolId: null,
         },
         create: {
@@ -108,6 +127,7 @@ async function main() {
           maxMonths: rank.maxMonths,
           estimatedDurationMonths: rank.maxMonths ?? rank.minMonths,
           minAttendancePercent: 80,
+          examDay: examDayForRank(program, rank.order),
           schoolId: null,
         },
       })

@@ -1,14 +1,25 @@
 'use client'
 
-import { Award, CheckCircle2, Shield } from 'lucide-react'
-import type { GradoProgressData } from '@/types/dashboard'
+import { AlertTriangle, Award, CalendarDays, CheckCircle2, Clock, Shield } from 'lucide-react'
+import type { GradoProgressData, GradoMetric } from '@/types/dashboard'
 
 interface GradoProgressProps {
     grado: GradoProgressData
     className?: string
 }
 
-const percent = (value: number, goal: number) => (goal > 0 ? Math.min(100, Math.round((value / goal) * 100)) : 0)
+const percent = (value: number, goal: number) => (goal > 0 ? Math.min(100, Math.round((value / goal) * 100)) : 100)
+
+const BOTTLENECK_LABEL: Record<GradoMetric, string> = {
+    KATAS: 'Faltan katas por aprobar',
+    ASISTENCIA: 'Necesitas subir la asistencia',
+    PERMANENCIA: 'Falta permanencia en el grado',
+}
+
+function formatDate(value: string | null): string {
+    if (!value) return 'Sin fecha'
+    return new Date(value).toLocaleDateString('es-DO', { day: 'numeric', month: 'short', year: 'numeric' })
+}
 
 export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
     const kataPercent = percent(grado.approvedKatas, grado.requiredKatas)
@@ -16,9 +27,21 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
     const monthsPercent = percent(grado.monthsInRank, grado.minMonths)
 
     const metrics = [
-        { label: 'Katas oficiales', detail: `${grado.approvedKatas} de ${grado.requiredKatas} aprobadas`, value: kataPercent },
-        { label: 'Asistencias', detail: `${grado.attendance.percentage}% (mín. ${grado.minAttendancePercent}%)`, value: attendancePercent },
-        { label: 'Permanencia en grado', detail: `${grado.monthsInRank} de ${grado.minMonths} meses`, value: monthsPercent },
+        {
+            label: 'Katas oficiales',
+            detail: grado.requiredKatas > 0 ? `${grado.approvedKatas} de ${grado.requiredKatas} aprobadas` : 'Sin katas configuradas',
+            value: grado.requiredKatas > 0 ? kataPercent : 100,
+        },
+        {
+            label: 'Asistencias',
+            detail: `${grado.attendance.percentage}% (mín. ${grado.minAttendancePercent}%)`,
+            value: attendancePercent,
+        },
+        {
+            label: 'Permanencia en grado',
+            detail: `${grado.monthsInRank} de ${grado.minMonths} meses${grado.monthsInRankEstimated ? ' (estimado)' : ''}`,
+            value: monthsPercent,
+        },
     ]
 
     return (
@@ -60,28 +83,133 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
                 ))}
             </div>
 
-            <div
-                className={`mt-5 flex items-center gap-3 rounded-md border p-3 ${
-                    grado.isEligible
-                        ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-100'
-                        : 'border-neutral-700 bg-[#0d1117] text-neutral-300'
-                }`}
-            >
-                {grado.isEligible ? (
-                    <CheckCircle2 aria-hidden="true" className="size-5 shrink-0 text-emerald-400" />
-                ) : (
-                    <Shield aria-hidden="true" className="size-5 shrink-0 text-cyan-400" />
-                )}
-                <div>
-                    <p className="text-sm font-bold">{grado.isEligible ? 'Elegible para Examen de Grado' : 'Preparación en curso'}</p>
-                    <p className="text-xs opacity-80">
-                        {grado.isEligible
-                            ? 'Cumpliste los requisitos técnicos, de asistencia y permanencia.'
-                            : 'Completa las tres metas para solicitar tu evaluación.'}
+            {grado.nextExam && (
+                <div className="mt-5 flex flex-wrap items-center gap-3 rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-2.5">
+                    <CalendarDays aria-hidden="true" className="size-4 shrink-0 text-amber-400" />
+                    <p className="text-xs text-neutral-300">
+                        <span className="font-bold text-amber-200">{grado.nextExam.cuatrimestreLabel}</span> · Convocatoria{' '}
+                        {grado.nextExam.tentative ? 'tentativa' : 'confirmada'}:{' '}
+                        <span className="font-semibold text-white">{formatDate(grado.nextExam.date)}</span>
                     </p>
+                    <span className="rounded-full border border-neutral-700 bg-[#0d1117] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-neutral-400">
+                        {grado.nextExam.examDay === 'SATURDAY' ? 'Sábado' : 'Domingo'}
+                    </span>
                 </div>
-                {grado.isEligible && <Award aria-hidden="true" className="ml-auto size-6 text-emerald-400" />}
-            </div>
+            )}
+
+            {grado.cuatrimestres.length > 0 && (
+                <div className="mt-5 border-t border-neutral-800 pt-4">
+                    <div className="flex items-center justify-between gap-3">
+                        <p className="text-xs font-bold uppercase tracking-wider text-cyan-400">Meta por cuatrimestre</p>
+                        <span className="text-[10px] text-neutral-500">Máximo {grado.maxAbsencesPerMonth} faltas por mes</span>
+                    </div>
+                    <ul className="mt-3 space-y-2">
+                        {grado.cuatrimestres.map((cuatrimestre) => {
+                            const katasTarget = cuatrimestre.expectedKatas > 0
+                                ? Math.min(100, Math.round((cuatrimestre.approvedKatas / cuatrimestre.expectedKatas) * 100))
+                                : 100
+                            const hoursTarget = cuatrimestre.expectedHours > 0
+                                ? Math.min(100, Math.round((cuatrimestre.attendedHours / cuatrimestre.expectedHours) * 100))
+                                : 100
+                            return (
+                                <li
+                                    className={`rounded-md border p-3 ${cuatrimestre.isCurrent ? 'border-cyan-500/40 bg-cyan-500/5' : 'border-neutral-800 bg-[#0d1117]'}`}
+                                    key={`${cuatrimestre.year}-${cuatrimestre.index}`}
+                                >
+                                    <div className="flex flex-wrap items-center justify-between gap-2">
+                                        <p className="flex items-center gap-2 text-sm font-semibold text-white">
+                                            {cuatrimestre.label}
+                                            {cuatrimestre.isCurrent && (
+                                                <span className="rounded-full border border-cyan-500/40 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-cyan-200">En curso</span>
+                                            )}
+                                        </p>
+                                        {cuatrimestre.examDate && (
+                                            <p className="flex items-center gap-1.5 text-[11px] text-neutral-400">
+                                                <CalendarDays aria-hidden="true" className="size-3.5 text-amber-400" />
+                                                Examen {cuatrimestre.examTentative ? 'tentativo' : 'confirmado'}: {formatDate(cuatrimestre.examDate)}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="mt-3 grid gap-2 text-[11px] sm:grid-cols-3">
+                                        <div>
+                                            <div className="flex justify-between text-neutral-400">
+                                                <span>Katas</span>
+                                                <span className="font-semibold text-white">{cuatrimestre.approvedKatas}/{cuatrimestre.expectedKatas}</span>
+                                            </div>
+                                            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-[#161b22]">
+                                                <div className="h-full rounded-full bg-cyan-500" style={{ width: `${katasTarget}%` }} />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div className="flex justify-between text-neutral-400">
+                                                <span>Horas</span>
+                                                <span className="font-semibold text-white">{cuatrimestre.attendedHours}h/{cuatrimestre.expectedHours}h</span>
+                                            </div>
+                                            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-[#161b22]">
+                                                <div className="h-full rounded-full bg-emerald-500" style={{ width: `${hoursTarget}%` }} />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div className="flex justify-between text-neutral-400">
+                                                <span>Faltas (máx. mes)</span>
+                                                <span className={`font-semibold ${cuatrimestre.exceededAbsenceLimit ? 'text-red-400' : 'text-white'}`}>
+                                                    {cuatrimestre.maxMonthAbsences}/{grado.maxAbsencesPerMonth}
+                                                </span>
+                                            </div>
+                                            <p className="mt-1 text-neutral-500">
+                                                {cuatrimestre.absences} faltas en el cuatrimestre
+                                                {cuatrimestre.excessMonth ? ` · excedió en ${cuatrimestre.excessMonth}` : ''}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            )
+                        })}
+                    </ul>
+                </div>
+            )}
+
+            {grado.examRightLost ? (
+                <div className="mt-5 flex items-center gap-3 rounded-md border border-red-500/40 bg-red-500/10 p-3 text-red-100">
+                    <AlertTriangle aria-hidden="true" className="size-5 shrink-0 text-red-400" />
+                    <div>
+                        <p className="text-sm font-bold">Derecho a examen suspendido</p>
+                        <p className="text-xs opacity-80">Superaste el máximo de {grado.maxAbsencesPerMonth} faltas en un mes. Regulariza tu asistencia o recupera clases.</p>
+                    </div>
+                </div>
+            ) : (
+                <div
+                    className={`mt-5 flex items-center gap-3 rounded-md border p-3 ${
+                        grado.isEligible
+                            ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-100'
+                            : 'border-neutral-700 bg-[#0d1117] text-neutral-300'
+                    }`}
+                >
+                    {grado.isEligible ? (
+                        <CheckCircle2 aria-hidden="true" className="size-5 shrink-0 text-emerald-400" />
+                    ) : (
+                        <Shield aria-hidden="true" className="size-5 shrink-0 text-cyan-400" />
+                    )}
+                    <div>
+                        <p className="text-sm font-bold">{grado.isEligible ? 'Elegible para Examen de Grado' : 'Preparación en curso'}</p>
+                        <p className="text-xs opacity-80">
+                            {grado.isEligible
+                                ? 'Cumpliste los requisitos técnicos, de asistencia y permanencia.'
+                                : grado.bottleneck
+                                    ? BOTTLENECK_LABEL[grado.bottleneck]
+                                    : 'Completa las metas del cuatrimestre para solicitar tu evaluación.'}
+                        </p>
+                    </div>
+                    {grado.isEligible && <Award aria-hidden="true" className="ml-auto size-6 text-emerald-400" />}
+                </div>
+            )}
+
+            {grado.monthsInRankEstimated && (
+                <p className="mt-3 flex items-center gap-1.5 text-[11px] text-neutral-500">
+                    <Clock aria-hidden="true" className="size-3.5" /> La permanencia se estima desde tu matrícula porque no hay un ascenso registrado para este grado.
+                </p>
+            )}
         </section>
     )
 }
