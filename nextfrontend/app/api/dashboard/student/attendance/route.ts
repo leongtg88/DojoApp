@@ -2,13 +2,23 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
 import { resolveClassByTime, classHours, formatTime } from '@/lib/dashboard/balance'
+import { registerPracticeLogs } from '@/lib/dashboard/technique-reps'
+import type { PracticePlace } from '@/lib/generated/prisma'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+
+const practiceLineSchema = z.object({
+  techniqueId: z.string().trim().min(1).max(100),
+  repetitions: z.number().int().min(1).max(100_000),
+  place: z.enum(['DOJO', 'FUERA']).optional(),
+  notes: z.string().trim().max(500).nullable().optional(),
+})
 
 const punchInSchema = z.object({
   hoursTrained: z.number().min(0.5).max(12).optional(),
   sessionType: z.string().trim().min(1).max(50).optional(),
   notes: z.string().trim().max(500).optional().nullable(),
+  practiceLogs: z.array(practiceLineSchema).max(30).optional(),
 })
 
 const SESSION_TYPES = ['class', 'private', 'autonomous', 'seminar', 'other'] as const
@@ -99,6 +109,25 @@ export async function POST(request: Request) {
       notes: result.data.notes ?? null,
     },
   })
+
+  const practiceLines = result.data.practiceLogs ?? []
+  if (practiceLines.length > 0) {
+    try {
+      await registerPracticeLogs(
+        student.id,
+        practiceLines.map((line) => ({
+          techniqueId: line.techniqueId,
+          repetitions: line.repetitions,
+          place: (line.place ?? 'DOJO') as PracticePlace,
+          notes: line.notes ?? null,
+          attendanceId: attendance.id,
+          date: now,
+        })),
+      )
+    } catch (error) {
+      console.error('Error registrando repeticiones del punch:', error)
+    }
+  }
 
   return NextResponse.json({
     record: {

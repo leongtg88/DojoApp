@@ -34,6 +34,16 @@ export type TechniqueStatus = 'PENDING' | 'IN_PROGRESS' | 'APPROVED'
 
 export type TechniqueCategory = 'KIHON' | 'KATA' | 'KUMITE' | 'BUNKAI'
 
+export type PracticePlace = 'DOJO' | 'FUERA'
+
+export interface TechniquePracticeLogEntry {
+	id: string
+	date: string
+	repetitions: number
+	place: PracticePlace
+	notes: string | null
+}
+
 export interface DashboardBeltRank {
 	id: string
 	name: string
@@ -89,6 +99,8 @@ export interface StudentTechnique {
 	approvedAt: string | null
 	notes: string | null
 	practiceHours: number
+	practiceRepetitions: number
+	targetRepetitions: number | null
 	evaluation: TechniqueEvaluation | null
 }
 
@@ -270,8 +282,10 @@ export interface AdminStudentTechnique {
 	approvedAt: string | null
 	inPractice: boolean
 	practiceHours: number
+	practiceRepetitions: number
 	notes: string | null
 	technique: AdminTechniqueSummary
+	practiceLogs: TechniquePracticeLogEntry[]
 }
 
 export interface AdminStudentAttendanceRecord {
@@ -382,6 +396,8 @@ export interface KataProgressItem {
 	description: string | null
 	status: KataStatus
 	practiceHours: number
+	practiceRepetitions: number
+	targetRepetitions: number | null
 	score: number | null
 	lastFeedback: string | null
 	lastPracticeDate: string | null
@@ -395,7 +411,7 @@ export interface KataProgressItem {
 
 export type ExamDay = 'SATURDAY' | 'SUNDAY'
 
-export type GradoMetric = 'KATAS' | 'ASISTENCIA' | 'PERMANENCIA'
+export type GradoMetric = 'KATAS' | 'PERMANENCIA' | 'HORAS'
 
 export interface CuatrimestreProgress {
 	year: number
@@ -405,9 +421,24 @@ export interface CuatrimestreProgress {
 	end: string
 	expectedKatas: number
 	approvedKatas: number
-	expectedHours: number
-	attendedHours: number
+	/** Horas mínimas del plan para este cuatrimestre (monthlyHours × meses). `null` si ilimitado o sin plan. */
+	requiredHours: number | null
+	/** Horas máximas que el horario del alumno permite en el cuatrimestre. */
+	capacityHours: number
+	/** Sesiones máximas que el horario del alumno permite en el cuatrimestre. */
+	capacitySessions: number
+	/** Horas de las clases asistidas en su horario de referencia. */
+	classHours: number
+	/** Clases asistidas en su horario de referencia. */
+	classSessions: number
+	/** Horas de entrenamiento que no es su clase regular (libre/casa + fuera de horario). */
+	extraHours: number
+	/** Clases de tipo class fuera de su horario de referencia. */
+	extraClasses: number
+	hoursMet: boolean
+	hoursExempt: boolean
 	absences: number
+	monthAbsences: MonthAbsence[]
 	maxMonthAbsences: number
 	excessMonth: string | null
 	exceededAbsenceLimit: boolean
@@ -415,6 +446,44 @@ export interface CuatrimestreProgress {
 	isFuture: boolean
 	examDate: string | null
 	examTentative: boolean
+}
+
+export interface GradeHoursRequirement {
+	/** Horas de las clases asistidas en el tramo del grado. */
+	classHours: number
+	requiredHours: number | null
+	/** Meta ya descontado el crédito acumulado de grados previos. */
+	effectiveRequiredHours: number | null
+	/** Horas extra (casa/fuera de horario) del tramo, ponderables. */
+	extraHours: number
+	/** Crédito heredado de grados previos. */
+	creditHours: number
+	capacityHours: number
+	label: string
+	exempt: boolean
+	met: boolean
+}
+
+export interface MonthAbsence {
+	label: string
+	count: number
+	max: number
+}
+
+export interface CurrentPeriod {
+	label: string
+	classSessions: number
+	capacitySessions: number
+	classHours: number
+	requiredHours: number | null
+	extraHours: number
+	extraClasses: number
+	creditHours: number
+	monthAbsences: MonthAbsence[]
+	totalAbsences: number
+	maxAbsencesTotal: number
+	exempt: boolean
+	met: boolean
 }
 
 export interface NextExamInfo {
@@ -441,6 +510,8 @@ export interface GradoProgressData {
 	examDay: ExamDay | null
 	nextExam: NextExamInfo | null
 	cuatrimestres: CuatrimestreProgress[]
+	hoursRequirement: GradeHoursRequirement | null
+	currentPeriod: CurrentPeriod | null
 	maxAbsencesPerMonth: number
 	examRightLost: boolean
 	bottleneck: GradoMetric | null
@@ -493,6 +564,14 @@ export interface AttendanceRecord {
 	sessionId?: string | null
 }
 
+export interface StudentPracticeTechniqueOption {
+	id: string
+	name: string
+	category: TechniqueCategory
+	targetRepetitions: number | null
+	practiceRepetitions: number
+}
+
 export interface StudentAttendancePunchData {
 	summary: {
 		confirmedCount: number
@@ -502,6 +581,7 @@ export interface StudentAttendancePunchData {
 		attendancePercent: number
 	}
 	records: AttendanceRecord[]
+	availableTechniques: StudentPracticeTechniqueOption[]
 }
 
 export interface InstructorAttendanceBoardData {

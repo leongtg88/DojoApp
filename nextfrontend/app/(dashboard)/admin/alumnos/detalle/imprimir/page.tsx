@@ -195,6 +195,7 @@ export default async function PrintStudentPage({ searchParams }: PrintStudentPag
                                         <th className="py-2">Categoría</th>
                                         <th className="py-2">Estado</th>
                                         <th className="py-2">Aprobada</th>
+                                        <th className="py-2">Repeticiones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -204,6 +205,7 @@ export default async function PrintStudentPage({ searchParams }: PrintStudentPag
                                             <td className="py-2 text-neutral-600">{entry.technique.category}</td>
                                             <td className="py-2">{entry.status}</td>
                                             <td className="py-2">{entry.approved ? 'Sí' : 'No'}</td>
+                                            <td className="py-2">{entry.practiceRepetitions}</td>
                                         </tr>
                                     ))}
                                 </tbody>

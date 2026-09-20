@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Award, CheckCheck, CircleDashed, Info, Search, Star } from 'lucide-react'
-import type { StudentTechnique, TechniqueCategory } from '@/types/dashboard'
+import { useRouter } from 'next/navigation'
+import { Award, CheckCheck, CircleDashed, Info, Repeat, Search, Star } from 'lucide-react'
+import type { PracticePlace, StudentTechnique, TechniqueCategory } from '@/types/dashboard'
 
 interface StudentSyllabusProps {
     techniques: StudentTechnique[]
@@ -16,9 +17,31 @@ const categories: { id: TechniqueCategory; label: string; accent: string }[] = [
 ]
 
 export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
+    const router = useRouter()
     const [activeCategory, setActiveCategory] = useState<TechniqueCategory | 'ALL'>('ALL')
     const [statusFilter, setStatusFilter] = useState<'ALL' | 'PENDING' | 'APPROVED'>('ALL')
     const [searchTerm, setSearchTerm] = useState('')
+    const [loggingTechniqueId, setLoggingTechniqueId] = useState<string | null>(null)
+    const [repInput, setRepInput] = useState('')
+    const [repPlace, setRepPlace] = useState<PracticePlace>('DOJO')
+    const [isSavingReps, setIsSavingReps] = useState(false)
+
+    async function saveRepetitions(techniqueId: string) {
+        const repetitions = Number.parseInt(repInput, 10)
+        if (!Number.isFinite(repetitions) || repetitions <= 0 || isSavingReps) return
+        setIsSavingReps(true)
+        const response = await fetch(`/api/dashboard/student/techniques/${techniqueId}/practice`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ repetitions, place: repPlace }),
+        })
+        setIsSavingReps(false)
+        if (response.ok) {
+            setLoggingTechniqueId(null)
+            setRepInput('')
+            router.refresh()
+        }
+    }
     const categoryTechniques = activeCategory === 'ALL'
         ? techniques
         : techniques.filter(({ category }) => category === activeCategory)
@@ -40,6 +63,7 @@ export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
                 </div>
                 <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">{techniques.length} técnicas</p>
             </div>
+            <p className="mt-2 px-1 text-xs text-neutral-500">¿Falta una técnica? Pídele a tu sensei que la asigne a tu expediente para poder registrar sus repeticiones.</p>
 
             <div aria-label="Filtrar técnicas por categoría" className="mt-4 flex gap-2 overflow-x-auto pb-1">
                 <button
@@ -106,6 +130,50 @@ export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
                                     </span>
                                 </div>
                                 {technique.description && <p className="mt-3 pl-4 text-sm leading-6 text-neutral-300">{technique.description}</p>}
+                                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 pl-4 text-xs text-neutral-400">
+                                    <span className="inline-flex items-center gap-1"><Repeat aria-hidden="true" className="size-3.5 text-cyan-400" />{technique.practiceRepetitions} rep.{technique.targetRepetitions ? ` / ${technique.targetRepetitions}` : ''}</span>
+                                    {!approved && (
+                                        <button
+                                            className="inline-flex items-center gap-1 font-bold text-cyan-300 hover:text-cyan-100"
+                                            onClick={() => {
+                                                setLoggingTechniqueId((current) => (current === technique.id ? null : technique.id))
+                                                setRepInput('')
+                                                setRepPlace('DOJO')
+                                            }}
+                                            type="button"
+                                        >
+                                            {loggingTechniqueId === technique.id ? 'Cancelar' : 'Registrar repeticiones'}
+                                        </button>
+                                    )}
+                                </div>
+                                {!approved && loggingTechniqueId === technique.id && (
+                                    <div className="mt-3 flex flex-col gap-2 rounded-md border border-neutral-800 bg-[#0d1117] p-3 sm:flex-row sm:items-center">
+                                        <input
+                                            className="w-28 rounded-md border border-neutral-700 bg-[#161b22] px-3 py-2 text-xs text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500"
+                                            min={1}
+                                            onChange={(event) => setRepInput(event.target.value)}
+                                            placeholder="Ej: 50"
+                                            type="number"
+                                            value={repInput}
+                                        />
+                                        <select
+                                            className="rounded-md border border-neutral-700 bg-[#161b22] px-3 py-2 text-xs text-white outline-none focus:border-cyan-500"
+                                            onChange={(event) => setRepPlace(event.target.value as PracticePlace)}
+                                            value={repPlace}
+                                        >
+                                            <option value="DOJO">En el dojo</option>
+                                            <option value="FUERA">Fuera del dojo</option>
+                                        </select>
+                                        <button
+                                            className="inline-flex items-center justify-center gap-1.5 rounded-md bg-cyan-500 px-3 py-2 text-xs font-bold text-[#0d1117] hover:bg-cyan-400 disabled:opacity-50"
+                                            disabled={!repInput || Number(repInput) <= 0 || isSavingReps}
+                                            onClick={() => saveRepetitions(technique.id)}
+                                            type="button"
+                                        >
+                                            {isSavingReps ? 'Guardando...' : 'Guardar'}
+                                        </button>
+                                    </div>
+                                )}
                                 {technique.notes && <p className="mt-3 flex items-start gap-2 rounded-md border border-cyan-900/50 bg-cyan-950/20 p-2.5 text-xs leading-5 text-cyan-100"><Info aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-cyan-400" />{technique.notes}</p>}
                                 {technique.evaluation && <div className="mt-3 flex items-start gap-2 rounded-md border border-emerald-900/50 bg-emerald-950/20 p-2.5 text-xs leading-5 text-emerald-100"><Star aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-emerald-400" /><div><p className="font-bold">Evaluación: {technique.evaluation.score} / 10</p>{technique.evaluation.feedback && <p className="mt-1">{technique.evaluation.feedback}</p>}<p className="mt-1 text-emerald-300/80">{new Date(technique.evaluation.evaluatedAt).toLocaleString('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}{technique.evaluation.evaluatorName ? ` · ${technique.evaluation.evaluatorName}` : ''}</p></div></div>}
                             </li>

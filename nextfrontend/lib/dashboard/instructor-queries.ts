@@ -4,6 +4,7 @@ import { formatTime } from '@/lib/dashboard/balance'
 import { computeBirthdays } from '@/lib/dashboard/birthdays'
 import { ageFromDob, programForAge } from '@/lib/dashboard/program'
 import { introLevelFromBeltRankKatas } from '@/lib/dashboard/kata-level'
+import { targetRepetitionsFor } from '@/lib/dashboard/technique-reps'
 import { getCurriculumForSchool } from '@/lib/dashboard/curriculum-queries'
 import type {
   AdminCurriculumData,
@@ -364,7 +365,7 @@ export async function getInstructorTechniqueReview(
       lastName: student.lastName,
       currentRank: student.currentRank,
     },
-    techniques: student.techniques.map(({ approved, approvedAt, inPractice, notes, practiceHours, technique, evaluation }) => {
+    techniques: student.techniques.map(({ approved, approvedAt, inPractice, notes, practiceHours, practiceRepetitions, technique, evaluation }) => {
       const level = introLevelFromBeltRankKatas(technique.beltRankKatas, program)
       return {
         id: technique.id,
@@ -378,6 +379,8 @@ export async function getInstructorTechniqueReview(
         approvedAt: approvedAt?.toISOString() ?? null,
         notes,
         practiceHours,
+        practiceRepetitions,
+        targetRepetitions: targetRepetitionsFor(technique),
         evaluation: evaluation ? {
           score: evaluation.score,
           feedback: evaluation.feedback,

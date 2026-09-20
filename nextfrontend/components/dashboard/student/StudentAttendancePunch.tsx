@@ -11,15 +11,17 @@ import {
   Hourglass,
   Pencil,
   Plus,
+  Repeat,
   Save,
   ShieldCheck,
   Trash2,
   X,
 } from 'lucide-react'
-import type { AttendanceRecord, StudentAttendancePunchData } from '@/types/dashboard'
+import type { AttendanceRecord, GradoProgressData, PracticePlace, StudentAttendancePunchData } from '@/types/dashboard'
 
 interface StudentAttendancePunchProps {
   data: StudentAttendancePunchData
+  grado?: GradoProgressData | null
 }
 
 const SESSION_OPTIONS = [
@@ -41,15 +43,20 @@ function sessionLabel(sessionType: string | null): string {
   return SESSION_OPTIONS.find(({ value }) => value === sessionType)?.label ?? sessionType ?? 'Clase'
 }
 
-export function StudentAttendancePunch({ data }: StudentAttendancePunchProps) {
+export function StudentAttendancePunch({ data, grado = null }: StudentAttendancePunchProps) {
   const router = useRouter()
   const { summary, records } = data
-  const minimum = summary.targetAttendances || 30
+  const currentPeriod = grado?.currentPeriod ?? null
+  const classSessions = currentPeriod?.classSessions ?? summary.confirmedCount
+  const capacitySessions = currentPeriod?.capacitySessions ?? summary.confirmedCount
+  const totalAbsences = currentPeriod?.totalAbsences ?? 0
+  const classPercent = capacitySessions > 0 ? Math.min(100, Math.round((classSessions / capacitySessions) * 100)) : 0
 
   const [hours, setHours] = useState<number>(1.5)
   const [sessionType, setSessionType] = useState<string>('class')
   const [notes, setNotes] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [practiceLines, setPracticeLines] = useState<Array<{ techniqueId: string; repetitions: string; place: PracticePlace }>>([])
 
   const [editingRecord, setEditingRecord] = useState<AttendanceRecord | null>(null)
   const [editHours, setEditHours] = useState<number>(1.5)
@@ -58,8 +65,14 @@ export function StudentAttendancePunch({ data }: StudentAttendancePunchProps) {
 
   const formatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })
   const quickHours = [1.0, 1.5, 2.0, 2.5]
-  const compliance = Math.min(100, summary.attendancePercent)
-  const eligible = summary.confirmedCount >= minimum * 0.8
+
+  const visiblePracticeLines = practiceLines
+    .map((line) => ({
+      techniqueId: line.techniqueId,
+      repetitions: Number.parseInt(line.repetitions, 10),
+      place: line.place,
+    }))
+    .filter((line) => line.techniqueId && Number.isFinite(line.repetitions) && line.repetitions > 0)
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -69,12 +82,18 @@ export function StudentAttendancePunch({ data }: StudentAttendancePunchProps) {
     const response = await fetch('/api/dashboard/student/attendance', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ hoursTrained: hours, sessionType, notes: notes.trim() }),
+      body: JSON.stringify({
+        hoursTrained: hours,
+        sessionType,
+        notes: notes.trim(),
+        ...(visiblePracticeLines.length > 0 ? { practiceLogs: visiblePracticeLines } : {}),
+      }),
     })
     setIsSubmitting(false)
 
     if (response.ok) {
       setNotes('')
+      setPracticeLines([])
       router.refresh()
     } else {
       const { error } = await response.json().catch(() => ({ error: 'Error al registrar tu práctica' }))
@@ -126,17 +145,17 @@ export function StudentAttendancePunch({ data }: StudentAttendancePunchProps) {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="rounded-xl border border-neutral-800 bg-[#161b22] p-3.5">
           <div className="mb-1 flex items-center justify-between text-neutral-400">
-            <span className="text-xs">Clases Confirmadas</span>
+            <span className="text-xs">Asistencias válidas</span>
             <CheckCircle2 className="size-4 text-emerald-400" aria-hidden="true" />
           </div>
           <div className="flex items-baseline gap-1.5">
-            <span className="font-mono text-2xl font-bold text-white">{summary.confirmedCount}</span>
-            <span className="text-xs text-neutral-400">/ {minimum} mín.</span>
+            <span className="font-mono text-2xl font-bold text-white">{classSessions}</span>
+            <span className="text-xs text-neutral-400">de {capacitySessions} esperadas</span>
           </div>
           <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-neutral-800">
             <div
               className="h-full rounded-full bg-emerald-500 transition-all duration-500"
-              style={{ width: `${compliance}%` }}
+              style={{ width: `${classPercent}%` }}
             />
           </div>
         </div>
@@ -167,14 +186,14 @@ export function StudentAttendancePunch({ data }: StudentAttendancePunchProps) {
 
         <div className="rounded-xl border border-neutral-800 bg-[#161b22] p-3.5">
           <div className="mb-1 flex items-center justify-between text-neutral-400">
-            <span className="text-xs">Cumplimiento</span>
+            <span className="text-xs">Inasistencia</span>
             <ShieldCheck className="size-4 text-blue-400" aria-hidden="true" />
           </div>
           <div className="flex items-baseline gap-1.5">
-            <span className="font-mono text-2xl font-bold text-white">{compliance}%</span>
-            <span className="text-xs text-neutral-400">{eligible ? 'Apto' : 'En curso'}</span>
+            <span className="font-mono text-2xl font-bold text-white">{totalAbsences}</span>
+            <span className="text-xs text-neutral-400">máx 2/mes</span>
           </div>
-          <p className="mt-2 text-[11px] text-neutral-400">80% mín. p/ examen</p>
+          <p className="mt-2 text-[11px] text-neutral-400">Del cuatrimestre en curso</p>
         </div>
       </div>
 
@@ -260,6 +279,66 @@ export function StudentAttendancePunch({ data }: StudentAttendancePunchProps) {
               />
             </div>
           </div>
+
+          {data.availableTechniques.length > 0 && (
+            <div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-3.5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-neutral-300">
+                  <Repeat className="size-4 text-cyan-400" aria-hidden="true" />Repeticiones de técnicas
+                </p>
+                <button
+                  className="inline-flex items-center gap-1 rounded-md border border-cyan-500/40 bg-cyan-500/10 px-2.5 py-1.5 text-xs font-bold text-cyan-200 transition-colors hover:bg-cyan-500/20"
+                  onClick={() => setPracticeLines((current) => [...current, { techniqueId: '', repetitions: '', place: 'DOJO' }])}
+                  type="button"
+                >
+                  <Plus className="size-3.5" aria-hidden="true" />Añadir
+                </button>
+              </div>
+              <p className="mt-1 text-[11px] text-neutral-500">Opcional. Registra cuántas repeticiones hiciste por técnica, en el dojo o fuera. No afecta tu examen de grado. ¿Falta una técnica? Pídele a tu sensei que la asigne a tu expediente.</p>
+              {practiceLines.length > 0 && (
+                <div className="mt-3 space-y-2">
+                  {practiceLines.map((line, index) => (
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center" key={index}>
+                      <select
+                        className="min-w-0 flex-1 rounded-md border border-neutral-700 bg-[#161b22] px-3 py-2 text-xs text-white outline-none focus:border-cyan-500"
+                        onChange={(event) => setPracticeLines((current) => current.map((item, itemIndex) => (itemIndex === index ? { ...item, techniqueId: event.target.value } : item)))}
+                        value={line.techniqueId}
+                      >
+                        <option value="">Selecciona técnica</option>
+                        {data.availableTechniques.map((technique) => (
+                          <option key={technique.id} value={technique.id}>{technique.category}: {technique.name}</option>
+                        ))}
+                      </select>
+                      <input
+                        className="w-24 rounded-md border border-neutral-700 bg-[#161b22] px-3 py-2 text-xs text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500"
+                        min={1}
+                        onChange={(event) => setPracticeLines((current) => current.map((item, itemIndex) => (itemIndex === index ? { ...item, repetitions: event.target.value } : item)))}
+                        placeholder="Reps"
+                        type="number"
+                        value={line.repetitions}
+                      />
+                      <select
+                        className="rounded-md border border-neutral-700 bg-[#161b22] px-3 py-2 text-xs text-white outline-none focus:border-cyan-500"
+                        onChange={(event) => setPracticeLines((current) => current.map((item, itemIndex) => (itemIndex === index ? { ...item, place: event.target.value as PracticePlace } : item)))}
+                        value={line.place}
+                      >
+                        <option value="DOJO">En el dojo</option>
+                        <option value="FUERA">Fuera del dojo</option>
+                      </select>
+                      <button
+                        aria-label="Quitar repeticiones"
+                        className="self-start rounded border border-neutral-800 p-2 text-neutral-500 transition-colors hover:border-red-500/40 hover:text-red-400 sm:self-center"
+                        onClick={() => setPracticeLines((current) => current.filter((_, itemIndex) => itemIndex !== index))}
+                        type="button"
+                      >
+                        <Trash2 className="size-3.5" aria-hidden="true" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="flex items-center justify-between pt-2">
             <span className="text-xs text-neutral-400">

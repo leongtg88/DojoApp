@@ -25,6 +25,7 @@ export function FocusTechniquesList({ techniques }: FocusTechniquesListProps) {
                                 <div><p className="text-[10px] font-bold uppercase tracking-widest text-cyan-400">{technique.category}</p><h3 className="mt-1 text-sm font-bold text-white">{technique.name}</h3></div>
                                 <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-bold text-amber-300"><Clock3 aria-hidden="true" className="size-3.5" />Pendiente</span>
                             </div>
+                            <p className="mt-2 text-xs text-neutral-400">{technique.practiceRepetitions} rep.{technique.targetRepetitions ? ` / ${technique.targetRepetitions}` : ''}</p>
                             {technique.notes && <p className="mt-3 flex items-start gap-2 rounded-lg border border-cyan-900/50 bg-cyan-950/20 p-2.5 text-xs text-cyan-100"><Info aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-cyan-400" />{technique.notes}</p>}
                         </li>
                     ))}

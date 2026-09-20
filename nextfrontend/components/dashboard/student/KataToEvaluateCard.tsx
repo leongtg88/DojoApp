@@ -28,7 +28,7 @@ export function KataToEvaluateCard({ katas }: KataToEvaluateCardProps) {
                             <div className="flex items-start justify-between gap-4">
                                 <div className="min-w-0">
                                     <div className="flex flex-wrap items-center gap-2"><h3 className="text-sm font-bold text-white">{kata.name}</h3><KataBadge status={kata.status} /></div>
-                                    <p className="mt-1 text-xs text-neutral-400">{kata.practiceHours} h de práctica{!kata.evaluatedBy ? ' · pendiente de evaluación del sensei' : ` · evaluada por ${kata.evaluatedBy}`}</p>
+                                    <p className="mt-1 text-xs text-neutral-400">{kata.practiceHours} h de práctica · {kata.practiceRepetitions} rep.{!kata.evaluatedBy ? ' · pendiente de evaluación del sensei' : ` · evaluada por ${kata.evaluatedBy}`}</p>
                                 </div>
                                 <Hourglass aria-hidden="true" className="size-5 shrink-0 text-amber-400/70" />
                             </div>

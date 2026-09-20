@@ -25,7 +25,7 @@ export function StudentDashboardOverview({ summary, kataSummary }: StudentDashbo
                 <MartialGradeCard approvedTechniques={approvedTechniques} grado={kataSummary?.grado} rank={profile.currentRank} studentName={studentName} totalTechniques={techniques.length} />
                 <StudentBirthdayCard dateOfBirth={profile.dateOfBirth} />
             </section>
-            <div className="mt-5"><StudentMetricsGrid attendance={attendance} techniques={techniques} /></div>
+            <div className="mt-5"><StudentMetricsGrid attendance={attendance} techniques={techniques} grado={kataSummary?.grado ?? null} /></div>
             <section className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
                 <FocusTechniquesList techniques={techniques} />
                 <KataToEvaluateCard katas={kataSummary?.katas ?? []} />

@@ -1,8 +1,8 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { ChevronDown, ChevronUp, Clock, MessageSquare, Search, Star, Timer } from 'lucide-react'
-import type { KataProgressItem, KataStatus } from '@/types/dashboard'
+import { ChevronDown, ChevronUp, Clock, MessageSquare, Repeat, Search, Star, Timer } from 'lucide-react'
+import type { KataProgressItem, KataStatus, PracticePlace } from '@/types/dashboard'
 import { KataBadge } from './KataBadge'
 import { KataBeltChip } from '../shared/KataBeltChip'
 
@@ -13,6 +13,7 @@ interface KataListProps {
     requiredKataIds?: string[]
     onStartPractice?: (kataId: string) => void
     onSaveNote?: (kataId: string, note: string) => void
+    onLogPractice?: (kataId: string, payload: { repetitions: number; place: PracticePlace; notes?: string }) => Promise<void>
     className?: string
 }
 
@@ -23,13 +24,16 @@ const filters: Array<{ value: StatusFilter; label: string }> = [
     { value: 'PENDING', label: 'Por iniciar' },
 ]
 
-export function KataList({ katas = [], requiredKataIds = [], onStartPractice, onSaveNote, className = '' }: KataListProps) {
+export function KataList({ katas = [], requiredKataIds = [], onStartPractice, onSaveNote, onLogPractice, className = '' }: KataListProps) {
     const [search, setSearch] = useState('')
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL')
     const [showRequired, setShowRequired] = useState(true)
     const [expandedId, setExpandedId] = useState<string | null>(null)
     const [note, setNote] = useState('')
     const [savingNoteId, setSavingNoteId] = useState<string | null>(null)
+    const [repInput, setRepInput] = useState('')
+    const [repPlace, setRepPlace] = useState<PracticePlace>('DOJO')
+    const [savingRepsId, setSavingRepsId] = useState<string | null>(null)
 
     const requiredIdSet = useMemo(() => new Set(requiredKataIds), [requiredKataIds])
 
@@ -53,6 +57,15 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
         setSavingNoteId(null)
         setNote('')
         setExpandedId(null)
+    }
+
+    async function handleLogPractice(kataId: string) {
+        const repetitions = Number.parseInt(repInput, 10)
+        if (!Number.isFinite(repetitions) || repetitions <= 0 || savingRepsId !== null) return
+        setSavingRepsId(kataId)
+        await onLogPractice?.(kataId, { repetitions, place: repPlace })
+        setSavingRepsId(null)
+        setRepInput('')
     }
 
     return (
@@ -136,6 +149,8 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                                         onClick={() => {
                                             setExpandedId(isExpanded ? null : kata.id)
                                             setNote(kata.lastFeedback ?? '')
+                                            setRepInput('')
+                                            setRepPlace('DOJO')
                                         }}
                                         type="button"
                                     >
@@ -147,6 +162,10 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                                     <span className="inline-flex items-center gap-1">
                                         <Timer aria-hidden="true" className="size-3.5 text-amber-400" />
                                         {kata.practiceHours} h de práctica
+                                    </span>
+                                    <span className="inline-flex items-center gap-1">
+                                        <Repeat aria-hidden="true" className="size-3.5 text-cyan-400" />
+                                        {kata.practiceRepetitions} rep.{kata.targetRepetitions ? ` / ${kata.targetRepetitions}` : ''}
                                     </span>
                                     {kata.score !== null && (
                                         <span className="inline-flex items-center gap-1">
@@ -197,6 +216,40 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                                                         Comenzar práctica
                                                     </button>
                                                 )}
+                                            </div>
+                                        )}
+                                        {!isApproved && onLogPractice && (
+                                            <div className="space-y-2 rounded-md border border-neutral-800 bg-[#0d1117] p-3">
+                                                <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                                                    <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-cyan-300">
+                                                        <Repeat aria-hidden="true" className="size-3.5" />Registrar repeticiones
+                                                    </span>
+                                                    <input
+                                                        className="w-28 rounded-md border border-neutral-700 bg-[#161b22] px-3 py-2 text-xs text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500"
+                                                        min={1}
+                                                        onChange={(event) => setRepInput(event.target.value)}
+                                                        placeholder="Ej: 50"
+                                                        type="number"
+                                                        value={repInput}
+                                                    />
+                                                    <select
+                                                        className="rounded-md border border-neutral-700 bg-[#161b22] px-3 py-2 text-xs text-white outline-none focus:border-cyan-500"
+                                                        onChange={(event) => setRepPlace(event.target.value as PracticePlace)}
+                                                        value={repPlace}
+                                                    >
+                                                        <option value="DOJO">En el dojo</option>
+                                                        <option value="FUERA">Fuera del dojo</option>
+                                                    </select>
+                                                    <button
+                                                        className="inline-flex items-center justify-center gap-1.5 rounded-md bg-cyan-500 px-3 py-2 text-xs font-bold text-[#0d1117] hover:bg-cyan-400 disabled:opacity-50"
+                                                        disabled={!repInput || Number(repInput) <= 0 || savingRepsId === kata.id}
+                                                        onClick={() => handleLogPractice(kata.id)}
+                                                        type="button"
+                                                    >
+                                                        {savingRepsId === kata.id ? 'Guardando...' : 'Guardar repeticiones'}
+                                                    </button>
+                                                </div>
+                                                <p className="text-[11px] text-neutral-500">¿Falta una técnica? Pídele a tu sensei que la asigne a tu expediente.</p>
                                             </div>
                                         )}
                                     </div>

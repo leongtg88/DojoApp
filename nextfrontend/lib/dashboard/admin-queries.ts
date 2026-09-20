@@ -377,7 +377,12 @@ documents: {
           approvedAt: true,
           inPractice: true,
           practiceHours: true,
+          practiceRepetitions: true,
           notes: true,
+          practiceLogs: {
+            orderBy: { date: 'desc' },
+            select: { id: true, date: true, repetitions: true, place: true, notes: true },
+          },
           technique: {
             select: {
               id: true,
@@ -552,8 +557,16 @@ techniques: rank.katas.map(({ kata }) => techniqueWithRanks(kata)),
       approvedAt: entry.approvedAt?.toISOString() ?? null,
       inPractice: entry.inPractice,
       practiceHours: entry.practiceHours,
+      practiceRepetitions: entry.practiceRepetitions,
       notes: entry.notes,
       technique: techniqueWithRanks(entry.technique),
+      practiceLogs: entry.practiceLogs.map((log) => ({
+        id: log.id,
+        date: log.date.toISOString(),
+        repetitions: log.repetitions,
+        place: log.place,
+        notes: log.notes,
+      })),
     })),
     attendanceHistory: student.attendances.map((entry) => ({
       id: entry.id,

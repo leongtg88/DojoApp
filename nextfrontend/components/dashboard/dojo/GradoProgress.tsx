@@ -12,8 +12,8 @@ const percent = (value: number, goal: number) => (goal > 0 ? Math.min(100, Math.
 
 const BOTTLENECK_LABEL: Record<GradoMetric, string> = {
     KATAS: 'Faltan katas por aprobar',
-    ASISTENCIA: 'Necesitas subir la asistencia',
     PERMANENCIA: 'Falta permanencia en el grado',
+    HORAS: 'Faltan horas de tatami por reponer',
 }
 
 function formatDate(value: string | null): string {
@@ -23,8 +23,21 @@ function formatDate(value: string | null): string {
 
 export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
     const kataPercent = percent(grado.approvedKatas, grado.requiredKatas)
-    const attendancePercent = percent(grado.attendance.percentage, grado.minAttendancePercent)
     const monthsPercent = percent(grado.monthsInRank, grado.minMonths)
+    const hoursReq = grado.hoursRequirement
+    const currentPeriod = grado.currentPeriod
+    const classPercent = currentPeriod && currentPeriod.capacitySessions > 0
+        ? percent(currentPeriod.classSessions, currentPeriod.capacitySessions)
+        : 100
+    const hoursGoal = hoursReq?.effectiveRequiredHours ?? hoursReq?.requiredHours ?? null
+    const hoursPercent = hoursReq && hoursGoal != null
+        ? percent(hoursReq.classHours, hoursGoal)
+        : 100
+    const hoursDetail = hoursReq
+        ? hoursReq.exempt
+            ? `${hoursReq.classHours} h de clase · plan exento`
+            : `${hoursReq.classHours} de ${hoursGoal} h · extra ${hoursReq.extraHours} h${hoursReq.creditHours > 0 ? ` · crédito ${hoursReq.creditHours} h` : ''}`
+        : ''
 
     const metrics = [
         {
@@ -33,15 +46,22 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
             value: grado.requiredKatas > 0 ? kataPercent : 100,
         },
         {
-            label: 'Asistencias',
-            detail: `${grado.attendance.percentage}% (mín. ${grado.minAttendancePercent}%)`,
-            value: attendancePercent,
+            label: 'Asistencia (clases)',
+            detail: `${currentPeriod?.classSessions ?? 0} de ${currentPeriod?.capacitySessions ?? 0} clases`,
+            value: classPercent,
         },
         {
             label: 'Permanencia en grado',
             detail: `${grado.monthsInRank} de ${grado.minMonths} meses${grado.monthsInRankEstimated ? ' (estimado)' : ''}`,
             value: monthsPercent,
         },
+        ...(hoursReq
+            ? [{
+                label: 'Horas de tatami',
+                detail: hoursDetail,
+                value: hoursPercent,
+            }]
+            : []),
     ]
 
     return (
@@ -101,15 +121,15 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
                 <div className="mt-5 border-t border-neutral-800 pt-4">
                     <div className="flex items-center justify-between gap-3">
                         <p className="text-xs font-bold uppercase tracking-wider text-cyan-400">Meta por cuatrimestre</p>
-                        <span className="text-[10px] text-neutral-500">Máximo {grado.maxAbsencesPerMonth} faltas por mes</span>
+                        <span className="text-[10px] text-neutral-500">Máximo {grado.maxAbsencesPerMonth} inasistencias por mes</span>
                     </div>
                     <ul className="mt-3 space-y-2">
                         {grado.cuatrimestres.map((cuatrimestre) => {
                             const katasTarget = cuatrimestre.expectedKatas > 0
                                 ? Math.min(100, Math.round((cuatrimestre.approvedKatas / cuatrimestre.expectedKatas) * 100))
                                 : 100
-                            const hoursTarget = cuatrimestre.expectedHours > 0
-                                ? Math.min(100, Math.round((cuatrimestre.attendedHours / cuatrimestre.expectedHours) * 100))
+                            const classTarget = cuatrimestre.capacitySessions > 0
+                                ? Math.min(100, Math.round((cuatrimestre.classSessions / cuatrimestre.capacitySessions) * 100))
                                 : 100
                             return (
                                 <li
@@ -143,22 +163,27 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
                                         </div>
                                         <div>
                                             <div className="flex justify-between text-neutral-400">
-                                                <span>Horas</span>
-                                                <span className="font-semibold text-white">{cuatrimestre.attendedHours}h/{cuatrimestre.expectedHours}h</span>
+                                                <span>Clases</span>
+                                                <span className="font-semibold text-white">{cuatrimestre.classSessions}/{cuatrimestre.capacitySessions}</span>
                                             </div>
                                             <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-[#161b22]">
-                                                <div className="h-full rounded-full bg-emerald-500" style={{ width: `${hoursTarget}%` }} />
+                                                <div className="h-full rounded-full bg-cyan-500" style={{ width: `${classTarget}%` }} />
                                             </div>
+                                            <p className="mt-1 text-neutral-500">
+                                                {cuatrimestre.extraHours > 0 || cuatrimestre.extraClasses > 0
+                                                    ? `${cuatrimestre.extraHours} h extra · ${cuatrimestre.extraClasses} clases extra`
+                                                    : 'Sin entrenamiento extra'}
+                                            </p>
                                         </div>
                                         <div>
                                             <div className="flex justify-between text-neutral-400">
-                                                <span>Faltas (máx. mes)</span>
+                                                <span>Inasistencia (máx. mes)</span>
                                                 <span className={`font-semibold ${cuatrimestre.exceededAbsenceLimit ? 'text-red-400' : 'text-white'}`}>
                                                     {cuatrimestre.maxMonthAbsences}/{grado.maxAbsencesPerMonth}
                                                 </span>
                                             </div>
                                             <p className="mt-1 text-neutral-500">
-                                                {cuatrimestre.absences} faltas en el cuatrimestre
+                                                {cuatrimestre.absences} inasistencias en el cuatrimestre
                                                 {cuatrimestre.excessMonth ? ` · excedió en ${cuatrimestre.excessMonth}` : ''}
                                             </p>
                                         </div>

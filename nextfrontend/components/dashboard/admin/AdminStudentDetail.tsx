@@ -349,6 +349,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 											</div>
 											<div className="flex items-center gap-2">
 												{entry?.practiceHours ? <span className="text-[11px] text-neutral-400">{entry.practiceHours} h</span> : null}
+												{entry?.practiceRepetitions ? <span className="text-[11px] text-neutral-400">{entry.practiceRepetitions} rep.</span> : null}
 												<KataBadge status={status} />
 											</div>
 										</div>
@@ -373,19 +374,36 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 						) : (
 							<div className="mt-4 divide-y divide-neutral-800 overflow-hidden rounded-lg border border-neutral-800 bg-[#0d1117]">
 								{student.techniques.map((entry) => (
-									<div key={entry.id} className="flex items-center justify-between gap-3 p-3 text-xs transition-colors hover:bg-neutral-800/50">
-										<div className="flex items-center gap-3">
-											<GraduationCap aria-hidden="true" className="size-4 shrink-0 text-cyan-400" />
-											<div>
-												<p className="font-bold text-white">{entry.technique.name}</p>
-												{entry.technique.kanji && <span className="ml-1.5 text-neutral-400">{entry.technique.kanji}</span>}
-												<p className="text-[11px] text-neutral-400">{entry.technique.category}</p>
+									<div key={entry.id} className="p-3 text-xs transition-colors hover:bg-neutral-800/50">
+										<div className="flex items-center justify-between gap-3">
+											<div className="flex items-center gap-3">
+												<GraduationCap aria-hidden="true" className="size-4 shrink-0 text-cyan-400" />
+												<div>
+													<p className="font-bold text-white">{entry.technique.name}</p>
+													{entry.technique.kanji && <span className="ml-1.5 text-neutral-400">{entry.technique.kanji}</span>}
+													<p className="text-[11px] text-neutral-400">
+														{entry.technique.category}
+														{entry.practiceHours > 0 ? ` · ${entry.practiceHours} h` : ''}
+														{entry.practiceRepetitions > 0 ? ` · ${entry.practiceRepetitions} rep.` : ''}
+													</p>
+												</div>
+											</div>
+											<div className="flex items-center gap-3">
+												<KataBadge status={entry.status} />
+												{entry.approvedAt && <span className="text-[11px] text-neutral-400">{formatDateTime(entry.approvedAt)}</span>}
 											</div>
 										</div>
-										<div className="flex items-center gap-3">
-											<KataBadge status={entry.status} />
-											{entry.approvedAt && <span className="text-[11px] text-neutral-400">{formatDateTime(entry.approvedAt)}</span>}
-										</div>
+										{entry.practiceLogs.length > 0 && (
+											<ul className="mt-2 ml-7 space-y-1 border-l border-neutral-800 pl-3 text-[11px] text-neutral-400">
+												{entry.practiceLogs.slice(0, 5).map((log) => (
+													<li key={log.id}>
+														{formatDate(log.date)} · {log.repetitions} rep. · {log.place === 'DOJO' ? 'En el dojo' : 'Fuera del dojo'}
+														{log.notes ? ` · ${log.notes}` : ''}
+													</li>
+												))}
+												{entry.practiceLogs.length > 5 && <li className="text-neutral-500">+{entry.practiceLogs.length - 5} registros más</li>}
+											</ul>
+										)}
 									</div>
 								))}
 							</div>

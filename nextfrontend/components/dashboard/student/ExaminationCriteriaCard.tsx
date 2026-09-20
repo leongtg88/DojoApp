@@ -6,10 +6,18 @@ interface ExaminationCriteriaCardProps {
 }
 
 export function ExaminationCriteriaCard({ grado }: ExaminationCriteriaCardProps) {
-    const missingSessions = Math.max(0, grado.minAttendancePercent - grado.attendance.percentage)
     const missingMonths = Math.max(0, grado.minMonths - grado.monthsInRank)
-    const attendanceOk = grado.attendance.percentage >= grado.minAttendancePercent
     const monthsOk = grado.monthsInRank >= grado.minMonths
+    const hoursReq = grado.hoursRequirement
+    const currentPeriod = grado.currentPeriod
+    const hoursGoal = hoursReq?.effectiveRequiredHours ?? hoursReq?.requiredHours ?? null
+    const hoursPending = hoursReq && hoursGoal != null
+        ? Math.max(0, Number((hoursGoal - hoursReq.classHours).toFixed(1)))
+        : 0
+    const hasCredit = (hoursReq?.creditHours ?? 0) > 0
+    const monthBreakdown = currentPeriod && currentPeriod.monthAbsences.length > 0
+        ? currentPeriod.monthAbsences.map((month) => `${month.label}: ${month.count}/${month.max}`).join(' · ')
+        : 'Sin inasistencias'
 
     return (
         <section className="rounded-lg border border-neutral-800 bg-[#161b22] p-5 shadow-sm">
@@ -27,27 +35,42 @@ export function ExaminationCriteriaCard({ grado }: ExaminationCriteriaCardProps)
                 <div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
                     <div className="flex items-center justify-between">
                         <span className="text-[10px] font-bold uppercase tracking-wide text-neutral-400">Asistencia</span>
-                        <CheckCircle2 aria-hidden="true" className={`size-4 ${attendanceOk ? 'text-emerald-400' : 'text-neutral-600'}`} />
+                        <CheckCircle2 aria-hidden="true" className="size-4 text-neutral-600" />
                     </div>
                     <p className="mt-3 font-display text-2xl font-extrabold text-white">
-                        {grado.attendance.percentage}%
-                        <span className="text-xs font-normal text-neutral-400"> mín. {grado.minAttendancePercent}%</span>
+                        {currentPeriod?.classSessions ?? 0}
+                        <span className="text-xs font-normal text-neutral-400"> / {currentPeriod?.capacitySessions ?? 0} clases</span>
                     </p>
-                    <p className={`mt-1 text-xs ${attendanceOk ? 'text-emerald-300' : 'text-neutral-500'}`}>
-                        {attendanceOk ? 'Requisito cumplido' : `Falta ${missingSessions}% para el mínimo`}
-                    </p>
+                    <p className="mt-1 text-xs text-neutral-500">{monthBreakdown}</p>
                 </div>
 
                 <div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
                     <div className="flex items-center justify-between">
                         <span className="text-[10px] font-bold uppercase tracking-wide text-neutral-400">Tatami</span>
-                        <Clock aria-hidden="true" className="size-4 text-cyan-400" />
+                        <Clock aria-hidden="true" className={`size-4 ${hoursReq && hoursGoal != null && !hoursReq.met ? 'text-amber-400' : 'text-cyan-400'}`} />
                     </div>
-                    <p className="mt-3 font-display text-2xl font-extrabold text-white">
-                        {grado.attendance.attendedSessions}
-                        <span className="text-xs font-normal text-neutral-400"> / {grado.attendance.totalSessions} sesiones</span>
-                    </p>
-                    <p className="mt-1 text-xs text-neutral-500">Registro acumulado en tu expediente</p>
+                    {hoursReq && hoursGoal != null ? (
+                        <>
+                            <p className="mt-3 font-display text-2xl font-extrabold text-white">
+                                {hoursReq.classHours}
+                                <span className="text-xs font-normal text-neutral-400"> / {hoursGoal} h</span>
+                            </p>
+                            <p className={`mt-1 text-xs ${hoursReq.met ? 'text-emerald-300' : 'text-amber-300'}`}>
+                                {hoursReq.met
+                                    ? hasCredit ? `Cumplido · crédito ${hoursReq.creditHours} h` : 'Mínimo del plan cumplido'
+                                    : `Reponer ${hoursPending} h para el examen`}
+                            </p>
+                            <p className="mt-1 text-[11px] text-neutral-500">extra ponderable {hoursReq.extraHours} h</p>
+                        </>
+                    ) : (
+                        <>
+                            <p className="mt-3 font-display text-2xl font-extrabold text-white">
+                                {hoursReq ? hoursReq.classHours : currentPeriod?.classHours ?? 0}
+                                <span className="text-xs font-normal text-neutral-400"> h de clase</span>
+                            </p>
+                            <p className="mt-1 text-xs text-neutral-500">Plan sin mínimo de horas de tatami</p>
+                        </>
+                    )}
                 </div>
 
                 <div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
@@ -68,7 +91,7 @@ export function ExaminationCriteriaCard({ grado }: ExaminationCriteriaCardProps)
             <p className="mt-4 flex items-center gap-2 rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2.5 text-xs text-neutral-400">
                 <CheckCircle2 aria-hidden="true" className={`size-4 shrink-0 ${grado.isEligible ? 'text-emerald-400' : grado.examRightLost ? 'text-red-400' : 'text-cyan-400'}`} />
                 {grado.examRightLost
-                    ? `Derecho a examen suspendido: superaste el máximo de ${grado.maxAbsencesPerMonth} faltas en un mes.`
+                    ? `Derecho a examen suspendido: superaste el máximo de ${grado.maxAbsencesPerMonth} inasistencias en un mes.`
                     : grado.isEligible
                         ? 'Registro activo: ya puedes solicitar tu mesa de examen con el instructor.'
                         : grado.nextExam

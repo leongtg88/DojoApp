@@ -43,8 +43,8 @@ export async function PATCH(request: Request, { params }: PracticeRouteContext) 
   }
 
   const { techniqueId } = await params
-  const technique = await db.studentTechnique.findFirst({
-    where: { id: techniqueId, studentId: student.id },
+  const technique = await db.studentTechnique.findUnique({
+    where: { studentId_techniqueId: { studentId: student.id, techniqueId } },
     select: { id: true },
   })
 
@@ -67,6 +67,7 @@ export async function PATCH(request: Request, { params }: PracticeRouteContext) 
       approved: true,
       inPractice: true,
       practiceHours: true,
+      practiceRepetitions: true,
       lastPracticeDate: true,
       notes: true,
     },

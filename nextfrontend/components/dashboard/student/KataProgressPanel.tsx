@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useMemo } from 'react'
 import { useCallback } from 'react'
-import type { KataProgressItem } from '@/types/dashboard'
+import type { KataProgressItem, PracticePlace } from '@/types/dashboard'
 import { KataList } from '@/components/dashboard/dojo/KataList'
 
 interface KataProgressPanelProps {
@@ -39,11 +39,27 @@ export function KataProgressPanel({ katas }: KataProgressPanelProps) {
         [updateKata],
     )
 
+    const handleLogPractice = useCallback(
+        async (kataId: string, payload: { repetitions: number; place: PracticePlace; notes?: string }) => {
+            const response = await fetch(`/api/dashboard/student/techniques/${kataId}/practice`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            })
+
+            if (response.ok) {
+                router.refresh()
+            }
+        },
+        [router],
+    )
+
     return (
         <KataList
             katas={katas}
             onSaveNote={handleSaveNote}
             onStartPractice={handleStartPractice}
+            onLogPractice={handleLogPractice}
             requiredKataIds={requiredKataIds}
         />
     )

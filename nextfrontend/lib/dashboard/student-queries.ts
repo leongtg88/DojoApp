@@ -4,6 +4,8 @@ import { ageFromDob, programForAge, resolveDefaultRank } from '@/lib/dashboard/p
 import { computeBalance, formatTime, monthRange, pendingRecoveries } from '@/lib/dashboard/balance'
 import { introLevelFromBeltRankKatas } from '@/lib/dashboard/kata-level'
 import { buildHolidaySet } from '@/lib/dashboard/holidays'
+import { monthsForGrade } from '@/lib/dashboard/rank-months'
+import { targetRepetitionsFor } from '@/lib/dashboard/technique-reps'
 import { cuatrimestreForDate, nextCuatrimestre, tentativeExamDate, type Cuatrimestre, type ExamDayValue } from '@/lib/dashboard/cuatrimestre'
 import { availableTrainingHours, type TrainingAudience, type TrainingScheduleClass } from '@/lib/dashboard/training-hours'
 import type {
@@ -16,6 +18,9 @@ import type {
   GradoProgressData,
   GradoMetric,
   CuatrimestreProgress,
+  GradeHoursRequirement,
+  CurrentPeriod,
+  MonthAbsence,
   NextExamInfo,
   KataProgressItem,
   TechniqueStatus,
@@ -108,7 +113,7 @@ export async function getStudentDashboardSummary(
       totalSessions,
       percentage: totalSessions === 0 ? 0 : Math.round((attendedSessions / totalSessions) * 100),
     },
-    techniques: student.techniques.map(({ approved, approvedAt, inPractice, notes, practiceHours, technique, evaluation }) => ({
+    techniques: student.techniques.map(({ approved, approvedAt, inPractice, notes, practiceHours, practiceRepetitions, technique, evaluation }) => ({
       id: technique.id,
       name: technique.name,
       description: technique.description,
@@ -120,6 +125,8 @@ export async function getStudentDashboardSummary(
       approvedAt: approvedAt?.toISOString() ?? null,
       notes,
       practiceHours,
+      practiceRepetitions,
+      targetRepetitions: targetRepetitionsFor(technique),
       evaluation: evaluation ? {
         score: evaluation.score,
         feedback: evaluation.feedback,
@@ -175,6 +182,15 @@ export async function getStudentAttendancePunchData(userId: string): Promise<Stu
           confirmedBy: { select: { name: true } },
         },
       },
+      techniques: {
+        select: {
+          practiceRepetitions: true,
+          technique: {
+            select: { id: true, name: true, category: true, repetitionsCount: true, movementsCount: true },
+          },
+        },
+        orderBy: { technique: { name: 'asc' } },
+      },
     },
   })
 
@@ -213,6 +229,13 @@ export async function getStudentAttendancePunchData(userId: string): Promise<Stu
       attendancePercent,
     },
     records,
+    availableTechniques: student.techniques.map(({ practiceRepetitions, technique }) => ({
+      id: technique.id,
+      name: technique.name,
+      category: technique.category,
+      targetRepetitions: targetRepetitionsFor(technique),
+      practiceRepetitions,
+    })),
   }
 }
 
@@ -400,10 +423,32 @@ function clampPercent(value: number, goal: number): number {
   return goal <= 0 ? 0 : Math.min(100, Math.round((value / goal) * 100))
 }
 
+/**
+ * Meses de calendario tocados por [start, end), con tope de `max`. Se usa para
+ * prorratear el mínimo de horas del plan cuando el cuatrimestre arranca a mitad
+ * (p. ej. el primero desde la matrícula).
+ */
+function monthsCovered(start: Date, end: Date, max = 4): number {
+  let count = 0
+  const cursor = new Date(start.getFullYear(), start.getMonth(), 1)
+  while (cursor.getTime() < end.getTime() && count < max) {
+    count += 1
+    cursor.setMonth(cursor.getMonth() + 1)
+  }
+  return count
+}
+
+/** Meses transcurridos (fraccional) entre dos fechas, con mes promedio de 30.44 días. */
+function mesesElapsed(start: Date, end: Date): number {
+  if (end.getTime() <= start.getTime()) return 0
+  return (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 30.44)
+}
+
 export async function getStudentKataProgress(userId: string): Promise<StudentKataProgressSummary | null> {
   const student = await db.student.findUnique({
     where: { userId },
     include: {
+      plan: { select: { monthlyHours: true, isUnlimited: true } },
       techniques: {
         include: {
           technique: {
@@ -421,8 +466,9 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
         },
         orderBy: { createdAt: 'desc' },
       },
-      attendances: { select: { date: true, present: true, status: true, hoursTrained: true, recoveredById: true } },
+      attendances: { select: { date: true, present: true, status: true, hoursTrained: true, recoveredById: true, sessionType: true, classId: true } },
       rankHistory: { orderBy: { promotedAt: 'desc' }, select: { beltRankId: true, promotedAt: true } },
+      classEnrollments: { where: { status: 'ACTIVE' }, select: { classId: true } },
     },
   })
 
@@ -481,43 +527,40 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
   const monthsInRank = Math.max(0, Math.floor((today.getTime() - gradeStart.getTime()) / (1000 * 60 * 60 * 24 * 30.44)))
 
   const minAttendancePercent = currentRank?.minAttendancePercent ?? 80
-  const minMonths = currentRank?.minMonths ?? 0
+  // `minMonths` del currículum de kyu es acumulado desde Blanco; el tramo del
+  // grado actual es la diferencia con el siguiente (los dan ya son "desde anterior").
+  const minMonths = monthsForGrade(currentRank, nextRank)
 
-  // Asistencia dentro del periodo del grado. Solo confirmadas cuentan como
-  // presentes; faltas confirmadas o justificadas sin recuperar penalizan;
-  // las pendientes de confirmar no entran a la tasa.
+  // Asistencia de clase vs horas de práctica. Solo confirmadas cuentan; las
+  // faltas confirmadas o justificadas sin recuperar son inasistencias.
+  const referenceClassIds = new Set(student.classEnrollments.map((entry) => entry.classId))
+  const isClassAttendance = (attendance: {
+    sessionType: string | null
+    classId: string | null
+  }) => attendance.sessionType === 'class' && attendance.classId != null && referenceClassIds.has(attendance.classId)
+
   const scopedAttendances = student.attendances.filter((attendance) => attendance.date.getTime() >= gradeStart.getTime())
-  const attendedRecords = scopedAttendances.filter((attendance) => attendance.present && attendance.status === 'CONFIRMED')
+  const confirmedRecords = scopedAttendances.filter((attendance) => attendance.present && attendance.status === 'CONFIRMED')
+  const classRecords = confirmedRecords.filter(isClassAttendance)
   const absenceRecords = scopedAttendances.filter(
     (attendance) => !attendance.present && (attendance.status === 'CONFIRMED' || attendance.status === 'JUSTIFIED') && !attendance.recoveredById,
   )
-  const attendedSessions = attendedRecords.length
-  const absenceCount = absenceRecords.length
-  const expectedSessions = attendedSessions + absenceCount
-  const attendancePercent = expectedSessions === 0 ? 0 : Math.round((attendedSessions / expectedSessions) * 100)
+
+  const classSessionsGrade = classRecords.length
 
   const approvedKatas = student.techniques.filter(({ technique, approved }) => gradeKataIdsSet.has(technique.id) && approved).length
   const totalRequiredKatas = gradeKataIds.length
 
   const kataMetric = normalizeMetric(approvedKatas, totalRequiredKatas)
-  const attendanceMetric = normalizeMetric(attendancePercent, minAttendancePercent)
   const monthsMetric = normalizeMetric(monthsInRank, minMonths)
 
   const applicableMetrics: { key: GradoMetric; percent: number }[] = []
   if (kataMetric.applicable) applicableMetrics.push({ key: 'KATAS', percent: kataMetric.percent })
-  if (attendanceMetric.applicable) applicableMetrics.push({ key: 'ASISTENCIA', percent: attendanceMetric.percent })
   if (monthsMetric.applicable) applicableMetrics.push({ key: 'PERMANENCIA', percent: monthsMetric.percent })
-
-  const overallPercent =
-    applicableMetrics.length === 0
-      ? 100
-      : Math.round(applicableMetrics.reduce((sum, metric) => sum + metric.percent, 0) / applicableMetrics.length)
-  const bottleneck =
-    applicableMetrics.filter((metric) => metric.percent < 100).sort((a, b) => a.percent - b.percent)[0]?.key ?? null
 
   const katas = student.techniques
     .filter(({ technique }) => technique.category === 'KATA')
-    .map(({ technique, approved, inPractice, practiceHours, lastPracticeDate, notes, evaluation, approvedAt }) => {
+    .map(({ technique, approved, inPractice, practiceHours, practiceRepetitions, lastPracticeDate, notes, evaluation, approvedAt }) => {
       const requiredForGrade = gradeKataIdsSet.has(technique.id)
       const level = introLevelFromBeltRankKatas(technique.beltRankKatas, currentProgram)
       return {
@@ -526,6 +569,8 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
         description: technique.description,
         status: constructorStatus(approved, inPractice),
         practiceHours,
+        practiceRepetitions,
+        targetRepetitions: targetRepetitionsFor(technique),
         score: evaluation?.score ?? null,
         lastFeedback: notes,
         lastPracticeDate: lastPracticeDate?.toISOString() ?? approvedAt?.toISOString() ?? null,
@@ -554,7 +599,12 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
     }),
   ])
 
-  const scheduleClasses: TrainingScheduleClass[] = activeClasses.map((scheduledClass) => ({
+  // Capacidad basada en los horarios de referencia del alumno; si no tiene
+  // ninguno asignado, se usa el catálogo de su audiencia como respaldo.
+  const referenceClasses = activeClasses.filter((scheduledClass) => referenceClassIds.has(scheduledClass.id))
+  const scheduleSource = referenceClasses.length > 0 ? referenceClasses : activeClasses
+
+  const scheduleClasses: TrainingScheduleClass[] = scheduleSource.map((scheduledClass) => ({
     id: scheduledClass.id,
     name: scheduledClass.name,
     audience: scheduledClass.audience,
@@ -590,6 +640,10 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
   const baseExpected = Math.floor(totalRequiredKatas / cuatrimestreCount)
   const expectedRemainder = totalRequiredKatas % cuatrimestreCount
 
+  // Mínimo de horas del plan: ilimitado o sin plan quedan exentos.
+  const planMonthlyHours = student.plan?.monthlyHours ?? null
+  const hoursExempt = student.plan == null || student.plan.isUnlimited || planMonthlyHours == null || planMonthlyHours <= 0
+
   const approvedBy = (endExclusive: Date): number =>
     requiredTechniques.filter(({ approved, approvedAt }) => {
       if (!approved) return false
@@ -602,8 +656,19 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
 
     const effectiveStart = block.start.getTime() < gradeStart.getTime() ? gradeStart : block.start
     const available = availableTrainingHours(scheduleClasses, { audience, start: effectiveStart, end: block.end, holidays })
-    const blockAttended = attendedRecords.filter((attendance) => attendance.date >= effectiveStart && attendance.date < block.end)
-    const attendedHours = Number(blockAttended.reduce((sum, attendance) => sum + attendance.hoursTrained, 0).toFixed(2))
+    const blockConfirmed = confirmedRecords.filter((attendance) => attendance.date >= effectiveStart && attendance.date < block.end)
+    const blockClass = classRecords.filter((attendance) => attendance.date >= effectiveStart && attendance.date < block.end)
+    const classHours = Number(blockClass.reduce((sum, attendance) => sum + attendance.hoursTrained, 0).toFixed(2))
+    const classSessions = blockClass.length
+    const extraHours = Number((blockConfirmed.reduce((sum, attendance) => sum + attendance.hoursTrained, 0) - classHours).toFixed(2))
+    const extraClasses = blockConfirmed.filter(
+      (attendance) => attendance.sessionType === 'class' && (attendance.classId == null || !referenceClassIds.has(attendance.classId)),
+    ).length
+
+    const requiredHours = hoursExempt ? null : Number((planMonthlyHours * monthsCovered(effectiveStart, block.end)).toFixed(2))
+    const capacityHours = available.hours
+    const capacitySessions = available.sessions
+    const hoursMet = requiredHours == null || classHours >= requiredHours
 
     const blockAbsences = absenceRecords.filter((attendance) => attendance.date >= effectiveStart && attendance.date < block.end)
     const monthCounts = new Map<string, { count: number; label: string }>()
@@ -617,7 +682,9 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
 
     let maxMonthAbsences = 0
     let excessMonth: string | null = null
+    const monthAbsences: MonthAbsence[] = []
     for (const { count, label } of monthCounts.values()) {
+      monthAbsences.push({ label, count, max: MAX_ABSENCES_PER_MONTH })
       if (count > maxMonthAbsences) {
         maxMonthAbsences = count
         excessMonth = label
@@ -637,9 +704,17 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
       end: lastDay.toISOString(),
       expectedKatas: cumulativeExpected,
       approvedKatas: approvedBy(block.end),
-      expectedHours: available.hours,
-      attendedHours,
+      requiredHours,
+      capacityHours,
+      capacitySessions,
+      classHours,
+      classSessions,
+      extraHours,
+      extraClasses,
+      hoursMet,
+      hoursExempt,
       absences: blockAbsences.length,
+      monthAbsences,
       maxMonthAbsences,
       excessMonth,
       exceededAbsenceLimit: maxMonthAbsences > MAX_ABSENCES_PER_MONTH,
@@ -668,8 +743,85 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
         }
       : null
 
+  // Requisito de tatami (opción A): las horas de clase cumplen el mínimo; las
+  // horas extra (casa/fuera de horario) quedan como ponderables y el excedente
+  // de grados previos se descuenta de la meta.
+  const examIndex = examBlock ? cuatrimestres.indexOf(examBlock) : -1
+  const hoursBlocks = examIndex >= 0 ? cuatrimestres.slice(0, examIndex + 1) : cuatrimestres
+  const classHoursTramo = Number(hoursBlocks.reduce((sum, block) => sum + block.classHours, 0).toFixed(2))
+  const extraHoursTramo = Number(hoursBlocks.reduce((sum, block) => sum + block.extraHours, 0).toFixed(2))
+  const hoursCapacity = Number(hoursBlocks.reduce((sum, block) => sum + block.capacityHours, 0).toFixed(2))
+  const hoursLabel = hoursBlocks.length > 1
+    ? `${hoursBlocks[0].label} – ${hoursBlocks[hoursBlocks.length - 1].label}`
+    : examBlock?.label ?? 'Cuatrimestre actual'
+
+  const examBoundary = examIndex >= 0 ? blocks[examIndex].end : today
+
+  // Crédito heredado de grados previos (todo lo confirmado antes de gradeStart).
+  const attendedBefore = student.attendances.filter(
+    (attendance) => attendance.present && attendance.status === 'CONFIRMED' && attendance.date.getTime() < gradeStart.getTime(),
+  )
+  const attendedHoursBefore = attendedBefore.reduce((sum, attendance) => sum + attendance.hoursTrained, 0)
+  const requiredHoursBefore = hoursExempt ? null : planMonthlyHours * mesesElapsed(student.enrollmentDate, gradeStart)
+  const creditHours = requiredHoursBefore == null ? 0 : Math.max(0, Number((attendedHoursBefore - requiredHoursBefore).toFixed(2)))
+
+  // Tramo del grado actual.
+  const requiredHoursTramo = hoursExempt ? null : Number((planMonthlyHours * mesesElapsed(gradeStart, examBoundary)).toFixed(2))
+  const effectiveRequiredHours = requiredHoursTramo == null ? null : Math.max(0, Number((requiredHoursTramo - creditHours).toFixed(2)))
+  const hoursMet = effectiveRequiredHours == null || classHoursTramo >= effectiveRequiredHours
+
+  const hoursRequirement: GradeHoursRequirement | null = examBlock
+    ? {
+        classHours: classHoursTramo,
+        requiredHours: requiredHoursTramo,
+        effectiveRequiredHours,
+        extraHours: extraHoursTramo,
+        creditHours,
+        capacityHours: hoursCapacity,
+        label: hoursLabel,
+        exempt: hoursExempt,
+        met: hoursMet,
+      }
+    : null
+
+  if (hoursRequirement && !hoursRequirement.exempt && hoursRequirement.effectiveRequiredHours != null) {
+    applicableMetrics.push({
+      key: 'HORAS',
+      percent: normalizeMetric(hoursRequirement.classHours, hoursRequirement.effectiveRequiredHours).percent,
+    })
+  }
+
+  const overallPercent =
+    applicableMetrics.length === 0
+      ? 100
+      : Math.round(applicableMetrics.reduce((sum, metric) => sum + metric.percent, 0) / applicableMetrics.length)
+  const bottleneck =
+    applicableMetrics.filter((metric) => metric.percent < 100).sort((a, b) => a.percent - b.percent)[0]?.key ?? null
+
   const allApplicableMet = applicableMetrics.every((metric) => metric.percent === 100)
   const isEligible = allApplicableMet && !examRightLost && nextRank != null
+
+  const capacitySessionsGrade = cuatrimestres.reduce((sum, cuatrimestre) => sum + cuatrimestre.capacitySessions, 0)
+  const currentBlock =
+    cuatrimestres.find((cuatrimestre) => cuatrimestre.isCurrent) ?? [...cuatrimestres].reverse().find((cuatrimestre) => !cuatrimestre.isFuture) ?? null
+
+  const currentPeriod: CurrentPeriod | null = currentBlock
+    ? {
+        label: currentBlock.label,
+        classSessions: currentBlock.classSessions,
+        capacitySessions: currentBlock.capacitySessions,
+        classHours: currentBlock.classHours,
+        requiredHours: currentBlock.requiredHours,
+        extraHours: currentBlock.extraHours,
+        extraClasses: currentBlock.extraClasses,
+        creditHours: hoursRequirement?.creditHours ?? 0,
+        monthAbsences: currentBlock.monthAbsences,
+        totalAbsences: currentBlock.absences,
+        maxAbsencesTotal: MAX_ABSENCES_PER_MONTH * 4,
+        exempt: currentBlock.hoursExempt,
+        met: currentBlock.hoursMet,
+      }
+    : null
 
   const grado: GradoProgressData = {
     currentRankName: currentRank?.name ?? student.currentRank ?? null,
@@ -678,7 +830,11 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
     beltColor: currentRank?.beltColor ?? beltColorFor(currentRank?.name ?? student.currentRank),
     approvedKatas,
     requiredKatas: totalRequiredKatas,
-    attendance: { attendedSessions, totalSessions: expectedSessions, percentage: attendancePercent },
+    attendance: {
+      attendedSessions: classSessionsGrade,
+      totalSessions: capacitySessionsGrade,
+      percentage: capacitySessionsGrade > 0 ? Math.round((classSessionsGrade / capacitySessionsGrade) * 100) : 0,
+    },
     minAttendancePercent,
     monthsInRank,
     monthsInRankEstimated,
@@ -688,6 +844,8 @@ export async function getStudentKataProgress(userId: string): Promise<StudentKat
     examDay,
     nextExam,
     cuatrimestres,
+    hoursRequirement,
+    currentPeriod,
     maxAbsencesPerMonth: MAX_ABSENCES_PER_MONTH,
     examRightLost,
     bottleneck,

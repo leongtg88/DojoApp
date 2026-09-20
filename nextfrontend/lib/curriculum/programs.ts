@@ -139,31 +139,30 @@ export const KATAS: CurriculumKata[] = [
   { id: 'kata-haffa', name: 'Haffa', kanji: 'ハッファ', order: 67 },
 ]
 
-
 export const ADULT_RANKS: CurriculumRank[] = [
-  { id: 'belt-adult-01-blanco', order: 1, name: 'Blanco', kyuDan: '11TH KYU', japaneseName: '—', kanji: '白帯', beltColor: '#FFFFFF', minMonths: 0, maxMonths: 3, isMaximumRank: false, katas: ['Kihon Kata Ichi', 'Kihon Kata Ni', 'Kihon Kata San', 'Kihon Kata Yon', 'Kihon Kata Go'] },
+  { id: 'belt-adult-01-blanco', order: 1, name: 'Blanco', kyuDan: '11TH KYU', japaneseName: '—', kanji: '白帯', beltColor: '#FFFFFF', minMonths: 0, maxMonths: 4, isMaximumRank: false, katas: ['Kihon Kata Ichi', 'Kihon Kata Ni', 'Kihon Kata San', 'Kihon Kata Yon', 'Kihon Kata Go'] },
 
-  { id: 'belt-adult-02-amarillo', order: 2, name: 'Amarillo', kyuDan: '10TH KYU', japaneseName: 'Ju-kyu', kanji: '十級', beltColor: '#FFEB3B', minMonths: 3, maxMonths: 4, isMaximumRank: false, katas: ['Tenno Kata', 'Chino Kata', 'Pinan Nidan'] },
+  { id: 'belt-adult-02-amarillo', order: 2, name: 'Amarillo', kyuDan: '10TH KYU', japaneseName: 'Ju-kyu', kanji: '十級', beltColor: '#FFEB3B', minMonths: 4, maxMonths: 5, isMaximumRank: false, katas: ['Tenno Kata', 'Chino Kata', 'Pinan Nidan'] },
 
-  { id: 'belt-adult-03-naranja', order: 3, name: 'Naranja', kyuDan: '9TH KYU', japaneseName: 'Kyu-kyu', kanji: '九級', beltColor: '#FF9800', minMonths: 6, maxMonths: 7, isMaximumRank: false, katas: ['Chino Kata', 'Pinan Nidan', 'Pinan Shodan'] },
+  { id: 'belt-adult-03-naranja', order: 3, name: 'Naranja', kyuDan: '9TH KYU', japaneseName: 'Kyu-kyu', kanji: '九級', beltColor: '#FF9800', minMonths: 8, maxMonths: 9, isMaximumRank: false, katas: ['Chino Kata', 'Pinan Nidan', 'Pinan Shodan'] },
 
-  { id: 'belt-adult-04-azul', order: 4, name: 'Azul', kyuDan: '8TH KYU', japaneseName: 'Hachi-kyu', kanji: '八級', beltColor: '#2196F3', minMonths: 9, maxMonths: 10, isMaximumRank: false, katas: ['Pinan Shodan', 'Pinan Sandan', 'Pinan Yondan'] },
+  { id: 'belt-adult-04-azul', order: 4, name: 'Azul', kyuDan: '8TH KYU', japaneseName: 'Hachi-kyu', kanji: '八級', beltColor: '#2196F3', minMonths: 12, maxMonths: 13, isMaximumRank: false, katas: ['Pinan Shodan', 'Pinan Sandan', 'Pinan Yondan'] },
 
-  { id: 'belt-adult-05-morado', order: 5, name: 'Morado', kyuDan: '7TH KYU', japaneseName: 'Nana-kyu', kanji: '七級', beltColor: '#9C27B0', minMonths: 12, maxMonths: 13, isMaximumRank: false, katas: ['Pinan Sandan', 'Pinan Yondan', 'Pinan Godan'] },
+  { id: 'belt-adult-05-morado', order: 5, name: 'Morado', kyuDan: '7TH KYU', japaneseName: 'Nana-kyu', kanji: '七級', beltColor: '#9C27B0', minMonths: 16, maxMonths: 17, isMaximumRank: false, katas: ['Pinan Sandan', 'Pinan Yondan', 'Pinan Godan'] },
 
-  { id: 'belt-adult-06-verde', order: 6, name: 'Verde', kyuDan: '6TH KYU', japaneseName: 'Rok-kyu', kanji: '六級', beltColor: '#4CAF50', minMonths: 15, maxMonths: 16, isMaximumRank: false, katas: ['Pinan Yondan', 'Pinan Godan', 'Bassai Dai'] },
+  { id: 'belt-adult-06-verde', order: 6, name: 'Verde', kyuDan: '6TH KYU', japaneseName: 'Rok-kyu', kanji: '六級', beltColor: '#4CAF50', minMonths: 20, maxMonths: 21, isMaximumRank: false, katas: ['Pinan Yondan', 'Pinan Godan', 'Bassai Dai'] },
 
-  { id: 'belt-adult-07-verde-claro', order: 7, name: 'Verde-Blanca', kyuDan: '5TH KYU', japaneseName: 'Go-kyu', kanji: '五級', beltColor: '#4CAF50', beltSecondaryColor: '#FFFFFF', minMonths: 16, maxMonths: 19, isMaximumRank: false, katas: ['Pinan Godan', 'Bassai Dai', 'Jūtte'] },
+  { id: 'belt-adult-07-verde-claro', order: 7, name: 'Verde-Blanca', kyuDan: '5TH KYU', japaneseName: 'Go-kyu', kanji: '五級', beltColor: '#4CAF50', beltSecondaryColor: '#FFFFFF', minMonths: 24, maxMonths: 25, isMaximumRank: false, katas: ['Pinan Godan', 'Bassai Dai', 'Jūtte'] },
 
-  { id: 'belt-adult-08-verde-oscuro', order: 8, name: 'Verde-Negra', kyuDan: '4TH KYU', japaneseName: 'Yon-kyu', kanji: '四級', beltColor: '#4CAF50', beltSecondaryColor: '#212121', minMonths: 21, maxMonths: 23, isMaximumRank: false, katas: ['Bassai Dai', 'Jūtte', 'Seienchin'] },
+  { id: 'belt-adult-08-verde-oscuro', order: 8, name: 'Verde-Negra', kyuDan: '4TH KYU', japaneseName: 'Yon-kyu', kanji: '四級', beltColor: '#4CAF50', beltSecondaryColor: '#212121', minMonths: 29, maxMonths: 30, isMaximumRank: false, katas: ['Bassai Dai', 'Jūtte', 'Seienchin'] },
 
-  { id: 'belt-adult-09-marron', order: 9, name: 'Marrón', kyuDan: '3RD KYU', japaneseName: 'San-kyu', kanji: '三級', beltColor: '#5D4037', minMonths: 24, maxMonths: 25, isMaximumRank: false, katas: ['Bassai Dai', 'Seienchin', 'Jion'] },
+  { id: 'belt-adult-09-marron', order: 9, name: 'Marrón', kyuDan: '3RD KYU', japaneseName: 'San-kyu', kanji: '三級', beltColor: '#5D4037', minMonths: 33, maxMonths: 34, isMaximumRank: false, katas: ['Bassai Dai', 'Seienchin', 'Jion'] },
 
-  { id: 'belt-adult-10-marron-claro', order: 10, name: 'Marrón-Blanca', kyuDan: '2ND KYU', japaneseName: 'Ni-kyu', kanji: '二級', beltColor: '#5D4037', beltSecondaryColor: '#FFFFFF', minMonths: 27, maxMonths: 29, isMaximumRank: false, katas: ['Bassai Dai', 'Seienchin', 'Jiin'] },
+  { id: 'belt-adult-10-marron-claro', order: 10, name: 'Marrón-Blanca', kyuDan: '2ND KYU', japaneseName: 'Ni-kyu', kanji: '二級', beltColor: '#5D4037', beltSecondaryColor: '#FFFFFF', minMonths: 37, maxMonths: 38, isMaximumRank: false, katas: ['Bassai Dai', 'Seienchin', 'Jiin'] },
 
-  { id: 'belt-adult-11-marron-oscuro', order: 11, name: 'Marrón-Negra', kyuDan: '1ST KYU', japaneseName: 'Ik-kyu', kanji: '一級', beltColor: '#5D4037', beltSecondaryColor: '#212121', minMonths: 30, maxMonths: 31, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin'] },
+  { id: 'belt-adult-11-marron-oscuro', order: 11, name: 'Marrón-Negra', kyuDan: '1ST KYU', japaneseName: 'Ik-kyu', kanji: '一級', beltColor: '#5D4037', beltSecondaryColor: '#212121', minMonths: 41, maxMonths: 42, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin'] },
 
- { 
+  { 
     id: 'belt-adult-12-negro', 
     order: 12, 
     name: 'Shodan', 
@@ -292,42 +291,37 @@ export const ADULT_RANKS: CurriculumRank[] = [
 ]
 
 export const YOUTH_RANKS: CurriculumRank[] = [
-  { id: 'belt-youth-01-blanco', order: 1, name: 'Blanco', kyuDan: '11TH KYU', japaneseName: '—', kanji: '白帯', beltColor: '#FFFFFF', minMonths: 0, maxMonths: 3, isMaximumRank: false, katas: [] },
-  { id: 'belt-youth-02-blanco-amarillo', order: 2, name: 'Amarillo-Blanca', kyuDan: '10TH KYU HO', japaneseName: 'Ju-kyu-ho', kanji: '十級補', beltColor: '#FFEB3B', beltSecondaryColor: '#FFFFFF', minMonths: 3, maxMonths: 4, isMaximumRank: false, katas: ['Kihon Kata Ichi', 'Kihon Kata Ni', 'Kihon Kata San', 'Kihon Kata Yon', 'Kihon Kata Go'] },
+  { id: 'belt-youth-01-blanco', order: 1, name: 'Blanco', kyuDan: '11TH KYU', japaneseName: '—', kanji: '白帯', beltColor: '#FFFFFF', minMonths: 0, maxMonths: 4, isMaximumRank: false, katas: [] },
+  { id: 'belt-youth-02-blanco-amarillo', order: 2, name: 'Amarillo-Blanca', kyuDan: '10TH KYU HO', japaneseName: 'Ju-kyu-ho', kanji: '十級補', beltColor: '#FFEB3B', beltSecondaryColor: '#FFFFFF', minMonths: 4, maxMonths: 5, isMaximumRank: false, katas: ['Kihon Kata Ichi', 'Kihon Kata Ni', 'Kihon Kata San', 'Kihon Kata Yon', 'Kihon Kata Go'] },
 
-  { id: 'belt-youth-03-amarillo', order: 3, name: 'Amarillo', kyuDan: '10TH KYU', japaneseName: 'Ju-kyu', kanji: '十級', beltColor: '#FFEB3B', minMonths: 6, maxMonths: 7, isMaximumRank: false, katas: ['Tenno Kata', 'Chino Kata'] },
+  { id: 'belt-youth-03-amarillo', order: 3, name: 'Amarillo', kyuDan: '10TH KYU', japaneseName: 'Ju-kyu', kanji: '十級', beltColor: '#FFEB3B', minMonths: 8, maxMonths: 9, isMaximumRank: false, katas: ['Tenno Kata', 'Chino Kata'] },
 
-  { id: 'belt-youth-04-amarillo-naranja', order: 4, name: 'Naranja-Blanca', kyuDan: '9TH KYU HO', japaneseName: 'Kyu-kyu-ho', kanji: '九級補', beltColor: '#FF9800', beltSecondaryColor: '#FFFFFF', minMonths: 9, maxMonths: 10, isMaximumRank: false, katas: ['Tenno Kata', 'Chino Kata', 'Pinan Nidan'] },
+  { id: 'belt-youth-04-amarillo-naranja', order: 4, name: 'Naranja-Blanca', kyuDan: '9TH KYU HO', japaneseName: 'Kyu-kyu-ho', kanji: '九級補', beltColor: '#FF9800', beltSecondaryColor: '#FFFFFF', minMonths: 12, maxMonths: 13, isMaximumRank: false, katas: ['Tenno Kata', 'Chino Kata', 'Pinan Nidan'] },
 
-  { id: 'belt-youth-05-naranja', order: 5, name: 'Naranja', kyuDan: '9TH KYU', japaneseName: 'Kyu-kyu', kanji: '九級', beltColor: '#FF9800', minMonths: 12, maxMonths: 13, isMaximumRank: false, katas: ['Chino Kata', 'Pinan Nidan', 'Pinan Shodan'] },
+  { id: 'belt-youth-05-naranja', order: 5, name: 'Naranja', kyuDan: '9TH KYU', japaneseName: 'Kyu-kyu', kanji: '九級', beltColor: '#FF9800', minMonths: 16, maxMonths: 17, isMaximumRank: false, katas: ['Chino Kata', 'Pinan Nidan', 'Pinan Shodan'] },
 
-  { id: 'belt-youth-06-naranja-azul', order: 6, name: 'Azul-Blanca', kyuDan: '8TH KYU HO', japaneseName: 'Hachi-kyu-ho', kanji: '八級補', beltColor: '#2196F3', beltSecondaryColor: '#FFFFFF', minMonths: 15, maxMonths: 16, isMaximumRank: false, katas: ['Pinan Nidan', 'Pinan Shodan', 'Pinan Sandan'] },
+  { id: 'belt-youth-06-naranja-azul', order: 6, name: 'Azul-Blanca', kyuDan: '8TH KYU HO', japaneseName: 'Hachi-kyu-ho', kanji: '八級補', beltColor: '#2196F3', beltSecondaryColor: '#FFFFFF', minMonths: 20, maxMonths: 21, isMaximumRank: false, katas: ['Pinan Nidan', 'Pinan Shodan', 'Pinan Sandan'] },
 
-  { id: 'belt-youth-07-azul', order: 7, name: 'Azul', kyuDan: '8TH KYU', japaneseName: 'Hachi-kyu', kanji: '八級', beltColor: '#2196F3', minMonths: 18, maxMonths: 19, isMaximumRank: false, katas: ['Pinan Shodan', 'Pinan Sandan', 'Pinan Yondan'] },
+  { id: 'belt-youth-07-azul', order: 7, name: 'Azul', kyuDan: '8TH KYU', japaneseName: 'Hachi-kyu', kanji: '八級', beltColor: '#2196F3', minMonths: 24, maxMonths: 25, isMaximumRank: false, katas: ['Pinan Shodan', 'Pinan Sandan', 'Pinan Yondan'] },
 
-  { id: 'belt-youth-08-azul-morado', order: 8, name: 'Morado-Blanca', kyuDan: '7TH KYU HO', japaneseName: 'Nana-kyu-ho', kanji: '七級補', beltColor: '#9C27B0', beltSecondaryColor: '#FFFFFF', minMonths: 21, maxMonths: 22, isMaximumRank: false, katas: ['Pinan Sandan', 'Pinan Yondan', 'Pinan Godan'] },
+  { id: 'belt-youth-08-azul-morado', order: 8, name: 'Morado-Blanca', kyuDan: '7TH KYU HO', japaneseName: 'Nana-kyu-ho', kanji: '七級補', beltColor: '#9C27B0', beltSecondaryColor: '#FFFFFF', minMonths: 28, maxMonths: 29, isMaximumRank: false, katas: ['Pinan Sandan', 'Pinan Yondan', 'Pinan Godan'] },
 
-  { id: 'belt-youth-09-morado', order: 9, name: 'Morado', kyuDan: '7TH KYU', japaneseName: 'Nana-kyu', kanji: '七級', beltColor: '#9C27B0', minMonths: 24, maxMonths: 25, isMaximumRank: false, katas: ['Pinan Yondan', 'Pinan Godan', 'Bassai Dai'] },
+  { id: 'belt-youth-09-morado', order: 9, name: 'Morado', kyuDan: '7TH KYU', japaneseName: 'Nana-kyu', kanji: '七級', beltColor: '#9C27B0', minMonths: 32, maxMonths: 33, isMaximumRank: false, katas: ['Pinan Yondan', 'Pinan Godan', 'Bassai Dai'] },
   
-  { id: 'belt-youth-10-verde', order: 10, name: 'Verde', kyuDan: '6TH KYU ', japaneseName: 'Rok-kyu-ho', kanji: '六級補', beltColor: '#4CAF50', beltSecondaryColor: '#FFFFFF', minMonths: 27, maxMonths: 28, isMaximumRank: false, katas: ['Pinan Godan', 'Bassai Dai', 'Jūtte', 'Niseishi'] },
+  { id: 'belt-youth-10-verde', order: 10, name: 'Verde', kyuDan: '6TH KYU ', japaneseName: 'Rok-kyu-ho', kanji: '六級補', beltColor: '#4CAF50', beltSecondaryColor: '#FFFFFF', minMonths: 36, maxMonths: 37, isMaximumRank: false, katas: ['Pinan Godan', 'Bassai Dai', 'Jūtte', 'Niseishi'] },
 
-  { id: 'belt-youth-11-verde-blanco', order: 11, name: 'Verde-Blanca', kyuDan: '5TH KYU', japaneseName: 'Rok-kyu', kanji: '六級', beltColor: '#4CAF50', minMonths: 30, maxMonths: 31, isMaximumRank: false, katas: ['Bassai Dai', 'Jūtte', 'Seienchin', 'Niseishi'] },
+  { id: 'belt-youth-11-verde-blanco', order: 11, name: 'Verde-Blanca', kyuDan: '5TH KYU', japaneseName: 'Rok-kyu', kanji: '六級', beltColor: '#4CAF50', minMonths: 40, maxMonths: 41, isMaximumRank: false, katas: ['Bassai Dai', 'Jūtte', 'Seienchin', 'Niseishi'] },
 
-  { id: 'belt-youth-12-verde-negro', order: 12, name: 'Verde-Negra', kyuDan: '4TH KYU', japaneseName: 'Go-kyu-ho', kanji: '五級補', beltColor: '#795548', beltSecondaryColor: '#FFFFFF', minMonths: 33, maxMonths: 34, isMaximumRank: false, katas: ['Bassai Dai', 'Jūtte', 'Jion', 'Seienchin'] },
+  { id: 'belt-youth-12-verde-negro', order: 12, name: 'Verde-Negra', kyuDan: '4TH KYU', japaneseName: 'Go-kyu-ho', kanji: '五級補', beltColor: '#795548', beltSecondaryColor: '#FFFFFF', minMonths: 44, maxMonths: 45, isMaximumRank: false, katas: ['Bassai Dai', 'Jūtte', 'Jion', 'Seienchin'] },
 
-  { id: 'belt-youth-13-marron', order: 13, name: 'Marrón', kyuDan: '3RD KYU', japaneseName: 'Go-kyu', kanji: '五級', beltColor: '#795548', minMonths: 36, maxMonths: 37, isMaximumRank: false, katas: ['Bassai Dai', 'Jion', 'Jiin', 'Seienchin'] },
+  { id: 'belt-youth-13-marron', order: 13, name: 'Marrón', kyuDan: '3RD KYU', japaneseName: 'Go-kyu', kanji: '五級', beltColor: '#795548', minMonths: 48, maxMonths: 49, isMaximumRank: false, katas: ['Bassai Dai', 'Jion', 'Jiin', 'Seienchin'] },
 
+  { id: 'belt-youth-14-marron-blanco', order: 14, name: 'Marrón-Blanca', kyuDan: '2ND KYU', japaneseName: 'San-kyu', kanji: '三級', beltColor: '#5D4037', minMonths: 54, maxMonths: 55, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin', 'Jiin'] },
 
+  { id: 'belt-youth-15-marron-negro', order: 15, name: 'Marrón-Negra', kyuDan: '1ST KYU', japaneseName: 'Ni-kyu', kanji: '二級', beltColor: '#5D4037', beltSecondaryColor: '#FFFFFF', minMonths: 60, maxMonths: 61, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin', 'Seipai'] },
 
-  { id: 'belt-youth-14-marron-blanco', order: 14, name: 'Marrón-Blanca', kyuDan: '2ND KYU', japaneseName: 'San-kyu', kanji: '三級', beltColor: '#5D4037', minMonths: 42, maxMonths: 43, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin', 'Jiin'] },
-
-  { id: 'belt-youth-15-marron-negro', order: 15, name: 'Marrón-Negra', kyuDan: '1ST KYU', japaneseName: 'Ni-kyu', kanji: '二級', beltColor: '#5D4037', beltSecondaryColor: '#FFFFFF', minMonths: 43, maxMonths: 44, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin', 'Seipai'] },
-
-  { id: 'belt-youth-16-negro-blanco', order: 16, name: 'Negra-Blanca', kyuDan: 'SHODAN HO', japaneseName: 'Ichi-kyu', kanji: '一級', beltColor: '#212121', beltSecondaryColor: '#FFFFFF', minMonths: 43, maxMonths: 44, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin', 'Seipai', 'Kururunfa'] },
-
-
+  { id: 'belt-youth-16-negro-blanco', order: 16, name: 'Negra-Blanca', kyuDan: 'SHODAN HO', japaneseName: 'Ichi-kyu', kanji: '一級', beltColor: '#212121', beltSecondaryColor: '#FFFFFF', minMonths: 66, maxMonths: 67, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin', 'Seipai', 'Kururunfa'] },
 ]
-
 
 export const RANKS_BY_PROGRAM: Record<Program, CurriculumRank[]> = {
   ADULT: ADULT_RANKS,

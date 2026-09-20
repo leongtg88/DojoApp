@@ -1,22 +1,51 @@
 import Link from 'next/link'
 import { CalendarCheck2, ClipboardCheck, Star, Timer } from 'lucide-react'
-import type { AttendanceSummary, StudentTechnique } from '@/types/dashboard'
+import type { AttendanceSummary, GradoProgressData, StudentTechnique } from '@/types/dashboard'
 
 interface StudentMetricsGridProps {
     attendance: AttendanceSummary
     techniques: StudentTechnique[]
+    grado?: GradoProgressData | null
 }
 
-export function StudentMetricsGrid({ attendance, techniques }: StudentMetricsGridProps) {
+export function StudentMetricsGrid({ attendance, techniques, grado = null }: StudentMetricsGridProps) {
     const approvedTechniques = techniques.filter(({ status }) => status === 'APPROVED').length
     const kataCount = techniques.filter(({ category }) => category === 'KATA').length
     const practiceHours = techniques.reduce((total, { practiceHours }) => total + practiceHours, 0)
+    const totalRepetitions = techniques.reduce((total, { practiceRepetitions }) => total + practiceRepetitions, 0)
     const evaluatedScores = techniques.flatMap(({ evaluation }) => (evaluation ? [evaluation.score] : []))
     const averageScore = evaluatedScores.length === 0 ? null : Math.round((evaluatedScores.reduce((total, score) => total + score, 0) / evaluatedScores.length) * 10) / 10
+
+    const attendanceSummary = grado?.attendance ?? attendance
+    const hoursReq = grado?.hoursRequirement ?? null
+    const currentPeriod = grado?.currentPeriod ?? null
+
+    const hoursGoal = hoursReq?.effectiveRequiredHours ?? hoursReq?.requiredHours ?? null
+    const hoursValue = hoursReq
+        ? hoursReq.exempt
+            ? `${hoursReq.classHours} h`
+            : `${hoursReq.classHours} / ${hoursGoal} h`
+        : `${practiceHours} h`
+    const hoursDetail = hoursReq
+        ? hoursReq.exempt
+            ? `Plan exento · ${hoursReq.label}`
+            : `${hoursReq.met ? 'Mínimo cumplido' : 'Horas por reponer'} · extra ponderable ${hoursReq.extraHours} h · crédito ${hoursReq.creditHours} h`
+        : `${kataCount} katas asignadas · ${totalRepetitions} rep.`
+
+    const monthBreakdown = currentPeriod && currentPeriod.monthAbsences.length > 0
+        ? currentPeriod.monthAbsences.map((month) => `${month.label}: ${month.count}/${month.max}`).join(' · ')
+        : '0'
+    const attendanceValue = currentPeriod
+        ? `${currentPeriod.classSessions} / ${currentPeriod.capacitySessions}`
+        : `${attendanceSummary.attendedSessions} de ${attendanceSummary.totalSessions}`
+    const attendanceDetail = currentPeriod
+        ? `inasistencia ${monthBreakdown} · horas extra ${currentPeriod.extraHours} h · clases extra ${currentPeriod.extraClasses}`
+        : `${attendanceSummary.percentage}% del grado`
+
     const cards = [
-        { href: '/dashboard/estudiante/asistencia', icon: CalendarCheck2, label: 'Asistencia', value: `${attendance.percentage}%`, detail: `${attendance.attendedSessions} de ${attendance.totalSessions} sesiones` },
+        { href: '/dashboard/estudiante/asistencia', icon: CalendarCheck2, label: 'Asistencia', value: attendanceValue, detail: attendanceDetail },
         { href: '/dashboard/estudiante/progreso', icon: ClipboardCheck, label: 'Técnicas listas', value: `${approvedTechniques} / ${techniques.length}`, detail: 'Progreso del programa' },
-        { href: '/dashboard/estudiante/progreso', icon: Timer, label: 'Horas de práctica', value: `${practiceHours} h`, detail: `${kataCount} katas asignadas` },
+        { href: '/dashboard/estudiante/progreso', icon: Timer, label: 'Horas de práctica', value: hoursValue, detail: hoursDetail },
         { href: '/dashboard/estudiante/progreso', icon: Star, label: 'Nota promedio', value: averageScore === null ? '—' : `${averageScore} / 10`, detail: 'Evaluaciones del sensei' },
     ]
 

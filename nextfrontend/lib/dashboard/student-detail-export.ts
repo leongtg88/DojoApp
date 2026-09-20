@@ -132,7 +132,7 @@ function buildDocumentsSheet(detail: AdminStudentDetail): (string | number | nul
 }
 
 function buildTechniquesSheet(detail: AdminStudentDetail): (string | number | null)[][] {
-  const rows: (string | number | null)[][] = [['Kata / técnica', 'Kanji', 'Categoría', 'Estado', 'Aprobada', 'Horas de práctica', 'Notas']]
+  const rows: (string | number | null)[][] = [['Kata / técnica', 'Kanji', 'Categoría', 'Estado', 'Aprobada', 'Horas de práctica', 'Repeticiones', 'Notas']]
   for (const entry of detail.techniques) {
     rows.push([
       entry.technique.name,
@@ -141,8 +141,26 @@ function buildTechniquesSheet(detail: AdminStudentDetail): (string | number | nu
       STATUS_LABELS[entry.status] ?? entry.status,
       entry.approved ? 'Sí' : 'No',
       entry.practiceHours,
+      entry.practiceRepetitions,
       entry.notes,
     ])
+  }
+  return rows
+}
+
+function buildPracticeLogSheet(detail: AdminStudentDetail): (string | number | null)[][] {
+  const rows: (string | number | null)[][] = [['Kata / técnica', 'Categoría', 'Fecha', 'Repeticiones', 'Lugar', 'Notas']]
+  for (const entry of detail.techniques) {
+    for (const log of entry.practiceLogs) {
+      rows.push([
+        entry.technique.name,
+        entry.technique.category,
+        toDateTimeLabel(log.date),
+        log.repetitions,
+        log.place === 'DOJO' ? 'En el dojo' : 'Fuera del dojo',
+        log.notes,
+      ])
+    }
   }
   return rows
 }
@@ -178,6 +196,7 @@ export function buildStudentDetailWorkbook(detail: AdminStudentDetail): Buffer {
   XLSX.utils.book_append_sheet(workbook, blockSheet(buildRegistrationSheet(detail)), 'Inscripción')
   XLSX.utils.book_append_sheet(workbook, blockSheet(buildDocumentsSheet(detail)), 'Documentos')
   XLSX.utils.book_append_sheet(workbook, blockSheet(buildTechniquesSheet(detail)), 'Katas y técnicas')
+  XLSX.utils.book_append_sheet(workbook, blockSheet(buildPracticeLogSheet(detail)), 'Registro de repeticiones')
   XLSX.utils.book_append_sheet(workbook, blockSheet(buildRankHistorySheet(detail)), 'Historial de grados')
   XLSX.utils.book_append_sheet(workbook, blockSheet(buildAttendanceSheet(detail)), 'Asistencias')
 

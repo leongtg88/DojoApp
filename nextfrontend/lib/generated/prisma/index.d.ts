@@ -99,6 +99,11 @@ export type Technique = $Result.DefaultSelection<Prisma.$TechniquePayload>
  */
 export type StudentTechnique = $Result.DefaultSelection<Prisma.$StudentTechniquePayload>
 /**
+ * Model TechniquePracticeLog
+ * 
+ */
+export type TechniquePracticeLog = $Result.DefaultSelection<Prisma.$TechniquePracticeLogPayload>
+/**
  * Model TechniqueEvaluation
  * 
  */
@@ -283,6 +288,14 @@ export const ExamDay: {
 export type ExamDay = (typeof ExamDay)[keyof typeof ExamDay]
 
 
+export const PracticePlace: {
+  DOJO: 'DOJO',
+  FUERA: 'FUERA'
+};
+
+export type PracticePlace = (typeof PracticePlace)[keyof typeof PracticePlace]
+
+
 export const ClassAudience: {
   ADULTS: 'ADULTS',
   CHILDREN: 'CHILDREN',
@@ -389,6 +402,10 @@ export const Program: typeof $Enums.Program
 export type ExamDay = $Enums.ExamDay
 
 export const ExamDay: typeof $Enums.ExamDay
+
+export type PracticePlace = $Enums.PracticePlace
+
+export const PracticePlace: typeof $Enums.PracticePlace
 
 export type ClassAudience = $Enums.ClassAudience
 
@@ -700,6 +717,16 @@ export class PrismaClient<
     * ```
     */
   get studentTechnique(): Prisma.StudentTechniqueDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.techniquePracticeLog`: Exposes CRUD operations for the **TechniquePracticeLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TechniquePracticeLogs
+    * const techniquePracticeLogs = await prisma.techniquePracticeLog.findMany()
+    * ```
+    */
+  get techniquePracticeLog(): Prisma.TechniquePracticeLogDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.techniqueEvaluation`: Exposes CRUD operations for the **TechniqueEvaluation** model.
@@ -1294,6 +1321,7 @@ export namespace Prisma {
     StudentRankHistory: 'StudentRankHistory',
     Technique: 'Technique',
     StudentTechnique: 'StudentTechnique',
+    TechniquePracticeLog: 'TechniquePracticeLog',
     TechniqueEvaluation: 'TechniqueEvaluation',
     Plan: 'Plan',
     Class: 'Class',
@@ -1322,7 +1350,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "pushSubscription" | "holiday" | "examConvocation"
+      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniquePracticeLog" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "pushSubscription" | "holiday" | "examConvocation"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2584,6 +2612,80 @@ export namespace Prisma {
           }
         }
       }
+      TechniquePracticeLog: {
+        payload: Prisma.$TechniquePracticeLogPayload<ExtArgs>
+        fields: Prisma.TechniquePracticeLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TechniquePracticeLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TechniquePracticeLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TechniquePracticeLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TechniquePracticeLogPayload>
+          }
+          findFirst: {
+            args: Prisma.TechniquePracticeLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TechniquePracticeLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TechniquePracticeLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TechniquePracticeLogPayload>
+          }
+          findMany: {
+            args: Prisma.TechniquePracticeLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TechniquePracticeLogPayload>[]
+          }
+          create: {
+            args: Prisma.TechniquePracticeLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TechniquePracticeLogPayload>
+          }
+          createMany: {
+            args: Prisma.TechniquePracticeLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TechniquePracticeLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TechniquePracticeLogPayload>[]
+          }
+          delete: {
+            args: Prisma.TechniquePracticeLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TechniquePracticeLogPayload>
+          }
+          update: {
+            args: Prisma.TechniquePracticeLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TechniquePracticeLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.TechniquePracticeLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TechniquePracticeLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TechniquePracticeLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TechniquePracticeLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.TechniquePracticeLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TechniquePracticeLogPayload>
+          }
+          aggregate: {
+            args: Prisma.TechniquePracticeLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTechniquePracticeLog>
+          }
+          groupBy: {
+            args: Prisma.TechniquePracticeLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TechniquePracticeLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TechniquePracticeLogCountArgs<ExtArgs>
+            result: $Utils.Optional<TechniquePracticeLogCountAggregateOutputType> | number
+          }
+        }
+      }
       TechniqueEvaluation: {
         payload: Prisma.$TechniqueEvaluationPayload<ExtArgs>
         fields: Prisma.TechniqueEvaluationFieldRefs
@@ -3686,6 +3788,7 @@ export namespace Prisma {
     studentRankHistory?: StudentRankHistoryOmit
     technique?: TechniqueOmit
     studentTechnique?: StudentTechniqueOmit
+    techniquePracticeLog?: TechniquePracticeLogOmit
     techniqueEvaluation?: TechniqueEvaluationOmit
     plan?: PlanOmit
     class?: ClassOmit
@@ -4383,6 +4486,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type StudentTechniqueCountOutputType
+   */
+
+  export type StudentTechniqueCountOutputType = {
+    practiceLogs: number
+  }
+
+  export type StudentTechniqueCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    practiceLogs?: boolean | StudentTechniqueCountOutputTypeCountPracticeLogsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * StudentTechniqueCountOutputType without action
+   */
+  export type StudentTechniqueCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentTechniqueCountOutputType
+     */
+    select?: StudentTechniqueCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * StudentTechniqueCountOutputType without action
+   */
+  export type StudentTechniqueCountOutputTypeCountPracticeLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TechniquePracticeLogWhereInput
+  }
+
+
+  /**
    * Count Type PlanCountOutputType
    */
 
@@ -4490,6 +4624,37 @@ export namespace Prisma {
    */
   export type ClassSessionCountOutputTypeCountAttendancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AttendanceWhereInput
+  }
+
+
+  /**
+   * Count Type AttendanceCountOutputType
+   */
+
+  export type AttendanceCountOutputType = {
+    practiceLogs: number
+  }
+
+  export type AttendanceCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    practiceLogs?: boolean | AttendanceCountOutputTypeCountPracticeLogsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AttendanceCountOutputType without action
+   */
+  export type AttendanceCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AttendanceCountOutputType
+     */
+    select?: AttendanceCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AttendanceCountOutputType without action
+   */
+  export type AttendanceCountOutputTypeCountPracticeLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TechniquePracticeLogWhereInput
   }
 
 
@@ -24723,10 +24888,12 @@ export namespace Prisma {
 
   export type StudentTechniqueAvgAggregateOutputType = {
     practiceHours: number | null
+    practiceRepetitions: number | null
   }
 
   export type StudentTechniqueSumAggregateOutputType = {
     practiceHours: number | null
+    practiceRepetitions: number | null
   }
 
   export type StudentTechniqueMinAggregateOutputType = {
@@ -24738,6 +24905,7 @@ export namespace Prisma {
     approvedAt: Date | null
     inPractice: boolean | null
     practiceHours: number | null
+    practiceRepetitions: number | null
     lastPracticeDate: Date | null
     notes: string | null
     createdAt: Date | null
@@ -24752,6 +24920,7 @@ export namespace Prisma {
     approvedAt: Date | null
     inPractice: boolean | null
     practiceHours: number | null
+    practiceRepetitions: number | null
     lastPracticeDate: Date | null
     notes: string | null
     createdAt: Date | null
@@ -24766,6 +24935,7 @@ export namespace Prisma {
     approvedAt: number
     inPractice: number
     practiceHours: number
+    practiceRepetitions: number
     lastPracticeDate: number
     notes: number
     createdAt: number
@@ -24775,10 +24945,12 @@ export namespace Prisma {
 
   export type StudentTechniqueAvgAggregateInputType = {
     practiceHours?: true
+    practiceRepetitions?: true
   }
 
   export type StudentTechniqueSumAggregateInputType = {
     practiceHours?: true
+    practiceRepetitions?: true
   }
 
   export type StudentTechniqueMinAggregateInputType = {
@@ -24790,6 +24962,7 @@ export namespace Prisma {
     approvedAt?: true
     inPractice?: true
     practiceHours?: true
+    practiceRepetitions?: true
     lastPracticeDate?: true
     notes?: true
     createdAt?: true
@@ -24804,6 +24977,7 @@ export namespace Prisma {
     approvedAt?: true
     inPractice?: true
     practiceHours?: true
+    practiceRepetitions?: true
     lastPracticeDate?: true
     notes?: true
     createdAt?: true
@@ -24818,6 +24992,7 @@ export namespace Prisma {
     approvedAt?: true
     inPractice?: true
     practiceHours?: true
+    practiceRepetitions?: true
     lastPracticeDate?: true
     notes?: true
     createdAt?: true
@@ -24919,6 +25094,7 @@ export namespace Prisma {
     approvedAt: Date | null
     inPractice: boolean
     practiceHours: number
+    practiceRepetitions: number
     lastPracticeDate: Date | null
     notes: string | null
     createdAt: Date
@@ -24952,6 +25128,7 @@ export namespace Prisma {
     approvedAt?: boolean
     inPractice?: boolean
     practiceHours?: boolean
+    practiceRepetitions?: boolean
     lastPracticeDate?: boolean
     notes?: boolean
     createdAt?: boolean
@@ -24959,6 +25136,8 @@ export namespace Prisma {
     technique?: boolean | TechniqueDefaultArgs<ExtArgs>
     approvedByUser?: boolean | StudentTechnique$approvedByUserArgs<ExtArgs>
     evaluation?: boolean | StudentTechnique$evaluationArgs<ExtArgs>
+    practiceLogs?: boolean | StudentTechnique$practiceLogsArgs<ExtArgs>
+    _count?: boolean | StudentTechniqueCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["studentTechnique"]>
 
   export type StudentTechniqueSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -24970,6 +25149,7 @@ export namespace Prisma {
     approvedAt?: boolean
     inPractice?: boolean
     practiceHours?: boolean
+    practiceRepetitions?: boolean
     lastPracticeDate?: boolean
     notes?: boolean
     createdAt?: boolean
@@ -24987,6 +25167,7 @@ export namespace Prisma {
     approvedAt?: boolean
     inPractice?: boolean
     practiceHours?: boolean
+    practiceRepetitions?: boolean
     lastPracticeDate?: boolean
     notes?: boolean
     createdAt?: boolean
@@ -25004,17 +25185,20 @@ export namespace Prisma {
     approvedAt?: boolean
     inPractice?: boolean
     practiceHours?: boolean
+    practiceRepetitions?: boolean
     lastPracticeDate?: boolean
     notes?: boolean
     createdAt?: boolean
   }
 
-  export type StudentTechniqueOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "studentId" | "techniqueId" | "approved" | "approvedBy" | "approvedAt" | "inPractice" | "practiceHours" | "lastPracticeDate" | "notes" | "createdAt", ExtArgs["result"]["studentTechnique"]>
+  export type StudentTechniqueOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "studentId" | "techniqueId" | "approved" | "approvedBy" | "approvedAt" | "inPractice" | "practiceHours" | "practiceRepetitions" | "lastPracticeDate" | "notes" | "createdAt", ExtArgs["result"]["studentTechnique"]>
   export type StudentTechniqueInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | StudentDefaultArgs<ExtArgs>
     technique?: boolean | TechniqueDefaultArgs<ExtArgs>
     approvedByUser?: boolean | StudentTechnique$approvedByUserArgs<ExtArgs>
     evaluation?: boolean | StudentTechnique$evaluationArgs<ExtArgs>
+    practiceLogs?: boolean | StudentTechnique$practiceLogsArgs<ExtArgs>
+    _count?: boolean | StudentTechniqueCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StudentTechniqueIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | StudentDefaultArgs<ExtArgs>
@@ -25034,6 +25218,7 @@ export namespace Prisma {
       technique: Prisma.$TechniquePayload<ExtArgs>
       approvedByUser: Prisma.$UserPayload<ExtArgs> | null
       evaluation: Prisma.$TechniqueEvaluationPayload<ExtArgs> | null
+      practiceLogs: Prisma.$TechniquePracticeLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -25044,6 +25229,7 @@ export namespace Prisma {
       approvedAt: Date | null
       inPractice: boolean
       practiceHours: number
+      practiceRepetitions: number
       lastPracticeDate: Date | null
       notes: string | null
       createdAt: Date
@@ -25445,6 +25631,7 @@ export namespace Prisma {
     technique<T extends TechniqueDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TechniqueDefaultArgs<ExtArgs>>): Prisma__TechniqueClient<$Result.GetResult<Prisma.$TechniquePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     approvedByUser<T extends StudentTechnique$approvedByUserArgs<ExtArgs> = {}>(args?: Subset<T, StudentTechnique$approvedByUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     evaluation<T extends StudentTechnique$evaluationArgs<ExtArgs> = {}>(args?: Subset<T, StudentTechnique$evaluationArgs<ExtArgs>>): Prisma__TechniqueEvaluationClient<$Result.GetResult<Prisma.$TechniqueEvaluationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    practiceLogs<T extends StudentTechnique$practiceLogsArgs<ExtArgs> = {}>(args?: Subset<T, StudentTechnique$practiceLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -25482,6 +25669,7 @@ export namespace Prisma {
     readonly approvedAt: FieldRef<"StudentTechnique", 'DateTime'>
     readonly inPractice: FieldRef<"StudentTechnique", 'Boolean'>
     readonly practiceHours: FieldRef<"StudentTechnique", 'Float'>
+    readonly practiceRepetitions: FieldRef<"StudentTechnique", 'Int'>
     readonly lastPracticeDate: FieldRef<"StudentTechnique", 'DateTime'>
     readonly notes: FieldRef<"StudentTechnique", 'String'>
     readonly createdAt: FieldRef<"StudentTechnique", 'DateTime'>
@@ -25924,6 +26112,30 @@ export namespace Prisma {
   }
 
   /**
+   * StudentTechnique.practiceLogs
+   */
+  export type StudentTechnique$practiceLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogInclude<ExtArgs> | null
+    where?: TechniquePracticeLogWhereInput
+    orderBy?: TechniquePracticeLogOrderByWithRelationInput | TechniquePracticeLogOrderByWithRelationInput[]
+    cursor?: TechniquePracticeLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TechniquePracticeLogScalarFieldEnum | TechniquePracticeLogScalarFieldEnum[]
+  }
+
+  /**
    * StudentTechnique without action
    */
   export type StudentTechniqueDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -25939,6 +26151,1169 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: StudentTechniqueInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TechniquePracticeLog
+   */
+
+  export type AggregateTechniquePracticeLog = {
+    _count: TechniquePracticeLogCountAggregateOutputType | null
+    _avg: TechniquePracticeLogAvgAggregateOutputType | null
+    _sum: TechniquePracticeLogSumAggregateOutputType | null
+    _min: TechniquePracticeLogMinAggregateOutputType | null
+    _max: TechniquePracticeLogMaxAggregateOutputType | null
+  }
+
+  export type TechniquePracticeLogAvgAggregateOutputType = {
+    repetitions: number | null
+  }
+
+  export type TechniquePracticeLogSumAggregateOutputType = {
+    repetitions: number | null
+  }
+
+  export type TechniquePracticeLogMinAggregateOutputType = {
+    id: string | null
+    studentTechniqueId: string | null
+    date: Date | null
+    repetitions: number | null
+    place: $Enums.PracticePlace | null
+    notes: string | null
+    attendanceId: string | null
+    createdAt: Date | null
+  }
+
+  export type TechniquePracticeLogMaxAggregateOutputType = {
+    id: string | null
+    studentTechniqueId: string | null
+    date: Date | null
+    repetitions: number | null
+    place: $Enums.PracticePlace | null
+    notes: string | null
+    attendanceId: string | null
+    createdAt: Date | null
+  }
+
+  export type TechniquePracticeLogCountAggregateOutputType = {
+    id: number
+    studentTechniqueId: number
+    date: number
+    repetitions: number
+    place: number
+    notes: number
+    attendanceId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type TechniquePracticeLogAvgAggregateInputType = {
+    repetitions?: true
+  }
+
+  export type TechniquePracticeLogSumAggregateInputType = {
+    repetitions?: true
+  }
+
+  export type TechniquePracticeLogMinAggregateInputType = {
+    id?: true
+    studentTechniqueId?: true
+    date?: true
+    repetitions?: true
+    place?: true
+    notes?: true
+    attendanceId?: true
+    createdAt?: true
+  }
+
+  export type TechniquePracticeLogMaxAggregateInputType = {
+    id?: true
+    studentTechniqueId?: true
+    date?: true
+    repetitions?: true
+    place?: true
+    notes?: true
+    attendanceId?: true
+    createdAt?: true
+  }
+
+  export type TechniquePracticeLogCountAggregateInputType = {
+    id?: true
+    studentTechniqueId?: true
+    date?: true
+    repetitions?: true
+    place?: true
+    notes?: true
+    attendanceId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type TechniquePracticeLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TechniquePracticeLog to aggregate.
+     */
+    where?: TechniquePracticeLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TechniquePracticeLogs to fetch.
+     */
+    orderBy?: TechniquePracticeLogOrderByWithRelationInput | TechniquePracticeLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TechniquePracticeLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TechniquePracticeLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TechniquePracticeLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TechniquePracticeLogs
+    **/
+    _count?: true | TechniquePracticeLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TechniquePracticeLogAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TechniquePracticeLogSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TechniquePracticeLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TechniquePracticeLogMaxAggregateInputType
+  }
+
+  export type GetTechniquePracticeLogAggregateType<T extends TechniquePracticeLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateTechniquePracticeLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTechniquePracticeLog[P]>
+      : GetScalarType<T[P], AggregateTechniquePracticeLog[P]>
+  }
+
+
+
+
+  export type TechniquePracticeLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TechniquePracticeLogWhereInput
+    orderBy?: TechniquePracticeLogOrderByWithAggregationInput | TechniquePracticeLogOrderByWithAggregationInput[]
+    by: TechniquePracticeLogScalarFieldEnum[] | TechniquePracticeLogScalarFieldEnum
+    having?: TechniquePracticeLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TechniquePracticeLogCountAggregateInputType | true
+    _avg?: TechniquePracticeLogAvgAggregateInputType
+    _sum?: TechniquePracticeLogSumAggregateInputType
+    _min?: TechniquePracticeLogMinAggregateInputType
+    _max?: TechniquePracticeLogMaxAggregateInputType
+  }
+
+  export type TechniquePracticeLogGroupByOutputType = {
+    id: string
+    studentTechniqueId: string
+    date: Date
+    repetitions: number
+    place: $Enums.PracticePlace
+    notes: string | null
+    attendanceId: string | null
+    createdAt: Date
+    _count: TechniquePracticeLogCountAggregateOutputType | null
+    _avg: TechniquePracticeLogAvgAggregateOutputType | null
+    _sum: TechniquePracticeLogSumAggregateOutputType | null
+    _min: TechniquePracticeLogMinAggregateOutputType | null
+    _max: TechniquePracticeLogMaxAggregateOutputType | null
+  }
+
+  type GetTechniquePracticeLogGroupByPayload<T extends TechniquePracticeLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TechniquePracticeLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TechniquePracticeLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TechniquePracticeLogGroupByOutputType[P]>
+            : GetScalarType<T[P], TechniquePracticeLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TechniquePracticeLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentTechniqueId?: boolean
+    date?: boolean
+    repetitions?: boolean
+    place?: boolean
+    notes?: boolean
+    attendanceId?: boolean
+    createdAt?: boolean
+    studentTechnique?: boolean | StudentTechniqueDefaultArgs<ExtArgs>
+    attendance?: boolean | TechniquePracticeLog$attendanceArgs<ExtArgs>
+  }, ExtArgs["result"]["techniquePracticeLog"]>
+
+  export type TechniquePracticeLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentTechniqueId?: boolean
+    date?: boolean
+    repetitions?: boolean
+    place?: boolean
+    notes?: boolean
+    attendanceId?: boolean
+    createdAt?: boolean
+    studentTechnique?: boolean | StudentTechniqueDefaultArgs<ExtArgs>
+    attendance?: boolean | TechniquePracticeLog$attendanceArgs<ExtArgs>
+  }, ExtArgs["result"]["techniquePracticeLog"]>
+
+  export type TechniquePracticeLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentTechniqueId?: boolean
+    date?: boolean
+    repetitions?: boolean
+    place?: boolean
+    notes?: boolean
+    attendanceId?: boolean
+    createdAt?: boolean
+    studentTechnique?: boolean | StudentTechniqueDefaultArgs<ExtArgs>
+    attendance?: boolean | TechniquePracticeLog$attendanceArgs<ExtArgs>
+  }, ExtArgs["result"]["techniquePracticeLog"]>
+
+  export type TechniquePracticeLogSelectScalar = {
+    id?: boolean
+    studentTechniqueId?: boolean
+    date?: boolean
+    repetitions?: boolean
+    place?: boolean
+    notes?: boolean
+    attendanceId?: boolean
+    createdAt?: boolean
+  }
+
+  export type TechniquePracticeLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "studentTechniqueId" | "date" | "repetitions" | "place" | "notes" | "attendanceId" | "createdAt", ExtArgs["result"]["techniquePracticeLog"]>
+  export type TechniquePracticeLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    studentTechnique?: boolean | StudentTechniqueDefaultArgs<ExtArgs>
+    attendance?: boolean | TechniquePracticeLog$attendanceArgs<ExtArgs>
+  }
+  export type TechniquePracticeLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    studentTechnique?: boolean | StudentTechniqueDefaultArgs<ExtArgs>
+    attendance?: boolean | TechniquePracticeLog$attendanceArgs<ExtArgs>
+  }
+  export type TechniquePracticeLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    studentTechnique?: boolean | StudentTechniqueDefaultArgs<ExtArgs>
+    attendance?: boolean | TechniquePracticeLog$attendanceArgs<ExtArgs>
+  }
+
+  export type $TechniquePracticeLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TechniquePracticeLog"
+    objects: {
+      studentTechnique: Prisma.$StudentTechniquePayload<ExtArgs>
+      attendance: Prisma.$AttendancePayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      studentTechniqueId: string
+      date: Date
+      repetitions: number
+      place: $Enums.PracticePlace
+      notes: string | null
+      attendanceId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["techniquePracticeLog"]>
+    composites: {}
+  }
+
+  type TechniquePracticeLogGetPayload<S extends boolean | null | undefined | TechniquePracticeLogDefaultArgs> = $Result.GetResult<Prisma.$TechniquePracticeLogPayload, S>
+
+  type TechniquePracticeLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TechniquePracticeLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TechniquePracticeLogCountAggregateInputType | true
+    }
+
+  export interface TechniquePracticeLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TechniquePracticeLog'], meta: { name: 'TechniquePracticeLog' } }
+    /**
+     * Find zero or one TechniquePracticeLog that matches the filter.
+     * @param {TechniquePracticeLogFindUniqueArgs} args - Arguments to find a TechniquePracticeLog
+     * @example
+     * // Get one TechniquePracticeLog
+     * const techniquePracticeLog = await prisma.techniquePracticeLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TechniquePracticeLogFindUniqueArgs>(args: SelectSubset<T, TechniquePracticeLogFindUniqueArgs<ExtArgs>>): Prisma__TechniquePracticeLogClient<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TechniquePracticeLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TechniquePracticeLogFindUniqueOrThrowArgs} args - Arguments to find a TechniquePracticeLog
+     * @example
+     * // Get one TechniquePracticeLog
+     * const techniquePracticeLog = await prisma.techniquePracticeLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TechniquePracticeLogFindUniqueOrThrowArgs>(args: SelectSubset<T, TechniquePracticeLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TechniquePracticeLogClient<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TechniquePracticeLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TechniquePracticeLogFindFirstArgs} args - Arguments to find a TechniquePracticeLog
+     * @example
+     * // Get one TechniquePracticeLog
+     * const techniquePracticeLog = await prisma.techniquePracticeLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TechniquePracticeLogFindFirstArgs>(args?: SelectSubset<T, TechniquePracticeLogFindFirstArgs<ExtArgs>>): Prisma__TechniquePracticeLogClient<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TechniquePracticeLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TechniquePracticeLogFindFirstOrThrowArgs} args - Arguments to find a TechniquePracticeLog
+     * @example
+     * // Get one TechniquePracticeLog
+     * const techniquePracticeLog = await prisma.techniquePracticeLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TechniquePracticeLogFindFirstOrThrowArgs>(args?: SelectSubset<T, TechniquePracticeLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__TechniquePracticeLogClient<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TechniquePracticeLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TechniquePracticeLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TechniquePracticeLogs
+     * const techniquePracticeLogs = await prisma.techniquePracticeLog.findMany()
+     * 
+     * // Get first 10 TechniquePracticeLogs
+     * const techniquePracticeLogs = await prisma.techniquePracticeLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const techniquePracticeLogWithIdOnly = await prisma.techniquePracticeLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TechniquePracticeLogFindManyArgs>(args?: SelectSubset<T, TechniquePracticeLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TechniquePracticeLog.
+     * @param {TechniquePracticeLogCreateArgs} args - Arguments to create a TechniquePracticeLog.
+     * @example
+     * // Create one TechniquePracticeLog
+     * const TechniquePracticeLog = await prisma.techniquePracticeLog.create({
+     *   data: {
+     *     // ... data to create a TechniquePracticeLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends TechniquePracticeLogCreateArgs>(args: SelectSubset<T, TechniquePracticeLogCreateArgs<ExtArgs>>): Prisma__TechniquePracticeLogClient<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TechniquePracticeLogs.
+     * @param {TechniquePracticeLogCreateManyArgs} args - Arguments to create many TechniquePracticeLogs.
+     * @example
+     * // Create many TechniquePracticeLogs
+     * const techniquePracticeLog = await prisma.techniquePracticeLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TechniquePracticeLogCreateManyArgs>(args?: SelectSubset<T, TechniquePracticeLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TechniquePracticeLogs and returns the data saved in the database.
+     * @param {TechniquePracticeLogCreateManyAndReturnArgs} args - Arguments to create many TechniquePracticeLogs.
+     * @example
+     * // Create many TechniquePracticeLogs
+     * const techniquePracticeLog = await prisma.techniquePracticeLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TechniquePracticeLogs and only return the `id`
+     * const techniquePracticeLogWithIdOnly = await prisma.techniquePracticeLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TechniquePracticeLogCreateManyAndReturnArgs>(args?: SelectSubset<T, TechniquePracticeLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TechniquePracticeLog.
+     * @param {TechniquePracticeLogDeleteArgs} args - Arguments to delete one TechniquePracticeLog.
+     * @example
+     * // Delete one TechniquePracticeLog
+     * const TechniquePracticeLog = await prisma.techniquePracticeLog.delete({
+     *   where: {
+     *     // ... filter to delete one TechniquePracticeLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TechniquePracticeLogDeleteArgs>(args: SelectSubset<T, TechniquePracticeLogDeleteArgs<ExtArgs>>): Prisma__TechniquePracticeLogClient<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TechniquePracticeLog.
+     * @param {TechniquePracticeLogUpdateArgs} args - Arguments to update one TechniquePracticeLog.
+     * @example
+     * // Update one TechniquePracticeLog
+     * const techniquePracticeLog = await prisma.techniquePracticeLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TechniquePracticeLogUpdateArgs>(args: SelectSubset<T, TechniquePracticeLogUpdateArgs<ExtArgs>>): Prisma__TechniquePracticeLogClient<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TechniquePracticeLogs.
+     * @param {TechniquePracticeLogDeleteManyArgs} args - Arguments to filter TechniquePracticeLogs to delete.
+     * @example
+     * // Delete a few TechniquePracticeLogs
+     * const { count } = await prisma.techniquePracticeLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TechniquePracticeLogDeleteManyArgs>(args?: SelectSubset<T, TechniquePracticeLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TechniquePracticeLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TechniquePracticeLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TechniquePracticeLogs
+     * const techniquePracticeLog = await prisma.techniquePracticeLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TechniquePracticeLogUpdateManyArgs>(args: SelectSubset<T, TechniquePracticeLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TechniquePracticeLogs and returns the data updated in the database.
+     * @param {TechniquePracticeLogUpdateManyAndReturnArgs} args - Arguments to update many TechniquePracticeLogs.
+     * @example
+     * // Update many TechniquePracticeLogs
+     * const techniquePracticeLog = await prisma.techniquePracticeLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TechniquePracticeLogs and only return the `id`
+     * const techniquePracticeLogWithIdOnly = await prisma.techniquePracticeLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TechniquePracticeLogUpdateManyAndReturnArgs>(args: SelectSubset<T, TechniquePracticeLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TechniquePracticeLog.
+     * @param {TechniquePracticeLogUpsertArgs} args - Arguments to update or create a TechniquePracticeLog.
+     * @example
+     * // Update or create a TechniquePracticeLog
+     * const techniquePracticeLog = await prisma.techniquePracticeLog.upsert({
+     *   create: {
+     *     // ... data to create a TechniquePracticeLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TechniquePracticeLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TechniquePracticeLogUpsertArgs>(args: SelectSubset<T, TechniquePracticeLogUpsertArgs<ExtArgs>>): Prisma__TechniquePracticeLogClient<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TechniquePracticeLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TechniquePracticeLogCountArgs} args - Arguments to filter TechniquePracticeLogs to count.
+     * @example
+     * // Count the number of TechniquePracticeLogs
+     * const count = await prisma.techniquePracticeLog.count({
+     *   where: {
+     *     // ... the filter for the TechniquePracticeLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends TechniquePracticeLogCountArgs>(
+      args?: Subset<T, TechniquePracticeLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TechniquePracticeLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TechniquePracticeLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TechniquePracticeLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TechniquePracticeLogAggregateArgs>(args: Subset<T, TechniquePracticeLogAggregateArgs>): Prisma.PrismaPromise<GetTechniquePracticeLogAggregateType<T>>
+
+    /**
+     * Group by TechniquePracticeLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TechniquePracticeLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TechniquePracticeLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TechniquePracticeLogGroupByArgs['orderBy'] }
+        : { orderBy?: TechniquePracticeLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TechniquePracticeLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTechniquePracticeLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TechniquePracticeLog model
+   */
+  readonly fields: TechniquePracticeLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TechniquePracticeLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TechniquePracticeLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    studentTechnique<T extends StudentTechniqueDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudentTechniqueDefaultArgs<ExtArgs>>): Prisma__StudentTechniqueClient<$Result.GetResult<Prisma.$StudentTechniquePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    attendance<T extends TechniquePracticeLog$attendanceArgs<ExtArgs> = {}>(args?: Subset<T, TechniquePracticeLog$attendanceArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TechniquePracticeLog model
+   */
+  interface TechniquePracticeLogFieldRefs {
+    readonly id: FieldRef<"TechniquePracticeLog", 'String'>
+    readonly studentTechniqueId: FieldRef<"TechniquePracticeLog", 'String'>
+    readonly date: FieldRef<"TechniquePracticeLog", 'DateTime'>
+    readonly repetitions: FieldRef<"TechniquePracticeLog", 'Int'>
+    readonly place: FieldRef<"TechniquePracticeLog", 'PracticePlace'>
+    readonly notes: FieldRef<"TechniquePracticeLog", 'String'>
+    readonly attendanceId: FieldRef<"TechniquePracticeLog", 'String'>
+    readonly createdAt: FieldRef<"TechniquePracticeLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TechniquePracticeLog findUnique
+   */
+  export type TechniquePracticeLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogInclude<ExtArgs> | null
+    /**
+     * Filter, which TechniquePracticeLog to fetch.
+     */
+    where: TechniquePracticeLogWhereUniqueInput
+  }
+
+  /**
+   * TechniquePracticeLog findUniqueOrThrow
+   */
+  export type TechniquePracticeLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogInclude<ExtArgs> | null
+    /**
+     * Filter, which TechniquePracticeLog to fetch.
+     */
+    where: TechniquePracticeLogWhereUniqueInput
+  }
+
+  /**
+   * TechniquePracticeLog findFirst
+   */
+  export type TechniquePracticeLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogInclude<ExtArgs> | null
+    /**
+     * Filter, which TechniquePracticeLog to fetch.
+     */
+    where?: TechniquePracticeLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TechniquePracticeLogs to fetch.
+     */
+    orderBy?: TechniquePracticeLogOrderByWithRelationInput | TechniquePracticeLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TechniquePracticeLogs.
+     */
+    cursor?: TechniquePracticeLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TechniquePracticeLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TechniquePracticeLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TechniquePracticeLogs.
+     */
+    distinct?: TechniquePracticeLogScalarFieldEnum | TechniquePracticeLogScalarFieldEnum[]
+  }
+
+  /**
+   * TechniquePracticeLog findFirstOrThrow
+   */
+  export type TechniquePracticeLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogInclude<ExtArgs> | null
+    /**
+     * Filter, which TechniquePracticeLog to fetch.
+     */
+    where?: TechniquePracticeLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TechniquePracticeLogs to fetch.
+     */
+    orderBy?: TechniquePracticeLogOrderByWithRelationInput | TechniquePracticeLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TechniquePracticeLogs.
+     */
+    cursor?: TechniquePracticeLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TechniquePracticeLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TechniquePracticeLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TechniquePracticeLogs.
+     */
+    distinct?: TechniquePracticeLogScalarFieldEnum | TechniquePracticeLogScalarFieldEnum[]
+  }
+
+  /**
+   * TechniquePracticeLog findMany
+   */
+  export type TechniquePracticeLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogInclude<ExtArgs> | null
+    /**
+     * Filter, which TechniquePracticeLogs to fetch.
+     */
+    where?: TechniquePracticeLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TechniquePracticeLogs to fetch.
+     */
+    orderBy?: TechniquePracticeLogOrderByWithRelationInput | TechniquePracticeLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TechniquePracticeLogs.
+     */
+    cursor?: TechniquePracticeLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TechniquePracticeLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TechniquePracticeLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TechniquePracticeLogs.
+     */
+    distinct?: TechniquePracticeLogScalarFieldEnum | TechniquePracticeLogScalarFieldEnum[]
+  }
+
+  /**
+   * TechniquePracticeLog create
+   */
+  export type TechniquePracticeLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TechniquePracticeLog.
+     */
+    data: XOR<TechniquePracticeLogCreateInput, TechniquePracticeLogUncheckedCreateInput>
+  }
+
+  /**
+   * TechniquePracticeLog createMany
+   */
+  export type TechniquePracticeLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TechniquePracticeLogs.
+     */
+    data: TechniquePracticeLogCreateManyInput | TechniquePracticeLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TechniquePracticeLog createManyAndReturn
+   */
+  export type TechniquePracticeLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many TechniquePracticeLogs.
+     */
+    data: TechniquePracticeLogCreateManyInput | TechniquePracticeLogCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TechniquePracticeLog update
+   */
+  export type TechniquePracticeLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TechniquePracticeLog.
+     */
+    data: XOR<TechniquePracticeLogUpdateInput, TechniquePracticeLogUncheckedUpdateInput>
+    /**
+     * Choose, which TechniquePracticeLog to update.
+     */
+    where: TechniquePracticeLogWhereUniqueInput
+  }
+
+  /**
+   * TechniquePracticeLog updateMany
+   */
+  export type TechniquePracticeLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TechniquePracticeLogs.
+     */
+    data: XOR<TechniquePracticeLogUpdateManyMutationInput, TechniquePracticeLogUncheckedUpdateManyInput>
+    /**
+     * Filter which TechniquePracticeLogs to update
+     */
+    where?: TechniquePracticeLogWhereInput
+    /**
+     * Limit how many TechniquePracticeLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TechniquePracticeLog updateManyAndReturn
+   */
+  export type TechniquePracticeLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * The data used to update TechniquePracticeLogs.
+     */
+    data: XOR<TechniquePracticeLogUpdateManyMutationInput, TechniquePracticeLogUncheckedUpdateManyInput>
+    /**
+     * Filter which TechniquePracticeLogs to update
+     */
+    where?: TechniquePracticeLogWhereInput
+    /**
+     * Limit how many TechniquePracticeLogs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TechniquePracticeLog upsert
+   */
+  export type TechniquePracticeLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TechniquePracticeLog to update in case it exists.
+     */
+    where: TechniquePracticeLogWhereUniqueInput
+    /**
+     * In case the TechniquePracticeLog found by the `where` argument doesn't exist, create a new TechniquePracticeLog with this data.
+     */
+    create: XOR<TechniquePracticeLogCreateInput, TechniquePracticeLogUncheckedCreateInput>
+    /**
+     * In case the TechniquePracticeLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TechniquePracticeLogUpdateInput, TechniquePracticeLogUncheckedUpdateInput>
+  }
+
+  /**
+   * TechniquePracticeLog delete
+   */
+  export type TechniquePracticeLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogInclude<ExtArgs> | null
+    /**
+     * Filter which TechniquePracticeLog to delete.
+     */
+    where: TechniquePracticeLogWhereUniqueInput
+  }
+
+  /**
+   * TechniquePracticeLog deleteMany
+   */
+  export type TechniquePracticeLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TechniquePracticeLogs to delete
+     */
+    where?: TechniquePracticeLogWhereInput
+    /**
+     * Limit how many TechniquePracticeLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TechniquePracticeLog.attendance
+   */
+  export type TechniquePracticeLog$attendanceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+    where?: AttendanceWhereInput
+  }
+
+  /**
+   * TechniquePracticeLog without action
+   */
+  export type TechniquePracticeLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogInclude<ExtArgs> | null
   }
 
 
@@ -32148,6 +33523,8 @@ export namespace Prisma {
     recoveredBy?: boolean | Attendance$recoveredByArgs<ExtArgs>
     recovery?: boolean | Attendance$recoveryArgs<ExtArgs>
     confirmedBy?: boolean | Attendance$confirmedByArgs<ExtArgs>
+    practiceLogs?: boolean | Attendance$practiceLogsArgs<ExtArgs>
+    _count?: boolean | AttendanceCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["attendance"]>
 
   export type AttendanceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -32228,6 +33605,8 @@ export namespace Prisma {
     recoveredBy?: boolean | Attendance$recoveredByArgs<ExtArgs>
     recovery?: boolean | Attendance$recoveryArgs<ExtArgs>
     confirmedBy?: boolean | Attendance$confirmedByArgs<ExtArgs>
+    practiceLogs?: boolean | Attendance$practiceLogsArgs<ExtArgs>
+    _count?: boolean | AttendanceCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AttendanceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     session?: boolean | Attendance$sessionArgs<ExtArgs>
@@ -32253,6 +33632,7 @@ export namespace Prisma {
       recoveredBy: Prisma.$AttendancePayload<ExtArgs> | null
       recovery: Prisma.$AttendancePayload<ExtArgs> | null
       confirmedBy: Prisma.$UserPayload<ExtArgs> | null
+      practiceLogs: Prisma.$TechniquePracticeLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -32672,6 +34052,7 @@ export namespace Prisma {
     recoveredBy<T extends Attendance$recoveredByArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$recoveredByArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     recovery<T extends Attendance$recoveryArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$recoveryArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     confirmedBy<T extends Attendance$confirmedByArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$confirmedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    practiceLogs<T extends Attendance$practiceLogsArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$practiceLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -33211,6 +34592,30 @@ export namespace Prisma {
      */
     include?: UserInclude<ExtArgs> | null
     where?: UserWhereInput
+  }
+
+  /**
+   * Attendance.practiceLogs
+   */
+  export type Attendance$practiceLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogInclude<ExtArgs> | null
+    where?: TechniquePracticeLogWhereInput
+    orderBy?: TechniquePracticeLogOrderByWithRelationInput | TechniquePracticeLogOrderByWithRelationInput[]
+    cursor?: TechniquePracticeLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TechniquePracticeLogScalarFieldEnum | TechniquePracticeLogScalarFieldEnum[]
   }
 
   /**
@@ -41373,12 +42778,27 @@ export namespace Prisma {
     approvedAt: 'approvedAt',
     inPractice: 'inPractice',
     practiceHours: 'practiceHours',
+    practiceRepetitions: 'practiceRepetitions',
     lastPracticeDate: 'lastPracticeDate',
     notes: 'notes',
     createdAt: 'createdAt'
   };
 
   export type StudentTechniqueScalarFieldEnum = (typeof StudentTechniqueScalarFieldEnum)[keyof typeof StudentTechniqueScalarFieldEnum]
+
+
+  export const TechniquePracticeLogScalarFieldEnum: {
+    id: 'id',
+    studentTechniqueId: 'studentTechniqueId',
+    date: 'date',
+    repetitions: 'repetitions',
+    place: 'place',
+    notes: 'notes',
+    attendanceId: 'attendanceId',
+    createdAt: 'createdAt'
+  };
+
+  export type TechniquePracticeLogScalarFieldEnum = (typeof TechniquePracticeLogScalarFieldEnum)[keyof typeof TechniquePracticeLogScalarFieldEnum]
 
 
   export const TechniqueEvaluationScalarFieldEnum: {
@@ -41858,6 +43278,20 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PracticePlace'
+   */
+  export type EnumPracticePlaceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PracticePlace'>
+    
+
+
+  /**
+   * Reference to a field of type 'PracticePlace[]'
+   */
+  export type ListEnumPracticePlaceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PracticePlace[]'>
     
 
 
@@ -43506,6 +44940,7 @@ export namespace Prisma {
     approvedAt?: DateTimeNullableFilter<"StudentTechnique"> | Date | string | null
     inPractice?: BoolFilter<"StudentTechnique"> | boolean
     practiceHours?: FloatFilter<"StudentTechnique"> | number
+    practiceRepetitions?: IntFilter<"StudentTechnique"> | number
     lastPracticeDate?: DateTimeNullableFilter<"StudentTechnique"> | Date | string | null
     notes?: StringNullableFilter<"StudentTechnique"> | string | null
     createdAt?: DateTimeFilter<"StudentTechnique"> | Date | string
@@ -43513,6 +44948,7 @@ export namespace Prisma {
     technique?: XOR<TechniqueScalarRelationFilter, TechniqueWhereInput>
     approvedByUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     evaluation?: XOR<TechniqueEvaluationNullableScalarRelationFilter, TechniqueEvaluationWhereInput> | null
+    practiceLogs?: TechniquePracticeLogListRelationFilter
   }
 
   export type StudentTechniqueOrderByWithRelationInput = {
@@ -43524,6 +44960,7 @@ export namespace Prisma {
     approvedAt?: SortOrderInput | SortOrder
     inPractice?: SortOrder
     practiceHours?: SortOrder
+    practiceRepetitions?: SortOrder
     lastPracticeDate?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -43531,6 +44968,7 @@ export namespace Prisma {
     technique?: TechniqueOrderByWithRelationInput
     approvedByUser?: UserOrderByWithRelationInput
     evaluation?: TechniqueEvaluationOrderByWithRelationInput
+    practiceLogs?: TechniquePracticeLogOrderByRelationAggregateInput
   }
 
   export type StudentTechniqueWhereUniqueInput = Prisma.AtLeast<{
@@ -43546,6 +44984,7 @@ export namespace Prisma {
     approvedAt?: DateTimeNullableFilter<"StudentTechnique"> | Date | string | null
     inPractice?: BoolFilter<"StudentTechnique"> | boolean
     practiceHours?: FloatFilter<"StudentTechnique"> | number
+    practiceRepetitions?: IntFilter<"StudentTechnique"> | number
     lastPracticeDate?: DateTimeNullableFilter<"StudentTechnique"> | Date | string | null
     notes?: StringNullableFilter<"StudentTechnique"> | string | null
     createdAt?: DateTimeFilter<"StudentTechnique"> | Date | string
@@ -43553,6 +44992,7 @@ export namespace Prisma {
     technique?: XOR<TechniqueScalarRelationFilter, TechniqueWhereInput>
     approvedByUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     evaluation?: XOR<TechniqueEvaluationNullableScalarRelationFilter, TechniqueEvaluationWhereInput> | null
+    practiceLogs?: TechniquePracticeLogListRelationFilter
   }, "id" | "studentId_techniqueId">
 
   export type StudentTechniqueOrderByWithAggregationInput = {
@@ -43564,6 +45004,7 @@ export namespace Prisma {
     approvedAt?: SortOrderInput | SortOrder
     inPractice?: SortOrder
     practiceHours?: SortOrder
+    practiceRepetitions?: SortOrder
     lastPracticeDate?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -43586,9 +45027,85 @@ export namespace Prisma {
     approvedAt?: DateTimeNullableWithAggregatesFilter<"StudentTechnique"> | Date | string | null
     inPractice?: BoolWithAggregatesFilter<"StudentTechnique"> | boolean
     practiceHours?: FloatWithAggregatesFilter<"StudentTechnique"> | number
+    practiceRepetitions?: IntWithAggregatesFilter<"StudentTechnique"> | number
     lastPracticeDate?: DateTimeNullableWithAggregatesFilter<"StudentTechnique"> | Date | string | null
     notes?: StringNullableWithAggregatesFilter<"StudentTechnique"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"StudentTechnique"> | Date | string
+  }
+
+  export type TechniquePracticeLogWhereInput = {
+    AND?: TechniquePracticeLogWhereInput | TechniquePracticeLogWhereInput[]
+    OR?: TechniquePracticeLogWhereInput[]
+    NOT?: TechniquePracticeLogWhereInput | TechniquePracticeLogWhereInput[]
+    id?: StringFilter<"TechniquePracticeLog"> | string
+    studentTechniqueId?: StringFilter<"TechniquePracticeLog"> | string
+    date?: DateTimeFilter<"TechniquePracticeLog"> | Date | string
+    repetitions?: IntFilter<"TechniquePracticeLog"> | number
+    place?: EnumPracticePlaceFilter<"TechniquePracticeLog"> | $Enums.PracticePlace
+    notes?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    attendanceId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    createdAt?: DateTimeFilter<"TechniquePracticeLog"> | Date | string
+    studentTechnique?: XOR<StudentTechniqueScalarRelationFilter, StudentTechniqueWhereInput>
+    attendance?: XOR<AttendanceNullableScalarRelationFilter, AttendanceWhereInput> | null
+  }
+
+  export type TechniquePracticeLogOrderByWithRelationInput = {
+    id?: SortOrder
+    studentTechniqueId?: SortOrder
+    date?: SortOrder
+    repetitions?: SortOrder
+    place?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    attendanceId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    studentTechnique?: StudentTechniqueOrderByWithRelationInput
+    attendance?: AttendanceOrderByWithRelationInput
+  }
+
+  export type TechniquePracticeLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TechniquePracticeLogWhereInput | TechniquePracticeLogWhereInput[]
+    OR?: TechniquePracticeLogWhereInput[]
+    NOT?: TechniquePracticeLogWhereInput | TechniquePracticeLogWhereInput[]
+    studentTechniqueId?: StringFilter<"TechniquePracticeLog"> | string
+    date?: DateTimeFilter<"TechniquePracticeLog"> | Date | string
+    repetitions?: IntFilter<"TechniquePracticeLog"> | number
+    place?: EnumPracticePlaceFilter<"TechniquePracticeLog"> | $Enums.PracticePlace
+    notes?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    attendanceId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    createdAt?: DateTimeFilter<"TechniquePracticeLog"> | Date | string
+    studentTechnique?: XOR<StudentTechniqueScalarRelationFilter, StudentTechniqueWhereInput>
+    attendance?: XOR<AttendanceNullableScalarRelationFilter, AttendanceWhereInput> | null
+  }, "id">
+
+  export type TechniquePracticeLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    studentTechniqueId?: SortOrder
+    date?: SortOrder
+    repetitions?: SortOrder
+    place?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    attendanceId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: TechniquePracticeLogCountOrderByAggregateInput
+    _avg?: TechniquePracticeLogAvgOrderByAggregateInput
+    _max?: TechniquePracticeLogMaxOrderByAggregateInput
+    _min?: TechniquePracticeLogMinOrderByAggregateInput
+    _sum?: TechniquePracticeLogSumOrderByAggregateInput
+  }
+
+  export type TechniquePracticeLogScalarWhereWithAggregatesInput = {
+    AND?: TechniquePracticeLogScalarWhereWithAggregatesInput | TechniquePracticeLogScalarWhereWithAggregatesInput[]
+    OR?: TechniquePracticeLogScalarWhereWithAggregatesInput[]
+    NOT?: TechniquePracticeLogScalarWhereWithAggregatesInput | TechniquePracticeLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TechniquePracticeLog"> | string
+    studentTechniqueId?: StringWithAggregatesFilter<"TechniquePracticeLog"> | string
+    date?: DateTimeWithAggregatesFilter<"TechniquePracticeLog"> | Date | string
+    repetitions?: IntWithAggregatesFilter<"TechniquePracticeLog"> | number
+    place?: EnumPracticePlaceWithAggregatesFilter<"TechniquePracticeLog"> | $Enums.PracticePlace
+    notes?: StringNullableWithAggregatesFilter<"TechniquePracticeLog"> | string | null
+    attendanceId?: StringNullableWithAggregatesFilter<"TechniquePracticeLog"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"TechniquePracticeLog"> | Date | string
   }
 
   export type TechniqueEvaluationWhereInput = {
@@ -44030,6 +45547,7 @@ export namespace Prisma {
     recoveredBy?: XOR<AttendanceNullableScalarRelationFilter, AttendanceWhereInput> | null
     recovery?: XOR<AttendanceNullableScalarRelationFilter, AttendanceWhereInput> | null
     confirmedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    practiceLogs?: TechniquePracticeLogListRelationFilter
   }
 
   export type AttendanceOrderByWithRelationInput = {
@@ -44056,6 +45574,7 @@ export namespace Prisma {
     recoveredBy?: AttendanceOrderByWithRelationInput
     recovery?: AttendanceOrderByWithRelationInput
     confirmedBy?: UserOrderByWithRelationInput
+    practiceLogs?: TechniquePracticeLogOrderByRelationAggregateInput
   }
 
   export type AttendanceWhereUniqueInput = Prisma.AtLeast<{
@@ -44086,6 +45605,7 @@ export namespace Prisma {
     recoveredBy?: XOR<AttendanceNullableScalarRelationFilter, AttendanceWhereInput> | null
     recovery?: XOR<AttendanceNullableScalarRelationFilter, AttendanceWhereInput> | null
     confirmedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    practiceLogs?: TechniquePracticeLogListRelationFilter
   }, "id" | "recoveredById" | "sessionId_studentId">
 
   export type AttendanceOrderByWithAggregationInput = {
@@ -46328,6 +47848,7 @@ export namespace Prisma {
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
+    practiceRepetitions?: number
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
@@ -46335,6 +47856,7 @@ export namespace Prisma {
     technique: TechniqueCreateNestedOneWithoutStudentsInput
     approvedByUser?: UserCreateNestedOneWithoutTechniquesApprovedInput
     evaluation?: TechniqueEvaluationCreateNestedOneWithoutStudentTechniqueInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentTechniqueInput
   }
 
   export type StudentTechniqueUncheckedCreateInput = {
@@ -46346,10 +47868,12 @@ export namespace Prisma {
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
+    practiceRepetitions?: number
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     evaluation?: TechniqueEvaluationUncheckedCreateNestedOneWithoutStudentTechniqueInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentTechniqueInput
   }
 
   export type StudentTechniqueUpdateInput = {
@@ -46358,6 +47882,7 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46365,6 +47890,7 @@ export namespace Prisma {
     technique?: TechniqueUpdateOneRequiredWithoutStudentsNestedInput
     approvedByUser?: UserUpdateOneWithoutTechniquesApprovedNestedInput
     evaluation?: TechniqueEvaluationUpdateOneWithoutStudentTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutStudentTechniqueNestedInput
   }
 
   export type StudentTechniqueUncheckedUpdateInput = {
@@ -46376,10 +47902,12 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     evaluation?: TechniqueEvaluationUncheckedUpdateOneWithoutStudentTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentTechniqueNestedInput
   }
 
   export type StudentTechniqueCreateManyInput = {
@@ -46391,6 +47919,7 @@ export namespace Prisma {
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
+    practiceRepetitions?: number
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
@@ -46402,6 +47931,7 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46416,8 +47946,84 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TechniquePracticeLogCreateInput = {
+    id?: string
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    createdAt?: Date | string
+    studentTechnique: StudentTechniqueCreateNestedOneWithoutPracticeLogsInput
+    attendance?: AttendanceCreateNestedOneWithoutPracticeLogsInput
+  }
+
+  export type TechniquePracticeLogUncheckedCreateInput = {
+    id?: string
+    studentTechniqueId: string
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    attendanceId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type TechniquePracticeLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    studentTechnique?: StudentTechniqueUpdateOneRequiredWithoutPracticeLogsNestedInput
+    attendance?: AttendanceUpdateOneWithoutPracticeLogsNestedInput
+  }
+
+  export type TechniquePracticeLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentTechniqueId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TechniquePracticeLogCreateManyInput = {
+    id?: string
+    studentTechniqueId: string
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    attendanceId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type TechniquePracticeLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TechniquePracticeLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentTechniqueId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -46879,6 +48485,7 @@ export namespace Prisma {
     recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
     recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
     confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceUncheckedCreateInput = {
@@ -46900,6 +48507,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceUpdateInput = {
@@ -46921,6 +48529,7 @@ export namespace Prisma {
     recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
     recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
     confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateInput = {
@@ -46942,6 +48551,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceCreateManyInput = {
@@ -49064,6 +50674,16 @@ export namespace Prisma {
     isNot?: TechniqueEvaluationWhereInput | null
   }
 
+  export type TechniquePracticeLogListRelationFilter = {
+    every?: TechniquePracticeLogWhereInput
+    some?: TechniquePracticeLogWhereInput
+    none?: TechniquePracticeLogWhereInput
+  }
+
+  export type TechniquePracticeLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type StudentTechniqueStudentIdTechniqueIdCompoundUniqueInput = {
     studentId: string
     techniqueId: string
@@ -49078,6 +50698,7 @@ export namespace Prisma {
     approvedAt?: SortOrder
     inPractice?: SortOrder
     practiceHours?: SortOrder
+    practiceRepetitions?: SortOrder
     lastPracticeDate?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
@@ -49085,6 +50706,7 @@ export namespace Prisma {
 
   export type StudentTechniqueAvgOrderByAggregateInput = {
     practiceHours?: SortOrder
+    practiceRepetitions?: SortOrder
   }
 
   export type StudentTechniqueMaxOrderByAggregateInput = {
@@ -49096,6 +50718,7 @@ export namespace Prisma {
     approvedAt?: SortOrder
     inPractice?: SortOrder
     practiceHours?: SortOrder
+    practiceRepetitions?: SortOrder
     lastPracticeDate?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
@@ -49110,6 +50733,7 @@ export namespace Prisma {
     approvedAt?: SortOrder
     inPractice?: SortOrder
     practiceHours?: SortOrder
+    practiceRepetitions?: SortOrder
     lastPracticeDate?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
@@ -49117,6 +50741,7 @@ export namespace Prisma {
 
   export type StudentTechniqueSumOrderByAggregateInput = {
     practiceHours?: SortOrder
+    practiceRepetitions?: SortOrder
   }
 
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -49135,9 +50760,72 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type EnumPracticePlaceFilter<$PrismaModel = never> = {
+    equals?: $Enums.PracticePlace | EnumPracticePlaceFieldRefInput<$PrismaModel>
+    in?: $Enums.PracticePlace[] | ListEnumPracticePlaceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PracticePlace[] | ListEnumPracticePlaceFieldRefInput<$PrismaModel>
+    not?: NestedEnumPracticePlaceFilter<$PrismaModel> | $Enums.PracticePlace
+  }
+
   export type StudentTechniqueScalarRelationFilter = {
     is?: StudentTechniqueWhereInput
     isNot?: StudentTechniqueWhereInput
+  }
+
+  export type AttendanceNullableScalarRelationFilter = {
+    is?: AttendanceWhereInput | null
+    isNot?: AttendanceWhereInput | null
+  }
+
+  export type TechniquePracticeLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    studentTechniqueId?: SortOrder
+    date?: SortOrder
+    repetitions?: SortOrder
+    place?: SortOrder
+    notes?: SortOrder
+    attendanceId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TechniquePracticeLogAvgOrderByAggregateInput = {
+    repetitions?: SortOrder
+  }
+
+  export type TechniquePracticeLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    studentTechniqueId?: SortOrder
+    date?: SortOrder
+    repetitions?: SortOrder
+    place?: SortOrder
+    notes?: SortOrder
+    attendanceId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TechniquePracticeLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    studentTechniqueId?: SortOrder
+    date?: SortOrder
+    repetitions?: SortOrder
+    place?: SortOrder
+    notes?: SortOrder
+    attendanceId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TechniquePracticeLogSumOrderByAggregateInput = {
+    repetitions?: SortOrder
+  }
+
+  export type EnumPracticePlaceWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PracticePlace | EnumPracticePlaceFieldRefInput<$PrismaModel>
+    in?: $Enums.PracticePlace[] | ListEnumPracticePlaceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PracticePlace[] | ListEnumPracticePlaceFieldRefInput<$PrismaModel>
+    not?: NestedEnumPracticePlaceWithAggregatesFilter<$PrismaModel> | $Enums.PracticePlace
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPracticePlaceFilter<$PrismaModel>
+    _max?: NestedEnumPracticePlaceFilter<$PrismaModel>
   }
 
   export type TechniqueEvaluationCountOrderByAggregateInput = {
@@ -49452,11 +51140,6 @@ export namespace Prisma {
   export type ClassNullableScalarRelationFilter = {
     is?: ClassWhereInput | null
     isNot?: ClassWhereInput | null
-  }
-
-  export type AttendanceNullableScalarRelationFilter = {
-    is?: AttendanceWhereInput | null
-    isNot?: AttendanceWhereInput | null
   }
 
   export type AttendanceSessionIdStudentIdCompoundUniqueInput = {
@@ -52566,10 +54249,24 @@ export namespace Prisma {
     connect?: TechniqueEvaluationWhereUniqueInput
   }
 
+  export type TechniquePracticeLogCreateNestedManyWithoutStudentTechniqueInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutStudentTechniqueInput, TechniquePracticeLogUncheckedCreateWithoutStudentTechniqueInput> | TechniquePracticeLogCreateWithoutStudentTechniqueInput[] | TechniquePracticeLogUncheckedCreateWithoutStudentTechniqueInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutStudentTechniqueInput | TechniquePracticeLogCreateOrConnectWithoutStudentTechniqueInput[]
+    createMany?: TechniquePracticeLogCreateManyStudentTechniqueInputEnvelope
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+  }
+
   export type TechniqueEvaluationUncheckedCreateNestedOneWithoutStudentTechniqueInput = {
     create?: XOR<TechniqueEvaluationCreateWithoutStudentTechniqueInput, TechniqueEvaluationUncheckedCreateWithoutStudentTechniqueInput>
     connectOrCreate?: TechniqueEvaluationCreateOrConnectWithoutStudentTechniqueInput
     connect?: TechniqueEvaluationWhereUniqueInput
+  }
+
+  export type TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentTechniqueInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutStudentTechniqueInput, TechniquePracticeLogUncheckedCreateWithoutStudentTechniqueInput> | TechniquePracticeLogCreateWithoutStudentTechniqueInput[] | TechniquePracticeLogUncheckedCreateWithoutStudentTechniqueInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutStudentTechniqueInput | TechniquePracticeLogCreateOrConnectWithoutStudentTechniqueInput[]
+    createMany?: TechniquePracticeLogCreateManyStudentTechniqueInputEnvelope
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -52616,6 +54313,20 @@ export namespace Prisma {
     update?: XOR<XOR<TechniqueEvaluationUpdateToOneWithWhereWithoutStudentTechniqueInput, TechniqueEvaluationUpdateWithoutStudentTechniqueInput>, TechniqueEvaluationUncheckedUpdateWithoutStudentTechniqueInput>
   }
 
+  export type TechniquePracticeLogUpdateManyWithoutStudentTechniqueNestedInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutStudentTechniqueInput, TechniquePracticeLogUncheckedCreateWithoutStudentTechniqueInput> | TechniquePracticeLogCreateWithoutStudentTechniqueInput[] | TechniquePracticeLogUncheckedCreateWithoutStudentTechniqueInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutStudentTechniqueInput | TechniquePracticeLogCreateOrConnectWithoutStudentTechniqueInput[]
+    upsert?: TechniquePracticeLogUpsertWithWhereUniqueWithoutStudentTechniqueInput | TechniquePracticeLogUpsertWithWhereUniqueWithoutStudentTechniqueInput[]
+    createMany?: TechniquePracticeLogCreateManyStudentTechniqueInputEnvelope
+    set?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    disconnect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    delete?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    update?: TechniquePracticeLogUpdateWithWhereUniqueWithoutStudentTechniqueInput | TechniquePracticeLogUpdateWithWhereUniqueWithoutStudentTechniqueInput[]
+    updateMany?: TechniquePracticeLogUpdateManyWithWhereWithoutStudentTechniqueInput | TechniquePracticeLogUpdateManyWithWhereWithoutStudentTechniqueInput[]
+    deleteMany?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
+  }
+
   export type TechniqueEvaluationUncheckedUpdateOneWithoutStudentTechniqueNestedInput = {
     create?: XOR<TechniqueEvaluationCreateWithoutStudentTechniqueInput, TechniqueEvaluationUncheckedCreateWithoutStudentTechniqueInput>
     connectOrCreate?: TechniqueEvaluationCreateOrConnectWithoutStudentTechniqueInput
@@ -52624,6 +54335,54 @@ export namespace Prisma {
     delete?: TechniqueEvaluationWhereInput | boolean
     connect?: TechniqueEvaluationWhereUniqueInput
     update?: XOR<XOR<TechniqueEvaluationUpdateToOneWithWhereWithoutStudentTechniqueInput, TechniqueEvaluationUpdateWithoutStudentTechniqueInput>, TechniqueEvaluationUncheckedUpdateWithoutStudentTechniqueInput>
+  }
+
+  export type TechniquePracticeLogUncheckedUpdateManyWithoutStudentTechniqueNestedInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutStudentTechniqueInput, TechniquePracticeLogUncheckedCreateWithoutStudentTechniqueInput> | TechniquePracticeLogCreateWithoutStudentTechniqueInput[] | TechniquePracticeLogUncheckedCreateWithoutStudentTechniqueInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutStudentTechniqueInput | TechniquePracticeLogCreateOrConnectWithoutStudentTechniqueInput[]
+    upsert?: TechniquePracticeLogUpsertWithWhereUniqueWithoutStudentTechniqueInput | TechniquePracticeLogUpsertWithWhereUniqueWithoutStudentTechniqueInput[]
+    createMany?: TechniquePracticeLogCreateManyStudentTechniqueInputEnvelope
+    set?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    disconnect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    delete?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    update?: TechniquePracticeLogUpdateWithWhereUniqueWithoutStudentTechniqueInput | TechniquePracticeLogUpdateWithWhereUniqueWithoutStudentTechniqueInput[]
+    updateMany?: TechniquePracticeLogUpdateManyWithWhereWithoutStudentTechniqueInput | TechniquePracticeLogUpdateManyWithWhereWithoutStudentTechniqueInput[]
+    deleteMany?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
+  }
+
+  export type StudentTechniqueCreateNestedOneWithoutPracticeLogsInput = {
+    create?: XOR<StudentTechniqueCreateWithoutPracticeLogsInput, StudentTechniqueUncheckedCreateWithoutPracticeLogsInput>
+    connectOrCreate?: StudentTechniqueCreateOrConnectWithoutPracticeLogsInput
+    connect?: StudentTechniqueWhereUniqueInput
+  }
+
+  export type AttendanceCreateNestedOneWithoutPracticeLogsInput = {
+    create?: XOR<AttendanceCreateWithoutPracticeLogsInput, AttendanceUncheckedCreateWithoutPracticeLogsInput>
+    connectOrCreate?: AttendanceCreateOrConnectWithoutPracticeLogsInput
+    connect?: AttendanceWhereUniqueInput
+  }
+
+  export type EnumPracticePlaceFieldUpdateOperationsInput = {
+    set?: $Enums.PracticePlace
+  }
+
+  export type StudentTechniqueUpdateOneRequiredWithoutPracticeLogsNestedInput = {
+    create?: XOR<StudentTechniqueCreateWithoutPracticeLogsInput, StudentTechniqueUncheckedCreateWithoutPracticeLogsInput>
+    connectOrCreate?: StudentTechniqueCreateOrConnectWithoutPracticeLogsInput
+    upsert?: StudentTechniqueUpsertWithoutPracticeLogsInput
+    connect?: StudentTechniqueWhereUniqueInput
+    update?: XOR<XOR<StudentTechniqueUpdateToOneWithWhereWithoutPracticeLogsInput, StudentTechniqueUpdateWithoutPracticeLogsInput>, StudentTechniqueUncheckedUpdateWithoutPracticeLogsInput>
+  }
+
+  export type AttendanceUpdateOneWithoutPracticeLogsNestedInput = {
+    create?: XOR<AttendanceCreateWithoutPracticeLogsInput, AttendanceUncheckedCreateWithoutPracticeLogsInput>
+    connectOrCreate?: AttendanceCreateOrConnectWithoutPracticeLogsInput
+    upsert?: AttendanceUpsertWithoutPracticeLogsInput
+    disconnect?: AttendanceWhereInput | boolean
+    delete?: AttendanceWhereInput | boolean
+    connect?: AttendanceWhereUniqueInput
+    update?: XOR<XOR<AttendanceUpdateToOneWithWhereWithoutPracticeLogsInput, AttendanceUpdateWithoutPracticeLogsInput>, AttendanceUncheckedUpdateWithoutPracticeLogsInput>
   }
 
   export type StudentTechniqueCreateNestedOneWithoutEvaluationInput = {
@@ -53004,10 +54763,24 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type TechniquePracticeLogCreateNestedManyWithoutAttendanceInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutAttendanceInput, TechniquePracticeLogUncheckedCreateWithoutAttendanceInput> | TechniquePracticeLogCreateWithoutAttendanceInput[] | TechniquePracticeLogUncheckedCreateWithoutAttendanceInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutAttendanceInput | TechniquePracticeLogCreateOrConnectWithoutAttendanceInput[]
+    createMany?: TechniquePracticeLogCreateManyAttendanceInputEnvelope
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+  }
+
   export type AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput = {
     create?: XOR<AttendanceCreateWithoutRecoveredByInput, AttendanceUncheckedCreateWithoutRecoveredByInput>
     connectOrCreate?: AttendanceCreateOrConnectWithoutRecoveredByInput
     connect?: AttendanceWhereUniqueInput
+  }
+
+  export type TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutAttendanceInput, TechniquePracticeLogUncheckedCreateWithoutAttendanceInput> | TechniquePracticeLogCreateWithoutAttendanceInput[] | TechniquePracticeLogUncheckedCreateWithoutAttendanceInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutAttendanceInput | TechniquePracticeLogCreateOrConnectWithoutAttendanceInput[]
+    createMany?: TechniquePracticeLogCreateManyAttendanceInputEnvelope
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
   }
 
   export type EnumAttendanceStatusFieldUpdateOperationsInput = {
@@ -53072,6 +54845,20 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAttendanceConfirmationsInput, UserUpdateWithoutAttendanceConfirmationsInput>, UserUncheckedUpdateWithoutAttendanceConfirmationsInput>
   }
 
+  export type TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutAttendanceInput, TechniquePracticeLogUncheckedCreateWithoutAttendanceInput> | TechniquePracticeLogCreateWithoutAttendanceInput[] | TechniquePracticeLogUncheckedCreateWithoutAttendanceInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutAttendanceInput | TechniquePracticeLogCreateOrConnectWithoutAttendanceInput[]
+    upsert?: TechniquePracticeLogUpsertWithWhereUniqueWithoutAttendanceInput | TechniquePracticeLogUpsertWithWhereUniqueWithoutAttendanceInput[]
+    createMany?: TechniquePracticeLogCreateManyAttendanceInputEnvelope
+    set?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    disconnect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    delete?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    update?: TechniquePracticeLogUpdateWithWhereUniqueWithoutAttendanceInput | TechniquePracticeLogUpdateWithWhereUniqueWithoutAttendanceInput[]
+    updateMany?: TechniquePracticeLogUpdateManyWithWhereWithoutAttendanceInput | TechniquePracticeLogUpdateManyWithWhereWithoutAttendanceInput[]
+    deleteMany?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
+  }
+
   export type AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput = {
     create?: XOR<AttendanceCreateWithoutRecoveredByInput, AttendanceUncheckedCreateWithoutRecoveredByInput>
     connectOrCreate?: AttendanceCreateOrConnectWithoutRecoveredByInput
@@ -53080,6 +54867,20 @@ export namespace Prisma {
     delete?: AttendanceWhereInput | boolean
     connect?: AttendanceWhereUniqueInput
     update?: XOR<XOR<AttendanceUpdateToOneWithWhereWithoutRecoveredByInput, AttendanceUpdateWithoutRecoveredByInput>, AttendanceUncheckedUpdateWithoutRecoveredByInput>
+  }
+
+  export type TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutAttendanceInput, TechniquePracticeLogUncheckedCreateWithoutAttendanceInput> | TechniquePracticeLogCreateWithoutAttendanceInput[] | TechniquePracticeLogUncheckedCreateWithoutAttendanceInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutAttendanceInput | TechniquePracticeLogCreateOrConnectWithoutAttendanceInput[]
+    upsert?: TechniquePracticeLogUpsertWithWhereUniqueWithoutAttendanceInput | TechniquePracticeLogUpsertWithWhereUniqueWithoutAttendanceInput[]
+    createMany?: TechniquePracticeLogCreateManyAttendanceInputEnvelope
+    set?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    disconnect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    delete?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    update?: TechniquePracticeLogUpdateWithWhereUniqueWithoutAttendanceInput | TechniquePracticeLogUpdateWithWhereUniqueWithoutAttendanceInput[]
+    updateMany?: TechniquePracticeLogUpdateManyWithWhereWithoutAttendanceInput | TechniquePracticeLogUpdateManyWithWhereWithoutAttendanceInput[]
+    deleteMany?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
   }
 
   export type SchoolCreateNestedOneWithoutAchievementTypesInput = {
@@ -53735,6 +55536,23 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPracticePlaceFilter<$PrismaModel = never> = {
+    equals?: $Enums.PracticePlace | EnumPracticePlaceFieldRefInput<$PrismaModel>
+    in?: $Enums.PracticePlace[] | ListEnumPracticePlaceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PracticePlace[] | ListEnumPracticePlaceFieldRefInput<$PrismaModel>
+    not?: NestedEnumPracticePlaceFilter<$PrismaModel> | $Enums.PracticePlace
+  }
+
+  export type NestedEnumPracticePlaceWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PracticePlace | EnumPracticePlaceFieldRefInput<$PrismaModel>
+    in?: $Enums.PracticePlace[] | ListEnumPracticePlaceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PracticePlace[] | ListEnumPracticePlaceFieldRefInput<$PrismaModel>
+    not?: NestedEnumPracticePlaceWithAggregatesFilter<$PrismaModel> | $Enums.PracticePlace
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPracticePlaceFilter<$PrismaModel>
+    _max?: NestedEnumPracticePlaceFilter<$PrismaModel>
   }
 
   export type NestedDecimalNullableFilter<$PrismaModel = never> = {
@@ -55491,12 +57309,14 @@ export namespace Prisma {
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
+    practiceRepetitions?: number
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     student: StudentCreateNestedOneWithoutTechniquesInput
     technique: TechniqueCreateNestedOneWithoutStudentsInput
     evaluation?: TechniqueEvaluationCreateNestedOneWithoutStudentTechniqueInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentTechniqueInput
   }
 
   export type StudentTechniqueUncheckedCreateWithoutApprovedByUserInput = {
@@ -55507,10 +57327,12 @@ export namespace Prisma {
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
+    practiceRepetitions?: number
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     evaluation?: TechniqueEvaluationUncheckedCreateNestedOneWithoutStudentTechniqueInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentTechniqueInput
   }
 
   export type StudentTechniqueCreateOrConnectWithoutApprovedByUserInput = {
@@ -55603,6 +57425,7 @@ export namespace Prisma {
     class?: ClassCreateNestedOneWithoutAttendancesInput
     recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
     recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceUncheckedCreateWithoutConfirmedByInput = {
@@ -55623,6 +57446,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceCreateOrConnectWithoutConfirmedByInput = {
@@ -56151,6 +57975,7 @@ export namespace Prisma {
     approvedAt?: DateTimeNullableFilter<"StudentTechnique"> | Date | string | null
     inPractice?: BoolFilter<"StudentTechnique"> | boolean
     practiceHours?: FloatFilter<"StudentTechnique"> | number
+    practiceRepetitions?: IntFilter<"StudentTechnique"> | number
     lastPracticeDate?: DateTimeNullableFilter<"StudentTechnique"> | Date | string | null
     notes?: StringNullableFilter<"StudentTechnique"> | string | null
     createdAt?: DateTimeFilter<"StudentTechnique"> | Date | string
@@ -57496,6 +59321,7 @@ export namespace Prisma {
     recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
     recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
     confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceUncheckedCreateWithoutStudentInput = {
@@ -57516,6 +59342,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceCreateOrConnectWithoutStudentInput = {
@@ -57566,12 +59393,14 @@ export namespace Prisma {
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
+    practiceRepetitions?: number
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     technique: TechniqueCreateNestedOneWithoutStudentsInput
     approvedByUser?: UserCreateNestedOneWithoutTechniquesApprovedInput
     evaluation?: TechniqueEvaluationCreateNestedOneWithoutStudentTechniqueInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentTechniqueInput
   }
 
   export type StudentTechniqueUncheckedCreateWithoutStudentInput = {
@@ -57582,10 +59411,12 @@ export namespace Prisma {
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
+    practiceRepetitions?: number
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     evaluation?: TechniqueEvaluationUncheckedCreateNestedOneWithoutStudentTechniqueInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentTechniqueInput
   }
 
   export type StudentTechniqueCreateOrConnectWithoutStudentInput = {
@@ -60935,12 +62766,14 @@ export namespace Prisma {
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
+    practiceRepetitions?: number
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     student: StudentCreateNestedOneWithoutTechniquesInput
     approvedByUser?: UserCreateNestedOneWithoutTechniquesApprovedInput
     evaluation?: TechniqueEvaluationCreateNestedOneWithoutStudentTechniqueInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentTechniqueInput
   }
 
   export type StudentTechniqueUncheckedCreateWithoutTechniqueInput = {
@@ -60951,10 +62784,12 @@ export namespace Prisma {
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
+    practiceRepetitions?: number
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     evaluation?: TechniqueEvaluationUncheckedCreateNestedOneWithoutStudentTechniqueInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentTechniqueInput
   }
 
   export type StudentTechniqueCreateOrConnectWithoutTechniqueInput = {
@@ -61357,6 +63192,36 @@ export namespace Prisma {
     create: XOR<TechniqueEvaluationCreateWithoutStudentTechniqueInput, TechniqueEvaluationUncheckedCreateWithoutStudentTechniqueInput>
   }
 
+  export type TechniquePracticeLogCreateWithoutStudentTechniqueInput = {
+    id?: string
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    createdAt?: Date | string
+    attendance?: AttendanceCreateNestedOneWithoutPracticeLogsInput
+  }
+
+  export type TechniquePracticeLogUncheckedCreateWithoutStudentTechniqueInput = {
+    id?: string
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    attendanceId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type TechniquePracticeLogCreateOrConnectWithoutStudentTechniqueInput = {
+    where: TechniquePracticeLogWhereUniqueInput
+    create: XOR<TechniquePracticeLogCreateWithoutStudentTechniqueInput, TechniquePracticeLogUncheckedCreateWithoutStudentTechniqueInput>
+  }
+
+  export type TechniquePracticeLogCreateManyStudentTechniqueInputEnvelope = {
+    data: TechniquePracticeLogCreateManyStudentTechniqueInput | TechniquePracticeLogCreateManyStudentTechniqueInput[]
+    skipDuplicates?: boolean
+  }
+
   export type StudentUpsertWithoutTechniquesInput = {
     update: XOR<StudentUpdateWithoutTechniquesInput, StudentUncheckedUpdateWithoutTechniquesInput>
     create: XOR<StudentCreateWithoutTechniquesInput, StudentUncheckedCreateWithoutTechniquesInput>
@@ -61615,18 +63480,230 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type StudentTechniqueCreateWithoutEvaluationInput = {
+  export type TechniquePracticeLogUpsertWithWhereUniqueWithoutStudentTechniqueInput = {
+    where: TechniquePracticeLogWhereUniqueInput
+    update: XOR<TechniquePracticeLogUpdateWithoutStudentTechniqueInput, TechniquePracticeLogUncheckedUpdateWithoutStudentTechniqueInput>
+    create: XOR<TechniquePracticeLogCreateWithoutStudentTechniqueInput, TechniquePracticeLogUncheckedCreateWithoutStudentTechniqueInput>
+  }
+
+  export type TechniquePracticeLogUpdateWithWhereUniqueWithoutStudentTechniqueInput = {
+    where: TechniquePracticeLogWhereUniqueInput
+    data: XOR<TechniquePracticeLogUpdateWithoutStudentTechniqueInput, TechniquePracticeLogUncheckedUpdateWithoutStudentTechniqueInput>
+  }
+
+  export type TechniquePracticeLogUpdateManyWithWhereWithoutStudentTechniqueInput = {
+    where: TechniquePracticeLogScalarWhereInput
+    data: XOR<TechniquePracticeLogUpdateManyMutationInput, TechniquePracticeLogUncheckedUpdateManyWithoutStudentTechniqueInput>
+  }
+
+  export type TechniquePracticeLogScalarWhereInput = {
+    AND?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
+    OR?: TechniquePracticeLogScalarWhereInput[]
+    NOT?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
+    id?: StringFilter<"TechniquePracticeLog"> | string
+    studentTechniqueId?: StringFilter<"TechniquePracticeLog"> | string
+    date?: DateTimeFilter<"TechniquePracticeLog"> | Date | string
+    repetitions?: IntFilter<"TechniquePracticeLog"> | number
+    place?: EnumPracticePlaceFilter<"TechniquePracticeLog"> | $Enums.PracticePlace
+    notes?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    attendanceId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    createdAt?: DateTimeFilter<"TechniquePracticeLog"> | Date | string
+  }
+
+  export type StudentTechniqueCreateWithoutPracticeLogsInput = {
     id?: string
     approved?: boolean
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
+    practiceRepetitions?: number
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
     student: StudentCreateNestedOneWithoutTechniquesInput
     technique: TechniqueCreateNestedOneWithoutStudentsInput
     approvedByUser?: UserCreateNestedOneWithoutTechniquesApprovedInput
+    evaluation?: TechniqueEvaluationCreateNestedOneWithoutStudentTechniqueInput
+  }
+
+  export type StudentTechniqueUncheckedCreateWithoutPracticeLogsInput = {
+    id?: string
+    studentId: string
+    techniqueId: string
+    approved?: boolean
+    approvedBy?: string | null
+    approvedAt?: Date | string | null
+    inPractice?: boolean
+    practiceHours?: number
+    practiceRepetitions?: number
+    lastPracticeDate?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    evaluation?: TechniqueEvaluationUncheckedCreateNestedOneWithoutStudentTechniqueInput
+  }
+
+  export type StudentTechniqueCreateOrConnectWithoutPracticeLogsInput = {
+    where: StudentTechniqueWhereUniqueInput
+    create: XOR<StudentTechniqueCreateWithoutPracticeLogsInput, StudentTechniqueUncheckedCreateWithoutPracticeLogsInput>
+  }
+
+  export type AttendanceCreateWithoutPracticeLogsInput = {
+    id?: string
+    date?: Date | string
+    present?: boolean
+    hoursTrained?: number
+    sessionType?: string | null
+    status?: $Enums.AttendanceStatus
+    isOutOfSchedule?: boolean
+    punchedAt?: Date | string
+    confirmedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session?: ClassSessionCreateNestedOneWithoutAttendancesInput
+    student: StudentCreateNestedOneWithoutAttendancesInput
+    class?: ClassCreateNestedOneWithoutAttendancesInput
+    recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
+    recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
+    confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
+  }
+
+  export type AttendanceUncheckedCreateWithoutPracticeLogsInput = {
+    id?: string
+    sessionId?: string | null
+    studentId: string
+    date?: Date | string
+    present?: boolean
+    hoursTrained?: number
+    sessionType?: string | null
+    status?: $Enums.AttendanceStatus
+    classId?: string | null
+    isOutOfSchedule?: boolean
+    recoveredById?: string | null
+    punchedAt?: Date | string
+    confirmedAt?: Date | string | null
+    confirmedById?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+  }
+
+  export type AttendanceCreateOrConnectWithoutPracticeLogsInput = {
+    where: AttendanceWhereUniqueInput
+    create: XOR<AttendanceCreateWithoutPracticeLogsInput, AttendanceUncheckedCreateWithoutPracticeLogsInput>
+  }
+
+  export type StudentTechniqueUpsertWithoutPracticeLogsInput = {
+    update: XOR<StudentTechniqueUpdateWithoutPracticeLogsInput, StudentTechniqueUncheckedUpdateWithoutPracticeLogsInput>
+    create: XOR<StudentTechniqueCreateWithoutPracticeLogsInput, StudentTechniqueUncheckedCreateWithoutPracticeLogsInput>
+    where?: StudentTechniqueWhereInput
+  }
+
+  export type StudentTechniqueUpdateToOneWithWhereWithoutPracticeLogsInput = {
+    where?: StudentTechniqueWhereInput
+    data: XOR<StudentTechniqueUpdateWithoutPracticeLogsInput, StudentTechniqueUncheckedUpdateWithoutPracticeLogsInput>
+  }
+
+  export type StudentTechniqueUpdateWithoutPracticeLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    approved?: BoolFieldUpdateOperationsInput | boolean
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inPractice?: BoolFieldUpdateOperationsInput | boolean
+    practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
+    lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentUpdateOneRequiredWithoutTechniquesNestedInput
+    technique?: TechniqueUpdateOneRequiredWithoutStudentsNestedInput
+    approvedByUser?: UserUpdateOneWithoutTechniquesApprovedNestedInput
+    evaluation?: TechniqueEvaluationUpdateOneWithoutStudentTechniqueNestedInput
+  }
+
+  export type StudentTechniqueUncheckedUpdateWithoutPracticeLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    techniqueId?: StringFieldUpdateOperationsInput | string
+    approved?: BoolFieldUpdateOperationsInput | boolean
+    approvedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    inPractice?: BoolFieldUpdateOperationsInput | boolean
+    practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
+    lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    evaluation?: TechniqueEvaluationUncheckedUpdateOneWithoutStudentTechniqueNestedInput
+  }
+
+  export type AttendanceUpsertWithoutPracticeLogsInput = {
+    update: XOR<AttendanceUpdateWithoutPracticeLogsInput, AttendanceUncheckedUpdateWithoutPracticeLogsInput>
+    create: XOR<AttendanceCreateWithoutPracticeLogsInput, AttendanceUncheckedCreateWithoutPracticeLogsInput>
+    where?: AttendanceWhereInput
+  }
+
+  export type AttendanceUpdateToOneWithWhereWithoutPracticeLogsInput = {
+    where?: AttendanceWhereInput
+    data: XOR<AttendanceUpdateWithoutPracticeLogsInput, AttendanceUncheckedUpdateWithoutPracticeLogsInput>
+  }
+
+  export type AttendanceUpdateWithoutPracticeLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    present?: BoolFieldUpdateOperationsInput | boolean
+    hoursTrained?: FloatFieldUpdateOperationsInput | number
+    sessionType?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    isOutOfSchedule?: BoolFieldUpdateOperationsInput | boolean
+    punchedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: ClassSessionUpdateOneWithoutAttendancesNestedInput
+    student?: StudentUpdateOneRequiredWithoutAttendancesNestedInput
+    class?: ClassUpdateOneWithoutAttendancesNestedInput
+    recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
+    recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
+    confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
+  }
+
+  export type AttendanceUncheckedUpdateWithoutPracticeLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    studentId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    present?: BoolFieldUpdateOperationsInput | boolean
+    hoursTrained?: FloatFieldUpdateOperationsInput | number
+    sessionType?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    classId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOutOfSchedule?: BoolFieldUpdateOperationsInput | boolean
+    recoveredById?: NullableStringFieldUpdateOperationsInput | string | null
+    punchedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+  }
+
+  export type StudentTechniqueCreateWithoutEvaluationInput = {
+    id?: string
+    approved?: boolean
+    approvedAt?: Date | string | null
+    inPractice?: boolean
+    practiceHours?: number
+    practiceRepetitions?: number
+    lastPracticeDate?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    student: StudentCreateNestedOneWithoutTechniquesInput
+    technique: TechniqueCreateNestedOneWithoutStudentsInput
+    approvedByUser?: UserCreateNestedOneWithoutTechniquesApprovedInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentTechniqueInput
   }
 
   export type StudentTechniqueUncheckedCreateWithoutEvaluationInput = {
@@ -61638,9 +63715,11 @@ export namespace Prisma {
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
+    practiceRepetitions?: number
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentTechniqueInput
   }
 
   export type StudentTechniqueCreateOrConnectWithoutEvaluationInput = {
@@ -61728,12 +63807,14 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentUpdateOneRequiredWithoutTechniquesNestedInput
     technique?: TechniqueUpdateOneRequiredWithoutStudentsNestedInput
     approvedByUser?: UserUpdateOneWithoutTechniquesApprovedNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutStudentTechniqueNestedInput
   }
 
   export type StudentTechniqueUncheckedUpdateWithoutEvaluationInput = {
@@ -61745,9 +63826,11 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentTechniqueNestedInput
   }
 
   export type UserUpsertWithoutTechniqueEvaluationsInput = {
@@ -62173,6 +64256,7 @@ export namespace Prisma {
     recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
     recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
     confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceUncheckedCreateWithoutClassInput = {
@@ -62193,6 +64277,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceCreateOrConnectWithoutClassInput = {
@@ -62687,6 +64772,7 @@ export namespace Prisma {
     recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
     recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
     confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceUncheckedCreateWithoutSessionInput = {
@@ -62707,6 +64793,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceCreateOrConnectWithoutSessionInput = {
@@ -62945,6 +65032,7 @@ export namespace Prisma {
     class?: ClassCreateNestedOneWithoutAttendancesInput
     recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
     confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceUncheckedCreateWithoutRecoveryInput = {
@@ -62965,6 +65053,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceCreateOrConnectWithoutRecoveryInput = {
@@ -62990,6 +65079,7 @@ export namespace Prisma {
     class?: ClassCreateNestedOneWithoutAttendancesInput
     recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
     confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceUncheckedCreateWithoutRecoveredByInput = {
@@ -63010,6 +65100,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceCreateOrConnectWithoutRecoveredByInput = {
@@ -63078,6 +65169,36 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutAttendanceConfirmationsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutAttendanceConfirmationsInput, UserUncheckedCreateWithoutAttendanceConfirmationsInput>
+  }
+
+  export type TechniquePracticeLogCreateWithoutAttendanceInput = {
+    id?: string
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    createdAt?: Date | string
+    studentTechnique: StudentTechniqueCreateNestedOneWithoutPracticeLogsInput
+  }
+
+  export type TechniquePracticeLogUncheckedCreateWithoutAttendanceInput = {
+    id?: string
+    studentTechniqueId: string
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type TechniquePracticeLogCreateOrConnectWithoutAttendanceInput = {
+    where: TechniquePracticeLogWhereUniqueInput
+    create: XOR<TechniquePracticeLogCreateWithoutAttendanceInput, TechniquePracticeLogUncheckedCreateWithoutAttendanceInput>
+  }
+
+  export type TechniquePracticeLogCreateManyAttendanceInputEnvelope = {
+    data: TechniquePracticeLogCreateManyAttendanceInput | TechniquePracticeLogCreateManyAttendanceInput[]
+    skipDuplicates?: boolean
   }
 
   export type ClassSessionUpsertWithoutAttendancesInput = {
@@ -63274,6 +65395,7 @@ export namespace Prisma {
     class?: ClassUpdateOneWithoutAttendancesNestedInput
     recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
     confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateWithoutRecoveryInput = {
@@ -63294,6 +65416,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUpsertWithoutRecoveredByInput = {
@@ -63325,6 +65448,7 @@ export namespace Prisma {
     class?: ClassUpdateOneWithoutAttendancesNestedInput
     recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
     confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateWithoutRecoveredByInput = {
@@ -63345,6 +65469,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 
   export type UserUpsertWithoutAttendanceConfirmationsInput = {
@@ -63414,6 +65539,22 @@ export namespace Prisma {
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
+  }
+
+  export type TechniquePracticeLogUpsertWithWhereUniqueWithoutAttendanceInput = {
+    where: TechniquePracticeLogWhereUniqueInput
+    update: XOR<TechniquePracticeLogUpdateWithoutAttendanceInput, TechniquePracticeLogUncheckedUpdateWithoutAttendanceInput>
+    create: XOR<TechniquePracticeLogCreateWithoutAttendanceInput, TechniquePracticeLogUncheckedCreateWithoutAttendanceInput>
+  }
+
+  export type TechniquePracticeLogUpdateWithWhereUniqueWithoutAttendanceInput = {
+    where: TechniquePracticeLogWhereUniqueInput
+    data: XOR<TechniquePracticeLogUpdateWithoutAttendanceInput, TechniquePracticeLogUncheckedUpdateWithoutAttendanceInput>
+  }
+
+  export type TechniquePracticeLogUpdateManyWithWhereWithoutAttendanceInput = {
+    where: TechniquePracticeLogScalarWhereInput
+    data: XOR<TechniquePracticeLogUpdateManyMutationInput, TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceInput>
   }
 
   export type SchoolCreateWithoutAchievementTypesInput = {
@@ -65937,6 +68078,7 @@ export namespace Prisma {
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
+    practiceRepetitions?: number
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
@@ -66239,12 +68381,14 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentUpdateOneRequiredWithoutTechniquesNestedInput
     technique?: TechniqueUpdateOneRequiredWithoutStudentsNestedInput
     evaluation?: TechniqueEvaluationUpdateOneWithoutStudentTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutStudentTechniqueNestedInput
   }
 
   export type StudentTechniqueUncheckedUpdateWithoutApprovedByUserInput = {
@@ -66255,10 +68399,12 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     evaluation?: TechniqueEvaluationUncheckedUpdateOneWithoutStudentTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentTechniqueNestedInput
   }
 
   export type StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserInput = {
@@ -66269,6 +68415,7 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66355,6 +68502,7 @@ export namespace Prisma {
     class?: ClassUpdateOneWithoutAttendancesNestedInput
     recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
     recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateWithoutConfirmedByInput = {
@@ -66375,6 +68523,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateManyWithoutConfirmedByInput = {
@@ -66650,6 +68799,7 @@ export namespace Prisma {
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
+    practiceRepetitions?: number
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
@@ -66819,6 +68969,7 @@ export namespace Prisma {
     recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
     recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
     confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateWithoutStudentInput = {
@@ -66839,6 +68990,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateManyWithoutStudentInput = {
@@ -66899,12 +69051,14 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     technique?: TechniqueUpdateOneRequiredWithoutStudentsNestedInput
     approvedByUser?: UserUpdateOneWithoutTechniquesApprovedNestedInput
     evaluation?: TechniqueEvaluationUpdateOneWithoutStudentTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutStudentTechniqueNestedInput
   }
 
   export type StudentTechniqueUncheckedUpdateWithoutStudentInput = {
@@ -66915,10 +69069,12 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     evaluation?: TechniqueEvaluationUncheckedUpdateOneWithoutStudentTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentTechniqueNestedInput
   }
 
   export type StudentTechniqueUncheckedUpdateManyWithoutStudentInput = {
@@ -66929,6 +69085,7 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -67556,6 +69713,7 @@ export namespace Prisma {
     approvedAt?: Date | string | null
     inPractice?: boolean
     practiceHours?: number
+    practiceRepetitions?: number
     lastPracticeDate?: Date | string | null
     notes?: string | null
     createdAt?: Date | string
@@ -67663,12 +69821,14 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentUpdateOneRequiredWithoutTechniquesNestedInput
     approvedByUser?: UserUpdateOneWithoutTechniquesApprovedNestedInput
     evaluation?: TechniqueEvaluationUpdateOneWithoutStudentTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutStudentTechniqueNestedInput
   }
 
   export type StudentTechniqueUncheckedUpdateWithoutTechniqueInput = {
@@ -67679,10 +69839,12 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     evaluation?: TechniqueEvaluationUncheckedUpdateOneWithoutStudentTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentTechniqueNestedInput
   }
 
   export type StudentTechniqueUncheckedUpdateManyWithoutTechniqueInput = {
@@ -67693,8 +69855,49 @@ export namespace Prisma {
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     inPractice?: BoolFieldUpdateOperationsInput | boolean
     practiceHours?: FloatFieldUpdateOperationsInput | number
+    practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TechniquePracticeLogCreateManyStudentTechniqueInput = {
+    id?: string
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    attendanceId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type TechniquePracticeLogUpdateWithoutStudentTechniqueInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendance?: AttendanceUpdateOneWithoutPracticeLogsNestedInput
+  }
+
+  export type TechniquePracticeLogUncheckedUpdateWithoutStudentTechniqueInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TechniquePracticeLogUncheckedUpdateManyWithoutStudentTechniqueInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -67949,6 +70152,7 @@ export namespace Prisma {
     recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
     recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
     confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateWithoutClassInput = {
@@ -67969,6 +70173,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateManyWithoutClassInput = {
@@ -68027,6 +70232,7 @@ export namespace Prisma {
     recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
     recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
     confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateWithoutSessionInput = {
@@ -68047,6 +70253,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 
   export type AttendanceUncheckedUpdateManyWithoutSessionInput = {
@@ -68066,6 +70273,46 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TechniquePracticeLogCreateManyAttendanceInput = {
+    id?: string
+    studentTechniqueId: string
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    createdAt?: Date | string
+  }
+
+  export type TechniquePracticeLogUpdateWithoutAttendanceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    studentTechnique?: StudentTechniqueUpdateOneRequiredWithoutPracticeLogsNestedInput
+  }
+
+  export type TechniquePracticeLogUncheckedUpdateWithoutAttendanceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentTechniqueId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentTechniqueId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StudentAchievementCreateManyTypeInput = {

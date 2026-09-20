@@ -198,6 +198,7 @@ function TechniqueRow({
                     {technique.level && <div className="mt-1"><KataBeltChip beltColor={technique.beltColor} beltSecondaryColor={technique.beltSecondaryColor} level={technique.level} /></div>}
                     {technique.description && <p className="mt-1 text-sm text-neutral-400">{technique.description}</p>}
                     {technique.practiceHours > 0 && <p className="mt-1.5 text-xs font-semibold text-neutral-300"><Clock aria-hidden="true" className="mr-1 inline size-3.5 text-cyan-400" />{technique.practiceHours}h de práctica</p>}
+                    {technique.practiceRepetitions > 0 && <p className="mt-1 text-xs font-semibold text-neutral-300"><RefreshCw aria-hidden="true" className="mr-1 inline size-3.5 text-cyan-400" />{technique.practiceRepetitions} rep.{technique.targetRepetitions ? ` / ${technique.targetRepetitions}` : ''}</p>}
                 </div>
                 <div aria-label={`Estado de ${technique.name}`} className="inline-flex rounded-md border border-neutral-700 bg-[#0d1117] p-1 text-xs font-bold">
                     {([

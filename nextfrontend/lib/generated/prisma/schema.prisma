@@ -432,24 +432,47 @@ model Technique {
 }
 
 model StudentTechnique {
-  id               String               @id @default(cuid())
-  studentId        String
-  techniqueId      String
-  student          Student              @relation(fields: [studentId], references: [id])
-  technique        Technique            @relation(fields: [techniqueId], references: [id])
-  approved         Boolean              @default(false)
-  approvedBy       String?
-  approvedByUser   User?                @relation("techniqueApprovedBy", fields: [approvedBy], references: [id], onDelete: SetNull)
-  approvedAt       DateTime?
-  inPractice       Boolean              @default(false)
-  practiceHours    Float                @default(0)
-  lastPracticeDate DateTime?
-  notes            String?
-  evaluation       TechniqueEvaluation?
-  createdAt        DateTime             @default(now())
+  id                  String                 @id @default(cuid())
+  studentId           String
+  techniqueId         String
+  student             Student                @relation(fields: [studentId], references: [id])
+  technique           Technique              @relation(fields: [techniqueId], references: [id])
+  approved            Boolean                @default(false)
+  approvedBy          String?
+  approvedByUser      User?                  @relation("techniqueApprovedBy", fields: [approvedBy], references: [id], onDelete: SetNull)
+  approvedAt          DateTime?
+  inPractice          Boolean                @default(false)
+  practiceHours       Float                  @default(0)
+  practiceRepetitions Int                    @default(0) // total acumulado de repeticiones registradas
+  lastPracticeDate    DateTime?
+  notes               String?
+  evaluation          TechniqueEvaluation?
+  practiceLogs        TechniquePracticeLog[]
+  createdAt           DateTime               @default(now())
 
   @@unique([studentId, techniqueId])
   @@index([approvedBy])
+}
+
+enum PracticePlace {
+  DOJO
+  FUERA
+}
+
+model TechniquePracticeLog {
+  id                 String           @id @default(cuid())
+  studentTechniqueId String
+  studentTechnique   StudentTechnique @relation(fields: [studentTechniqueId], references: [id], onDelete: Cascade)
+  date               DateTime         @default(now())
+  repetitions        Int
+  place              PracticePlace    @default(DOJO)
+  notes              String?
+  attendanceId       String?
+  attendance         Attendance?      @relation(fields: [attendanceId], references: [id], onDelete: SetNull)
+  createdAt          DateTime         @default(now())
+
+  @@index([studentTechniqueId, date])
+  @@index([attendanceId])
 }
 
 model TechniqueEvaluation {
@@ -560,29 +583,30 @@ enum ScholarshipType {
 }
 
 model Attendance {
-  id              String           @id @default(cuid())
+  id              String                 @id @default(cuid())
   sessionId       String?
-  session         ClassSession?    @relation(fields: [sessionId], references: [id])
+  session         ClassSession?          @relation(fields: [sessionId], references: [id])
   studentId       String
-  student         Student          @relation(fields: [studentId], references: [id])
-  date            DateTime         @default(now()) // fecha del registro (punch-in o pase de lista)
-  present         Boolean          @default(true)
-  hoursTrained    Float            @default(1)
+  student         Student                @relation(fields: [studentId], references: [id])
+  date            DateTime               @default(now()) // fecha del registro (punch-in o pase de lista)
+  present         Boolean                @default(true)
+  hoursTrained    Float                  @default(1)
   sessionType     String?
-  status          AttendanceStatus @default(PENDING)
+  status          AttendanceStatus       @default(PENDING)
   classId         String? // horario en el que asistió efectivamente
-  class           Class?           @relation(fields: [classId], references: [id])
-  isOutOfSchedule Boolean          @default(false) // asistió a un horario distinto al de su referencia
-  recoveredById   String?          @unique // asistencia (fuera de horario) que recuperó una falta justificada
-  recoveredBy     Attendance?      @relation("recovery", fields: [recoveredById], references: [id])
-  recovery        Attendance?      @relation("recovery")
-  punchedAt       DateTime         @default(now())
+  class           Class?                 @relation(fields: [classId], references: [id])
+  isOutOfSchedule Boolean                @default(false) // asistió a un horario distinto al de su referencia
+  recoveredById   String?                @unique // asistencia (fuera de horario) que recuperó una falta justificada
+  recoveredBy     Attendance?            @relation("recovery", fields: [recoveredById], references: [id])
+  recovery        Attendance?            @relation("recovery")
+  punchedAt       DateTime               @default(now())
   confirmedAt     DateTime?
   confirmedById   String?
-  confirmedBy     User?            @relation("attendanceConfirmer", fields: [confirmedById], references: [id])
+  confirmedBy     User?                  @relation("attendanceConfirmer", fields: [confirmedById], references: [id])
   notes           String?
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  practiceLogs    TechniquePracticeLog[]
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
 
   @@unique([sessionId, studentId])
   @@index([studentId, date])

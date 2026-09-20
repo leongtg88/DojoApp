@@ -443,13 +443,36 @@ model StudentTechnique {
   approvedAt       DateTime?
   inPractice       Boolean              @default(false)
   practiceHours    Float                @default(0)
+  practiceRepetitions Int               @default(0) // total acumulado de repeticiones registradas
   lastPracticeDate DateTime?
   notes            String?
   evaluation       TechniqueEvaluation?
+  practiceLogs     TechniquePracticeLog[]
   createdAt        DateTime             @default(now())
 
   @@unique([studentId, techniqueId])
   @@index([approvedBy])
+}
+
+enum PracticePlace {
+  DOJO
+  FUERA
+}
+
+model TechniquePracticeLog {
+  id                 String           @id @default(cuid())
+  studentTechniqueId String
+  studentTechnique   StudentTechnique @relation(fields: [studentTechniqueId], references: [id], onDelete: Cascade)
+  date               DateTime         @default(now())
+  repetitions        Int
+  place              PracticePlace    @default(DOJO)
+  notes              String?
+  attendanceId       String?
+  attendance         Attendance?      @relation(fields: [attendanceId], references: [id], onDelete: SetNull)
+  createdAt          DateTime         @default(now())
+
+  @@index([studentTechniqueId, date])
+  @@index([attendanceId])
 }
 
 model TechniqueEvaluation {
@@ -581,6 +604,7 @@ model Attendance {
   confirmedById   String?
   confirmedBy     User?            @relation("attendanceConfirmer", fields: [confirmedById], references: [id])
   notes           String?
+  practiceLogs    TechniquePracticeLog[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 

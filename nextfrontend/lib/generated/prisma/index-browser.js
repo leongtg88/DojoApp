@@ -345,8 +345,20 @@ exports.Prisma.StudentTechniqueScalarFieldEnum = {
   approvedAt: 'approvedAt',
   inPractice: 'inPractice',
   practiceHours: 'practiceHours',
+  practiceRepetitions: 'practiceRepetitions',
   lastPracticeDate: 'lastPracticeDate',
   notes: 'notes',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.TechniquePracticeLogScalarFieldEnum = {
+  id: 'id',
+  studentTechniqueId: 'studentTechniqueId',
+  date: 'date',
+  repetitions: 'repetitions',
+  place: 'place',
+  notes: 'notes',
+  attendanceId: 'attendanceId',
   createdAt: 'createdAt'
 };
 
@@ -609,6 +621,11 @@ exports.TechniqueCategory = exports.$Enums.TechniqueCategory = {
   BUNKAI: 'BUNKAI'
 };
 
+exports.PracticePlace = exports.$Enums.PracticePlace = {
+  DOJO: 'DOJO',
+  FUERA: 'FUERA'
+};
+
 exports.ClassAudience = exports.$Enums.ClassAudience = {
   ADULTS: 'ADULTS',
   CHILDREN: 'CHILDREN',
@@ -676,6 +693,7 @@ exports.Prisma.ModelName = {
   StudentRankHistory: 'StudentRankHistory',
   Technique: 'Technique',
   StudentTechnique: 'StudentTechnique',
+  TechniquePracticeLog: 'TechniquePracticeLog',
   TechniqueEvaluation: 'TechniqueEvaluation',
   Plan: 'Plan',
   Class: 'Class',
