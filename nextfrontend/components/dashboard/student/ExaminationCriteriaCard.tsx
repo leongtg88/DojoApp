@@ -1,4 +1,5 @@
 import { CheckCircle2, Clock, History } from 'lucide-react'
+import { formatHoursHM } from '@/lib/dashboard/balance'
 import type { GradoProgressData } from '@/types/dashboard'
 
 interface ExaminationCriteriaCardProps {
@@ -12,7 +13,7 @@ export function ExaminationCriteriaCard({ grado }: ExaminationCriteriaCardProps)
     const currentPeriod = grado.currentPeriod
     const hoursGoal = hoursReq?.effectiveRequiredHours ?? hoursReq?.requiredHours ?? null
     const hoursPending = hoursReq && hoursGoal != null
-        ? Math.max(0, Number((hoursGoal - hoursReq.classHours).toFixed(1)))
+        ? Math.max(0, hoursGoal - hoursReq.classHours)
         : 0
     const hasCredit = (hoursReq?.creditHours ?? 0) > 0
     const monthBreakdown = currentPeriod && currentPeriod.monthAbsences.length > 0
@@ -52,15 +53,15 @@ export function ExaminationCriteriaCard({ grado }: ExaminationCriteriaCardProps)
                     {hoursReq && hoursGoal != null ? (
                         <>
                             <p className="mt-3 font-display text-2xl font-extrabold text-white">
-                                {hoursReq.classHours}
-                                <span className="text-xs font-normal text-neutral-400"> / {hoursGoal} h</span>
+                                {formatHoursHM(hoursReq.classHours)}
+                                <span className="text-xs font-normal text-neutral-400"> / {formatHoursHM(hoursGoal)} h</span>
                             </p>
                             <p className={`mt-1 text-xs ${hoursReq.met ? 'text-emerald-300' : 'text-amber-300'}`}>
                                 {hoursReq.met
-                                    ? hasCredit ? `Cumplido · crédito ${hoursReq.creditHours} h` : 'Mínimo del plan cumplido'
-                                    : `Reponer ${hoursPending} h para el examen`}
+                                    ? hasCredit ? `Cumplido · crédito ${formatHoursHM(hoursReq.creditHours)}` : 'Mínimo del plan cumplido'
+                                    : `Reponer ${formatHoursHM(hoursPending)} para el examen`}
                             </p>
-                            <p className="mt-1 text-[11px] text-neutral-500">extra ponderable {hoursReq.extraHours} h</p>
+                            <p className="mt-1 text-[11px] text-neutral-500">extra ponderable {formatHoursHM(hoursReq.extraHours)}</p>
                         </>
                     ) : (
                         <>

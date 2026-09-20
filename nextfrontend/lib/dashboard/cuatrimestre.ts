@@ -84,9 +84,17 @@ export function lastDayOf(cuatrimestre: Cuatrimestre): Date {
   return startOfDay(last)
 }
 
-/** Último día de la semana indicada dentro del cuatrimestre (fecha tentativa de examen). */
+/** Fecha tentativa de examen: para Sep–Dic cae la primera semana de diciembre; en el resto, el último día de examen del cuatrimestre. */
 export function tentativeExamDate(cuatrimestre: Cuatrimestre, examDay: ExamDayValue): Date {
   const weekday = EXAM_DAY_WEEKDAY[examDay]
+
+  if (cuatrimestre.index === 2) {
+    const first = new Date(cuatrimestre.year, 11, 1)
+    const diff = (weekday - first.getDay() + 7) % 7
+    first.setDate(first.getDate() + diff)
+    return startOfDay(first)
+  }
+
   const last = lastDayOf(cuatrimestre)
   const diff = (last.getDay() - weekday + 7) % 7
   last.setDate(last.getDate() - diff)

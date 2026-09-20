@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { CalendarCheck2, ClipboardCheck, Star, Timer } from 'lucide-react'
+import { formatHoursHM } from '@/lib/dashboard/balance'
 import type { AttendanceSummary, GradoProgressData, StudentTechnique } from '@/types/dashboard'
 
 interface StudentMetricsGridProps {
@@ -21,15 +22,16 @@ export function StudentMetricsGrid({ attendance, techniques, grado = null }: Stu
     const currentPeriod = grado?.currentPeriod ?? null
 
     const hoursGoal = hoursReq?.effectiveRequiredHours ?? hoursReq?.requiredHours ?? null
+    const hoursPending = hoursReq && hoursGoal != null ? Math.max(0, hoursGoal - hoursReq.classHours) : 0
     const hoursValue = hoursReq
         ? hoursReq.exempt
-            ? `${hoursReq.classHours} h`
-            : `${hoursReq.classHours} / ${hoursGoal} h`
-        : `${practiceHours} h`
+            ? formatHoursHM(hoursReq.classHours)
+            : `${formatHoursHM(hoursReq.classHours)} / ${formatHoursHM(hoursGoal ?? 0)}`
+        : formatHoursHM(practiceHours)
     const hoursDetail = hoursReq
         ? hoursReq.exempt
             ? `Plan exento · ${hoursReq.label}`
-            : `${hoursReq.met ? 'Mínimo cumplido' : 'Horas por reponer'} · extra ponderable ${hoursReq.extraHours} h · crédito ${hoursReq.creditHours} h`
+            : `${hoursReq.label} · ${hoursReq.met ? 'Mínimo cumplido' : `faltan ${formatHoursHM(hoursPending)}`}${hoursReq.extraHours > 0 ? ` · extra ponderable ${formatHoursHM(hoursReq.extraHours)}` : ''}${hoursReq.creditHours > 0 ? ` · crédito ${formatHoursHM(hoursReq.creditHours)}` : ''}`
         : `${kataCount} katas asignadas · ${totalRepetitions} rep.`
 
     const monthBreakdown = currentPeriod && currentPeriod.monthAbsences.length > 0

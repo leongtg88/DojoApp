@@ -39,6 +39,16 @@ export function classHours(cls: { startTime: string; endTime: string }): number 
   return hoursFromTimes(cls.startTime, cls.endTime)
 }
 
+/** Formatea horas decimales (ej. 43.76) a "43h 46m" redondeando al minuto. */
+export function formatHoursHM(hours: number): string {
+  const totalMinutes = Math.max(0, Math.round(hours * 60))
+  const h = Math.floor(totalMinutes / 60)
+  const m = totalMinutes % 60
+  if (h === 0) return `${m}m`
+  if (m === 0) return `${h}h`
+  return `${h}h ${m}m`
+}
+
 export function isTimeWithin(startTime: string, endTime: string, minutes: number, toleranceMinutes = 60): boolean {
   const start = timeToMinutes(startTime)
   let end = timeToMinutes(endTime)

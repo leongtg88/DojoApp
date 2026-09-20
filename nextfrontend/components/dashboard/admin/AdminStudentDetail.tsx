@@ -219,7 +219,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 							<div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-neutral-400">
 								<span className="inline-flex items-center gap-1.5"><MapPin aria-hidden="true" className="size-3.5 text-cyan-400" />{student.branchName}</span>
 								{student.contactPhone && <span className="inline-flex items-center gap-1.5"><Phone aria-hidden="true" className="size-3.5 text-cyan-400" />{student.contactPhone}</span>}
-								<span className="inline-flex items-center gap-1.5"><CalendarDays aria-hidden="true" className="size-3.5 text-cyan-400" />Alta: {formatDateTime(student.enrollmentDate)}</span>
+								<span className="inline-flex items-center gap-1.5"><CalendarDays aria-hidden="true" className="size-3.5 text-cyan-400" />Alta: <span suppressHydrationWarning>{formatDateTime(student.enrollmentDate)}</span></span>
 							</div>
 						</div>
 					</div>
@@ -241,7 +241,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 								{currentRankInfo?.kyuDan && <p className="text-xs font-semibold text-cyan-300">{currentRankInfo.kyuDan}</p>}
 							</div>
 						</div>
-						<p className="mt-2 text-[11px] text-neutral-400">Otorgado: {formatDateTime(student.rankAwardedAt)}</p>
+						<p className="mt-2 text-[11px] text-neutral-400">Otorgado: <span suppressHydrationWarning>{formatDateTime(student.rankAwardedAt)}</span></p>
 					</div>
 
 					<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
@@ -390,7 +390,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 											</div>
 											<div className="flex items-center gap-3">
 												<KataBadge status={entry.status} />
-												{entry.approvedAt && <span className="text-[11px] text-neutral-400">{formatDateTime(entry.approvedAt)}</span>}
+												{entry.approvedAt && <span className="text-[11px] text-neutral-400" suppressHydrationWarning>{formatDateTime(entry.approvedAt)}</span>}
 											</div>
 										</div>
 										{entry.practiceLogs.length > 0 && (
@@ -453,7 +453,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 										<div className="flex items-center gap-3">
 											<span className={`size-2 shrink-0 rounded-full ${entry.present ? 'bg-emerald-400' : 'bg-red-400'}`} />
 											<div>
-												<p className="font-bold text-white">{formatDateTime(entry.date)}</p>
+												<p className="font-bold text-white" suppressHydrationWarning>{formatDateTime(entry.date)}</p>
 												<p className="text-[11px] text-neutral-400">
 													{entry.className ?? 'Sin clase'} · {entry.hoursTrained} h{entry.sessionType ? ` · ${entry.sessionType}` : ''}
 												</p>
@@ -491,7 +491,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 						<div className="mt-4 grid gap-4 sm:grid-cols-3">
 							<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
 								<p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Fecha de inscripción</p>
-								<p className="mt-1 text-sm font-semibold text-white">{formatDateTime(student.registration.registeredAt)}</p>
+								<p className="mt-1 text-sm font-semibold text-white" suppressHydrationWarning>{formatDateTime(student.registration.registeredAt)}</p>
 							</div>
 							<div className="rounded-lg border border-neutral-800 bg-[#0d1117] p-4">
 								<p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Referencia</p>
@@ -538,7 +538,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 								{student.registration.applicants.map((applicant) => (
 									<li key={applicant.id} className="flex items-center justify-between gap-3 py-2.5 text-sm">
 										<span className="font-semibold text-white">{applicant.name}</span>
-										<span className="text-xs text-neutral-400">{formatDate(applicant.dateOfBirth)}</span>
+										<span className="text-xs text-neutral-400" suppressHydrationWarning>{formatDate(applicant.dateOfBirth)}</span>
 									</li>
 								))}
 							</ul>
@@ -554,7 +554,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 							<Stethoscope aria-hidden="true" className="size-4 text-cyan-400" />
 							<h2 className="font-display text-base font-bold text-white">Ficha médica</h2>
 						</div>
-						<p className="mt-3 text-sm text-neutral-300"><span className="font-semibold text-neutral-200">Fecha de nacimiento:</span> {formatDate(student.dateOfBirth)}</p>
+						<p className="mt-3 text-sm text-neutral-300"><span className="font-semibold text-neutral-200">Fecha de nacimiento:</span> <span suppressHydrationWarning>{formatDate(student.dateOfBirth)}</span></p>
 						<p className="mt-2 text-sm text-neutral-300"><span className="font-semibold text-neutral-200">Información médica:</span> {student.medicalInfo || 'Sin información registrada.'}</p>
 					</div>
 					<div className="rounded-lg border border-neutral-800 bg-[#161b22] p-5 shadow-sm">
@@ -564,9 +564,9 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 				</section>
 			)}
 
-			<AdminStudentMedia key={student.id} documents={student.documents} />
+			<AdminStudentMedia documents={student.documents} />
 
-			<AdminStudentDocuments key={student.id} documents={student.documents} studentId={student.id} />
+			<AdminStudentDocuments documents={student.documents} studentId={student.id} />
 
 			<section className="mt-7 rounded-lg border border-neutral-800 bg-[#161b22] shadow-sm">
 				<div className="flex items-center justify-between border-b border-neutral-800 px-5 py-4">
@@ -586,7 +586,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 								<div>
 									<p className="text-sm font-semibold text-white">{entry.rankName}</p>
 									<p className="mt-1 inline-flex items-center gap-1.5 text-xs text-neutral-400">
-										<CalendarDays aria-hidden="true" className="size-3.5 text-cyan-400" />{formatDateTime(entry.promotedAt)} · {entry.promoterName ?? 'Sin responsable registrado'}
+										<CalendarDays aria-hidden="true" className="size-3.5 text-cyan-400" /><span suppressHydrationWarning>{formatDateTime(entry.promotedAt)}</span> · {entry.promoterName ?? 'Sin responsable registrado'}
 									</p>
 									{entry.examinerName && <p className="mt-1 text-xs text-neutral-400">Sensei examinador: <span className="text-neutral-200">{entry.examinerName}</span></p>}
 									{entry.notes && <p className="mt-2 text-sm text-neutral-300">{entry.notes}</p>}
