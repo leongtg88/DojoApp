@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
 import { InstructorDashboardOverview } from '@/components/dashboard/instructor/InstructorDashboardOverview'
-import { getInstructorClasses, getInstructorStudents, getInstructorUpcomingBirthdays } from '@/lib/dashboard/instructor-queries'
+import { getInstructorClasses, getInstructorPendingCount, getInstructorStudents, getInstructorUpcomingBirthdays } from '@/lib/dashboard/instructor-queries'
 import { redirect } from 'next/navigation'
 import { hasRole } from '@/lib/auth/roles'
 
@@ -11,11 +11,12 @@ export default async function InstructorDashboardPage() {
         redirect('/no-autorizado')
     }
 
-    const [birthdays, classes, students] = await Promise.all([
+    const [birthdays, classes, students, pendingCount] = await Promise.all([
         getInstructorUpcomingBirthdays(session.user.id),
         getInstructorClasses(session.user.id),
         getInstructorStudents(session.user.id),
+        getInstructorPendingCount(session.user.id),
     ])
 
-    return <InstructorDashboardOverview birthdays={birthdays} classes={classes} students={students} />
+    return <InstructorDashboardOverview birthdays={birthdays} classes={classes} pendingCount={pendingCount} students={students} />
 }

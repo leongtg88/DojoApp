@@ -69,19 +69,19 @@ export function StudentProfileDetails({ profile }: StudentProfileDetailsProps) {
 
     return (
         <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-            <p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">Mi perfil</p>
-            <h1 className="mt-2 font-display text-3xl font-extrabold text-white">Datos del dojo</h1>
-            <p className="mt-2 text-sm text-neutral-400">Información registrada en la secretaría del dojo Tosei Gusoku.</p>
+            <p className="text-sm font-semibold uppercase tracking-wide text-accent">Mi perfil</p>
+            <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Datos del dojo</h1>
+            <p className="mt-2 text-sm text-ink-3">Información registrada en la secretaría del dojo Tosei Gusoku.</p>
 
-            <section className="mt-7 rounded-xl border border-neutral-800 bg-[#161b22] p-5 shadow-sm sm:p-6">
+            <section className="mt-7 rounded-xl border border-edge bg-surface-2 p-5 shadow-sm sm:p-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                    <div className="flex size-16 shrink-0 items-center justify-center rounded-xl border-2 border-neutral-700 bg-[#0d1117] font-display text-xl font-extrabold text-cyan-100">
+                    <div className="flex size-16 shrink-0 items-center justify-center rounded-xl border-2 border-edge-strong bg-surface-1 font-display text-xl font-extrabold text-accent-text">
                         {initials}
                     </div>
                     <div className="min-w-0">
-                        <h2 className="font-display text-xl font-bold text-white">{profile.firstName} {profile.lastName}</h2>
-                        <p className="mt-1 font-mono text-xs text-neutral-400">Expediente {expediente} · Ingreso {formatLongDate(profile.enrollmentDate)}</p>
-                        <div className="mt-2 inline-flex items-center gap-2 rounded-md border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 text-xs font-bold text-cyan-200">
+                        <h2 className="font-display text-xl font-bold text-ink">{profile.firstName} {profile.lastName}</h2>
+                        <p className="mt-1 font-mono text-xs text-ink-3">Expediente {expediente} · Ingreso {formatLongDate(profile.enrollmentDate)}</p>
+                        <div className="mt-2 inline-flex items-center gap-2 rounded-md border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 text-xs font-bold text-accent-text">
                             <GraduationCap aria-hidden="true" className="size-3.5" />
                             {profile.currentRank?.name ?? 'Sin grado asignado'}
                         </div>
@@ -100,10 +100,10 @@ export function StudentProfileDetails({ profile }: StudentProfileDetailsProps) {
 
 function ProfileSection({ title, icon: Icon, fields }: ProfileSectionProps) {
     return (
-        <section className="rounded-xl border border-neutral-800 bg-[#161b22] p-5 shadow-sm">
-            <div className="flex items-center gap-2 border-b border-neutral-800 pb-3">
-                <Icon aria-hidden="true" className="size-4 text-cyan-400" />
-                <h3 className="font-display text-xs font-extrabold uppercase tracking-widest text-neutral-200">{title}</h3>
+        <section className="rounded-xl border border-edge bg-surface-2 p-5 shadow-sm">
+            <div className="flex items-center gap-2 border-b border-edge pb-3">
+                <Icon aria-hidden="true" className="size-4 text-accent" />
+                <h3 className="font-display text-xs font-extrabold uppercase tracking-widest text-ink">{title}</h3>
             </div>
             <dl className="mt-4 space-y-4">
                 {fields.map((field) => {
@@ -112,10 +112,10 @@ function ProfileSection({ title, icon: Icon, fields }: ProfileSectionProps) {
 
                     return (
                         <div className="flex gap-3" key={field.label}>
-                            <IconField aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-neutral-500" />
+                            <IconField aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-ink-4" />
                             <div className="min-w-0">
-                                <dt className="text-[10px] font-bold uppercase tracking-wide text-neutral-500">{field.label}</dt>
-                                <dd className={`mt-0.5 break-words text-sm font-medium ${isEmpty ? 'text-neutral-500' : 'text-white'}`}>{field.value}</dd>
+                                <dt className="text-[10px] font-bold uppercase tracking-wide text-ink-4">{field.label}</dt>
+                                <dd className={`mt-0.5 break-words text-sm font-medium ${isEmpty ? 'text-ink-4' : 'text-ink'}`}>{field.value}</dd>
                             </div>
                         </div>
                     )

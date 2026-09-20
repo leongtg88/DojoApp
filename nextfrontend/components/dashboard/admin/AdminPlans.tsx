@@ -120,9 +120,9 @@ export function AdminPlans({ plans }: AdminPlansProps) {
         <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">Administración</p>
-                    <h1 className="mt-2 font-display text-3xl font-extrabold text-white">Planes y mensualidades</h1>
-                    <p className="mt-2 max-w-xl text-sm text-neutral-400">
+                    <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
+                    <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Planes y mensualidades</h1>
+                    <p className="mt-2 max-w-xl text-sm text-ink-3">
                         Los planes definen las horas mensuales de referencia para calcular el balance de cada alumno.
                     </p>
                 </div>
@@ -137,23 +137,23 @@ export function AdminPlans({ plans }: AdminPlansProps) {
             </div>
 
             {error && (
-                <p className="mt-4 rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">{error}</p>
+                <p className="mt-4 rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-danger-text">{error}</p>
             )}
 
             {(creating || editing) && (
-                <section className="mt-6 rounded-lg border border-neutral-800 bg-[#161b22] p-5">
-                    <h2 className="font-display text-lg font-bold text-white">{editing ? 'Editar plan' : 'Nuevo plan'}</h2>
+                <section className="mt-6 rounded-lg border border-edge bg-surface-2 p-5">
+                    <h2 className="font-display text-lg font-bold text-ink">{editing ? 'Editar plan' : 'Nuevo plan'}</h2>
                     <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                        <label className="text-sm text-neutral-300">
+                        <label className="text-sm text-ink-2">
                             Nombre
                             <input
                                 value={form.name}
                                 onChange={(event) => setForm({ ...form, name: event.target.value })}
-                                className="mt-1 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
+                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
                                 placeholder="Ej: Básico"
                             />
                         </label>
-                        <label className="text-sm text-neutral-300">
+                        <label className="text-sm text-ink-2">
                             Horas mensuales
                             <input
                                 type="number"
@@ -161,21 +161,21 @@ export function AdminPlans({ plans }: AdminPlansProps) {
                                 max="500"
                                 value={form.monthlyHours}
                                 onChange={(event) => setForm({ ...form, monthlyHours: event.target.value })}
-                                className="mt-1 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
+                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
                             />
                         </label>
-                        <label className="text-sm text-neutral-300">
+                        <label className="text-sm text-ink-2">
                             Precio (valor numérico)
                             <input
                                 type="number"
                                 min="0"
                                 value={form.price}
                                 onChange={(event) => setForm({ ...form, price: event.target.value })}
-                                className="mt-1 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
+                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
                                 placeholder="Ej: 2500"
                             />
                         </label>
-                        <label className="mt-5 flex items-center gap-2 text-sm text-neutral-300">
+                        <label className="mt-5 flex items-center gap-2 text-sm text-ink-2">
                             <input
                                 type="checkbox"
                                 checked={form.isUnlimited}
@@ -184,13 +184,13 @@ export function AdminPlans({ plans }: AdminPlansProps) {
                             />
                             Plan ilimitado (sin tope de horas)
                         </label>
-                        <label className="text-sm text-neutral-300 sm:col-span-2">
+                        <label className="text-sm text-ink-2 sm:col-span-2">
                             Descripción
                             <textarea
                                 value={form.description}
                                 onChange={(event) => setForm({ ...form, description: event.target.value })}
                                 rows={2}
-                                className="mt-1 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
+                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
                             />
                         </label>
                     </div>
@@ -207,7 +207,7 @@ export function AdminPlans({ plans }: AdminPlansProps) {
                         <button
                             type="button"
                             onClick={() => { setCreating(false); setEditing(null); setError(null) }}
-                            className="flex items-center gap-2 rounded-md border border-neutral-700 bg-[#0d1117] px-4 py-2 text-xs font-semibold text-neutral-300 hover:bg-neutral-800"
+                            className="flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-4 py-2 text-xs font-semibold text-ink-2 hover:bg-surface-3"
                         >
                             <X className="size-4" aria-hidden="true" />
                             Cancelar
@@ -218,11 +218,11 @@ export function AdminPlans({ plans }: AdminPlansProps) {
 
             <section className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {plans.map((plan) => (
-                    <article key={plan.id} className={`rounded-lg border bg-[#161b22] p-5 ${plan.active ? 'border-neutral-800' : 'border-neutral-800/40 opacity-70'}`}>
+                    <article key={plan.id} className={`rounded-lg border bg-surface-2 p-5 ${plan.active ? 'border-edge' : 'border-edge/40 opacity-70'}`}>
                         <div className="flex items-start justify-between gap-2">
                             <div>
-                                <h3 className="font-display text-lg font-bold text-white">{plan.name}</h3>
-                                {plan.description && <p className="mt-1 text-xs text-neutral-400">{plan.description}</p>}
+                                <h3 className="font-display text-lg font-bold text-ink">{plan.name}</h3>
+                                {plan.description && <p className="mt-1 text-xs text-ink-3">{plan.description}</p>}
                             </div>
                             <button
                                 type="button"
@@ -230,31 +230,31 @@ export function AdminPlans({ plans }: AdminPlansProps) {
                                 title={plan.active ? 'Desactivar plan' : 'Activar plan'}
                                 className={`flex size-7 items-center justify-center rounded-md border transition-colors ${
                                     plan.active
-                                        ? 'border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10'
-                                        : 'border-neutral-700 text-neutral-500 hover:bg-neutral-800'
+                                        ? 'border-emerald-500/40 text-ok-text hover:bg-emerald-500/10'
+                                        : 'border-edge-strong text-ink-4 hover:bg-surface-3'
                                 }`}
                             >
                                 {plan.active ? <Power className="size-4" aria-hidden="true" /> : <Check className="size-4" aria-hidden="true" />}
                             </button>
                         </div>
                         <dl className="mt-4 grid grid-cols-2 gap-2 text-sm">
-                            <div className="rounded-md bg-[#0d1117] px-3 py-2">
-                                <dt className="text-[11px] uppercase tracking-wide text-neutral-500">Horas/mes</dt>
-                                <dd className="text-base font-bold text-white">{plan.isUnlimited ? '∞' : plan.monthlyHours}</dd>
+                            <div className="rounded-md bg-surface-1 px-3 py-2">
+                                <dt className="text-[11px] uppercase tracking-wide text-ink-4">Horas/mes</dt>
+                                <dd className="text-base font-bold text-ink">{plan.isUnlimited ? '∞' : plan.monthlyHours}</dd>
                             </div>
-                            <div className="rounded-md bg-[#0d1117] px-3 py-2">
-                                <dt className="text-[11px] uppercase tracking-wide text-neutral-500">Precio</dt>
-                                <dd className="text-base font-bold text-white">{formatPrice(plan.price)}</dd>
+                            <div className="rounded-md bg-surface-1 px-3 py-2">
+                                <dt className="text-[11px] uppercase tracking-wide text-ink-4">Precio</dt>
+                                <dd className="text-base font-bold text-ink">{formatPrice(plan.price)}</dd>
                             </div>
                         </dl>
-                        <p className="mt-3 text-xs text-neutral-400">
+                        <p className="mt-3 text-xs text-ink-3">
                             {plan.studentCount != null ? `${plan.studentCount} alumnos asignados` : ''}
                         </p>
-                        <div className="mt-4 flex items-center gap-2 border-t border-neutral-800 pt-3">
+                        <div className="mt-4 flex items-center gap-2 border-t border-edge pt-3">
                             <button
                                 type="button"
                                 onClick={() => openEdit(plan)}
-                                className="flex items-center gap-1.5 rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-1.5 text-xs font-medium text-neutral-300 hover:bg-neutral-800 hover:text-white"
+                                className="flex items-center gap-1.5 rounded-md border border-edge-strong bg-surface-1 px-3 py-1.5 text-xs font-medium text-ink-2 hover:bg-surface-3 hover:text-ink"
                             >
                                 <Pencil className="size-3.5" aria-hidden="true" />
                                 Editar
@@ -263,7 +263,7 @@ export function AdminPlans({ plans }: AdminPlansProps) {
                                 <button
                                     type="button"
                                     onClick={() => deletePlan(plan)}
-                                    className="flex items-center gap-1.5 rounded-md border border-rose-500/30 bg-rose-500/10 px-3 py-1.5 text-xs font-medium text-rose-300 hover:bg-rose-500/20"
+                                    className="flex items-center gap-1.5 rounded-md border border-rose-500/30 bg-rose-500/10 px-3 py-1.5 text-xs font-medium text-danger-text hover:bg-rose-500/20"
                                 >
                                     <Trash2 className="size-3.5" aria-hidden="true" />
                                     Eliminar

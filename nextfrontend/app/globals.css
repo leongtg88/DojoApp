@@ -30,6 +30,92 @@
   }
 }
 
+/* ============ Dashboard tokens (theme-aware) ============
+   dark = default (marca actual). [data-theme="light"] sobrescribe. */
+
+:root,
+[data-theme='dark'] {
+  --dash-surface-1: #0d1117;
+  --dash-surface-2: #161b22;
+  --dash-surface-3: #262626;
+  --dash-surface-4: #171717;
+  --dash-ink: #ffffff;
+  --dash-ink-2: #d4d4d8;
+  --dash-ink-3: #a3a3a3;
+  --dash-ink-4: #737373;
+  --dash-edge: #262626;
+  --dash-edge-strong: #404040;
+  --dash-accent: #22d3ee;
+  --dash-accent-strong: #0891b2;
+  --dash-accent-text: #a5f3fc;
+  --dash-on-accent: #0d1117;
+  --dash-danger: #dc2626;
+  --dash-success: #34d399;
+  --dash-warning: #fbbf24;
+  --dash-info: #38bdf8;
+  --dash-ok-text: #6ee7b7;
+  --dash-warn-text: #fcd34d;
+  --dash-danger-text: #f87171;
+  --dash-info-text: #7dd3fc;
+  --dash-violet-text: #c4b5fd;
+  --color-scheme: dark;
+}
+
+[data-theme='light'] {
+  --dash-surface-1: #ffffff;
+  --dash-surface-2: #f3f4f6;
+  --dash-surface-3: #e5e7eb;
+  --dash-surface-4: #f9fafb;
+  --dash-ink: #111827;
+  --dash-ink-2: #374151;
+  --dash-ink-3: #4b5563;
+  --dash-ink-4: #6b7280;
+  --dash-edge: #e5e7eb;
+  --dash-edge-strong: #d1d5db;
+  --dash-accent: #0e7490;
+  --dash-accent-strong: #155e75;
+  --dash-accent-text: #155e75;
+  --dash-on-accent: #0d1117;
+  --dash-danger: #b91c1c;
+  --dash-success: #059669;
+  --dash-warning: #d97706;
+  --dash-info: #0369a1;
+  --dash-ok-text: #047857;
+  --dash-warn-text: #b45309;
+  --dash-danger-text: #b91c1c;
+--dash-info-text: #0369a1;
+  --dash-violet-text: #6d28d9;
+  --color-scheme: light;
+}
+
+@theme inline {
+  --color-surface-1: var(--dash-surface-1);
+  --color-surface-2: var(--dash-surface-2);
+  --color-surface-3: var(--dash-surface-3);
+  --color-surface-4: var(--dash-surface-4);
+  --color-ink: var(--dash-ink);
+  --color-ink-2: var(--dash-ink-2);
+  --color-ink-3: var(--dash-ink-3);
+  --color-ink-4: var(--dash-ink-4);
+  --color-edge: var(--dash-edge);
+  --color-edge-strong: var(--dash-edge-strong);
+  --color-accent: var(--dash-accent);
+  --color-accent-strong: var(--dash-accent-strong);
+  --color-accent-text: var(--dash-accent-text);
+  --color-on-accent: var(--dash-on-accent);
+  --color-danger: var(--dash-danger);
+  --color-success: var(--dash-success);
+  --color-warning: var(--dash-warning);
+  --color-info: var(--dash-info);
+  --color-ok-text: var(--dash-ok-text);
+  --color-warn-text: var(--dash-warn-text);
+  --color-danger-text: var(--dash-danger-text);
+  --color-info-text: var(--dash-info-text);
+  --color-violet-text: var(--dash-violet-text);
+  --radius-card: 12px;
+  --radius-control: 8px;
+}
+
 @layer utilities {
 
     .glass {

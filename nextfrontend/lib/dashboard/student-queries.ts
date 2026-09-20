@@ -48,6 +48,22 @@ export async function getStudentDashboardSummary(
         orderBy: { createdAt: 'desc' },
       },
       attendances: { select: { present: true, status: true } },
+      classEnrollments: {
+        where: { status: ClassEnrollmentStatus.ACTIVE },
+        select: {
+          class: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              dayOfWeek: true,
+              startTime: true,
+              endTime: true,
+              instructor: { select: { name: true } },
+            },
+          },
+        },
+      },
     },
   })
 
@@ -134,7 +150,20 @@ export async function getStudentDashboardSummary(
         evaluatorName: evaluation.evaluator.name,
       } : null,
     })),
-    upcomingClasses: [],
+    upcomingClasses: student.classEnrollments
+      .map(({ class: scheduledClass }) => ({
+        id: scheduledClass.id,
+        name: scheduledClass.name,
+        description: scheduledClass.description,
+        dayOfWeek: scheduledClass.dayOfWeek,
+        startTime: formatTime(scheduledClass.startTime),
+        endTime: formatTime(scheduledClass.endTime),
+        instructorName: scheduledClass.instructor?.name ?? null,
+      }))
+      .sort((a, b) => {
+        const dayDelta = a.dayOfWeek - b.dayOfWeek
+        return dayDelta !== 0 ? dayDelta : a.startTime.localeCompare(b.startTime)
+      }),
   }
 }
 

@@ -50,21 +50,21 @@ const SCHOLARSHIP_LABELS: Record<ScholarshipType, string> = {
 }
 
 function statusBadgeClass(status: string) {
-	if (status === 'ACTIVE') return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
-	if (status === 'INACTIVE') return 'border-amber-500/30 bg-amber-500/10 text-amber-200'
-	return 'border-neutral-700 bg-[#0d1117] text-neutral-300'
+	if (status === 'ACTIVE') return 'border-emerald-500/30 bg-emerald-500/10 text-ok-text'
+	if (status === 'INACTIVE') return 'border-amber-500/30 bg-amber-500/10 text-warn-text'
+	return 'border-edge-strong bg-surface-1 text-ink-2'
 }
 
 function attendanceBadgeClass(percent: number) {
-	if (percent >= 85) return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
-	if (percent >= 50) return 'border-amber-500/30 bg-amber-500/10 text-amber-200'
-	return 'border-red-500/30 bg-red-500/10 text-red-200'
+	if (percent >= 85) return 'border-emerald-500/30 bg-emerald-500/10 text-ok-text'
+	if (percent >= 50) return 'border-amber-500/30 bg-amber-500/10 text-warn-text'
+	return 'border-red-500/30 bg-red-500/10 text-danger-text'
 }
 
 function accountBadgeClass(accountStatus: 'SIN_CUENTA' | 'INVITADO' | 'ACTIVO') {
-	if (accountStatus === 'ACTIVO') return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
-	if (accountStatus === 'INVITADO') return 'border-amber-500/30 bg-amber-500/10 text-amber-200'
-	return 'border-neutral-700 bg-[#0d1117] text-neutral-300'
+	if (accountStatus === 'ACTIVO') return 'border-emerald-500/30 bg-emerald-500/10 text-ok-text'
+	if (accountStatus === 'INVITADO') return 'border-amber-500/30 bg-amber-500/10 text-warn-text'
+	return 'border-edge-strong bg-surface-1 text-ink-2'
 }
 
 interface ConfirmModalProps {
@@ -83,14 +83,14 @@ function ConfirmModal({ open, title, message, confirmLabel, isDestructive = fals
 
 	return (
 		<div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" onClick={onCancel}>
-			<div className="w-full max-w-sm rounded-lg border border-neutral-800 bg-[#161b22] shadow-xl" onClick={(event) => event.stopPropagation()}>
-				<div className="border-b border-neutral-800 px-5 py-4">
-					<h3 className="font-display text-lg font-bold text-white">{title}</h3>
+			<div className="w-full max-w-sm rounded-lg border border-edge bg-surface-2 shadow-xl" onClick={(event) => event.stopPropagation()}>
+				<div className="border-b border-edge px-5 py-4">
+					<h3 className="font-display text-lg font-bold text-ink">{title}</h3>
 				</div>
-				<p className="px-5 py-4 text-sm text-neutral-300">{message}</p>
-				{children && <div className="border-t border-neutral-800 px-5 py-4">{children}</div>}
-				<div className="flex items-center justify-end gap-2.5 border-t border-neutral-800 px-5 py-3.5">
-					<button type="button" onClick={onCancel} className="rounded-md border border-neutral-700 bg-[#0d1117] px-4 py-2 text-xs font-semibold text-neutral-300 hover:bg-neutral-800 hover:text-white">
+				<p className="px-5 py-4 text-sm text-ink-2">{message}</p>
+				{children && <div className="border-t border-edge px-5 py-4">{children}</div>}
+				<div className="flex items-center justify-end gap-2.5 border-t border-edge px-5 py-3.5">
+					<button type="button" onClick={onCancel} className="rounded-md border border-edge-strong bg-surface-1 px-4 py-2 text-xs font-semibold text-ink-2 hover:bg-surface-3 hover:text-ink">
 						Cancelar
 					</button>
 					<button type="button" onClick={onConfirm} className={`rounded-md px-4 py-2 text-xs font-semibold text-white ${isDestructive ? 'bg-red-600 hover:bg-red-500' : 'bg-cyan-500 hover:bg-cyan-400 text-[#0d1117]'}`}>
@@ -293,58 +293,58 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 
 	return (
 		<div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" onClick={requestClose}>
-			<div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-neutral-800 bg-[#161b22] shadow-2xl" onClick={(event) => event.stopPropagation()}>
-				<div className="flex items-center justify-between border-b border-neutral-800 bg-[#0d1117] px-5 py-4">
+			<div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-edge bg-surface-2 shadow-2xl" onClick={(event) => event.stopPropagation()}>
+				<div className="flex items-center justify-between border-b border-edge bg-surface-1 px-5 py-4">
 					<div className="flex items-center gap-3">
-						<div className="flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-900/50 bg-cyan-950/50 text-cyan-400">
+						<div className="flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-900/50 bg-cyan-950/50 text-accent">
 							<Award className="h-5 w-5" />
 						</div>
 						<div>
-							<h3 className="text-sm font-bold text-white">{mode === 'create' ? 'Nuevo alumno' : 'Editar alumno'}</h3>
-							<p className="text-xs text-neutral-400">
+							<h3 className="text-sm font-bold text-ink">{mode === 'create' ? 'Nuevo alumno' : 'Editar alumno'}</h3>
+							<p className="text-xs text-ink-3">
 								{mode === 'create' ? `Matrícula sugerida: ${nextMemberNumber}` : student ? `${student.firstName} ${student.lastName}` : 'Actualizar datos'}
 							</p>
 						</div>
 					</div>
-					<button type="button" onClick={requestClose} className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white">
+					<button type="button" onClick={requestClose} className="flex h-8 w-8 items-center justify-center rounded-lg text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink">
 						<X className="h-5 w-5" />
 					</button>
 				</div>
 
 				<div className="flex-1 space-y-3 overflow-y-auto p-5">
 					{isLoadingOptions && (
-						<p className="flex items-center gap-2 text-xs text-neutral-400">
+						<p className="flex items-center gap-2 text-xs text-ink-3">
 							<Loader2 className="h-4 w-4 animate-spin" /> Cargando opciones...
 						</p>
 					)}
 					<div className="grid gap-3 sm:grid-cols-2">
-						<label className="text-sm font-semibold text-neutral-200" htmlFor="student-first-name">
+						<label className="text-sm font-semibold text-ink" htmlFor="student-first-name">
 							Nombre *
-							<input id="student-first-name" value={form.firstName} onChange={(event) => updateField('firstName', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" />
+							<input id="student-first-name" value={form.firstName} onChange={(event) => updateField('firstName', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
 						</label>
-						<label className="text-sm font-semibold text-neutral-200" htmlFor="student-last-name">
+						<label className="text-sm font-semibold text-ink" htmlFor="student-last-name">
 							Apellido *
-							<input id="student-last-name" value={form.lastName} onChange={(event) => updateField('lastName', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" />
+							<input id="student-last-name" value={form.lastName} onChange={(event) => updateField('lastName', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
 						</label>
-						<label className="text-sm font-semibold text-neutral-200" htmlFor="student-dob">
+						<label className="text-sm font-semibold text-ink" htmlFor="student-dob">
 							Fecha de nacimiento *
-							<input id="student-dob" type="date" value={form.dateOfBirth} onChange={(event) => updateField('dateOfBirth', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" />
+							<input id="student-dob" type="date" value={form.dateOfBirth} onChange={(event) => updateField('dateOfBirth', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
 						</label>
-						<label className="text-sm font-semibold text-neutral-200" htmlFor="student-gender">
+						<label className="text-sm font-semibold text-ink" htmlFor="student-gender">
 							Sexo
-							<select id="student-gender" value={form.gender} onChange={(event) => updateField('gender', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white">
+							<select id="student-gender" value={form.gender} onChange={(event) => updateField('gender', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
 								<option value="">No especificado</option>
 								<option value="FEMALE">Femenino</option>
 								<option value="MALE">Masculino</option>
 							</select>
 						</label>
-						<label className="text-sm font-semibold text-neutral-200" htmlFor="student-phone">
+						<label className="text-sm font-semibold text-ink" htmlFor="student-phone">
 							Teléfono de contacto
-							<input id="student-phone" value={form.contactPhone} onChange={(event) => updateField('contactPhone', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" />
+							<input id="student-phone" value={form.contactPhone} onChange={(event) => updateField('contactPhone', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
 						</label>
-						<label className="text-sm font-semibold text-neutral-200" htmlFor="student-branch">
+						<label className="text-sm font-semibold text-ink" htmlFor="student-branch">
 							Sucursal *
-							<select id="student-branch" value={form.branchId} disabled={mode === 'edit'} onChange={(event) => updateField('branchId', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white disabled:cursor-not-allowed disabled:opacity-60">
+							<select id="student-branch" value={form.branchId} disabled={mode === 'edit'} onChange={(event) => updateField('branchId', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink disabled:cursor-not-allowed disabled:opacity-60">
 								<option value="">Selecciona una sucursal</option>
 								{branches.map((branch) => (
 									<option key={branch.id} value={branch.id}>{branch.name}</option>
@@ -352,9 +352,9 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 							</select>
 						</label>
 						{mode === 'create' ? (
-							<label className="text-sm font-semibold text-neutral-200" htmlFor="student-initial-rank">
+							<label className="text-sm font-semibold text-ink" htmlFor="student-initial-rank">
 								Grado inicial
-								<select id="student-initial-rank" value={form.beltRankId} onChange={(event) => updateField('beltRankId', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white">
+								<select id="student-initial-rank" value={form.beltRankId} onChange={(event) => updateField('beltRankId', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
 									<option value="">Sin grado asignado</option>
 									{ranks.map((rank) => (
 										<option key={rank.id} value={rank.id}>{rank.kyuDan ? `${rank.kyuDan} · ` : ''}{rank.name}</option>
@@ -363,25 +363,25 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 							</label>
 						) : (
 							<div className="flex items-end">
-								<p className="text-xs text-neutral-400">Para ver o cambiar el grado usa la ficha del alumno.</p>
+								<p className="text-xs text-ink-3">Para ver o cambiar el grado usa la ficha del alumno.</p>
 							</div>
 						)}
-						<label className="text-sm font-semibold text-neutral-200 sm:col-span-2" htmlFor="student-medical">
+						<label className="text-sm font-semibold text-ink sm:col-span-2" htmlFor="student-medical">
 							Información médica
-							<textarea id="student-medical" rows={2} value={form.medicalInfo} onChange={(event) => updateField('medicalInfo', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" />
+							<textarea id="student-medical" rows={2} value={form.medicalInfo} onChange={(event) => updateField('medicalInfo', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
 						</label>
-						<label className="text-sm font-semibold text-neutral-200 sm:col-span-2" htmlFor="student-emergency">
+						<label className="text-sm font-semibold text-ink sm:col-span-2" htmlFor="student-emergency">
 							Contacto de emergencia
-							<input id="student-emergency" value={form.emergencyContact} onChange={(event) => updateField('emergencyContact', event.target.value)} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" />
+							<input id="student-emergency" value={form.emergencyContact} onChange={(event) => updateField('emergencyContact', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
 						</label>
-						<div className="mt-1 border-t border-neutral-800 pt-4 sm:col-span-2">
-							<p className="flex items-center gap-2 text-sm font-bold text-white">
-								<CalendarDays className="h-4 w-4 text-cyan-400" />Plan, horarios y beca
+						<div className="mt-1 border-t border-edge pt-4 sm:col-span-2">
+							<p className="flex items-center gap-2 text-sm font-bold text-ink">
+								<CalendarDays className="h-4 w-4 text-accent" />Plan, horarios y beca
 							</p>
 
-							<label className="mt-3 block text-xs font-semibold text-neutral-300" htmlFor="student-plan">
+							<label className="mt-3 block text-xs font-semibold text-ink-2" htmlFor="student-plan">
 								Plan de mensualidad
-								<select id="student-plan" value={planId} onChange={(event) => { setPlanId(event.target.value); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white">
+								<select id="student-plan" value={planId} onChange={(event) => { setPlanId(event.target.value); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
 									<option value="">Sin plan asignado</option>
 									{selectablePlans.map((plan) => (
 										<option key={plan.id} value={plan.id}>
@@ -392,51 +392,51 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 							</label>
 
 							<div className="mt-3">
-								<p className="text-xs font-semibold text-neutral-300">Horarios de referencia</p>
+								<p className="text-xs font-semibold text-ink-2">Horarios de referencia</p>
 								<div className="mt-1.5 grid gap-2 sm:grid-cols-2">
 									{[...groupedSchedules.entries()].sort(([a], [b]) => a - b).map(([day, blocks]) => (
-										<div key={day} className="rounded-md border border-neutral-800 bg-[#0d1117] p-2.5">
-											<p className="mb-1.5 text-xs font-bold text-neutral-300">{DAY_LABELS[day]}</p>
+										<div key={day} className="rounded-md border border-edge bg-surface-1 p-2.5">
+											<p className="mb-1.5 text-xs font-bold text-ink-2">{DAY_LABELS[day]}</p>
 											<div className="space-y-1">
 												{blocks.map((schedule) => (
-													<label key={schedule.id} className="flex items-center gap-2 text-xs text-neutral-200">
+													<label key={schedule.id} className="flex items-center gap-2 text-xs text-ink">
 														<input type="checkbox" checked={scheduleIds.includes(schedule.id)} onChange={() => toggleSchedule(schedule.id)} className="size-4 accent-cyan-500" />
 														<span>{schedule.name}</span>
-														<span className="ml-auto text-[11px] text-neutral-500">{schedule.startTime}</span>
+														<span className="ml-auto text-[11px] text-ink-4">{schedule.startTime}</span>
 													</label>
 												))}
 											</div>
 										</div>
 									))}
-									{groupedSchedules.size === 0 && <p className="text-xs text-neutral-500">No hay horarios activos.</p>}
+									{groupedSchedules.size === 0 && <p className="text-xs text-ink-4">No hay horarios activos.</p>}
 								</div>
 							</div>
 
 							<div className="mt-3 grid gap-3 sm:grid-cols-2">
-								<label className="block text-xs font-semibold text-neutral-300" htmlFor="student-scholarship">
+								<label className="block text-xs font-semibold text-ink-2" htmlFor="student-scholarship">
 									Tipo de beca
-									<select id="student-scholarship" value={scholarshipType} onChange={(event) => { setScholarshipType(event.target.value as ScholarshipType); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white">
+									<select id="student-scholarship" value={scholarshipType} onChange={(event) => { setScholarshipType(event.target.value as ScholarshipType); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
 										{(Object.keys(SCHOLARSHIP_LABELS) as ScholarshipType[]).map((type) => (
 											<option key={type} value={type}>{SCHOLARSHIP_LABELS[type]}</option>
 										))}
 									</select>
 								</label>
-								<label className="mt-5 flex items-center gap-2 text-xs text-neutral-300">
+								<label className="mt-5 flex items-center gap-2 text-xs text-ink-2">
 									<input type="checkbox" checked={isCompetitor} onChange={(event) => { setIsCompetitor(event.target.checked); setIsDirty(true) }} className="size-4 accent-cyan-500" />
 									Competidor (alto rendimiento)
 								</label>
-								<label className="block text-xs font-semibold text-neutral-300 sm:col-span-2" htmlFor="student-scholarship-note">
+								<label className="block text-xs font-semibold text-ink-2 sm:col-span-2" htmlFor="student-scholarship-note">
 									Nota de la beca
-									<input id="student-scholarship-note" value={scholarshipNote} onChange={(event) => { setScholarshipNote(event.target.value); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" placeholder="Ej: apoyo económico por situación familiar" />
+									<input id="student-scholarship-note" value={scholarshipNote} onChange={(event) => { setScholarshipNote(event.target.value); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" placeholder="Ej: apoyo económico por situación familiar" />
 								</label>
 							</div>
 						</div>
 					</div>
-					{error && <p className="rounded-md border border-red-900/40 bg-red-950/20 px-3 py-2 text-sm font-medium text-red-300">{error}</p>}
+					{error && <p className="rounded-md border border-red-900/40 bg-red-950/20 px-3 py-2 text-sm font-medium text-danger-text">{error}</p>}
 				</div>
 
-				<div className="flex items-center justify-end gap-2.5 border-t border-neutral-800 bg-[#0d1117] px-5 py-3.5">
-					<button type="button" onClick={requestClose} className="rounded-md border border-neutral-700 bg-[#0d1117] px-4 py-2 text-xs font-semibold text-neutral-300 hover:bg-neutral-800 hover:text-white">
+				<div className="flex items-center justify-end gap-2.5 border-t border-edge bg-surface-1 px-5 py-3.5">
+					<button type="button" onClick={requestClose} className="rounded-md border border-edge-strong bg-surface-1 px-4 py-2 text-xs font-semibold text-ink-2 hover:bg-surface-3 hover:text-ink">
 						Cancelar
 					</button>
 					<button type="button" onClick={mode === 'create' ? handleCreate : handleUpdate} disabled={isSaving || isLoadingOptions} className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-xs font-semibold text-[#0d1117] disabled:opacity-60">
@@ -607,16 +607,16 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 		<main className="w-full px-4 py-8 sm:px-6 lg:px-8">
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 				<div>
-					<p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">Administración</p>
-					<h1 className="mt-2 font-display text-3xl font-extrabold text-white">Gestión de alumnos</h1>
-					<p className="mt-2 text-sm text-neutral-400">Padrón, matrículas, progreso técnico y altas/bajas dentro de tu escuela.</p>
+					<p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
+					<h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Gestión de alumnos</h1>
+					<p className="mt-2 text-sm text-ink-3">Padrón, matrículas, progreso técnico y altas/bajas dentro de tu escuela.</p>
 				</div>
 				<div className="flex flex-wrap items-center gap-2 self-start">
-					<button type="button" onClick={handleExport} disabled={isExporting || students.length === 0} className="inline-flex items-center gap-2 rounded-md border border-neutral-700 bg-[#0d1117] px-4 py-2.5 text-sm font-semibold text-neutral-200 transition-colors hover:bg-neutral-800 hover:text-white disabled:opacity-50">
+					<button type="button" onClick={handleExport} disabled={isExporting || students.length === 0} className="inline-flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-surface-3 hover:text-ink disabled:opacity-50">
 						{isExporting ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <FileSpreadsheet aria-hidden="true" className="size-4" />}
 						{isExporting ? 'Exportando…' : 'Exportar Excel'}
 					</button>
-					<button type="button" onClick={handleApplyKatas} disabled={isApplyingKatas || students.length === 0} className="inline-flex items-center gap-2 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-4 py-2.5 text-sm font-semibold text-cyan-200 transition-colors hover:bg-cyan-900/50 disabled:opacity-50">
+					<button type="button" onClick={handleApplyKatas} disabled={isApplyingKatas || students.length === 0} className="inline-flex items-center gap-2 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-4 py-2.5 text-sm font-semibold text-accent-text transition-colors hover:bg-cyan-900/50 disabled:opacity-50">
 						{isApplyingKatas ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <BookOpenCheck aria-hidden="true" className="size-4" />}
 						{isApplyingKatas ? 'Asignando…' : 'Asignar katas por grado'}
 					</button>
@@ -626,42 +626,42 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 				</div>
 			</div>
 
-			{actionError && <p className="mt-4 rounded-md border border-red-900/40 bg-red-950/20 px-3 py-2 text-sm font-medium text-red-300">{actionError}</p>}
-			{katasNotice && <p className="mt-4 rounded-md border border-emerald-900/40 bg-emerald-950/20 px-3 py-2 text-sm font-medium text-emerald-300">{katasNotice}</p>}
+			{actionError && <p className="mt-4 rounded-md border border-red-900/40 bg-red-950/20 px-3 py-2 text-sm font-medium text-danger-text">{actionError}</p>}
+			{katasNotice && <p className="mt-4 rounded-md border border-emerald-900/40 bg-emerald-950/20 px-3 py-2 text-sm font-medium text-ok-text">{katasNotice}</p>}
 
 			{students.length === 0 ? (
-				<section className="mt-7 rounded-lg border border-dashed border-neutral-700 bg-[#161b22] px-5 py-10 text-center">
-					<Users aria-hidden="true" className="mx-auto size-7 text-cyan-400" />
-					<p className="mt-3 text-sm font-semibold text-white">No hay alumnos registrados para este alcance.</p>
+				<section className="mt-7 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center">
+					<Users aria-hidden="true" className="mx-auto size-7 text-accent" />
+					<p className="mt-3 text-sm font-semibold text-ink">No hay alumnos registrados para este alcance.</p>
 				</section>
 			) : (
-				<section className="mt-7 rounded-lg border border-neutral-800 bg-[#161b22] shadow-sm">
-					<div className="grid gap-3 border-b border-neutral-800 p-4 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:p-5">
+				<section className="mt-7 rounded-lg border border-edge bg-surface-2 shadow-sm">
+					<div className="grid gap-3 border-b border-edge p-4 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:p-5">
 						<label className="relative block" htmlFor="admin-student-search">
-							<Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-cyan-400" />
-							<input className="w-full rounded-md border border-neutral-700 bg-[#0d1117] py-2.5 pl-10 pr-3 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="admin-student-search" onChange={(event) => setSearchTerm(event.target.value)} placeholder="Buscar por alumno, matrícula, grado o clase" type="search" value={searchTerm} />
+							<Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-accent" />
+							<input className="w-full rounded-md border border-edge-strong bg-surface-1 py-2.5 pl-10 pr-3 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="admin-student-search" onChange={(event) => setSearchTerm(event.target.value)} placeholder="Buscar por alumno, matrícula, grado o clase" type="search" value={searchTerm} />
 						</label>
-						<label className="text-xs font-semibold text-neutral-300" htmlFor="admin-student-status">
+						<label className="text-xs font-semibold text-ink-2" htmlFor="admin-student-status">
 							Estado
-							<select className="mt-1 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="admin-student-status" onChange={(event) => setStatusFilter(event.target.value)} value={statusFilter}>
+							<select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="admin-student-status" onChange={(event) => setStatusFilter(event.target.value)} value={statusFilter}>
 								<option value="ALL">Todos</option>
 								{statuses.map((status) => (
 									<option key={status} value={status}>{status}</option>
 								))}
 							</select>
 						</label>
-						<label className="text-xs font-semibold text-neutral-300" htmlFor="admin-student-grade">
+						<label className="text-xs font-semibold text-ink-2" htmlFor="admin-student-grade">
 							Grado
-							<select className="mt-1 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="admin-student-grade" onChange={(event) => setBeltFilter(event.target.value)} value={beltFilter}>
+							<select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="admin-student-grade" onChange={(event) => setBeltFilter(event.target.value)} value={beltFilter}>
 								<option value="ALL">Todos</option>
 								{belts.map((belt) => (
 									<option key={belt} value={belt}>{belt === 'SIN_GRADO' ? 'Sin grado' : belt}</option>
 								))}
 							</select>
 						</label>
-						<label className="text-xs font-semibold text-neutral-300" htmlFor="admin-student-branch">
+						<label className="text-xs font-semibold text-ink-2" htmlFor="admin-student-branch">
 							Sucursal
-							<select className="mt-1 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" id="admin-student-branch" onChange={(event) => setBranchFilter(event.target.value)} value={branchFilter}>
+							<select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="admin-student-branch" onChange={(event) => setBranchFilter(event.target.value)} value={branchFilter}>
 								<option value="ALL">Todas</option>
 								{branches.map((branch) => (
 									<option key={branch} value={branch}>{branch}</option>
@@ -672,14 +672,14 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 
 					{filteredStudents.length === 0 ? (
 						<div className="px-5 py-10 text-center">
-							<Users aria-hidden="true" className="mx-auto size-6 text-neutral-500" />
-							<p className="mt-3 text-sm font-semibold text-white">No se encontraron alumnos.</p>
-							<p className="mt-1 text-sm text-neutral-400">Ajusta los filtros para ver otros expedientes.</p>
+							<Users aria-hidden="true" className="mx-auto size-6 text-ink-4" />
+							<p className="mt-3 text-sm font-semibold text-ink">No se encontraron alumnos.</p>
+							<p className="mt-1 text-sm text-ink-3">Ajusta los filtros para ver otros expedientes.</p>
 						</div>
 					) : (
 						<div className="overflow-x-auto">
 							<table className="w-full min-w-[880px] text-left text-sm">
-								<thead className="border-b border-neutral-800 text-xs font-semibold uppercase tracking-wide text-neutral-400">
+								<thead className="border-b border-edge text-xs font-semibold uppercase tracking-wide text-ink-3">
 									<tr>
 										<th className="px-5 py-3">Alumno</th>
 										<th className="px-5 py-3">Grado</th>
@@ -692,21 +692,21 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 										<th className="px-5 py-3 text-right">Acciones</th>
 									</tr>
 								</thead>
-								<tbody className="divide-y divide-neutral-800">
+								<tbody className="divide-y divide-edge">
 									{filteredStudents.map((student) => {
 										const initials = `${student.firstName[0] ?? ''}${student.lastName[0] ?? ''}`.toUpperCase()
 										const kataPercent = student.kataTotalCount > 0 ? Math.round((student.kataMasteredCount / student.kataTotalCount) * 100) : 0
 
 										return (
-											<tr key={student.id} className="transition-colors hover:bg-neutral-800/50">
+											<tr key={student.id} className="transition-colors hover:bg-surface-3/50">
 												<td className="px-5 py-4">
 													<div className="flex min-w-0 items-center gap-3">
-														<span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-cyan-500/15 font-display text-sm font-extrabold text-cyan-100">{initials}</span>
+														<span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-cyan-500/15 font-display text-sm font-extrabold text-accent-text">{initials}</span>
 														<div className="min-w-0">
 															<div className="flex flex-wrap items-center gap-2">
-																<Link href={`/dashboard/admin/alumnos/${student.id}`} title={`Ver ficha de ${student.firstName} ${student.lastName}`} className="truncate rounded text-sm font-bold text-white transition-colors hover:text-cyan-300 hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400">{student.firstName} {student.lastName}</Link>
+																<Link href={`/dashboard/admin/alumnos/${student.id}`} title={`Ver ficha de ${student.firstName} ${student.lastName}`} className="truncate rounded text-sm font-bold text-ink transition-colors hover:text-accent hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400">{student.firstName} {student.lastName}</Link>
 															</div>
-															<p className="mt-1 font-mono text-xs text-neutral-400">{student.memberNumber ?? '—'}</p>
+															<p className="mt-1 font-mono text-xs text-ink-3">{student.memberNumber ?? '—'}</p>
 														</div>
 													</div>
 												</td>
@@ -714,62 +714,62 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 													<div className="flex items-center gap-2">
 														<BeltRankIndicator rank={{ beltColor: student.beltColor, beltSecondaryColor: student.beltSecondaryColor }} size="sm" />
 														<div>
-															<p className="text-sm font-semibold text-white">{student.currentRank ?? 'Sin grado'}</p>
-															{student.nextRankName && <p className="text-[11px] text-neutral-400">Próximo: {student.nextRankName}</p>}
+															<p className="text-sm font-semibold text-ink">{student.currentRank ?? 'Sin grado'}</p>
+															{student.nextRankName && <p className="text-[11px] text-ink-3">Próximo: {student.nextRankName}</p>}
 														</div>
 													</div>
 												</td>
 												<td className="px-5 py-4">
-													<p className="text-sm font-semibold text-white">{student.planName ?? 'Sin plan'}</p>
-													{student.scholarshipType !== 'NONE' && <p className="text-[11px] text-cyan-300">{student.scholarshipType === 'ECONOMIC' ? 'Beca económica' : student.scholarshipType === 'MERIT' ? 'Beca mérito' : 'Beca competidor'}</p>}
+													<p className="text-sm font-semibold text-ink">{student.planName ?? 'Sin plan'}</p>
+													{student.scholarshipType !== 'NONE' && <p className="text-[11px] text-accent">{student.scholarshipType === 'ECONOMIC' ? 'Beca económica' : student.scholarshipType === 'MERIT' ? 'Beca mérito' : 'Beca competidor'}</p>}
 													{(student.needsPlan || student.needsSchedule) && (
 														<div className="mt-1 flex flex-wrap gap-1">
-															{student.needsPlan && <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-amber-200">Asignar plan</span>}
-															{student.needsSchedule && <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-amber-200">Asignar horario</span>}
+															{student.needsPlan && <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-warn-text">Asignar plan</span>}
+															{student.needsSchedule && <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-warn-text">Asignar horario</span>}
 														</div>
 													)}
 												</td>
 												<td className="px-5 py-4">
-													<div className="text-sm font-semibold text-white">{student.kataMasteredCount}<span className="text-neutral-500"> / {student.kataTotalCount}</span></div>
-													<div className="mt-1 h-1.5 w-24 overflow-hidden rounded-full bg-neutral-800">
+													<div className="text-sm font-semibold text-ink">{student.kataMasteredCount}<span className="text-ink-4"> / {student.kataTotalCount}</span></div>
+													<div className="mt-1 h-1.5 w-24 overflow-hidden rounded-full bg-surface-3">
 														<div className="h-full rounded-full bg-cyan-400" style={{ width: `${kataPercent}%` }} />
 													</div>
 												</td>
 												<td className="px-5 py-4">
-													<span className={`rounded-md border px-2 py-0.5 text-xs font-bold ${student.attendancePercent === null ? 'border-neutral-700 text-neutral-300' : attendanceBadgeClass(student.attendancePercent)}`}>{student.attendancePercent ?? 0}%</span>
+													<span className={`rounded-md border px-2 py-0.5 text-xs font-bold ${student.attendancePercent === null ? 'border-edge-strong text-ink-2' : attendanceBadgeClass(student.attendancePercent)}`}>{student.attendancePercent ?? 0}%</span>
 												</td>
-												<td className="px-5 py-4 text-xs text-neutral-300">{student.branchName}</td>
+												<td className="px-5 py-4 text-xs text-ink-2">{student.branchName}</td>
 												<td className="px-5 py-4">
 													<span className={`rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${statusBadgeClass(student.status)}`}>{student.status}</span>
 												</td>
 												<td className="px-5 py-4">
 													<span className={`rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${accountBadgeClass(student.accountStatus)}`}>{student.accountStatus}</span>
-													{student.accountStatus === 'INVITADO' && student.email && <p className="mt-1 max-w-[160px] truncate font-mono text-[11px] text-neutral-500">{student.email}</p>}
+													{student.accountStatus === 'INVITADO' && student.email && <p className="mt-1 max-w-[160px] truncate font-mono text-[11px] text-ink-4">{student.email}</p>}
 												</td>
 												<td className="px-5 py-4">
 													<div className="flex items-center justify-end gap-1">
 														{(student.accountStatus !== 'ACTIVO' && student.email) && (
-															<button type="button" title={student.accountStatus === 'INVITADO' ? 'Reenviar invitación' : 'Enviar invitación al correo'} onClick={() => setInvitingStudent(student)} className="flex items-center gap-1 rounded px-2 py-1.5 text-xs font-semibold text-cyan-400 transition-colors hover:bg-cyan-950/40 hover:text-cyan-300">
+															<button type="button" title={student.accountStatus === 'INVITADO' ? 'Reenviar invitación' : 'Enviar invitación al correo'} onClick={() => setInvitingStudent(student)} className="flex items-center gap-1 rounded px-2 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-cyan-950/40 hover:text-accent">
 																<Mail className="size-4" />{student.accountStatus === 'INVITADO' ? 'Reenviar' : 'Invitar'}
 															</button>
 														)}
 														{student.status !== 'ACTIVE' && (
-															<button type="button" title="Dar de alta" onClick={() => setTogglingStudent(student)} className="rounded p-1.5 text-emerald-400 transition-colors hover:bg-emerald-950/40">
+															<button type="button" title="Dar de alta" onClick={() => setTogglingStudent(student)} className="rounded p-1.5 text-ok-text transition-colors hover:bg-emerald-950/40">
 																<UserCheck className="size-4" />
 															</button>
 														)}
 														{student.status === 'ACTIVE' && (
-															<button type="button" title="Dar de baja" onClick={() => setTogglingStudent(student)} className="rounded p-1.5 text-amber-400 transition-colors hover:bg-amber-950/40">
+															<button type="button" title="Dar de baja" onClick={() => setTogglingStudent(student)} className="rounded p-1.5 text-warn-text transition-colors hover:bg-amber-950/40">
 																<UserMinus className="size-4" />
 															</button>
 														)}
-														<button type="button" title="Editar alumno" onClick={() => setEditingStudent(student)} className="rounded p-1.5 text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white">
+														<button type="button" title="Editar alumno" onClick={() => setEditingStudent(student)} className="rounded p-1.5 text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink">
 															<Pencil className="size-4" />
 														</button>
-														<Link href={`/dashboard/admin/alumnos/${student.id}`} title="Ver ficha y promover" className="flex items-center gap-1 rounded px-2 py-1.5 text-xs font-semibold text-cyan-400 transition-colors hover:bg-cyan-950/40 hover:text-cyan-300">
+														<Link href={`/dashboard/admin/alumnos/${student.id}`} title="Ver ficha y promover" className="flex items-center gap-1 rounded px-2 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-cyan-950/40 hover:text-accent">
 															<Award className="size-4" />Promover
 														</Link>
-														<button type="button" title="Eliminar alumno" onClick={() => setDeletingStudent(student)} className="rounded p-1.5 text-red-400 transition-colors hover:bg-red-950/40">
+														<button type="button" title="Eliminar alumno" onClick={() => setDeletingStudent(student)} className="rounded p-1.5 text-danger-text transition-colors hover:bg-red-950/40">
 															<Trash2 className="size-4" />
 														</button>
 													</div>
@@ -802,16 +802,16 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 				}}
 			>
 				{togglingStudent?.status === 'ACTIVE' && (
-					<label className="flex cursor-pointer items-start gap-2.5 text-xs text-neutral-300">
+					<label className="flex cursor-pointer items-start gap-2.5 text-xs text-ink-2">
 						<input
 							type="checkbox"
 							checked={purgeOnBaja}
 							onChange={(event) => setPurgeOnBaja(event.target.checked)}
-							className="mt-0.5 size-4 shrink-0 rounded border-neutral-600 bg-[#0d1117] accent-red-500"
+							className="mt-0.5 size-4 shrink-0 rounded border-edge-strong bg-surface-1 accent-red-500"
 						/>
 						<span>
 							Eliminar también la información del formulario de inscripción (perfil físico, cédula, dirección, padres y aceptaciones).
-							<span className="mt-1 block font-semibold text-red-300">Esta acción no se puede deshacer.</span>
+							<span className="mt-1 block font-semibold text-danger-text">Esta acción no se puede deshacer.</span>
 						</span>
 					</label>
 				)}

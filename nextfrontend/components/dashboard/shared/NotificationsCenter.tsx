@@ -75,14 +75,14 @@ export function NotificationsCenter({ initialItems, initialNextCursor, initialUn
         <div className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
             <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
-                    <h1 className="font-display text-xl font-extrabold text-white">Notificaciones</h1>
-                    <p className="text-sm text-neutral-400">
+                    <h1 className="font-display text-xl font-extrabold text-ink">Notificaciones</h1>
+                    <p className="text-sm text-ink-3">
                         {unreadCount > 0 ? `${unreadCount} sin leer` : 'Estás al día'}
                     </p>
                 </div>
                 {unreadCount > 0 && (
                     <button
-                        className="flex items-center gap-1.5 rounded-lg border border-neutral-700 px-3 py-1.5 text-xs font-bold text-cyan-400 transition-colors hover:border-cyan-500 hover:text-cyan-300"
+                        className="flex items-center gap-1.5 rounded-lg border border-edge-strong px-3 py-1.5 text-xs font-bold text-accent transition-colors hover:border-cyan-500 hover:text-accent"
                         onClick={handleMarkAllRead}
                         type="button"
                     >
@@ -93,9 +93,9 @@ export function NotificationsCenter({ initialItems, initialNextCursor, initialUn
             </div>
 
             {items.length === 0 ? (
-                <div className="flex flex-col items-center gap-2 rounded-xl border border-neutral-800 bg-[#161b22] px-4 py-12 text-center">
-                    <BellOff aria-hidden="true" className="size-6 text-neutral-600" />
-                    <p className="text-sm text-neutral-400">Todavía no tienes notificaciones.</p>
+                <div className="flex flex-col items-center gap-2 rounded-xl border border-edge bg-surface-2 px-4 py-12 text-center">
+                    <BellOff aria-hidden="true" className="size-6 text-ink-4" />
+                    <p className="text-sm text-ink-3">Todavía no tienes notificaciones.</p>
                 </div>
             ) : (
                 <ul className="space-y-2">
@@ -104,7 +104,7 @@ export function NotificationsCenter({ initialItems, initialNextCursor, initialUn
                             <Link
                                 className={`block rounded-xl border px-4 py-3 transition-colors ${item.readAt === null
                                     ? 'border-cyan-500/30 bg-cyan-500/5 hover:bg-cyan-500/10'
-                                    : 'border-neutral-800 bg-[#161b22] hover:bg-neutral-800/40'
+                                    : 'border-edge bg-surface-2 hover:bg-surface-3/40'
                                     }`}
                                 href={item.link ?? '/dashboard/notificaciones'}
                                 onClick={() => void handleOpen(item)}
@@ -114,13 +114,13 @@ export function NotificationsCenter({ initialItems, initialNextCursor, initialUn
                                         aria-hidden="true"
                                         className={`size-2 shrink-0 rounded-full ${NOTIFICATION_PRIORITY_STYLES[item.priority]}`}
                                     />
-                                    <p className="min-w-0 flex-1 truncate text-sm font-bold text-white">{item.title}</p>
-                                    <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-neutral-500">
+                                    <p className="min-w-0 flex-1 truncate text-sm font-bold text-ink">{item.title}</p>
+                                    <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-ink-4">
                                         {NOTIFICATION_PRIORITY_LABELS[item.priority]}
                                     </span>
                                 </div>
-                                <p className="mt-1 text-sm leading-snug text-neutral-400">{item.body}</p>
-                                <p className="mt-1.5 text-[10px] font-semibold uppercase tracking-wide text-neutral-600">
+                                <p className="mt-1 text-sm leading-snug text-ink-3">{item.body}</p>
+                                <p className="mt-1.5 text-[10px] font-semibold uppercase tracking-wide text-ink-4">
                                     {formatNotificationRelative(item.createdAt)}
                                 </p>
                             </Link>
@@ -132,7 +132,7 @@ export function NotificationsCenter({ initialItems, initialNextCursor, initialUn
             {nextCursor && (
                 <div className="mt-4 flex justify-center">
                     <button
-                        className="rounded-lg border border-neutral-700 px-4 py-2 text-xs font-bold text-neutral-300 transition-colors hover:border-cyan-500 hover:text-cyan-300 disabled:opacity-50"
+                        className="rounded-lg border border-edge-strong px-4 py-2 text-xs font-bold text-ink-2 transition-colors hover:border-cyan-500 hover:text-accent disabled:opacity-50"
                         disabled={loadingMore}
                         onClick={handleLoadMore}
                         type="button"

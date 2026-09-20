@@ -67,14 +67,14 @@ export function RankCatalog({
 		<div id={id} className={`space-y-4 ${className}`}>
 			<div className="flex items-center justify-between px-1">
 				<div className="flex items-center gap-2">
-					<span className="text-xs font-bold uppercase tracking-wider text-neutral-400">Escalafón Oficial de Cinturones</span>
-					<span className="text-xs text-neutral-500">({ranks.length} grados configurados)</span>
+					<span className="text-xs font-bold uppercase tracking-wider text-ink-3">Escalafón Oficial de Cinturones</span>
+					<span className="text-xs text-ink-4">({ranks.length} grados configurados)</span>
 				</div>
 				{onAddRank && (
 					<button
 						type="button"
 						onClick={onAddRank}
-						className="flex items-center gap-1 text-xs font-semibold text-cyan-400 hover:text-cyan-200 transition-colors"
+						className="flex items-center gap-1 text-xs font-semibold text-accent hover:text-accent-text transition-colors"
 					>
 						<Plus className="h-3.5 w-3.5" />
 						<span>Nuevo grado</span>
@@ -88,8 +88,8 @@ export function RankCatalog({
 
 				return (
 					<div className="space-y-2" key={program}>
-						<p className="px-1 text-[10px] font-bold uppercase tracking-wider text-neutral-500">
-							{label} <span className="font-medium normal-case text-neutral-600">({list.length})</span>
+						<p className="px-1 text-[10px] font-bold uppercase tracking-wider text-ink-4">
+							{label} <span className="font-medium normal-case text-ink-4">({list.length})</span>
 						</p>
 						<RankRow
 							canReorder={canReorder}
@@ -153,8 +153,8 @@ function RankRow({
 							as="div"
 							className={`flex w-48 shrink-0 flex-col justify-between rounded-xl border p-3.5 text-left transition-colors ${canReorder ? 'cursor-grab active:cursor-grabbing' : ''} ${
 								isSelected
-									? 'border-cyan-500 bg-[#161b22] shadow-md ring-1 ring-cyan-500/30'
-									: 'border-neutral-800 bg-[#161b22] opacity-90 shadow-sm hover:opacity-100 hover:bg-[#1b2130]'
+									? 'border-cyan-500 bg-surface-2 shadow-md ring-1 ring-cyan-500/30'
+									: 'border-edge bg-surface-2 opacity-90 shadow-sm hover:opacity-100 hover:bg-surface-3'
 							}`}
 							dragListener={canReorder}
 							key={rank.id}
@@ -164,32 +164,32 @@ function RankRow({
 							<div className="mb-3 flex items-center justify-between gap-2">
 								<div className="flex items-center gap-2">
 									<BeltRankIndicator rank={rank} size="sm" />
-									<span className={`text-xs font-bold ${isSelected ? 'text-cyan-400' : 'text-neutral-400'}`}>{rank.kyuDan}</span>
+									<span className={`text-xs font-bold ${isSelected ? 'text-accent' : 'text-ink-3'}`}>{rank.kyuDan}</span>
 								</div>
 								{canReorder ? (
-									<GripVertical aria-hidden="true" className="h-4 w-4 shrink-0 text-neutral-600" />
+									<GripVertical aria-hidden="true" className="h-4 w-4 shrink-0 text-ink-4" />
 								) : isSelected ? (
-									<CheckCircle2 className="h-4 w-4 shrink-0 text-cyan-400" />
+									<CheckCircle2 className="h-4 w-4 shrink-0 text-accent" />
 								) : null}
 							</div>
 
 							<div>
 								<div className="flex items-center justify-between">
-									<h4 className="truncate text-xs font-bold text-white">{rank.name.replace('Cinturón ', '')}</h4>
+									<h4 className="truncate text-xs font-bold text-ink">{rank.name.replace('Cinturón ', '')}</h4>
 									{isSelected && (
-										<span className="rounded border border-cyan-900/40 bg-cyan-950/60 px-1.5 py-0.5 text-[10px] font-semibold text-cyan-400">
+										<span className="rounded border border-cyan-900/40 bg-cyan-950/60 px-1.5 py-0.5 text-[10px] font-semibold text-accent">
 											Activo
 										</span>
 									)}
 								</div>
-								<p className="mt-1 truncate text-[11px] text-neutral-400">
+								<p className="mt-1 truncate text-[11px] text-ink-3">
 									{rank.estimatedDurationMonths ? `${rank.estimatedDurationMonths}m · ` : '0m · '}
 									{rank.isMaximumRank ? 'Grado máximo' : rank.japaneseName || 'Iniciación'}
 								</p>
 							</div>
 
 							{(onEditRank || onDeleteRank) && (
-								<div className="mt-2 flex items-center justify-end gap-1 border-t border-neutral-800 pt-2">
+								<div className="mt-2 flex items-center justify-end gap-1 border-t border-edge pt-2">
 									{onEditRank && (
 										<button
 											type="button"
@@ -198,7 +198,7 @@ function RankRow({
 												event.stopPropagation()
 												onEditRank(rank)
 											}}
-											className="rounded p-1 text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white"
+											className="rounded p-1 text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink"
 										>
 											<Edit2 className="h-3 w-3" />
 										</button>
@@ -211,7 +211,7 @@ function RankRow({
 												event.stopPropagation()
 												onDeleteRank(rank.id)
 											}}
-											className="rounded p-1 text-neutral-400 transition-colors hover:bg-red-950/50 hover:text-red-400"
+											className="rounded p-1 text-ink-3 transition-colors hover:bg-red-950/50 hover:text-danger-text"
 										>
 											<Trash2 className="h-3 w-3" />
 										</button>

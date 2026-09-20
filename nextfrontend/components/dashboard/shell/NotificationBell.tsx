@@ -200,7 +200,7 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
         <div className="relative" ref={containerRef}>
             <button
                 aria-label={unreadCount > 0 ? `${unreadCount} notificaciones sin leer` : 'Notificaciones'}
-                className="relative flex size-9 shrink-0 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white"
+                className="relative flex size-9 shrink-0 items-center justify-center rounded-lg text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink"
                 onClick={() => setOpen((current) => !current)}
                 title="Notificaciones"
                 type="button"
@@ -214,12 +214,12 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
             </button>
 
             {open && (
-                <div className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-neutral-800 bg-[#161b22] shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-                    <div className="flex items-center justify-between border-b border-neutral-800 px-3 py-2">
-                        <p className="text-xs font-bold uppercase tracking-wide text-neutral-400">Notificaciones</p>
+                <div className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-edge bg-surface-2 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                    <div className="flex items-center justify-between border-b border-edge px-3 py-2">
+                        <p className="text-xs font-bold uppercase tracking-wide text-ink-3">Notificaciones</p>
                         {unreadCount > 0 && (
                             <button
-                                className="flex items-center gap-1 text-[11px] font-semibold text-cyan-400 transition-colors hover:text-cyan-300"
+                                className="flex items-center gap-1 text-[11px] font-semibold text-accent transition-colors hover:text-accent"
                                 onClick={handleMarkAllRead}
                                 type="button"
                             >
@@ -231,12 +231,12 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
 
                     <div className="max-h-80 overflow-y-auto">
                         {items.length === 0 && (
-                            <p className="px-3 py-6 text-center text-xs text-neutral-500">No tienes notificaciones.</p>
+                            <p className="px-3 py-6 text-center text-xs text-ink-4">No tienes notificaciones.</p>
                         )}
 
                         {items.map((item) => (
                             <Link
-                                className={`flex gap-2.5 border-b border-neutral-800/60 px-3 py-2.5 transition-colors last:border-b-0 hover:bg-neutral-800/50 ${item.readAt === null ? 'bg-cyan-500/5' : ''
+                                className={`flex gap-2.5 border-b border-edge/60 px-3 py-2.5 transition-colors last:border-b-0 hover:bg-surface-3/50 ${item.readAt === null ? 'bg-cyan-500/5' : ''
                                     }`}
                                 href={item.link ?? '/dashboard/notificaciones'}
                                 key={item.id}
@@ -247,9 +247,9 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
                                     className={`mt-1.5 size-2 shrink-0 rounded-full ${NOTIFICATION_PRIORITY_STYLES[item.priority]}`}
                                 />
                                 <span className="min-w-0">
-                                    <span className="block truncate text-xs font-bold text-white">{item.title}</span>
-                                    <span className="mt-0.5 block text-[11px] leading-snug text-neutral-400">{item.body}</span>
-                                    <span className="mt-1 block text-[10px] font-semibold uppercase tracking-wide text-neutral-600">
+                                    <span className="block truncate text-xs font-bold text-ink">{item.title}</span>
+                                    <span className="mt-0.5 block text-[11px] leading-snug text-ink-3">{item.body}</span>
+                                    <span className="mt-1 block text-[10px] font-semibold uppercase tracking-wide text-ink-4">
                                         {formatNotificationRelative(item.createdAt)}
                                     </span>
                                 </span>
@@ -259,7 +259,7 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
 
                     {showPushRow && (
                         <button
-                            className="flex w-full items-center gap-2 border-t border-neutral-800 px-3 py-2 text-left text-[11px] font-semibold text-neutral-400 transition-colors hover:bg-neutral-800/50 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex w-full items-center gap-2 border-t border-edge px-3 py-2 text-left text-[11px] font-semibold text-ink-3 transition-colors hover:bg-surface-3/50 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
                             disabled={pushDisabled}
                             onClick={() => void (pushSubscribed ? unsubscribePush() : subscribePush())}
                             type="button"
@@ -267,7 +267,7 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
                             {pushState === 'denied' ? (
                                 <BellOff aria-hidden="true" className="size-3.5 shrink-0" />
                             ) : pushSubscribed ? (
-                                <BellRing aria-hidden="true" className="size-3.5 shrink-0 text-cyan-400" />
+                                <BellRing aria-hidden="true" className="size-3.5 shrink-0 text-accent" />
                             ) : (
                                 <Bell aria-hidden="true" className="size-3.5 shrink-0" />
                             )}
@@ -276,7 +276,7 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
                     )}
 
                     <Link
-                        className="block border-t border-neutral-800 px-3 py-2 text-center text-[11px] font-bold uppercase tracking-wide text-cyan-400 transition-colors hover:bg-neutral-800/50 hover:text-cyan-300"
+                        className="block border-t border-edge px-3 py-2 text-center text-[11px] font-bold uppercase tracking-wide text-accent transition-colors hover:bg-surface-3/50 hover:text-accent"
                         href="/dashboard/notificaciones"
                         onClick={() => setOpen(false)}
                     >

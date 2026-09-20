@@ -97,27 +97,27 @@ export function AdminAttendanceBoard() {
     })
 
     return (
-        <section className="rounded-lg border border-neutral-800 bg-[#161b22]">
-            <div className="flex flex-wrap items-center gap-3 border-b border-neutral-800 p-4">
+        <section className="rounded-lg border border-edge bg-surface-2">
+            <div className="flex flex-wrap items-center gap-3 border-b border-edge p-4">
                 <div className="relative min-w-52 flex-1">
-                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-neutral-500" aria-hidden="true" />
+                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-4" aria-hidden="true" />
                     <input
                         value={query}
                         onChange={(event) => setQuery(event.target.value)}
                         placeholder="Buscar por alumno..."
-                        className="w-full rounded-md border border-neutral-700 bg-[#0d1117] py-2 pl-9 pr-3 text-sm text-white outline-none focus:border-cyan-500"
+                        className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-sm text-ink outline-none focus:border-cyan-500"
                     />
                 </div>
                 <input
                     type="date"
                     value={date}
                     onChange={(event) => setDate(event.target.value)}
-                    className="rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
+                    className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
                 />
                 <select
                     value={status}
                     onChange={(event) => setStatus(event.target.value as 'PENDING' | 'all')}
-                    className="rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
+                    className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
                 >
                     <option value="PENDING">Pendientes</option>
                     <option value="all">Todas</option>
@@ -129,17 +129,17 @@ export function AdminAttendanceBoard() {
                         setRefreshKey((key) => key + 1)
                     }}
                     disabled={loading}
-                    className="rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-xs font-semibold text-neutral-200 hover:bg-neutral-800 disabled:opacity-50"
+                    className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs font-semibold text-ink hover:bg-surface-3 disabled:opacity-50"
                 >
                     {loading ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : 'Actualizar'}
                 </button>
             </div>
 
-            {error && <p className="border-b border-neutral-800 px-4 py-3 text-sm text-rose-200">{error}</p>}
+            {error && <p className="border-b border-edge px-4 py-3 text-sm text-danger-text">{error}</p>}
 
             {selected.size > 0 && (
-                <div className="flex flex-wrap items-center gap-2 border-b border-neutral-800 px-4 py-3">
-                    <span className="text-xs text-neutral-400">{selected.size} seleccionados</span>
+                <div className="flex flex-wrap items-center gap-2 border-b border-edge px-4 py-3">
+                    <span className="text-xs text-ink-3">{selected.size} seleccionados</span>
                     <button
                         type="button"
                         onClick={() => void bulkAction('CONFIRMED')}
@@ -170,13 +170,13 @@ export function AdminAttendanceBoard() {
                 </div>
             )}
 
-            <ul className="max-h-[480px] divide-y divide-neutral-800 overflow-y-auto">
+            <ul className="max-h-[480px] divide-y divide-edge overflow-y-auto">
                 {records.map((record) => {
                     const isConfirmed = record.status === 'CONFIRMED'
                     const isPending = record.status === 'PENDING'
                     const isJustified = record.status === 'JUSTIFIED'
                     return (
-                        <li key={record.id} className="flex items-center gap-3 px-4 py-3 hover:bg-neutral-800/40">
+                        <li key={record.id} className="flex items-center gap-3 px-4 py-3 hover:bg-surface-3/40">
                             <input
                                 type="checkbox"
                                 checked={selected.has(record.id)}
@@ -185,31 +185,31 @@ export function AdminAttendanceBoard() {
                                 className="size-4 shrink-0 accent-cyan-500"
                             />
                             <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm font-semibold text-white">{record.student.firstName} {record.student.lastName}</p>
-                                <p className="truncate text-xs text-neutral-400">
+                                <p className="truncate text-sm font-semibold text-ink">{record.student.firstName} {record.student.lastName}</p>
+                                <p className="truncate text-xs text-ink-3">
                                     {formatter.format(new Date(record.date))}
                                     {record.className ? ` · ${record.className}` : ''}
                                     {record.student.planName ? ` · ${record.student.planName}` : ''}
                                 </p>
                             </div>
-                            <div className="hidden text-right text-xs text-neutral-400 sm:block">
+                            <div className="hidden text-right text-xs text-ink-3 sm:block">
                                 <p>{record.hoursTrained} h</p>
                                 <p>{record.sessionType ?? 'class'}</p>
                             </div>
                             <div className="flex shrink-0 flex-col items-end gap-1">
                                 <span className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold ${
                                     isConfirmed
-                                        ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
+                                        ? 'border-emerald-500/30 bg-emerald-500/10 text-ok-text'
                                         : isJustified
-                                            ? 'border-sky-500/30 bg-sky-500/10 text-sky-200'
+                                            ? 'border-sky-500/30 bg-sky-500/10 text-info-text'
                                             : isPending
-                                                ? 'border-amber-500/30 bg-amber-500/10 text-amber-200'
-                                                : 'border-rose-500/30 bg-rose-500/10 text-rose-200'
+                                                ? 'border-amber-500/30 bg-amber-500/10 text-warn-text'
+                                                : 'border-rose-500/30 bg-rose-500/10 text-danger-text'
                                 }`}>
                                     {isPending ? 'Pendiente' : isJustified ? 'Justificada' : isConfirmed ? 'Confirmada' : 'Rechazada'}
                                 </span>
                                 {record.isOutOfSchedule && record.status !== 'REJECTED' && (
-                                    <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] text-amber-200">
+                                    <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] text-warn-text">
                                         Fuera de horario
                                     </span>
                                 )}
@@ -218,14 +218,14 @@ export function AdminAttendanceBoard() {
                     )
                 })}
                 {!loading && records.length === 0 && (
-                    <li className="flex flex-col items-center gap-2 px-4 py-12 text-center text-neutral-500">
+                    <li className="flex flex-col items-center gap-2 px-4 py-12 text-center text-ink-4">
                         <Clock3 className="size-6" aria-hidden="true" />
                         <p className="text-sm">No hay asistencias para revisar con estos filtros.</p>
                     </li>
                 )}
                 {loading && (
                     <li className="flex justify-center px-4 py-12">
-                        <Loader2 className="size-6 animate-spin text-neutral-500" aria-hidden="true" />
+                        <Loader2 className="size-6 animate-spin text-ink-4" aria-hidden="true" />
                     </li>
                 )}
             </ul>

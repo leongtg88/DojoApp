@@ -5,6 +5,7 @@ import './globals.css';
 import { MetaPixel } from '@adkit/meta-pixel-next';
 import { AppChrome } from '@/components/AppChrome';
 import { PwaRegister } from '@/components/PwaRegister';
+import { ThemeProvider } from '@/components/dashboard/theme/ThemeProvider';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -106,11 +107,20 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var p=window.location.pathname;if(p!=='/'&&!p.startsWith('/dashboard')){document.documentElement.removeAttribute('data-theme');return}var t=localStorage.getItem('tgd-dashboard-theme');var d=document.documentElement;d.setAttribute('data-theme',t==='light'?'light':'dark')}catch(e){document.documentElement.removeAttribute('data-theme')}})();`,
+          }}
+        />
+      </head>
       <body suppressHydrationWarning className={`${montserrat.variable} ${openSans.variable} min-h-screen bg-white text-[#dee2f0] flex flex-col font-sans relative antialiased selection:bg-brand-accent selection:text-gray-700`}>
-        <PwaRegister />
-        <AppChrome>
-          <MetaPixel>{children}</MetaPixel>
-        </AppChrome>
+        <ThemeProvider>
+          <PwaRegister />
+          <AppChrome>
+            <MetaPixel>{children}</MetaPixel>
+          </AppChrome>
+        </ThemeProvider>
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID ?? 'G-53QPVLVTCP'} />
       </body>
     </html>

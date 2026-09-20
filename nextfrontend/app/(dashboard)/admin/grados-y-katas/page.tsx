@@ -22,7 +22,7 @@ export default async function AdminCurriculumPage() {
     return (
         <>
             <AdminCurriculumCatalog canReorder={hasRole(session.user, 'SUPERADMIN')} ranks={curriculum.ranks} techniques={curriculum.techniques} />
-            <div className="mt-8 border-t border-neutral-800" />
+            <div className="mt-8 border-t border-edge" />
             <AdminTechniqueManager ranks={curriculum.ranks} techniques={curriculum.techniques} />
         </>
     )

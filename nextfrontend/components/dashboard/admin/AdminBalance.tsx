@@ -10,10 +10,10 @@ interface AdminBalanceProps {
 }
 
 const LEVEL_META: Record<BalanceLevel, { label: string; className: string }> = {
-    OK: { label: 'En rango', className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200' },
-    LOW: { label: 'Contactar', className: 'border-rose-500/30 bg-rose-500/10 text-rose-200' },
-    HIGH: { label: 'Plan superior', className: 'border-amber-500/30 bg-amber-500/10 text-amber-200' },
-    VERY_HIGH: { label: 'Revisar', className: 'border-purple-500/30 bg-purple-500/10 text-purple-200' },
+    OK: { label: 'En rango', className: 'border-emerald-500/30 bg-emerald-500/10 text-ok-text' },
+    LOW: { label: 'Contactar', className: 'border-rose-500/30 bg-rose-500/10 text-danger-text' },
+    HIGH: { label: 'Plan superior', className: 'border-amber-500/30 bg-amber-500/10 text-warn-text' },
+    VERY_HIGH: { label: 'Revisar', className: 'border-purple-500/30 bg-purple-500/10 text-violet-text' },
 }
 
 const SCHOLARSHIP_LABELS: Record<string, string> = {
@@ -72,39 +72,39 @@ export function AdminBalance({ rows }: AdminBalanceProps) {
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">Administración</p>
-                    <h1 className="mt-2 font-display text-3xl font-extrabold text-white">Balance de horas</h1>
-                    <p className="mt-2 max-w-xl text-sm text-neutral-400">
+                    <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
+                    <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Balance de horas</h1>
+                    <p className="mt-2 max-w-xl text-sm text-ink-3">
                         Horas confirmadas del mes natural frente a las horas del plan de cada alumno.
                     </p>
                 </div>
                 <button
                     type="button"
                     onClick={exportCsv}
-                    className="flex items-center gap-2 rounded-md border border-neutral-700 bg-[#161b22] px-4 py-2 text-xs font-semibold text-neutral-200 hover:bg-neutral-800"
+                    className="flex items-center gap-2 rounded-md border border-edge-strong bg-surface-2 px-4 py-2 text-xs font-semibold text-ink hover:bg-surface-3"
                 >
                     <Download className="size-4" aria-hidden="true" />
                     Exportar CSV
                 </button>
             </div>
 
-            <div className="mt-5 flex flex-wrap items-center gap-3 rounded-lg border border-neutral-800 bg-[#161b22] p-3">
+            <div className="mt-5 flex flex-wrap items-center gap-3 rounded-lg border border-edge bg-surface-2 p-3">
                 <div className="relative min-w-52 flex-1">
-                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-neutral-500" aria-hidden="true" />
+                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-4" aria-hidden="true" />
                     <input
                         value={search}
                         onChange={(event) => setSearch(event.target.value)}
                         placeholder="Buscar por alumno, matrícula o plan..."
-                        className="w-full rounded-md border border-neutral-700 bg-[#0d1117] py-2 pl-9 pr-3 text-sm text-white outline-none focus:border-cyan-500"
+                        className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-sm text-ink outline-none focus:border-cyan-500"
                     />
                 </div>
-                <label className="flex items-center gap-1.5 text-xs text-neutral-400">
+                <label className="flex items-center gap-1.5 text-xs text-ink-3">
                     <Filter className="size-3.5" aria-hidden="true" />
                     Estado
                     <select
                         value={levelFilter}
                         onChange={(event) => setLevelFilter(event.target.value as 'ALL' | BalanceLevel)}
-                        className="rounded-md border border-neutral-700 bg-[#0d1117] px-2 py-1.5 text-xs text-white outline-none focus:border-cyan-500"
+                        className="rounded-md border border-edge-strong bg-surface-1 px-2 py-1.5 text-xs text-ink outline-none focus:border-cyan-500"
                     >
                         <option value="ALL">Todos</option>
                         <option value="OK">En rango</option>
@@ -113,7 +113,7 @@ export function AdminBalance({ rows }: AdminBalanceProps) {
                         <option value="VERY_HIGH">Revisar</option>
                     </select>
                 </label>
-                <label className="flex items-center gap-1.5 text-xs text-neutral-300">
+                <label className="flex items-center gap-1.5 text-xs text-ink-2">
                     <input
                         type="checkbox"
                         checked={onlyAlerts}
@@ -122,7 +122,7 @@ export function AdminBalance({ rows }: AdminBalanceProps) {
                     />
                     Solo alertas ({alertCount})
                 </label>
-                <label className="flex items-center gap-1.5 text-xs text-neutral-300">
+                <label className="flex items-center gap-1.5 text-xs text-ink-2">
                     <input
                         type="checkbox"
                         checked={onlyOutOfSchedule}
@@ -133,9 +133,9 @@ export function AdminBalance({ rows }: AdminBalanceProps) {
                 </label>
             </div>
 
-            <section className="mt-5 overflow-x-auto rounded-lg border border-neutral-800 bg-[#161b22]">
+            <section className="mt-5 overflow-x-auto rounded-lg border border-edge bg-surface-2">
                 <table className="w-full min-w-[820px] text-left text-sm">
-                    <thead className="border-b border-neutral-800 text-[11px] uppercase tracking-wide text-neutral-500">
+                    <thead className="border-b border-edge text-[11px] uppercase tracking-wide text-ink-4">
                         <tr>
                             <th className="px-4 py-3 font-semibold">Alumno</th>
                             <th className="px-4 py-3 font-semibold">Plan</th>
@@ -146,25 +146,25 @@ export function AdminBalance({ rows }: AdminBalanceProps) {
                             <th className="px-4 py-3 text-center font-semibold">Fuera</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-neutral-800">
+                    <tbody className="divide-y divide-edge">
                         {filtered.map((row) => (
-                            <tr key={row.studentId} className="hover:bg-neutral-800/40">
+                            <tr key={row.studentId} className="hover:bg-surface-3/40">
                                 <td className="px-4 py-3">
-                                    <Link href={`/dashboard/admin/alumnos/${row.studentId}`} className="font-medium text-white hover:text-cyan-400">
+                                    <Link href={`/dashboard/admin/alumnos/${row.studentId}`} className="font-medium text-ink hover:text-accent">
                                         {row.studentName}
                                     </Link>
-                                    <div className="text-xs text-neutral-500">
+                                    <div className="text-xs text-ink-4">
                                         {row.currentRank ?? 'Sin grado'}
                                         {row.scholarshipType !== 'NONE' && ` · ${SCHOLARSHIP_LABELS[row.scholarshipType]}`}
                                     </div>
                                 </td>
-                                <td className="px-4 py-3 text-neutral-300">
-                                    {row.planName ?? <span className="text-amber-400">Asignar plan</span>}
-                                    {row.isCompetitor && <span className="ml-1.5 rounded border border-purple-500/30 bg-purple-500/10 px-1.5 py-0.5 text-[10px] text-purple-200">Competidor</span>}
+                                <td className="px-4 py-3 text-ink-2">
+                                    {row.planName ?? <span className="text-warn-text">Asignar plan</span>}
+                                    {row.isCompetitor && <span className="ml-1.5 rounded border border-purple-500/30 bg-purple-500/10 px-1.5 py-0.5 text-[10px] text-violet-text">Competidor</span>}
                                 </td>
-                                <td className="px-4 py-3 text-right text-neutral-300">{row.isUnlimited ? '∞' : row.planMonthlyHours}</td>
-                                <td className="px-4 py-3 text-right font-semibold text-white">{row.confirmedHours}</td>
-                                <td className="px-4 py-3 text-right text-neutral-300">
+                                <td className="px-4 py-3 text-right text-ink-2">{row.isUnlimited ? '∞' : row.planMonthlyHours}</td>
+                                <td className="px-4 py-3 text-right font-semibold text-ink">{row.confirmedHours}</td>
+                                <td className="px-4 py-3 text-right text-ink-2">
                                     {row.balanceDiff == null ? '—' : `${row.balanceDiff > 0 ? '+' : ''}${row.balanceDiff}`}
                                 </td>
                                 <td className="px-4 py-3">
@@ -174,18 +174,18 @@ export function AdminBalance({ rows }: AdminBalanceProps) {
                                 </td>
                                 <td className="px-4 py-3 text-center">
                                     {row.outOfScheduleCount > 0 ? (
-                                        <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] text-amber-200">
+                                        <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] text-warn-text">
                                             {row.outOfScheduleCount}x
                                         </span>
                                     ) : (
-                                        <span className="text-neutral-600">—</span>
+                                        <span className="text-ink-4">—</span>
                                     )}
                                 </td>
                             </tr>
                         ))}
                         {filtered.length === 0 && (
                             <tr>
-                                <td colSpan={7} className="px-4 py-10 text-center text-neutral-500">Sin resultados con los filtros aplicados.</td>
+                                <td colSpan={7} className="px-4 py-10 text-center text-ink-4">Sin resultados con los filtros aplicados.</td>
                             </tr>
                         )}
                     </tbody>

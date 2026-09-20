@@ -27,29 +27,29 @@ export default async function InstructorAttendancePage({ searchParams }: Instruc
 
     return (
         <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-            <p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">Panel de instructor</p>
-            <h1 className="mt-2 font-display text-3xl font-extrabold text-white">Asistencia</h1>
-            <p className="mt-2 text-sm text-neutral-400">Pase de lista por clase y revisión de los punch-ins de tus alumnos.</p>
+            <p className="text-sm font-semibold uppercase tracking-wide text-accent">Panel de instructor</p>
+            <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Asistencia</h1>
+            <p className="mt-2 text-sm text-ink-3">Pase de lista por clase y revisión de los punch-ins de tus alumnos.</p>
 
              <section className="mt-10">
-                <p className="text-xs font-semibold uppercase tracking-wide text-cyan-400">Punch-ins de tus alumnos</p>
-                <h2 className="mt-1 font-display text-xl font-bold text-white">Revisión de marcaciones</h2>
+                <p className="text-xs font-semibold uppercase tracking-wide text-accent">Punch-ins de tus alumnos</p>
+                <h2 className="mt-1 font-display text-xl font-bold text-ink">Revisión de marcaciones</h2>
                 <div className="mt-4">
                     <InstructorAttendanceBoard data={board} />
                 </div>
             </section>
             
             
-            <form className="mt-7 flex flex-wrap items-end gap-3 rounded-lg border border-neutral-800 bg-[#161b22] p-5" method="get">
-                <label className="flex min-w-52 flex-1 flex-col gap-1.5 text-sm font-semibold text-neutral-200" htmlFor="classId">
+            <form className="mt-7 flex flex-wrap items-end gap-3 rounded-lg border border-edge bg-surface-2 p-5" method="get">
+                <label className="flex min-w-52 flex-1 flex-col gap-1.5 text-sm font-semibold text-ink" htmlFor="classId">
                     Clase
-                    <select className="rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" defaultValue={selectedClassId} id="classId" name="classId">
+                    <select className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" defaultValue={selectedClassId} id="classId" name="classId">
                         {classes.map((scheduledClass) => <option key={scheduledClass.id} value={scheduledClass.id}>{scheduledClass.name}</option>)}
                     </select>
                 </label>
-                <label className="flex flex-col gap-1.5 text-sm font-semibold text-neutral-200" htmlFor="date">
+                <label className="flex flex-col gap-1.5 text-sm font-semibold text-ink" htmlFor="date">
                     Fecha
-                    <input className="rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white" defaultValue={date} id="date" name="date" type="date" />
+                    <input className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" defaultValue={date} id="date" name="date" type="date" />
                 </label>
                 <button className="rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117]" type="submit">Cargar</button>
             </form>
@@ -57,7 +57,7 @@ export default async function InstructorAttendancePage({ searchParams }: Instruc
             {roster ? (
                 <InstructorAttendanceRoster roster={roster} />
             ) : (
-                <p className="mt-6 rounded-lg border border-dashed border-neutral-700 bg-[#161b22] px-5 py-8 text-sm text-neutral-400">No tienes clases asignadas o no puedes acceder a la clase solicitada.</p>
+                <p className="mt-6 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-8 text-sm text-ink-3">No tienes clases asignadas o no puedes acceder a la clase solicitada.</p>
             )}
 
         </main>

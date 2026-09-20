@@ -21,15 +21,15 @@ export default async function AdminAttendancePage() {
 
     return (
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-            <p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">Administración</p>
-            <h1 className="mt-2 font-display text-3xl font-extrabold text-white">Asistencia</h1>
+            <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
+            <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Asistencia</h1>
             <section className="mt-6 space-y-6">
                 <div>
-                    <h2 className="mb-3 font-display text-lg font-bold text-white">Revisión de registros</h2>
+                    <h2 className="mb-3 font-display text-lg font-bold text-ink">Revisión de registros</h2>
                     <AdminAttendanceBoard />
                 </div>
                 <div>
-                    <h2 className="mb-3 font-display text-lg font-bold text-white">Reporte general</h2>
+                    <h2 className="mb-3 font-display text-lg font-bold text-ink">Reporte general</h2>
                     <AdminAttendanceReport records={records} />
                 </div>
             </section>

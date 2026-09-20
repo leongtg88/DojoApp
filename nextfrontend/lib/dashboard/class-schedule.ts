@@ -1,5 +1,7 @@
 import { db } from '@/lib/db'
 
+export { dateToTime, formatNextClass, nextClassFrom, WEEKDAY_LONG, WEEKDAY_SHORT } from './schedule-utils'
+
 /** Convierte "HH:MM" al DateTime (Time) que Prisma usa para Class.startTime/endTime. */
 export function timeToDate(value: string): Date {
   return new Date(`1970-01-01T${value}:00.000Z`)

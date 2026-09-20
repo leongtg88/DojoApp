@@ -7,6 +7,7 @@ import { MartialGradeCard } from './MartialGradeCard'
 import { StudentGreeting } from './StudentGreeting'
 import { StudentMetricsGrid } from './StudentMetricsGrid'
 import { StudentMonthlyProgress } from './StudentMonthlyProgress'
+import { NextClassCard } from './NextClassCard'
 
 interface StudentDashboardOverviewProps {
     summary: StudentDashboardSummary
@@ -14,14 +15,15 @@ interface StudentDashboardOverviewProps {
 }
 
 export function StudentDashboardOverview({ summary, kataSummary }: StudentDashboardOverviewProps) {
-    const { attendance, profile, techniques } = summary
+    const { attendance, profile, techniques, upcomingClasses } = summary
     const approvedTechniques = techniques.filter(({ status }) => status === 'APPROVED').length
     const studentName = `${profile.firstName} ${profile.lastName}`
 
     return (
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
             <StudentGreeting profile={profile} />
-            <section className="mt-7 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="mt-7"><NextClassCard classes={upcomingClasses} /></div>
+            <section className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
                 <MartialGradeCard approvedTechniques={approvedTechniques} grado={kataSummary?.grado} rank={profile.currentRank} studentName={studentName} totalTechniques={techniques.length} />
                 <StudentBirthdayCard dateOfBirth={profile.dateOfBirth} />
             </section>

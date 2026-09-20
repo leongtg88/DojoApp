@@ -79,8 +79,8 @@ export function BeltRankIndicator({
 			</div>
 			{showDetails && (
 				<div className="flex flex-col">
-					<span className="text-xs font-bold text-white leading-tight">{displayName}</span>
-					{displayKyuDan && <span className="text-[11px] text-neutral-400 font-semibold">{displayKyuDan}</span>}
+					<span className="text-xs font-bold text-ink leading-tight">{displayName}</span>
+					{displayKyuDan && <span className="text-[11px] text-ink-3 font-semibold">{displayKyuDan}</span>}
 				</div>
 			)}
 		</div>

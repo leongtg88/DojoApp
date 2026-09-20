@@ -150,6 +150,30 @@ export async function getInstructorStudents(userId: string): Promise<InstructorS
   })
 }
 
+/** Cuenta las marcaciones PENDING de los alumnos del instructor (resumen del panel). */
+export async function getInstructorPendingCount(userId: string): Promise<number> {
+  return db.attendance.count({
+    where: {
+      status: 'PENDING',
+      student: { status: StudentStatus.ACTIVE },
+      OR: [
+        {
+          student: {
+            classEnrollments: {
+              some: {
+                status: ClassEnrollmentStatus.ACTIVE,
+                class: { instructorId: userId },
+              },
+            },
+          },
+        },
+        { class: { instructorId: userId } },
+        { session: { class: { instructorId: userId } } },
+      ],
+    },
+  })
+}
+
 export async function getInstructorUpcomingBirthdays(userId: string): Promise<DashboardBirthday[]> {
   const students = await db.student.findMany({
     where: {

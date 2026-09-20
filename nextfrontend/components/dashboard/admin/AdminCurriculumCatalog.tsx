@@ -246,30 +246,30 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
         <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">Administración</p>
-                    <h1 className="mt-2 font-display text-3xl font-extrabold text-white">Grados y técnicas</h1>
-                    <p className="mt-2 text-sm text-neutral-400">Catálogo curricular configurado para tu escuela.</p>
+                    <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
+                    <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Grados y técnicas</h1>
+                    <p className="mt-2 text-sm text-ink-3">Catálogo curricular configurado para tu escuela.</p>
                 </div>
-                <button className="inline-flex items-center gap-2 self-start rounded-md border border-cyan-500/40 bg-cyan-950/30 px-4 py-2.5 text-sm font-semibold text-cyan-200 transition-colors hover:bg-cyan-900/50 disabled:opacity-60" disabled={saving} onClick={applyOfficialCurriculum} type="button">
+                <button className="inline-flex items-center gap-2 self-start rounded-md border border-cyan-500/40 bg-cyan-950/30 px-4 py-2.5 text-sm font-semibold text-accent-text transition-colors hover:bg-cyan-900/50 disabled:opacity-60" disabled={saving} onClick={applyOfficialCurriculum} type="button">
                     {saving ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <ListChecks aria-hidden="true" className="size-4" />}
                     Aplicar currículo oficial
                 </button>
             </div>
 
             {ranks.length === 0 ? (
-                <section className="mt-7 rounded-lg border border-dashed border-neutral-700 bg-[#161b22] px-5 py-10 text-center">
-                    <GraduationCap aria-hidden="true" className="mx-auto size-7 text-cyan-400" />
-                    <p className="mt-3 text-sm font-semibold text-white">No hay grados configurados todavía.</p>
+                <section className="mt-7 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center">
+                    <GraduationCap aria-hidden="true" className="mx-auto size-7 text-accent" />
+                    <p className="mt-3 text-sm font-semibold text-ink">No hay grados configurados todavía.</p>
                     <button className="mt-4 inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400" onClick={openCreateRank} type="button"><Plus aria-hidden="true" className="size-4" />Crear primer grado</button>
                 </section>
             ) : (
                 <>
                     <section className="mt-7 grid gap-3 sm:grid-cols-2">
-                        <article className="rounded-lg border border-neutral-800 bg-[#161b22] p-5 shadow-sm"><Rows3 aria-hidden="true" className="size-5 text-cyan-400" /><p className="mt-4 text-xs font-semibold uppercase tracking-wide text-neutral-400">Grados configurados</p><p className="mt-1 text-3xl font-bold text-white">{ranks.length}</p></article>
-                        <article className="rounded-lg border border-neutral-800 bg-[#161b22] p-5 shadow-sm"><BookOpen aria-hidden="true" className="size-5 text-emerald-400" /><p className="mt-4 text-xs font-semibold uppercase tracking-wide text-neutral-400">Técnicas asociadas</p><p className="mt-1 text-3xl font-bold text-white">{totalTechniques}</p></article>
+                        <article className="rounded-lg border border-edge bg-surface-2 p-5 shadow-sm"><Rows3 aria-hidden="true" className="size-5 text-accent" /><p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink-3">Grados configurados</p><p className="mt-1 text-3xl font-bold text-ink">{ranks.length}</p></article>
+                        <article className="rounded-lg border border-edge bg-surface-2 p-5 shadow-sm"><BookOpen aria-hidden="true" className="size-5 text-ok-text" /><p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink-3">Técnicas asociadas</p><p className="mt-1 text-3xl font-bold text-ink">{totalTechniques}</p></article>
                     </section>
 
-                    <section className="mt-5 rounded-lg border border-neutral-800 bg-[#161b22] p-4 shadow-sm">
+                    <section className="mt-5 rounded-lg border border-edge bg-surface-2 p-4 shadow-sm">
                         <RankCatalog
                             canReorder={canReorder}
                             onAddRank={openCreateRank}
@@ -286,61 +286,61 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
                     </section>
 
                     {selectedRank && (
-                        <section className="mt-5 rounded-lg border border-neutral-800 bg-[#161b22] p-5 shadow-sm">
+                        <section className="mt-5 rounded-lg border border-edge bg-surface-2 p-5 shadow-sm">
                             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                                 <div className="flex items-center gap-3">
                                     <span aria-hidden="true" className="flex size-12 items-center justify-center rounded-md border border-white/10" style={{ backgroundColor: selectedRank.beltColor ?? '#3f3f46' }}><GraduationCap className="size-6 text-[#10131a]" /></span>
                                     <div>
-                                        <p className="text-xs font-semibold uppercase tracking-wide text-cyan-400">Grado seleccionado</p>
-                                        <h2 className="mt-1 font-display text-xl font-bold text-white flex items-center gap-2">{selectedRank.name}<span className="inline-flex items-center rounded-full border border-neutral-700 bg-[#0d1117] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-neutral-400">{selectedRank.program === 'YOUTH' ? 'Niños' : 'Adultos'}</span></h2>
-                                        <p className="mt-1 text-sm text-neutral-400">{selectedRank.kyuDan ?? `Posición ${selectedRank.order}`}{selectedRank.isMaximumRank ? ' · Grado máximo' : ''}</p>
+                                        <p className="text-xs font-semibold uppercase tracking-wide text-accent">Grado seleccionado</p>
+                                        <h2 className="mt-1 font-display text-xl font-bold text-ink flex items-center gap-2">{selectedRank.name}<span className="inline-flex items-center rounded-full border border-edge-strong bg-surface-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ink-3">{selectedRank.program === 'YOUTH' ? 'Niños' : 'Adultos'}</span></h2>
+                                        <p className="mt-1 text-sm text-ink-3">{selectedRank.kyuDan ?? `Posición ${selectedRank.order}`}{selectedRank.isMaximumRank ? ' · Grado máximo' : ''}</p>
                                     </div>
                                 </div>
                                 <div className="flex flex-wrap items-center gap-2">
-                                    <span className="inline-flex items-center gap-2 rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm font-bold text-cyan-200"><ListChecks aria-hidden="true" className="size-4 text-cyan-400" />{selectedRank.techniqueCount} técnicas</span>
-                                    <button className="inline-flex items-center gap-1.5 rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-xs font-semibold text-neutral-300 transition-colors hover:border-neutral-500 hover:text-white disabled:opacity-60" disabled={saving} onClick={() => openEditRank(selectedRank)} type="button"><Pencil aria-hidden="true" className="size-3.5" />Editar</button>
-                                    <button className="inline-flex items-center gap-1.5 rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs font-semibold text-red-300 transition-colors hover:bg-red-500/20 disabled:opacity-60" disabled={saving} onClick={() => deleteRank(selectedRank)} type="button"><Trash2 aria-hidden="true" className="size-3.5" />Eliminar</button>
+                                    <span className="inline-flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm font-bold text-accent-text"><ListChecks aria-hidden="true" className="size-4 text-accent" />{selectedRank.techniqueCount} técnicas</span>
+                                    <button className="inline-flex items-center gap-1.5 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs font-semibold text-ink-2 transition-colors hover:border-edge-strong hover:text-ink disabled:opacity-60" disabled={saving} onClick={() => openEditRank(selectedRank)} type="button"><Pencil aria-hidden="true" className="size-3.5" />Editar</button>
+                                    <button className="inline-flex items-center gap-1.5 rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs font-semibold text-danger-text transition-colors hover:bg-red-500/20 disabled:opacity-60" disabled={saving} onClick={() => deleteRank(selectedRank)} type="button"><Trash2 aria-hidden="true" className="size-3.5" />Eliminar</button>
                                 </div>
                             </div>
 
                             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                                <article className="rounded-lg border border-neutral-800 bg-[#0d1117] p-3">
-                                    <p className="text-[10px] font-semibold uppercase tracking-wide text-neutral-400">Permanencia mínima</p>
-                                    <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-white"><Clock aria-hidden="true" className="size-4 text-amber-400" />{selectedRank.estimatedDurationMonths != null ? `${selectedRank.estimatedDurationMonths} meses` : 'Sin límite'}</p>
+                                <article className="rounded-lg border border-edge bg-surface-1 p-3">
+                                    <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-3">Permanencia mínima</p>
+                                    <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-ink"><Clock aria-hidden="true" className="size-4 text-warn-text" />{selectedRank.estimatedDurationMonths != null ? `${selectedRank.estimatedDurationMonths} meses` : 'Sin límite'}</p>
                                 </article>
-                                <article className="rounded-lg border border-neutral-800 bg-[#0d1117] p-3">
-                                    <p className="text-[10px] font-semibold uppercase tracking-wide text-neutral-400">Asistencia requerida</p>
-                                    <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-white"><ShieldCheck aria-hidden="true" className="size-4 text-emerald-400" />{selectedRank.minAttendancePercent != null ? `${selectedRank.minAttendancePercent}%` : 'Sin requisito'}</p>
+                                <article className="rounded-lg border border-edge bg-surface-1 p-3">
+                                    <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-3">Asistencia requerida</p>
+                                    <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-ink"><ShieldCheck aria-hidden="true" className="size-4 text-ok-text" />{selectedRank.minAttendancePercent != null ? `${selectedRank.minAttendancePercent}%` : 'Sin requisito'}</p>
                                 </article>
-                                <article className="rounded-lg border border-neutral-800 bg-[#0d1117] p-3">
-                                    <p className="text-[10px] font-semibold uppercase tracking-wide text-neutral-400">Técnicas requeridas</p>
-                                    <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-white"><BookOpen aria-hidden="true" className="size-4 text-cyan-400" />{selectedRank.techniqueCount}</p>
+                                <article className="rounded-lg border border-edge bg-surface-1 p-3">
+                                    <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-3">Técnicas requeridas</p>
+                                    <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-ink"><BookOpen aria-hidden="true" className="size-4 text-accent" />{selectedRank.techniqueCount}</p>
                                 </article>
-                                <article className="rounded-lg border border-neutral-800 bg-[#0d1117] p-3">
-                                    <p className="text-[10px] font-semibold uppercase tracking-wide text-neutral-400">Alumnos en grado</p>
-                                    <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-white"><Users aria-hidden="true" className="size-4 text-violet-400" />{selectedRank.studentCount}</p>
+                                <article className="rounded-lg border border-edge bg-surface-1 p-3">
+                                    <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-3">Alumnos en grado</p>
+                                    <p className="mt-1 flex items-center gap-1.5 text-sm font-bold text-ink"><Users aria-hidden="true" className="size-4 text-violet-400" />{selectedRank.studentCount}</p>
                                 </article>
                             </div>
 
-                            <div className="mt-5 border-t border-neutral-800 pt-5">
+                            <div className="mt-5 border-t border-edge pt-5">
                                 <div className="flex flex-wrap items-center justify-between gap-3">
-                                    <p className="text-sm font-semibold text-neutral-300">Técnicas del plan ({selectedRank.techniques.length})</p>
+                                    <p className="text-sm font-semibold text-ink-2">Técnicas del plan ({selectedRank.techniques.length})</p>
                                     <button className="inline-flex items-center gap-1.5 rounded-md bg-cyan-500 px-3 py-1.5 text-xs font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400 disabled:opacity-60" disabled={saving} onClick={() => setIsKataDialogOpen(true)} type="button"><Plus aria-hidden="true" className="size-3.5" />Asignar técnicas</button>
                                 </div>
                                 {selectedRank.techniques.length === 0 ? (
-                                    <p className="mt-4 rounded-md border border-dashed border-neutral-700 bg-[#0d1117] p-4 text-sm text-neutral-400">Este grado aún no tiene técnicas asociadas. Pulsa «Asignar técnicas» para añadirlas.</p>
+                                    <p className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 p-4 text-sm text-ink-3">Este grado aún no tiene técnicas asociadas. Pulsa «Asignar técnicas» para añadirlas.</p>
                                 ) : (
-                                    <ul className="mt-4 divide-y divide-neutral-800 rounded-md border border-neutral-800 bg-[#0d1117]">
+                                    <ul className="mt-4 divide-y divide-edge rounded-md border border-edge bg-surface-1">
                                         {selectedRank.techniques.map((technique, index) => (
                                             <li className="flex items-center justify-between gap-3 px-4 py-3" key={technique.id}>
                                                 <div className="min-w-0">
-                                                    <p className="truncate text-sm font-semibold text-white">{technique.name}{technique.japaneseName ? <span className="ml-1.5 text-xs font-normal text-neutral-400">{technique.japaneseName}</span> : ''}</p>
-                                                     <p className="mt-0.5 text-xs text-neutral-400">{techniqueMetaLine(technique)}</p>
+                                                    <p className="truncate text-sm font-semibold text-ink">{technique.name}{technique.japaneseName ? <span className="ml-1.5 text-xs font-normal text-ink-3">{technique.japaneseName}</span> : ''}</p>
+                                                     <p className="mt-0.5 text-xs text-ink-3">{techniqueMetaLine(technique)}</p>
                                                  </div>
                                                 <div className="flex shrink-0 items-center gap-1">
-                                                    <button aria-label={`Mover ${technique.name} hacia arriba`} className="rounded p-1.5 text-neutral-500 transition-colors hover:bg-neutral-800 hover:text-white disabled:cursor-not-allowed disabled:opacity-40" disabled={index === 0 || saving} onClick={() => reorderTechnique(technique.id, 'up')} type="button"><MoveUp aria-hidden="true" className="size-4" /></button>
-                                                    <button aria-label={`Mover ${technique.name} hacia abajo`} className="rounded p-1.5 text-neutral-500 transition-colors hover:bg-neutral-800 hover:text-white disabled:cursor-not-allowed disabled:opacity-40" disabled={index === selectedRank.techniques.length - 1 || saving} onClick={() => reorderTechnique(technique.id, 'down')} type="button"><MoveDown aria-hidden="true" className="size-4" /></button>
-                                                    <button aria-label={`Quitar ${technique.name} del grado`} className="rounded p-1.5 text-neutral-500 transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:opacity-60" disabled={saving} onClick={async () => {
+                                                    <button aria-label={`Mover ${technique.name} hacia arriba`} className="rounded p-1.5 text-ink-4 transition-colors hover:bg-surface-3 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40" disabled={index === 0 || saving} onClick={() => reorderTechnique(technique.id, 'up')} type="button"><MoveUp aria-hidden="true" className="size-4" /></button>
+                                                    <button aria-label={`Mover ${technique.name} hacia abajo`} className="rounded p-1.5 text-ink-4 transition-colors hover:bg-surface-3 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40" disabled={index === selectedRank.techniques.length - 1 || saving} onClick={() => reorderTechnique(technique.id, 'down')} type="button"><MoveDown aria-hidden="true" className="size-4" /></button>
+                                                    <button aria-label={`Quitar ${technique.name} del grado`} className="rounded p-1.5 text-ink-4 transition-colors hover:bg-red-500/10 hover:text-danger-text disabled:opacity-60" disabled={saving} onClick={async () => {
                                                         const remaining = selectedRank.techniques.filter(({ id }) => id !== technique.id)
                                                         await saveKatas(selectedRank.id, remaining.map(({ id }) => id))
                                                     }} type="button"><Trash2 aria-hidden="true" className="size-4" /></button>
@@ -355,8 +355,8 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
                 </>
             )}
 
-            {error && <p className="mt-4 text-sm font-medium text-red-400">{error}</p>}
-            {notice && <p className="mt-4 text-sm font-medium text-emerald-400">{notice}</p>}
+            {error && <p className="mt-4 text-sm font-medium text-danger-text">{error}</p>}
+            {notice && <p className="mt-4 text-sm font-medium text-ok-text">{notice}</p>}
 
             {isRankDialogOpen && (
                 <RankDialog form={rankForm} isNew={!editingRank} onChange={setRankForm} onClose={() => setIsRankDialogOpen(false)} onSubmit={submitRank} saving={saving} />
@@ -416,47 +416,47 @@ function RankDialog({
 
     return (
         <div aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm" role="dialog">
-            <form className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-xl border border-neutral-800 bg-[#161616] p-6 shadow-2xl" onSubmit={onSubmit}>
+            <form className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-xl border border-edge bg-surface-2 p-6 shadow-2xl" onSubmit={onSubmit}>
                 <div className="flex items-start justify-between gap-3">
                     <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-cyan-400">{isNew ? 'Nuevo grado' : 'Editar grado'}</p>
-                        <h3 className="mt-1 font-display text-lg font-bold text-white">{isNew ? 'Crear grado' : form.name}</h3>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-accent">{isNew ? 'Nuevo grado' : 'Editar grado'}</p>
+                        <h3 className="mt-1 font-display text-lg font-bold text-ink">{isNew ? 'Crear grado' : form.name}</h3>
                     </div>
-                    <button aria-label="Cerrar" className="flex size-8 shrink-0 items-center justify-center rounded-full text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white" onClick={onClose} type="button"><X aria-hidden="true" className="size-5" /></button>
+                    <button aria-label="Cerrar" className="flex size-8 shrink-0 items-center justify-center rounded-full text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink" onClick={onClose} type="button"><X aria-hidden="true" className="size-5" /></button>
                 </div>
 
                 <div className="mt-5 grid gap-4">
                     <div>
-                        <span className="text-xs font-semibold text-neutral-300">Programa</span>
-                        <div className="mt-1.5 grid grid-cols-2 gap-1 rounded-md border border-neutral-700 bg-[#0d1117] p-1">
+                        <span className="text-xs font-semibold text-ink-2">Programa</span>
+                        <div className="mt-1.5 grid grid-cols-2 gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
                             {(['ADULT', 'YOUTH'] as const).map((program) => (
-                                <button className={`rounded px-3 py-2 text-sm font-semibold transition-colors ${form.program === program ? 'bg-cyan-500 text-[#0d1117]' : 'text-neutral-400 hover:text-white'}`} key={program} onClick={() => set('program', program)} type="button">{program === 'ADULT' ? 'Adultos' : 'Niños'}</button>
+                                <button className={`rounded px-3 py-2 text-sm font-semibold transition-colors ${form.program === program ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={program} onClick={() => set('program', program)} type="button">{program === 'ADULT' ? 'Adultos' : 'Niños'}</button>
                             ))}
                         </div>
                     </div>
-                    <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-name">Nombre (ej. Cinturón Blanco)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-name" onChange={(event) => set('name', event.target.value)} placeholder="Cinturón Blanco" required value={form.name} /></label>
+                    <label className="text-xs font-semibold text-ink-2" htmlFor="rank-name">Nombre (ej. Cinturón Blanco)<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-name" onChange={(event) => set('name', event.target.value)} placeholder="Cinturón Blanco" required value={form.name} /></label>
                     <div className="grid gap-4 sm:grid-cols-2">
-                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-order">Número de grado (autocompleta)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-order" min="1" onChange={(event) => set('order', event.target.value)} placeholder="10" type="number" value={form.order} /></label>
-                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-kyu">Grado (Kyū/Dan)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-kyu" onChange={(event) => set('kyuDan', event.target.value)} placeholder="10º Kyū" value={form.kyuDan} /></label>
-                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-japanese">Nombre japonés<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-japanese" onChange={(event) => set('japaneseName', event.target.value)} placeholder="Hachikyū" value={form.japaneseName} /></label>
-                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-kanji">Kanji<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-kanji" onChange={(event) => set('kanji', event.target.value)} placeholder="八級" value={form.kanji} /></label>
+                        <label className="text-xs font-semibold text-ink-2" htmlFor="rank-order">Número de grado (autocompleta)<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-order" min="1" onChange={(event) => set('order', event.target.value)} placeholder="10" type="number" value={form.order} /></label>
+                        <label className="text-xs font-semibold text-ink-2" htmlFor="rank-kyu">Grado (Kyū/Dan)<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-kyu" onChange={(event) => set('kyuDan', event.target.value)} placeholder="10º Kyū" value={form.kyuDan} /></label>
+                        <label className="text-xs font-semibold text-ink-2" htmlFor="rank-japanese">Nombre japonés<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-japanese" onChange={(event) => set('japaneseName', event.target.value)} placeholder="Hachikyū" value={form.japaneseName} /></label>
+                        <label className="text-xs font-semibold text-ink-2" htmlFor="rank-kanji">Kanji<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-kanji" onChange={(event) => set('kanji', event.target.value)} placeholder="八級" value={form.kanji} /></label>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
-                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-color">Color de cinturón<select className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-color" onChange={(event) => setBeltColor(event.target.value)} value={selectedBeltColorLabel}><option value="">Selecciona un color…</option>{BELT_COLORS.map(({ label }) => <option key={label} value={label}>{label}</option>)}</select></label>
-                        <div className="flex items-end gap-3"><span aria-hidden="true" className="relative mb-1.5 inline-block h-7 w-14 overflow-hidden rounded-sm border border-white/30" style={{ backgroundColor: form.beltColor || '#3f3f46' }}>{form.beltSecondaryColor && <span className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2" style={{ backgroundColor: form.beltSecondaryColor }} />}</span><span className="mb-1.5 text-xs text-neutral-500">{selectedBeltColorLabel || 'Sin color'}</span></div>
+                        <label className="text-xs font-semibold text-ink-2" htmlFor="rank-color">Color de cinturón<select className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-color" onChange={(event) => setBeltColor(event.target.value)} value={selectedBeltColorLabel}><option value="">Selecciona un color…</option>{BELT_COLORS.map(({ label }) => <option key={label} value={label}>{label}</option>)}</select></label>
+                        <div className="flex items-end gap-3"><span aria-hidden="true" className="relative mb-1.5 inline-block h-7 w-14 overflow-hidden rounded-sm border border-white/30" style={{ backgroundColor: form.beltColor || '#3f3f46' }}>{form.beltSecondaryColor && <span className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2" style={{ backgroundColor: form.beltSecondaryColor }} />}</span><span className="mb-1.5 text-xs text-ink-4">{selectedBeltColorLabel || 'Sin color'}</span></div>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-3">
-                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-duration">Permanencia mínima (meses)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-duration" min="0" onChange={(event) => set('estimatedDurationMonths', event.target.value)} type="number" value={form.estimatedDurationMonths} /></label>
-                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-min-months">Meses mínimos (acumulado)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-min-months" min="0" onChange={(event) => set('minMonths', event.target.value)} type="number" value={form.minMonths} /></label>
-                        <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-max-months">Meses máximos (acumulado)<input className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-max-months" min="0" onChange={(event) => set('maxMonths', event.target.value)} type="number" value={form.maxMonths} /></label>
+                        <label className="text-xs font-semibold text-ink-2" htmlFor="rank-duration">Permanencia mínima (meses)<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-duration" min="0" onChange={(event) => set('estimatedDurationMonths', event.target.value)} type="number" value={form.estimatedDurationMonths} /></label>
+                        <label className="text-xs font-semibold text-ink-2" htmlFor="rank-min-months">Meses mínimos (acumulado)<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-min-months" min="0" onChange={(event) => set('minMonths', event.target.value)} type="number" value={form.minMonths} /></label>
+                        <label className="text-xs font-semibold text-ink-2" htmlFor="rank-max-months">Meses máximos (acumulado)<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-max-months" min="0" onChange={(event) => set('maxMonths', event.target.value)} type="number" value={form.maxMonths} /></label>
                     </div>
-                    <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-exam-day">Día de examen<select className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-exam-day" onChange={(event) => set('examDay', event.target.value as RankForm['examDay'])} value={form.examDay}><option value="">Sin definir</option><option value="SATURDAY">Sábado (principiantes)</option><option value="SUNDAY">Domingo (avanzados)</option></select></label>
-                    <label className="flex items-center gap-2 text-xs font-semibold text-neutral-300" htmlFor="rank-max"><input checked={form.isMaximumRank} className="size-4 accent-cyan-500" id="rank-max" onChange={(event) => set('isMaximumRank', event.target.checked)} type="checkbox" />Grado máximo del escalafón</label>
-                    <label className="text-xs font-semibold text-neutral-300" htmlFor="rank-desc">Descripción<textarea className="mt-1.5 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm font-normal text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500" id="rank-desc" onChange={(event) => set('description', event.target.value)} placeholder="Requisitos y notas del grado" rows={3} value={form.description} /></label>
+                    <label className="text-xs font-semibold text-ink-2" htmlFor="rank-exam-day">Día de examen<select className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-exam-day" onChange={(event) => set('examDay', event.target.value as RankForm['examDay'])} value={form.examDay}><option value="">Sin definir</option><option value="SATURDAY">Sábado (principiantes)</option><option value="SUNDAY">Domingo (avanzados)</option></select></label>
+                    <label className="flex items-center gap-2 text-xs font-semibold text-ink-2" htmlFor="rank-max"><input checked={form.isMaximumRank} className="size-4 accent-cyan-500" id="rank-max" onChange={(event) => set('isMaximumRank', event.target.checked)} type="checkbox" />Grado máximo del escalafón</label>
+                    <label className="text-xs font-semibold text-ink-2" htmlFor="rank-desc">Descripción<textarea className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-desc" onChange={(event) => set('description', event.target.value)} placeholder="Requisitos y notas del grado" rows={3} value={form.description} /></label>
                 </div>
 
                 <div className="mt-6 flex justify-end gap-3">
-                    <button className="rounded-md border border-neutral-700 px-4 py-2 text-sm font-semibold text-neutral-300 transition-colors hover:border-neutral-500 hover:text-white" onClick={onClose} type="button">Cancelar</button>
+                    <button className="rounded-md border border-edge-strong px-4 py-2 text-sm font-semibold text-ink-2 transition-colors hover:border-edge-strong hover:text-ink" onClick={onClose} type="button">Cancelar</button>
                     <button className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400 disabled:opacity-60" disabled={saving} type="submit">{saving ? <Loader2 aria-label="Guardando" className="size-4 animate-spin" /> : <CheckSquare aria-hidden="true" className="size-4" />}{isNew ? 'Crear grado' : 'Guardar cambios'}</button>
                 </div>
             </form>
@@ -514,36 +514,36 @@ function AssignKatasDialog({
 
     return (
         <div aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm" role="dialog">
-            <div className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-xl border border-neutral-800 bg-[#161616] p-6 shadow-2xl">
+            <div className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-xl border border-edge bg-surface-2 p-6 shadow-2xl">
                 <div className="flex items-start justify-between gap-3">
                     <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-cyan-400">Asignación curricular</p>
-                        <h3 className="mt-1 font-display text-lg font-bold text-white">Selecciona las técnicas del grado</h3>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-accent">Asignación curricular</p>
+                        <h3 className="mt-1 font-display text-lg font-bold text-ink">Selecciona las técnicas del grado</h3>
                     </div>
-                    <button aria-label="Cerrar" className="flex size-8 shrink-0 items-center justify-center rounded-full text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white" onClick={onClose} type="button"><X aria-hidden="true" className="size-5" /></button>
+                    <button aria-label="Cerrar" className="flex size-8 shrink-0 items-center justify-center rounded-full text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink" onClick={onClose} type="button"><X aria-hidden="true" className="size-5" /></button>
                 </div>
 
                 <div className="mt-4 flex items-center gap-2">
-                    <button className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-300 hover:text-cyan-200" onClick={() => setSelected(allSelected ? new Set() : new Set(allCatalog.map(({ id }) => id)))} type="button">{allSelected ? <Square aria-hidden="true" className="size-3.5" /> : <CheckSquare aria-hidden="true" className="size-3.5" />}{allSelected ? 'Quitar todas' : 'Seleccionar todas'}</button>
-                    <span className="ml-auto text-xs text-neutral-400">{selected.size} de {allCatalog.length} seleccionadas</span>
+                    <button className="inline-flex items-center gap-1.5 text-xs font-semibold text-accent hover:text-accent-text" onClick={() => setSelected(allSelected ? new Set() : new Set(allCatalog.map(({ id }) => id)))} type="button">{allSelected ? <Square aria-hidden="true" className="size-3.5" /> : <CheckSquare aria-hidden="true" className="size-3.5" />}{allSelected ? 'Quitar todas' : 'Seleccionar todas'}</button>
+                    <span className="ml-auto text-xs text-ink-3">{selected.size} de {allCatalog.length} seleccionadas</span>
                 </div>
 
                 {catalogSize === 0 ? (
-                    <p className="mt-5 rounded-md border border-dashed border-neutral-700 bg-[#0d1117] p-4 text-sm text-neutral-400">No hay técnicas en el catálogo todavía. Crea técnicas para poder asignarlas a los grados.</p>
+                    <p className="mt-5 rounded-md border border-dashed border-edge-strong bg-surface-1 p-4 text-sm text-ink-3">No hay técnicas en el catálogo todavía. Crea técnicas para poder asignarlas a los grados.</p>
                 ) : (
-                    <ul className="mt-4 max-h-72 divide-y divide-neutral-800 overflow-y-auto rounded-md border border-neutral-800 bg-[#0d1117]">
+                    <ul className="mt-4 max-h-72 divide-y divide-edge overflow-y-auto rounded-md border border-edge bg-surface-1">
                         {groups.map((group) => (
                             <li key={group.key}>
-                                <p className="sticky top-0 flex items-center gap-2 bg-[#0d1117]/95 px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider text-neutral-500 backdrop-blur-sm">{group.label}<span className="font-medium normal-case text-neutral-600">{group.items.length}</span></p>
-                                <ul className="divide-y divide-neutral-800/70">
+                                <p className="sticky top-0 flex items-center gap-2 bg-surface-1/95 px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider text-ink-4 backdrop-blur-sm">{group.label}<span className="font-medium normal-case text-ink-4">{group.items.length}</span></p>
+                                <ul className="divide-y divide-edge/70">
                                     {group.items.map((technique) => (
                                         <li key={technique.id}>
-                                            <button className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition-colors hover:bg-neutral-800" onClick={() => toggle(technique.id)} type="button">
+                                            <button className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition-colors hover:bg-surface-3" onClick={() => toggle(technique.id)} type="button">
                                                 <span className="min-w-0">
-                                                    <span className="block truncate text-sm font-semibold text-white">{technique.name}</span>
-                                                    <span className="block text-xs text-neutral-400">{CATEGORY_LABELS[technique.category]}{technique.difficulty ? ` · ${technique.difficulty}` : ''}</span>
+                                                    <span className="block truncate text-sm font-semibold text-ink">{technique.name}</span>
+                                                    <span className="block text-xs text-ink-3">{CATEGORY_LABELS[technique.category]}{technique.difficulty ? ` · ${technique.difficulty}` : ''}</span>
                                                 </span>
-                                                {selected.has(technique.id) ? <CheckSquare aria-hidden="true" className="size-5 shrink-0 text-cyan-400" /> : <Square aria-hidden="true" className="size-5 shrink-0 text-neutral-600" />}
+                                                {selected.has(technique.id) ? <CheckSquare aria-hidden="true" className="size-5 shrink-0 text-accent" /> : <Square aria-hidden="true" className="size-5 shrink-0 text-ink-4" />}
                                             </button>
                                         </li>
                                     ))}
@@ -554,7 +554,7 @@ function AssignKatasDialog({
                 )}
 
                 <div className="mt-6 flex justify-end gap-3">
-                    <button className="rounded-md border border-neutral-700 px-4 py-2 text-sm font-semibold text-neutral-300 transition-colors hover:border-neutral-500 hover:text-white" onClick={onClose} type="button">Cancelar</button>
+                    <button className="rounded-md border border-edge-strong px-4 py-2 text-sm font-semibold text-ink-2 transition-colors hover:border-edge-strong hover:text-ink" onClick={onClose} type="button">Cancelar</button>
                     <button className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400 disabled:opacity-60" disabled={saving} onClick={() => onSave([...selected])} type="button">{saving ? <Loader2 aria-label="Guardando" className="size-4 animate-spin" /> : <CheckSquare aria-hidden="true" className="size-4" />}Guardar técnicas</button>
                 </div>
             </div>

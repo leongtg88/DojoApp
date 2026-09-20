@@ -21,7 +21,7 @@ export function MobileDashboardNav({ activeRole, pendingEnrollmentCount = 0, pen
     return (
         <nav
             aria-label="Navegación móvil del dashboard"
-            className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-800 bg-[#161b22]/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-2px_10px_rgba(0,0,0,0.35)] backdrop-blur md:hidden print:hidden"
+            className="fixed inset-x-0 bottom-0 z-40 border-t border-edge bg-surface-2/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-2px_10px_rgba(0,0,0,0.35)] backdrop-blur md:hidden print:hidden"
         >
             <div className="flex h-16 items-center gap-1 overflow-x-auto overflow-y-hidden overscroll-x-contain px-2 touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {navigation.map(({ href, icon: Icon, label, badge }) => {
@@ -29,7 +29,7 @@ export function MobileDashboardNav({ activeRole, pendingEnrollmentCount = 0, pen
 
                     return (
                         <Link
-                            className={`relative flex h-14 min-w-14 flex-1 flex-col items-center justify-center gap-1 px-1 text-center text-[10px] font-semibold ${active ? 'text-cyan-300' : 'text-neutral-500'
+                            className={`relative flex h-14 min-w-14 flex-1 flex-col items-center justify-center gap-1 px-1 text-center text-[10px] font-semibold ${active ? 'text-accent' : 'text-ink-4'
                                 }`}
                             href={href}
                             key={href}

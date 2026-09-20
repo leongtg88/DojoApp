@@ -37,27 +37,27 @@ export function MartialGradeCard({ rank, studentName, approvedTechniques, totalT
     const tagText = lightBelt ? '#1a1a1a' : '#eee49f'
 
     return (
-        <section className="relative overflow-hidden rounded-xl border border-amber-900/40 bg-gradient-to-br from-[#1a1c20] via-[#16171a] to-[#0d0e10] p-5 shadow-lg shadow-black/40">
-            <span aria-hidden="true" className="pointer-events-none absolute -bottom-10 -right-4 font-display text-[9rem] font-black leading-none text-white opacity-[0.05]">級</span>
+        <section className="relative overflow-hidden rounded-xl border border-amber-900/40 bg-gradient-to-br from-surface-3 via-surface-2 to-surface-1 p-5 shadow-lg shadow-black/20">
+            <span aria-hidden="true" className="pointer-events-none absolute -bottom-10 -right-4 font-display text-[9rem] font-black leading-none text-ink opacity-[0.05]">級</span>
 
             <div className="relative">
                 <div className="flex items-start justify-between gap-4">
                     <div>
-                        <p className="text-[11px] font-bold uppercase tracking-widest text-amber-500/90">Grado actual</p>
-                        <h2 className="mt-1 font-display text-2xl font-black text-white">{rank?.name ?? 'Sin grado asignado'}</h2>
-                        <p className="mt-1 text-xs font-semibold text-neutral-400">Siguiente: {grado?.nextRankName ?? 'convocatoria de examen'}</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-warn-text">Grado actual</p>
+                        <h2 className="mt-1 font-display text-2xl font-black text-ink">{rank?.name ?? 'Sin grado asignado'}</h2>
+                        <p className="mt-1 text-xs font-semibold text-ink-3">Siguiente: {grado?.nextRankName ?? 'convocatoria de examen'}</p>
                     </div>
                     <div className="flex shrink-0 flex-col items-end gap-1.5">
-                        <span className="rounded-full border border-amber-500/50 bg-amber-500/10 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-amber-300">Plan oficial de grado</span>
+                        <span className="rounded-full border border-amber-500/50 bg-amber-500/10 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-warn-text">Plan oficial de grado</span>
                         {grado ? (
-                            <span className="rounded-full border border-cyan-500/40 bg-cyan-500/10 px-2.5 py-1 text-xs font-extrabold text-cyan-200">{grado.overallPercent}% avance</span>
+                            <span className="rounded-full border border-cyan-500/40 bg-cyan-500/10 px-2.5 py-1 text-xs font-extrabold text-accent-text">{grado.overallPercent}% avance</span>
                         ) : (
-                            <span className="rounded-full border border-neutral-600 bg-neutral-800/50 px-2.5 py-1 text-xs font-extrabold text-neutral-400">Sin datos</span>
+                            <span className="rounded-full border border-edge-strong bg-surface-3/50 px-2.5 py-1 text-xs font-extrabold text-ink-3">Sin datos</span>
                         )}
                     </div>
                 </div>
 
-                <div className="mt-5 rounded-md border border-neutral-700 bg-[#0d1117] p-1.5 shadow-inner">
+                <div className="mt-5 rounded-md border border-edge-strong bg-surface-1 p-1.5 shadow-inner">
                     <div className="relative flex h-10 items-center justify-between overflow-hidden rounded-sm px-4 shadow-sm" style={{ backgroundColor: beltColor }}>
                         <span aria-hidden="true" className="absolute inset-x-0 top-1.5 h-px" style={{ backgroundColor: darken(beltColor, 40) }} />
                         <span aria-hidden="true" className="absolute inset-x-0 bottom-1.5 h-px" style={{ backgroundColor: darken(beltColor, 40) }} />
@@ -74,16 +74,16 @@ export function MartialGradeCard({ rank, studentName, approvedTechniques, totalT
                 </div>
 
                 <div className="mt-5 flex items-center justify-between gap-3 text-xs">
-                    <span className="font-semibold text-neutral-200">{approvedTechniques} de {totalTechniques} técnicas aprobadas</span>
-                    <Link className="inline-flex shrink-0 items-center gap-0.5 font-bold text-cyan-300 hover:underline" href="/dashboard/estudiante/progreso">Ver progreso <ChevronRight aria-hidden="true" className="size-4" /></Link>
+                    <span className="font-semibold text-ink">{approvedTechniques} de {totalTechniques} técnicas aprobadas</span>
+                    <Link className="inline-flex shrink-0 items-center gap-0.5 font-bold text-accent hover:underline" href="/dashboard/estudiante/progreso">Ver progreso <ChevronRight aria-hidden="true" className="size-4" /></Link>
                 </div>
-                <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#0d1117] p-0.5"><div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-300 transition-all" style={{ width: `${progress}%` }} /></div>
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface-1 p-0.5"><div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-300 transition-all" style={{ width: `${progress}%` }} /></div>
 
-                <div className={`mt-4 flex items-center gap-2 rounded-md border px-3 py-2.5 ${grado?.isEligible ? 'border-emerald-500/40 bg-emerald-500/10' : 'border-neutral-700 bg-[#0d1117]'}`}>
-                    <BadgeCheck aria-hidden="true" className={`size-4 shrink-0 ${grado?.isEligible ? 'text-emerald-400' : 'text-amber-400'}`} />
+                <div className={`mt-4 flex items-center gap-2 rounded-md border px-3 py-2.5 ${grado?.isEligible ? 'border-emerald-500/40 bg-emerald-500/10' : 'border-edge-strong bg-surface-1'}`}>
+                    <BadgeCheck aria-hidden="true" className={`size-4 shrink-0 ${grado?.isEligible ? 'text-ok-text' : 'text-warn-text'}`} />
                     <div className="min-w-0">
-                        <p className="text-[11px] font-bold uppercase tracking-wide text-neutral-100">Budo Pass</p>
-                        <p className={`truncate text-xs ${grado?.isEligible ? 'text-emerald-300' : 'text-neutral-400'}`}>
+                        <p className="text-[11px] font-bold uppercase tracking-wide text-ink">Budo Pass</p>
+                        <p className={`truncate text-xs ${grado?.isEligible ? 'text-ok-text' : 'text-ink-3'}`}>
                             {grado?.isEligible
                                 ? 'Listo para examen de grado'
                                 : grado

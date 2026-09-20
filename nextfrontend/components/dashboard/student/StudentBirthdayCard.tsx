@@ -19,15 +19,15 @@ export function StudentBirthdayCard({ dateOfBirth }: StudentBirthdayCardProps) {
     const dateLabel = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'long' }).format(nextBirthday)
 
     return (
-        <aside className="mt-8 rounded-lg border border-cyan-900/50 bg-[#161b22] p-5" aria-label="Próximo cumpleaños">
+        <aside className="mt-8 rounded-lg border border-cyan-900/50 bg-surface-2 p-5" aria-label="Próximo cumpleaños">
             <div className="flex gap-3">
-                <CakeSlice aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-cyan-400" />
+                <CakeSlice aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-accent" />
                 <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-cyan-400">Cumpleaños</p>
-                    <p className="mt-1 text-sm font-semibold text-white">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-accent">Cumpleaños</p>
+                    <p className="mt-1 text-sm font-semibold text-ink">
                         {isToday ? 'Hoy celebramos tu cumpleaños en el dojo.' : `Tu próximo cumpleaños es el ${dateLabel}.`}
                     </p>
-                    {!isToday && <p className="mt-1 text-sm text-neutral-400">Faltan {daysUntil} días.</p>}
+                    {!isToday && <p className="mt-1 text-sm text-ink-3">Faltan {daysUntil} días.</p>}
                 </div>
             </div>
         </aside>

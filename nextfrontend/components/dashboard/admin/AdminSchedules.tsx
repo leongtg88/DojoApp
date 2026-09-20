@@ -199,9 +199,9 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-cyan-400">Administración</p>
-                    <h1 className="mt-2 font-display text-3xl font-extrabold text-white">Horarios</h1>
-                    <p className="mt-2 max-w-xl text-sm text-neutral-400">
+                    <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
+                    <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Horarios</h1>
+                    <p className="mt-2 max-w-xl text-sm text-ink-3">
                         Agrupa por módulo y agrega varias franjas el mismo día, cada una con su instructor.
                     </p>
                 </div>
@@ -216,52 +216,52 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
             </div>
 
             {error && (
-                <p className="mt-4 rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">{error}</p>
+                <p className="mt-4 rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-danger-text">{error}</p>
             )}
 
             {(creating || editing) && (
-                <section className="mt-6 rounded-lg border border-neutral-800 bg-[#161b22] p-5">
-                    <h2 className="font-display text-lg font-bold text-white">{editing ? 'Editar franja' : 'Nueva franja'}</h2>
+                <section className="mt-6 rounded-lg border border-edge bg-surface-2 p-5">
+                    <h2 className="font-display text-lg font-bold text-ink">{editing ? 'Editar franja' : 'Nueva franja'}</h2>
                     <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        <label className="text-sm text-neutral-300 lg:col-span-3">
+                        <label className="text-sm text-ink-2 lg:col-span-3">
                             Nombre del módulo
                             <input
                                 value={form.name}
                                 onChange={(event) => setForm({ ...form, name: event.target.value })}
-                                className="mt-1 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
+                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
                                 placeholder="Ej: Módulo Niños Tarde (usa el mismo nombre para todas sus franjas)"
                             />
                         </label>
-                        <label className="text-sm text-neutral-300">
+                        <label className="text-sm text-ink-2">
                             Audiencia
                             <select
                                 value={form.audience}
                                 onChange={(event) => setForm({ ...form, audience: event.target.value as ScheduleAudience })}
-                                className="mt-1 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
+                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
                             >
                                 <option value="ADULTS">Adultos</option>
                                 <option value="CHILDREN">Niños</option>
                                 <option value="MIXED">Mixta</option>
                             </select>
                         </label>
-                        <label className="text-sm text-neutral-300">
+                        <label className="text-sm text-ink-2">
                             Día
                             <select
                                 value={form.dayOfWeek}
                                 onChange={(event) => setForm({ ...form, dayOfWeek: Number(event.target.value) })}
-                                className="mt-1 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
+                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
                             >
                                 {DAY_LABELS.map((label, index) => (
                                     <option key={label} value={index}>{label}</option>
                                 ))}
                             </select>
                         </label>
-                        <label className="text-sm text-neutral-300">
+                        <label className="text-sm text-ink-2">
                             Instructor
                             <select
                                 value={form.instructorId}
                                 onChange={(event) => setForm({ ...form, instructorId: event.target.value })}
-                                className="mt-1 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
+                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
                             >
                                 <option value="">Sin instructor asignado</option>
                                 {instructors.map((instructor) => (
@@ -270,31 +270,31 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                             </select>
                         </label>
                         <div className="grid grid-cols-2 gap-3">
-                            <label className="text-sm text-neutral-300">
+                            <label className="text-sm text-ink-2">
                                 Inicio
                                 <input
                                     type="time"
                                     value={form.startTime}
                                     onChange={(event) => setForm({ ...form, startTime: event.target.value })}
-                                    className="mt-1 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
+                                    className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
                                 />
                             </label>
-                            <label className="text-sm text-neutral-300">
+                            <label className="text-sm text-ink-2">
                                 Fin
                                 <input
                                     type="time"
                                     value={form.endTime}
                                     onChange={(event) => setForm({ ...form, endTime: event.target.value })}
-                                    className="mt-1 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
+                                    className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
                                 />
                             </label>
                         </div>
-                        <label className="text-sm text-neutral-300 lg:col-span-3">
+                        <label className="text-sm text-ink-2 lg:col-span-3">
                             Descripción
                             <input
                                 value={form.description}
                                 onChange={(event) => setForm({ ...form, description: event.target.value })}
-                                className="mt-1 w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500"
+                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
                             />
                         </label>
                     </div>
@@ -311,7 +311,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                         <button
                             type="button"
                             onClick={() => { setCreating(false); setEditing(null); setError(null) }}
-                            className="flex items-center gap-2 rounded-md border border-neutral-700 bg-[#0d1117] px-4 py-2 text-xs font-semibold text-neutral-300 hover:bg-neutral-800"
+                            className="flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-4 py-2 text-xs font-semibold text-ink-2 hover:bg-surface-3"
                         >
                             <X className="size-4" aria-hidden="true" />
                             Cancelar
@@ -332,12 +332,12 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                         byDay.set(block.dayOfWeek, list)
                     }
                     return (
-                        <article key={name} className={`rounded-lg border bg-[#161b22] p-5 ${activeCount === 0 ? 'border-neutral-800/40 opacity-70' : 'border-neutral-800'}`}>
+                        <article key={name} className={`rounded-lg border bg-surface-2 p-5 ${activeCount === 0 ? 'border-edge/40 opacity-70' : 'border-edge'}`}>
                             <div className="flex items-start justify-between gap-2">
                                 <div>
-                                    <h3 className="font-display text-lg font-bold text-white">{name}</h3>
-                                    <p className="mt-1 text-xs text-neutral-400">
-                                        <span className="mr-1.5 inline-block rounded border border-neutral-700 px-1.5 py-0.5 text-[10px] uppercase tracking-wide">
+                                    <h3 className="font-display text-lg font-bold text-ink">{name}</h3>
+                                    <p className="mt-1 text-xs text-ink-3">
+                                        <span className="mr-1.5 inline-block rounded border border-edge-strong px-1.5 py-0.5 text-[10px] uppercase tracking-wide">
                                             {blocks[0] ? AUDIENCE_LABELS[blocks[0].audience] : '—'}
                                         </span>
                                         {enrolledCount} alumnos inscritos · {sortedBlocks.length} franja(s)
@@ -347,7 +347,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                                     type="button"
                                     onClick={() => openCreate(name)}
                                     title="Agregar otra franja a este módulo"
-                                    className="flex shrink-0 items-center gap-1 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-2.5 py-1.5 text-[11px] font-semibold text-cyan-300 transition-colors hover:bg-cyan-900/50"
+                                    className="flex shrink-0 items-center gap-1 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-2.5 py-1.5 text-[11px] font-semibold text-accent transition-colors hover:bg-cyan-900/50"
                                 >
                                     <Plus className="size-3.5" aria-hidden="true" />
                                     Franja
@@ -356,15 +356,15 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                             <div className="mt-4 space-y-4">
                                 {[...byDay.entries()].map(([day, dayBlocks]) => (
                                     <div key={day}>
-                                        <p className="text-xs font-bold uppercase tracking-wide text-cyan-300">{DAY_LABELS[day]}</p>
+                                        <p className="text-xs font-bold uppercase tracking-wide text-accent">{DAY_LABELS[day]}</p>
                                         <ul className="mt-1.5 space-y-1.5">
                                             {dayBlocks.map((schedule) => (
-                                                <li key={schedule.id} className="flex items-center justify-between gap-3 rounded-md border border-neutral-800 bg-[#0d1117] px-3 py-2">
+                                                <li key={schedule.id} className="flex items-center justify-between gap-3 rounded-md border border-edge bg-surface-1 px-3 py-2">
                                                     <div className="flex items-center gap-3">
-                                                        <CalendarPlus className={`size-4 ${schedule.active ? 'text-cyan-400' : 'text-neutral-600'}`} aria-hidden="true" />
+                                                        <CalendarPlus className={`size-4 ${schedule.active ? 'text-accent' : 'text-ink-4'}`} aria-hidden="true" />
                                                         <div>
-                                                            <p className="font-mono text-sm font-semibold text-white">{schedule.startTime} – {schedule.endTime}</p>
-                                                            <p className="text-xs text-neutral-400">{schedule.instructorName ?? 'Sin instructor asignado'}</p>
+                                                            <p className="font-mono text-sm font-semibold text-ink">{schedule.startTime} – {schedule.endTime}</p>
+                                                            <p className="text-xs text-ink-3">{schedule.instructorName ?? 'Sin instructor asignado'}</p>
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-1.5">
@@ -372,7 +372,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                                                             type="button"
                                                             onClick={() => openEnroll(schedule)}
                                                             title="Inscribir alumnos"
-                                                            className="flex size-7 items-center justify-center rounded-md border border-neutral-700 text-neutral-300 hover:bg-neutral-700"
+                                                            className="flex size-7 items-center justify-center rounded-md border border-edge-strong text-ink-2 hover:bg-surface-3"
                                                         >
                                                             <Users className="size-3.5" aria-hidden="true" />
                                                         </button>
@@ -380,7 +380,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                                                             type="button"
                                                             onClick={() => openEdit(schedule)}
                                                             title="Editar"
-                                                            className="flex size-7 items-center justify-center rounded-md border border-neutral-700 text-neutral-300 hover:bg-neutral-700"
+                                                            className="flex size-7 items-center justify-center rounded-md border border-edge-strong text-ink-2 hover:bg-surface-3"
                                                         >
                                                             <Pencil className="size-3.5" aria-hidden="true" />
                                                         </button>
@@ -390,8 +390,8 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                                                             title={schedule.active ? 'Desactivar' : 'Activar'}
                                                             className={`flex size-7 items-center justify-center rounded-md border ${
                                                                 schedule.active
-                                                                    ? 'border-neutral-700 text-neutral-300 hover:bg-neutral-700'
-                                                                    : 'border-emerald-500/40 text-emerald-400'
+                                                                    ? 'border-edge-strong text-ink-2 hover:bg-surface-3'
+                                                                    : 'border-emerald-500/40 text-ok-text'
                                                             }`}
                                                         >
                                                             {schedule.active ? <Power className="size-3.5" aria-hidden="true" /> : <Check className="size-3.5" aria-hidden="true" />}
@@ -400,7 +400,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                                                             type="button"
                                                             onClick={() => deleteSchedule(schedule)}
                                                             title="Eliminar"
-                                                            className="flex size-7 items-center justify-center rounded-md border border-rose-500/30 text-rose-400 hover:bg-rose-500/10"
+                                                            className="flex size-7 items-center justify-center rounded-md border border-rose-500/30 text-danger-text hover:bg-rose-500/10"
                                                         >
                                                             <X className="size-3.5" aria-hidden="true" />
                                                         </button>
@@ -418,27 +418,27 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
 
             {enrollingIn && (
                 <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" onClick={() => setEnrollingIn(null)}>
-                    <div className="flex max-h-[80vh] w-full max-w-lg flex-col rounded-lg border border-neutral-800 bg-[#161b22] shadow-xl" onClick={(event) => event.stopPropagation()}>
-                        <div className="flex items-center justify-between border-b border-neutral-800 px-5 py-4">
+                    <div className="flex max-h-[80vh] w-full max-w-lg flex-col rounded-lg border border-edge bg-surface-2 shadow-xl" onClick={(event) => event.stopPropagation()}>
+                        <div className="flex items-center justify-between border-b border-edge px-5 py-4">
                             <div>
-                                <h3 className="font-display text-lg font-bold text-white">Inscribir alumnos · {enrollingIn.name}</h3>
-                                <p className="text-xs text-neutral-400">
+                                <h3 className="font-display text-lg font-bold text-ink">Inscribir alumnos · {enrollingIn.name}</h3>
+                                <p className="text-xs text-ink-3">
                                     {DAY_LABELS[enrollingIn.dayOfWeek]} {enrollingIn.startTime} – {enrollingIn.endTime}
                                     {enrollingIn.instructorName ? ` · ${enrollingIn.instructorName}` : ''}
                                 </p>
                             </div>
-                            <button type="button" onClick={() => setEnrollingIn(null)} className="rounded-md p-1 text-neutral-400 hover:text-white">
+                            <button type="button" onClick={() => setEnrollingIn(null)} className="rounded-md p-1 text-ink-3 hover:text-ink">
                                 <X className="size-5" aria-hidden="true" />
                             </button>
                         </div>
-                        <div className="border-b border-neutral-800 px-5 py-3">
+                        <div className="border-b border-edge px-5 py-3">
                             <div className="relative">
-                                <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-neutral-500" aria-hidden="true" />
+                                <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-4" aria-hidden="true" />
                                 <input
                                     value={search}
                                     onChange={(event) => setSearch(event.target.value)}
                                     placeholder="Buscar alumno..."
-                                    className="w-full rounded-md border border-neutral-700 bg-[#0d1117] py-2 pl-9 pr-3 text-sm text-white outline-none focus:border-cyan-500"
+                                    className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-sm text-ink outline-none focus:border-cyan-500"
                                 />
                             </div>
                         </div>
@@ -447,7 +447,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                                 const isChecked = selected.has(student.id)
                                 return (
                                     <li key={student.id}>
-                                        <label className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800">
+                                        <label className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm text-ink hover:bg-surface-3">
                                             <input
                                                 type="checkbox"
                                                 checked={isChecked}
@@ -455,19 +455,19 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                                                 className="size-4 accent-cyan-500"
                                             />
                                             <span className="font-medium">{student.firstName} {student.lastName}</span>
-                                            <span className="ml-auto text-xs text-neutral-500">{student.currentRank ?? 'Sin grado'}</span>
+                                            <span className="ml-auto text-xs text-ink-4">{student.currentRank ?? 'Sin grado'}</span>
                                         </label>
                                     </li>
                                 )
                             })}
-                            {filteredStudents.length === 0 && <li className="px-3 py-6 text-center text-sm text-neutral-500">Sin resultados.</li>}
+                            {filteredStudents.length === 0 && <li className="px-3 py-6 text-center text-sm text-ink-4">Sin resultados.</li>}
                         </ul>
-                        <div className="flex items-center justify-end gap-2.5 border-t border-neutral-800 px-5 py-3.5">
+                        <div className="flex items-center justify-end gap-2.5 border-t border-edge px-5 py-3.5">
                             <button
                                 type="button"
                                 onClick={() => setEnrollingIn(null)}
                                 disabled={isEnrolling}
-                                className="rounded-md border border-neutral-700 bg-[#0d1117] px-4 py-2 text-xs font-semibold text-neutral-300 hover:bg-neutral-800 disabled:opacity-50"
+                                className="rounded-md border border-edge-strong bg-surface-1 px-4 py-2 text-xs font-semibold text-ink-2 hover:bg-surface-3 disabled:opacity-50"
                             >
                                 Cancelar
                             </button>

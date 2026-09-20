@@ -11,7 +11,7 @@ interface EditProfileModalProps {
 }
 
 const fieldClass =
-    'mt-1.5 block w-full rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500'
+    'mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500'
 
 export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
     const router = useRouter()
@@ -60,18 +60,18 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
     return (
         <div
             aria-modal="true"
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#0d1117]/80 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-surface-1/80 p-4 backdrop-blur-sm"
             role="dialog"
         >
-            <div className="w-full max-w-lg rounded-xl border border-neutral-700 bg-[#161b22] shadow-2xl">
-                <div className="flex items-center justify-between border-b border-neutral-800 px-5 py-4">
+            <div className="w-full max-w-lg rounded-xl border border-edge-strong bg-surface-2 shadow-2xl">
+                <div className="flex items-center justify-between border-b border-edge px-5 py-4">
                     <div>
-                        <h2 className="font-display text-base font-bold text-white">Editar datos personales</h2>
-                        <p className="mt-0.5 text-xs text-neutral-400">Los cambios quedan asociados a tu expediente de estudiante.</p>
+                        <h2 className="font-display text-base font-bold text-ink">Editar datos personales</h2>
+                        <p className="mt-0.5 text-xs text-ink-3">Los cambios quedan asociados a tu expediente de estudiante.</p>
                     </div>
                     <button
                         aria-label="Cerrar"
-                        className="flex size-8 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white"
+                        className="flex size-8 items-center justify-center rounded-md text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink"
                         onClick={onClose}
                         type="button"
                     >
@@ -81,7 +81,7 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
 
                 <form className="space-y-4 px-5 py-5" onSubmit={handleSubmit}>
                     <div className="grid gap-4 sm:grid-cols-2">
-                        <label className="block text-sm font-semibold text-neutral-200" htmlFor="edit-firstname">
+                        <label className="block text-sm font-semibold text-ink" htmlFor="edit-firstname">
                             Nombre
                             <input
                                 className={fieldClass}
@@ -93,7 +93,7 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
                             />
                         </label>
 
-                        <label className="block text-sm font-semibold text-neutral-200" htmlFor="edit-lastname">
+                        <label className="block text-sm font-semibold text-ink" htmlFor="edit-lastname">
                             Apellido
                             <input
                                 className={fieldClass}
@@ -106,7 +106,7 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
                         </label>
                     </div>
 
-                    <label className="block text-sm font-semibold text-neutral-200" htmlFor="edit-dob">
+                    <label className="block text-sm font-semibold text-ink" htmlFor="edit-dob">
                         Fecha de nacimiento
                         <input
                             className={fieldClass}
@@ -118,7 +118,7 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
                         />
                     </label>
 
-                    <label className="block text-sm font-semibold text-neutral-200" htmlFor="edit-phone">
+                    <label className="block text-sm font-semibold text-ink" htmlFor="edit-phone">
                         Teléfono
                         <input
                             className={fieldClass}
@@ -129,7 +129,7 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
                         />
                     </label>
 
-                    <label className="block text-sm font-semibold text-neutral-200" htmlFor="edit-emergency">
+                    <label className="block text-sm font-semibold text-ink" htmlFor="edit-emergency">
                         Contacto de emergencia
                         <textarea
                             className={fieldClass}
@@ -140,7 +140,7 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
                         />
                     </label>
 
-                    <label className="block text-sm font-semibold text-neutral-200" htmlFor="edit-medical">
+                    <label className="block text-sm font-semibold text-ink" htmlFor="edit-medical">
                         Información médica relevante
                         <textarea
                             className={fieldClass}
@@ -151,11 +151,11 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
                         />
                     </label>
 
-                    {error && <p className="text-sm font-medium text-red-300">{error}</p>}
+                    {error && <p className="text-sm font-medium text-danger-text">{error}</p>}
 
-                    <div className="flex flex-col-reverse gap-2 border-t border-neutral-800 pt-4 sm:flex-row sm:justify-end">
+                    <div className="flex flex-col-reverse gap-2 border-t border-edge pt-4 sm:flex-row sm:justify-end">
                         <button
-                            className="rounded-md border border-neutral-700 px-4 py-2.5 text-sm font-semibold text-neutral-300 transition-colors hover:bg-neutral-800 hover:text-white"
+                            className="rounded-md border border-edge-strong px-4 py-2.5 text-sm font-semibold text-ink-2 transition-colors hover:bg-surface-3 hover:text-ink"
                             onClick={onClose}
                             type="button"
                         >

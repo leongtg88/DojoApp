@@ -22,7 +22,7 @@ export default async function StudentProfilePage() {
         <>
             <StudentProfileDetails profile={summary.profile} />
             <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 pb-8 sm:px-6 lg:px-8">
-                <p className="text-sm text-neutral-400">¿Necesitas actualizar tu nombre, fecha de nacimiento, teléfono, contacto de emergencia o notas médicas?</p>
+                <p className="text-sm text-ink-3">¿Necesitas actualizar tu nombre, fecha de nacimiento, teléfono, contacto de emergencia o notas médicas?</p>
                 <StudentProfileActions profile={summary.profile} />
             </div>
             <div className="mx-auto max-w-4xl px-4 pb-8 sm:px-6 lg:px-8">

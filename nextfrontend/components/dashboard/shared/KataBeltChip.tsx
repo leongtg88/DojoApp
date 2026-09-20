@@ -14,7 +14,7 @@ export function KataBeltChip({ level, beltColor, beltSecondaryColor, className =
 	const isDark = level === 'Negro' || color.toUpperCase() === '#212121'
 
 	return (
-		<span className={`inline-flex items-center gap-1.5 rounded-md border border-neutral-700 bg-[#0d1117] px-2 py-1 text-[11px] font-semibold text-neutral-200 ${className}`}>
+		<span className={`inline-flex items-center gap-1.5 rounded-md border border-edge-strong bg-surface-1 px-2 py-1 text-[11px] font-semibold text-ink ${className}`}>
 			<span
 				aria-hidden="true"
 				className="relative inline-block h-2.5 w-3.5 overflow-hidden rounded-sm border border-white/30"

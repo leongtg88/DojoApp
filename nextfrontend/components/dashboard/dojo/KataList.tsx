@@ -70,11 +70,11 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
 
     return (
         <section className={`space-y-4 ${className}`}>
-            <div className="space-y-3 rounded-lg border border-neutral-800 bg-[#161b22] p-3">
+            <div className="space-y-3 rounded-lg border border-edge bg-surface-2 p-3">
                 <label className="relative block">
-                    <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-cyan-400" />
+                    <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-accent" />
                     <input
-                        className="w-full rounded-md border border-neutral-700 bg-[#0d1117] py-2 pl-9 pr-3 text-sm text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500"
+                        className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
                         onChange={(event) => setSearch(event.target.value)}
                         placeholder="Buscar Pinan Nidan, Bassai Dai, Seienchin..."
                         type="search"
@@ -86,7 +86,7 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                     {filters.map((filter) => (
                         <button
                             aria-pressed={statusFilter === filter.value}
-                            className={`rounded-md border px-2.5 py-1.5 text-xs font-semibold transition-colors ${statusFilter === filter.value ? 'border-cyan-500/50 bg-cyan-500/15 text-cyan-200' : 'border-neutral-700 bg-neutral-900 text-neutral-400 hover:text-white'}`}
+                            className={`rounded-md border px-2.5 py-1.5 text-xs font-semibold transition-colors ${statusFilter === filter.value ? 'border-cyan-500/50 bg-cyan-500/15 text-accent-text' : 'border-edge-strong bg-surface-4 text-ink-3 hover:text-ink'}`}
                             key={filter.value}
                             onClick={() => setStatusFilter(filter.value)}
                             type="button"
@@ -97,10 +97,10 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                 </div>
 
                 {katas.some(({ requiredForGrade }) => requiredForGrade) && (
-                    <div className="inline-flex rounded-md border border-neutral-700 bg-[#0d1117] p-1 text-xs">
+                    <div className="inline-flex rounded-md border border-edge-strong bg-surface-1 p-1 text-xs">
                         <button
                             aria-pressed={showRequired}
-                            className={`rounded px-2.5 py-1.5 ${showRequired ? 'bg-emerald-500/20 text-emerald-200' : 'text-neutral-400'}`}
+                            className={`rounded px-2.5 py-1.5 ${showRequired ? 'bg-emerald-500/20 text-ok-text' : 'text-ink-3'}`}
                             onClick={() => setShowRequired(true)}
                             type="button"
                         >
@@ -108,7 +108,7 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                         </button>
                         <button
                             aria-pressed={!showRequired}
-                            className={`rounded px-2.5 py-1.5 ${!showRequired ? 'bg-cyan-500/20 text-cyan-200' : 'text-neutral-400'}`}
+                            className={`rounded px-2.5 py-1.5 ${!showRequired ? 'bg-cyan-500/20 text-accent-text' : 'text-ink-3'}`}
                             onClick={() => setShowRequired(false)}
                             type="button"
                         >
@@ -119,7 +119,7 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
             </div>
 
             {visibleKatas.length === 0 ? (
-                <div className="rounded-lg border border-dashed border-neutral-700 bg-[#161b22] px-6 py-12 text-center text-sm text-neutral-400">
+                <div className="rounded-lg border border-dashed border-edge-strong bg-surface-2 px-6 py-12 text-center text-sm text-ink-3">
                     No hay katas que coincidan con los filtros seleccionados.
                 </div>
             ) : (
@@ -129,23 +129,23 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                         const isApproved = kata.status === 'APPROVED'
 
                         return (
-                            <article className="rounded-lg border border-neutral-800 bg-[#161b22] p-4 hover:border-neutral-700" key={kata.id}>
+                            <article className="rounded-lg border border-edge bg-surface-2 p-4 hover:border-edge-strong" key={kata.id}>
                                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                                     <div className="min-w-0">
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <h3 className="font-semibold text-white">{kata.name}</h3>
+                                            <h3 className="font-semibold text-ink">{kata.name}</h3>
                                             <KataBadge status={kata.status} />
                                             {kata.requiredForGrade && (
-                                                <span className="rounded-md border border-cyan-900/60 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-cyan-200">
+                                                <span className="rounded-md border border-cyan-900/60 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent-text">
                                                     Requerida
                                                 </span>
                                             )}
                                         </div>
-                                        <p className="mt-1 text-sm text-neutral-400">{kata.rankName ?? 'Programa del dojo'}</p>
+                                        <p className="mt-1 text-sm text-ink-3">{kata.rankName ?? 'Programa del dojo'}</p>
                                         {kata.level && <div className="mt-1"><KataBeltChip beltColor={kata.beltColor} beltSecondaryColor={kata.beltSecondaryColor} level={kata.level} /></div>}
                                     </div>
                                     <button
-                                        className="inline-flex items-center gap-1 self-start text-xs font-semibold text-cyan-300 hover:text-cyan-100"
+                                        className="inline-flex items-center gap-1 self-start text-xs font-semibold text-accent hover:text-accent-text"
                                         onClick={() => {
                                             setExpandedId(isExpanded ? null : kata.id)
                                             setNote(kata.lastFeedback ?? '')
@@ -158,18 +158,18 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                                     </button>
                                 </div>
 
-                                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-400">
+                                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-3">
                                     <span className="inline-flex items-center gap-1">
-                                        <Timer aria-hidden="true" className="size-3.5 text-amber-400" />
+                                        <Timer aria-hidden="true" className="size-3.5 text-warn-text" />
                                         {kata.practiceHours} h de práctica
                                     </span>
                                     <span className="inline-flex items-center gap-1">
-                                        <Repeat aria-hidden="true" className="size-3.5 text-cyan-400" />
+                                        <Repeat aria-hidden="true" className="size-3.5 text-accent" />
                                         {kata.practiceRepetitions} rep.{kata.targetRepetitions ? ` / ${kata.targetRepetitions}` : ''}
                                     </span>
                                     {kata.score !== null && (
                                         <span className="inline-flex items-center gap-1">
-                                            <Star aria-hidden="true" className="size-3.5 text-emerald-400" />
+                                            <Star aria-hidden="true" className="size-3.5 text-ok-text" />
                                             Nota del sensei: {kata.score} / 10
                                         </span>
                                     )}
@@ -180,20 +180,20 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                                 </div>
 
                                 {isExpanded && (
-                                    <div className="mt-4 space-y-3 border-t border-neutral-800 pt-4">
+                                    <div className="mt-4 space-y-3 border-t border-edge pt-4">
                                         {kata.description && (
-                                            <p className="text-sm leading-6 text-neutral-300">{kata.description}</p>
+                                            <p className="text-sm leading-6 text-ink-2">{kata.description}</p>
                                         )}
                                         {kata.lastFeedback && (
-                                            <p className="flex gap-2 rounded-md border border-cyan-900/50 bg-cyan-950/20 p-3 text-xs text-cyan-100">
-                                                <MessageSquare aria-hidden="true" className="size-4 shrink-0 text-cyan-400" />
+                                            <p className="flex gap-2 rounded-md border border-cyan-900/50 bg-cyan-950/20 p-3 text-xs text-accent-text">
+                                                <MessageSquare aria-hidden="true" className="size-4 shrink-0 text-accent" />
                                                 {kata.lastFeedback}
                                             </p>
                                         )}
                                         {!isApproved && (
                                             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                                                 <input
-                                                    className="min-w-0 flex-1 rounded-md border border-neutral-700 bg-[#0d1117] px-3 py-2 text-xs text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500"
+                                                    className="min-w-0 flex-1 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
                                                     onChange={(event) => setNote(event.target.value)}
                                                     placeholder="Nota personal de práctica..."
                                                     value={note}
@@ -208,7 +208,7 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                                                 </button>
                                                 {kata.status === 'PENDING' && onStartPractice && (
                                                     <button
-                                                        className="inline-flex items-center justify-center gap-1.5 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs font-bold text-amber-200 hover:bg-amber-500/20"
+                                                        className="inline-flex items-center justify-center gap-1.5 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs font-bold text-warn-text hover:bg-amber-500/20"
                                                         onClick={() => onStartPractice(kata.id)}
                                                         type="button"
                                                     >
@@ -219,13 +219,13 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                                             </div>
                                         )}
                                         {!isApproved && onLogPractice && (
-                                            <div className="space-y-2 rounded-md border border-neutral-800 bg-[#0d1117] p-3">
+                                            <div className="space-y-2 rounded-md border border-edge bg-surface-1 p-3">
                                                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                                                    <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-cyan-300">
+                                                    <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-accent">
                                                         <Repeat aria-hidden="true" className="size-3.5" />Registrar repeticiones
                                                     </span>
                                                     <input
-                                                        className="w-28 rounded-md border border-neutral-700 bg-[#161b22] px-3 py-2 text-xs text-white outline-none placeholder:text-neutral-500 focus:border-cyan-500"
+                                                        className="w-28 rounded-md border border-edge-strong bg-surface-2 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
                                                         min={1}
                                                         onChange={(event) => setRepInput(event.target.value)}
                                                         placeholder="Ej: 50"
@@ -233,7 +233,7 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                                                         value={repInput}
                                                     />
                                                     <select
-                                                        className="rounded-md border border-neutral-700 bg-[#161b22] px-3 py-2 text-xs text-white outline-none focus:border-cyan-500"
+                                                        className="rounded-md border border-edge-strong bg-surface-2 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
                                                         onChange={(event) => setRepPlace(event.target.value as PracticePlace)}
                                                         value={repPlace}
                                                     >
@@ -249,7 +249,7 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                                                         {savingRepsId === kata.id ? 'Guardando...' : 'Guardar repeticiones'}
                                                     </button>
                                                 </div>
-                                                <p className="text-[11px] text-neutral-500">¿Falta una técnica? Pídele a tu sensei que la asigne a tu expediente.</p>
+                                                <p className="text-[11px] text-ink-4">¿Falta una técnica? Pídele a tu sensei que la asigne a tu expediente.</p>
                                             </div>
                                         )}
                                     </div>
