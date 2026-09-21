@@ -25,6 +25,12 @@ const seedPasswords = {
   student: process.env.SEED_STUDENT_PASSWORD || randomPassword(),
 }
 
+// En re-seeds, si la variable SEED_*_PASSWORD está definida explícitamente se
+// actualiza el passwordHash (e invalida sesiones viejas) de la cuenta existente;
+// si no, no se pisa la contraseña actual.
+const pwdUpdate = (envKey: string, hash: string) =>
+  process.env[envKey] ? { passwordHash: hash, sessionVersion: { increment: 1 } } : {}
+
 async function main() {
   const school = await db.school.upsert({
     where: { id: 'tosei-gusoku-school' },
@@ -188,7 +194,7 @@ async function main() {
 
   await db.user.upsert({
     where: { email: 'admin@toseigusoku.com' },
-    update: {},
+    update: pwdUpdate('SEED_ADMIN_PASSWORD', adminPassword),
     create: {
       email: 'admin@toseigusoku.com',
       passwordHash: adminPassword,
@@ -204,7 +210,7 @@ async function main() {
 
   const instructor = await db.user.upsert({
     where: { email: 'instructor@toseigusoku.com' },
-    update: {},
+    update: pwdUpdate('SEED_INSTRUCTOR_PASSWORD', instructorPassword),
     create: {
       email: 'instructor@toseigusoku.com',
       passwordHash: instructorPassword,
@@ -226,7 +232,7 @@ async function main() {
 
   const studentUser = await db.user.upsert({
     where: { email: 'alumno@test.com' },
-    update: {},
+    update: pwdUpdate('SEED_STUDENT_PASSWORD', studentPassword),
     create: {
       email: 'alumno@test.com',
       passwordHash: studentPassword,
@@ -296,7 +302,7 @@ async function main() {
 
   const ownerUser = await db.user.upsert({
     where: { email: 'sensei@toseigusoku.com' },
-    update: {},
+    update: pwdUpdate('SEED_OWNER_PASSWORD', ownerPassword),
     create: {
       email: 'sensei@toseigusoku.com',
       passwordHash: ownerPassword,
