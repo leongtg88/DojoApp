@@ -122,6 +122,8 @@ export async function getStudentDashboardSummary(
       photoKey: student.photoKey,
       medicalInfo: student.medicalInfo,
       emergencyContact: student.emergencyContact,
+      giSize: student.giSize,
+      beltSize: student.beltSize,
       enrollmentDate: student.enrollmentDate.toISOString(),
     },
     attendance: {

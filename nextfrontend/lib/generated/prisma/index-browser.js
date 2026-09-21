@@ -201,6 +201,8 @@ exports.Prisma.StudentScalarFieldEnum = {
   contactPhone: 'contactPhone',
   medicalInfo: 'medicalInfo',
   emergencyContact: 'emergencyContact',
+  giSize: 'giSize',
+  beltSize: 'beltSize',
   enrollmentDate: 'enrollmentDate',
   memberNumber: 'memberNumber',
   status: 'status',

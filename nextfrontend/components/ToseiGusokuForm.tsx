@@ -4,6 +4,7 @@ import { Fragment, useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMetaPixel } from '@adkit/meta-pixel-next';
 import { MOCK_BENEFITS } from '@/lib/types';
+import { KYU_OPTIONS } from '@/lib/curriculum/kyu-options';
 import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES, mimeForExtension } from '@/lib/file-validation';
 import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake, FileText, ChevronDown } from 'lucide-react';
 import LegalConsentModal from '@/components/LegalConsentModal';
@@ -21,6 +22,8 @@ type Hijo = {
   altura: string;
   tallaPantalon: string;
   tallaCamiseta: string;
+  practicoKarate: 'no' | 'si' | '';
+  kyu: string;
   foto: File | null;
   identificacion: File[];
   fotoPreview: string;
@@ -39,6 +42,8 @@ type FormData = {
   tallaCamisetaAdulto: string;
   direccionAdulto: string;
   cedula: string;
+  practicoKarateAdulto: 'no' | 'si' | '';
+  kyuAdulto: string;
   fotoAdulto: File | null;
   identAdulto: File[];
   fotoAdultoPreview: string;
@@ -201,6 +206,49 @@ const FileDropZone = ({ label, files, previews, error, accept, multiple, hint, o
   );
 };
 
+// ========== COMPONENTE KARATE PREVIO ==========
+const KaratePrevioFields = ({ name, practico, kyu, error, onPractico, onKyu }: {
+  name: string;
+  practico: 'no' | 'si' | '';
+  kyu: string;
+  error?: string;
+  onPractico: (value: 'no' | 'si') => void;
+  onKyu: (value: string) => void;
+}) => (
+  <div className="bg-stone-50 border border-brand-accent/30 rounded-lg p-4 space-y-3">
+    <label className="block text-sm font-medium text-stone-500 mb-1">
+      ¿La persona a inscribir ya ha practicado karate?
+    </label>
+    <div className="flex flex-wrap gap-4">
+      <label className="flex items-center gap-2 text-sm text-stone-700 cursor-pointer">
+        <input type="radio" name={name} checked={practico === 'si'} onChange={() => onPractico('si')} className="size-4 accent-brand-accent" />
+        Sí
+      </label>
+      <label className="flex items-center gap-2 text-sm text-stone-700 cursor-pointer">
+        <input type="radio" name={name} checked={practico === 'no'} onChange={() => onPractico('no')} className="size-4 accent-brand-accent" />
+        No
+      </label>
+    </div>
+    {practico === 'si' && (
+      <div>
+        <label className="block text-sm font-medium text-stone-500 mb-1">Grado alcanzado (Kyu / Dan) <span className="text-red-500">*</span></label>
+        <div className="relative">
+          <select
+            value={kyu}
+            onChange={(e) => onKyu(e.target.value)}
+            className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${error ? 'border-red-500' : 'border-brand-accent/60'}`}
+          >
+            <option value="">Selecciona...</option>
+            {KYU_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+          </select>
+          <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+        </div>
+        {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      </div>
+    )}
+  </div>
+);
+
 // ========== COMPONENTE WELCOME ==========
 const WelcomeScreen = ({ onStart, onNavigateToHome }: { onStart: () => void; onNavigateToHome: () => void }) => (
   <div className="min-h-screen relative bg-fixed flex items-center justify-center px-4" style={{ backgroundImage: `url(${heroImageDesktop})`, backgroundSize: 'fixed', backgroundPosition: 'center' }}>
@@ -305,13 +353,15 @@ const ToseiGusokuForm = () => {
     tallaCamisetaAdulto: '',
     direccionAdulto: '',
     cedula: '',
+    practicoKarateAdulto: '',
+    kyuAdulto: '',
     fotoAdulto: null,
     identAdulto: [],
     fotoAdultoPreview: '',
     identAdultoPreview: [],
     telefonoContacto: '',
     email: '',
-    hijos: [{ id: generarId(), nombre: '', fechaNacimiento: '', sexo: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }],
+    hijos: [{ id: generarId(), nombre: '', fechaNacimiento: '', sexo: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', practicoKarate: '', kyu: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }],
     nombreMadre: '',
     telefonoMadre: '',
     nombrePadre: '',
@@ -380,6 +430,8 @@ const ToseiGusokuForm = () => {
         tallaCamisetaAdulto: '',
         direccionAdulto: '',
         cedula: '',
+        practicoKarateAdulto: '',
+        kyuAdulto: '',
         fotoAdulto: null,
         identAdulto: [],
         fotoAdultoPreview: '',
@@ -394,7 +446,7 @@ const ToseiGusokuForm = () => {
   const agregarHijo = () => {
     setFormData(prev => ({
       ...prev,
-      hijos: [...prev.hijos, { id: generarId(), nombre: '', fechaNacimiento: '', sexo: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }]
+      hijos: [...prev.hijos, { id: generarId(), nombre: '', fechaNacimiento: '', sexo: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', practicoKarate: '', kyu: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }]
     }));
   };
 
@@ -627,6 +679,7 @@ const ToseiGusokuForm = () => {
       }
       if (!formData.telefonoContacto.trim()) newErrors.telefonoContacto = 'Campo requerido';
       else if (!esTelefonoValido(formData.telefonoContacto)) newErrors.telefonoContacto = 'Ingresa un teléfono válido (ej: 809-123-4567)';
+      if (formData.practicoKarateAdulto === 'si' && !formData.kyuAdulto) newErrors.kyuAdulto = 'Selecciona el grado alcanzado';
     } else {
       // Menor
       const hijosErrores: { [key: string]: string }[] = [];
@@ -646,6 +699,7 @@ const ToseiGusokuForm = () => {
           const msg = archivoInvalido(hijo.foto, false);
           if (msg) { err.foto = msg; hasError = true; }
         }
+        if (hijo.practicoKarate === 'si' && !hijo.kyu) { err.kyu = `Grado del hijo ${index + 1} requerido`; hasError = true; }
         if (hijo.identificacion.length === 0) { err.identificacion = `Identificación del hijo ${index + 1} requerida`; hasError = true; }
         else {
           for (const file of hijo.identificacion) {
@@ -710,8 +764,8 @@ const ToseiGusokuForm = () => {
 
   const submitEnrollment = async () => {
     const applicants = formData.tipoRegistro === 'adulto'
-      ? [{ name: formData.nombreAdulto, dateOfBirth: formData.fechaNacimientoAdulto, profileData: { sexo: formData.sexoAdulto, bloodType: formData.tipoSangreAdulto, height: formData.alturaAdulto, pantSize: formData.tallaPantalonAdulto, shirtSize: formData.tallaCamisetaAdulto, address: formData.direccionAdulto, nationalId: formData.cedula, medicalInfo: formData.condicionMedica } }]
-      : formData.hijos.map((hijo) => ({ name: hijo.nombre, dateOfBirth: hijo.fechaNacimiento, profileData: { sexo: hijo.sexo, bloodType: hijo.tipoSangre, height: hijo.altura, pantSize: hijo.tallaPantalon, shirtSize: hijo.tallaCamiseta, medicalInfo: formData.condicionMedica } }));
+      ? [{ name: formData.nombreAdulto, dateOfBirth: formData.fechaNacimientoAdulto, profileData: { sexo: formData.sexoAdulto, bloodType: formData.tipoSangreAdulto, height: formData.alturaAdulto, pantSize: formData.tallaPantalonAdulto, shirtSize: formData.tallaCamisetaAdulto, address: formData.direccionAdulto, nationalId: formData.cedula, medicalInfo: formData.condicionMedica, haPracticadoKarate: formData.practicoKarateAdulto === 'si', kyu: formData.practicoKarateAdulto === 'si' ? formData.kyuAdulto : '' } }]
+      : formData.hijos.map((hijo) => ({ name: hijo.nombre, dateOfBirth: hijo.fechaNacimiento, profileData: { sexo: hijo.sexo, bloodType: hijo.tipoSangre, height: hijo.altura, pantSize: hijo.tallaPantalon, shirtSize: hijo.tallaCamiseta, medicalInfo: formData.condicionMedica, haPracticadoKarate: hijo.practicoKarate === 'si', kyu: hijo.practicoKarate === 'si' ? hijo.kyu : '' } }));
     const uploadData = new FormData();
     uploadData.append('payload', JSON.stringify({ email: formData.email, phone: formData.tipoRegistro === 'adulto' ? formData.telefonoContacto : formData.telefonoMadre, applicants, registrationData: { tipoRegistro: formData.tipoRegistro, nombreMadre: formData.nombreMadre, telefonoMadre: formData.telefonoMadre, nombrePadre: formData.nombrePadre, telefonoPadre: formData.telefonoPadre, direccionPadres: formData.direccionPadres, condicionMedica: formData.condicionMedica, horasPractica: formData.horasPractica, espacioCasa: formData.espacioCasa, compromisoDiario: formData.compromisoDiario, asistenciaPadre: formData.asistenciaPadre, metodoMotivacion: formData.metodoMotivacion, razonesKarate: formData.razonesKarate, compromisoObstaculos: formData.compromisoObstaculos, aceptoPago: formData.aceptoPago, aceptoMultas: formData.aceptoMultas, aceptoPagosParciales: formData.aceptoPagosParciales, aceptoPagoIninterrumpido: formData.aceptoPagoIninterrumpido, aceptoDerechoAdmision: formData.aceptoDerechoAdmision, aceptoPoliticas: formData.aceptoPoliticas, aceptoTerminosLegales: true, terminosLegalesAceptadosEn: new Date().toISOString() } }));
     if (formData.tipoRegistro === 'adulto') {
@@ -844,6 +898,17 @@ const ToseiGusokuForm = () => {
                 className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.telefonoContacto ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="0412-1234567" />
               {errors.telefonoContacto && <p className="text-red-500 text-xs mt-1">{errors.telefonoContacto}</p>}
             </div>
+            <KaratePrevioFields
+              name="practico-karate-adulto"
+              practico={formData.practicoKarateAdulto}
+              kyu={formData.kyuAdulto}
+              error={errors.kyuAdulto}
+              onPractico={(value) => {
+                setFormData(prev => ({ ...prev, practicoKarateAdulto: value, kyuAdulto: value === 'si' ? prev.kyuAdulto : '' }));
+                if (errors.kyuAdulto) setErrors(prev => ({ ...prev, kyuAdulto: '' }));
+              }}
+              onKyu={(value) => setFormData(prev => ({ ...prev, kyuAdulto: value }))}
+            />
             <div>
               <label className="block text-sm font-medium text-stone-500 mb-1">Tipo de Sangre <span className="text-red-500">*</span></label>
               <div className="relative">
@@ -959,6 +1024,14 @@ const ToseiGusokuForm = () => {
                   </div>
                   {errors.hijos?.[index]?.sexo && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.sexo}</p>}
                 </div>
+                <KaratePrevioFields
+                  name={`practico-karate-hijo-${hijo.id}`}
+                  practico={hijo.practicoKarate}
+                  kyu={hijo.kyu}
+                  error={errors.hijos?.[index]?.kyu}
+                  onPractico={(value) => handleHijoChange(hijo.id, 'practicoKarate', value)}
+                  onKyu={(value) => handleHijoChange(hijo.id, 'kyu', value)}
+                />
                 <div>
                   <label className="block text-sm font-medium text-stone-500 mb-1">Tipo de Sangre <span className="text-red-500">*</span></label>
                   <div className="relative">

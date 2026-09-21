@@ -72,6 +72,8 @@ export interface StudentProfile {
 	photoKey: string | null
 	medicalInfo: string | null
 	emergencyContact: string | null
+	giSize: string | null
+	beltSize: string | null
 	enrollmentDate: string
 }
 
@@ -317,6 +319,8 @@ export interface AdminStudentDetail {
 	enrollmentDate: string | null
 	medicalInfo: string | null
 	emergencyContact: string | null
+	giSize: string | null
+	beltSize: string | null
 	documents: StudentDocumentSummary[]
 	rankHistory: AdminRankHistoryEntry[]
 	availableRanks: AdminBeltRankSummary[]

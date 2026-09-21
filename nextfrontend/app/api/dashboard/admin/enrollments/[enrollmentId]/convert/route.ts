@@ -2,7 +2,7 @@ import { Prisma } from '@/lib/generated/prisma'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasAnyRole, hasRole } from '@/lib/auth/roles'
-import { ageFromDob, programForAge } from '@/lib/dashboard/program'
+import { ageFromDob, programForAge, resolveRankForKyu } from '@/lib/dashboard/program'
 import { resolveProgressionKataIds } from '@/lib/dashboard/kata-curriculum'
 import type { Program } from '@/lib/curriculum/programs'
 import { buildStudentExportRecord } from '@/lib/dashboard/student-export'
@@ -87,15 +87,22 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
   const gender = input.gender ?? applicantGender ?? null
   const dateOfBirth = new Date(`${input.dateOfBirth}T00:00:00.000Z`)
 
-  // Nuevo estudiante entra como cinturón blanco según su programa (edad).
-  const defaultRank = await db.beltRank.findFirst({
+  // Nuevo estudiante entra como cinturón blanco según su programa (edad),
+  // salvo que el formulario haya declarado un grado de karate previo (Kyu/Dan).
+  const applicantProfile = applicant?.profileData as { haPracticadoKarate?: boolean; kyu?: string } | null
+  const declaredKyu = applicantProfile?.haPracticadoKarate ? applicantProfile.kyu?.trim() : ''
+  const declaredRank = declaredKyu
+    ? await resolveRankForKyu(enrollment.schoolId!, dateOfBirth, declaredKyu)
+    : null
+
+  const defaultRank = declaredRank ?? (await db.beltRank.findFirst({
     where: {
       program: programForAge(ageFromDob(dateOfBirth)),
       order: 1,
       OR: [{ schoolId: enrollment.schoolId! }, { schoolId: null }],
     },
     select: { id: true, name: true, program: true, order: true },
-  })
+  }))
 
   const techniqueIds = defaultRank
     ? await resolveProgressionKataIds({

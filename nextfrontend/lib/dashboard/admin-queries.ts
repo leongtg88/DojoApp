@@ -331,6 +331,8 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
       enrollmentDate: true,
       medicalInfo: true,
       emergencyContact: true,
+      giSize: true,
+      beltSize: true,
       invitationTokens: {
         where: { usedAt: null, expiresAt: { gt: new Date() } },
         orderBy: { createdAt: 'desc' },
@@ -519,6 +521,8 @@ documents: {
     enrollmentDate: student.enrollmentDate?.toISOString() ?? null,
     medicalInfo: student.medicalInfo,
     emergencyContact: student.emergencyContact,
+    giSize: student.giSize,
+    beltSize: student.beltSize,
     documents,
     availableRanks: ranks.map((rank) => ({
       id: rank.id,

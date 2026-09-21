@@ -13275,6 +13275,8 @@ export namespace Prisma {
     contactPhone: string | null
     medicalInfo: string | null
     emergencyContact: string | null
+    giSize: string | null
+    beltSize: string | null
     enrollmentDate: Date | null
     memberNumber: string | null
     status: $Enums.StudentStatus | null
@@ -13304,6 +13306,8 @@ export namespace Prisma {
     contactPhone: string | null
     medicalInfo: string | null
     emergencyContact: string | null
+    giSize: string | null
+    beltSize: string | null
     enrollmentDate: Date | null
     memberNumber: string | null
     status: $Enums.StudentStatus | null
@@ -13333,6 +13337,8 @@ export namespace Prisma {
     contactPhone: number
     medicalInfo: number
     emergencyContact: number
+    giSize: number
+    beltSize: number
     enrollmentDate: number
     memberNumber: number
     status: number
@@ -13365,6 +13371,8 @@ export namespace Prisma {
     contactPhone?: true
     medicalInfo?: true
     emergencyContact?: true
+    giSize?: true
+    beltSize?: true
     enrollmentDate?: true
     memberNumber?: true
     status?: true
@@ -13394,6 +13402,8 @@ export namespace Prisma {
     contactPhone?: true
     medicalInfo?: true
     emergencyContact?: true
+    giSize?: true
+    beltSize?: true
     enrollmentDate?: true
     memberNumber?: true
     status?: true
@@ -13423,6 +13433,8 @@ export namespace Prisma {
     contactPhone?: true
     medicalInfo?: true
     emergencyContact?: true
+    giSize?: true
+    beltSize?: true
     enrollmentDate?: true
     memberNumber?: true
     status?: true
@@ -13526,6 +13538,8 @@ export namespace Prisma {
     contactPhone: string | null
     medicalInfo: string | null
     emergencyContact: string | null
+    giSize: string | null
+    beltSize: string | null
     enrollmentDate: Date
     memberNumber: string | null
     status: $Enums.StudentStatus
@@ -13573,6 +13587,8 @@ export namespace Prisma {
     contactPhone?: boolean
     medicalInfo?: boolean
     emergencyContact?: boolean
+    giSize?: boolean
+    beltSize?: boolean
     enrollmentDate?: boolean
     memberNumber?: boolean
     status?: boolean
@@ -13622,6 +13638,8 @@ export namespace Prisma {
     contactPhone?: boolean
     medicalInfo?: boolean
     emergencyContact?: boolean
+    giSize?: boolean
+    beltSize?: boolean
     enrollmentDate?: boolean
     memberNumber?: boolean
     status?: boolean
@@ -13658,6 +13676,8 @@ export namespace Prisma {
     contactPhone?: boolean
     medicalInfo?: boolean
     emergencyContact?: boolean
+    giSize?: boolean
+    beltSize?: boolean
     enrollmentDate?: boolean
     memberNumber?: boolean
     status?: boolean
@@ -13694,6 +13714,8 @@ export namespace Prisma {
     contactPhone?: boolean
     medicalInfo?: boolean
     emergencyContact?: boolean
+    giSize?: boolean
+    beltSize?: boolean
     enrollmentDate?: boolean
     memberNumber?: boolean
     status?: boolean
@@ -13710,7 +13732,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type StudentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "guardianId" | "schoolId" | "branchId" | "firstName" | "lastName" | "dateOfBirth" | "gender" | "email" | "contactPhone" | "medicalInfo" | "emergencyContact" | "enrollmentDate" | "memberNumber" | "status" | "currentRank" | "currentRankId" | "photoKey" | "registrationData" | "planId" | "planStartDate" | "scholarshipType" | "scholarshipNote" | "isCompetitor" | "createdAt" | "updatedAt", ExtArgs["result"]["student"]>
+  export type StudentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "guardianId" | "schoolId" | "branchId" | "firstName" | "lastName" | "dateOfBirth" | "gender" | "email" | "contactPhone" | "medicalInfo" | "emergencyContact" | "giSize" | "beltSize" | "enrollmentDate" | "memberNumber" | "status" | "currentRank" | "currentRankId" | "photoKey" | "registrationData" | "planId" | "planStartDate" | "scholarshipType" | "scholarshipNote" | "isCompetitor" | "createdAt" | "updatedAt", ExtArgs["result"]["student"]>
   export type StudentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     currentRankRef?: boolean | Student$currentRankRefArgs<ExtArgs>
     plan?: boolean | Student$planArgs<ExtArgs>
@@ -13785,6 +13807,8 @@ export namespace Prisma {
       contactPhone: string | null
       medicalInfo: string | null
       emergencyContact: string | null
+      giSize: string | null
+      beltSize: string | null
       enrollmentDate: Date
       memberNumber: string | null
       status: $Enums.StudentStatus
@@ -14253,6 +14277,8 @@ export namespace Prisma {
     readonly contactPhone: FieldRef<"Student", 'String'>
     readonly medicalInfo: FieldRef<"Student", 'String'>
     readonly emergencyContact: FieldRef<"Student", 'String'>
+    readonly giSize: FieldRef<"Student", 'String'>
+    readonly beltSize: FieldRef<"Student", 'String'>
     readonly enrollmentDate: FieldRef<"Student", 'DateTime'>
     readonly memberNumber: FieldRef<"Student", 'String'>
     readonly status: FieldRef<"Student", 'StudentStatus'>
@@ -43732,6 +43758,8 @@ export namespace Prisma {
     contactPhone: 'contactPhone',
     medicalInfo: 'medicalInfo',
     emergencyContact: 'emergencyContact',
+    giSize: 'giSize',
+    beltSize: 'beltSize',
     enrollmentDate: 'enrollmentDate',
     memberNumber: 'memberNumber',
     status: 'status',
@@ -45082,6 +45110,8 @@ export namespace Prisma {
     contactPhone?: StringNullableFilter<"Student"> | string | null
     medicalInfo?: StringNullableFilter<"Student"> | string | null
     emergencyContact?: StringNullableFilter<"Student"> | string | null
+    giSize?: StringNullableFilter<"Student"> | string | null
+    beltSize?: StringNullableFilter<"Student"> | string | null
     enrollmentDate?: DateTimeFilter<"Student"> | Date | string
     memberNumber?: StringNullableFilter<"Student"> | string | null
     status?: EnumStudentStatusFilter<"Student"> | $Enums.StudentStatus
@@ -45130,6 +45160,8 @@ export namespace Prisma {
     contactPhone?: SortOrderInput | SortOrder
     medicalInfo?: SortOrderInput | SortOrder
     emergencyContact?: SortOrderInput | SortOrder
+    giSize?: SortOrderInput | SortOrder
+    beltSize?: SortOrderInput | SortOrder
     enrollmentDate?: SortOrder
     memberNumber?: SortOrderInput | SortOrder
     status?: SortOrder
@@ -45182,6 +45214,8 @@ export namespace Prisma {
     contactPhone?: StringNullableFilter<"Student"> | string | null
     medicalInfo?: StringNullableFilter<"Student"> | string | null
     emergencyContact?: StringNullableFilter<"Student"> | string | null
+    giSize?: StringNullableFilter<"Student"> | string | null
+    beltSize?: StringNullableFilter<"Student"> | string | null
     enrollmentDate?: DateTimeFilter<"Student"> | Date | string
     status?: EnumStudentStatusFilter<"Student"> | $Enums.StudentStatus
     currentRank?: StringNullableFilter<"Student"> | string | null
@@ -45229,6 +45263,8 @@ export namespace Prisma {
     contactPhone?: SortOrderInput | SortOrder
     medicalInfo?: SortOrderInput | SortOrder
     emergencyContact?: SortOrderInput | SortOrder
+    giSize?: SortOrderInput | SortOrder
+    beltSize?: SortOrderInput | SortOrder
     enrollmentDate?: SortOrder
     memberNumber?: SortOrderInput | SortOrder
     status?: SortOrder
@@ -45265,6 +45301,8 @@ export namespace Prisma {
     contactPhone?: StringNullableWithAggregatesFilter<"Student"> | string | null
     medicalInfo?: StringNullableWithAggregatesFilter<"Student"> | string | null
     emergencyContact?: StringNullableWithAggregatesFilter<"Student"> | string | null
+    giSize?: StringNullableWithAggregatesFilter<"Student"> | string | null
+    beltSize?: StringNullableWithAggregatesFilter<"Student"> | string | null
     enrollmentDate?: DateTimeWithAggregatesFilter<"Student"> | Date | string
     memberNumber?: StringNullableWithAggregatesFilter<"Student"> | string | null
     status?: EnumStudentStatusWithAggregatesFilter<"Student"> | $Enums.StudentStatus
@@ -47940,6 +47978,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -47986,6 +48026,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -48024,6 +48066,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -48070,6 +48114,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -48112,6 +48158,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -48138,6 +48186,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -48166,6 +48216,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -51088,6 +51140,8 @@ export namespace Prisma {
     contactPhone?: SortOrder
     medicalInfo?: SortOrder
     emergencyContact?: SortOrder
+    giSize?: SortOrder
+    beltSize?: SortOrder
     enrollmentDate?: SortOrder
     memberNumber?: SortOrder
     status?: SortOrder
@@ -51118,6 +51172,8 @@ export namespace Prisma {
     contactPhone?: SortOrder
     medicalInfo?: SortOrder
     emergencyContact?: SortOrder
+    giSize?: SortOrder
+    beltSize?: SortOrder
     enrollmentDate?: SortOrder
     memberNumber?: SortOrder
     status?: SortOrder
@@ -51147,6 +51203,8 @@ export namespace Prisma {
     contactPhone?: SortOrder
     medicalInfo?: SortOrder
     emergencyContact?: SortOrder
+    giSize?: SortOrder
+    beltSize?: SortOrder
     enrollmentDate?: SortOrder
     memberNumber?: SortOrder
     status?: SortOrder
@@ -57095,6 +57153,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -57139,6 +57199,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -57566,6 +57628,8 @@ export namespace Prisma {
     contactPhone?: StringNullableFilter<"Student"> | string | null
     medicalInfo?: StringNullableFilter<"Student"> | string | null
     emergencyContact?: StringNullableFilter<"Student"> | string | null
+    giSize?: StringNullableFilter<"Student"> | string | null
+    beltSize?: StringNullableFilter<"Student"> | string | null
     enrollmentDate?: DateTimeFilter<"Student"> | Date | string
     memberNumber?: StringNullableFilter<"Student"> | string | null
     status?: EnumStudentStatusFilter<"Student"> | $Enums.StudentStatus
@@ -57940,6 +58004,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -57984,6 +58050,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -58336,6 +58404,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -58380,6 +58450,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -58445,6 +58517,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -58489,6 +58563,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -59057,6 +59133,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -59101,6 +59179,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -59803,6 +59883,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -59848,6 +59930,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -59964,6 +60048,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -60009,6 +60095,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -61571,6 +61659,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -61616,6 +61706,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -61738,6 +61830,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -61783,6 +61877,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -61884,6 +61980,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -61929,6 +62027,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -62132,6 +62232,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -62177,6 +62279,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -62305,6 +62409,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -62350,6 +62456,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -62496,6 +62604,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -62541,6 +62651,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -62666,6 +62778,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -62711,6 +62825,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -62848,6 +62964,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -62893,6 +63011,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -63019,6 +63139,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -63064,6 +63186,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -63448,6 +63572,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -63493,6 +63619,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -63662,6 +63790,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -63707,6 +63837,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -64252,6 +64384,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -64297,6 +64431,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -64527,6 +64663,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -64572,6 +64710,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -65233,6 +65373,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -65278,6 +65420,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -65784,6 +65928,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -65829,6 +65975,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -65927,6 +66075,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -65972,6 +66122,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -66182,6 +66334,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -66227,6 +66381,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -66533,6 +66689,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -66578,6 +66736,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -66979,6 +67139,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -67024,6 +67186,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -67161,6 +67325,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -67206,6 +67372,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -67339,6 +67507,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -67384,6 +67554,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -67500,6 +67672,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -67545,6 +67719,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -67714,6 +67890,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -67759,6 +67937,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -67881,6 +68061,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -67926,6 +68108,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -68278,6 +68462,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -68507,6 +68693,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -68551,6 +68739,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -68592,6 +68782,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -68963,6 +69155,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -69092,6 +69286,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -69136,6 +69332,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -69177,6 +69375,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -69318,6 +69518,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -69498,6 +69700,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -69542,6 +69746,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -69583,6 +69789,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -70785,6 +70993,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -70858,6 +71068,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -70903,6 +71115,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -70944,6 +71158,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -71199,6 +71415,8 @@ export namespace Prisma {
     contactPhone?: string | null
     medicalInfo?: string | null
     emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
     enrollmentDate?: Date | string
     memberNumber?: string | null
     status?: $Enums.StudentStatus
@@ -71224,6 +71442,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -71269,6 +71489,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
@@ -71310,6 +71532,8 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
     emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
     enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
     memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus

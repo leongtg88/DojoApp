@@ -21,6 +21,8 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
     const [contactPhone, setContactPhone] = useState(profile.contactPhone ?? '')
     const [emergencyContact, setEmergencyContact] = useState(profile.emergencyContact ?? '')
     const [medicalInfo, setMedicalInfo] = useState(profile.medicalInfo ?? '')
+    const [giSize, setGiSize] = useState(profile.giSize ?? '')
+    const [beltSize, setBeltSize] = useState(profile.beltSize ?? '')
     const [error, setError] = useState<string | null>(null)
     const [isSaving, setIsSaving] = useState(false)
 
@@ -35,6 +37,8 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
             contactPhone: contactPhone.trim() || null,
             emergencyContact: emergencyContact.trim() || null,
             medicalInfo: medicalInfo.trim() || null,
+            giSize: giSize.trim() || null,
+            beltSize: beltSize.trim() || null,
         }
         if (dateOfBirth) {
             body.dateOfBirth = dateOfBirth
@@ -150,6 +154,34 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
                             value={medicalInfo}
                         />
                     </label>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <label className="block text-sm font-semibold text-ink" htmlFor="edit-gi-size">
+                            Talla de karategi (uniforme)
+                            <input
+                                className={fieldClass}
+                                id="edit-gi-size"
+                                maxLength={20}
+                                onChange={(event) => setGiSize(event.target.value)}
+                                placeholder="Ej: 2, 160 cm, Adulto M"
+                                type="text"
+                                value={giSize}
+                            />
+                        </label>
+
+                        <label className="block text-sm font-semibold text-ink" htmlFor="edit-belt-size">
+                            Talla de cinturón
+                            <input
+                                className={fieldClass}
+                                id="edit-belt-size"
+                                maxLength={20}
+                                onChange={(event) => setBeltSize(event.target.value)}
+                                placeholder="Ej: 160, 180 cm"
+                                type="text"
+                                value={beltSize}
+                            />
+                        </label>
+                    </div>
 
                     {error && <p className="text-sm font-medium text-danger-text">{error}</p>}
 

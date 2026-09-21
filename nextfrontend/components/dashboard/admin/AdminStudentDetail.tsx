@@ -269,6 +269,12 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 
 				<div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
 					<div className="rounded-lg border border-edge bg-surface-1 p-4">
+						<p className="text-[10px] font-bold uppercase tracking-wider text-ink-4">Uniforme</p>
+						<p className="mt-2 text-sm font-bold text-ink">{student.giSize ? `Karategi ${student.giSize}` : 'Sin talla de karategi'}</p>
+						<p className="mt-1 text-[11px] text-ink-3">{student.beltSize ? `Cinturón ${student.beltSize}` : 'Sin talla de cinturón'}</p>
+					</div>
+
+					<div className="rounded-lg border border-edge bg-surface-1 p-4">
 						<p className="text-[10px] font-bold uppercase tracking-wider text-ink-4">Plan de mensualidad</p>
 						<p className="mt-2 text-sm font-bold text-ink">{student.planName ?? 'Sin plan asignado'}</p>
 						<p className="mt-1 text-[11px] text-ink-3">
@@ -601,7 +607,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 				<p className="flex items-center gap-1.5 text-xs font-semibold text-ink"><GraduationCap aria-hidden="true" className="size-3.5 text-accent" />{eligibleRanks.length} grados superiores disponibles</p>
 			</section>
 
-			{eligibleRanks.length > 0 && (
+			{student.availableRanks.length > 0 && (
 				<AssignRankDialog
 					student={{ id: student.id, name: `${student.firstName} ${student.lastName}`, memberNumber: student.memberNumber, currentRank: student.currentRank }}
 					currentRankOrder={student.currentRankOrder}

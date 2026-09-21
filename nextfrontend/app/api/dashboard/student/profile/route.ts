@@ -15,6 +15,8 @@ const profileUpdateSchema = z.object({
   contactPhone: z.string().trim().max(30).nullable(),
   emergencyContact: z.string().trim().max(500).nullable(),
   medicalInfo: z.string().trim().max(2_000).nullable(),
+  giSize: z.string().trim().max(20).nullable(),
+  beltSize: z.string().trim().max(20).nullable(),
 }).refine(({ dateOfBirth }) => {
   if (!dateOfBirth) return true
   return new Date(`${dateOfBirth}T00:00:00.000Z`).getTime() <= Date.now()
@@ -55,6 +57,8 @@ export async function PATCH(request: Request) {
       contactPhone: result.data.contactPhone,
       emergencyContact: result.data.emergencyContact,
       medicalInfo: result.data.medicalInfo,
+      giSize: result.data.giSize,
+      beltSize: result.data.beltSize,
     },
     select: {
       firstName: true,
@@ -62,6 +66,8 @@ export async function PATCH(request: Request) {
       contactPhone: true,
       emergencyContact: true,
       medicalInfo: true,
+      giSize: true,
+      beltSize: true,
     },
   })
 

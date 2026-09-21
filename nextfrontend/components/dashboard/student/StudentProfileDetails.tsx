@@ -48,7 +48,8 @@ export function StudentProfileDetails({ profile }: StudentProfileDetailsProps) {
             title: 'Preparación física',
             icon: Ruler,
             fields: [
-                { icon: Ruler, label: 'Perfil físico', value: 'Consulta con tu sensei para registrar tus medidas de uniforme.' },
+                { icon: Ruler, label: 'Karategi (uniforme)', value: profile.giSize ?? 'No registrado' },
+                { icon: Ruler, label: 'Cinturón', value: profile.beltSize ?? 'No registrado' },
             ],
         },
         {

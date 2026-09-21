@@ -180,6 +180,8 @@ model Student {
   contactPhone        String?
   medicalInfo         String?
   emergencyContact    String?
+  giSize              String? // talla de karategi (uniforme)
+  beltSize            String? // talla de cinturón
   enrollmentDate      DateTime                 @default(now())
   memberNumber        String?                  @unique // matrícula KYU-YYYY-NNN
   status              StudentStatus            @default(ACTIVE)

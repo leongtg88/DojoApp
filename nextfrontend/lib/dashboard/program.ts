@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import type { Program } from '@/lib/curriculum/programs'
+import { kyuMatches, normalizeKyuDanStrict } from '@/lib/curriculum/kyu-options'
 
 export function ageFromDob(dob: Date): number {
   const today = new Date()
@@ -37,4 +38,30 @@ export async function resolveDefaultRank(schoolId: string, dateOfBirth: Date) {
       katas: { select: { kataId: true }, orderBy: { order: 'asc' } },
     },
   })
+}
+
+// Resuelve el BeltRank del programa del aspirante que coincide con el grado de
+// karate previo declarado (Kyu/Dan) en el formulario de inscripción. Devuelve
+// null si no hay coincidencia (el expediente queda como cinturón blanco).
+export async function resolveRankForKyu(schoolId: string, dateOfBirth: Date, kyu: string) {
+  const program = programForAge(ageFromDob(dateOfBirth))
+  const ranks = await db.beltRank.findMany({
+    where: {
+      program,
+      OR: [{ schoolId }, { schoolId: null }],
+    },
+    orderBy: { order: 'asc' },
+    select: {
+      id: true,
+      name: true,
+      kyuDan: true,
+      program: true,
+      order: true,
+    },
+  })
+
+  const match =
+    ranks.find((rank) => rank.kyuDan && normalizeKyuDanStrict(kyu) === normalizeKyuDanStrict(rank.kyuDan)) ??
+    ranks.find((rank) => rank.kyuDan && kyuMatches(kyu, rank.kyuDan))
+  return match ?? null
 }

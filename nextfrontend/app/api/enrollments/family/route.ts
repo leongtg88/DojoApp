@@ -6,6 +6,7 @@ import { buildEnrollmentExportRecord } from '@/lib/dashboard/student-export'
 import { postToN8n } from '@/lib/integrations/n8n'
 import { notifyEnrollmentByTelegram } from '@/lib/integrations/telegram'
 import { sendPushToSchoolAdmins } from '@/lib/push/web-push'
+import { isValidKyuValue } from '@/lib/curriculum/kyu-options'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { consumeRateLimit, getClientIp, rateLimitResponse } from '@/lib/security/rate-limit'
@@ -54,6 +55,18 @@ const profileDataSchema = z
     const nationalId = typeof profile.nationalId === 'string' ? profile.nationalId.trim() : ''
     if (nationalId && !esCedulaValida(nationalId)) {
       ctx.addIssue({ code: 'custom', path: ['nationalId'], message: 'La cédula debe tener exactamente 11 dígitos.' })
+    }
+
+    const haPracticado = profile.haPracticadoKarate
+    if (haPracticado !== undefined && typeof haPracticado !== 'boolean') {
+      ctx.addIssue({ code: 'custom', path: ['haPracticadoKarate'], message: 'El dato de karate previo no es válido.' })
+    }
+    const kyu = typeof profile.kyu === 'string' ? profile.kyu.trim() : ''
+    if (kyu && !isValidKyuValue(kyu)) {
+      ctx.addIssue({ code: 'custom', path: ['kyu'], message: 'El grado de karate seleccionado no es válido.' })
+    }
+    if (haPracticado === true && !kyu) {
+      ctx.addIssue({ code: 'custom', path: ['kyu'], message: 'Debes indicar el grado alcanzado.' })
     }
   })
 

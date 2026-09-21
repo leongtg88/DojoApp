@@ -89,8 +89,10 @@ export async function POST(request: Request, { params }: PromotionRouteContext) 
         })
       : null
 
-  if (currentRank && (currentRank.program !== newRank.program || newRank.order <= currentRank.order)) {
-    return NextResponse.json({ error: 'El nuevo grado debe ser superior al grado actual' }, { status: 409 })
+  // Solo se permite cambiar dentro del mismo programa (ADULT/YOUTH). Puede ser
+  // un ascenso o un descenso de grado según lo decida el instructor/admin.
+  if (currentRank && currentRank.program !== newRank.program) {
+    return NextResponse.json({ error: 'No puedes cambiar el grado a otro programa (jóvenes/adultos)' }, { status: 409 })
   }
 
   const promotedAt = new Date(`${result.data.promotedAt}T00:00:00.000Z`)
@@ -103,7 +105,7 @@ export async function POST(request: Request, { params }: PromotionRouteContext) 
   await db.$transaction([
     db.student.update({
       where: { id: student.id },
-      data: { currentRank: newRank.name },
+      data: { currentRank: newRank.name, currentRankId: newRank.id },
     }),
     db.studentRankHistory.create({
       data: {

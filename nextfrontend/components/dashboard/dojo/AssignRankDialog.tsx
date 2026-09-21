@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Award, Check, Info, Loader2, X } from 'lucide-react'
+import { ArrowDownUp, Award, Check, Info, Loader2, X } from 'lucide-react'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
 import type { AdminBeltRankSummary } from '@/types/dashboard'
 
@@ -21,13 +21,16 @@ interface AssignRankDialogProps {
 	onClose: () => void
 }
 
+type Direction = 'ascenso' | 'descenso' | 'sin-cambio'
+
 export function AssignRankDialog({ student, currentRankOrder, ranks, isOpen, onClose }: AssignRankDialogProps) {
 	const router = useRouter()
 	const currentRank = ranks.find((rank) => rank.order === currentRankOrder)
-	const eligibleRanks = [...ranks]
-		.filter((rank) => currentRankOrder === null || rank.order > (currentRankOrder as number))
-		.sort((a, b) => a.order - b.order)
-	const [beltRankId, setBeltRankId] = useState(eligibleRanks[0]?.id ?? '')
+	const program = currentRank?.program ?? ranks[0]?.program ?? null
+	const programRanks = program ? ranks.filter((rank) => rank.program === program) : ranks
+	const sortedRanks = [...programRanks].sort((a, b) => a.order - b.order)
+	const currentRankId = sortedRanks.find((rank) => rank.order === currentRankOrder)?.id ?? ''
+	const [beltRankId, setBeltRankId] = useState(currentRankId)
 	const [promotedAt, setPromotedAt] = useState(new Date().toISOString().slice(0, 10))
 	const [examinerName, setExaminerName] = useState('')
 	const [notes, setNotes] = useState('')
@@ -38,7 +41,7 @@ export function AssignRankDialog({ student, currentRankOrder, ranks, isOpen, onC
 
 	if (isOpen && lastOpenKey !== openKey) {
 		setLastOpenKey(openKey)
-		setBeltRankId(eligibleRanks[0]?.id ?? '')
+		setBeltRankId(currentRankId)
 		setPromotedAt(new Date().toISOString().slice(0, 10))
 		setExaminerName('')
 		setNotes('')
@@ -47,8 +50,14 @@ export function AssignRankDialog({ student, currentRankOrder, ranks, isOpen, onC
 
 	if (!isOpen) return null
 
-	const chosenRank = ranks.find((rank) => rank.id === beltRankId)
-	const nextTargetRank = chosenRank ? ranks.find((rank) => rank.order === chosenRank.order + 1) : null
+	const chosenRank = sortedRanks.find((rank) => rank.id === beltRankId)
+	const direction: Direction = chosenRank && currentRankOrder !== null
+		? chosenRank.order > currentRankOrder
+			? 'ascenso'
+			: chosenRank.order < currentRankOrder
+				? 'descenso'
+				: 'sin-cambio'
+		: 'sin-cambio'
 
 	function handleConfirm() {
 		if (!beltRankId) {
@@ -69,13 +78,15 @@ export function AssignRankDialog({ student, currentRankOrder, ranks, isOpen, onC
 		})
 			.then(async (response) => {
 				const payload = await response.json().catch(() => ({}))
-				if (!response.ok) throw new Error(payload.error ?? 'No fue posible registrar el ascenso.')
+				if (!response.ok) throw new Error(payload.error ?? 'No fue posible registrar el cambio de grado.')
 				router.refresh()
 				onClose()
 			})
 			.catch((reason: Error) => setError(reason.message))
 			.finally(() => setIsSaving(false))
 	}
+
+	const nextTargetRank = chosenRank ? sortedRanks.find((rank) => rank.order === chosenRank.order + 1) : null
 
 	return (
 		<div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" onClick={onClose}>
@@ -105,11 +116,11 @@ export function AssignRankDialog({ student, currentRankOrder, ranks, isOpen, onC
 					</div>
 
 					<label className="block text-sm font-semibold text-ink" htmlFor="assign-rank-select">
-						Seleccionar grado a otorgar
+						Seleccionar grado
 						<select id="assign-rank-select" value={beltRankId} onChange={(event) => setBeltRankId(event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
-							{eligibleRanks.length === 0 && <option value="">No hay grados superiores</option>}
-							{eligibleRanks.map((rank, index) => (
-								<option key={rank.id} value={rank.id}>{rank.kyuDan ? `${rank.kyuDan} · ` : ''}{rank.name}{index === 0 && currentRankOrder !== null ? ' (Siguiente en syllabus)' : ''}</option>
+							{programRanks.length === 0 && <option value="">No hay grados disponibles</option>}
+							{programRanks.map((rank) => (
+								<option key={rank.id} value={rank.id}>{rank.kyuDan ? `${rank.kyuDan} · ` : ''}{rank.name}{rank.order === currentRankOrder ? ' (Actual)' : rank.order === (currentRankOrder ?? 0) + 1 ? ' (Siguiente en syllabus)' : ''}</option>
 							))}
 						</select>
 					</label>
@@ -134,11 +145,20 @@ export function AssignRankDialog({ student, currentRankOrder, ranks, isOpen, onC
 						<Info className="mt-0.5 h-5 w-5 shrink-0 text-warn-text" />
 						<div className="space-y-1 text-xs leading-relaxed text-ink-2">
 							<strong className="block font-bold text-warn-text">Efecto reglamentario en el avance:</strong>
-							<p>
-								Al confirmar el ascenso a <strong className="text-ink">{chosenRank?.name} ({chosenRank?.kyuDan ?? '—'})</strong>, el progreso del alumno se actualizará. Su siguiente meta pasará a ser{' '}
-								<strong className="text-ink">{nextTargetRank ? `${nextTargetRank.name} (${nextTargetRank.kyuDan ?? '—'})` : 'el grado máximo final'}</strong>.
-								Las nuevas katas oficiales se vinculan automáticamente a su expediente.
-							</p>
+							{direction === 'descenso' ? (
+								<p>
+									Al confirmar el <strong className="text-ink">descenso</strong> a <strong className="text-ink">{chosenRank?.name} ({chosenRank?.kyuDan ?? '—'})</strong>, el grado del alumno quedará por debajo de su nivel actual y su próxima meta pasará a ser{' '}
+									<strong className="text-ink">{chosenRank && nextTargetRank ? `${nextTargetRank.name} (${nextTargetRank.kyuDan ?? '—'})` : 'el siguiente grado del syllabus'}</strong>. Las katas ya dominadas se conservan en su expediente.
+								</p>
+							) : direction === 'ascenso' ? (
+								<p>
+									Al confirmar el ascenso a <strong className="text-ink">{chosenRank?.name} ({chosenRank?.kyuDan ?? '—'})</strong>, el progreso del alumno se actualizará. Su siguiente meta pasará a ser{' '}
+									<strong className="text-ink">{nextTargetRank ? `${nextTargetRank.name} (${nextTargetRank.kyuDan ?? '—'})` : 'el grado máximo final'}</strong>.
+									Las nuevas katas oficiales se vinculan automáticamente a su expediente.
+								</p>
+							) : (
+								<p>Se registrará el grado seleccionado sin cambiar la posición actual del alumno en el syllabus.</p>
+							)}
 						</div>
 					</div>
 
@@ -149,9 +169,9 @@ export function AssignRankDialog({ student, currentRankOrder, ranks, isOpen, onC
 					<button type="button" onClick={onClose} className="rounded-md border border-edge-strong bg-surface-1 px-4 py-2 text-xs font-semibold text-ink-2 hover:bg-surface-3 hover:text-ink">
 						Cancelar
 					</button>
-					<button type="button" onClick={handleConfirm} disabled={isSaving || eligibleRanks.length === 0} className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-xs font-semibold text-[#0d1117] disabled:opacity-60">
-						{isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-						Confirmar ascenso
+					<button type="button" onClick={handleConfirm} disabled={isSaving || programRanks.length === 0} className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-xs font-semibold text-[#0d1117] disabled:opacity-60">
+						{isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : direction === 'ascenso' ? <Check className="h-4 w-4" /> : <ArrowDownUp className="h-4 w-4" />}
+						{direction === 'ascenso' ? 'Confirmar ascenso' : direction === 'descenso' ? 'Confirmar descenso' : 'Confirmar grado'}
 					</button>
 				</div>
 			</div>
