@@ -1,3 +1,5 @@
+import { createHmac } from 'node:crypto'
+
 export type N8nEvent = 'enrollment.created' | 'student.converted'
 
 interface N8nEnvelope {
@@ -26,10 +28,22 @@ export async function postToN8n(event: N8nEvent, data: unknown): Promise<void> {
 	}
 
 	try {
+		const body = JSON.stringify(envelope)
+		const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+
+		// Firma HMAC-SHA256 del body con N8N_WEBHOOK_SECRET: el workflow de n8n
+		// debe verificar `x-dojoapp-signature` para descartar payloads falsificados.
+		const secret = process.env.N8N_WEBHOOK_SECRET
+		if (secret) {
+			headers['x-dojoapp-signature'] = createHmac('sha256', secret).update(body).digest('hex')
+		}
+
 		await fetch(url, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(envelope),
+			headers,
+			body,
+			// No seguir redirecciones: el webhook debe ser un destino exacto.
+			redirect: 'error',
 			signal: AbortSignal.timeout(5000),
 		})
 	} catch (error) {

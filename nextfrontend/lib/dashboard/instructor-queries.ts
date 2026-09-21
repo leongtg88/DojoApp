@@ -518,7 +518,11 @@ export async function getInstructorKataAssignment(
   }
 }
 
-/** Búsqueda de alumnos de la misma escuela para agregarlos al pase de lista. */
+/** Búsqueda de alumnos de la misma escuela para agregarlos al pase de lista.
+ *  Decisión de diseño (documentada): la búsqueda abarca toda la escuela, no solo
+ *  los alumnos de las clases del instructor, para permitir matricularlos. Los
+ *  campos expuestos son mínimos (id, nombre, cinturón). Si se quiere least-privilege
+ *  estricto, filtrar por `enrolledSet` en lugar de por `schoolId`. */
 export async function getInstructorStudentsSearch(
   userId: string,
   query: string,

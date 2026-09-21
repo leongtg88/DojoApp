@@ -15,10 +15,15 @@ export interface RateLimitResult {
 
 export type RateLimitHeaders = Pick<Headers, 'get'>
 
-// Extrae la IP del cliente. En Vercel, `x-forwarded-for` lo setea el edge
-// proxy; en desarrollo no hay proxy y se usa un valor fijo.
+// Extrae la IP del cliente. En Vercel, `x-vercel-forwarded-for` lo fija el edge
+// proxy y no puede ser spoofeado por el cliente; `x-forwarded-for` se usa solo
+// cuando aquel no está presente (y asume un proxy de confianza como intermediario).
 export function getClientIp(headers?: RateLimitHeaders | null): string {
   if (!headers) return 'unknown'
+  const vercelForwarded = headers.get('x-vercel-forwarded-for')
+  if (vercelForwarded && vercelForwarded.trim().length > 0) {
+    return vercelForwarded.split(',')[0].trim()
+  }
   const forwarded = headers.get('x-forwarded-for')
   if (forwarded && forwarded.trim().length > 0) {
     return forwarded.split(',')[0].trim()
