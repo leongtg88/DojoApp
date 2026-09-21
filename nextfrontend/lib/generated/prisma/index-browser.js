@@ -530,6 +530,18 @@ exports.Prisma.ApiUsageScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  schoolId: 'schoolId',
+  actorId: 'actorId',
+  action: 'action',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  detail: 'detail',
+  ip: 'ip',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -718,7 +730,8 @@ exports.Prisma.ModelName = {
   PushSubscription: 'PushSubscription',
   Holiday: 'Holiday',
   ExamConvocation: 'ExamConvocation',
-  ApiUsage: 'ApiUsage'
+  ApiUsage: 'ApiUsage',
+  AuditLog: 'AuditLog'
 };
 
 /**

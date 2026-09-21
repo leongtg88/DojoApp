@@ -22,6 +22,7 @@ model School {
   plans            Plan[]
   holidays         Holiday[]
   examConvocations ExamConvocation[]
+  auditLogs        AuditLog[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 }
@@ -109,6 +110,7 @@ model User {
   acceptedInvitations     StudentInvitationToken[]
   notifications           Notification[]
   pushSubscriptions       PushSubscription[]
+  auditLogs               AuditLog[]
   classes                 Class[]                  @relation("instructor")
   createdAt               DateTime                 @default(now())
   updatedAt               DateTime                 @updatedAt
@@ -765,4 +767,24 @@ model ApiUsage {
 
   @@unique([key, windowStart])
   @@index([key])
+}
+
+// Trazabilidad de acciones sensibles del staff (exports, borrados): soporta
+// repudio/responsabilidad. El `detail` es un JSON opcional con el contexto.
+model AuditLog {
+  id         String   @id @default(cuid())
+  schoolId   String?
+  school     School?  @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+  actorId    String
+  actor      User     @relation(fields: [actorId], references: [id])
+  action     String
+  targetType String?
+  targetId   String?
+  detail     Json?
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  @@index([actorId])
+  @@index([schoolId, createdAt])
+  @@index([action])
 }

@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
+import { recordAudit } from '@/lib/security/audit'
 import { ClassEnrollmentStatus } from '@/lib/generated/prisma'
 import { STUDENT_EXPORT_COLUMNS, buildStudentExportRow } from '@/lib/dashboard/student-export'
 import * as XLSX from 'xlsx'
@@ -112,6 +113,15 @@ export async function GET(request: Request) {
 	]
 
 	const worksheet = XLSX.utils.aoa_to_sheet(rows)
+
+	await recordAudit({
+		actorId: session.user.id,
+		schoolId: scope.schoolId,
+		action: 'student.export.excel',
+		targetType: 'school',
+		targetId: scope.schoolId,
+		detail: { statusFilter, branchFilter, searchTerm, exported: filtered.length },
+	})
 	worksheet['!cols'] = STUDENT_EXPORT_COLUMNS.map((column) => ({ wch: Math.max(14, Math.min(36, column.label.length + 4)) }))
 	const workbook = XLSX.utils.book_new()
 	XLSX.utils.book_append_sheet(workbook, worksheet, 'Alumnos')

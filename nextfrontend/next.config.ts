@@ -64,12 +64,20 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
+              // 'unsafe-inline' en script-src se mantiene a propósito: Next.js
+              // App Router inyecta sus scripts de bootstrap/hidratación inline y
+              // las páginas públicas son estáticas, así que nonces/strict-dynamic
+              // exigirían render dinámico global (regresión de SEO/perf). El resto
+              // de directivas se mantiene estricto.
               `script-src ${scriptSources.join(' ')}`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co",
               "font-src 'self' data:",
               "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://analytics.google.com https://*.vercel-analytics.com",
               "frame-src 'self'",
+              "object-src 'none'",
+              "worker-src 'self'",
+              "manifest-src 'self'",
               "base-uri 'self'",
               "form-action 'self'",
               "frame-ancestors 'none'",

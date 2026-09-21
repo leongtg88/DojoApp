@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { getAdminStudentDetail } from '@/lib/dashboard/admin-queries'
 import { buildStudentDetailWorkbook, studentFileName } from '@/lib/dashboard/student-detail-export'
 import { downloadPrivateDocument, sanitizeStorageName } from '@/lib/document-storage'
+import { recordAudit } from '@/lib/security/audit'
 import { NextResponse } from 'next/server'
 
 interface StudentZipRouteContext {
@@ -28,6 +29,14 @@ export async function GET(_: Request, context: StudentZipRouteContext) {
     where: { studentId: student.id },
     orderBy: { uploadedAt: 'desc' },
     select: { id: true, type: true, fileName: true, storageKey: true },
+  })
+
+  await recordAudit({
+    actorId: session.user.id,
+    action: 'student.export.zip',
+    targetType: 'student',
+    targetId: student.id,
+    detail: { documentCount: documents.length },
   })
 
   try {

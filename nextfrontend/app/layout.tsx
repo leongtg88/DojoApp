@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { Montserrat, Open_Sans } from 'next/font/google';
 import './globals.css';
@@ -108,11 +109,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var p=window.location.pathname;if(p!=='/'&&!p.startsWith('/dashboard')){document.documentElement.removeAttribute('data-theme');return}var t=localStorage.getItem('tgd-dashboard-theme');var d=document.documentElement;d.setAttribute('data-theme',t==='light'?'light':'dark')}catch(e){document.documentElement.removeAttribute('data-theme')}})();`,
-          }}
-        />
+        <Script src="/theme-init.js" strategy="beforeInteractive" />
       </head>
       <body suppressHydrationWarning className={`${montserrat.variable} ${openSans.variable} min-h-screen bg-white text-[#dee2f0] flex flex-col font-sans relative antialiased selection:bg-brand-accent selection:text-gray-700`}>
         <ThemeProvider>

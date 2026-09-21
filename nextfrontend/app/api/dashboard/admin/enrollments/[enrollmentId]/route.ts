@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
+import { recordAudit } from '@/lib/security/audit'
 import { deletePrivateDocuments } from '@/lib/document-storage'
 import { NextResponse } from 'next/server'
 
@@ -47,6 +48,15 @@ export async function DELETE(_request: Request, { params }: EnrollmentRouteConte
   }
 
   await db.enrollment.delete({ where: { id: enrollment.id } })
+
+  await recordAudit({
+    actorId: session.user.id,
+    schoolId: scope.schoolId,
+    action: 'enrollment.delete',
+    targetType: 'enrollment',
+    targetId: enrollment.id,
+    detail: { documentsDeleted: enrollment.documents.length },
+  })
 
   return NextResponse.json({ ok: true })
 }

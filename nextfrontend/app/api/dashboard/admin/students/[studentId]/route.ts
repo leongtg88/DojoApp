@@ -3,6 +3,7 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
 import { purgeStudentRegistrationData } from '@/lib/dashboard/registration-purge'
+import { recordAudit } from '@/lib/security/audit'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -115,6 +116,14 @@ export async function DELETE(_request: Request, { params }: UpdateStudentRouteCo
       data: { userId: null, guardianId: null },
     })
     await tx.student.delete({ where: { id: studentId } })
+  })
+
+  await recordAudit({
+    actorId: session.user.id,
+    schoolId: scope.schoolId,
+    action: 'student.delete',
+    targetType: 'student',
+    targetId: existing.id,
   })
 
   return NextResponse.json({ ok: true, studentId: existing.id })

@@ -173,6 +173,11 @@ export type ExamConvocation = $Result.DefaultSelection<Prisma.$ExamConvocationPa
  * 
  */
 export type ApiUsage = $Result.DefaultSelection<Prisma.$ApiUsagePayload>
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
 
 /**
  * Enums
@@ -872,6 +877,16 @@ export class PrismaClient<
     * ```
     */
   get apiUsage(): Prisma.ApiUsageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.auditLog`: Exposes CRUD operations for the **AuditLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AuditLogs
+    * const auditLogs = await prisma.auditLog.findMany()
+    * ```
+    */
+  get auditLog(): Prisma.AuditLogDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1350,7 +1365,8 @@ export namespace Prisma {
     PushSubscription: 'PushSubscription',
     Holiday: 'Holiday',
     ExamConvocation: 'ExamConvocation',
-    ApiUsage: 'ApiUsage'
+    ApiUsage: 'ApiUsage',
+    AuditLog: 'AuditLog'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1366,7 +1382,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniquePracticeLog" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "pushSubscription" | "holiday" | "examConvocation" | "apiUsage"
+      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniquePracticeLog" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "pushSubscription" | "holiday" | "examConvocation" | "apiUsage" | "auditLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3738,6 +3754,80 @@ export namespace Prisma {
           }
         }
       }
+      AuditLog: {
+        payload: Prisma.$AuditLogPayload<ExtArgs>
+        fields: Prisma.AuditLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AuditLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AuditLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          findFirst: {
+            args: Prisma.AuditLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AuditLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          findMany: {
+            args: Prisma.AuditLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>[]
+          }
+          create: {
+            args: Prisma.AuditLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          createMany: {
+            args: Prisma.AuditLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AuditLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>[]
+          }
+          delete: {
+            args: Prisma.AuditLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          update: {
+            args: Prisma.AuditLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.AuditLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AuditLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AuditLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.AuditLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          aggregate: {
+            args: Prisma.AuditLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAuditLog>
+          }
+          groupBy: {
+            args: Prisma.AuditLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AuditLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AuditLogCountArgs<ExtArgs>
+            result: $Utils.Optional<AuditLogCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3893,6 +3983,7 @@ export namespace Prisma {
     holiday?: HolidayOmit
     examConvocation?: ExamConvocationOmit
     apiUsage?: ApiUsageOmit
+    auditLog?: AuditLogOmit
   }
 
   /* Types for Logging */
@@ -3983,6 +4074,7 @@ export namespace Prisma {
     plans: number
     holidays: number
     examConvocations: number
+    auditLogs: number
   }
 
   export type SchoolCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3996,6 +4088,7 @@ export namespace Prisma {
     plans?: boolean | SchoolCountOutputTypeCountPlansArgs
     holidays?: boolean | SchoolCountOutputTypeCountHolidaysArgs
     examConvocations?: boolean | SchoolCountOutputTypeCountExamConvocationsArgs
+    auditLogs?: boolean | SchoolCountOutputTypeCountAuditLogsArgs
   }
 
   // Custom InputTypes
@@ -4079,6 +4172,13 @@ export namespace Prisma {
     where?: ExamConvocationWhereInput
   }
 
+  /**
+   * SchoolCountOutputType without action
+   */
+  export type SchoolCountOutputTypeCountAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AuditLogWhereInput
+  }
+
 
   /**
    * Count Type BranchCountOutputType
@@ -4156,6 +4256,7 @@ export namespace Prisma {
     acceptedInvitations: number
     notifications: number
     pushSubscriptions: number
+    auditLogs: number
     classes: number
   }
 
@@ -4173,6 +4274,7 @@ export namespace Prisma {
     acceptedInvitations?: boolean | UserCountOutputTypeCountAcceptedInvitationsArgs
     notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
     pushSubscriptions?: boolean | UserCountOutputTypeCountPushSubscriptionsArgs
+    auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
     classes?: boolean | UserCountOutputTypeCountClassesArgs
   }
 
@@ -4276,6 +4378,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountPushSubscriptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PushSubscriptionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AuditLogWhereInput
   }
 
   /**
@@ -4950,6 +5059,7 @@ export namespace Prisma {
     plans?: boolean | School$plansArgs<ExtArgs>
     holidays?: boolean | School$holidaysArgs<ExtArgs>
     examConvocations?: boolean | School$examConvocationsArgs<ExtArgs>
+    auditLogs?: boolean | School$auditLogsArgs<ExtArgs>
     _count?: boolean | SchoolCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["school"]>
 
@@ -4986,6 +5096,7 @@ export namespace Prisma {
     plans?: boolean | School$plansArgs<ExtArgs>
     holidays?: boolean | School$holidaysArgs<ExtArgs>
     examConvocations?: boolean | School$examConvocationsArgs<ExtArgs>
+    auditLogs?: boolean | School$auditLogsArgs<ExtArgs>
     _count?: boolean | SchoolCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SchoolIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -5004,6 +5115,7 @@ export namespace Prisma {
       plans: Prisma.$PlanPayload<ExtArgs>[]
       holidays: Prisma.$HolidayPayload<ExtArgs>[]
       examConvocations: Prisma.$ExamConvocationPayload<ExtArgs>[]
+      auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5414,6 +5526,7 @@ export namespace Prisma {
     plans<T extends School$plansArgs<ExtArgs> = {}>(args?: Subset<T, School$plansArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     holidays<T extends School$holidaysArgs<ExtArgs> = {}>(args?: Subset<T, School$holidaysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HolidayPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     examConvocations<T extends School$examConvocationsArgs<ExtArgs> = {}>(args?: Subset<T, School$examConvocationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExamConvocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    auditLogs<T extends School$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, School$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6077,6 +6190,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ExamConvocationScalarFieldEnum | ExamConvocationScalarFieldEnum[]
+  }
+
+  /**
+   * School.auditLogs
+   */
+  export type School$auditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    where?: AuditLogWhereInput
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    cursor?: AuditLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
   }
 
   /**
@@ -7542,6 +7679,7 @@ export namespace Prisma {
     acceptedInvitations?: boolean | User$acceptedInvitationsArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     pushSubscriptions?: boolean | User$pushSubscriptionsArgs<ExtArgs>
+    auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
     classes?: boolean | User$classesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -7614,6 +7752,7 @@ export namespace Prisma {
     acceptedInvitations?: boolean | User$acceptedInvitationsArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     pushSubscriptions?: boolean | User$pushSubscriptionsArgs<ExtArgs>
+    auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
     classes?: boolean | User$classesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -7646,6 +7785,7 @@ export namespace Prisma {
       acceptedInvitations: Prisma.$StudentInvitationTokenPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       pushSubscriptions: Prisma.$PushSubscriptionPayload<ExtArgs>[]
+      auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
       classes: Prisma.$ClassPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -8072,6 +8212,7 @@ export namespace Prisma {
     acceptedInvitations<T extends User$acceptedInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$acceptedInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentInvitationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     pushSubscriptions<T extends User$pushSubscriptionsArgs<ExtArgs> = {}>(args?: Subset<T, User$pushSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PushSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    auditLogs<T extends User$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     classes<T extends User$classesArgs<ExtArgs> = {}>(args?: Subset<T, User$classesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClassPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -8900,6 +9041,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PushSubscriptionScalarFieldEnum | PushSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * User.auditLogs
+   */
+  export type User$auditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    where?: AuditLogWhereInput
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    cursor?: AuditLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
   }
 
   /**
@@ -43690,6 +43855,1144 @@ export namespace Prisma {
 
 
   /**
+   * Model AuditLog
+   */
+
+  export type AggregateAuditLog = {
+    _count: AuditLogCountAggregateOutputType | null
+    _min: AuditLogMinAggregateOutputType | null
+    _max: AuditLogMaxAggregateOutputType | null
+  }
+
+  export type AuditLogMinAggregateOutputType = {
+    id: string | null
+    schoolId: string | null
+    actorId: string | null
+    action: string | null
+    targetType: string | null
+    targetId: string | null
+    ip: string | null
+    createdAt: Date | null
+  }
+
+  export type AuditLogMaxAggregateOutputType = {
+    id: string | null
+    schoolId: string | null
+    actorId: string | null
+    action: string | null
+    targetType: string | null
+    targetId: string | null
+    ip: string | null
+    createdAt: Date | null
+  }
+
+  export type AuditLogCountAggregateOutputType = {
+    id: number
+    schoolId: number
+    actorId: number
+    action: number
+    targetType: number
+    targetId: number
+    detail: number
+    ip: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AuditLogMinAggregateInputType = {
+    id?: true
+    schoolId?: true
+    actorId?: true
+    action?: true
+    targetType?: true
+    targetId?: true
+    ip?: true
+    createdAt?: true
+  }
+
+  export type AuditLogMaxAggregateInputType = {
+    id?: true
+    schoolId?: true
+    actorId?: true
+    action?: true
+    targetType?: true
+    targetId?: true
+    ip?: true
+    createdAt?: true
+  }
+
+  export type AuditLogCountAggregateInputType = {
+    id?: true
+    schoolId?: true
+    actorId?: true
+    action?: true
+    targetType?: true
+    targetId?: true
+    detail?: true
+    ip?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AuditLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AuditLog to aggregate.
+     */
+    where?: AuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditLogs to fetch.
+     */
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AuditLogs
+    **/
+    _count?: true | AuditLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AuditLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AuditLogMaxAggregateInputType
+  }
+
+  export type GetAuditLogAggregateType<T extends AuditLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateAuditLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAuditLog[P]>
+      : GetScalarType<T[P], AggregateAuditLog[P]>
+  }
+
+
+
+
+  export type AuditLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AuditLogWhereInput
+    orderBy?: AuditLogOrderByWithAggregationInput | AuditLogOrderByWithAggregationInput[]
+    by: AuditLogScalarFieldEnum[] | AuditLogScalarFieldEnum
+    having?: AuditLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AuditLogCountAggregateInputType | true
+    _min?: AuditLogMinAggregateInputType
+    _max?: AuditLogMaxAggregateInputType
+  }
+
+  export type AuditLogGroupByOutputType = {
+    id: string
+    schoolId: string | null
+    actorId: string
+    action: string
+    targetType: string | null
+    targetId: string | null
+    detail: JsonValue | null
+    ip: string | null
+    createdAt: Date
+    _count: AuditLogCountAggregateOutputType | null
+    _min: AuditLogMinAggregateOutputType | null
+    _max: AuditLogMaxAggregateOutputType | null
+  }
+
+  type GetAuditLogGroupByPayload<T extends AuditLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AuditLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AuditLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AuditLogGroupByOutputType[P]>
+            : GetScalarType<T[P], AuditLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AuditLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    schoolId?: boolean
+    actorId?: boolean
+    action?: boolean
+    targetType?: boolean
+    targetId?: boolean
+    detail?: boolean
+    ip?: boolean
+    createdAt?: boolean
+    school?: boolean | AuditLog$schoolArgs<ExtArgs>
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["auditLog"]>
+
+  export type AuditLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    schoolId?: boolean
+    actorId?: boolean
+    action?: boolean
+    targetType?: boolean
+    targetId?: boolean
+    detail?: boolean
+    ip?: boolean
+    createdAt?: boolean
+    school?: boolean | AuditLog$schoolArgs<ExtArgs>
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["auditLog"]>
+
+  export type AuditLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    schoolId?: boolean
+    actorId?: boolean
+    action?: boolean
+    targetType?: boolean
+    targetId?: boolean
+    detail?: boolean
+    ip?: boolean
+    createdAt?: boolean
+    school?: boolean | AuditLog$schoolArgs<ExtArgs>
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["auditLog"]>
+
+  export type AuditLogSelectScalar = {
+    id?: boolean
+    schoolId?: boolean
+    actorId?: boolean
+    action?: boolean
+    targetType?: boolean
+    targetId?: boolean
+    detail?: boolean
+    ip?: boolean
+    createdAt?: boolean
+  }
+
+  export type AuditLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "schoolId" | "actorId" | "action" | "targetType" | "targetId" | "detail" | "ip" | "createdAt", ExtArgs["result"]["auditLog"]>
+  export type AuditLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    school?: boolean | AuditLog$schoolArgs<ExtArgs>
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type AuditLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    school?: boolean | AuditLog$schoolArgs<ExtArgs>
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type AuditLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    school?: boolean | AuditLog$schoolArgs<ExtArgs>
+    actor?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $AuditLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AuditLog"
+    objects: {
+      school: Prisma.$SchoolPayload<ExtArgs> | null
+      actor: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      schoolId: string | null
+      actorId: string
+      action: string
+      targetType: string | null
+      targetId: string | null
+      detail: Prisma.JsonValue | null
+      ip: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["auditLog"]>
+    composites: {}
+  }
+
+  type AuditLogGetPayload<S extends boolean | null | undefined | AuditLogDefaultArgs> = $Result.GetResult<Prisma.$AuditLogPayload, S>
+
+  type AuditLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AuditLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AuditLogCountAggregateInputType | true
+    }
+
+  export interface AuditLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AuditLog'], meta: { name: 'AuditLog' } }
+    /**
+     * Find zero or one AuditLog that matches the filter.
+     * @param {AuditLogFindUniqueArgs} args - Arguments to find a AuditLog
+     * @example
+     * // Get one AuditLog
+     * const auditLog = await prisma.auditLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AuditLogFindUniqueArgs>(args: SelectSubset<T, AuditLogFindUniqueArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AuditLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AuditLogFindUniqueOrThrowArgs} args - Arguments to find a AuditLog
+     * @example
+     * // Get one AuditLog
+     * const auditLog = await prisma.auditLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AuditLogFindUniqueOrThrowArgs>(args: SelectSubset<T, AuditLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AuditLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogFindFirstArgs} args - Arguments to find a AuditLog
+     * @example
+     * // Get one AuditLog
+     * const auditLog = await prisma.auditLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AuditLogFindFirstArgs>(args?: SelectSubset<T, AuditLogFindFirstArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AuditLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogFindFirstOrThrowArgs} args - Arguments to find a AuditLog
+     * @example
+     * // Get one AuditLog
+     * const auditLog = await prisma.auditLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AuditLogFindFirstOrThrowArgs>(args?: SelectSubset<T, AuditLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AuditLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AuditLogs
+     * const auditLogs = await prisma.auditLog.findMany()
+     * 
+     * // Get first 10 AuditLogs
+     * const auditLogs = await prisma.auditLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const auditLogWithIdOnly = await prisma.auditLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AuditLogFindManyArgs>(args?: SelectSubset<T, AuditLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AuditLog.
+     * @param {AuditLogCreateArgs} args - Arguments to create a AuditLog.
+     * @example
+     * // Create one AuditLog
+     * const AuditLog = await prisma.auditLog.create({
+     *   data: {
+     *     // ... data to create a AuditLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends AuditLogCreateArgs>(args: SelectSubset<T, AuditLogCreateArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AuditLogs.
+     * @param {AuditLogCreateManyArgs} args - Arguments to create many AuditLogs.
+     * @example
+     * // Create many AuditLogs
+     * const auditLog = await prisma.auditLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AuditLogCreateManyArgs>(args?: SelectSubset<T, AuditLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AuditLogs and returns the data saved in the database.
+     * @param {AuditLogCreateManyAndReturnArgs} args - Arguments to create many AuditLogs.
+     * @example
+     * // Create many AuditLogs
+     * const auditLog = await prisma.auditLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AuditLogs and only return the `id`
+     * const auditLogWithIdOnly = await prisma.auditLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AuditLogCreateManyAndReturnArgs>(args?: SelectSubset<T, AuditLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AuditLog.
+     * @param {AuditLogDeleteArgs} args - Arguments to delete one AuditLog.
+     * @example
+     * // Delete one AuditLog
+     * const AuditLog = await prisma.auditLog.delete({
+     *   where: {
+     *     // ... filter to delete one AuditLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AuditLogDeleteArgs>(args: SelectSubset<T, AuditLogDeleteArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AuditLog.
+     * @param {AuditLogUpdateArgs} args - Arguments to update one AuditLog.
+     * @example
+     * // Update one AuditLog
+     * const auditLog = await prisma.auditLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AuditLogUpdateArgs>(args: SelectSubset<T, AuditLogUpdateArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AuditLogs.
+     * @param {AuditLogDeleteManyArgs} args - Arguments to filter AuditLogs to delete.
+     * @example
+     * // Delete a few AuditLogs
+     * const { count } = await prisma.auditLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AuditLogDeleteManyArgs>(args?: SelectSubset<T, AuditLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AuditLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AuditLogs
+     * const auditLog = await prisma.auditLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AuditLogUpdateManyArgs>(args: SelectSubset<T, AuditLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AuditLogs and returns the data updated in the database.
+     * @param {AuditLogUpdateManyAndReturnArgs} args - Arguments to update many AuditLogs.
+     * @example
+     * // Update many AuditLogs
+     * const auditLog = await prisma.auditLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AuditLogs and only return the `id`
+     * const auditLogWithIdOnly = await prisma.auditLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AuditLogUpdateManyAndReturnArgs>(args: SelectSubset<T, AuditLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AuditLog.
+     * @param {AuditLogUpsertArgs} args - Arguments to update or create a AuditLog.
+     * @example
+     * // Update or create a AuditLog
+     * const auditLog = await prisma.auditLog.upsert({
+     *   create: {
+     *     // ... data to create a AuditLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AuditLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AuditLogUpsertArgs>(args: SelectSubset<T, AuditLogUpsertArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AuditLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogCountArgs} args - Arguments to filter AuditLogs to count.
+     * @example
+     * // Count the number of AuditLogs
+     * const count = await prisma.auditLog.count({
+     *   where: {
+     *     // ... the filter for the AuditLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends AuditLogCountArgs>(
+      args?: Subset<T, AuditLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AuditLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AuditLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AuditLogAggregateArgs>(args: Subset<T, AuditLogAggregateArgs>): Prisma.PrismaPromise<GetAuditLogAggregateType<T>>
+
+    /**
+     * Group by AuditLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AuditLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AuditLogGroupByArgs['orderBy'] }
+        : { orderBy?: AuditLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AuditLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAuditLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AuditLog model
+   */
+  readonly fields: AuditLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AuditLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AuditLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    school<T extends AuditLog$schoolArgs<ExtArgs> = {}>(args?: Subset<T, AuditLog$schoolArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    actor<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AuditLog model
+   */
+  interface AuditLogFieldRefs {
+    readonly id: FieldRef<"AuditLog", 'String'>
+    readonly schoolId: FieldRef<"AuditLog", 'String'>
+    readonly actorId: FieldRef<"AuditLog", 'String'>
+    readonly action: FieldRef<"AuditLog", 'String'>
+    readonly targetType: FieldRef<"AuditLog", 'String'>
+    readonly targetId: FieldRef<"AuditLog", 'String'>
+    readonly detail: FieldRef<"AuditLog", 'Json'>
+    readonly ip: FieldRef<"AuditLog", 'String'>
+    readonly createdAt: FieldRef<"AuditLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AuditLog findUnique
+   */
+  export type AuditLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which AuditLog to fetch.
+     */
+    where: AuditLogWhereUniqueInput
+  }
+
+  /**
+   * AuditLog findUniqueOrThrow
+   */
+  export type AuditLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which AuditLog to fetch.
+     */
+    where: AuditLogWhereUniqueInput
+  }
+
+  /**
+   * AuditLog findFirst
+   */
+  export type AuditLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which AuditLog to fetch.
+     */
+    where?: AuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditLogs to fetch.
+     */
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AuditLogs.
+     */
+    cursor?: AuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AuditLogs.
+     */
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * AuditLog findFirstOrThrow
+   */
+  export type AuditLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which AuditLog to fetch.
+     */
+    where?: AuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditLogs to fetch.
+     */
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AuditLogs.
+     */
+    cursor?: AuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AuditLogs.
+     */
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * AuditLog findMany
+   */
+  export type AuditLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which AuditLogs to fetch.
+     */
+    where?: AuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditLogs to fetch.
+     */
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AuditLogs.
+     */
+    cursor?: AuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AuditLogs.
+     */
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * AuditLog create
+   */
+  export type AuditLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AuditLog.
+     */
+    data: XOR<AuditLogCreateInput, AuditLogUncheckedCreateInput>
+  }
+
+  /**
+   * AuditLog createMany
+   */
+  export type AuditLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AuditLogs.
+     */
+    data: AuditLogCreateManyInput | AuditLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AuditLog createManyAndReturn
+   */
+  export type AuditLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many AuditLogs.
+     */
+    data: AuditLogCreateManyInput | AuditLogCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AuditLog update
+   */
+  export type AuditLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AuditLog.
+     */
+    data: XOR<AuditLogUpdateInput, AuditLogUncheckedUpdateInput>
+    /**
+     * Choose, which AuditLog to update.
+     */
+    where: AuditLogWhereUniqueInput
+  }
+
+  /**
+   * AuditLog updateMany
+   */
+  export type AuditLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AuditLogs.
+     */
+    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyInput>
+    /**
+     * Filter which AuditLogs to update
+     */
+    where?: AuditLogWhereInput
+    /**
+     * Limit how many AuditLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AuditLog updateManyAndReturn
+   */
+  export type AuditLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * The data used to update AuditLogs.
+     */
+    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyInput>
+    /**
+     * Filter which AuditLogs to update
+     */
+    where?: AuditLogWhereInput
+    /**
+     * Limit how many AuditLogs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AuditLog upsert
+   */
+  export type AuditLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AuditLog to update in case it exists.
+     */
+    where: AuditLogWhereUniqueInput
+    /**
+     * In case the AuditLog found by the `where` argument doesn't exist, create a new AuditLog with this data.
+     */
+    create: XOR<AuditLogCreateInput, AuditLogUncheckedCreateInput>
+    /**
+     * In case the AuditLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AuditLogUpdateInput, AuditLogUncheckedUpdateInput>
+  }
+
+  /**
+   * AuditLog delete
+   */
+  export type AuditLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    /**
+     * Filter which AuditLog to delete.
+     */
+    where: AuditLogWhereUniqueInput
+  }
+
+  /**
+   * AuditLog deleteMany
+   */
+  export type AuditLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AuditLogs to delete
+     */
+    where?: AuditLogWhereInput
+    /**
+     * Limit how many AuditLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AuditLog.school
+   */
+  export type AuditLog$schoolArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the School
+     */
+    select?: SchoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the School
+     */
+    omit?: SchoolOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolInclude<ExtArgs> | null
+    where?: SchoolWhereInput
+  }
+
+  /**
+   * AuditLog without action
+   */
+  export type AuditLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -44209,6 +45512,21 @@ export namespace Prisma {
   export type ApiUsageScalarFieldEnum = (typeof ApiUsageScalarFieldEnum)[keyof typeof ApiUsageScalarFieldEnum]
 
 
+  export const AuditLogScalarFieldEnum: {
+    id: 'id',
+    schoolId: 'schoolId',
+    actorId: 'actorId',
+    action: 'action',
+    targetType: 'targetType',
+    targetId: 'targetId',
+    detail: 'detail',
+    ip: 'ip',
+    createdAt: 'createdAt'
+  };
+
+  export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -44626,6 +45944,7 @@ export namespace Prisma {
     plans?: PlanListRelationFilter
     holidays?: HolidayListRelationFilter
     examConvocations?: ExamConvocationListRelationFilter
+    auditLogs?: AuditLogListRelationFilter
   }
 
   export type SchoolOrderByWithRelationInput = {
@@ -44643,6 +45962,7 @@ export namespace Prisma {
     plans?: PlanOrderByRelationAggregateInput
     holidays?: HolidayOrderByRelationAggregateInput
     examConvocations?: ExamConvocationOrderByRelationAggregateInput
+    auditLogs?: AuditLogOrderByRelationAggregateInput
   }
 
   export type SchoolWhereUniqueInput = Prisma.AtLeast<{
@@ -44663,6 +45983,7 @@ export namespace Prisma {
     plans?: PlanListRelationFilter
     holidays?: HolidayListRelationFilter
     examConvocations?: ExamConvocationListRelationFilter
+    auditLogs?: AuditLogListRelationFilter
   }, "id">
 
   export type SchoolOrderByWithAggregationInput = {
@@ -44785,6 +46106,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenListRelationFilter
     notifications?: NotificationListRelationFilter
     pushSubscriptions?: PushSubscriptionListRelationFilter
+    auditLogs?: AuditLogListRelationFilter
     classes?: ClassListRelationFilter
   }
 
@@ -44818,6 +46140,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
     pushSubscriptions?: PushSubscriptionOrderByRelationAggregateInput
+    auditLogs?: AuditLogOrderByRelationAggregateInput
     classes?: ClassOrderByRelationAggregateInput
   }
 
@@ -44854,6 +46177,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenListRelationFilter
     notifications?: NotificationListRelationFilter
     pushSubscriptions?: PushSubscriptionListRelationFilter
+    auditLogs?: AuditLogListRelationFilter
     classes?: ClassListRelationFilter
   }, "id" | "email">
 
@@ -47442,6 +48766,84 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"ApiUsage"> | Date | string
   }
 
+  export type AuditLogWhereInput = {
+    AND?: AuditLogWhereInput | AuditLogWhereInput[]
+    OR?: AuditLogWhereInput[]
+    NOT?: AuditLogWhereInput | AuditLogWhereInput[]
+    id?: StringFilter<"AuditLog"> | string
+    schoolId?: StringNullableFilter<"AuditLog"> | string | null
+    actorId?: StringFilter<"AuditLog"> | string
+    action?: StringFilter<"AuditLog"> | string
+    targetType?: StringNullableFilter<"AuditLog"> | string | null
+    targetId?: StringNullableFilter<"AuditLog"> | string | null
+    detail?: JsonNullableFilter<"AuditLog">
+    ip?: StringNullableFilter<"AuditLog"> | string | null
+    createdAt?: DateTimeFilter<"AuditLog"> | Date | string
+    school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
+    actor?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type AuditLogOrderByWithRelationInput = {
+    id?: SortOrder
+    schoolId?: SortOrderInput | SortOrder
+    actorId?: SortOrder
+    action?: SortOrder
+    targetType?: SortOrderInput | SortOrder
+    targetId?: SortOrderInput | SortOrder
+    detail?: SortOrderInput | SortOrder
+    ip?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    school?: SchoolOrderByWithRelationInput
+    actor?: UserOrderByWithRelationInput
+  }
+
+  export type AuditLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AuditLogWhereInput | AuditLogWhereInput[]
+    OR?: AuditLogWhereInput[]
+    NOT?: AuditLogWhereInput | AuditLogWhereInput[]
+    schoolId?: StringNullableFilter<"AuditLog"> | string | null
+    actorId?: StringFilter<"AuditLog"> | string
+    action?: StringFilter<"AuditLog"> | string
+    targetType?: StringNullableFilter<"AuditLog"> | string | null
+    targetId?: StringNullableFilter<"AuditLog"> | string | null
+    detail?: JsonNullableFilter<"AuditLog">
+    ip?: StringNullableFilter<"AuditLog"> | string | null
+    createdAt?: DateTimeFilter<"AuditLog"> | Date | string
+    school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
+    actor?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type AuditLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    schoolId?: SortOrderInput | SortOrder
+    actorId?: SortOrder
+    action?: SortOrder
+    targetType?: SortOrderInput | SortOrder
+    targetId?: SortOrderInput | SortOrder
+    detail?: SortOrderInput | SortOrder
+    ip?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: AuditLogCountOrderByAggregateInput
+    _max?: AuditLogMaxOrderByAggregateInput
+    _min?: AuditLogMinOrderByAggregateInput
+  }
+
+  export type AuditLogScalarWhereWithAggregatesInput = {
+    AND?: AuditLogScalarWhereWithAggregatesInput | AuditLogScalarWhereWithAggregatesInput[]
+    OR?: AuditLogScalarWhereWithAggregatesInput[]
+    NOT?: AuditLogScalarWhereWithAggregatesInput | AuditLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AuditLog"> | string
+    schoolId?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
+    actorId?: StringWithAggregatesFilter<"AuditLog"> | string
+    action?: StringWithAggregatesFilter<"AuditLog"> | string
+    targetType?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
+    targetId?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
+    detail?: JsonNullableWithAggregatesFilter<"AuditLog">
+    ip?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AuditLog"> | Date | string
+  }
+
   export type SchoolCreateInput = {
     id?: string
     name: string
@@ -47457,6 +48859,7 @@ export namespace Prisma {
     plans?: PlanCreateNestedManyWithoutSchoolInput
     holidays?: HolidayCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateInput = {
@@ -47474,6 +48877,7 @@ export namespace Prisma {
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
     holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUpdateInput = {
@@ -47491,6 +48895,7 @@ export namespace Prisma {
     plans?: PlanUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateInput = {
@@ -47508,6 +48913,7 @@ export namespace Prisma {
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolCreateManyInput = {
@@ -47630,6 +49036,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -47661,6 +49068,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -47692,6 +49100,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -47723,6 +49132,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -50495,6 +51905,88 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AuditLogCreateInput = {
+    id?: string
+    action: string
+    targetType?: string | null
+    targetId?: string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: string | null
+    createdAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutAuditLogsInput
+    actor: UserCreateNestedOneWithoutAuditLogsInput
+  }
+
+  export type AuditLogUncheckedCreateInput = {
+    id?: string
+    schoolId?: string | null
+    actorId: string
+    action: string
+    targetType?: string | null
+    targetId?: string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AuditLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutAuditLogsNestedInput
+    actor?: UserUpdateOneRequiredWithoutAuditLogsNestedInput
+  }
+
+  export type AuditLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    actorId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogCreateManyInput = {
+    id?: string
+    schoolId?: string | null
+    actorId: string
+    action: string
+    targetType?: string | null
+    targetId?: string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AuditLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    actorId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -50581,6 +52073,12 @@ export namespace Prisma {
     none?: ExamConvocationWhereInput
   }
 
+  export type AuditLogListRelationFilter = {
+    every?: AuditLogWhereInput
+    some?: AuditLogWhereInput
+    none?: AuditLogWhereInput
+  }
+
   export type BranchOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -50618,6 +52116,10 @@ export namespace Prisma {
   }
 
   export type ExamConvocationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AuditLogOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -52950,6 +54452,40 @@ export namespace Prisma {
     count?: SortOrder
   }
 
+  export type AuditLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    schoolId?: SortOrder
+    actorId?: SortOrder
+    action?: SortOrder
+    targetType?: SortOrder
+    targetId?: SortOrder
+    detail?: SortOrder
+    ip?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AuditLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    schoolId?: SortOrder
+    actorId?: SortOrder
+    action?: SortOrder
+    targetType?: SortOrder
+    targetId?: SortOrder
+    ip?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AuditLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    schoolId?: SortOrder
+    actorId?: SortOrder
+    action?: SortOrder
+    targetType?: SortOrder
+    targetId?: SortOrder
+    ip?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type BranchCreateNestedManyWithoutSchoolInput = {
     create?: XOR<BranchCreateWithoutSchoolInput, BranchUncheckedCreateWithoutSchoolInput> | BranchCreateWithoutSchoolInput[] | BranchUncheckedCreateWithoutSchoolInput[]
     connectOrCreate?: BranchCreateOrConnectWithoutSchoolInput | BranchCreateOrConnectWithoutSchoolInput[]
@@ -53020,6 +54556,13 @@ export namespace Prisma {
     connect?: ExamConvocationWhereUniqueInput | ExamConvocationWhereUniqueInput[]
   }
 
+  export type AuditLogCreateNestedManyWithoutSchoolInput = {
+    create?: XOR<AuditLogCreateWithoutSchoolInput, AuditLogUncheckedCreateWithoutSchoolInput> | AuditLogCreateWithoutSchoolInput[] | AuditLogUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutSchoolInput | AuditLogCreateOrConnectWithoutSchoolInput[]
+    createMany?: AuditLogCreateManySchoolInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
   export type BranchUncheckedCreateNestedManyWithoutSchoolInput = {
     create?: XOR<BranchCreateWithoutSchoolInput, BranchUncheckedCreateWithoutSchoolInput> | BranchCreateWithoutSchoolInput[] | BranchUncheckedCreateWithoutSchoolInput[]
     connectOrCreate?: BranchCreateOrConnectWithoutSchoolInput | BranchCreateOrConnectWithoutSchoolInput[]
@@ -53088,6 +54631,13 @@ export namespace Prisma {
     connectOrCreate?: ExamConvocationCreateOrConnectWithoutSchoolInput | ExamConvocationCreateOrConnectWithoutSchoolInput[]
     createMany?: ExamConvocationCreateManySchoolInputEnvelope
     connect?: ExamConvocationWhereUniqueInput | ExamConvocationWhereUniqueInput[]
+  }
+
+  export type AuditLogUncheckedCreateNestedManyWithoutSchoolInput = {
+    create?: XOR<AuditLogCreateWithoutSchoolInput, AuditLogUncheckedCreateWithoutSchoolInput> | AuditLogCreateWithoutSchoolInput[] | AuditLogUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutSchoolInput | AuditLogCreateOrConnectWithoutSchoolInput[]
+    createMany?: AuditLogCreateManySchoolInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -53238,6 +54788,20 @@ export namespace Prisma {
     deleteMany?: ExamConvocationScalarWhereInput | ExamConvocationScalarWhereInput[]
   }
 
+  export type AuditLogUpdateManyWithoutSchoolNestedInput = {
+    create?: XOR<AuditLogCreateWithoutSchoolInput, AuditLogUncheckedCreateWithoutSchoolInput> | AuditLogCreateWithoutSchoolInput[] | AuditLogUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutSchoolInput | AuditLogCreateOrConnectWithoutSchoolInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutSchoolInput | AuditLogUpsertWithWhereUniqueWithoutSchoolInput[]
+    createMany?: AuditLogCreateManySchoolInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutSchoolInput | AuditLogUpdateWithWhereUniqueWithoutSchoolInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutSchoolInput | AuditLogUpdateManyWithWhereWithoutSchoolInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+  }
+
   export type BranchUncheckedUpdateManyWithoutSchoolNestedInput = {
     create?: XOR<BranchCreateWithoutSchoolInput, BranchUncheckedCreateWithoutSchoolInput> | BranchCreateWithoutSchoolInput[] | BranchUncheckedCreateWithoutSchoolInput[]
     connectOrCreate?: BranchCreateOrConnectWithoutSchoolInput | BranchCreateOrConnectWithoutSchoolInput[]
@@ -53376,6 +54940,20 @@ export namespace Prisma {
     update?: ExamConvocationUpdateWithWhereUniqueWithoutSchoolInput | ExamConvocationUpdateWithWhereUniqueWithoutSchoolInput[]
     updateMany?: ExamConvocationUpdateManyWithWhereWithoutSchoolInput | ExamConvocationUpdateManyWithWhereWithoutSchoolInput[]
     deleteMany?: ExamConvocationScalarWhereInput | ExamConvocationScalarWhereInput[]
+  }
+
+  export type AuditLogUncheckedUpdateManyWithoutSchoolNestedInput = {
+    create?: XOR<AuditLogCreateWithoutSchoolInput, AuditLogUncheckedCreateWithoutSchoolInput> | AuditLogCreateWithoutSchoolInput[] | AuditLogUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutSchoolInput | AuditLogCreateOrConnectWithoutSchoolInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutSchoolInput | AuditLogUpsertWithWhereUniqueWithoutSchoolInput[]
+    createMany?: AuditLogCreateManySchoolInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutSchoolInput | AuditLogUpdateWithWhereUniqueWithoutSchoolInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutSchoolInput | AuditLogUpdateManyWithWhereWithoutSchoolInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
   }
 
   export type SchoolCreateNestedOneWithoutBranchesInput = {
@@ -53679,6 +55257,13 @@ export namespace Prisma {
     connect?: PushSubscriptionWhereUniqueInput | PushSubscriptionWhereUniqueInput[]
   }
 
+  export type AuditLogCreateNestedManyWithoutActorInput = {
+    create?: XOR<AuditLogCreateWithoutActorInput, AuditLogUncheckedCreateWithoutActorInput> | AuditLogCreateWithoutActorInput[] | AuditLogUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutActorInput | AuditLogCreateOrConnectWithoutActorInput[]
+    createMany?: AuditLogCreateManyActorInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
   export type ClassCreateNestedManyWithoutInstructorInput = {
     create?: XOR<ClassCreateWithoutInstructorInput, ClassUncheckedCreateWithoutInstructorInput> | ClassCreateWithoutInstructorInput[] | ClassUncheckedCreateWithoutInstructorInput[]
     connectOrCreate?: ClassCreateOrConnectWithoutInstructorInput | ClassCreateOrConnectWithoutInstructorInput[]
@@ -53787,6 +55372,13 @@ export namespace Prisma {
     connectOrCreate?: PushSubscriptionCreateOrConnectWithoutUserInput | PushSubscriptionCreateOrConnectWithoutUserInput[]
     createMany?: PushSubscriptionCreateManyUserInputEnvelope
     connect?: PushSubscriptionWhereUniqueInput | PushSubscriptionWhereUniqueInput[]
+  }
+
+  export type AuditLogUncheckedCreateNestedManyWithoutActorInput = {
+    create?: XOR<AuditLogCreateWithoutActorInput, AuditLogUncheckedCreateWithoutActorInput> | AuditLogCreateWithoutActorInput[] | AuditLogUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutActorInput | AuditLogCreateOrConnectWithoutActorInput[]
+    createMany?: AuditLogCreateManyActorInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
   }
 
   export type ClassUncheckedCreateNestedManyWithoutInstructorInput = {
@@ -54039,6 +55631,20 @@ export namespace Prisma {
     deleteMany?: PushSubscriptionScalarWhereInput | PushSubscriptionScalarWhereInput[]
   }
 
+  export type AuditLogUpdateManyWithoutActorNestedInput = {
+    create?: XOR<AuditLogCreateWithoutActorInput, AuditLogUncheckedCreateWithoutActorInput> | AuditLogCreateWithoutActorInput[] | AuditLogUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutActorInput | AuditLogCreateOrConnectWithoutActorInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutActorInput | AuditLogUpsertWithWhereUniqueWithoutActorInput[]
+    createMany?: AuditLogCreateManyActorInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutActorInput | AuditLogUpdateWithWhereUniqueWithoutActorInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutActorInput | AuditLogUpdateManyWithWhereWithoutActorInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+  }
+
   export type ClassUpdateManyWithoutInstructorNestedInput = {
     create?: XOR<ClassCreateWithoutInstructorInput, ClassUncheckedCreateWithoutInstructorInput> | ClassCreateWithoutInstructorInput[] | ClassUncheckedCreateWithoutInstructorInput[]
     connectOrCreate?: ClassCreateOrConnectWithoutInstructorInput | ClassCreateOrConnectWithoutInstructorInput[]
@@ -54253,6 +55859,20 @@ export namespace Prisma {
     update?: PushSubscriptionUpdateWithWhereUniqueWithoutUserInput | PushSubscriptionUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: PushSubscriptionUpdateManyWithWhereWithoutUserInput | PushSubscriptionUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: PushSubscriptionScalarWhereInput | PushSubscriptionScalarWhereInput[]
+  }
+
+  export type AuditLogUncheckedUpdateManyWithoutActorNestedInput = {
+    create?: XOR<AuditLogCreateWithoutActorInput, AuditLogUncheckedCreateWithoutActorInput> | AuditLogCreateWithoutActorInput[] | AuditLogUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutActorInput | AuditLogCreateOrConnectWithoutActorInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutActorInput | AuditLogUpsertWithWhereUniqueWithoutActorInput[]
+    createMany?: AuditLogCreateManyActorInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutActorInput | AuditLogUpdateWithWhereUniqueWithoutActorInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutActorInput | AuditLogUpdateManyWithWhereWithoutActorInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
   }
 
   export type ClassUncheckedUpdateManyWithoutInstructorNestedInput = {
@@ -56520,6 +58140,36 @@ export namespace Prisma {
     update?: XOR<XOR<SchoolUpdateToOneWithWhereWithoutExamConvocationsInput, SchoolUpdateWithoutExamConvocationsInput>, SchoolUncheckedUpdateWithoutExamConvocationsInput>
   }
 
+  export type SchoolCreateNestedOneWithoutAuditLogsInput = {
+    create?: XOR<SchoolCreateWithoutAuditLogsInput, SchoolUncheckedCreateWithoutAuditLogsInput>
+    connectOrCreate?: SchoolCreateOrConnectWithoutAuditLogsInput
+    connect?: SchoolWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutAuditLogsInput = {
+    create?: XOR<UserCreateWithoutAuditLogsInput, UserUncheckedCreateWithoutAuditLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAuditLogsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type SchoolUpdateOneWithoutAuditLogsNestedInput = {
+    create?: XOR<SchoolCreateWithoutAuditLogsInput, SchoolUncheckedCreateWithoutAuditLogsInput>
+    connectOrCreate?: SchoolCreateOrConnectWithoutAuditLogsInput
+    upsert?: SchoolUpsertWithoutAuditLogsInput
+    disconnect?: SchoolWhereInput | boolean
+    delete?: SchoolWhereInput | boolean
+    connect?: SchoolWhereUniqueInput
+    update?: XOR<XOR<SchoolUpdateToOneWithWhereWithoutAuditLogsInput, SchoolUpdateWithoutAuditLogsInput>, SchoolUncheckedUpdateWithoutAuditLogsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutAuditLogsNestedInput = {
+    create?: XOR<UserCreateWithoutAuditLogsInput, UserUncheckedCreateWithoutAuditLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAuditLogsInput
+    upsert?: UserUpsertWithoutAuditLogsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAuditLogsInput, UserUpdateWithoutAuditLogsInput>, UserUncheckedUpdateWithoutAuditLogsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -57175,6 +58825,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -57205,6 +58856,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -57610,6 +59262,38 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AuditLogCreateWithoutSchoolInput = {
+    id?: string
+    action: string
+    targetType?: string | null
+    targetId?: string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: string | null
+    createdAt?: Date | string
+    actor: UserCreateNestedOneWithoutAuditLogsInput
+  }
+
+  export type AuditLogUncheckedCreateWithoutSchoolInput = {
+    id?: string
+    actorId: string
+    action: string
+    targetType?: string | null
+    targetId?: string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AuditLogCreateOrConnectWithoutSchoolInput = {
+    where: AuditLogWhereUniqueInput
+    create: XOR<AuditLogCreateWithoutSchoolInput, AuditLogUncheckedCreateWithoutSchoolInput>
+  }
+
+  export type AuditLogCreateManySchoolInputEnvelope = {
+    data: AuditLogCreateManySchoolInput | AuditLogCreateManySchoolInput[]
+    skipDuplicates?: boolean
+  }
+
   export type BranchUpsertWithWhereUniqueWithoutSchoolInput = {
     where: BranchWhereUniqueInput
     update: XOR<BranchUpdateWithoutSchoolInput, BranchUncheckedUpdateWithoutSchoolInput>
@@ -57965,6 +59649,37 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"ExamConvocation"> | Date | string
   }
 
+  export type AuditLogUpsertWithWhereUniqueWithoutSchoolInput = {
+    where: AuditLogWhereUniqueInput
+    update: XOR<AuditLogUpdateWithoutSchoolInput, AuditLogUncheckedUpdateWithoutSchoolInput>
+    create: XOR<AuditLogCreateWithoutSchoolInput, AuditLogUncheckedCreateWithoutSchoolInput>
+  }
+
+  export type AuditLogUpdateWithWhereUniqueWithoutSchoolInput = {
+    where: AuditLogWhereUniqueInput
+    data: XOR<AuditLogUpdateWithoutSchoolInput, AuditLogUncheckedUpdateWithoutSchoolInput>
+  }
+
+  export type AuditLogUpdateManyWithWhereWithoutSchoolInput = {
+    where: AuditLogScalarWhereInput
+    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyWithoutSchoolInput>
+  }
+
+  export type AuditLogScalarWhereInput = {
+    AND?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+    OR?: AuditLogScalarWhereInput[]
+    NOT?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+    id?: StringFilter<"AuditLog"> | string
+    schoolId?: StringNullableFilter<"AuditLog"> | string | null
+    actorId?: StringFilter<"AuditLog"> | string
+    action?: StringFilter<"AuditLog"> | string
+    targetType?: StringNullableFilter<"AuditLog"> | string | null
+    targetId?: StringNullableFilter<"AuditLog"> | string | null
+    detail?: JsonNullableFilter<"AuditLog">
+    ip?: StringNullableFilter<"AuditLog"> | string | null
+    createdAt?: DateTimeFilter<"AuditLog"> | Date | string
+  }
+
   export type SchoolCreateWithoutBranchesInput = {
     id?: string
     name: string
@@ -57979,6 +59694,7 @@ export namespace Prisma {
     plans?: PlanCreateNestedManyWithoutSchoolInput
     holidays?: HolidayCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutBranchesInput = {
@@ -57995,6 +59711,7 @@ export namespace Prisma {
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
     holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutBranchesInput = {
@@ -58029,6 +59746,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -58059,6 +59777,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -58287,6 +60006,7 @@ export namespace Prisma {
     plans?: PlanUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutBranchesInput = {
@@ -58303,6 +60023,7 @@ export namespace Prisma {
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutBranchInput = {
@@ -58401,6 +60122,7 @@ export namespace Prisma {
     plans?: PlanCreateNestedManyWithoutSchoolInput
     holidays?: HolidayCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutUsersInput = {
@@ -58417,6 +60139,7 @@ export namespace Prisma {
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
     holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutUsersInput = {
@@ -59043,6 +60766,38 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AuditLogCreateWithoutActorInput = {
+    id?: string
+    action: string
+    targetType?: string | null
+    targetId?: string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: string | null
+    createdAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutAuditLogsInput
+  }
+
+  export type AuditLogUncheckedCreateWithoutActorInput = {
+    id?: string
+    schoolId?: string | null
+    action: string
+    targetType?: string | null
+    targetId?: string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AuditLogCreateOrConnectWithoutActorInput = {
+    where: AuditLogWhereUniqueInput
+    create: XOR<AuditLogCreateWithoutActorInput, AuditLogUncheckedCreateWithoutActorInput>
+  }
+
+  export type AuditLogCreateManyActorInputEnvelope = {
+    data: AuditLogCreateManyActorInput | AuditLogCreateManyActorInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ClassCreateWithoutInstructorInput = {
     id?: string
     name: string
@@ -59112,6 +60867,7 @@ export namespace Prisma {
     plans?: PlanUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutUsersInput = {
@@ -59128,6 +60884,7 @@ export namespace Prisma {
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BranchUpsertWithoutUsersInput = {
@@ -59671,6 +61428,22 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"PushSubscription"> | Date | string
   }
 
+  export type AuditLogUpsertWithWhereUniqueWithoutActorInput = {
+    where: AuditLogWhereUniqueInput
+    update: XOR<AuditLogUpdateWithoutActorInput, AuditLogUncheckedUpdateWithoutActorInput>
+    create: XOR<AuditLogCreateWithoutActorInput, AuditLogUncheckedCreateWithoutActorInput>
+  }
+
+  export type AuditLogUpdateWithWhereUniqueWithoutActorInput = {
+    where: AuditLogWhereUniqueInput
+    data: XOR<AuditLogUpdateWithoutActorInput, AuditLogUncheckedUpdateWithoutActorInput>
+  }
+
+  export type AuditLogUpdateManyWithWhereWithoutActorInput = {
+    where: AuditLogScalarWhereInput
+    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyWithoutActorInput>
+  }
+
   export type ClassUpsertWithWhereUniqueWithoutInstructorInput = {
     where: ClassWhereUniqueInput
     update: XOR<ClassUpdateWithoutInstructorInput, ClassUncheckedUpdateWithoutInstructorInput>
@@ -59714,6 +61487,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -59744,6 +61518,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -59790,6 +61565,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -59820,6 +61596,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -59850,6 +61627,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -59880,6 +61658,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -59926,6 +61705,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -59956,6 +61736,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -60077,6 +61858,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -60107,6 +61889,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -60250,6 +62033,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -60280,6 +62064,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -60310,6 +62095,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -60340,6 +62126,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -60386,6 +62173,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -60416,6 +62204,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -60521,6 +62310,7 @@ export namespace Prisma {
     plans?: PlanCreateNestedManyWithoutSchoolInput
     holidays?: HolidayCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutStudentsInput = {
@@ -60537,6 +62327,7 @@ export namespace Prisma {
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
     holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutStudentsInput = {
@@ -60598,6 +62389,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -60628,6 +62420,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -60663,6 +62456,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -60693,6 +62487,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -61251,6 +63046,7 @@ export namespace Prisma {
     plans?: PlanUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutStudentsInput = {
@@ -61267,6 +63063,7 @@ export namespace Prisma {
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BranchUpsertWithoutStudentsInput = {
@@ -61340,6 +63137,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -61370,6 +63168,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -61411,6 +63210,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -61441,6 +63241,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -61715,6 +63516,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -61745,6 +63547,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -61882,6 +63685,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -61912,6 +63716,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -62026,6 +63831,7 @@ export namespace Prisma {
     plans?: PlanCreateNestedManyWithoutSchoolInput
     holidays?: HolidayCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutEnrollmentsInput = {
@@ -62042,6 +63848,7 @@ export namespace Prisma {
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
     holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutEnrollmentsInput = {
@@ -62266,6 +64073,7 @@ export namespace Prisma {
     plans?: PlanUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutEnrollmentsInput = {
@@ -62282,6 +64090,7 @@ export namespace Prisma {
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BranchUpsertWithoutEnrollmentsInput = {
@@ -63160,6 +64969,7 @@ export namespace Prisma {
     plans?: PlanCreateNestedManyWithoutSchoolInput
     holidays?: HolidayCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutBeltRanksInput = {
@@ -63176,6 +64986,7 @@ export namespace Prisma {
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
     holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutBeltRanksInput = {
@@ -63356,6 +65167,7 @@ export namespace Prisma {
     plans?: PlanUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutBeltRanksInput = {
@@ -63372,6 +65184,7 @@ export namespace Prisma {
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BeltRankKataUpsertWithWhereUniqueWithoutBeltRankInput = {
@@ -63839,6 +65652,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -63869,6 +65683,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -64071,6 +65886,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -64101,6 +65917,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -64241,6 +66058,7 @@ export namespace Prisma {
     plans?: PlanCreateNestedManyWithoutSchoolInput
     holidays?: HolidayCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutTechniquesInput = {
@@ -64257,6 +66075,7 @@ export namespace Prisma {
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
     holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutTechniquesInput = {
@@ -64434,6 +66253,7 @@ export namespace Prisma {
     plans?: PlanUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutTechniquesInput = {
@@ -64450,6 +66270,7 @@ export namespace Prisma {
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BeltRankKataUpsertWithWhereUniqueWithoutKataInput = {
@@ -64661,6 +66482,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -64691,6 +66513,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -64954,6 +66777,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -64984,6 +66808,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -65292,6 +67117,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -65322,6 +67148,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -65411,6 +67238,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -65441,6 +67269,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -65458,6 +67287,7 @@ export namespace Prisma {
     achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
     holidays?: HolidayCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutPlansInput = {
@@ -65474,6 +67304,7 @@ export namespace Prisma {
     achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
     holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutPlansInput = {
@@ -65602,6 +67433,7 @@ export namespace Prisma {
     achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutPlansInput = {
@@ -65618,6 +67450,7 @@ export namespace Prisma {
     achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type StudentUpsertWithWhereUniqueWithoutPlanInput = {
@@ -65691,6 +67524,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
   }
 
   export type UserUncheckedCreateWithoutClassesInput = {
@@ -65721,6 +67555,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
   }
 
   export type UserCreateOrConnectWithoutClassesInput = {
@@ -65910,6 +67745,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClassesInput = {
@@ -65940,6 +67776,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
   }
 
   export type ClassSessionUpsertWithWhereUniqueWithoutClassInput = {
@@ -66697,6 +68534,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -66727,6 +68565,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -67078,6 +68917,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -67108,6 +68948,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -67141,6 +68982,7 @@ export namespace Prisma {
     plans?: PlanCreateNestedManyWithoutSchoolInput
     holidays?: HolidayCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutAchievementTypesInput = {
@@ -67157,6 +68999,7 @@ export namespace Prisma {
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
     holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutAchievementTypesInput = {
@@ -67221,6 +69064,7 @@ export namespace Prisma {
     plans?: PlanUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutAchievementTypesInput = {
@@ -67237,6 +69081,7 @@ export namespace Prisma {
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type StudentAchievementUpsertWithWhereUniqueWithoutTypeInput = {
@@ -67394,6 +69239,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -67424,6 +69270,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -67594,6 +69441,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -67624,6 +69472,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -67745,6 +69594,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -67775,6 +69625,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -67918,6 +69769,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -67948,6 +69800,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -67978,6 +69831,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -68008,6 +69862,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -68145,6 +70000,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -68175,6 +70031,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -68302,6 +70159,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
 
@@ -68332,6 +70190,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
 
@@ -68378,6 +70237,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -68408,6 +70268,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -68425,6 +70286,7 @@ export namespace Prisma {
     achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
     plans?: PlanCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutHolidaysInput = {
@@ -68441,6 +70303,7 @@ export namespace Prisma {
     achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutHolidaysInput = {
@@ -68473,6 +70336,7 @@ export namespace Prisma {
     achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
     plans?: PlanUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutHolidaysInput = {
@@ -68489,6 +70353,7 @@ export namespace Prisma {
     achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolCreateWithoutExamConvocationsInput = {
@@ -68505,6 +70370,7 @@ export namespace Prisma {
     achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
     plans?: PlanCreateNestedManyWithoutSchoolInput
     holidays?: HolidayCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutExamConvocationsInput = {
@@ -68521,6 +70387,7 @@ export namespace Prisma {
     achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
     plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
     holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutExamConvocationsInput = {
@@ -68553,6 +70420,7 @@ export namespace Prisma {
     achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
     plans?: PlanUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutExamConvocationsInput = {
@@ -68569,6 +70437,231 @@ export namespace Prisma {
     achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
     plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
     holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
+  }
+
+  export type SchoolCreateWithoutAuditLogsInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branches?: BranchCreateNestedManyWithoutSchoolInput
+    users?: UserCreateNestedManyWithoutSchoolInput
+    students?: StudentCreateNestedManyWithoutSchoolInput
+    enrollments?: EnrollmentCreateNestedManyWithoutSchoolInput
+    beltRanks?: BeltRankCreateNestedManyWithoutSchoolInput
+    techniques?: TechniqueCreateNestedManyWithoutSchoolInput
+    achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
+    plans?: PlanCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
+  }
+
+  export type SchoolUncheckedCreateWithoutAuditLogsInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branches?: BranchUncheckedCreateNestedManyWithoutSchoolInput
+    users?: UserUncheckedCreateNestedManyWithoutSchoolInput
+    students?: StudentUncheckedCreateNestedManyWithoutSchoolInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutSchoolInput
+    beltRanks?: BeltRankUncheckedCreateNestedManyWithoutSchoolInput
+    techniques?: TechniqueUncheckedCreateNestedManyWithoutSchoolInput
+    achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
+    plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
+  }
+
+  export type SchoolCreateOrConnectWithoutAuditLogsInput = {
+    where: SchoolWhereUniqueInput
+    create: XOR<SchoolCreateWithoutAuditLogsInput, SchoolUncheckedCreateWithoutAuditLogsInput>
+  }
+
+  export type UserCreateWithoutAuditLogsInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutUsersInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    instructorProfile?: InstructorProfileCreateNestedOneWithoutUserInput
+    studentProfile?: StudentCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    classes?: ClassCreateNestedManyWithoutInstructorInput
+  }
+
+  export type UserUncheckedCreateWithoutAuditLogsInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    schoolId?: string | null
+    branchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    instructorProfile?: InstructorProfileUncheckedCreateNestedOneWithoutUserInput
+    studentProfile?: StudentUncheckedCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
+  }
+
+  export type UserCreateOrConnectWithoutAuditLogsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAuditLogsInput, UserUncheckedCreateWithoutAuditLogsInput>
+  }
+
+  export type SchoolUpsertWithoutAuditLogsInput = {
+    update: XOR<SchoolUpdateWithoutAuditLogsInput, SchoolUncheckedUpdateWithoutAuditLogsInput>
+    create: XOR<SchoolCreateWithoutAuditLogsInput, SchoolUncheckedCreateWithoutAuditLogsInput>
+    where?: SchoolWhereInput
+  }
+
+  export type SchoolUpdateToOneWithWhereWithoutAuditLogsInput = {
+    where?: SchoolWhereInput
+    data: XOR<SchoolUpdateWithoutAuditLogsInput, SchoolUncheckedUpdateWithoutAuditLogsInput>
+  }
+
+  export type SchoolUpdateWithoutAuditLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branches?: BranchUpdateManyWithoutSchoolNestedInput
+    users?: UserUpdateManyWithoutSchoolNestedInput
+    students?: StudentUpdateManyWithoutSchoolNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutSchoolNestedInput
+    beltRanks?: BeltRankUpdateManyWithoutSchoolNestedInput
+    techniques?: TechniqueUpdateManyWithoutSchoolNestedInput
+    achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
+    plans?: PlanUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
+  }
+
+  export type SchoolUncheckedUpdateWithoutAuditLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branches?: BranchUncheckedUpdateManyWithoutSchoolNestedInput
+    users?: UserUncheckedUpdateManyWithoutSchoolNestedInput
+    students?: StudentUncheckedUpdateManyWithoutSchoolNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutSchoolNestedInput
+    beltRanks?: BeltRankUncheckedUpdateManyWithoutSchoolNestedInput
+    techniques?: TechniqueUncheckedUpdateManyWithoutSchoolNestedInput
+    achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
+    plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
+  }
+
+  export type UserUpsertWithoutAuditLogsInput = {
+    update: XOR<UserUpdateWithoutAuditLogsInput, UserUncheckedUpdateWithoutAuditLogsInput>
+    create: XOR<UserCreateWithoutAuditLogsInput, UserUncheckedCreateWithoutAuditLogsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAuditLogsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAuditLogsInput, UserUncheckedUpdateWithoutAuditLogsInput>
+  }
+
+  export type UserUpdateWithoutAuditLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutUsersNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    instructorProfile?: InstructorProfileUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    classes?: ClassUpdateManyWithoutInstructorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAuditLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    instructorProfile?: InstructorProfileUncheckedUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUncheckedUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
   export type BranchCreateManySchoolInput = {
@@ -68726,6 +70819,17 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type AuditLogCreateManySchoolInput = {
+    id?: string
+    actorId: string
+    action: string
+    targetType?: string | null
+    targetId?: string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: string | null
+    createdAt?: Date | string
+  }
+
   export type BranchUpdateWithoutSchoolInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -68782,6 +70886,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -68812,6 +70917,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -69275,6 +71381,39 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AuditLogUpdateWithoutSchoolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    actor?: UserUpdateOneRequiredWithoutAuditLogsNestedInput
+  }
+
+  export type AuditLogUncheckedUpdateWithoutSchoolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogUncheckedUpdateManyWithoutSchoolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateManyBranchInput = {
     id?: string
     email: string
@@ -69379,6 +71518,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
 
@@ -69409,6 +71549,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
@@ -69805,6 +71946,17 @@ export namespace Prisma {
     p256dh: string
     auth: string
     userAgent?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AuditLogCreateManyActorInput = {
+    id?: string
+    schoolId?: string | null
+    action: string
+    targetType?: string | null
+    targetId?: string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: string | null
     createdAt?: Date | string
   }
 
@@ -70328,6 +72480,39 @@ export namespace Prisma {
     p256dh?: StringFieldUpdateOperationsInput | string
     auth?: StringFieldUpdateOperationsInput | string
     userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogUpdateWithoutActorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutAuditLogsNestedInput
+  }
+
+  export type AuditLogUncheckedUpdateWithoutActorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    action?: StringFieldUpdateOperationsInput | string
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogUncheckedUpdateManyWithoutActorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    action?: StringFieldUpdateOperationsInput | string
+    targetType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    detail?: NullableJsonNullValueInput | InputJsonValue
+    ip?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
