@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
 export type DashboardTheme = 'dark' | 'light'
@@ -18,19 +18,38 @@ function isDashboardRoute(pathname: string): boolean {
     return pathname === '/dashboard' || pathname.startsWith('/dashboard/')
 }
 
+// El estado inicial es fijo para que SSR y la primera hidratación coincidan
+// (evita hydration mismatch). La preferencia guardada se aplica en un efecto
+// posterior; el script inline de layout.tsx ya aplica el tema al <html> antes
+// de que React hidrate.
 function getInitialTheme(): DashboardTheme {
-    if (typeof window === 'undefined') return 'dark'
-    const stored = window.localStorage.getItem(STORAGE_KEY)
-    if (stored === 'light' || stored === 'dark') return stored
     return 'dark'
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
     const [theme, setThemeState] = useState<DashboardTheme>(getInitialTheme)
+    const isFirstRender = useRef(true)
 
     useEffect(() => {
         const root = document.documentElement
+
+        // Tras la primera hidratación se aplica la preferencia guardada.
+        if (isFirstRender.current) {
+            isFirstRender.current = false
+            let stored: DashboardTheme = 'dark'
+            try {
+                const saved = window.localStorage.getItem(STORAGE_KEY)
+                if (saved === 'light' || saved === 'dark') stored = saved
+            } catch {
+                /* almacenamiento no disponible */
+            }
+            if (stored !== theme) {
+                setThemeState(stored)
+                return
+            }
+        }
+
         if (!isDashboardRoute(pathname)) {
             root.removeAttribute('data-theme')
             root.style.colorScheme = ''

@@ -20,6 +20,18 @@ const nextConfig: NextConfig = {
     ]
   },
   async headers() {
+    // En desarrollo React/Turbopack usan eval() para HMR; se permite solo en
+    // ese entorno. En producción el CSP se mantiene estricto.
+    const isDev = process.env.NODE_ENV !== 'production'
+
+    const scriptSources = [
+      "'self'",
+      "'unsafe-inline'",
+      'https://www.googletagmanager.com',
+      'https://connect.facebook.net',
+      ...(isDev ? ["'unsafe-eval'"] : []),
+    ]
+
     return [
       {
         source: '/(.*)',
@@ -52,7 +64,7 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net",
+              `script-src ${scriptSources.join(' ')}`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co",
               "font-src 'self' data:",
