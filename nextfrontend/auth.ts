@@ -150,6 +150,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user.email,
           name: user.name,
           roles: user.roles as DashboardRole[],
+          sessionVersion: user.sessionVersion,
         }
       },
     }),
@@ -160,6 +161,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id
         token.roles = user.roles as DashboardRole[]
+        token.sessionVersion = (user as { sessionVersion?: number }).sessionVersion ?? 0
+      } else if (token.id) {
+        // Sesión ya emitida: si el usuario cambió su contraseña (sessionVersion
+        // aumentó) o ya no existe, la sesión deja de ser válida.
+        const dbUser = await db.user.findUnique({
+          where: { id: String(token.id) },
+          select: { sessionVersion: true },
+        })
+        if (!dbUser || dbUser.sessionVersion !== token.sessionVersion) {
+          return null
+        }
       }
 
       return token

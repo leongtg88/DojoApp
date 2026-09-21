@@ -40,8 +40,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ url: await createPrivateDocumentUrl(document.storageKey) })
   } catch (urlError) {
     console.error('Error abriendo documento:', urlError)
-    const detail = urlError instanceof Error ? urlError.message : 'No fue posible abrir el documento'
-    return NextResponse.json({ error: detail }, { status: 503 })
+    return NextResponse.json({ error: 'No fue posible abrir el documento' }, { status: 503 })
   }
 }
 
@@ -86,7 +85,6 @@ export async function POST(request: Request) {
     })
   } catch (uploadError) {
     console.error('Error guardando documento de estudiante:', uploadError)
-    const detail = uploadError instanceof Error ? uploadError.message : 'No fue posible guardar el documento'
-    return NextResponse.json({ error: detail }, { status: 503 })
+    return NextResponse.json({ error: 'No fue posible guardar el documento. Inténtalo nuevamente.' }, { status: 503 })
   }
 }

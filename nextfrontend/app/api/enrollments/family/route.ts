@@ -269,8 +269,7 @@ export async function POST(request: Request) {
       }
     } catch (uploadError) {
       console.error('Error guardando documentos de inscripción:', uploadError)
-      const message = uploadError instanceof Error ? uploadError.message : 'Verifica la configuración de almacenamiento.'
-      return NextResponse.json({ error: message }, { status: 503 })
+      return NextResponse.json({ error: 'No fue posible guardar los documentos de la inscripción.' }, { status: 503 })
     }
   } catch (dbError) {
     console.error('Error guardando la inscripción:', dbError)

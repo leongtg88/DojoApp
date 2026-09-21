@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import { db } from '@/lib/db'
+import { consumeRateLimit, getClientIp, rateLimitResponse } from '@/lib/security/rate-limit'
 
 export const runtime = 'nodejs'
 
@@ -24,6 +25,24 @@ export async function POST(request: NextRequest) {
     }
 
     const tokenHash = createHash('sha256').update(parsed.data.token).digest('hex')
+
+    const ip = getClientIp(request.headers)
+    const ipAttempt = await consumeRateLimit(`reset:${ip}`, {
+      limit: 20,
+      windowMs: 60 * 60 * 1000,
+    })
+    if (!ipAttempt.allowed) {
+      return rateLimitResponse(ipAttempt.retryAfterSeconds, 'Demasiados intentos. Inténtalo de nuevo más tarde.')
+    }
+
+    const tokenAttempt = await consumeRateLimit(`reset-token:${tokenHash}`, {
+      limit: 5,
+      windowMs: 60 * 60 * 1000,
+    })
+    if (!tokenAttempt.allowed) {
+      return rateLimitResponse(tokenAttempt.retryAfterSeconds, 'Demasiados intentos para este enlace. Inténtalo de nuevo más tarde.')
+    }
+
     const resetToken = await db.passwordResetToken.findUnique({
       where: { token: tokenHash },
       include: { user: { select: { id: true } } },
@@ -41,7 +60,7 @@ export async function POST(request: NextRequest) {
     await db.$transaction(async (transaction) => {
       await transaction.user.update({
         where: { id: resetToken.userId },
-        data: { passwordHash },
+        data: { passwordHash, sessionVersion: { increment: 1 } },
       })
       await transaction.passwordResetToken.update({
         where: { id: resetToken.id },
