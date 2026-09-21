@@ -40,7 +40,16 @@ export async function PUT(request: Request, { params }: RankKatasContext) {
   }
 
   const techniqueIds = [...new Set(result.data.techniqueIds)]
-  const validCount = await db.technique.count({ where: { id: { in: techniqueIds } } })
+  const validCount = await db.technique.count({
+    where: {
+      id: { in: techniqueIds },
+      // Un SCHOOL_ADMIN solo puede enlazar técnicas de su propia escuela o
+      // técnicas globales (schoolId null); el SUPERADMIN puede enlazar cualquiera.
+      ...(scope.isSuperAdmin
+        ? {}
+        : { OR: [{ schoolId: scope.schoolId }, { schoolId: null }] }),
+    },
+  })
 
   if (validCount !== techniqueIds.length) {
     return NextResponse.json({ error: 'Alguna técnica no existe' }, { status: 400 })

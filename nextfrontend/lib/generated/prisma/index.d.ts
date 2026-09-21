@@ -168,6 +168,11 @@ export type Holiday = $Result.DefaultSelection<Prisma.$HolidayPayload>
  * 
  */
 export type ExamConvocation = $Result.DefaultSelection<Prisma.$ExamConvocationPayload>
+/**
+ * Model ApiUsage
+ * 
+ */
+export type ApiUsage = $Result.DefaultSelection<Prisma.$ApiUsagePayload>
 
 /**
  * Enums
@@ -857,6 +862,16 @@ export class PrismaClient<
     * ```
     */
   get examConvocation(): Prisma.ExamConvocationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.apiUsage`: Exposes CRUD operations for the **ApiUsage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ApiUsages
+    * const apiUsages = await prisma.apiUsage.findMany()
+    * ```
+    */
+  get apiUsage(): Prisma.ApiUsageDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1334,7 +1349,8 @@ export namespace Prisma {
     Notification: 'Notification',
     PushSubscription: 'PushSubscription',
     Holiday: 'Holiday',
-    ExamConvocation: 'ExamConvocation'
+    ExamConvocation: 'ExamConvocation',
+    ApiUsage: 'ApiUsage'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1350,7 +1366,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniquePracticeLog" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "pushSubscription" | "holiday" | "examConvocation"
+      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniquePracticeLog" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "pushSubscription" | "holiday" | "examConvocation" | "apiUsage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3648,6 +3664,80 @@ export namespace Prisma {
           }
         }
       }
+      ApiUsage: {
+        payload: Prisma.$ApiUsagePayload<ExtArgs>
+        fields: Prisma.ApiUsageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ApiUsageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiUsagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ApiUsageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiUsagePayload>
+          }
+          findFirst: {
+            args: Prisma.ApiUsageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiUsagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ApiUsageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiUsagePayload>
+          }
+          findMany: {
+            args: Prisma.ApiUsageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiUsagePayload>[]
+          }
+          create: {
+            args: Prisma.ApiUsageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiUsagePayload>
+          }
+          createMany: {
+            args: Prisma.ApiUsageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ApiUsageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiUsagePayload>[]
+          }
+          delete: {
+            args: Prisma.ApiUsageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiUsagePayload>
+          }
+          update: {
+            args: Prisma.ApiUsageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiUsagePayload>
+          }
+          deleteMany: {
+            args: Prisma.ApiUsageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ApiUsageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ApiUsageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiUsagePayload>[]
+          }
+          upsert: {
+            args: Prisma.ApiUsageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiUsagePayload>
+          }
+          aggregate: {
+            args: Prisma.ApiUsageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateApiUsage>
+          }
+          groupBy: {
+            args: Prisma.ApiUsageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ApiUsageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ApiUsageCountArgs<ExtArgs>
+            result: $Utils.Optional<ApiUsageCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3802,6 +3892,7 @@ export namespace Prisma {
     pushSubscription?: PushSubscriptionOmit
     holiday?: HolidayOmit
     examConvocation?: ExamConvocationOmit
+    apiUsage?: ApiUsageOmit
   }
 
   /* Types for Logging */
@@ -42492,6 +42583,1040 @@ export namespace Prisma {
 
 
   /**
+   * Model ApiUsage
+   */
+
+  export type AggregateApiUsage = {
+    _count: ApiUsageCountAggregateOutputType | null
+    _avg: ApiUsageAvgAggregateOutputType | null
+    _sum: ApiUsageSumAggregateOutputType | null
+    _min: ApiUsageMinAggregateOutputType | null
+    _max: ApiUsageMaxAggregateOutputType | null
+  }
+
+  export type ApiUsageAvgAggregateOutputType = {
+    count: number | null
+  }
+
+  export type ApiUsageSumAggregateOutputType = {
+    count: number | null
+  }
+
+  export type ApiUsageMinAggregateOutputType = {
+    id: string | null
+    key: string | null
+    windowStart: Date | null
+    count: number | null
+    updatedAt: Date | null
+  }
+
+  export type ApiUsageMaxAggregateOutputType = {
+    id: string | null
+    key: string | null
+    windowStart: Date | null
+    count: number | null
+    updatedAt: Date | null
+  }
+
+  export type ApiUsageCountAggregateOutputType = {
+    id: number
+    key: number
+    windowStart: number
+    count: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ApiUsageAvgAggregateInputType = {
+    count?: true
+  }
+
+  export type ApiUsageSumAggregateInputType = {
+    count?: true
+  }
+
+  export type ApiUsageMinAggregateInputType = {
+    id?: true
+    key?: true
+    windowStart?: true
+    count?: true
+    updatedAt?: true
+  }
+
+  export type ApiUsageMaxAggregateInputType = {
+    id?: true
+    key?: true
+    windowStart?: true
+    count?: true
+    updatedAt?: true
+  }
+
+  export type ApiUsageCountAggregateInputType = {
+    id?: true
+    key?: true
+    windowStart?: true
+    count?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ApiUsageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApiUsage to aggregate.
+     */
+    where?: ApiUsageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiUsages to fetch.
+     */
+    orderBy?: ApiUsageOrderByWithRelationInput | ApiUsageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ApiUsageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiUsages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiUsages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ApiUsages
+    **/
+    _count?: true | ApiUsageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ApiUsageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ApiUsageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ApiUsageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ApiUsageMaxAggregateInputType
+  }
+
+  export type GetApiUsageAggregateType<T extends ApiUsageAggregateArgs> = {
+        [P in keyof T & keyof AggregateApiUsage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateApiUsage[P]>
+      : GetScalarType<T[P], AggregateApiUsage[P]>
+  }
+
+
+
+
+  export type ApiUsageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApiUsageWhereInput
+    orderBy?: ApiUsageOrderByWithAggregationInput | ApiUsageOrderByWithAggregationInput[]
+    by: ApiUsageScalarFieldEnum[] | ApiUsageScalarFieldEnum
+    having?: ApiUsageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ApiUsageCountAggregateInputType | true
+    _avg?: ApiUsageAvgAggregateInputType
+    _sum?: ApiUsageSumAggregateInputType
+    _min?: ApiUsageMinAggregateInputType
+    _max?: ApiUsageMaxAggregateInputType
+  }
+
+  export type ApiUsageGroupByOutputType = {
+    id: string
+    key: string
+    windowStart: Date
+    count: number
+    updatedAt: Date
+    _count: ApiUsageCountAggregateOutputType | null
+    _avg: ApiUsageAvgAggregateOutputType | null
+    _sum: ApiUsageSumAggregateOutputType | null
+    _min: ApiUsageMinAggregateOutputType | null
+    _max: ApiUsageMaxAggregateOutputType | null
+  }
+
+  type GetApiUsageGroupByPayload<T extends ApiUsageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ApiUsageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ApiUsageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ApiUsageGroupByOutputType[P]>
+            : GetScalarType<T[P], ApiUsageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ApiUsageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    windowStart?: boolean
+    count?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["apiUsage"]>
+
+  export type ApiUsageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    windowStart?: boolean
+    count?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["apiUsage"]>
+
+  export type ApiUsageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    key?: boolean
+    windowStart?: boolean
+    count?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["apiUsage"]>
+
+  export type ApiUsageSelectScalar = {
+    id?: boolean
+    key?: boolean
+    windowStart?: boolean
+    count?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ApiUsageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "key" | "windowStart" | "count" | "updatedAt", ExtArgs["result"]["apiUsage"]>
+
+  export type $ApiUsagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ApiUsage"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      key: string
+      windowStart: Date
+      count: number
+      updatedAt: Date
+    }, ExtArgs["result"]["apiUsage"]>
+    composites: {}
+  }
+
+  type ApiUsageGetPayload<S extends boolean | null | undefined | ApiUsageDefaultArgs> = $Result.GetResult<Prisma.$ApiUsagePayload, S>
+
+  type ApiUsageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ApiUsageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ApiUsageCountAggregateInputType | true
+    }
+
+  export interface ApiUsageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ApiUsage'], meta: { name: 'ApiUsage' } }
+    /**
+     * Find zero or one ApiUsage that matches the filter.
+     * @param {ApiUsageFindUniqueArgs} args - Arguments to find a ApiUsage
+     * @example
+     * // Get one ApiUsage
+     * const apiUsage = await prisma.apiUsage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ApiUsageFindUniqueArgs>(args: SelectSubset<T, ApiUsageFindUniqueArgs<ExtArgs>>): Prisma__ApiUsageClient<$Result.GetResult<Prisma.$ApiUsagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ApiUsage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ApiUsageFindUniqueOrThrowArgs} args - Arguments to find a ApiUsage
+     * @example
+     * // Get one ApiUsage
+     * const apiUsage = await prisma.apiUsage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ApiUsageFindUniqueOrThrowArgs>(args: SelectSubset<T, ApiUsageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ApiUsageClient<$Result.GetResult<Prisma.$ApiUsagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApiUsage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiUsageFindFirstArgs} args - Arguments to find a ApiUsage
+     * @example
+     * // Get one ApiUsage
+     * const apiUsage = await prisma.apiUsage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ApiUsageFindFirstArgs>(args?: SelectSubset<T, ApiUsageFindFirstArgs<ExtArgs>>): Prisma__ApiUsageClient<$Result.GetResult<Prisma.$ApiUsagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApiUsage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiUsageFindFirstOrThrowArgs} args - Arguments to find a ApiUsage
+     * @example
+     * // Get one ApiUsage
+     * const apiUsage = await prisma.apiUsage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ApiUsageFindFirstOrThrowArgs>(args?: SelectSubset<T, ApiUsageFindFirstOrThrowArgs<ExtArgs>>): Prisma__ApiUsageClient<$Result.GetResult<Prisma.$ApiUsagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ApiUsages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiUsageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ApiUsages
+     * const apiUsages = await prisma.apiUsage.findMany()
+     * 
+     * // Get first 10 ApiUsages
+     * const apiUsages = await prisma.apiUsage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const apiUsageWithIdOnly = await prisma.apiUsage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ApiUsageFindManyArgs>(args?: SelectSubset<T, ApiUsageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApiUsagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ApiUsage.
+     * @param {ApiUsageCreateArgs} args - Arguments to create a ApiUsage.
+     * @example
+     * // Create one ApiUsage
+     * const ApiUsage = await prisma.apiUsage.create({
+     *   data: {
+     *     // ... data to create a ApiUsage
+     *   }
+     * })
+     * 
+     */
+    create<T extends ApiUsageCreateArgs>(args: SelectSubset<T, ApiUsageCreateArgs<ExtArgs>>): Prisma__ApiUsageClient<$Result.GetResult<Prisma.$ApiUsagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ApiUsages.
+     * @param {ApiUsageCreateManyArgs} args - Arguments to create many ApiUsages.
+     * @example
+     * // Create many ApiUsages
+     * const apiUsage = await prisma.apiUsage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ApiUsageCreateManyArgs>(args?: SelectSubset<T, ApiUsageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ApiUsages and returns the data saved in the database.
+     * @param {ApiUsageCreateManyAndReturnArgs} args - Arguments to create many ApiUsages.
+     * @example
+     * // Create many ApiUsages
+     * const apiUsage = await prisma.apiUsage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ApiUsages and only return the `id`
+     * const apiUsageWithIdOnly = await prisma.apiUsage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ApiUsageCreateManyAndReturnArgs>(args?: SelectSubset<T, ApiUsageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApiUsagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ApiUsage.
+     * @param {ApiUsageDeleteArgs} args - Arguments to delete one ApiUsage.
+     * @example
+     * // Delete one ApiUsage
+     * const ApiUsage = await prisma.apiUsage.delete({
+     *   where: {
+     *     // ... filter to delete one ApiUsage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ApiUsageDeleteArgs>(args: SelectSubset<T, ApiUsageDeleteArgs<ExtArgs>>): Prisma__ApiUsageClient<$Result.GetResult<Prisma.$ApiUsagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ApiUsage.
+     * @param {ApiUsageUpdateArgs} args - Arguments to update one ApiUsage.
+     * @example
+     * // Update one ApiUsage
+     * const apiUsage = await prisma.apiUsage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ApiUsageUpdateArgs>(args: SelectSubset<T, ApiUsageUpdateArgs<ExtArgs>>): Prisma__ApiUsageClient<$Result.GetResult<Prisma.$ApiUsagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ApiUsages.
+     * @param {ApiUsageDeleteManyArgs} args - Arguments to filter ApiUsages to delete.
+     * @example
+     * // Delete a few ApiUsages
+     * const { count } = await prisma.apiUsage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ApiUsageDeleteManyArgs>(args?: SelectSubset<T, ApiUsageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApiUsages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiUsageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ApiUsages
+     * const apiUsage = await prisma.apiUsage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ApiUsageUpdateManyArgs>(args: SelectSubset<T, ApiUsageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApiUsages and returns the data updated in the database.
+     * @param {ApiUsageUpdateManyAndReturnArgs} args - Arguments to update many ApiUsages.
+     * @example
+     * // Update many ApiUsages
+     * const apiUsage = await prisma.apiUsage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ApiUsages and only return the `id`
+     * const apiUsageWithIdOnly = await prisma.apiUsage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ApiUsageUpdateManyAndReturnArgs>(args: SelectSubset<T, ApiUsageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApiUsagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ApiUsage.
+     * @param {ApiUsageUpsertArgs} args - Arguments to update or create a ApiUsage.
+     * @example
+     * // Update or create a ApiUsage
+     * const apiUsage = await prisma.apiUsage.upsert({
+     *   create: {
+     *     // ... data to create a ApiUsage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ApiUsage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ApiUsageUpsertArgs>(args: SelectSubset<T, ApiUsageUpsertArgs<ExtArgs>>): Prisma__ApiUsageClient<$Result.GetResult<Prisma.$ApiUsagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ApiUsages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiUsageCountArgs} args - Arguments to filter ApiUsages to count.
+     * @example
+     * // Count the number of ApiUsages
+     * const count = await prisma.apiUsage.count({
+     *   where: {
+     *     // ... the filter for the ApiUsages we want to count
+     *   }
+     * })
+    **/
+    count<T extends ApiUsageCountArgs>(
+      args?: Subset<T, ApiUsageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ApiUsageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ApiUsage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiUsageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ApiUsageAggregateArgs>(args: Subset<T, ApiUsageAggregateArgs>): Prisma.PrismaPromise<GetApiUsageAggregateType<T>>
+
+    /**
+     * Group by ApiUsage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiUsageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ApiUsageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ApiUsageGroupByArgs['orderBy'] }
+        : { orderBy?: ApiUsageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ApiUsageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApiUsageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ApiUsage model
+   */
+  readonly fields: ApiUsageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ApiUsage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ApiUsageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ApiUsage model
+   */
+  interface ApiUsageFieldRefs {
+    readonly id: FieldRef<"ApiUsage", 'String'>
+    readonly key: FieldRef<"ApiUsage", 'String'>
+    readonly windowStart: FieldRef<"ApiUsage", 'DateTime'>
+    readonly count: FieldRef<"ApiUsage", 'Int'>
+    readonly updatedAt: FieldRef<"ApiUsage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ApiUsage findUnique
+   */
+  export type ApiUsageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiUsage
+     */
+    select?: ApiUsageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiUsage
+     */
+    omit?: ApiUsageOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiUsage to fetch.
+     */
+    where: ApiUsageWhereUniqueInput
+  }
+
+  /**
+   * ApiUsage findUniqueOrThrow
+   */
+  export type ApiUsageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiUsage
+     */
+    select?: ApiUsageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiUsage
+     */
+    omit?: ApiUsageOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiUsage to fetch.
+     */
+    where: ApiUsageWhereUniqueInput
+  }
+
+  /**
+   * ApiUsage findFirst
+   */
+  export type ApiUsageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiUsage
+     */
+    select?: ApiUsageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiUsage
+     */
+    omit?: ApiUsageOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiUsage to fetch.
+     */
+    where?: ApiUsageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiUsages to fetch.
+     */
+    orderBy?: ApiUsageOrderByWithRelationInput | ApiUsageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApiUsages.
+     */
+    cursor?: ApiUsageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiUsages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiUsages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApiUsages.
+     */
+    distinct?: ApiUsageScalarFieldEnum | ApiUsageScalarFieldEnum[]
+  }
+
+  /**
+   * ApiUsage findFirstOrThrow
+   */
+  export type ApiUsageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiUsage
+     */
+    select?: ApiUsageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiUsage
+     */
+    omit?: ApiUsageOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiUsage to fetch.
+     */
+    where?: ApiUsageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiUsages to fetch.
+     */
+    orderBy?: ApiUsageOrderByWithRelationInput | ApiUsageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApiUsages.
+     */
+    cursor?: ApiUsageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiUsages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiUsages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApiUsages.
+     */
+    distinct?: ApiUsageScalarFieldEnum | ApiUsageScalarFieldEnum[]
+  }
+
+  /**
+   * ApiUsage findMany
+   */
+  export type ApiUsageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiUsage
+     */
+    select?: ApiUsageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiUsage
+     */
+    omit?: ApiUsageOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiUsages to fetch.
+     */
+    where?: ApiUsageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiUsages to fetch.
+     */
+    orderBy?: ApiUsageOrderByWithRelationInput | ApiUsageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ApiUsages.
+     */
+    cursor?: ApiUsageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiUsages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiUsages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApiUsages.
+     */
+    distinct?: ApiUsageScalarFieldEnum | ApiUsageScalarFieldEnum[]
+  }
+
+  /**
+   * ApiUsage create
+   */
+  export type ApiUsageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiUsage
+     */
+    select?: ApiUsageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiUsage
+     */
+    omit?: ApiUsageOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ApiUsage.
+     */
+    data: XOR<ApiUsageCreateInput, ApiUsageUncheckedCreateInput>
+  }
+
+  /**
+   * ApiUsage createMany
+   */
+  export type ApiUsageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ApiUsages.
+     */
+    data: ApiUsageCreateManyInput | ApiUsageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApiUsage createManyAndReturn
+   */
+  export type ApiUsageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiUsage
+     */
+    select?: ApiUsageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiUsage
+     */
+    omit?: ApiUsageOmit<ExtArgs> | null
+    /**
+     * The data used to create many ApiUsages.
+     */
+    data: ApiUsageCreateManyInput | ApiUsageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApiUsage update
+   */
+  export type ApiUsageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiUsage
+     */
+    select?: ApiUsageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiUsage
+     */
+    omit?: ApiUsageOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ApiUsage.
+     */
+    data: XOR<ApiUsageUpdateInput, ApiUsageUncheckedUpdateInput>
+    /**
+     * Choose, which ApiUsage to update.
+     */
+    where: ApiUsageWhereUniqueInput
+  }
+
+  /**
+   * ApiUsage updateMany
+   */
+  export type ApiUsageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ApiUsages.
+     */
+    data: XOR<ApiUsageUpdateManyMutationInput, ApiUsageUncheckedUpdateManyInput>
+    /**
+     * Filter which ApiUsages to update
+     */
+    where?: ApiUsageWhereInput
+    /**
+     * Limit how many ApiUsages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApiUsage updateManyAndReturn
+   */
+  export type ApiUsageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiUsage
+     */
+    select?: ApiUsageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiUsage
+     */
+    omit?: ApiUsageOmit<ExtArgs> | null
+    /**
+     * The data used to update ApiUsages.
+     */
+    data: XOR<ApiUsageUpdateManyMutationInput, ApiUsageUncheckedUpdateManyInput>
+    /**
+     * Filter which ApiUsages to update
+     */
+    where?: ApiUsageWhereInput
+    /**
+     * Limit how many ApiUsages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApiUsage upsert
+   */
+  export type ApiUsageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiUsage
+     */
+    select?: ApiUsageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiUsage
+     */
+    omit?: ApiUsageOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ApiUsage to update in case it exists.
+     */
+    where: ApiUsageWhereUniqueInput
+    /**
+     * In case the ApiUsage found by the `where` argument doesn't exist, create a new ApiUsage with this data.
+     */
+    create: XOR<ApiUsageCreateInput, ApiUsageUncheckedCreateInput>
+    /**
+     * In case the ApiUsage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ApiUsageUpdateInput, ApiUsageUncheckedUpdateInput>
+  }
+
+  /**
+   * ApiUsage delete
+   */
+  export type ApiUsageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiUsage
+     */
+    select?: ApiUsageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiUsage
+     */
+    omit?: ApiUsageOmit<ExtArgs> | null
+    /**
+     * Filter which ApiUsage to delete.
+     */
+    where: ApiUsageWhereUniqueInput
+  }
+
+  /**
+   * ApiUsage deleteMany
+   */
+  export type ApiUsageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApiUsages to delete
+     */
+    where?: ApiUsageWhereInput
+    /**
+     * Limit how many ApiUsages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApiUsage without action
+   */
+  export type ApiUsageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiUsage
+     */
+    select?: ApiUsageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiUsage
+     */
+    omit?: ApiUsageOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -42995,6 +44120,17 @@ export namespace Prisma {
   };
 
   export type ExamConvocationScalarFieldEnum = (typeof ExamConvocationScalarFieldEnum)[keyof typeof ExamConvocationScalarFieldEnum]
+
+
+  export const ApiUsageScalarFieldEnum: {
+    id: 'id',
+    key: 'key',
+    windowStart: 'windowStart',
+    count: 'count',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ApiUsageScalarFieldEnum = (typeof ApiUsageScalarFieldEnum)[keyof typeof ApiUsageScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -46158,6 +47294,61 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"ExamConvocation"> | Date | string
   }
 
+  export type ApiUsageWhereInput = {
+    AND?: ApiUsageWhereInput | ApiUsageWhereInput[]
+    OR?: ApiUsageWhereInput[]
+    NOT?: ApiUsageWhereInput | ApiUsageWhereInput[]
+    id?: StringFilter<"ApiUsage"> | string
+    key?: StringFilter<"ApiUsage"> | string
+    windowStart?: DateTimeFilter<"ApiUsage"> | Date | string
+    count?: IntFilter<"ApiUsage"> | number
+    updatedAt?: DateTimeFilter<"ApiUsage"> | Date | string
+  }
+
+  export type ApiUsageOrderByWithRelationInput = {
+    id?: SortOrder
+    key?: SortOrder
+    windowStart?: SortOrder
+    count?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApiUsageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    key_windowStart?: ApiUsageKeyWindowStartCompoundUniqueInput
+    AND?: ApiUsageWhereInput | ApiUsageWhereInput[]
+    OR?: ApiUsageWhereInput[]
+    NOT?: ApiUsageWhereInput | ApiUsageWhereInput[]
+    key?: StringFilter<"ApiUsage"> | string
+    windowStart?: DateTimeFilter<"ApiUsage"> | Date | string
+    count?: IntFilter<"ApiUsage"> | number
+    updatedAt?: DateTimeFilter<"ApiUsage"> | Date | string
+  }, "id" | "key_windowStart">
+
+  export type ApiUsageOrderByWithAggregationInput = {
+    id?: SortOrder
+    key?: SortOrder
+    windowStart?: SortOrder
+    count?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ApiUsageCountOrderByAggregateInput
+    _avg?: ApiUsageAvgOrderByAggregateInput
+    _max?: ApiUsageMaxOrderByAggregateInput
+    _min?: ApiUsageMinOrderByAggregateInput
+    _sum?: ApiUsageSumOrderByAggregateInput
+  }
+
+  export type ApiUsageScalarWhereWithAggregatesInput = {
+    AND?: ApiUsageScalarWhereWithAggregatesInput | ApiUsageScalarWhereWithAggregatesInput[]
+    OR?: ApiUsageScalarWhereWithAggregatesInput[]
+    NOT?: ApiUsageScalarWhereWithAggregatesInput | ApiUsageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ApiUsage"> | string
+    key?: StringWithAggregatesFilter<"ApiUsage"> | string
+    windowStart?: DateTimeWithAggregatesFilter<"ApiUsage"> | Date | string
+    count?: IntWithAggregatesFilter<"ApiUsage"> | number
+    updatedAt?: DateTimeWithAggregatesFilter<"ApiUsage"> | Date | string
+  }
+
   export type SchoolCreateInput = {
     id?: string
     name: string
@@ -49134,6 +50325,62 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ApiUsageCreateInput = {
+    id?: string
+    key: string
+    windowStart: Date | string
+    count?: number
+    updatedAt?: Date | string
+  }
+
+  export type ApiUsageUncheckedCreateInput = {
+    id?: string
+    key: string
+    windowStart: Date | string
+    count?: number
+    updatedAt?: Date | string
+  }
+
+  export type ApiUsageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    windowStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    count?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApiUsageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    windowStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    count?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApiUsageCreateManyInput = {
+    id?: string
+    key: string
+    windowStart: Date | string
+    count?: number
+    updatedAt?: Date | string
+  }
+
+  export type ApiUsageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    windowStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    count?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApiUsageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    windowStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    count?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -51533,6 +52780,43 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumExamDayFilter<$PrismaModel>
     _max?: NestedEnumExamDayFilter<$PrismaModel>
+  }
+
+  export type ApiUsageKeyWindowStartCompoundUniqueInput = {
+    key: string
+    windowStart: Date | string
+  }
+
+  export type ApiUsageCountOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    windowStart?: SortOrder
+    count?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApiUsageAvgOrderByAggregateInput = {
+    count?: SortOrder
+  }
+
+  export type ApiUsageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    windowStart?: SortOrder
+    count?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApiUsageMinOrderByAggregateInput = {
+    id?: SortOrder
+    key?: SortOrder
+    windowStart?: SortOrder
+    count?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApiUsageSumOrderByAggregateInput = {
+    count?: SortOrder
   }
 
   export type BranchCreateNestedManyWithoutSchoolInput = {

@@ -519,6 +519,14 @@ exports.Prisma.ExamConvocationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ApiUsageScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  windowStart: 'windowStart',
+  count: 'count',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -706,7 +714,8 @@ exports.Prisma.ModelName = {
   Notification: 'Notification',
   PushSubscription: 'PushSubscription',
   Holiday: 'Holiday',
-  ExamConvocation: 'ExamConvocation'
+  ExamConvocation: 'ExamConvocation',
+  ApiUsage: 'ApiUsage'
 };
 
 /**

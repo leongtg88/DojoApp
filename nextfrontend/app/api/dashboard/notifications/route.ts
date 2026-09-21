@@ -1,18 +1,30 @@
 import { auth } from '@/auth'
 import { NextResponse } from 'next/server'
+import { z } from 'zod'
+import { hasAnyRole } from '@/lib/auth/roles'
 import { listNotifications, markAllNotificationsRead } from '@/lib/notifications/queries'
+import type { DashboardRole } from '@/types/dashboard'
+
+const ALL_ROLES: DashboardRole[] = ['STUDENT', 'INSTRUCTOR', 'SCHOOL_ADMIN', 'SUPERADMIN']
+
+const listQuerySchema = z.object({
+  cursor: z.string().trim().min(1).max(64).optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+})
 
 export async function GET(request: Request) {
   const session = await auth()
 
-  if (!session?.user?.id) {
+  if (!session?.user?.id || !hasAnyRole(session.user, ALL_ROLES)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
   const url = new URL(request.url)
-  const cursor = url.searchParams.get('cursor')
-  const requestedLimit = Number(url.searchParams.get('limit') ?? '20')
-  const limit = Number.isFinite(requestedLimit) ? Math.min(Math.max(requestedLimit, 1), 50) : 20
+  const query = listQuerySchema.safeParse({
+    cursor: url.searchParams.get('cursor') ?? undefined,
+    limit: url.searchParams.get('limit') ?? undefined,
+  })
+  const { cursor, limit } = query.success ? query.data : { cursor: undefined, limit: 20 }
 
   const page = await listNotifications(session.user.id, limit, cursor)
 
@@ -22,7 +34,7 @@ export async function GET(request: Request) {
 export async function PATCH() {
   const session = await auth()
 
-  if (!session?.user?.id) {
+  if (!session?.user?.id || !hasAnyRole(session.user, ALL_ROLES)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 

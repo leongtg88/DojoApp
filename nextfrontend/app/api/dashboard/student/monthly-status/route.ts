@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { auth } from '@/auth'
 import { hasAnyRole } from '@/lib/auth/roles'
 import { getStudentMonthlyStatus } from '@/lib/dashboard/student-queries'
+
+const monthParamSchema = z.string().regex(/^\d{4}-\d{2}$/)
 
 export async function GET(request: NextRequest) {
     const session = await auth()
@@ -12,8 +15,12 @@ export async function GET(request: NextRequest) {
     }
 
     const searchParams = request.nextUrl.searchParams
-    const month = searchParams.get('month')
-    const date = month ? new Date(`${month}-01T12:00:00`) : new Date()
+    const monthRaw = searchParams.get('month')
+    const month = monthRaw ? monthParamSchema.safeParse(monthRaw) : null
+    if (month && !month.success) {
+        return NextResponse.json({ error: 'Parámetro de mes no válido (formato YYYY-MM)' }, { status: 400 })
+    }
+    const date = month?.success && monthRaw ? new Date(`${monthRaw}-01T12:00:00`) : new Date()
 
     const status = await getStudentMonthlyStatus(userId, date)
 

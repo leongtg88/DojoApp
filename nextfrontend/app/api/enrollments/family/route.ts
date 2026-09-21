@@ -8,6 +8,7 @@ import { notifyEnrollmentByTelegram } from '@/lib/integrations/telegram'
 import { sendPushToSchoolAdmins } from '@/lib/push/web-push'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { consumeRateLimit, getClientIp, rateLimitResponse } from '@/lib/security/rate-limit'
 
 // ==================== Validaciones de negocio ====================
 
@@ -137,6 +138,16 @@ async function validateFile(file: File): Promise<{ ok: true } | { ok: false; mes
 // ==================== Ruta ====================
 
 export async function POST(request: Request) {
+  // Rate limiting estricto: este endpoint recibe subidas de archivos anónimos.
+  const ip = getClientIp(request.headers)
+  const ipAttempt = await consumeRateLimit(`enroll-family:${ip}`, {
+    limit: 10,
+    windowMs: 60 * 60 * 1000,
+  })
+  if (!ipAttempt.allowed) {
+    return rateLimitResponse(ipAttempt.retryAfterSeconds, 'Demasiadas solicitudes desde esta dirección. Inténtalo de nuevo más tarde.')
+  }
+
   const formData = await request.formData().catch(() => null)
   const payload = formData?.get('payload')
   let parsedPayload: string | null = null
@@ -154,6 +165,15 @@ export async function POST(request: Request) {
       ? readableValidationMessage(parsed.error.issues)
       : 'Datos de inscripción no válidos.'
     return NextResponse.json({ error: message }, { status: 400 })
+  }
+
+  const email = String(parsed.data.email ?? '').toLowerCase()
+  const emailAttempt = await consumeRateLimit(`enroll-family:${email}`, {
+    limit: 3,
+    windowMs: 60 * 60 * 1000,
+  })
+  if (!emailAttempt.allowed) {
+    return rateLimitResponse(emailAttempt.retryAfterSeconds, 'Ya existe una solicitud reciente para este correo. Inténtalo de nuevo más tarde.')
   }
 
   if (!formData) {

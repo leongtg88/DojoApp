@@ -749,3 +749,17 @@ model ExamConvocation {
   @@unique([schoolId, date, examDay])
   @@index([schoolId, date])
 }
+
+// Tabla para rate limiting simple por ventana fija. `key` identifica la acción
+// (p. ej. "login:{ip}", "forgot:{email}") y `windowStart` es el inicio de la
+// ventana actual; `count` acumula los intentos en esa ventana.
+model ApiUsage {
+  id          String   @id @default(cuid())
+  key         String
+  windowStart DateTime
+  count       Int      @default(1)
+  updatedAt   DateTime @updatedAt
+
+  @@unique([key, windowStart])
+  @@index([key])
+}

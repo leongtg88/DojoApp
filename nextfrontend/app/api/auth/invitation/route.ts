@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import { db } from '@/lib/db'
 import { Role } from '@/lib/generated/prisma'
+import { consumeRateLimit, getClientIp, rateLimitResponse } from '@/lib/security/rate-limit'
 
 export const runtime = 'nodejs'
 
@@ -20,6 +21,15 @@ export async function POST(request: NextRequest) {
 
     if (!parsed.success) {
       return NextResponse.json({ error: 'Datos de registro inválidos' }, { status: 400 })
+    }
+
+    const ip = getClientIp(request.headers)
+    const ipAttempt = await consumeRateLimit(`invite:${ip}`, {
+      limit: 10,
+      windowMs: 60 * 60 * 1000,
+    })
+    if (!ipAttempt.allowed) {
+      return rateLimitResponse(ipAttempt.retryAfterSeconds, 'Demasiados intentos. Inténtalo de nuevo más tarde.')
     }
 
     const tokenHash = createHash('sha256').update(parsed.data.token).digest('hex')

@@ -5,6 +5,7 @@ import { notifyEnrollmentByTelegram } from '@/lib/integrations/telegram'
 import { sendPushToSchoolAdmins } from '@/lib/push/web-push'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { consumeRateLimit, getClientIp, rateLimitResponse } from '@/lib/security/rate-limit'
 
 const enrollmentSchema = z.object({
   nombre: z.string().trim().min(2).max(160),
@@ -25,6 +26,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'Faltan datos de contacto válidos' }, { status: 400 })
   }
 
+  const ip = getClientIp(request.headers)
+  const ipAttempt = await consumeRateLimit(`enroll:${ip}`, {
+    limit: 20,
+    windowMs: 60 * 60 * 1000,
+  })
+  if (!ipAttempt.allowed) {
+    return rateLimitResponse(ipAttempt.retryAfterSeconds, 'Demasiadas inscripciones desde esta dirección. Inténtalo de nuevo más tarde.')
+  }
+
+  const data = result.data
+  const email = data.email.toLowerCase()
+
+  const emailAttempt = await consumeRateLimit(`enroll:${email}`, {
+    limit: 5,
+    windowMs: 60 * 60 * 1000,
+  })
+  if (!emailAttempt.allowed) {
+    return rateLimitResponse(emailAttempt.retryAfterSeconds, 'Ya existe una solicitud reciente para este correo. Inténtalo de nuevo más tarde.')
+  }
+
   const branch = await db.branch.findFirst({
     orderBy: { createdAt: 'asc' },
     select: { id: true, schoolId: true },
@@ -34,8 +55,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'No hay una sede disponible para la inscripción' }, { status: 503 })
   }
 
-  const data = result.data
-  const email = data.email.toLowerCase()
   const quote = [data.plan_seleccionado, data.plan_precio].filter(Boolean).join(' · ') || null
   const enrollment = await db.enrollment.upsert({
     where: { contactEmail_status: { contactEmail: email, status: 'PENDING' } },

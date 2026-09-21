@@ -13,5 +13,7 @@ export default auth((request) => {
 })
 
 export const config = {
-  matcher: ['/dashboard/:path*'],
+  // El grupo de rutas (dashboard) expone las mismas páginas también en sus
+  // rutas raíz (/admin, /estudiante, /instructor), así que se protegen ambas.
+  matcher: ['/dashboard/:path*', '/admin/:path*', '/estudiante/:path*', '/instructor/:path*'],
 }

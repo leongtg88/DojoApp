@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
     }
 
-    const q = request.nextUrl.searchParams.get('q')?.trim() ?? ''
+    const q = request.nextUrl.searchParams.get('q')?.trim().slice(0, 80) ?? ''
 
     if (q.length < 2) {
         return NextResponse.json({ students: [] })

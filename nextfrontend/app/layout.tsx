@@ -121,7 +121,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <MetaPixel>{children}</MetaPixel>
           </AppChrome>
         </ThemeProvider>
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID ?? 'G-53QPVLVTCP'} />
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID ?? ''} />
       </body>
     </html>
   );

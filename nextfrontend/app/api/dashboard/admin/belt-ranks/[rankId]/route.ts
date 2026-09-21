@@ -63,6 +63,7 @@ export async function PUT(request: Request, { params }: RankRouteContext) {
       where: {
         id: { not: rank.id },
         program,
+        schoolId: scope.isSuperAdmin ? null : scope.schoolId,
         ...(result.data.name ? { name: result.data.name } : {}),
       },
     })

@@ -66,13 +66,22 @@ export async function POST(request: Request) {
 
   const program = result.data.program ?? 'ADULT'
 
-  const existing = await db.beltRank.findFirst({ where: { name: result.data.name, program } })
+  const existing = await db.beltRank.findFirst({
+    where: {
+      name: result.data.name,
+      program,
+      schoolId: scope.isSuperAdmin ? null : scope.schoolId,
+    },
+  })
 
   if (existing) {
     return NextResponse.json({ error: 'Ya existe un grado con ese nombre en este programa' }, { status: 409 })
   }
 
-  const aggregate = await db.beltRank.aggregate({ where: { program }, _max: { order: true } })
+  const aggregate = await db.beltRank.aggregate({
+    where: { program, schoolId: scope.isSuperAdmin ? null : scope.schoolId },
+    _max: { order: true },
+  })
   const order = result.data.order ?? (aggregate._max.order ?? -1) + 1
 
   const rank = await db.beltRank.create({

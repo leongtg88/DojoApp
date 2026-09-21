@@ -107,8 +107,11 @@ export async function POST(request: NextRequest, { params }: InviteRouteContext)
   return NextResponse.json({
     ok: true,
     message: hasEmailConfig
-      ? 'Invitación enviada al correo del alumno. Puedes copiar el enlace y enviarlo manualmente.'
+      ? 'Invitación enviada al correo del alumno.'
       : 'Invitación generada. Enlázala manualmente.',
-    invitationUrl,
+    // Solo en entornos sin correo configurado (desarrollo) se devuelve el
+    // enlace en la respuesta; en producción el token viaja únicamente por email
+    // para que no quede expuesto en logs/proxies.
+    ...(hasEmailConfig ? {} : { invitationUrl }),
   })
 }
