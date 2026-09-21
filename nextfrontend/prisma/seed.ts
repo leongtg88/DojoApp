@@ -1,6 +1,7 @@
 import { PrismaClient, Role, ClassAudience } from '@/lib/generated/prisma'
 import { PrismaPg } from '@prisma/adapter-pg'
 import bcrypt from 'bcryptjs'
+import crypto from 'node:crypto'
 import dotenv from 'dotenv'
 import { ADULT_RANKS, YOUTH_RANKS, KATAS, examDayForRank, type Program } from '@/lib/curriculum/programs'
 import { dominicanHolidays } from '@/lib/dashboard/holidays'
@@ -12,6 +13,17 @@ const db = new PrismaClient({
     connectionString: process.env.DIRECT_URL,
   }),
 })
+
+// Credenciales del seed. Nunca quedan en texto plano en el repo: si las variables
+// SEED_*_PASSWORD están definidas en .env.local (fuera del repo) se usan esas;
+// si no, se genera una contraseña aleatoria y se muestra una sola vez al ejecutar.
+const randomPassword = () => crypto.randomBytes(12).toString('base64url')
+const seedPasswords = {
+  owner: process.env.SEED_OWNER_PASSWORD || randomPassword(),
+  admin: process.env.SEED_ADMIN_PASSWORD || randomPassword(),
+  instructor: process.env.SEED_INSTRUCTOR_PASSWORD || randomPassword(),
+  student: process.env.SEED_STUDENT_PASSWORD || randomPassword(),
+}
 
 async function main() {
   const school = await db.school.upsert({
@@ -172,7 +184,7 @@ async function main() {
     }
   }
 
-  const adminPassword = await bcrypt.hash('Admin123!', 12)
+  const adminPassword = await bcrypt.hash(seedPasswords.admin, 12)
 
   await db.user.upsert({
     where: { email: 'admin@toseigusoku.com' },
@@ -188,7 +200,7 @@ async function main() {
     },
   })
 
-  const instructorPassword = await bcrypt.hash('Instructor123!', 12)
+  const instructorPassword = await bcrypt.hash(seedPasswords.instructor, 12)
 
   const instructor = await db.user.upsert({
     where: { email: 'instructor@toseigusoku.com' },
@@ -210,7 +222,7 @@ async function main() {
     },
   })
 
-  const studentPassword = await bcrypt.hash('Alumno123!', 12)
+  const studentPassword = await bcrypt.hash(seedPasswords.student, 12)
 
   const studentUser = await db.user.upsert({
     where: { email: 'alumno@test.com' },
@@ -280,7 +292,7 @@ async function main() {
   })
 
   // Cuenta owner multirol (principal del dojo). Datos genéricos: se autocompletan desde su perfil en el panel del estudiante.
-  const ownerPassword = await bcrypt.hash('Sensei123!', 12)
+  const ownerPassword = await bcrypt.hash(seedPasswords.owner, 12)
 
   const ownerUser = await db.user.upsert({
     where: { email: 'sensei@toseigusoku.com' },
@@ -433,10 +445,12 @@ async function main() {
   })
 
   console.log('Seed completado correctamente')
-  console.log('Owner (multirol): sensei@toseigusoku.com / Sensei123!')
-  console.log('Administrador: admin@toseigusoku.com / Admin123!')
-  console.log('Instructor: instructor@toseigusoku.com / Instructor123!')
-  console.log('Alumno: alumno@test.com / Alumno123!')
+  // Solo se muestran los passwords generados aleatoriamente; los que vienen de
+  // variables de entorno no se imprimen.
+  if (!process.env.SEED_OWNER_PASSWORD) console.log(`Owner (multirol): sensei@toseigusoku.com / ${seedPasswords.owner}`)
+  if (!process.env.SEED_ADMIN_PASSWORD) console.log(`Administrador: admin@toseigusoku.com / ${seedPasswords.admin}`)
+  if (!process.env.SEED_INSTRUCTOR_PASSWORD) console.log(`Instructor: instructor@toseigusoku.com / ${seedPasswords.instructor}`)
+  if (!process.env.SEED_STUDENT_PASSWORD) console.log(`Alumno: alumno@test.com / ${seedPasswords.student}`)
 }
 
 main()

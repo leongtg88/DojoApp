@@ -23,6 +23,7 @@ const SECRET_PATTERNS = [
   ['SUPABASE_SERVICE_ROLE_KEY con valor', /SUPABASE_SERVICE_ROLE_KEY\s*=\s*["']?[^\s"'#]{8,}/],
   ['API key de Google/Gemini', /AIza[0-9A-Za-z_-]{30,}/],
   ['AWS Access Key', /AKIA[0-9A-Z]{16}/],
+  ['Password del seed en texto plano', /(Sensei123!|Admin123!|Instructor123!|Alumno123!)/],
 ]
 
 const PLACEHOLDER = /(MY_|YOUR_|PROJECT_REF|PASSWORD|REGION|genera-un-secreto|tu-dominio|example|placeholder|changeme|xxxx|^["']?(x|X|0|\*)+["']?$)/i
@@ -36,6 +37,9 @@ const isEnvExample = (path) => {
   const base = baseName(path)
   return base === '.env.example' || base.endsWith('.env.example')
 }
+// El propio guard define los passwords del seed en sus patrones de detección;
+// escanearlo a sí mismo sería un falso positivo.
+const isGuardScript = (path) => baseName(path) === 'guard-env.mjs'
 
 const errors = []
 
@@ -69,6 +73,7 @@ for (const line of diff.split('\n')) {
   if (!line.startsWith('+') || line.startsWith('+++') || !currentFile) continue
   if (isEnvExample(currentFile)) continue // los ejemplos pueden llevar placeholders
   if (isGenerated(currentFile)) continue // archivos generados: sin secretos propios
+  if (isGuardScript(currentFile)) continue // el guard define los patrones que detecta
   const text = line.slice(1)
   for (const [name, re] of SECRET_PATTERNS) {
     if (re.test(text)) {
