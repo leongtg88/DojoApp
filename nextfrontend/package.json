@@ -3,6 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.0.0",
+  "pnpm": {
+    "overrides": {
+      "js-yaml": "^4.3.2",
+      "mysql2": "^3.24.4",
+      "deepmerge-ts": "^8.0.2"
+    }
+  },
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
