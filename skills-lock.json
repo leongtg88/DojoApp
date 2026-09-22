@@ -1,11 +1,23 @@
 {
   "version": 1,
   "skills": {
+    "interface-auditor": {
+      "source": "uxuiprinciples/agent-skills",
+      "sourceType": "github",
+      "skillPath": "interface-auditor/SKILL.md",
+      "computedHash": "b23ca6bbee26ccc4ea14404e453ca3cfa0d7cb0edd50c9f48d4fa584a63cddb1"
+    },
     "security-and-hardening": {
       "source": "addyosmani/agent-skills",
       "sourceType": "github",
       "skillPath": "skills/security-and-hardening/SKILL.md",
       "computedHash": "23cf7d689a1d844844bba6c2de53acb4749eb6f3bd209762ccc77a75c2ec5f54"
+    },
+    "uxui-evaluator": {
+      "source": "uxuiprinciples/agent-skills",
+      "sourceType": "github",
+      "skillPath": "uxui-evaluator/SKILL.md",
+      "computedHash": "35883cc061c4476346d83c87e96177f494c0f97cd6078dd5d351b21c012e3579"
     }
   }
 }

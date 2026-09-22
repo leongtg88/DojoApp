@@ -101,8 +101,8 @@ export default function PoliticaPrivacidad({ embedded = false }: { embedded?: bo
               <p><strong>3.4.</strong> Tramitar tu carnet federativo ante la Federación Dominicana de Karate.</p>
               <p><strong>3.5.</strong> Garantizar la seguridad durante la práctica, adaptando los entrenamientos según tus condiciones de salud.</p>
               <p><strong>3.6.</strong> Mejorar nuestros servicios mediante análisis de uso y preferencias.</p>
-              <p><strong>3.7.</strong> Cumplir con obligaciones legales y regulatorias (ej. conservación de documentos, respuesta a autoridades).</p>
-              <p><strong>3.8.</strong> Realizar actividades promocionales, fotografías y vídeos (con tu autorización expresa) dentro del ámbito educativo y publicitario de la Escuela.</p>
+          {/*   <p><strong>3.7.</strong> Cumplir con obligaciones legales y regulatorias (ej. conservación de documentos, respuesta a autoridades).</p>*/}
+              <p><strong>3.7.</strong> Realizar actividades promocionales, fotografías y vídeos (con tu autorización expresa) dentro del ámbito educativo y publicitario de la Escuela.</p>
             </div>
           </section>
 

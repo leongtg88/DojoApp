@@ -11,6 +11,7 @@ import { DashboardSidebar } from './DashboardSidebar'
 import { MobileDashboardNav } from './MobileDashboardNav'
 import { NotificationBell } from './NotificationBell'
 import { ThemeToggle } from '../theme/ThemeToggle'
+import { DashboardLogo } from '../shared/DashboardLogo'
 
 interface DashboardShellProps {
     children: ReactNode
@@ -35,7 +36,6 @@ export function DashboardShell({ children, roles, primaryRole, userName, pending
     const pathname = usePathname()
     const activeRole = resolveActiveRole(pathname, roles, primaryRole)
     const initials = (userName ?? 'Usuario').split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()
-    const roleLabel = activeRole === 'STUDENT' ? 'Portal del estudiante' : activeRole === 'INSTRUCTOR' ? 'Panel de instructor' : 'Administración del dojo'
 
     function handleSignOut() {
         void signOut({ redirectTo: '/login' })
@@ -45,12 +45,8 @@ export function DashboardShell({ children, roles, primaryRole, userName, pending
         <div className="min-h-screen bg-surface-1 pb-16 text-ink md:pb-0">
             <header className="sticky top-0 z-30 border-b border-edge bg-surface-2/95 shadow-[0_1px_8px_rgba(0,0,0,0.35)] backdrop-blur print:hidden">
                 <div className="flex h-16 w-full items-center justify-between px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center gap-3">
-                        <span aria-hidden="true" className="h-8 w-1.5 bg-cyan-500" />
-                        <div>
-                            <p className="font-display text-base font-extrabold text-ink sm:text-lg">TOSEI GUSOKU</p>
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-accent">{roleLabel}</p>
-                        </div>
+                    <div className="flex min-w-0 items-center">
+                        <DashboardLogo className="h-6 w-auto sm:h-7" />
                     </div>
                     <div className="flex min-w-0 items-center gap-2.5"><ThemeToggle /><NotificationBell initialUnreadCount={unreadNotificationCount} /><div className="hidden min-w-0 text-right sm:block"><p className="max-w-44 truncate text-sm font-bold text-ink">{userName ?? 'Usuario'}</p><p className="text-[10px] font-semibold uppercase tracking-wide text-ink-4">Sesión activa</p></div><span aria-label="Usuario activo" className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-cyan-400/50 bg-cyan-500/20 font-display text-xs font-extrabold text-accent-text shadow-sm">{initials}</span>{roles.length > 1 && (<Link aria-label="Cambiar de panel" className="flex size-9 shrink-0 items-center justify-center rounded-lg text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink md:hidden" href="/dashboard" title="Cambiar de panel"><LayoutGrid aria-hidden="true" className="size-4" /></Link>)}<button aria-label="Cerrar sesión" className="flex size-9 shrink-0 items-center justify-center rounded-lg text-ink-3 transition-colors hover:bg-red-950/50 hover:text-danger-text" onClick={handleSignOut} title="Cerrar sesión" type="button"><LogOut aria-hidden="true" className="size-4" /></button></div>
                 </div>

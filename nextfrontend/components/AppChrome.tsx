@@ -11,7 +11,7 @@ import { InstallPrompt } from '@/components/InstallPrompt'
 export function AppChrome({ children }: { children: ReactNode }) {
     const pathname = usePathname()
     const isDashboard = pathname.startsWith('/dashboard')
-    const isAuth = pathname === '/login' || pathname === '/registro'
+    const isAuth = pathname.startsWith('/registro') || pathname === '/login'
 
     return (
         <>
