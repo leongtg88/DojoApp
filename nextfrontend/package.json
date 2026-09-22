@@ -11,6 +11,7 @@
     "sync:curriculum": "tsx prisma/sync-curriculum.ts",
     "lint": "eslint",
     "guard:env": "node scripts/guard-env.mjs",
+    "db:deploy": "prisma migrate deploy",
     "precommit": "node scripts/guard-env.mjs",
     "postinstall": "prisma generate"
   },
