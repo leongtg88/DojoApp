@@ -138,6 +138,20 @@ const builders: Record<NotificationType, NotificationBuilder> = {
     link: ATTENDANCE_LINK,
     priority: 'INFO',
   }),
+  ATTENDANCE_PUNCHED: ({ studentName, studentId, data }) => {
+    const hours = readNumber(data, 'hoursTrained')
+    const className = readString(data, 'className')
+    const suffix = className ? ` en ${className}` : ''
+    return {
+      title: 'Nuevo punch-in',
+      body:
+        hours !== null
+          ? `${studentName} marcó ${hours}h${suffix}. Revísalo para confirmarlo.`
+          : `${studentName} marcó asistencia${suffix}. Revísala para confirmarla.`,
+      link: `${ADMIN_STUDENTS_LINK}/${studentId}`,
+      priority: 'ACTION',
+    }
+  },
   TECHNIQUE_APPROVED: ({ studentName, data }) => {
     const techniqueName = readString(data, 'techniqueName') ?? 'Una técnica'
     return {

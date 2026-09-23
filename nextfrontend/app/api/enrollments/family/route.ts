@@ -68,11 +68,20 @@ const profileDataSchema = z
     if (haPracticado === true && !kyu) {
       ctx.addIssue({ code: 'custom', path: ['kyu'], message: 'Debes indicar el grado alcanzado.' })
     }
+
+    if (profile.esTutor !== undefined && typeof profile.esTutor !== 'boolean') {
+      ctx.addIssue({ code: 'custom', path: ['esTutor'], message: 'El dato de tutor no es válido.' })
+    }
+    const relacion = typeof profile.relacionConHijos === 'string' ? profile.relacionConHijos.trim() : ''
+    if (relacion && !['Padre', 'Madre', 'Tutor legal'].includes(relacion)) {
+      ctx.addIssue({ code: 'custom', path: ['relacionConHijos'], message: 'La relación del tutor no es válida.' })
+    }
   })
 
 const applicantSchema = z.object({
   name: z.string().trim().min(2).max(200),
   dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'La fecha de nacimiento no es válida.'),
+  email: z.string().trim().toLowerCase().email('El correo del aspirante no es válido.').max(320).optional().nullable(),
   profileData: profileDataSchema,
 })
 
@@ -92,6 +101,14 @@ const payloadSchema = z
 
     const reg = payload.registrationData
     const tipoRegistro = typeof reg.tipoRegistro === 'string' ? reg.tipoRegistro.trim() : ''
+
+    // Inscripción familiar: el primer aspirante debe ser el tutor que también se inscribe.
+    if (tipoRegistro === 'familiar') {
+      const first = payload.applicants[0]
+      if (!first || (first.profileData as { esTutor?: unknown }).esTutor !== true) {
+        ctx.addIssue({ code: 'custom', path: ['applicants'], message: 'En una inscripción familiar el primer aspirante debe ser el tutor.' })
+      }
+    }
 
     if (tipoRegistro === 'menor') {
       const telMadre = typeof reg.telefonoMadre === 'string' ? reg.telefonoMadre.trim() : ''
@@ -214,7 +231,7 @@ export async function POST(request: Request) {
 
   const input = parsed.data
   const reg = input.registrationData
-  const interest = reg.tipoRegistro === 'menor' ? 'Pequeños Guerreros' : 'Jóvenes y Adultos'
+  const interest = reg.tipoRegistro === 'menor' ? 'Pequeños Guerreros' : reg.tipoRegistro === 'familiar' ? 'Familia (adulto + menores)' : 'Jóvenes y Adultos'
   let enrollment: { id: string }
   try {
     enrollment = await db.enrollment.upsert({
@@ -242,7 +259,15 @@ export async function POST(request: Request) {
           return { id: match.id, reused: true }
         }
         const created = await db.enrollmentApplicant.create({
-          data: { enrollmentId: enrollment.id, name: applicant.name, dateOfBirth, profileData: applicant.profileData as Prisma.InputJsonValue },
+          data: {
+            enrollmentId: enrollment.id,
+            name: applicant.name,
+            dateOfBirth,
+            profileData: {
+              ...(applicant.profileData as Record<string, unknown>),
+              ...(applicant.email ? { email: applicant.email } : {}),
+            } as Prisma.InputJsonValue,
+          },
           select: { id: true },
         })
         return { id: created.id, reused: false }

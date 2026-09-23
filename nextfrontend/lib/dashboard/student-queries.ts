@@ -37,10 +37,10 @@ function techniqueStatus(approved: boolean, inPractice: boolean): TechniqueStatu
 }
 
 export async function getStudentDashboardSummary(
-  userId: string,
+  studentId: string,
 ): Promise<StudentDashboardSummary | null> {
   const student = await db.student.findUnique({
-    where: { userId },
+    where: { id: studentId },
     include: {
       user: { select: { email: true } },
       techniques: {
@@ -169,9 +169,9 @@ export async function getStudentDashboardSummary(
   }
 }
 
-export async function getStudentAttendanceHistory(userId: string): Promise<StudentAttendanceRecord[] | null> {
+export async function getStudentAttendanceHistory(studentId: string): Promise<StudentAttendanceRecord[] | null> {
   const student = await db.student.findUnique({
-    where: { userId },
+    where: { id: studentId },
     select: {
       attendances: {
         orderBy: { date: 'desc' },
@@ -203,14 +203,21 @@ export async function getStudentAttendanceHistory(userId: string): Promise<Stude
   }))
 }
 
-export async function getStudentAttendancePunchData(userId: string): Promise<StudentAttendancePunchData | null> {
+export async function getStudentAttendancePunchData(studentId: string): Promise<StudentAttendancePunchData | null> {
   const student = await db.student.findUnique({
-    where: { userId },
+    where: { id: studentId },
     include: {
       attendances: {
         orderBy: { date: 'desc' },
         include: {
           confirmedBy: { select: { name: true } },
+          practiceLogs: {
+            select: {
+              repetitions: true,
+              place: true,
+              studentTechnique: { select: { technique: { select: { name: true } } } },
+            },
+          },
         },
       },
       techniques: {
@@ -249,6 +256,11 @@ export async function getStudentAttendancePunchData(userId: string): Promise<Stu
     confirmedByName: attendance.confirmedBy?.name ?? null,
     notes: attendance.notes,
     punchedAt: attendance.punchedAt.toISOString(),
+    practiceLogs: attendance.practiceLogs.map((log) => ({
+      techniqueName: log.studentTechnique.technique.name,
+      repetitions: log.repetitions,
+      place: log.place,
+    })),
   }))
 
   return {
@@ -270,10 +282,10 @@ export async function getStudentAttendancePunchData(userId: string): Promise<Stu
   }
 }
 
-export async function getStudentMonthlyStatus(userId: string, date = new Date()): Promise<StudentMonthlyStatus | null> {
+export async function getStudentMonthlyStatus(studentId: string, date = new Date()): Promise<StudentMonthlyStatus | null> {
   const { start, end } = monthRange(date)
   const student = await db.student.findUnique({
-    where: { userId },
+    where: { id: studentId },
     select: {
       id: true,
       planId: true,
@@ -364,9 +376,9 @@ export async function getStudentMonthlyStatus(userId: string, date = new Date())
   }
 }
 
-export async function getStudentSchedule(userId: string) {
+export async function getStudentSchedule(studentId: string) {
   const student = await db.student.findUnique({
-    where: { userId },
+    where: { id: studentId },
     select: {
       classEnrollments: {
         where: { status: ClassEnrollmentStatus.ACTIVE },
@@ -403,9 +415,9 @@ export async function getStudentSchedule(userId: string) {
   }))
 }
 
-export async function getStudentDocuments(userId: string): Promise<StudentDocumentSummary[] | null> {
+export async function getStudentDocuments(studentId: string): Promise<StudentDocumentSummary[] | null> {
   const student = await db.student.findUnique({
-    where: { userId },
+    where: { id: studentId },
     select: {
       documents: {
         orderBy: { uploadedAt: 'desc' },
@@ -475,9 +487,9 @@ function mesesElapsed(start: Date, end: Date): number {
   return (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 30.44)
 }
 
-export async function getStudentKataProgress(userId: string): Promise<StudentKataProgressSummary | null> {
+export async function getStudentKataProgress(studentId: string): Promise<StudentKataProgressSummary | null> {
   const student = await db.student.findUnique({
-    where: { userId },
+    where: { id: studentId },
     include: {
       plan: { select: { monthlyHours: true, isUnlimited: true } },
       techniques: {

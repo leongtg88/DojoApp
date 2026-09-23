@@ -23,9 +23,13 @@ type StudentFormState = {
 	lastName: string
 	dateOfBirth: string
 	gender: string
+	email: string
 	contactPhone: string
 	medicalInfo: string
 	emergencyContact: string
+	giSize: string
+	beltSize: string
+	status: string
 	branchId: string
 	beltRankId: string
 }
@@ -35,9 +39,13 @@ const emptyForm: StudentFormState = {
 	lastName: '',
 	dateOfBirth: '',
 	gender: '',
+	email: '',
 	contactPhone: '',
 	medicalInfo: '',
 	emergencyContact: '',
+	giSize: '',
+	beltSize: '',
+	status: 'ACTIVE',
 	branchId: '',
 	beltRankId: '',
 }
@@ -140,9 +148,13 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 						lastName: student.lastName,
 						dateOfBirth: student.dateOfBirth ?? '',
 						gender: student.gender ?? '',
+						email: student.email ?? '',
 						contactPhone: student.contactPhone ?? '',
 						medicalInfo: student.medicalInfo ?? '',
 						emergencyContact: student.emergencyContact ?? '',
+						giSize: student.giSize ?? '',
+						beltSize: student.beltSize ?? '',
+						status: student.status,
 						branchId: student.branchId ?? '',
 						beltRankId: '',
 					}
@@ -223,6 +235,7 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 					lastName: form.lastName.trim(),
 					dateOfBirth: form.dateOfBirth,
 					gender: form.gender || null,
+					email: form.email.trim() || null,
 					contactPhone: form.contactPhone.trim() || null,
 					medicalInfo: form.medicalInfo.trim() || null,
 					emergencyContact: form.emergencyContact.trim() || null,
@@ -257,9 +270,13 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 					lastName: form.lastName.trim() || undefined,
 					dateOfBirth: form.dateOfBirth || undefined,
 					gender: form.gender || null,
+					email: form.email.trim() || null,
 					contactPhone: form.contactPhone.trim() || null,
 					medicalInfo: form.medicalInfo.trim() || null,
 					emergencyContact: form.emergencyContact.trim() || null,
+					giSize: form.giSize.trim() || null,
+					beltSize: form.beltSize.trim() || null,
+					status: form.status,
 				}),
 			})
 			const payload = await response.json().catch(() => ({}))
@@ -338,6 +355,10 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 								<option value="MALE">Masculino</option>
 							</select>
 						</label>
+						<label className="text-sm font-semibold text-ink" htmlFor="student-email">
+							Correo de contacto / acceso
+							<input id="student-email" type="email" value={form.email} onChange={(event) => updateField('email', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+						</label>
 						<label className="text-sm font-semibold text-ink" htmlFor="student-phone">
 							Teléfono de contacto
 							<input id="student-phone" value={form.contactPhone} onChange={(event) => updateField('contactPhone', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
@@ -365,6 +386,24 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 							<div className="flex items-end">
 								<p className="text-xs text-ink-3">Para ver o cambiar el grado usa la ficha del alumno.</p>
 							</div>
+						)}
+						<label className="text-sm font-semibold text-ink" htmlFor="student-gi-size">
+							Talla de karategi (uniforme)
+							<input id="student-gi-size" maxLength={20} value={form.giSize} onChange={(event) => updateField('giSize', event.target.value)} placeholder="Ej: 2, 160 cm, Adulto M" className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+						</label>
+						<label className="text-sm font-semibold text-ink" htmlFor="student-belt-size">
+							Talla de cinturón
+							<input id="student-belt-size" maxLength={20} value={form.beltSize} onChange={(event) => updateField('beltSize', event.target.value)} placeholder="Ej: 160, 180 cm" className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+						</label>
+						{mode === 'edit' && (
+							<label className="text-sm font-semibold text-ink" htmlFor="student-status">
+								Estado
+								<select id="student-status" value={form.status} onChange={(event) => updateField('status', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
+									<option value="ACTIVE">Activo</option>
+									<option value="INACTIVE">Inactivo</option>
+									<option value="GRADUATED">Graduado</option>
+								</select>
+							</label>
 						)}
 						<label className="text-sm font-semibold text-ink sm:col-span-2" htmlFor="student-medical">
 							Información médica

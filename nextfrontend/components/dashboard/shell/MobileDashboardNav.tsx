@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import type { DashboardRole } from '@/types/dashboard'
 import { getRoleNavigation } from './RoleNavigation'
 
@@ -13,10 +13,16 @@ interface MobileDashboardNavProps {
 
 export function MobileDashboardNav({ activeRole, pendingEnrollmentCount = 0, pendingDocumentCount = 0 }: MobileDashboardNavProps) {
     const pathname = usePathname()
+    const searchParams = useSearchParams()
+    const activeStudentId = searchParams.get('estudiante')
     const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount, pendingDocumentCount)
     const currentHref = navigation
         .filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))
         .sort((a, b) => b.href.length - a.href.length)[0]?.href
+    const withStudentContext = (href: string) => {
+        if (activeRole !== 'STUDENT' || !activeStudentId) return href
+        return `${href}${href.includes('?') ? '&' : '?'}estudiante=${encodeURIComponent(activeStudentId)}`
+    }
 
     return (
         <nav
@@ -31,7 +37,7 @@ export function MobileDashboardNav({ activeRole, pendingEnrollmentCount = 0, pen
                         <Link
                             className={`relative flex h-14 min-w-14 flex-1 flex-col items-center justify-center gap-1 px-1 text-center text-[10px] font-semibold ${active ? 'text-accent' : 'text-ink-4'
                                 }`}
-                            href={href}
+                            href={withStudentContext(href)}
                             key={href}
                         >
                             <span className="relative">

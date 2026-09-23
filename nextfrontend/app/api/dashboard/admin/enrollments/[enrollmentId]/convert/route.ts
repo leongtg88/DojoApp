@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { hasAnyRole, hasRole } from '@/lib/auth/roles'
 import { ageFromDob, programForAge, resolveRankForKyu } from '@/lib/dashboard/program'
 import { resolveProgressionKataIds } from '@/lib/dashboard/kata-curriculum'
+import { linkGuardianToChildren } from '@/lib/family/guardians'
 import type { Program } from '@/lib/curriculum/programs'
 import { buildStudentExportRecord } from '@/lib/dashboard/student-export'
 import { postToN8n } from '@/lib/integrations/n8n'
@@ -16,6 +17,7 @@ const conversionSchema = z.object({
   lastName: z.string().trim().min(2).max(120),
   dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   gender: z.enum(['FEMALE', 'MALE']).optional(),
+  email: z.string().trim().toLowerCase().email('Email inválido').max(320).nullable().optional(),
   contactPhone: z.string().trim().max(30).nullable(),
   medicalInfo: z.string().trim().max(2_000).nullable(),
   emergencyContact: z.string().trim().max(500).nullable(),
@@ -68,7 +70,7 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
       contactEmail: true,
       contactPhone: true,
     registrationData: true,
-    applicants: { select: { id: true, studentId: true, profileData: true } },
+    applicants: { select: { id: true, name: true, studentId: true, profileData: true } },
     },
   })
 
@@ -89,11 +91,41 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
 
   // Nuevo estudiante entra como cinturón blanco según su programa (edad),
   // salvo que el formulario haya declarado un grado de karate previo (Kyu/Dan).
-  const applicantProfile = applicant?.profileData as { haPracticadoKarate?: boolean; kyu?: string } | null
+  const applicantProfile = applicant?.profileData as { haPracticadoKarate?: boolean; kyu?: string; esTutor?: boolean; email?: string } | null
   const declaredKyu = applicantProfile?.haPracticadoKarate ? applicantProfile.kyu?.trim() : ''
   const declaredRank = declaredKyu
     ? await resolveRankForKyu(enrollment.schoolId!, dateOfBirth, declaredKyu)
     : null
+
+  // Correo del expediente: prioriza el que escribió el admin al convertir, luego
+  // el correo propio del aspirante (si el formulario lo capturó) y por último el
+  // correo de contacto de la inscripción.
+  const effectiveEmail = input.email?.trim().toLowerCase() || applicantProfile?.email?.trim().toLowerCase() || enrollment.contactEmail
+
+  // Inscripción familiar: si este aspirante es el tutor, se marca en su
+  // expediente para que al aceptar su invitación reciba el rol GUARDIAN y quede
+  // vinculado a sus hijos. Si es un hijo, se guarda la metadata del tutor
+  // (email de contacto + relación) que permite enlazarlos de forma idempotente.
+  const isTutorApplicant = applicantProfile?.esTutor === true
+  const enrollmentReg = (enrollment.registrationData ?? {}) as Record<string, unknown>
+  const tutorApplicant = enrollment.applicants.find(
+    (entry) => (entry.profileData as { esTutor?: boolean })?.esTutor === true,
+  )
+  const guardianRelationship =
+    typeof enrollmentReg.relacionTutor === 'string' && enrollmentReg.relacionTutor.trim()
+      ? enrollmentReg.relacionTutor.trim()
+      : 'Tutor legal'
+  const guardianMeta = isTutorApplicant
+    ? null
+    : {
+        email: enrollment.contactEmail,
+        name: tutorApplicant?.name ?? '',
+        relationship: guardianRelationship,
+      }
+  const registrationData: Prisma.InputJsonValue = {
+    ...(isTutorApplicant ? { rol: 'tutor' } : { rol: 'alumno' }),
+    ...(guardianMeta ? { guardian: guardianMeta } : {}),
+  }
 
   const defaultRank = declaredRank ?? (await db.beltRank.findFirst({
     where: {
@@ -122,18 +154,22 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
         lastName: { equals: input.lastName, mode: 'insensitive' },
         dateOfBirth,
       },
-      select: { id: true, email: true, contactPhone: true, medicalInfo: true, emergencyContact: true, gender: true },
+      select: { id: true, email: true, contactPhone: true, medicalInfo: true, emergencyContact: true, gender: true, registrationData: true },
     })
 
     const createdStudent = existingStudent
       ? await transaction.student.update({
           where: { id: existingStudent.id },
           data: {
-            email: existingStudent.email ?? enrollment.contactEmail,
+            email: existingStudent.email ?? effectiveEmail,
             contactPhone: existingStudent.contactPhone ?? input.contactPhone ?? enrollment.contactPhone,
             medicalInfo: existingStudent.medicalInfo ?? input.medicalInfo,
             emergencyContact: existingStudent.emergencyContact ?? input.emergencyContact,
             gender: existingStudent.gender ?? gender,
+            registrationData: {
+              ...((existingStudent.registrationData ?? {}) as Record<string, unknown>),
+              ...registrationData,
+            } as Prisma.InputJsonValue,
           },
           select: { id: true },
         })
@@ -145,13 +181,16 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
             lastName: input.lastName,
             dateOfBirth,
             gender,
-            email: enrollment.contactEmail,
+            email: effectiveEmail,
             contactPhone: input.contactPhone ?? enrollment.contactPhone,
             medicalInfo: input.medicalInfo,
             emergencyContact: input.emergencyContact,
             currentRank: defaultRank?.name ?? null,
             currentRankId: defaultRank?.id ?? null,
-            registrationData: (applicant?.profileData ?? enrollment.registrationData) ?? Prisma.JsonNull,
+            registrationData: {
+              ...((applicant?.profileData ?? enrollment.registrationData ?? {}) as Record<string, unknown>),
+              ...registrationData,
+            } as Prisma.InputJsonValue,
           },
           select: { id: true },
         })
@@ -186,6 +225,23 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
 
     return createdStudent
   })
+
+  // Si este aspirante es un hijo y el tutor ya creó su cuenta (aceptó su
+  // invitación), se enlaza el expediente del hijo al tutor de forma idempotente.
+  if (!isTutorApplicant && guardianMeta) {
+    const guardianUser = await db.user.findUnique({
+      where: { email: enrollment.contactEmail.toLowerCase() },
+      select: { id: true },
+    })
+    if (guardianUser) {
+      await linkGuardianToChildren({
+        userId: guardianUser.id,
+        schoolId: enrollment.schoolId!,
+        guardianEmail: enrollment.contactEmail,
+        relationship: guardianRelationship,
+      })
+    }
+  }
 
   const [exportedStudent, exportedEnrollment] = await Promise.all([
     db.student.findUnique({
@@ -253,5 +309,12 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
     )
   }
 
-  return NextResponse.json({ ok: true, studentId: student.id })
+  return NextResponse.json({
+    ok: true,
+    studentId: student.id,
+    // Info del grado declarado en el formulario (para que el admin sepa si el
+    // expediente se creó con ese grado o cayó al grado inicial).
+    declaredKyu: declaredKyu || null,
+    rankAutoAssigned: Boolean(declaredRank),
+  })
 }

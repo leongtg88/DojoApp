@@ -2,12 +2,14 @@ import Link from 'next/link'
 import { ChevronRight, ClipboardCheck, Hourglass } from 'lucide-react'
 import type { KataProgressItem } from '@/types/dashboard'
 import { KataBadge } from '@/components/dashboard/dojo/KataBadge'
+import { studentHref } from '@/lib/dashboard/student-links'
 
 interface KataToEvaluateCardProps {
     katas: KataProgressItem[]
+    studentId?: string
 }
 
-export function KataToEvaluateCard({ katas }: KataToEvaluateCardProps) {
+export function KataToEvaluateCard({ katas, studentId }: KataToEvaluateCardProps) {
     const pendingEvaluation = katas.filter(({ status }) => status === 'IN_PROGRESS').slice(0, 3)
 
     return (
@@ -17,7 +19,7 @@ export function KataToEvaluateCard({ katas }: KataToEvaluateCardProps) {
                     <ClipboardCheck aria-hidden="true" className="size-4 text-warn-text" />
                     <h2 className="font-display text-sm font-extrabold uppercase tracking-wide text-ink">Próximas katas a evaluar</h2>
                 </div>
-                <Link className="inline-flex items-center gap-0.5 text-xs font-bold text-accent hover:underline" href="/dashboard/estudiante/progreso">Ver katas <ChevronRight aria-hidden="true" className="size-3.5" /></Link>
+                <Link className="inline-flex items-center gap-0.5 text-xs font-bold text-accent hover:underline" href={studentHref('/dashboard/estudiante/progreso', studentId)}>Ver katas <ChevronRight aria-hidden="true" className="size-3.5" /></Link>
             </div>
             {pendingEvaluation.length === 0 ? (
                 <p className="px-5 py-8 text-sm text-ink-3">Aún no tienes katas en práctica para evaluar. Comienza a practicar alguna para que tu sensei pueda calificarla.</p>

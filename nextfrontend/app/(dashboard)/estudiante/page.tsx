@@ -1,13 +1,19 @@
 import { auth } from '@/auth'
 import { StudentDashboardOverview } from '@/components/dashboard/student/StudentDashboardOverview'
+import { FamilyQuickSwitcher } from '@/components/dashboard/student/FamilyQuickSwitcher'
 import { getStudentDashboardSummary, getStudentKataProgress } from '@/lib/dashboard/student-queries'
+import { getFamilyMembers, resolveStudentView } from '@/lib/family/guardians'
 import { redirect } from 'next/navigation'
-import { hasRole } from '@/lib/auth/roles'
+import { hasAnyRole } from '@/lib/auth/roles'
 
-export default async function StudentDashboardPage() {
+interface StudentDashboardPageProps {
+    searchParams: Promise<{ estudiante?: string }>
+}
+
+export default async function StudentDashboardPage({ searchParams }: StudentDashboardPageProps) {
     const session = await auth()
 
-    if (!session?.user?.id || !hasRole(session?.user, 'STUDENT')) {
+    if (!session?.user?.id || !hasAnyRole(session?.user, ['STUDENT', 'GUARDIAN'])) {
         redirect('/no-autorizado')
     }
 
@@ -17,7 +23,14 @@ export default async function StudentDashboardPage() {
         redirect('/no-autorizado')
     }
 
-    const summary = await getStudentDashboardSummary(userId)
+    const { estudiante } = await searchParams
+    const view = await resolveStudentView(userId, estudiante)
+
+    if (!view) {
+        redirect('/no-autorizado')
+    }
+
+    const summary = await getStudentDashboardSummary(view.studentId)
 
     if (!summary) {
         return (
@@ -28,7 +41,18 @@ export default async function StudentDashboardPage() {
         )
     }
 
-    const kataSummary = await getStudentKataProgress(userId)
+    const kataSummary = await getStudentKataProgress(view.studentId)
 
-    return <StudentDashboardOverview kataSummary={kataSummary} summary={summary} />
+    const familyMembers = hasAnyRole(session.user, ['GUARDIAN']) ? await getFamilyMembers(userId) : null
+
+    return (
+        <>
+            {familyMembers && (
+                <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6 lg:px-8">
+                    <FamilyQuickSwitcher members={familyMembers} currentStudentId={view.studentId} baseHref="/dashboard/estudiante" />
+                </div>
+            )}
+            <StudentDashboardOverview kataSummary={kataSummary} summary={summary} />
+        </>
+    )
 }

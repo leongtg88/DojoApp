@@ -7,9 +7,10 @@ import { EditProfileModal } from './EditProfileModal'
 
 interface StudentProfileActionsProps {
     profile: StudentProfile
+    studentId?: string
 }
 
-export function StudentProfileActions({ profile }: StudentProfileActionsProps) {
+export function StudentProfileActions({ profile, studentId }: StudentProfileActionsProps) {
     const [isOpen, setIsOpen] = useState(false)
 
     return (
@@ -22,7 +23,7 @@ export function StudentProfileActions({ profile }: StudentProfileActionsProps) {
                 <Pencil aria-hidden="true" className="size-4" />
                 Editar datos personales
             </button>
-            {isOpen && <EditProfileModal onClose={() => setIsOpen(false)} profile={profile} />}
+            {isOpen && <EditProfileModal onClose={() => setIsOpen(false)} profile={profile} studentId={studentId} />}
         </>
     )
 }

@@ -1,7 +1,8 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
-import { hasRole } from '@/lib/auth/roles'
-import { createPrivateDocumentUrl, uploadPrivateDocument, sanitizeStorageName } from '@/lib/document-storage'
+import { hasAnyRole } from '@/lib/auth/roles'
+import { resolveRequestStudent } from '@/lib/family/guardians'
+import { createPrivateDocumentUrl, uploadPrivateDocument, deletePrivateDocuments, sanitizeStorageName } from '@/lib/document-storage'
 import { notifySchoolStaff } from '@/lib/notifications/create'
 import { NextResponse } from 'next/server'
 
@@ -17,11 +18,13 @@ const DOCUMENT_TYPE_LABELS: Record<typeof documentTypes[number], string> = {
 const allowedMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
 const maxFileSize = 5 * 1024 * 1024
 
-async function getStudentId() {
+async function getStudentId(request: Request) {
   const session = await auth()
-  if (!session?.user?.id || !hasRole(session?.user, 'STUDENT')) return null
+  if (!session?.user?.id || !hasAnyRole(session?.user, ['STUDENT', 'GUARDIAN'])) return null
+  const view = await resolveRequestStudent(request, session.user.id)
+  if (!view) return null
   const student = await db.student.findUnique({
-    where: { userId: session.user.id },
+    where: { id: view.studentId },
     select: { id: true, enrollments: { select: { id: true }, take: 1 } },
   })
 
@@ -29,7 +32,7 @@ async function getStudentId() {
 }
 
 export async function GET(request: Request) {
-  const student = await getStudentId()
+  const student = await getStudentId(request)
   const documentId = new URL(request.url).searchParams.get('documentId')
   if (!student || !documentId) return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
 
@@ -45,7 +48,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const student = await getStudentId()
+  const student = await getStudentId(request)
   if (!student) return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
 
   const formData = await request.formData().catch(() => null)
@@ -87,4 +90,28 @@ export async function POST(request: Request) {
     console.error('Error guardando documento de estudiante:', uploadError)
     return NextResponse.json({ error: 'No fue posible guardar el documento. Inténtalo nuevamente.' }, { status: 503 })
   }
+}
+
+export async function DELETE(request: Request) {
+  const student = await getStudentId(request)
+  if (!student) return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+
+  const documentId = new URL(request.url).searchParams.get('documentId')
+  if (!documentId) return NextResponse.json({ error: 'Documento no especificado' }, { status: 400 })
+
+  const document = await db.studentDocument.findFirst({
+    where: { id: documentId, studentId: student.id },
+    select: { id: true, storageKey: true },
+  })
+  if (!document) return NextResponse.json({ error: 'Documento no encontrado' }, { status: 404 })
+
+  try {
+    await deletePrivateDocuments([document.storageKey])
+    await db.studentDocument.delete({ where: { id: document.id } })
+  } catch (deleteError) {
+    console.error('Error borrando documento del estudiante:', deleteError)
+    return NextResponse.json({ error: 'No fue posible borrar el documento. Inténtalo nuevamente.' }, { status: 503 })
+  }
+
+  return NextResponse.json({ ok: true })
 }

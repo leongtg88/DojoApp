@@ -1,8 +1,10 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
-import { hasRole } from '@/lib/auth/roles'
+import { hasAnyRole } from '@/lib/auth/roles'
+import { resolveRequestStudent } from '@/lib/family/guardians'
 import { resolveClassByTime, classHours, formatTime } from '@/lib/dashboard/balance'
 import { registerPracticeLogs } from '@/lib/dashboard/technique-reps'
+import { notifySchoolStaff } from '@/lib/notifications/create'
 import type { PracticePlace } from '@/lib/generated/prisma'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -17,6 +19,7 @@ const practiceLineSchema = z.object({
 const punchInSchema = z.object({
   hoursTrained: z.number().min(0.5).max(12).optional(),
   sessionType: z.string().trim().min(1).max(50).optional(),
+  date: z.string().refine((value) => !Number.isNaN(new Date(value).getTime()), { message: 'Fecha de práctica inválida' }).optional(),
   notes: z.string().trim().max(500).optional().nullable(),
   practiceLogs: z.array(practiceLineSchema).max(30).optional(),
 })
@@ -26,7 +29,7 @@ const SESSION_TYPES = ['class', 'private', 'autonomous', 'seminar', 'other'] as 
 export async function POST(request: Request) {
   const session = await auth()
 
-  if (!session?.user?.id || !hasRole(session?.user, 'STUDENT')) {
+  if (!session?.user?.id || !hasAnyRole(session?.user, ['STUDENT', 'GUARDIAN'])) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
@@ -37,8 +40,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Datos de punch-in no válidos' }, { status: 400 })
   }
 
+  const view = await resolveRequestStudent(request, session.user.id)
+  if (!view) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+  }
+
   const student = await db.student.findUnique({
-    where: { userId: session.user.id },
+    where: { id: view.studentId },
     select: {
       id: true,
       firstName: true,
@@ -53,20 +61,35 @@ export async function POST(request: Request) {
   }
 
   const now = new Date()
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-  const startOfTomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+  // Fecha/hora de la práctica: por defecto ahora. Permite registrar "a
+  // destiempo" (p. ej. olvidó marcar) dentro de los últimos 7 días.
+  const punchDate = result.data.date ? new Date(result.data.date) : now
+
+  if (Number.isNaN(punchDate.getTime())) {
+    return NextResponse.json({ error: 'Fecha de práctica no válida' }, { status: 400 })
+  }
+  if (punchDate.getTime() > now.getTime()) {
+    return NextResponse.json({ error: 'No puedes registrar práctica en el futuro.' }, { status: 400 })
+  }
+  const minAllowed = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6)
+  if (punchDate.getTime() < minAllowed.getTime()) {
+    return NextResponse.json({ error: 'Solo puedes registrar práctica de los últimos 7 días.' }, { status: 400 })
+  }
+
+  const startOfDay = new Date(punchDate.getFullYear(), punchDate.getMonth(), punchDate.getDate())
+  const startOfNextDay = new Date(punchDate.getFullYear(), punchDate.getMonth(), punchDate.getDate() + 1)
 
   const existing = await db.attendance.findFirst({
     where: {
       studentId: student.id,
       sessionId: null,
-      date: { gte: startOfToday, lt: startOfTomorrow },
+      date: { gte: startOfDay, lt: startOfNextDay },
     },
     select: { id: true },
   })
 
   if (existing) {
-    return NextResponse.json({ error: 'Ya registraste tu práctica hoy. Puedes editarla mientras esté pendiente.' }, { status: 409 })
+    return NextResponse.json({ error: 'Ya registraste tu práctica en esa fecha. Puedes editarla mientras esté pendiente.' }, { status: 409 })
   }
 
   const sessionType = result.data.sessionType ?? 'class'
@@ -75,8 +98,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Tipo de sesión no válido' }, { status: 400 })
   }
 
-  // Detecta el horario activo correspondiente a la fecha/hora actual para marcar
-  // "fuera de horario" cuando no coincide con los horarios de referencia del alumno.
+  // Detecta el horario activo correspondiente a la fecha/hora de la práctica para
+  // marcar "fuera de horario" cuando no coincide con los horarios de referencia del alumno.
   const scheduledClasses = await db.class.findMany({
     where: { branchId: student.branchId, active: true },
     select: {
@@ -91,14 +114,14 @@ export async function POST(request: Request) {
   })
   const resolvedClass = resolveClassByTime(
     scheduledClasses.map(({ startTime, endTime, ...cls }) => ({ ...cls, startTime: formatTime(startTime), endTime: formatTime(endTime) })),
-    now,
+    punchDate,
   )
   const referenceIds = new Set(student.classEnrollments.map((entry) => entry.classId))
 
   const attendance = await db.attendance.create({
     data: {
       studentId: student.id,
-      date: now,
+      date: punchDate,
       present: true,
       hoursTrained: result.data.hoursTrained ?? (resolvedClass ? classHours(resolvedClass) : 1),
       sessionType,
@@ -111,9 +134,10 @@ export async function POST(request: Request) {
   })
 
   const practiceLines = result.data.practiceLogs ?? []
+  let practiceWarning: string | null = null
   if (practiceLines.length > 0) {
     try {
-      await registerPracticeLogs(
+      const registered = await registerPracticeLogs(
         student.id,
         practiceLines.map((line) => ({
           techniqueId: line.techniqueId,
@@ -121,13 +145,24 @@ export async function POST(request: Request) {
           place: (line.place ?? 'DOJO') as PracticePlace,
           notes: line.notes ?? null,
           attendanceId: attendance.id,
-          date: now,
+          date: punchDate,
         })),
       )
+      if (registered === 0) {
+        practiceWarning = 'No se pudo registrar las repeticiones (técnicas no asignadas al expediente).'
+      }
     } catch (error) {
       console.error('Error registrando repeticiones del punch:', error)
+      practiceWarning = 'No se pudieron guardar las repeticiones de técnicas. La asistencia sí quedó registrada.'
     }
   }
+
+  // Avisa a los administradores de la escuela para que revisen y confirmen el punch-in.
+  await notifySchoolStaff({
+    type: 'ATTENDANCE_PUNCHED',
+    studentId: student.id,
+    data: { hoursTrained: attendance.hoursTrained, className: resolvedClass?.name ?? null },
+  })
 
   return NextResponse.json({
     record: {
@@ -143,5 +178,6 @@ export async function POST(request: Request) {
       notes: attendance.notes,
       punchedAt: attendance.punchedAt.toISOString(),
     },
+    ...(practiceWarning ? { practiceWarning } : {}),
   }, { status: 201 })
 }

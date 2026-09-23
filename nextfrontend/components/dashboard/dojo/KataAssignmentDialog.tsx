@@ -17,16 +17,18 @@ interface KataAssignmentDialogProps {
 	onClose: () => void
 	assignedTechniques: AssignedTechniqueRef[]
 	availableTechniques: AdminTechniqueSummary[]
+	defaultRequiredIds?: string[]
 }
 
-export function KataAssignmentDialog({ studentId, studentName, isOpen, onClose, assignedTechniques, availableTechniques }: KataAssignmentDialogProps) {
+export function KataAssignmentDialog({ studentId, studentName, isOpen, onClose, assignedTechniques, availableTechniques, defaultRequiredIds = [] }: KataAssignmentDialogProps) {
 	const router = useRouter()
 	const assignedIds = useMemo(() => assignedTechniques.map((technique) => technique.id), [assignedTechniques])
 	const assignedKey = useMemo(() => [...assignedIds].sort().join('|'), [assignedIds])
 	const lockedIds = useMemo(() => new Set(assignedTechniques.filter((technique) => technique.approved).map((technique) => technique.id)), [assignedTechniques])
+	const initialSelection = useMemo(() => [...new Set([...assignedIds, ...defaultRequiredIds])], [assignedIds, defaultRequiredIds])
 
 	const [lastAssignedKey, setLastAssignedKey] = useState(assignedKey)
-	const [selectedIds, setSelectedIds] = useState<string[]>(assignedIds)
+	const [selectedIds, setSelectedIds] = useState<string[]>(initialSelection)
 	const [searchTerm, setSearchTerm] = useState('')
 	const [isSaving, setIsSaving] = useState(false)
 	const [error, setError] = useState<string | null>(null)
@@ -34,7 +36,7 @@ export function KataAssignmentDialog({ studentId, studentName, isOpen, onClose, 
 
 	if (isOpen && lastAssignedKey !== assignedKey) {
 		setLastAssignedKey(assignedKey)
-		setSelectedIds(assignedIds)
+		setSelectedIds(initialSelection)
 		setNotice(null)
 	}
 

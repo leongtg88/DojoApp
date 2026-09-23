@@ -95,6 +95,8 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       contactPhone: true,
       medicalInfo: true,
       emergencyContact: true,
+      giSize: true,
+      beltSize: true,
       branchId: true,
       invitationTokens: {
         where: { usedAt: null, expiresAt: { gt: new Date() } },
@@ -195,6 +197,8 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       contactPhone: student.contactPhone,
       medicalInfo: student.medicalInfo,
       emergencyContact: student.emergencyContact,
+      giSize: student.giSize,
+      beltSize: student.beltSize,
       activeClassNames: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.name),
       activeScheduleIds: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.id),
       planId: student.plan?.id ?? null,
@@ -634,6 +638,13 @@ export async function getAdminAttendance(userId: string): Promise<AdminAttendanc
           class: { select: { name: true, branch: { select: { name: true } } } },
         },
       },
+      practiceLogs: {
+        select: {
+          repetitions: true,
+          place: true,
+          studentTechnique: { select: { technique: { select: { name: true } } } },
+        },
+      },
     },
   })
 
@@ -649,6 +660,11 @@ export async function getAdminAttendance(userId: string): Promise<AdminAttendanc
     status: record.status,
     confirmedByName: record.confirmedBy?.name ?? null,
     notes: record.notes,
+    practiceLogs: record.practiceLogs.map((log) => ({
+      techniqueName: log.studentTechnique.technique.name,
+      repetitions: log.repetitions,
+      place: log.place,
+    })),
   }))
 }
 
@@ -666,6 +682,13 @@ export async function getAdminAttendanceBoard(userId: string): Promise<Instructo
     include: {
       student: { select: { id: true, firstName: true, lastName: true } },
       confirmedBy: { select: { name: true } },
+      practiceLogs: {
+        select: {
+          repetitions: true,
+          place: true,
+          studentTechnique: { select: { technique: { select: { name: true } } } },
+        },
+      },
     },
   })
 
@@ -681,6 +704,11 @@ export async function getAdminAttendanceBoard(userId: string): Promise<Instructo
     confirmedByName: attendance.confirmedBy?.name ?? null,
     notes: attendance.notes,
     punchedAt: attendance.punchedAt.toISOString(),
+    practiceLogs: attendance.practiceLogs.map((log) => ({
+      techniqueName: log.studentTechnique.technique.name,
+      repetitions: log.repetitions,
+      place: log.place,
+    })),
   }))
 
   const availableDates = [...new Set(records.map(({ date }) => date.slice(0, 10)))].sort().reverse()

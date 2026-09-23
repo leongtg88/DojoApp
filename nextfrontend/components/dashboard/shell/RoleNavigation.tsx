@@ -30,6 +30,15 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/estudiante/horario', label: 'Horario', icon: CalendarDays },
         { href: '/dashboard/estudiante/asistencia', label: 'Asistencia', icon: ClipboardCheck },
     ],
+    // Un tutor accede al mismo portal del estudiante y usa el selector familiar
+    // para alternar entre su cuenta y la de sus hijos.
+    GUARDIAN: [
+        { href: '/dashboard/estudiante', label: 'Resumen', icon: LayoutDashboard },
+        { href: '/dashboard/estudiante/perfil', label: 'Mi perfil', icon: Users },
+        { href: '/dashboard/estudiante/progreso', label: 'Mi progreso', icon: GraduationCap },
+        { href: '/dashboard/estudiante/horario', label: 'Horario', icon: CalendarDays },
+        { href: '/dashboard/estudiante/asistencia', label: 'Asistencia', icon: ClipboardCheck },
+    ],
     INSTRUCTOR: [
         { href: '/dashboard/instructor', label: 'Resumen', icon: LayoutDashboard },
         { href: '/dashboard/instructor/clases', label: 'Mis clases', icon: CalendarDays },

@@ -4,16 +4,18 @@ import Link from 'next/link'
 import { CalendarDays, ChevronRight, Flame, GraduationCap, UserRound } from 'lucide-react'
 import type { ClassSchedule } from '@/types/dashboard'
 import { formatNextClass, nextClassFrom, WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
+import { studentHref } from '@/lib/dashboard/student-links'
 
 interface NextClassCardProps {
     classes: ClassSchedule[]
+    studentId?: string
 }
 
 function isToday(scheduledClass: ClassSchedule, now = new Date()): boolean {
     return scheduledClass.dayOfWeek === now.getDay()
 }
 
-export function NextClassCard({ classes }: NextClassCardProps) {
+export function NextClassCard({ classes, studentId }: NextClassCardProps) {
     const now = new Date()
     const next = nextClassFrom(classes, now)
     const hasClassToday = classes.some((scheduledClass) => isToday(scheduledClass, now))
@@ -54,7 +56,7 @@ export function NextClassCard({ classes }: NextClassCardProps) {
                     {hasClassToday && (
                         <Link
                             className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-3.5 py-2 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400"
-                            href="/dashboard/estudiante/asistencia"
+                            href={studentHref('/dashboard/estudiante/asistencia', studentId)}
                         >
                             <Flame aria-hidden="true" className="size-4" />
                             Marcar mi práctica
@@ -62,7 +64,7 @@ export function NextClassCard({ classes }: NextClassCardProps) {
                     )}
                     <Link
                         className="inline-flex items-center gap-1 rounded-md border border-edge-strong bg-surface-1 px-3.5 py-2 text-sm font-semibold text-ink-2 transition-colors hover:bg-surface-3 hover:text-ink"
-                        href="/dashboard/estudiante/progreso"
+                        href={studentHref('/dashboard/estudiante/progreso', studentId)}
                     >
                         <GraduationCap aria-hidden="true" className="size-4 text-accent" />
                         Ver técnicas

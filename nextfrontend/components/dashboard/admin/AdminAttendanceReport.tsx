@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CalendarCheck2, CircleX, Clock3, Search, Users } from 'lucide-react'
+import { CalendarCheck2, CircleX, Clock3, Repeat, Search, Users } from 'lucide-react'
 import type { AdminAttendanceRecord, AttendanceStatus } from '@/types/dashboard'
 
 interface AdminAttendanceReportProps {
@@ -81,6 +81,12 @@ export function AdminAttendanceReport({ records }: AdminAttendanceReportProps) {
                                                     {record.hoursTrained > 0 && <span className="inline-flex items-center gap-1 rounded-md border border-edge-strong bg-surface-1 px-2 py-0.5 text-[11px] font-semibold text-ink-2"><Clock3 aria-hidden="true" className="size-3 text-accent" />{record.hoursTrained}h</span>}
                                                     {record.confirmedByName && <span className="text-[11px] text-ink-4">Confirmado por {record.confirmedByName}</span>}
                                                 </div>
+                                                {record.practiceLogs && record.practiceLogs.length > 0 && (
+                                                    <p className="mt-2 flex flex-wrap items-center gap-1 text-[11px] text-ink-3">
+                                                        <Repeat aria-hidden="true" className="size-3.5 shrink-0 text-accent" />
+                                                        {record.practiceLogs.map((log) => `${log.techniqueName} ×${log.repetitions}${log.place === 'FUERA' ? ' (fuera)' : ''}`).join(' · ')}
+                                                    </p>
+                                                )}
                                                 {record.notes && <p className="mt-2 rounded-md border border-edge-strong bg-surface-1 p-2 text-sm text-ink-2">{record.notes}</p>}
                                             </div>
                                         </div>

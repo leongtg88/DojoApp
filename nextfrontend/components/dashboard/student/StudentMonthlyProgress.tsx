@@ -18,7 +18,7 @@ function balanceBarColor(level: StudentMonthlyStatus['balanceLevel']) {
     return 'bg-rose-400'
 }
 
-export function StudentMonthlyProgress() {
+export function StudentMonthlyProgress({ studentId }: { studentId?: string }) {
     const [month, setMonth] = useState(() => {
         const now = new Date()
         return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
@@ -28,7 +28,9 @@ export function StudentMonthlyProgress() {
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
-        fetch(`/api/dashboard/student/monthly-status?month=${month}`)
+        const params = new URLSearchParams({ month })
+        if (studentId) params.set('estudiante', studentId)
+        fetch(`/api/dashboard/student/monthly-status?${params.toString()}`)
             .then(async (response) => {
                 const payload = await response.json().catch(() => null)
                 if (!response.ok) throw new Error(payload?.error ?? 'No se pudo cargar el estado mensual')
@@ -39,7 +41,7 @@ export function StudentMonthlyProgress() {
                 setError(cause.message === 'Failed to fetch' ? 'Error al cargar' : cause.message)
             })
             .finally(() => setLoading(false))
-    }, [month])
+    }, [month, studentId])
 
     const monthLabel = new Intl.DateTimeFormat('es-DO', { month: 'long', year: 'numeric' }).format(new Date(`${month}-01T12:00:00`))
 

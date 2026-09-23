@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { BadgeCheck, ChevronRight } from 'lucide-react'
 import type { DashboardBeltRank, GradoProgressData } from '@/types/dashboard'
+import { studentHref } from '@/lib/dashboard/student-links'
 
 interface MartialGradeCardProps {
     rank: DashboardBeltRank | null
@@ -8,6 +9,7 @@ interface MartialGradeCardProps {
     approvedTechniques: number
     totalTechniques: number
     grado?: GradoProgressData
+    studentId?: string
 }
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
@@ -30,7 +32,7 @@ function isLightColor(hex: string): boolean {
 
 const BELT_DEFAULT = '#e5e7eb'
 
-export function MartialGradeCard({ rank, studentName, approvedTechniques, totalTechniques, grado }: MartialGradeCardProps) {
+export function MartialGradeCard({ rank, studentName, approvedTechniques, totalTechniques, grado, studentId }: MartialGradeCardProps) {
     const progress = totalTechniques === 0 ? 0 : Math.round((approvedTechniques / totalTechniques) * 100)
     const beltColor = grado?.beltColor ?? rank?.beltColor ?? BELT_DEFAULT
     const lightBelt = isLightColor(beltColor)
@@ -75,7 +77,7 @@ export function MartialGradeCard({ rank, studentName, approvedTechniques, totalT
 
                 <div className="mt-5 flex items-center justify-between gap-3 text-xs">
                     <span className="font-semibold text-ink">{approvedTechniques} de {totalTechniques} técnicas aprobadas</span>
-                    <Link className="inline-flex shrink-0 items-center gap-0.5 font-bold text-accent hover:underline" href="/dashboard/estudiante/progreso">Ver progreso <ChevronRight aria-hidden="true" className="size-4" /></Link>
+                    <Link className="inline-flex shrink-0 items-center gap-0.5 font-bold text-accent hover:underline" href={studentHref('/dashboard/estudiante/progreso', studentId)}>Ver progreso <ChevronRight aria-hidden="true" className="size-4" /></Link>
                 </div>
                 <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface-1 p-0.5"><div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-300 transition-all" style={{ width: `${progress}%` }} /></div>
 

@@ -24,6 +24,7 @@ type Hijo = {
   tallaCamiseta: string;
   practicoKarate: 'no' | 'si' | '';
   kyu: string;
+  email: string;
   foto: File | null;
   identificacion: File[];
   fotoPreview: string;
@@ -31,8 +32,9 @@ type Hijo = {
 };
 
 type FormData = {
-  tipoRegistro: 'ninguno' | 'adulto' | 'menor';
-  // Adulto
+  tipoRegistro: 'ninguno' | 'adulto' | 'menor' | 'familiar';
+  // Adulto / Tutor
+  relacionTutor: string;
   nombreAdulto: string;
   fechaNacimientoAdulto: string;
   sexoAdulto: string;
@@ -217,7 +219,7 @@ const KaratePrevioFields = ({ name, practico, kyu, error, onPractico, onKyu }: {
 }) => (
   <div className="bg-stone-50 border border-brand-accent/30 rounded-lg p-4 space-y-3">
     <label className="block text-sm font-medium text-stone-500 mb-1">
-      ¿La persona a inscribir ya ha practicado karate?
+      ¿La persona a inscribir practica o ha practicado karate?
     </label>
     <div className="flex flex-wrap gap-4">
       <label className="flex items-center gap-2 text-sm text-stone-700 cursor-pointer">
@@ -344,6 +346,7 @@ const ToseiGusokuForm = () => {
   // ===== ESTADO INICIAL =====
   const createInitialFormData = (): FormData => ({
     tipoRegistro: 'ninguno',
+    relacionTutor: 'Padre',
     nombreAdulto: '',
     fechaNacimientoAdulto: '',
     sexoAdulto: '',
@@ -361,7 +364,7 @@ const ToseiGusokuForm = () => {
     identAdultoPreview: [],
     telefonoContacto: '',
     email: '',
-    hijos: [{ id: generarId(), nombre: '', fechaNacimiento: '', sexo: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', practicoKarate: '', kyu: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }],
+    hijos: [{ id: generarId(), nombre: '', fechaNacimiento: '', sexo: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', practicoKarate: '', kyu: '', email: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }],
     nombreMadre: '',
     telefonoMadre: '',
     nombrePadre: '',
@@ -409,13 +412,20 @@ const ToseiGusokuForm = () => {
     }
   };
 
-  const handleTipoRegistro = (tipo: 'adulto' | 'menor') => {
+  const handleTipoRegistro = (tipo: 'adulto' | 'menor' | 'familiar') => {
     setFormData(prev => ({
       ...prev,
       tipoRegistro: tipo,
       // Resetear campos no usados para evitar datos residuales
       ...(tipo === 'adulto' ? {
         hijos: [],
+        nombreMadre: '',
+        telefonoMadre: '',
+        nombrePadre: '',
+        telefonoPadre: '',
+      } : tipo === 'familiar' ? {
+        // En "familiar" el tutor es uno de los padres: se limpia el bloque de
+        // contacto por separado, se conservan los datos del tutor y los hijos.
         nombreMadre: '',
         telefonoMadre: '',
         nombrePadre: '',
@@ -446,7 +456,7 @@ const ToseiGusokuForm = () => {
   const agregarHijo = () => {
     setFormData(prev => ({
       ...prev,
-      hijos: [...prev.hijos, { id: generarId(), nombre: '', fechaNacimiento: '', sexo: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', practicoKarate: '', kyu: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }]
+      hijos: [...prev.hijos, { id: generarId(), nombre: '', fechaNacimiento: '', sexo: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', practicoKarate: '', kyu: '', email: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }]
     }));
   };
 
@@ -637,6 +647,87 @@ const ToseiGusokuForm = () => {
   };
 
   // ===== VALIDACIONES =====
+  const validarAdulto = (newErrors: FormErrors) => {
+    if (!formData.nombreAdulto.trim()) newErrors.nombreAdulto = 'Campo requerido';
+    if (!formData.fechaNacimientoAdulto) newErrors.fechaNacimientoAdulto = 'Campo requerido';
+    if (!formData.sexoAdulto) newErrors.sexoAdulto = 'Selecciona una opción';
+    if (!formData.tipoSangreAdulto) newErrors.tipoSangreAdulto = 'Selecciona una opción';
+    if (!formData.direccionAdulto.trim()) newErrors.direccionAdulto = 'Campo requerido';
+    if (formData.tallaPantalonAdulto && !TALLAS_ROPA.includes(formData.tallaPantalonAdulto)) newErrors.tallaPantalonAdulto = 'Selecciona una talla válida';
+    else if (!formData.tallaPantalonAdulto) newErrors.tallaPantalonAdulto = 'Selecciona una talla';
+    if (formData.tallaCamisetaAdulto && !TALLAS_ROPA.includes(formData.tallaCamisetaAdulto)) newErrors.tallaCamisetaAdulto = 'Selecciona una talla válida';
+    else if (!formData.tallaCamisetaAdulto) newErrors.tallaCamisetaAdulto = 'Selecciona una talla';
+    if (!formData.cedula.trim()) newErrors.cedula = 'Campo requerido';
+    else if (!esCedulaValida(formData.cedula)) newErrors.cedula = 'La cédula debe tener exactamente 11 dígitos (ej: 00123456789)';
+    if (!formData.fotoAdulto) newErrors.fotoAdulto = 'Foto requerida';
+    else {
+      const msg = archivoInvalido(formData.fotoAdulto, false);
+      if (msg) newErrors.fotoAdulto = msg;
+    }
+    if (formData.identAdulto.length === 0) {
+      newErrors.identAdulto = 'Identificación requerida';
+    } else {
+      for (const file of formData.identAdulto) {
+        const msg = archivoInvalido(file, true);
+        if (msg) { newErrors.identAdulto = msg; break; }
+      }
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = 'Campo requerido';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Email inválido';
+    }
+    if (!formData.telefonoContacto.trim()) newErrors.telefonoContacto = 'Campo requerido';
+    else if (!esTelefonoValido(formData.telefonoContacto)) newErrors.telefonoContacto = 'Ingresa un teléfono válido (ej: 809-123-4567)';
+    if (formData.practicoKarateAdulto === 'si' && !formData.kyuAdulto) newErrors.kyuAdulto = 'Selecciona el grado alcanzado';
+  };
+
+  const validarHijos = (newErrors: FormErrors) => {
+    const hijosErrores: { [key: string]: string }[] = [];
+    let hasError = false;
+    formData.hijos.forEach((hijo, index) => {
+      const err: { [key: string]: string } = {};
+      if (!hijo.nombre.trim()) { err.nombre = `Nombre del hijo ${index + 1} requerido`; hasError = true; }
+      if (!hijo.fechaNacimiento) { err.fechaNacimiento = `Fecha de nacimiento del hijo ${index + 1} requerida`; hasError = true; }
+      if (!hijo.tipoSangre) { err.tipoSangre = `Tipo de sangre del hijo ${index + 1} requerido`; hasError = true; }
+      if (!hijo.sexo) { err.sexo = `Sexo del hijo ${index + 1} requerido`; hasError = true; }
+      if (hijo.tallaPantalon && !TALLAS_ROPA.includes(hijo.tallaPantalon)) { err.tallaPantalon = `Selecciona una talla válida para el hijo ${index + 1}`; hasError = true; }
+      else if (!hijo.tallaPantalon) { err.tallaPantalon = `Selecciona una talla para el hijo ${index + 1}`; hasError = true; }
+      if (hijo.tallaCamiseta && !TALLAS_ROPA.includes(hijo.tallaCamiseta)) { err.tallaCamiseta = `Selecciona una talla válida para el hijo ${index + 1}`; hasError = true; }
+      else if (!hijo.tallaCamiseta) { err.tallaCamiseta = `Selecciona una talla para el hijo ${index + 1}`; hasError = true; }
+      if (!hijo.foto) { err.foto = `Foto del hijo ${index + 1} requerida`; hasError = true; }
+      else {
+        const msg = archivoInvalido(hijo.foto, false);
+        if (msg) { err.foto = msg; hasError = true; }
+      }
+      if (hijo.practicoKarate === 'si' && !hijo.kyu) { err.kyu = `Grado del hijo ${index + 1} requerido`; hasError = true; }
+      if (hijo.identificacion.length === 0) { err.identificacion = `Identificación del hijo ${index + 1} requerida`; hasError = true; }
+      else {
+        for (const file of hijo.identificacion) {
+          const msg = archivoInvalido(file, true);
+          if (msg) { err.identificacion = msg; hasError = true; break; }
+        }
+      }
+      hijosErrores.push(err);
+    });
+    if (hasError) newErrors.hijos = hijosErrores;
+  };
+
+  const validarContactoPadres = (newErrors: FormErrors) => {
+    if (!formData.nombreMadre.trim()) newErrors.nombreMadre = 'Campo requerido';
+    if (!formData.telefonoMadre.trim()) newErrors.telefonoMadre = 'Campo requerido';
+    else if (!esTelefonoValido(formData.telefonoMadre)) newErrors.telefonoMadre = 'Ingresa un teléfono válido (ej: 809-123-4567)';
+    if (!formData.nombrePadre.trim()) newErrors.nombrePadre = 'Campo requerido';
+    if (!formData.telefonoPadre.trim()) newErrors.telefonoPadre = 'Campo requerido';
+    else if (!esTelefonoValido(formData.telefonoPadre)) newErrors.telefonoPadre = 'Ingresa un teléfono válido (ej: 809-123-4567)';
+    if (!formData.direccionPadres.trim()) newErrors.direccionPadres = 'Campo requerido';
+    if (!formData.email.trim()) {
+      newErrors.email = 'Campo requerido';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Email inválido';
+    }
+  };
+
   const validateStep1 = () => {
     const newErrors: FormErrors = {};
     const { tipoRegistro } = formData;
@@ -648,81 +739,13 @@ const ToseiGusokuForm = () => {
     }
 
     if (tipoRegistro === 'adulto') {
-      if (!formData.nombreAdulto.trim()) newErrors.nombreAdulto = 'Campo requerido';
-      if (!formData.fechaNacimientoAdulto) newErrors.fechaNacimientoAdulto = 'Campo requerido';
-      if (!formData.sexoAdulto) newErrors.sexoAdulto = 'Selecciona una opción';
-      if (!formData.tipoSangreAdulto) newErrors.tipoSangreAdulto = 'Selecciona una opción';
-      if (!formData.direccionAdulto.trim()) newErrors.direccionAdulto = 'Campo requerido';
-      if (formData.tallaPantalonAdulto && !TALLAS_ROPA.includes(formData.tallaPantalonAdulto)) newErrors.tallaPantalonAdulto = 'Selecciona una talla válida';
-      else if (!formData.tallaPantalonAdulto) newErrors.tallaPantalonAdulto = 'Selecciona una talla';
-      if (formData.tallaCamisetaAdulto && !TALLAS_ROPA.includes(formData.tallaCamisetaAdulto)) newErrors.tallaCamisetaAdulto = 'Selecciona una talla válida';
-      else if (!formData.tallaCamisetaAdulto) newErrors.tallaCamisetaAdulto = 'Selecciona una talla';
-      if (!formData.cedula.trim()) newErrors.cedula = 'Campo requerido';
-      else if (!esCedulaValida(formData.cedula)) newErrors.cedula = 'La cédula debe tener exactamente 11 dígitos (ej: 00123456789)';
-      if (!formData.fotoAdulto) newErrors.fotoAdulto = 'Foto requerida';
-      else {
-        const msg = archivoInvalido(formData.fotoAdulto, false);
-        if (msg) newErrors.fotoAdulto = msg;
-      }
-      if (formData.identAdulto.length === 0) {
-        newErrors.identAdulto = 'Identificación requerida';
-      } else {
-        for (const file of formData.identAdulto) {
-          const msg = archivoInvalido(file, true);
-          if (msg) { newErrors.identAdulto = msg; break; }
-        }
-      }
-      if (!formData.email.trim()) {
-        newErrors.email = 'Campo requerido';
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        newErrors.email = 'Email inválido';
-      }
-      if (!formData.telefonoContacto.trim()) newErrors.telefonoContacto = 'Campo requerido';
-      else if (!esTelefonoValido(formData.telefonoContacto)) newErrors.telefonoContacto = 'Ingresa un teléfono válido (ej: 809-123-4567)';
-      if (formData.practicoKarateAdulto === 'si' && !formData.kyuAdulto) newErrors.kyuAdulto = 'Selecciona el grado alcanzado';
+      validarAdulto(newErrors);
+    } else if (tipoRegistro === 'familiar') {
+      validarAdulto(newErrors);
+      validarHijos(newErrors);
     } else {
-      // Menor
-      const hijosErrores: { [key: string]: string }[] = [];
-      let hasError = false;
-      formData.hijos.forEach((hijo, index) => {
-        const err: { [key: string]: string } = {};
-        if (!hijo.nombre.trim()) { err.nombre = `Nombre del hijo ${index + 1} requerido`; hasError = true; }
-        if (!hijo.fechaNacimiento) { err.fechaNacimiento = `Fecha de nacimiento del hijo ${index + 1} requerida`; hasError = true; }
-        if (!hijo.tipoSangre) { err.tipoSangre = `Tipo de sangre del hijo ${index + 1} requerido`; hasError = true; }
-        if (!hijo.sexo) { err.sexo = `Sexo del hijo ${index + 1} requerido`; hasError = true; }
-        if (hijo.tallaPantalon && !TALLAS_ROPA.includes(hijo.tallaPantalon)) { err.tallaPantalon = `Selecciona una talla válida para el hijo ${index + 1}`; hasError = true; }
-        else if (!hijo.tallaPantalon) { err.tallaPantalon = `Selecciona una talla para el hijo ${index + 1}`; hasError = true; }
-        if (hijo.tallaCamiseta && !TALLAS_ROPA.includes(hijo.tallaCamiseta)) { err.tallaCamiseta = `Selecciona una talla válida para el hijo ${index + 1}`; hasError = true; }
-        else if (!hijo.tallaCamiseta) { err.tallaCamiseta = `Selecciona una talla para el hijo ${index + 1}`; hasError = true; }
-        if (!hijo.foto) { err.foto = `Foto del hijo ${index + 1} requerida`; hasError = true; }
-        else {
-          const msg = archivoInvalido(hijo.foto, false);
-          if (msg) { err.foto = msg; hasError = true; }
-        }
-        if (hijo.practicoKarate === 'si' && !hijo.kyu) { err.kyu = `Grado del hijo ${index + 1} requerido`; hasError = true; }
-        if (hijo.identificacion.length === 0) { err.identificacion = `Identificación del hijo ${index + 1} requerida`; hasError = true; }
-        else {
-          for (const file of hijo.identificacion) {
-            const msg = archivoInvalido(file, true);
-            if (msg) { err.identificacion = msg; hasError = true; break; }
-          }
-        }
-        hijosErrores.push(err);
-      });
-      if (hasError) newErrors.hijos = hijosErrores;
-
-      if (!formData.nombreMadre.trim()) newErrors.nombreMadre = 'Campo requerido';
-      if (!formData.telefonoMadre.trim()) newErrors.telefonoMadre = 'Campo requerido';
-      else if (!esTelefonoValido(formData.telefonoMadre)) newErrors.telefonoMadre = 'Ingresa un teléfono válido (ej: 809-123-4567)';
-      if (!formData.nombrePadre.trim()) newErrors.nombrePadre = 'Campo requerido';
-      if (!formData.telefonoPadre.trim()) newErrors.telefonoPadre = 'Campo requerido';
-      else if (!esTelefonoValido(formData.telefonoPadre)) newErrors.telefonoPadre = 'Ingresa un teléfono válido (ej: 809-123-4567)';
-      if (!formData.direccionPadres.trim()) newErrors.direccionPadres = 'Campo requerido';
-      if (!formData.email.trim()) {
-        newErrors.email = 'Campo requerido';
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        newErrors.email = 'Email inválido';
-      }
+      validarHijos(newErrors);
+      validarContactoPadres(newErrors);
     }
 
     setErrors(newErrors);
@@ -763,14 +786,44 @@ const ToseiGusokuForm = () => {
   };
 
   const submitEnrollment = async () => {
+    const esTutor = formData.tipoRegistro === 'familiar';
+    const tutorApplicant = {
+      name: formData.nombreAdulto,
+      dateOfBirth: formData.fechaNacimientoAdulto,
+      profileData: {
+        sexo: formData.sexoAdulto,
+        bloodType: formData.tipoSangreAdulto,
+        height: formData.alturaAdulto,
+        pantSize: formData.tallaPantalonAdulto,
+        shirtSize: formData.tallaCamisetaAdulto,
+        address: formData.direccionAdulto,
+        nationalId: formData.cedula,
+        medicalInfo: formData.condicionMedica,
+        haPracticadoKarate: formData.practicoKarateAdulto === 'si',
+        kyu: formData.practicoKarateAdulto === 'si' ? formData.kyuAdulto : '',
+        ...(esTutor ? { esTutor: true, relacionConHijos: formData.relacionTutor } : {}),
+      },
+    };
+    const hijoApplicants = formData.hijos.map((hijo) => ({ name: hijo.nombre, dateOfBirth: hijo.fechaNacimiento, email: hijo.email.trim() || undefined, profileData: { sexo: hijo.sexo, bloodType: hijo.tipoSangre, height: hijo.altura, pantSize: hijo.tallaPantalon, shirtSize: hijo.tallaCamiseta, medicalInfo: formData.condicionMedica, haPracticadoKarate: hijo.practicoKarate === 'si', kyu: hijo.practicoKarate === 'si' ? hijo.kyu : '' } }));
     const applicants = formData.tipoRegistro === 'adulto'
-      ? [{ name: formData.nombreAdulto, dateOfBirth: formData.fechaNacimientoAdulto, profileData: { sexo: formData.sexoAdulto, bloodType: formData.tipoSangreAdulto, height: formData.alturaAdulto, pantSize: formData.tallaPantalonAdulto, shirtSize: formData.tallaCamisetaAdulto, address: formData.direccionAdulto, nationalId: formData.cedula, medicalInfo: formData.condicionMedica, haPracticadoKarate: formData.practicoKarateAdulto === 'si', kyu: formData.practicoKarateAdulto === 'si' ? formData.kyuAdulto : '' } }]
-      : formData.hijos.map((hijo) => ({ name: hijo.nombre, dateOfBirth: hijo.fechaNacimiento, profileData: { sexo: hijo.sexo, bloodType: hijo.tipoSangre, height: hijo.altura, pantSize: hijo.tallaPantalon, shirtSize: hijo.tallaCamiseta, medicalInfo: formData.condicionMedica, haPracticadoKarate: hijo.practicoKarate === 'si', kyu: hijo.practicoKarate === 'si' ? hijo.kyu : '' } }));
+      ? [tutorApplicant]
+      : formData.tipoRegistro === 'familiar'
+        ? [tutorApplicant, ...hijoApplicants]
+        : hijoApplicants;
+    const contactPhone = formData.tipoRegistro === 'menor' ? formData.telefonoMadre : formData.telefonoContacto;
     const uploadData = new FormData();
-    uploadData.append('payload', JSON.stringify({ email: formData.email, phone: formData.tipoRegistro === 'adulto' ? formData.telefonoContacto : formData.telefonoMadre, applicants, registrationData: { tipoRegistro: formData.tipoRegistro, nombreMadre: formData.nombreMadre, telefonoMadre: formData.telefonoMadre, nombrePadre: formData.nombrePadre, telefonoPadre: formData.telefonoPadre, direccionPadres: formData.direccionPadres, condicionMedica: formData.condicionMedica, horasPractica: formData.horasPractica, espacioCasa: formData.espacioCasa, compromisoDiario: formData.compromisoDiario, asistenciaPadre: formData.asistenciaPadre, metodoMotivacion: formData.metodoMotivacion, razonesKarate: formData.razonesKarate, compromisoObstaculos: formData.compromisoObstaculos, aceptoPago: formData.aceptoPago, aceptoMultas: formData.aceptoMultas, aceptoPagosParciales: formData.aceptoPagosParciales, aceptoPagoIninterrumpido: formData.aceptoPagoIninterrumpido, aceptoDerechoAdmision: formData.aceptoDerechoAdmision, aceptoPoliticas: formData.aceptoPoliticas, aceptoTerminosLegales: true, terminosLegalesAceptadosEn: new Date().toISOString() } }));
+    uploadData.append('payload', JSON.stringify({ email: formData.email, phone: contactPhone, applicants, registrationData: { tipoRegistro: formData.tipoRegistro, esTutor, relacionTutor: esTutor ? formData.relacionTutor : '', nombreMadre: formData.nombreMadre, telefonoMadre: formData.telefonoMadre, nombrePadre: formData.nombrePadre, telefonoPadre: formData.telefonoPadre, direccionPadres: formData.direccionPadres, condicionMedica: formData.condicionMedica, horasPractica: formData.horasPractica, espacioCasa: formData.espacioCasa, compromisoDiario: formData.compromisoDiario, asistenciaPadre: formData.asistenciaPadre, metodoMotivacion: formData.metodoMotivacion, razonesKarate: formData.razonesKarate, compromisoObstaculos: formData.compromisoObstaculos, aceptoPago: formData.aceptoPago, aceptoMultas: formData.aceptoMultas, aceptoPagosParciales: formData.aceptoPagosParciales, aceptoPagoIninterrumpido: formData.aceptoPagoIninterrumpido, aceptoDerechoAdmision: formData.aceptoDerechoAdmision, aceptoPoliticas: formData.aceptoPoliticas, aceptoTerminosLegales: true, terminosLegalesAceptadosEn: new Date().toISOString() } }));
     if (formData.tipoRegistro === 'adulto') {
       if (formData.fotoAdulto) uploadData.append('document-0-PROFILE_PHOTO', formData.fotoAdulto);
       formData.identAdulto.forEach((file) => uploadData.append('document-0-IDENTITY', file));
+    } else if (formData.tipoRegistro === 'familiar') {
+      if (formData.fotoAdulto) uploadData.append('document-0-PROFILE_PHOTO', formData.fotoAdulto);
+      formData.identAdulto.forEach((file) => uploadData.append('document-0-IDENTITY', file));
+      formData.hijos.forEach((hijo, index) => {
+        const docIndex = index + 1;
+        if (hijo.foto) uploadData.append(`document-${docIndex}-PROFILE_PHOTO`, hijo.foto);
+        hijo.identificacion.forEach((file) => uploadData.append(`document-${docIndex}-IDENTITY`, file));
+      });
     } else {
       formData.hijos.forEach((hijo, index) => { if (hijo.foto) uploadData.append(`document-${index}-PROFILE_PHOTO`, hijo.foto); hijo.identificacion.forEach((file) => uploadData.append(`document-${index}-IDENTITY`, file)); });
     }
@@ -846,15 +899,43 @@ const ToseiGusokuForm = () => {
             >
               Adulto (mayor de edad)
             </button>
+            <button
+              type="button"
+              onClick={() => handleTipoRegistro('familiar')}
+              className={`px-6 py-2 rounded-full border-1 transition font-medium ${tipoRegistro === 'familiar' ? 'border-brand-accent bg-brand-accent/10 text-brand-accent' : 'border-stone-300 text-stone-500 hover:border-stone-400'}`}
+            >
+              Familia (tutor + hijos)
+            </button>
           </div>
           {errors.tipoRegistro && <p className="text-red-500 text-sm text-center mt-2">{errors.tipoRegistro}</p>}
         </div>
 
         {tipoRegistro === 'ninguno' ? (
           <p className="text-center text-stone-400 text-sm pt-2">Selecciona una opción para completar tus datos.</p>
-        ) : tipoRegistro === 'adulto' ? (
-          // ===== ADULTO =====
-          <div className="space-y-4">
+        ) : tipoRegistro === 'adulto' || tipoRegistro === 'familiar' ? (
+          // ===== ADULTO / FAMILIAR =====
+          <div className="space-y-6">
+            {tipoRegistro === 'familiar' && (
+              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+                <h4 className="font-semibold text-emerald-800">Tutor que también se inscribe</h4>
+                <p className="text-sm text-emerald-700">El padre/madre o tutor se inscribe como alumno y, al completar su registro, podrá dar seguimiento a la cuenta de sus hijos desde su propio portal.</p>
+              </div>
+            )}
+            <div className="space-y-4">
+              {tipoRegistro === 'familiar' && (
+                <div>
+                  <label className="block text-sm font-medium text-stone-500 mb-1">Relación del tutor con los hijos <span className="text-red-500">*</span></label>
+                  <div className="relative">
+                    <select name="relacionTutor" value={formData.relacionTutor} onChange={handleChange}
+                      className="w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none border-brand-accent/60">
+                      <option value="Padre">Padre</option>
+                      <option value="Madre">Madre</option>
+                      <option value="Tutor legal">Tutor legal</option>
+                    </select>
+                    <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+              )}
             <div>
               <label className="block text-sm font-medium text-stone-500 mb-1">Nombre y Apellido <span className="text-red-500">*</span></label>
               <input type="text" name="nombreAdulto" value={formData.nombreAdulto} onChange={handleChange}
@@ -983,6 +1064,136 @@ const ToseiGusokuForm = () => {
                 onRemove={handleAdultoIdentRemove}
               />
             </div>
+
+            {tipoRegistro === 'familiar' && (
+              <div className="border-t pt-4 mt-2">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-blue-800">Datos de los hijos</h4>
+                  <p className="text-sm text-blue-600">Agrega uno o más hijos. Todos los campos son obligatorios.</p>
+                </div>
+
+                {formData.hijos.map((hijo, index) => (
+                  <div key={hijo.id} className="border border-stone-200 rounded-lg p-4 space-y-3 relative">
+                    {formData.hijos.length > 1 && (
+                      <button type="button" onClick={() => eliminarHijo(hijo.id)}
+                        className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm">✕ Eliminar</button>
+                    )}
+                    <h5 className="font-medium text-stone-700">Hijo #{index + 1}</h5>
+                    <div>
+                      <label className="block text-sm font-medium text-stone-500 mb-1">Nombre y Apellido <span className="text-red-500">*</span></label>
+                      <input type="text" value={hijo.nombre} onChange={(e) => handleHijoChange(hijo.id, 'nombre', e.target.value)}
+                        className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.hijos?.[index]?.nombre ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                      {errors.hijos?.[index]?.nombre && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.nombre}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-stone-500 mb-1">Correo del hijo (opcional)</label>
+                      <input type="email" value={hijo.email} onChange={(e) => handleHijoChange(hijo.id, 'email', e.target.value)}
+                        className="w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" placeholder="correo@ejemplo.com" />
+                      <p className="text-xs text-stone-400 mt-1">Si tiene correo propio podrá tener su propia cuenta; si no, el padre lo verá desde su cuenta.</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-stone-500 mb-1">Fecha de Nacimiento <span className="text-red-500">*</span></label>
+                      <input type="date" value={hijo.fechaNacimiento} onChange={(e) => handleHijoChange(hijo.id, 'fechaNacimiento', e.target.value)}
+                        className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.hijos?.[index]?.fechaNacimiento ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                      {errors.hijos?.[index]?.fechaNacimiento && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.fechaNacimiento}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-stone-500 mb-1">Sexo <span className="text-red-500">*</span></label>
+                      <div className="relative">
+                        <select value={hijo.sexo} onChange={(e) => handleHijoChange(hijo.id, 'sexo', e.target.value)}
+                          className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.hijos?.[index]?.sexo ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                          <option value="">Selecciona...</option>
+                          <option value="Masculino">Masculino</option>
+                          <option value="Femenino">Femenino</option>
+                        </select>
+                        <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                      {errors.hijos?.[index]?.sexo && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.sexo}</p>}
+                    </div>
+                    <KaratePrevioFields
+                      name={`practico-karate-hijo-${hijo.id}`}
+                      practico={hijo.practicoKarate}
+                      kyu={hijo.kyu}
+                      error={errors.hijos?.[index]?.kyu}
+                      onPractico={(value) => handleHijoChange(hijo.id, 'practicoKarate', value)}
+                      onKyu={(value) => handleHijoChange(hijo.id, 'kyu', value)}
+                    />
+                    <div>
+                      <label className="block text-sm font-medium text-stone-500 mb-1">Tipo de Sangre <span className="text-red-500">*</span></label>
+                      <div className="relative">
+                        <select value={hijo.tipoSangre} onChange={(e) => handleHijoChange(hijo.id, 'tipoSangre', e.target.value)}
+                          className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.hijos?.[index]?.tipoSangre ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                          <option value="">Selecciona...</option>
+                          {TIPOS_SANGRE.map(t => <option key={t} value={t}>{t}</option>)}
+                        </select>
+                        <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                      {errors.hijos?.[index]?.tipoSangre && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.tipoSangre}</p>}
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-sm font-medium text-stone-500 mb-1">Altura (cm)</label>
+                        <input type="number" min="50" max="250" value={hijo.altura} onChange={(e) => handleHijoChange(hijo.id, 'altura', e.target.value)}
+                          className="w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" placeholder="Ej: 130" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-stone-500 mb-1">Talla de Pantalón <span className="text-red-500">*</span></label>
+                        <div className="relative">
+                          <select value={hijo.tallaPantalon} onChange={(e) => handleHijoChange(hijo.id, 'tallaPantalon', e.target.value)}
+                            className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.hijos?.[index]?.tallaPantalon ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                            <option value="">Selecciona...</option>
+                            {TALLAS_ROPA.map(t => <option key={t} value={t}>{t}</option>)}
+                          </select>
+                          <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
+                        {errors.hijos?.[index]?.tallaPantalon && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.tallaPantalon}</p>}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-stone-500 mb-1">Talla de T-shirt <span className="text-red-500">*</span></label>
+                        <div className="relative">
+                          <select value={hijo.tallaCamiseta} onChange={(e) => handleHijoChange(hijo.id, 'tallaCamiseta', e.target.value)}
+                            className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.hijos?.[index]?.tallaCamiseta ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                            <option value="">Selecciona...</option>
+                            {TALLAS_ROPA.map(t => <option key={t} value={t}>{t}</option>)}
+                          </select>
+                          <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
+                        {errors.hijos?.[index]?.tallaCamiseta && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.tallaCamiseta}</p>}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <FileDropZone
+                        label="Foto (cara, fondo blanco) *"
+                        files={hijo.foto ? [hijo.foto] : []}
+                        previews={hijo.fotoPreview ? [hijo.fotoPreview] : []}
+                        error={errors.hijos?.[index]?.foto}
+                        accept="image/*"
+                        hint="Formatos: JPG, PNG"
+                        onFiles={(fs) => handleHijoFoto(hijo.id, fs[0] ?? null)}
+                        onRemove={() => handleHijoFotoRemove(hijo.id)}
+                      />
+                      <FileDropZone
+                        label="Identificación (Partida de Nac. y/o Pasaporte) *"
+                        files={hijo.identificacion}
+                        previews={hijo.identPreview}
+                        error={errors.hijos?.[index]?.identificacion}
+                        accept="image/*,.pdf"
+                        multiple
+                        hint="Formatos: JPG, PNG, PDF."
+                        onFiles={(fs) => handleHijoIdentFiles(hijo.id, fs)}
+                        onRemove={(i) => handleHijoIdentRemove(hijo.id, i)}
+                      />
+                    </div>
+                  </div>
+                ))}
+
+                <button type="button" onClick={agregarHijo}
+                  className="w-full py-2 border-2 border-dashed border-brand-accent text-brand-accent rounded-lg hover:bg-brand-accent/5 transition font-medium">
+                  + Agregar otro hijo
+                </button>
+              </div>
+            )}
+          </div>
           </div>
         ) : (
           // ===== MENOR =====
@@ -1004,6 +1215,12 @@ const ToseiGusokuForm = () => {
                   <input type="text" value={hijo.nombre} onChange={(e) => handleHijoChange(hijo.id, 'nombre', e.target.value)}
                     className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.hijos?.[index]?.nombre ? 'border-red-500' : 'border-brand-accent/60'}`} />
                   {errors.hijos?.[index]?.nombre && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.nombre}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-stone-500 mb-1">Correo del hijo (opcional)</label>
+                  <input type="email" value={hijo.email} onChange={(e) => handleHijoChange(hijo.id, 'email', e.target.value)}
+                    className="w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" placeholder="correo@ejemplo.com" />
+                  <p className="text-xs text-stone-400 mt-1">Si tiene correo propio podrá tener su propia cuenta; si no, el padre lo verá desde su cuenta.</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-stone-500 mb-1">Fecha de Nacimiento <span className="text-red-500">*</span></label>

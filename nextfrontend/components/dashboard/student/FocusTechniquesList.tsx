@@ -1,19 +1,21 @@
 import Link from 'next/link'
 import { Award, CheckCheck, ChevronRight, Clock3, Info } from 'lucide-react'
 import type { StudentTechnique } from '@/types/dashboard'
+import { studentHref } from '@/lib/dashboard/student-links'
 
 interface FocusTechniquesListProps {
     techniques: StudentTechnique[]
+    studentId?: string
 }
 
-export function FocusTechniquesList({ techniques }: FocusTechniquesListProps) {
+export function FocusTechniquesList({ techniques, studentId }: FocusTechniquesListProps) {
     const displayTechniques = techniques.filter(({ status }) => status !== 'APPROVED').slice(0, 3)
 
     return (
         <section className="rounded-lg border border-edge bg-surface-2 shadow-sm">
             <div className="flex items-center justify-between border-b border-edge px-5 py-4">
                 <div className="flex items-center gap-2"><Award aria-hidden="true" className="size-4 text-warn-text" /><h2 className="font-display text-sm font-extrabold uppercase tracking-wide text-ink">Técnicas en enfoque</h2></div>
-                <Link className="inline-flex items-center gap-0.5 text-xs font-bold text-accent hover:underline" href="/dashboard/estudiante/progreso">Ver syllabus <ChevronRight aria-hidden="true" className="size-3.5" /></Link>
+                <Link className="inline-flex items-center gap-0.5 text-xs font-bold text-accent hover:underline" href={studentHref('/dashboard/estudiante/progreso', studentId)}>Ver syllabus <ChevronRight aria-hidden="true" className="size-3.5" /></Link>
             </div>
             {displayTechniques.length === 0 ? (
                 <p className="px-5 py-8 text-sm text-ink-3">No tienes técnicas pendientes de práctica.</p>

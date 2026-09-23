@@ -3,6 +3,7 @@ import { auth } from '@/auth'
 import { DashboardShell } from '@/components/dashboard/shell/DashboardShell'
 import type { DashboardRole } from '@/types/dashboard'
 import { hasAnyRole } from '@/lib/auth/roles'
+import { getFamilyMembers } from '@/lib/family/guardians'
 import { getAdminPendingEnrollmentCount, getAdminPendingDocumentCount } from '@/lib/dashboard/admin-queries'
 import { getUnreadNotificationCount } from '@/lib/notifications/queries'
 import { redirect } from 'next/navigation'
@@ -14,7 +15,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
         redirect('/login')
     }
 
-    if (!hasAnyRole(session.user, ['STUDENT', 'INSTRUCTOR', 'SCHOOL_ADMIN', 'SUPERADMIN'])) {
+    if (!hasAnyRole(session.user, ['STUDENT', 'GUARDIAN', 'INSTRUCTOR', 'SCHOOL_ADMIN', 'SUPERADMIN'])) {
         redirect('/no-autorizado')
     }
 
@@ -23,6 +24,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     const pendingEnrollmentCount = hasAnyRole(session.user, ['SCHOOL_ADMIN', 'SUPERADMIN']) ? await getAdminPendingEnrollmentCount(session.user.id) : 0
     const pendingDocumentCount = hasAnyRole(session.user, ['SCHOOL_ADMIN', 'SUPERADMIN']) ? await getAdminPendingDocumentCount(session.user.id) : 0
     const unreadNotificationCount = await getUnreadNotificationCount(session.user.id)
+    const familyMembers = hasAnyRole(session.user, ['GUARDIAN']) ? await getFamilyMembers(session.user.id) : { self: null, children: [] }
 
-    return <DashboardShell roles={roles} userName={session.user.name} primaryRole={primaryRole} pendingEnrollmentCount={pendingEnrollmentCount} pendingDocumentCount={pendingDocumentCount} unreadNotificationCount={unreadNotificationCount}>{children}</DashboardShell>
+    return <DashboardShell roles={roles} userName={session.user.name} primaryRole={primaryRole} pendingEnrollmentCount={pendingEnrollmentCount} pendingDocumentCount={pendingDocumentCount} unreadNotificationCount={unreadNotificationCount} familyMembers={familyMembers}>{children}</DashboardShell>
 }

@@ -8,16 +8,18 @@ import type { StudentProfile } from '@/types/dashboard'
 interface EditProfileModalProps {
     onClose: () => void
     profile: StudentProfile
+    studentId?: string
 }
 
 const fieldClass =
     'mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500'
 
-export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
+export function EditProfileModal({ onClose, profile, studentId }: EditProfileModalProps) {
     const router = useRouter()
     const [firstName, setFirstName] = useState(profile.firstName)
     const [lastName, setLastName] = useState(profile.lastName)
     const [dateOfBirth, setDateOfBirth] = useState(profile.dateOfBirth.slice(0, 10))
+    const [gender, setGender] = useState(profile.gender ?? '')
     const [contactPhone, setContactPhone] = useState(profile.contactPhone ?? '')
     const [emergencyContact, setEmergencyContact] = useState(profile.emergencyContact ?? '')
     const [medicalInfo, setMedicalInfo] = useState(profile.medicalInfo ?? '')
@@ -34,6 +36,7 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
         const body: Record<string, unknown> = {
             firstName: firstName.trim(),
             lastName: lastName.trim(),
+            gender: gender ? (gender as 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY') : null,
             contactPhone: contactPhone.trim() || null,
             emergencyContact: emergencyContact.trim() || null,
             medicalInfo: medicalInfo.trim() || null,
@@ -46,7 +49,7 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
 
         const response = await fetch('/api/dashboard/student/profile', {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', ...(studentId ? { 'X-Student-Id': studentId } : {}) },
             body: JSON.stringify(body),
         })
 
@@ -120,6 +123,22 @@ export function EditProfileModal({ onClose, profile }: EditProfileModalProps) {
                             type="date"
                             value={dateOfBirth}
                         />
+                    </label>
+
+                    <label className="block text-sm font-semibold text-ink" htmlFor="edit-gender">
+                        Sexo
+                        <select
+                            className={fieldClass}
+                            id="edit-gender"
+                            onChange={(event) => setGender(event.target.value)}
+                            value={gender}
+                        >
+                            <option value="">No especificar</option>
+                            <option value="MALE">Masculino</option>
+                            <option value="FEMALE">Femenino</option>
+                            <option value="OTHER">Otro</option>
+                            <option value="PREFER_NOT_TO_SAY">Prefiero no decirlo</option>
+                        </select>
                     </label>
 
                     <label className="block text-sm font-semibold text-ink" htmlFor="edit-phone">

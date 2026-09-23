@@ -66,6 +66,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 	const [isPurging, setIsPurging] = useState(false)
 	const [actionError, setActionError] = useState<string | null>(null)
 	const [invitationLink, setInvitationLink] = useState<{ url: string; name: string; email: string | null } | null>(null)
+	const [documents, setDocuments] = useState(student.documents)
 
 	const studentFullName = `${student.firstName} ${student.lastName}`
 
@@ -156,13 +157,21 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 
 	const currentRankInfo = student.currentRank ? student.availableRanks.find((rank) => rank.name === student.currentRank) : undefined
 	const nextRank = student.nextRankName ? student.availableRanks.find((rank) => rank.name === student.nextRankName) : undefined
-	const assignedTechniqueIds = new Set(student.techniques.map((entry) => entry.technique.id))
 	const nextRankTechniques = nextRank?.techniques ?? []
-	const requiredKatas = nextRankTechniques.filter((technique) => assignedTechniqueIds.has(technique.id))
+	// Todas las katas del plan del grado siguiente (las requeridas para pasar de nivel),
+	// asignadas o no al expediente. Las que falten se muestran como "sin asignar".
+	const requiredKatas = nextRankTechniques
 	const masteredCount = student.techniques.filter(({ approved }) => approved).length
 	const masteredTowardNext = student.techniques.filter((entry) => entry.approved && requiredKatas.some((required) => required.id === entry.technique.id)).length
 	const nextRankPercent = requiredKatas.length > 0 ? Math.round((masteredTowardNext / requiredKatas.length) * 100) : 0
 	const eligibleRanks = student.availableRanks.filter((rank) => rank.order > (student.currentRankOrder ?? 0))
+
+	// Katas requeridas del grado actual + siguiente, para pre-seleccionarlas por
+	// defecto en el diálogo "Asignar katas".
+	const requiredGradeIds = [...new Set([
+		...(currentRankInfo?.techniques ?? []).map((technique) => technique.id),
+		...(nextRank?.techniques ?? []).map((technique) => technique.id),
+	])]
 
 	const availableTechniques = [...new Map(student.availableRanks.flatMap((rank) => rank.techniques).map((technique) => [technique.id, technique])).values()]
 	const assignedTechniques = student.techniques.map((entry) => ({ id: entry.technique.id, approved: entry.approved }))
@@ -319,29 +328,20 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 						<div className="flex flex-wrap items-start justify-between gap-2">
 							<div>
 								<h2 className="font-display text-base font-bold text-ink">Katas requeridas hacia {student.nextRankName ?? 'el grado máximo'}</h2>
-								<p className="mt-1 text-xs text-ink-3">Se muestran las katas del plan del grado que el alumno tiene marcadas en su expediente. Desmarcar una kata en &ldquo;Asignar katas&rdquo; la quita de aquí.</p>
+								<p className="mt-1 text-xs text-ink-3">Katas del plan del grado siguiente. Las que no están en el expediente aparecen como &ldquo;sin asignar&rdquo;; usa &ldquo;Asignar katas&rdquo; para incorporarlas.</p>
 							</div>
 							<span className="text-xs font-semibold text-accent">{masteredTowardNext} de {requiredKatas.length} dominadas</span>
 						</div>
 						{requiredKatas.length === 0 ? (
 							<div className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 px-4 py-8 text-center text-sm text-ink-3">
-								{nextRankTechniques.length === 0 ? (
-									<>
-										El grado {student.nextRankName ?? 'siguiente'} no tiene katas en el plan. Configúralas en{' '}
-										<Link className="font-semibold text-accent hover:text-accent-text" href="/dashboard/admin/grados-y-katas">Grados y katas</Link>.
-									</>
-								) : (
-									<>
-										El alumno no tiene marcadas katas del plan de {student.nextRankName ?? 'este grado'}. Usa &ldquo;Asignar katas&rdquo; para seleccionarlas o revisa el plan en{' '}
-										<Link className="font-semibold text-accent hover:text-accent-text" href="/dashboard/admin/grados-y-katas">Grados y katas</Link>.
-									</>
-								)}
+								El grado {student.nextRankName ?? 'siguiente'} no tiene katas en el plan. Configúralas en{' '}
+								<Link className="font-semibold text-accent hover:text-accent-text" href="/dashboard/admin/grados-y-katas">Grados y katas</Link>.
 							</div>
 						) : (
 							<div className="mt-4 divide-y divide-edge overflow-hidden rounded-lg border border-edge bg-surface-1">
 								{requiredKatas.map((required) => {
 									const entry = student.techniques.find(({ technique }) => technique.id === required.id)
-									const status = entry?.status ?? 'PENDING'
+									const isAssigned = Boolean(entry)
 
 									return (
 										<div key={required.id} className="flex items-center justify-between gap-3 p-3 text-xs transition-colors hover:bg-surface-3/50">
@@ -356,7 +356,11 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 											<div className="flex items-center gap-2">
 												{entry?.practiceHours ? <span className="text-[11px] text-ink-3">{entry.practiceHours} h</span> : null}
 												{entry?.practiceRepetitions ? <span className="text-[11px] text-ink-3">{entry.practiceRepetitions} rep.</span> : null}
-												<KataBadge status={status} />
+												{isAssigned ? (
+													<KataBadge status={entry!.status} />
+												) : (
+													<span className="rounded border border-edge-strong bg-surface-2 px-2 py-0.5 text-[10px] font-semibold text-ink-3">Sin asignar</span>
+												)}
 											</div>
 										</div>
 									)
@@ -570,9 +574,9 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 				</section>
 			)}
 
-			<AdminStudentMedia documents={student.documents} />
+			<AdminStudentMedia documents={documents} />
 
-			<AdminStudentDocuments documents={student.documents} studentId={student.id} />
+			<AdminStudentDocuments documents={documents} studentId={student.id} onChange={setDocuments} />
 
 			<section className="mt-7 rounded-lg border border-edge bg-surface-2 shadow-sm">
 				<div className="flex items-center justify-between border-b border-edge px-5 py-4">
@@ -624,6 +628,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 				onClose={() => setIsKataAssignOpen(false)}
 				assignedTechniques={assignedTechniques}
 				availableTechniques={availableTechniques}
+				defaultRequiredIds={requiredGradeIds}
 			/>
 
 			<AdminPlacementModal

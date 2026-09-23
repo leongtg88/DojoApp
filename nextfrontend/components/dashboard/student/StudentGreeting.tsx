@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { BadgeCheck, UserRound } from 'lucide-react'
 import type { StudentProfile } from '@/types/dashboard'
+import { studentHref } from '@/lib/dashboard/student-links'
 
 interface StudentGreetingProps {
     profile: StudentProfile
@@ -18,7 +19,7 @@ export function StudentGreeting({ profile }: StudentGreetingProps) {
                 <h1 className="mt-2 font-display text-3xl font-extrabold text-ink sm:text-4xl">{saludo}, {profile.firstName}</h1>
                 <p className="mt-2 text-sm text-ink-3">Sigue tu avance marcial y mantente preparado para el próximo entrenamiento.</p>
             </div>
-            <Link className="flex items-center gap-3 self-start rounded-lg border border-edge-strong bg-surface-2 p-2.5 transition-colors hover:bg-surface-3 sm:self-auto" href="/dashboard/estudiante/perfil">
+            <Link className="flex items-center gap-3 self-start rounded-lg border border-edge-strong bg-surface-2 p-2.5 transition-colors hover:bg-surface-3 sm:self-auto" href={studentHref('/dashboard/estudiante/perfil', profile.id)}>
                 <span className="flex size-10 items-center justify-center rounded-full bg-cyan-500/20 font-display text-sm font-bold text-accent-text">{initials}</span>
                 <span className="min-w-0">
                     <span className="block truncate text-sm font-bold text-ink">{fullName}</span>

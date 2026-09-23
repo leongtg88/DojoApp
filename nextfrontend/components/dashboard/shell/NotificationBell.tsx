@@ -214,7 +214,7 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
             </button>
 
             {open && (
-                <div className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-edge bg-surface-2 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                <div className="fixed inset-x-3 top-[4.5rem] z-50 overflow-hidden rounded-xl border border-edge bg-surface-2 shadow-[0_10px_30px_rgba(0,0,0,0.5)] md:absolute md:inset-x-auto md:right-0 md:top-auto md:mt-2 md:w-80 md:max-w-[calc(100vw-2rem)]">
                     <div className="flex items-center justify-between border-b border-edge px-3 py-2">
                         <p className="text-xs font-bold uppercase tracking-wide text-ink-3">Notificaciones</p>
                         {unreadCount > 0 && (

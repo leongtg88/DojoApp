@@ -22,6 +22,7 @@ import type { AttendanceRecord, GradoProgressData, PracticePlace, StudentAttenda
 interface StudentAttendancePunchProps {
   data: StudentAttendancePunchData
   grado?: GradoProgressData | null
+  studentId?: string
 }
 
 const SESSION_OPTIONS = [
@@ -43,9 +44,10 @@ function sessionLabel(sessionType: string | null): string {
   return SESSION_OPTIONS.find(({ value }) => value === sessionType)?.label ?? sessionType ?? 'Clase'
 }
 
-export function StudentAttendancePunch({ data, grado = null }: StudentAttendancePunchProps) {
+export function StudentAttendancePunch({ data, grado = null, studentId }: StudentAttendancePunchProps) {
   const router = useRouter()
   const { summary, records } = data
+  const studentHeader: Record<string, string> = studentId ? { 'X-Student-Id': studentId } : {}
   const currentPeriod = grado?.currentPeriod ?? null
   const classSessions = currentPeriod?.classSessions ?? summary.confirmedCount
   const capacitySessions = currentPeriod?.capacitySessions ?? summary.confirmedCount
@@ -57,6 +59,16 @@ export function StudentAttendancePunch({ data, grado = null }: StudentAttendance
   const [notes, setNotes] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [practiceLines, setPracticeLines] = useState<Array<{ techniqueId: string; repetitions: string; place: PracticePlace }>>([])
+
+  const pad = (value: number) => String(value).padStart(2, '0')
+  const localNow = new Date()
+  const todayValue = `${localNow.getFullYear()}-${pad(localNow.getMonth() + 1)}-${pad(localNow.getDate())}`
+  const minDateValue = (() => {
+    const min = new Date(localNow.getFullYear(), localNow.getMonth(), localNow.getDate() - 6)
+    return `${min.getFullYear()}-${pad(min.getMonth() + 1)}-${pad(min.getDate())}`
+  })()
+  const [punchDate, setPunchDate] = useState(todayValue)
+  const [punchTime, setPunchTime] = useState(() => `${pad(localNow.getHours())}:${pad(localNow.getMinutes())}`)
 
   const [editingRecord, setEditingRecord] = useState<AttendanceRecord | null>(null)
   const [editHours, setEditHours] = useState<number>(1.5)
@@ -81,10 +93,11 @@ export function StudentAttendancePunch({ data, grado = null }: StudentAttendance
     setIsSubmitting(true)
     const response = await fetch('/api/dashboard/student/attendance', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...studentHeader },
       body: JSON.stringify({
         hoursTrained: hours,
         sessionType,
+        date: `${punchDate}T${punchTime}`,
         notes: notes.trim(),
         ...(visiblePracticeLines.length > 0 ? { practiceLogs: visiblePracticeLines } : {}),
       }),
@@ -92,8 +105,15 @@ export function StudentAttendancePunch({ data, grado = null }: StudentAttendance
     setIsSubmitting(false)
 
     if (response.ok) {
+      const payload = await response.json().catch(() => null) as { practiceWarning?: string } | null
+      if (payload?.practiceWarning) {
+        alert(payload.practiceWarning)
+      }
       setNotes('')
       setPracticeLines([])
+      const now = new Date()
+      setPunchDate(`${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`)
+      setPunchTime(`${pad(now.getHours())}:${pad(now.getMinutes())}`)
       router.refresh()
     } else {
       const { error } = await response.json().catch(() => ({ error: 'Error al registrar tu práctica' }))
@@ -114,7 +134,7 @@ export function StudentAttendancePunch({ data, grado = null }: StudentAttendance
     setIsSubmitting(true)
     const response = await fetch(`/api/dashboard/student/attendance/${editingRecord.id}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...studentHeader },
       body: JSON.stringify({ hoursTrained: editHours, sessionType: editSessionType, notes: editNotes.trim() }),
     })
     setIsSubmitting(false)
@@ -131,7 +151,7 @@ export function StudentAttendancePunch({ data, grado = null }: StudentAttendance
   const handleDelete = async (record: AttendanceRecord) => {
     if (!window.confirm('¿Eliminar este registro pendiente?')) return
 
-    const response = await fetch(`/api/dashboard/student/attendance/${record.id}`, { method: 'DELETE' })
+    const response = await fetch(`/api/dashboard/student/attendance/${record.id}`, { method: 'DELETE', headers: studentHeader })
     if (response.ok) {
       router.refresh()
     } else {
@@ -215,6 +235,38 @@ export function StudentAttendancePunch({ data, grado = null }: StudentAttendance
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-2" htmlFor="punch-date">
+                Fecha de la práctica
+              </label>
+              <input
+                className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink focus:border-red-500 focus:outline-none"
+                id="punch-date"
+                max={todayValue}
+                min={minDateValue}
+                onChange={(event) => setPunchDate(event.target.value)}
+                type="date"
+                value={punchDate}
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-2" htmlFor="punch-time">
+                Hora de la práctica
+              </label>
+              <input
+                className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink focus:border-red-500 focus:outline-none"
+                id="punch-time"
+                onChange={(event) => setPunchTime(event.target.value)}
+                type="time"
+                value={punchTime}
+              />
+            </div>
+          </div>
+          <p className="-mt-1 text-[11px] text-ink-4">
+            Por defecto ahora. Puedes registrar hasta 7 días atrás; tu Sensei confirma la asistencia.
+          </p>
+
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-2" htmlFor="punch-hours">
@@ -405,6 +457,12 @@ export function StudentAttendancePunch({ data, grado = null }: StudentAttendance
                         <span className="text-xs font-medium text-ink-2">{sessionLabel(record.sessionType)}</span>
                       </div>
                       {record.notes && <p className="mt-1 text-xs italic text-ink-3">&ldquo;{record.notes}&rdquo;</p>}
+                      {record.practiceLogs && record.practiceLogs.length > 0 && (
+                        <p className="mt-1 flex flex-wrap items-center gap-1 text-[11px] text-ink-3">
+                          <Repeat aria-hidden="true" className="size-3.5 shrink-0 text-accent" />
+                          {record.practiceLogs.map((log) => `${log.techniqueName} ×${log.repetitions}${log.place === 'FUERA' ? ' (fuera)' : ''}`).join(' · ')}
+                        </p>
+                      )}
                       {isConfirmed && record.confirmedByName && (
                         <p className="mt-0.5 flex items-center gap-1 text-[11px] text-ok-text/90">
                           <CheckCircle2 className="size-3" aria-hidden="true" />

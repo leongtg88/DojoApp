@@ -11,6 +11,7 @@ import {
   Flame,
   Hourglass,
   Pencil,
+  Repeat,
   Save,
   Users,
   X,
@@ -288,6 +289,12 @@ export function InstructorAttendanceBoard({ data }: InstructorAttendanceBoardPro
                                                 )}
                                             </div>
                                             {record.notes && <p className="mt-1 rounded border border-edge bg-surface-4/60 px-2 py-1 text-xs text-ink-3">{record.notes}</p>}
+                                            {record.practiceLogs && record.practiceLogs.length > 0 && (
+                                                <p className="mt-1 flex flex-wrap items-center gap-1 text-[11px] text-ink-3">
+                                                    <Repeat className="size-3.5 shrink-0 text-accent" aria-hidden="true" />
+                                                    {record.practiceLogs.map((log) => `${log.techniqueName} ×${log.repetitions}${log.place === 'FUERA' ? ' (fuera)' : ''}`).join(' · ')}
+                                                </p>
+                                            )}
                                             {isConfirmed && record.confirmedByName && (
                                                 <p className="mt-1 flex items-center gap-1 font-mono text-[11px] text-ok-text"><CheckCircle2 className="size-3" aria-hidden="true" />Confirmado por {record.confirmedByName}</p>
                                             )}

@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
-import { hasRole } from '@/lib/auth/roles'
+import { hasAnyRole } from '@/lib/auth/roles'
+import { resolveRequestStudent } from '@/lib/family/guardians'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -22,7 +23,7 @@ interface PracticeRouteContext {
 export async function PATCH(request: Request, { params }: PracticeRouteContext) {
   const session = await auth()
 
-  if (!session?.user?.id || !hasRole(session?.user, 'STUDENT')) {
+  if (!session?.user?.id || !hasAnyRole(session?.user, ['STUDENT', 'GUARDIAN'])) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
@@ -33,8 +34,13 @@ export async function PATCH(request: Request, { params }: PracticeRouteContext) 
     return NextResponse.json({ error: 'Datos de práctica no válidos' }, { status: 400 })
   }
 
+  const view = await resolveRequestStudent(request, session.user.id)
+  if (!view) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+  }
+
   const student = await db.student.findUnique({
-    where: { userId: session.user.id },
+    where: { id: view.studentId },
     select: { id: true },
   })
 

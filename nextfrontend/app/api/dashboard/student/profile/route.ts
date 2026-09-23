@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
-import { hasRole } from '@/lib/auth/roles'
+import { hasAnyRole } from '@/lib/auth/roles'
+import { resolveRequestStudent } from '@/lib/family/guardians'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -12,6 +13,7 @@ const profileUpdateSchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato de fecha inválido')
     .refine((value) => !Number.isNaN(new Date(`${value}T00:00:00.000Z`).getTime()), { message: 'Fecha de nacimiento inválida' })
     .optional(),
+  gender: z.enum(['MALE', 'FEMALE', 'OTHER', 'PREFER_NOT_TO_SAY']).nullable().optional(),
   contactPhone: z.string().trim().max(30).nullable(),
   emergencyContact: z.string().trim().max(500).nullable(),
   medicalInfo: z.string().trim().max(2_000).nullable(),
@@ -28,7 +30,12 @@ const profileUpdateSchema = z.object({
 export async function PATCH(request: Request) {
   const session = await auth()
 
-  if (!session?.user?.id || !hasRole(session?.user, 'STUDENT')) {
+  if (!session?.user?.id || !hasAnyRole(session?.user, ['STUDENT', 'GUARDIAN'])) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+  }
+
+  const view = await resolveRequestStudent(request, session.user.id)
+  if (!view) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
@@ -40,7 +47,7 @@ export async function PATCH(request: Request) {
   }
 
   const student = await db.student.findUnique({
-    where: { userId: session.user.id },
+    where: { id: view.studentId },
     select: { id: true },
   })
 
@@ -54,6 +61,7 @@ export async function PATCH(request: Request) {
       ...(result.data.firstName !== undefined ? { firstName: result.data.firstName } : {}),
       ...(result.data.lastName !== undefined ? { lastName: result.data.lastName } : {}),
       ...(result.data.dateOfBirth !== undefined ? { dateOfBirth: new Date(`${result.data.dateOfBirth}T00:00:00.000Z`) } : {}),
+      ...(result.data.gender !== undefined ? { gender: result.data.gender } : {}),
       contactPhone: result.data.contactPhone,
       emergencyContact: result.data.emergencyContact,
       medicalInfo: result.data.medicalInfo,

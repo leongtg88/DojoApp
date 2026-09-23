@@ -1,5 +1,6 @@
 export type DashboardRole =
 	| 'STUDENT'
+	| 'GUARDIAN'
 	| 'INSTRUCTOR'
 	| 'SCHOOL_ADMIN'
 	| 'SUPERADMIN'
@@ -192,6 +193,8 @@ export interface AdminStudentSummary {
 	contactPhone: string | null
 	medicalInfo: string | null
 	emergencyContact: string | null
+	giSize: string | null
+	beltSize: string | null
 	activeClassNames: string[],
 	activeScheduleIds: string[],
 	planId: string | null,
@@ -359,6 +362,11 @@ export interface AdminAttendanceRecord {
 	status: AttendanceStatus
 	confirmedByName: string | null
 	notes: string | null
+	practiceLogs?: Array<{
+		techniqueName: string
+		repetitions: number
+		place: 'DOJO' | 'FUERA'
+	}>
 }
 
 export interface DashboardBirthday {
@@ -566,6 +574,11 @@ export interface AttendanceRecord {
 	isOutOfSchedule?: boolean
 	className?: string | null
 	sessionId?: string | null
+	practiceLogs?: Array<{
+		techniqueName: string
+		repetitions: number
+		place: 'DOJO' | 'FUERA'
+	}>
 }
 
 export interface StudentPracticeTechniqueOption {

@@ -1,13 +1,13 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasAnyRole, hasRole } from '@/lib/auth/roles'
-import { createPrivateDocumentUrl } from '@/lib/document-storage'
+import { createPrivateDocumentUrl, deletePrivateDocuments } from '@/lib/document-storage'
 import { notifyAssignment } from '@/lib/notifications/create'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
 const reviewSchema = z.object({
-  status: z.enum(['APPROVED', 'REJECTED', 'EXPIRED']),
+  status: z.enum(['APPROVED', 'REJECTED', 'EXPIRED', 'PENDING']),
   reviewNotes: z.string().trim().max(1_000).nullable(),
 }).superRefine(({ reviewNotes, status }, context) => {
   if (status === 'REJECTED' && !reviewNotes) {
@@ -61,9 +61,16 @@ export async function PATCH(request: Request, context: DocumentRouteContext) {
   const result = reviewSchema.safeParse(await request.json().catch(() => null))
   if (!result.success) return NextResponse.json({ error: 'Datos de revisión no válidos' }, { status: 400 })
 
+  // Al volver un documento a "Pendiente" se limpian revisión y observaciones,
+  // para que quede como recién subido a la espera del Sensei.
+  const isPending = result.data.status === 'PENDING'
   await db.studentDocument.update({
     where: { id: document.id },
-    data: { status: result.data.status, reviewNotes: result.data.reviewNotes, reviewedAt: new Date() },
+    data: {
+      status: result.data.status,
+      reviewNotes: isPending ? null : result.data.reviewNotes,
+      reviewedAt: isPending ? null : new Date(),
+    },
   })
 
   const documentName = DOCUMENT_TYPE_LABELS[document.type]
@@ -81,6 +88,21 @@ export async function PATCH(request: Request, context: DocumentRouteContext) {
       studentId: targetStudentId,
       data: { documentName, reviewNotes: result.data.reviewNotes ?? '' },
     })
+  }
+
+  return NextResponse.json({ ok: true })
+}
+
+export async function DELETE(_: Request, context: DocumentRouteContext) {
+  const document = await findScopedDocument(context)
+  if (!document) return NextResponse.json({ error: 'Documento no encontrado' }, { status: 404 })
+
+  try {
+    await deletePrivateDocuments([document.storageKey])
+    await db.studentDocument.delete({ where: { id: document.id } })
+  } catch (deleteError) {
+    console.error('Error borrando documento:', deleteError)
+    return NextResponse.json({ error: 'No fue posible borrar el documento. Inténtalo nuevamente.' }, { status: 503 })
   }
 
   return NextResponse.json({ ok: true })

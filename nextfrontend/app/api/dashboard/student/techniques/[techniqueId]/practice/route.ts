@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
-import { db } from '@/lib/db'
-import { hasRole } from '@/lib/auth/roles'
+import { hasAnyRole } from '@/lib/auth/roles'
+import { resolveRequestStudent } from '@/lib/family/guardians'
 import { registerPracticeLogs, removePracticeLog } from '@/lib/dashboard/technique-reps'
 import type { PracticePlace } from '@/lib/generated/prisma'
 import { NextResponse } from 'next/server'
@@ -20,15 +20,10 @@ interface PracticeRouteContext {
   params: Promise<{ techniqueId: string }>
 }
 
-async function resolveStudentId(userId: string): Promise<string | null> {
-  const student = await db.student.findUnique({ where: { userId }, select: { id: true } })
-  return student?.id ?? null
-}
-
 export async function POST(request: Request, { params }: PracticeRouteContext) {
   const session = await auth()
 
-  if (!session?.user?.id || !hasRole(session?.user, 'STUDENT')) {
+  if (!session?.user?.id || !hasAnyRole(session?.user, ['STUDENT', 'GUARDIAN'])) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
@@ -38,14 +33,14 @@ export async function POST(request: Request, { params }: PracticeRouteContext) {
     return NextResponse.json({ error: 'Datos de práctica no válidos' }, { status: 400 })
   }
 
-  const studentId = await resolveStudentId(session.user.id)
+  const view = await resolveRequestStudent(request, session.user.id)
 
-  if (!studentId) {
-    return NextResponse.json({ error: 'Perfil de estudiante no encontrado' }, { status: 404 })
+  if (!view) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
   const { techniqueId } = await params
-  const created = await registerPracticeLogs(studentId, [
+  const created = await registerPracticeLogs(view.studentId, [
     {
       techniqueId,
       repetitions: result.data.repetitions,
@@ -65,7 +60,7 @@ export async function POST(request: Request, { params }: PracticeRouteContext) {
 export async function DELETE(request: Request) {
   const session = await auth()
 
-  if (!session?.user?.id || !hasRole(session?.user, 'STUDENT')) {
+  if (!session?.user?.id || !hasAnyRole(session?.user, ['STUDENT', 'GUARDIAN'])) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
@@ -75,13 +70,13 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: 'Registro no especificado' }, { status: 400 })
   }
 
-  const studentId = await resolveStudentId(session.user.id)
+  const view = await resolveRequestStudent(request, session.user.id)
 
-  if (!studentId) {
-    return NextResponse.json({ error: 'Perfil de estudiante no encontrado' }, { status: 404 })
+  if (!view) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
-  const removed = await removePracticeLog(studentId, logId)
+  const removed = await removePracticeLog(view.studentId, logId)
 
   if (!removed) {
     return NextResponse.json({ error: 'Registro de práctica no encontrado' }, { status: 404 })

@@ -235,6 +235,13 @@ export async function getInstructorAttendanceBoard(userId: string): Promise<Inst
       confirmedBy: { select: { name: true } },
       class: { select: { name: true } },
       session: { select: { class: { select: { name: true } } } },
+      practiceLogs: {
+        select: {
+          repetitions: true,
+          place: true,
+          studentTechnique: { select: { technique: { select: { name: true } } } },
+        },
+      },
     },
   })
 
@@ -252,6 +259,11 @@ export async function getInstructorAttendanceBoard(userId: string): Promise<Inst
     punchedAt: attendance.punchedAt.toISOString(),
     className: attendance.session?.class.name ?? attendance.class?.name ?? null,
     sessionId: attendance.sessionId,
+    practiceLogs: attendance.practiceLogs.map((log) => ({
+      techniqueName: log.studentTechnique.technique.name,
+      repetitions: log.repetitions,
+      place: log.place,
+    })),
   }))
 
   const availableDates = [...new Set(records.map(({ date }) => date.slice(0, 10)))].sort().reverse()

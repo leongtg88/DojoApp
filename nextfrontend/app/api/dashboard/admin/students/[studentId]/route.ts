@@ -12,9 +12,12 @@ const updateStudentSchema = z.object({
   lastName: z.string().trim().min(2).max(120).optional(),
   dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   gender: z.enum(['FEMALE', 'MALE']).nullable().optional(),
+  email: z.string().trim().toLowerCase().email('Email inválido').max(320).nullable().optional(),
   contactPhone: z.string().trim().max(30).nullable().optional(),
   medicalInfo: z.string().trim().max(2_000).nullable().optional(),
   emergencyContact: z.string().trim().max(500).nullable().optional(),
+  giSize: z.string().trim().max(20).nullable().optional(),
+  beltSize: z.string().trim().max(20).nullable().optional(),
   status: z.enum(['ACTIVE', 'INACTIVE', 'GRADUATED']).optional(),
   purgeRegistrationData: z.boolean().optional(),
 }).refine(({ dateOfBirth }) => !dateOfBirth || !Number.isNaN(new Date(`${dateOfBirth}T00:00:00.000Z`).getTime()), {
@@ -61,9 +64,12 @@ export async function PATCH(request: Request, { params }: UpdateStudentRouteCont
   if (result.data.lastName) data.lastName = result.data.lastName
   if (result.data.dateOfBirth) data.dateOfBirth = new Date(`${result.data.dateOfBirth}T00:00:00.000Z`)
   if (result.data.gender !== undefined) data.gender = result.data.gender
+  if (result.data.email !== undefined) data.email = result.data.email
   if (result.data.contactPhone !== undefined) data.contactPhone = result.data.contactPhone
   if (result.data.medicalInfo !== undefined) data.medicalInfo = result.data.medicalInfo
   if (result.data.emergencyContact !== undefined) data.emergencyContact = result.data.emergencyContact
+  if (result.data.giSize !== undefined) data.giSize = result.data.giSize
+  if (result.data.beltSize !== undefined) data.beltSize = result.data.beltSize
   if (result.data.status) data.status = result.data.status
 
   if (Object.keys(data).length > 0) {

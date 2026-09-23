@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { FilePlus2, Trash2 } from 'lucide-react'
 import type { AdminEnrollmentSummary } from '@/types/dashboard'
+import { kyuLabel } from '@/lib/curriculum/kyu-options'
 
 interface AdminEnrollmentsProps {
     enrollments: AdminEnrollmentSummary[]
@@ -19,7 +20,11 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
     const [lastName, setLastName] = useState('')
     const [dateOfBirth, setDateOfBirth] = useState('')
     const [gender, setGender] = useState<'FEMALE' | 'MALE' | ''>('')
+    const [email, setEmail] = useState('')
     const [applicantId, setApplicantId] = useState('')
+
+    const selectedApplicant = selectedEnrollment?.applicants.find((applicant) => applicant.id === applicantId) ?? selectedEnrollment?.applicants[0] ?? null
+    const declaredKarate = (selectedApplicant?.profileData as { haPracticadoKarate?: boolean; kyu?: string } | null | undefined) ?? null
 
     function sexoToGender(sexo: unknown): 'FEMALE' | 'MALE' | '' {
         if (sexo === 'Femenino') return 'FEMALE'
@@ -36,6 +41,7 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
         setLastName(parts.slice(1).join(' '))
         setDateOfBirth(applicant?.dateOfBirth.slice(0, 10) ?? '')
         setGender(sexoToGender(applicant?.profileData?.sexo))
+        setEmail((applicant?.profileData as { email?: string } | null)?.email ?? '')
         setApplicantId(applicant?.id ?? '')
         setError(null)
     }
@@ -88,16 +94,26 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                     dateOfBirth,
                     gender: gender || undefined,
                     applicantId: applicantId || undefined,
+                    email: email.trim() || undefined,
                     contactPhone: selectedEnrollment.contactPhone,
                     medicalInfo: null,
                     emergencyContact: null,
                 }),
             })
 
-            const payload = await response.json().catch(() => ({})) as { error?: string }
+            const payload = await response.json().catch(() => ({})) as { error?: string; declaredKyu?: string | null; rankAutoAssigned?: boolean }
 
             if (!response.ok) {
                 setError(payload.error ?? 'No fue posible convertir esta inscripción. Verifica los datos e inténtalo nuevamente.')
+                return
+            }
+
+            // Si el aspirante declaró un grado previo que no se pudo resolver al
+            // programa del alumno, se avisa para que el admin ajuste el grado desde
+            // la ficha en lugar de quedarse silenciosamente en cinturón blanco.
+            if (payload.declaredKyu && payload.rankAutoAssigned === false) {
+                setError(`El grado declarado "${payload.declaredKyu}" no se encontró para el programa del alumno; se asignó el grado inicial. Puedes cambiarlo desde la ficha del alumno.`)
+                router.refresh()
                 return
             }
 
@@ -147,9 +163,14 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                     <form className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border border-edge bg-surface-2 p-5" onClick={(event) => event.stopPropagation()} onSubmit={convertEnrollment}>
                         <h2 className="font-display text-lg font-bold text-ink">Completar expediente de alumno</h2>
                         <p className="mt-1 text-sm text-ink-3">Se creará el expediente sin cuenta de acceso. La cuenta se invita en un paso posterior.</p>
+                        <p className={`mt-3 rounded-md border px-3 py-2 text-xs ${declaredKarate?.haPracticadoKarate === true && declaredKarate?.kyu ? 'border-cyan-900/40 bg-cyan-950/20 text-accent-text' : 'border-edge bg-surface-1 text-ink-3'}`}>
+                            {declaredKarate?.haPracticadoKarate === true && declaredKarate?.kyu
+                                ? <>Karate previo declarado: <span className="font-bold">{kyuLabel(declaredKarate.kyu)}</span> — se asignará ese grado al convertir.</>
+                                : 'Sin karate previo declarado — se asignará el grado inicial (blanco).'}
+                        </p>
                         <div className="mt-4 grid gap-3 sm:grid-cols-2">
                             {selectedEnrollment.applicants.length > 1 && <label className="sm:col-span-2 text-sm font-semibold text-ink" htmlFor="applicantId">Aspirante
-                                <select className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="applicantId" onChange={(event) => { const applicant = selectedEnrollment.applicants.find(({ id }) => id === event.target.value); setApplicantId(event.target.value); const parts = applicant?.name.split(/\s+/) ?? []; setFirstName(parts[0] ?? ''); setLastName(parts.slice(1).join(' ')); setDateOfBirth(applicant?.dateOfBirth.slice(0, 10) ?? ''); setGender(sexoToGender(applicant?.profileData?.sexo)) }} value={applicantId}>{selectedEnrollment.applicants.map((applicant) => <option key={applicant.id} value={applicant.id}>{applicant.name}</option>)}</select>
+                                <select className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="applicantId" onChange={(event) => { const applicant = selectedEnrollment.applicants.find(({ id }) => id === event.target.value); setApplicantId(event.target.value); const parts = applicant?.name.split(/\s+/) ?? []; setFirstName(parts[0] ?? ''); setLastName(parts.slice(1).join(' ')); setDateOfBirth(applicant?.dateOfBirth.slice(0, 10) ?? ''); setGender(sexoToGender(applicant?.profileData?.sexo)); setEmail((applicant?.profileData as { email?: string } | null)?.email ?? '') }} value={applicantId}>{selectedEnrollment.applicants.map((applicant) => <option key={applicant.id} value={applicant.id}>{applicant.name}</option>)}</select>
                             </label>}
                             <label className="text-sm font-semibold text-ink" htmlFor="firstName">Nombre
                                 <input className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="firstName" onChange={(event) => setFirstName(event.target.value)} required value={firstName} />
@@ -160,12 +181,15 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                             <label className="text-sm font-semibold text-ink" htmlFor="dateOfBirth">Fecha de nacimiento
                                 <input className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="dateOfBirth" onChange={(event) => setDateOfBirth(event.target.value)} required type="date" value={dateOfBirth} />
                             </label>
-                            <label className="text-sm font-semibold text-ink" htmlFor="gender">Sexo
+<label className="text-sm font-semibold text-ink" htmlFor="gender">Sexo
 <select className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="gender" onChange={(event) => setGender(event.target.value as 'FEMALE' | 'MALE' | '')} value={gender}>
                                     <option value="">Seleccionar</option>
                                     <option value="FEMALE">Femenino</option>
                                     <option value="MALE">Masculino</option>
                                 </select>
+                            </label>
+                            <label className="sm:col-span-2 text-sm font-semibold text-ink" htmlFor="email">Correo (opcional)
+                                <input className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="email" onChange={(event) => setEmail(event.target.value)} placeholder="correo@ejemplo.com" type="email" value={email} />
                             </label>
                         </div>
                         {error && <p className="mt-4 text-sm font-medium text-danger-text">{error}</p>}

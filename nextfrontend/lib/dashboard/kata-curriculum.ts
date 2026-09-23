@@ -176,15 +176,16 @@ export async function resolveProgressionKataIds({
 }
 
 /**
- * Asigna las katas del grado actual y siguiente a los alumnos activos que no
- * tengan ninguna kata registrada. No elimina asignaciones existentes.
+ * Asegura que los alumnos activos tengan asignadas las katas de su grado actual
+ * y del siguiente (las requeridas para pasar de nivel). Agrega las que falten
+ * con `skipDuplicates`; nunca elimina asignaciones existentes. Aplica a todos
+ * los alumnos con grado, no solo a los que no tienen katas.
  */
 export async function assignCurriculumKatasToStudents(scope: AdminScope): Promise<StudentKataSummary> {
   const students = await db.student.findMany({
     where: {
       ...scopeSchoolFilter(scope),
       status: StudentStatus.ACTIVE,
-      techniques: { none: {} },
     },
     select: { id: true, schoolId: true, currentRankId: true, currentRank: true, dateOfBirth: true },
   })

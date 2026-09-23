@@ -15,7 +15,9 @@ const adminRole = (roles: DashboardRole[]): DashboardRole => (roles.includes('SU
 export function getRolePanelOptions(roles: DashboardRole[]): RolePanelOption[] {
     const options: RolePanelOption[] = []
 
-    if (roles.includes('STUDENT')) {
+    // Un tutor (GUARDIAN) entra al portal del estudiante: su propia cuenta o la
+    // de sus hijos vía el selector familiar dentro del portal.
+    if (roles.includes('STUDENT') || roles.includes('GUARDIAN')) {
         options.push({ role: 'STUDENT', href: '/dashboard/estudiante', label: 'Portal del estudiante', shortLabel: 'Estudiante', icon: GraduationCap })
     }
 
@@ -33,6 +35,7 @@ export function getRolePanelOptions(roles: DashboardRole[]): RolePanelOption[] {
 export function getPanelHref(role: DashboardRole): string {
     switch (role) {
         case 'STUDENT':
+        case 'GUARDIAN':
             return '/dashboard/estudiante'
         case 'INSTRUCTOR':
             return '/dashboard/instructor'

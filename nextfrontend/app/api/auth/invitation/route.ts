@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import { db } from '@/lib/db'
 import { Role } from '@/lib/generated/prisma'
+import { linkGuardianToChildren, readGuardianMetadata } from '@/lib/family/guardians'
 import { consumeRateLimit, getClientIp, rateLimitResponse } from '@/lib/security/rate-limit'
 
 export const runtime = 'nodejs'
@@ -13,6 +14,31 @@ const invitationSchema = z.object({
   email: z.string().trim().toLowerCase().email(),
   password: z.string().min(8).max(128),
 })
+
+/**
+ * Si el expediente pertenece a un tutor de una inscripción familiar, le asigna
+ * el rol GUARDIAN (además de STUDENT) y lo vincula de forma idempotente con sus
+ * hijos usando la metadata guardada durante la conversión.
+ */
+async function ensureTutorGuardian(userId: string, registrationData: unknown, guardianEmail: string, schoolId: string) {
+  const meta = readGuardianMetadata(registrationData)
+  if (meta.rol !== 'tutor') return
+
+  const user = await db.user.findUnique({ where: { id: userId }, select: { roles: true } })
+  if (user && !user.roles.includes(Role.GUARDIAN)) {
+    await db.user.update({
+      where: { id: userId },
+      data: { roles: [...user.roles, Role.GUARDIAN] },
+    })
+  }
+
+  await linkGuardianToChildren({
+    userId,
+    schoolId,
+    guardianEmail,
+    relationship: meta.guardian?.relationship ?? 'Tutor legal',
+  })
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     const invitation = await db.studentInvitationToken.findUnique({
       where: { token: tokenHash },
-      select: { id: true, studentId: true, email: true, expiresAt: true, usedAt: true, student: { select: { userId: true, schoolId: true, branchId: true, firstName: true, lastName: true } } },
+      select: { id: true, studentId: true, email: true, expiresAt: true, usedAt: true, student: { select: { userId: true, schoolId: true, branchId: true, firstName: true, lastName: true, registrationData: true } } },
     })
 
     if (!invitation) {
@@ -67,6 +93,8 @@ export async function POST(request: NextRequest) {
 
     // La cuenta ya existe vinculada a este estudiante: activación idempotente, solo marcamos el token como usado.
     if (existingUser && invitation.student.userId === existingUser.id) {
+      await ensureTutorGuardian(existingUser.id, invitation.student.registrationData, parsed.data.email, invitation.student.schoolId)
+
       await db.studentInvitationToken.update({
         where: { id: invitation.id },
         data: { usedAt: new Date(), usedByUserId: existingUser.id },
@@ -103,6 +131,8 @@ export async function POST(request: NextRequest) {
         })
       })
 
+      await ensureTutorGuardian(existingUser.id, invitation.student.registrationData, parsed.data.email, invitation.student.schoolId)
+
       return NextResponse.json({
         success: true,
         message: 'Cuenta vinculada correctamente. Ya puedes iniciar sesión con tu correo y contraseña.',
@@ -111,7 +141,7 @@ export async function POST(request: NextRequest) {
 
     const passwordHash = await bcrypt.hash(parsed.data.password, 12)
 
-    await db.$transaction(async (transaction) => {
+    const createdUserId = await db.$transaction(async (transaction) => {
       const createdUser = await transaction.user.create({
         data: {
           name: `${invitation.student.firstName} ${invitation.student.lastName}`,
@@ -135,7 +165,11 @@ export async function POST(request: NextRequest) {
         where: { id: invitation.id },
         data: { usedAt: new Date(), usedByUserId: createdUser.id },
       })
+
+      return createdUser.id
     })
+
+    await ensureTutorGuardian(createdUserId, invitation.student.registrationData, parsed.data.email, invitation.student.schoolId)
 
     return NextResponse.json({
       success: true,

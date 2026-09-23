@@ -1,11 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { LogOut } from 'lucide-react'
 import type { DashboardRole } from '@/types/dashboard'
+import type { FamilyView } from '@/lib/family/guardians'
 import { getRoleNavigation } from './RoleNavigation'
 import { getPanelHref, getRolePanelOptions } from './RolePanels'
+import { FamilyMemberSwitcher } from './FamilyMemberSwitcher'
 
 interface DashboardSidebarProps {
     onSignOut: () => void
@@ -14,10 +16,13 @@ interface DashboardSidebarProps {
     userName: string | null | undefined
     pendingEnrollmentCount?: number
     pendingDocumentCount?: number
+    familyMembers?: FamilyView
 }
 
-export function DashboardSidebar({ onSignOut, activeRole, roles, userName, pendingEnrollmentCount = 0, pendingDocumentCount = 0 }: DashboardSidebarProps) {
+export function DashboardSidebar({ onSignOut, activeRole, roles, userName, pendingEnrollmentCount = 0, pendingDocumentCount = 0, familyMembers }: DashboardSidebarProps) {
     const pathname = usePathname()
+    const searchParams = useSearchParams()
+    const activeStudentId = searchParams.get('estudiante')
     const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount, pendingDocumentCount)
     const activeHref = getPanelHref(activeRole)
     const currentHref = navigation
@@ -26,6 +31,10 @@ export function DashboardSidebar({ onSignOut, activeRole, roles, userName, pendi
     const switchOptions = getRolePanelOptions(roles).filter((option) => option.href !== activeHref)
     const initials = (userName ?? 'Usuario').split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()
     const roleLabel = activeRole === 'STUDENT' ? 'Estudiante' : activeRole === 'INSTRUCTOR' ? 'Instructor' : 'Administrador'
+    const withStudentContext = (href: string) => {
+        if (activeRole !== 'STUDENT' || !activeStudentId) return href
+        return `${href}${href.includes('?') ? '&' : '?'}estudiante=${encodeURIComponent(activeStudentId)}`
+    }
 
     return (
         <aside className="hidden w-64 shrink-0 border-r border-edge bg-surface-2 p-5 md:flex md:min-h-[calc(100vh-4rem)] md:flex-col print:hidden">
@@ -43,7 +52,7 @@ export function DashboardSidebar({ onSignOut, activeRole, roles, userName, pendi
                         <Link
                             className={`flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${active ? 'bg-cyan-500/15 text-accent-text shadow-sm ring-1 ring-cyan-500/30' : 'text-ink-3 hover:bg-surface-3 hover:text-ink'
                                 }`}
-                            href={href}
+                            href={withStudentContext(href)}
                             key={href}
                         >
                             <span className="flex min-w-0 items-center gap-3"><Icon aria-hidden="true" className="size-4 shrink-0" /><span className="truncate">{label}</span></span>
@@ -52,6 +61,15 @@ export function DashboardSidebar({ onSignOut, activeRole, roles, userName, pendi
                     )
                 })}
             </nav>
+
+            {familyMembers && activeRole === 'STUDENT' && (
+                <div className="mb-4">
+                    <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-ink-4">Cuenta familiar</p>
+                    <div className="px-2">
+                        <FamilyMemberSwitcher members={familyMembers} />
+                    </div>
+                </div>
+            )}
 
             {switchOptions.length > 0 && (
                 <div className="mt-6 border-t border-edge pt-4">
