@@ -59,6 +59,8 @@ export function StudentAttendancePunch({ data, grado = null, studentId }: Studen
   const [notes, setNotes] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [practiceLines, setPracticeLines] = useState<Array<{ techniqueId: string; repetitions: string; place: PracticePlace }>>([])
+  const [showPunchSuccess, setShowPunchSuccess] = useState(false)
+  const [punchWarning, setPunchWarning] = useState<string | null>(null)
 
   const pad = (value: number) => String(value).padStart(2, '0')
   const localNow = new Date()
@@ -113,15 +115,14 @@ export function StudentAttendancePunch({ data, grado = null, studentId }: Studen
 
     if (response.ok) {
       const payload = await response.json().catch(() => null) as { practiceWarning?: string } | null
-      if (payload?.practiceWarning) {
-        alert(payload.practiceWarning)
-      }
+      setPunchWarning(payload?.practiceWarning ?? null)
       setNotes('')
       setPracticeLines([])
       const now = new Date()
       setPunchDate(`${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`)
       setPunchTime(`${pad(now.getHours())}:${pad(now.getMinutes())}`)
       router.refresh()
+      setShowPunchSuccess(true)
     } else {
       const { error } = await response.json().catch(() => ({ error: 'Error al registrar tu práctica' }))
       alert(error ?? 'Error al registrar tu práctica')
@@ -634,6 +635,31 @@ export function StudentAttendancePunch({ data, grado = null, studentId }: Studen
                 <span>Guardar Corrección</span>
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showPunchSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="punch-success-title">
+          <div className="w-full max-w-sm rounded-xl border border-edge-strong bg-surface-2 p-6 text-center shadow-2xl">
+            <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-emerald-500/15 text-ok-text">
+              <CheckCircle2 className="size-9" aria-hidden="true" />
+            </div>
+            <h3 id="punch-success-title" className="mt-4 font-display text-xl font-extrabold text-ink">Asistencia Recibida</h3>
+            <p className="mt-2 text-sm text-ink-3">La puedes ver en el historial de asistencia.</p>
+            {punchWarning && (
+              <p className="mt-3 flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-left text-xs text-warn-text">
+                <AlertCircle className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+                {punchWarning}
+              </p>
+            )}
+            <button
+              className="mt-5 w-full rounded-lg bg-cyan-600 px-4 py-3 text-sm font-bold text-white shadow-md transition-colors hover:bg-cyan-500"
+              onClick={() => setShowPunchSuccess(false)}
+              type="button"
+            >
+              Oss
+            </button>
           </div>
         </div>
       )}
