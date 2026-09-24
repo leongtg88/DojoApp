@@ -50,7 +50,7 @@ export function DashboardShell({ children, roles, primaryRole, userName, pending
             <header className="sticky top-0 z-30 border-b border-edge bg-surface-2/95 shadow-[0_1px_8px_rgba(0,0,0,0.35)] backdrop-blur print:hidden">
                 <div className="flex h-16 w-full items-center justify-between px-4 sm:px-6 lg:px-8">
                     <div className="flex min-w-0 items-center">
-                        <DashboardLogo className="h-6 w-auto sm:h-7" />
+                        <DashboardLogo className="h-8 w-auto " />
                     </div>
 
                     <div className="flex min-w-0 items-center gap-2.5">
