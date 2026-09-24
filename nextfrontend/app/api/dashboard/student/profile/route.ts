@@ -6,8 +6,8 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
 const profileUpdateSchema = z.object({
-  firstName: z.string().trim().min(2).max(80).optional(),
-  lastName: z.string().trim().min(2).max(120).optional(),
+  firstName: z.string().trim().min(1).max(80).optional(),
+  lastName: z.string().trim().min(1).max(120).optional(),
   dateOfBirth: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato de fecha inválido')

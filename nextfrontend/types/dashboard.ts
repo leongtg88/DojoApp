@@ -71,6 +71,10 @@ export interface StudentProfile {
 	dateOfBirth: string
 	currentRank: DashboardBeltRank | null
 	photoKey: string | null
+	photoUrl?: string | null
+	guardianName?: string | null
+	guardianRelationship?: string | null
+	guardianPhone?: string | null
 	medicalInfo: string | null
 	emergencyContact: string | null
 	giSize: string | null

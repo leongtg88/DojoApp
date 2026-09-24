@@ -9,12 +9,13 @@ interface EditProfileModalProps {
     onClose: () => void
     profile: StudentProfile
     studentId?: string
+    restricted?: boolean
 }
 
 const fieldClass =
     'mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500'
 
-export function EditProfileModal({ onClose, profile, studentId }: EditProfileModalProps) {
+export function EditProfileModal({ onClose, profile, studentId, restricted = false }: EditProfileModalProps) {
     const router = useRouter()
     const [firstName, setFirstName] = useState(profile.firstName)
     const [lastName, setLastName] = useState(profile.lastName)
@@ -33,17 +34,25 @@ export function EditProfileModal({ onClose, profile, studentId }: EditProfileMod
         setError(null)
         setIsSaving(true)
 
-        const body: Record<string, unknown> = {
-            firstName: firstName.trim(),
-            lastName: lastName.trim(),
-            gender: gender ? (gender as 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY') : null,
-            contactPhone: contactPhone.trim() || null,
-            emergencyContact: emergencyContact.trim() || null,
-            medicalInfo: medicalInfo.trim() || null,
-            giSize: giSize.trim() || null,
-            beltSize: beltSize.trim() || null,
-        }
-        if (dateOfBirth) {
+        const body: Record<string, unknown> = restricted
+            ? {
+                contactPhone: contactPhone.trim() || null,
+                emergencyContact: emergencyContact.trim() || null,
+                medicalInfo: medicalInfo.trim() || null,
+                giSize: giSize.trim() || null,
+                beltSize: beltSize.trim() || null,
+            }
+            : {
+                firstName: firstName.trim(),
+                lastName: lastName.trim(),
+                gender: gender ? (gender as 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY') : null,
+                contactPhone: contactPhone.trim() || null,
+                emergencyContact: emergencyContact.trim() || null,
+                medicalInfo: medicalInfo.trim() || null,
+                giSize: giSize.trim() || null,
+                beltSize: beltSize.trim() || null,
+            }
+        if (!restricted && dateOfBirth) {
             body.dateOfBirth = dateOfBirth
         }
 
@@ -73,8 +82,8 @@ export function EditProfileModal({ onClose, profile, studentId }: EditProfileMod
             <div className="w-full max-w-lg rounded-xl border border-edge-strong bg-surface-2 shadow-2xl">
                 <div className="flex items-center justify-between border-b border-edge px-5 py-4">
                     <div>
-                        <h2 className="font-display text-base font-bold text-ink">Editar datos personales</h2>
-                        <p className="mt-0.5 text-xs text-ink-3">Los cambios quedan asociados a tu expediente de estudiante.</p>
+                        <h2 className="font-display text-base font-bold text-ink">{restricted ? `Editar datos de ${profile.firstName}` : 'Editar datos personales'}</h2>
+                        <p className="mt-0.5 text-xs text-ink-3">{restricted ? 'Solo contacto y datos médicos. Los datos de identidad los administra la secretaría del dojo.' : 'Los cambios quedan asociados a tu expediente de estudiante.'}</p>
                     </div>
                     <button
                         aria-label="Cerrar"
@@ -87,6 +96,7 @@ export function EditProfileModal({ onClose, profile, studentId }: EditProfileMod
                 </div>
 
                 <form className="space-y-4 px-5 py-5" onSubmit={handleSubmit}>
+                    {!restricted && (<>
                     <div className="grid gap-4 sm:grid-cols-2">
                         <label className="block text-sm font-semibold text-ink" htmlFor="edit-firstname">
                             Nombre
@@ -140,7 +150,7 @@ export function EditProfileModal({ onClose, profile, studentId }: EditProfileMod
                             <option value="PREFER_NOT_TO_SAY">Prefiero no decirlo</option>
                         </select>
                     </label>
-
+                    </>)}
                     <label className="block text-sm font-semibold text-ink" htmlFor="edit-phone">
                         Teléfono
                         <input

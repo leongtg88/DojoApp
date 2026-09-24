@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import { createPrivateDocumentUrl } from '@/lib/document-storage'
 import { ClassEnrollmentStatus } from '@/lib/generated/prisma'
 import { ageFromDob, programForAge, resolveDefaultRank } from '@/lib/dashboard/program'
 import { computeBalance, formatTime, monthRange, pendingRecoveries } from '@/lib/dashboard/balance'
@@ -43,6 +44,7 @@ export async function getStudentDashboardSummary(
     where: { id: studentId },
     include: {
       user: { select: { email: true } },
+      guardian: { select: { name: true, phone: true } },
       techniques: {
         include: { technique: true, evaluation: { include: { evaluator: { select: { name: true } } } } },
         orderBy: { createdAt: 'desc' },
@@ -109,6 +111,22 @@ export async function getStudentDashboardSummary(
   const attendedSessions = student.attendances.filter(({ present, status }) => present && status !== 'REJECTED').length
   const totalSessions = student.attendances.length
 
+  // Foto de perfil (URL firmada) y datos del tutor responsable, útiles cuando un
+  // padre/tutor consulta el perfil de su hijo.
+  let photoUrl: string | null = null
+  if (student.photoKey) {
+    try {
+      photoUrl = await createPrivateDocumentUrl(student.photoKey, 600)
+    } catch {
+      photoUrl = null
+    }
+  }
+  const registrationData = (student.registrationData ?? {}) as Record<string, unknown>
+  const guardianMeta =
+    registrationData.guardian && typeof registrationData.guardian === 'object' && !Array.isArray(registrationData.guardian)
+      ? (registrationData.guardian as { name?: string; relationship?: string })
+      : null
+
   return {
     profile: {
       id: student.id,
@@ -120,6 +138,10 @@ export async function getStudentDashboardSummary(
       dateOfBirth: student.dateOfBirth.toISOString(),
       currentRank: rank,
       photoKey: student.photoKey,
+      photoUrl,
+      guardianName: student.guardian?.name ?? guardianMeta?.name ?? null,
+      guardianRelationship: guardianMeta?.relationship ?? null,
+      guardianPhone: student.guardian?.phone ?? null,
       medicalInfo: student.medicalInfo,
       emergencyContact: student.emergencyContact,
       giSize: student.giSize,

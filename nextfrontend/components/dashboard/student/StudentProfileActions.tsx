@@ -8,9 +8,10 @@ import { EditProfileModal } from './EditProfileModal'
 interface StudentProfileActionsProps {
     profile: StudentProfile
     studentId?: string
+    restricted?: boolean
 }
 
-export function StudentProfileActions({ profile, studentId }: StudentProfileActionsProps) {
+export function StudentProfileActions({ profile, studentId, restricted = false }: StudentProfileActionsProps) {
     const [isOpen, setIsOpen] = useState(false)
 
     return (
@@ -21,9 +22,9 @@ export function StudentProfileActions({ profile, studentId }: StudentProfileActi
                 type="button"
             >
                 <Pencil aria-hidden="true" className="size-4" />
-                Editar datos personales
+                {restricted ? `Editar contacto y datos de ${profile.firstName}` : 'Editar datos personales'}
             </button>
-            {isOpen && <EditProfileModal onClose={() => setIsOpen(false)} profile={profile} studentId={studentId} />}
+            {isOpen && <EditProfileModal onClose={() => setIsOpen(false)} profile={profile} studentId={studentId} restricted={restricted} />}
         </>
     )
 }

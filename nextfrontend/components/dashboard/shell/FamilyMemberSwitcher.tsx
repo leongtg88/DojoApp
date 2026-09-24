@@ -8,15 +8,16 @@ import type { FamilyView } from '@/lib/family/guardians'
 
 interface FamilyMemberSwitcherProps {
     members: FamilyView
+    iconOnly?: boolean
 }
 
 /**
  * Selector "Mi cuenta / Cuenta de hijo" para tutores. Permite alternar entre el
  * expediente propio y el de cada hijo conservando la sub-ruta actual del portal
  * del estudiante. Solo se muestra si la cuenta tiene acceso a más de un
- * expediente.
+ * expediente. Con `iconOnly` el botón queda reducido a solo el icono.
  */
-export function FamilyMemberSwitcher({ members }: FamilyMemberSwitcherProps) {
+export function FamilyMemberSwitcher({ members, iconOnly = false }: FamilyMemberSwitcherProps) {
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const activeStudentId = searchParams.get('estudiante')
@@ -60,14 +61,18 @@ export function FamilyMemberSwitcher({ members }: FamilyMemberSwitcherProps) {
             <button
                 aria-expanded={open}
                 aria-haspopup="menu"
-                className="flex max-w-48 items-center gap-1.5 rounded-lg border border-edge-strong bg-surface-1 px-2.5 py-1.5 text-xs font-bold text-ink transition-colors hover:bg-surface-3"
+                className={`flex items-center rounded-lg border border-edge-strong bg-surface-1 font-bold text-ink transition-colors hover:bg-surface-3 ${iconOnly ? 'size-9 shrink-0 justify-center' : 'max-w-48 items-center gap-1.5 px-2.5 py-1.5 text-xs'}`}
                 onClick={() => setOpen((value) => !value)}
-                title="Cambiar de cuenta familiar"
+                title={iconOnly ? currentLabel : 'Cambiar de cuenta familiar'}
                 type="button"
             >
                 <Users aria-hidden="true" className="size-4 shrink-0 text-accent" />
-                <span className="truncate">{currentLabel}</span>
-                <ChevronDown aria-hidden="true" className={`size-3.5 shrink-0 text-ink-3 transition-transform ${open ? 'rotate-180' : ''}`} />
+                {!iconOnly && (
+                    <>
+                        <span className="truncate">{currentLabel}</span>
+                        <ChevronDown aria-hidden="true" className={`size-3.5 shrink-0 text-ink-3 transition-transform ${open ? 'rotate-180' : ''}`} />
+                    </>
+                )}
             </button>
 
             {open && (

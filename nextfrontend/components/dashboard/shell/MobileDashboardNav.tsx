@@ -29,7 +29,7 @@ export function MobileDashboardNav({ activeRole, pendingEnrollmentCount = 0, pen
             aria-label="Navegación móvil del dashboard"
             className="fixed inset-x-0 bottom-0 z-40 border-t border-edge bg-surface-2/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-2px_10px_rgba(0,0,0,0.35)] backdrop-blur md:hidden print:hidden"
         >
-            <div className="flex h-16 items-center gap-1 overflow-x-auto overflow-y-hidden overscroll-x-contain px-2 touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex h-16 items-center gap-1 overflow-x-auto overflow-y-hidden overscroll-x-contain px-2 pb-2 touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {navigation.map(({ href, icon: Icon, label, badge }) => {
                     const active = href === currentHref
 

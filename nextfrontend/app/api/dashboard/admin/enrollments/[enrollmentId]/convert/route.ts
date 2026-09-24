@@ -13,8 +13,8 @@ import { z } from 'zod'
 
 const conversionSchema = z.object({
   applicantId: z.string().trim().min(1).optional(),
-  firstName: z.string().trim().min(2).max(80),
-  lastName: z.string().trim().min(2).max(120),
+  firstName: z.string().trim().min(1).max(80),
+  lastName: z.string().trim().min(1).max(120),
   dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   gender: z.enum(['FEMALE', 'MALE']).optional(),
   email: z.string().trim().toLowerCase().email('Email inválido').max(320).nullable().optional(),

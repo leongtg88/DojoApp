@@ -8,8 +8,8 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
 const updateStudentSchema = z.object({
-  firstName: z.string().trim().min(2).max(80).optional(),
-  lastName: z.string().trim().min(2).max(120).optional(),
+  firstName: z.string().trim().min(1).max(80).optional(),
+  lastName: z.string().trim().min(1).max(120).optional(),
   dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   gender: z.enum(['FEMALE', 'MALE']).nullable().optional(),
   email: z.string().trim().toLowerCase().email('Email inválido').max(320).nullable().optional(),

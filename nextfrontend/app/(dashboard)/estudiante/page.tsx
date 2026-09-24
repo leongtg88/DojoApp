@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { StudentDashboardOverview } from '@/components/dashboard/student/StudentDashboardOverview'
 import { FamilyQuickSwitcher } from '@/components/dashboard/student/FamilyQuickSwitcher'
+import { FamilyMembersView } from '@/components/dashboard/student/FamilyMembersView'
 import { getStudentDashboardSummary, getStudentKataProgress } from '@/lib/dashboard/student-queries'
 import { getFamilyMembers, resolveStudentView } from '@/lib/family/guardians'
 import { redirect } from 'next/navigation'
@@ -50,6 +51,9 @@ export default async function StudentDashboardPage({ searchParams }: StudentDash
             {familyMembers && (
                 <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6 lg:px-8">
                     <FamilyQuickSwitcher members={familyMembers} currentStudentId={view.studentId} baseHref="/dashboard/estudiante" />
+                    <div className="mt-5">
+                        <FamilyMembersView members={familyMembers} />
+                    </div>
                 </div>
             )}
             <StudentDashboardOverview kataSummary={kataSummary} summary={summary} />

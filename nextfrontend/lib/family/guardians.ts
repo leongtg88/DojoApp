@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import { createPrivateDocumentUrl } from '@/lib/document-storage'
 
 /**
  * Utilidades para cuentas de tutor/padre en inscripciones familiares.
@@ -59,7 +60,9 @@ export async function linkGuardianToChildren(params: {
   const candidates = await db.student.findMany({
     where: {
       schoolId,
-      guardianId: { not: userId },
+      // `guardianId: { not: userId }` en Prisma excluye los guardianId nulos, así
+      // que se incluye explícitamente el OR con guardianId null (hijos aún sin tutor).
+      OR: [{ guardianId: null }, { guardianId: { not: userId } }],
     },
     select: { id: true, registrationData: true },
   })
@@ -96,6 +99,9 @@ export interface FamilyMember {
   firstName: string
   lastName: string
   dateOfBirth: string
+  currentRank?: string | null
+  photoUrl?: string | null
+  relationship?: string | null
 }
 
 export interface FamilyView {
@@ -103,6 +109,16 @@ export interface FamilyView {
   self: FamilyMember | null
   /** Hijos de los que el usuario es tutor. */
   children: FamilyMember[]
+}
+
+interface FamilyStudentRow {
+  id: string
+  firstName: string
+  lastName: string
+  dateOfBirth: Date
+  currentRank: string | null
+  photoKey: string | null
+  registrationData: unknown
 }
 
 /**
@@ -113,37 +129,52 @@ export async function getFamilyMembers(userId: string): Promise<FamilyView> {
   const [own, guardianRows, primaryGuardians] = await Promise.all([
     db.student.findFirst({
       where: { userId },
-      select: { id: true, firstName: true, lastName: true, dateOfBirth: true },
+      select: { id: true, firstName: true, lastName: true, dateOfBirth: true, currentRank: true, photoKey: true, registrationData: true },
     }),
     db.guardianStudent.findMany({
       where: { guardianId: userId },
       select: {
-        student: { select: { id: true, firstName: true, lastName: true, dateOfBirth: true } },
+        relationship: true,
+        student: { select: { id: true, firstName: true, lastName: true, dateOfBirth: true, currentRank: true, photoKey: true, registrationData: true } },
       },
     }),
     db.student.findMany({
       where: { guardianId: userId },
-      select: { id: true, firstName: true, lastName: true, dateOfBirth: true },
+      select: { id: true, firstName: true, lastName: true, dateOfBirth: true, currentRank: true, photoKey: true, registrationData: true },
     }),
   ])
 
-  const mapMember = (student: { id: string; firstName: string; lastName: string; dateOfBirth: Date }): FamilyMember => ({
-    id: student.id,
-    firstName: student.firstName,
-    lastName: student.lastName,
-    dateOfBirth: student.dateOfBirth.toISOString(),
-  })
+  const mapMember = async (student: FamilyStudentRow, relationship?: string | null): Promise<FamilyMember> => {
+    let photoUrl: string | null = null
+    if (student.photoKey) {
+      try {
+        photoUrl = await createPrivateDocumentUrl(student.photoKey, 600)
+      } catch {
+        photoUrl = null
+      }
+    }
+    const meta = readGuardianMetadata(student.registrationData)
+    return {
+      id: student.id,
+      firstName: student.firstName,
+      lastName: student.lastName,
+      dateOfBirth: student.dateOfBirth.toISOString(),
+      currentRank: student.currentRank,
+      photoUrl,
+      relationship: relationship ?? meta.guardian?.relationship ?? null,
+    }
+  }
 
   const children = new Map<string, FamilyMember>()
   for (const row of guardianRows) {
-    if (row.student.id !== own?.id) children.set(row.student.id, mapMember(row.student))
+    if (row.student.id !== own?.id) children.set(row.student.id, await mapMember(row.student, row.relationship))
   }
   for (const student of primaryGuardians) {
-    if (student.id !== own?.id) children.set(student.id, mapMember(student))
+    if (student.id !== own?.id) children.set(student.id, await mapMember(student))
   }
 
   return {
-    self: own ? mapMember(own) : null,
+    self: own ? await mapMember(own) : null,
     children: [...children.values()],
   }
 }

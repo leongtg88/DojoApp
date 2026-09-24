@@ -43,33 +43,35 @@ export function DashboardSidebar({ onSignOut, activeRole, roles, userName, pendi
                 <div className="min-w-0"><p className="truncate text-sm font-bold text-ink">{userName ?? 'Usuario'}</p><p className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-accent">{roleLabel}</p><span className="mt-1 inline-flex items-center gap-1 text-[10px] font-semibold text-ok-text"><span aria-hidden="true" className="size-1.5 rounded-full bg-emerald-400" />Activo</span></div>
             </div>
 
-            <nav className="flex flex-1 flex-col gap-1.5" aria-label="Navegación del dashboard">
-                <p className="mb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-ink-4">Navegación</p>
-                {navigation.map(({ href, icon: Icon, label, badge }) => {
-                    const active = href === currentHref
+            <div className="flex flex-1 flex-col gap-1.5">
+                <nav className="flex flex-col gap-1.5" aria-label="Navegación del dashboard">
+                    <p className="mb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-ink-4">Navegación</p>
+                    {navigation.map(({ href, icon: Icon, label, badge }) => {
+                        const active = href === currentHref
 
-                    return (
-                        <Link
-                            className={`flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${active ? 'bg-cyan-500/15 text-accent-text shadow-sm ring-1 ring-cyan-500/30' : 'text-ink-3 hover:bg-surface-3 hover:text-ink'
-                                }`}
-                            href={withStudentContext(href)}
-                            key={href}
-                        >
-                            <span className="flex min-w-0 items-center gap-3"><Icon aria-hidden="true" className="size-4 shrink-0" /><span className="truncate">{label}</span></span>
-                            {badge ? <span className="flex shrink-0 items-center gap-2"><span className="rounded-full bg-cyan-500 px-1.5 py-0.5 text-[10px] font-bold leading-none text-[#0d1117]">{badge > 99 ? '99+' : badge}</span>{active && <span aria-hidden="true" className="size-1.5 rounded-full bg-cyan-400" />}</span> : active && <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-cyan-400" />}
-                        </Link>
-                    )
-                })}
-            </nav>
+                        return (
+                            <Link
+                                className={`flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${active ? 'bg-cyan-500/15 text-accent-text shadow-sm ring-1 ring-cyan-500/30' : 'text-ink-3 hover:bg-surface-3 hover:text-ink'
+                                    }`}
+                                href={withStudentContext(href)}
+                                key={href}
+                            >
+                                <span className="flex min-w-0 items-center gap-3"><Icon aria-hidden="true" className="size-4 shrink-0" /><span className="truncate">{label}</span></span>
+                                {badge ? <span className="flex shrink-0 items-center gap-2"><span className="rounded-full bg-cyan-500 px-1.5 py-0.5 text-[10px] font-bold leading-none text-[#0d1117]">{badge > 99 ? '99+' : badge}</span>{active && <span aria-hidden="true" className="size-1.5 rounded-full bg-cyan-400" />}</span> : active && <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-cyan-400" />}
+                            </Link>
+                        )
+                    })}
+                </nav>
 
-            {familyMembers && activeRole === 'STUDENT' && (
-                <div className="mb-4">
-                    <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-ink-4">Cuenta familiar</p>
-                    <div className="px-2">
-                        <FamilyMemberSwitcher members={familyMembers} />
+                {familyMembers && activeRole === 'STUDENT' && (
+                    <div className="mb-4">
+                        <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-ink-4">Cuenta familiar</p>
+                        <div className="px-2">
+                            <FamilyMemberSwitcher members={familyMembers} />
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
 
             {switchOptions.length > 0 && (
                 <div className="mt-6 border-t border-edge pt-4">

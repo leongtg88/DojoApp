@@ -122,11 +122,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // inscripción (relación `enrollments` en el enrollment principal) o de
         // un aspirante familiar (relación `enrollmentApplicant`), por lo que se
         // aceptan ambas.
-        // El gate aplica SOLO a cuentas cuyo único rol es STUDENT o GUARDIAN:
-        // el staff multirol (admin/instructor) y los tutores nunca quedan
-        // bloqueados por este chequeo.
-        const staffRoles = user.roles.filter((role) => role !== 'STUDENT' && role !== 'GUARDIAN')
-        if (staffRoles.length === 0) {
+        // El gate aplica SOLO a cuentas cuyo único rol es STUDENT (sin rol de
+        // tutor): un tutor (GUARDIAN) puede tener su propio expediente o no
+        // (solo da seguimiento a sus hijos), y el staff multirol nunca queda
+        // bloqueado por este chequeo.
+        const hasStaffOrGuardianRole = user.roles.some((role) => role !== 'STUDENT')
+        if (!hasStaffOrGuardianRole) {
           const studentWithEnrollment = await db.student.findFirst({
             where: {
               userId: user.id,
