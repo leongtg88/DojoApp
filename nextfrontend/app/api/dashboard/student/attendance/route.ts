@@ -76,8 +76,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Solo puedes registrar práctica de los últimos 7 días.' }, { status: 400 })
   }
 
-  const startOfDay = new Date(punchDate.getFullYear(), punchDate.getMonth(), punchDate.getDate())
-  const startOfNextDay = new Date(punchDate.getFullYear(), punchDate.getMonth(), punchDate.getDate() + 1)
+  // El cliente envía el instante con zona (ISO), así que el día de referencia
+  // para evitar duplicados se calcula en límites UTC, consistente en cualquier zona.
+  const startOfDay = new Date(Date.UTC(punchDate.getUTCFullYear(), punchDate.getUTCMonth(), punchDate.getUTCDate()))
+  const startOfNextDay = new Date(Date.UTC(punchDate.getUTCFullYear(), punchDate.getUTCMonth(), punchDate.getUTCDate() + 1))
 
   const existing = await db.attendance.findFirst({
     where: {

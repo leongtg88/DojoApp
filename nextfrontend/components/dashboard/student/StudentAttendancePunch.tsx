@@ -54,7 +54,7 @@ export function StudentAttendancePunch({ data, grado = null, studentId }: Studen
   const totalAbsences = currentPeriod?.totalAbsences ?? 0
   const classPercent = capacitySessions > 0 ? Math.min(100, Math.round((classSessions / capacitySessions) * 100)) : 0
 
-  const [hours, setHours] = useState<number>(1.5)
+  const [hours, setHours] = useState<number>(1)
   const [sessionType, setSessionType] = useState<string>('class')
   const [notes, setNotes] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -88,7 +88,12 @@ export function StudentAttendancePunch({ data, grado = null, studentId }: Studen
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    if (hours <= 0 || isSubmitting) return
+    if (isSubmitting) return
+    if (!punchDate || !punchTime) {
+      alert('Selecciona la fecha y hora de la práctica para continuar.')
+      return
+    }
+    if (hours <= 0) return
 
     setIsSubmitting(true)
     const response = await fetch('/api/dashboard/student/attendance', {
@@ -97,7 +102,9 @@ export function StudentAttendancePunch({ data, grado = null, studentId }: Studen
       body: JSON.stringify({
         hoursTrained: hours,
         sessionType,
-        date: `${punchDate}T${punchTime}`,
+        // Se envía el instante con zona horaria para que la hora registrada
+        // coincida con la que el alumno seleccionó, sin importar la zona del servidor.
+        date: new Date(`${punchDate}T${punchTime}`).toISOString(),
         notes: notes.trim(),
         ...(visiblePracticeLines.length > 0 ? { practiceLogs: visiblePracticeLines } : {}),
       }),
@@ -238,7 +245,7 @@ export function StudentAttendancePunch({ data, grado = null, studentId }: Studen
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-2" htmlFor="punch-date">
-                Fecha de la práctica
+                Fecha de la práctica <span className="text-red-500">*</span>
               </label>
               <input
                 className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink focus:border-red-500 focus:outline-none"
@@ -252,7 +259,7 @@ export function StudentAttendancePunch({ data, grado = null, studentId }: Studen
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-2" htmlFor="punch-time">
-                Hora de la práctica
+                Hora de la práctica <span className="text-red-500">*</span>
               </label>
               <input
                 className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink focus:border-red-500 focus:outline-none"
@@ -392,12 +399,12 @@ export function StudentAttendancePunch({ data, grado = null, studentId }: Studen
             </div>
           )}
 
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-xs text-ink-3">
               Estado: <strong className="text-ink-2">{summary.pendingCount > 0 ? 'Tienes práctica(s) sin confirmar' : 'Al día'}</strong>
             </span>
             <button
-              className="flex items-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-red-950/40 transition-all hover:bg-red-500 disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-red-950/40 transition-all hover:bg-red-500 disabled:opacity-50 sm:w-auto"
               disabled={isSubmitting || hours <= 0}
               type="submit"
             >
