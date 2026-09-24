@@ -7,7 +7,6 @@ import {
   Calendar,
   CheckCircle2,
   Clock,
-  Flame,
   Hourglass,
   Pencil,
   Plus,
@@ -17,11 +16,10 @@ import {
   Trash2,
   X,
 } from 'lucide-react'
-import type { AttendanceRecord, GradoProgressData, PracticePlace, StudentAttendancePunchData } from '@/types/dashboard'
+import type { AttendanceRecord, PracticePlace, StudentAttendancePunchData } from '@/types/dashboard'
 
 interface StudentAttendancePunchProps {
   data: StudentAttendancePunchData
-  grado?: GradoProgressData | null
   studentId?: string
 }
 
@@ -44,15 +42,10 @@ function sessionLabel(sessionType: string | null): string {
   return SESSION_OPTIONS.find(({ value }) => value === sessionType)?.label ?? sessionType ?? 'Clase'
 }
 
-export function StudentAttendancePunch({ data, grado = null, studentId }: StudentAttendancePunchProps) {
+export function StudentAttendancePunch({ data, studentId }: StudentAttendancePunchProps) {
   const router = useRouter()
   const { summary, records } = data
   const studentHeader: Record<string, string> = studentId ? { 'X-Student-Id': studentId } : {}
-  const currentPeriod = grado?.currentPeriod ?? null
-  const classSessions = currentPeriod?.classSessions ?? summary.confirmedCount
-  const capacitySessions = currentPeriod?.capacitySessions ?? summary.confirmedCount
-  const totalAbsences = currentPeriod?.totalAbsences ?? 0
-  const classPercent = capacitySessions > 0 ? Math.min(100, Math.round((classSessions / capacitySessions) * 100)) : 0
 
   const [hours, setHours] = useState<number>(1)
   const [sessionType, setSessionType] = useState<string>('class')
@@ -170,61 +163,6 @@ export function StudentAttendancePunch({ data, grado = null, studentId }: Studen
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="rounded-xl border border-edge bg-surface-2 p-3.5">
-          <div className="mb-1 flex items-center justify-between text-ink-3">
-            <span className="text-xs">Asistencias válidas</span>
-            <CheckCircle2 className="size-4 text-ok-text" aria-hidden="true" />
-          </div>
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-mono text-2xl font-bold text-ink">{classSessions}</span>
-            <span className="text-xs text-ink-3">de {capacitySessions} esperadas</span>
-          </div>
-          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-3">
-            <div
-              className="h-full rounded-full bg-emerald-500 transition-all duration-500"
-              style={{ width: `${classPercent}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-edge bg-surface-2 p-3.5">
-          <div className="mb-1 flex items-center justify-between text-ink-3">
-            <span className="text-xs">Por Confirmar</span>
-            <Hourglass className="size-4 text-warn-text" aria-hidden="true" />
-          </div>
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-mono text-2xl font-bold text-warn-text">{summary.pendingCount}</span>
-            <span className="text-xs text-ink-3">en revisión Sensei</span>
-          </div>
-          <p className="mt-2 text-[11px] text-ink-3">Marcadas por ti</p>
-        </div>
-
-        <div className="rounded-xl border border-edge bg-surface-2 p-3.5">
-          <div className="mb-1 flex items-center justify-between text-ink-3">
-            <span className="text-xs">Horas en Tatami</span>
-            <Flame className="size-4 text-orange-400" aria-hidden="true" />
-          </div>
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-mono text-2xl font-bold text-ink">{summary.totalHours}</span>
-            <span className="text-xs text-ink-3">horas certif.</span>
-          </div>
-          <p className="mt-2 text-[11px] text-ink-3">Dojo Tosei-Gusoku</p>
-        </div>
-
-        <div className="rounded-xl border border-edge bg-surface-2 p-3.5">
-          <div className="mb-1 flex items-center justify-between text-ink-3">
-            <span className="text-xs">Inasistencia</span>
-            <ShieldCheck className="size-4 text-info-text" aria-hidden="true" />
-          </div>
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-mono text-2xl font-bold text-ink">{totalAbsences}</span>
-            <span className="text-xs text-ink-3">máx 2/mes</span>
-          </div>
-          <p className="mt-2 text-[11px] text-ink-3">Del cuatrimestre en curso</p>
-        </div>
-      </div>
-
       <div className="rounded-xl border border-edge bg-surface-2 p-5 shadow-sm">
         <div className="mb-4 flex flex-col justify-between gap-2 border-b border-edge pb-3 sm:flex-row sm:items-center">
           <div>

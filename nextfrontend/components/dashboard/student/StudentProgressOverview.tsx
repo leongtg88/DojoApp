@@ -1,17 +1,18 @@
-import { Award } from 'lucide-react'
-import type { StudentDashboardSummary, StudentKataProgressSummary } from '@/types/dashboard'
+import { Award, Hourglass } from 'lucide-react'
+import type { StudentAttendancePunchData, StudentDashboardSummary, StudentKataProgressSummary } from '@/types/dashboard'
 import { ExaminationCriteriaCard } from './ExaminationCriteriaCard'
 import { StudentSyllabus } from './StudentSyllabus'
-import { KataProgressPanel } from './KataProgressPanel'
 import { GradoProgress } from '@/components/dashboard/dojo/GradoProgress'
 
 interface StudentProgressOverviewProps {
     kataSummary: StudentKataProgressSummary
     summary: StudentDashboardSummary
+    attendanceData: StudentAttendancePunchData
 }
 
-export function StudentProgressOverview({ kataSummary, summary }: StudentProgressOverviewProps) {
-    const { grado, katas } = kataSummary
+export function StudentProgressOverview({ kataSummary, summary, attendanceData }: StudentProgressOverviewProps) {
+    const { grado } = kataSummary
+    const pendingCount = attendanceData.summary.pendingCount
 
     return (
         <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
@@ -26,9 +27,22 @@ export function StudentProgressOverview({ kataSummary, summary }: StudentProgres
                 <Award aria-hidden="true" className="size-8 shrink-0 text-ok-text" />
             </header>
 
+            {pendingCount > 0 && (
+                <div className="mt-6 flex items-start gap-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3">
+                    <Hourglass aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-warn-text" />
+                    <div>
+                        <p className="text-sm font-bold text-warn-text">
+                            {pendingCount} práctica{pendingCount > 1 ? 's' : ''} por confirmar
+                        </p>
+                        <p className="mt-0.5 text-xs text-ink-3">
+                            El Sensei confirmará tus punch de asistencia; al hacerlo se reflejarán en tu progreso de grado y metas.
+                        </p>
+                    </div>
+                </div>
+            )}
+
             <div className="mt-7 space-y-5">
                 <GradoProgress grado={grado} />
-                <KataProgressPanel katas={katas} />
                 <ExaminationCriteriaCard grado={grado} />
                 <StudentSyllabus techniques={summary.techniques} />
             </div>

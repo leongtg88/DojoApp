@@ -19,7 +19,7 @@ interface AdminStudentDetailProps {
 	embedded?: boolean
 }
 
-type ExportKind = 'excel' | 'zip'
+type ExportKind = 'excel' | 'zip' | 'pdf'
 
 type DetailTab = 'katas' | 'attendance' | 'inscripcion' | 'medical'
 
@@ -120,9 +120,12 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 		setExporting(kind)
 		setActionError(null)
 		try {
-			const path = kind === 'excel'
+			const path =
+			kind === 'excel'
 				? `/api/dashboard/admin/students/${student.id}/export`
-				: `/api/dashboard/admin/students/${student.id}/export/zip`
+				: kind === 'pdf'
+					? `/api/dashboard/admin/students/${student.id}/export-pdf`
+					: `/api/dashboard/admin/students/${student.id}/export/zip`
 			const response = await fetch(path)
 			if (!response.ok) {
 				const payload = await response.json().catch(() => ({})) as { error?: string }
@@ -139,7 +142,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 				.replace(/-+/g, '-')
 				.replace(/^-|-$/g, '')
 				.toLowerCase()
-			link.download = `expediente-${base || student.id}.${kind === 'excel' ? 'xlsx' : 'zip'}`
+			link.download = `expediente-${base || student.id}.${kind === 'excel' ? 'xlsx' : kind === 'pdf' ? 'pdf' : 'zip'}`
 			document.body.appendChild(link)
 			link.click()
 			link.remove()
@@ -194,6 +197,9 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 					</button>
 					<button type="button" onClick={() => handleExport('zip')} disabled={exporting !== null} className="inline-flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-3.5 py-2 text-xs font-semibold text-ink transition-colors hover:bg-surface-3 hover:text-ink disabled:opacity-50">
 						{exporting === 'zip' ? <Loader2 className="size-4 animate-spin" /> : <FolderArchive className="size-4" />}ZIP con archivos
+					</button>
+					<button type="button" onClick={() => handleExport('pdf')} disabled={exporting !== null} className="inline-flex items-center gap-2 rounded-md border border-emerald-500/40 bg-surface-1 px-3.5 py-2 text-xs font-semibold text-emerald-600 transition-colors hover:bg-emerald-500/10 disabled:opacity-50 dark:text-emerald-400">
+						{exporting === 'pdf' ? <Loader2 className="size-4 animate-spin" /> : <FileText className="size-4" />}Carnet (Federación)
 					</button>
 					<button type="button" onClick={handlePrint} className="inline-flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-3.5 py-2 text-xs font-semibold text-ink transition-colors hover:bg-surface-3 hover:text-ink">
 						<FileText className="size-4" />Imprimir / PDF

@@ -611,7 +611,9 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     (attendance) => !attendance.present && (attendance.status === 'CONFIRMED' || attendance.status === 'JUSTIFIED') && !attendance.recoveredById,
   )
 
-  const classSessionsGrade = classRecords.length
+  // Asistencias contabilizadas para la barra y las metas: TODAS las confirmadas
+  // (clase del horario + punch), para que el registro de asistencia mueva el progreso.
+  const confirmedSessionsGrade = confirmedRecords.length
 
   const approvedKatas = student.techniques.filter(({ technique, approved }) => gradeKataIdsSet.has(technique.id) && approved).length
   const totalRequiredKatas = gradeKataIds.length
@@ -724,7 +726,7 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     const blockConfirmed = confirmedRecords.filter((attendance) => attendance.date >= effectiveStart && attendance.date < block.end)
     const blockClass = classRecords.filter((attendance) => attendance.date >= effectiveStart && attendance.date < block.end)
     const classHours = Number(blockClass.reduce((sum, attendance) => sum + attendance.hoursTrained, 0).toFixed(2))
-    const classSessions = blockClass.length
+    const classSessions = blockConfirmed.length
     const extraHours = Number((blockConfirmed.reduce((sum, attendance) => sum + attendance.hoursTrained, 0) - classHours).toFixed(2))
     const extraClasses = blockConfirmed.filter(
       (attendance) => attendance.sessionType === 'class' && (attendance.classId == null || !referenceClassIds.has(attendance.classId)),
@@ -896,9 +898,9 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     approvedKatas,
     requiredKatas: totalRequiredKatas,
     attendance: {
-      attendedSessions: classSessionsGrade,
+      attendedSessions: confirmedSessionsGrade,
       totalSessions: capacitySessionsGrade,
-      percentage: capacitySessionsGrade > 0 ? Math.round((classSessionsGrade / capacitySessionsGrade) * 100) : 0,
+      percentage: capacitySessionsGrade > 0 ? Math.round((confirmedSessionsGrade / capacitySessionsGrade) * 100) : 0,
     },
     minAttendancePercent,
     monthsInRank,

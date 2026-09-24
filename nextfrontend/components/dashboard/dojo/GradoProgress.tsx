@@ -46,7 +46,7 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
             value: grado.requiredKatas > 0 ? kataPercent : 100,
         },
         {
-            label: 'Asistencia (clases)',
+            label: 'Asistencia',
             detail: `${currentPeriod?.classSessions ?? 0} de ${currentPeriod?.capacitySessions ?? 0} clases`,
             value: classPercent,
         },

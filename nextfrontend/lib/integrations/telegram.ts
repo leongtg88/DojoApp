@@ -70,3 +70,47 @@ export async function notifyEnrollmentByTelegram(input: EnrollmentNotification):
     }),
   )
 }
+
+/**
+ * Envía un documento (p. ej. el carnet de la federación rellenado) a todos los
+ * chats configurados, mediante multipart. Es "best-effort".
+ */
+export async function sendDocumentToTelegram(input: {
+  fileName: string
+  bytes: Uint8Array
+  mime: string
+  caption?: string
+}): Promise<void> {
+  const token = process.env.TELEGRAM_BOT_TOKEN
+  const chatIds = (process.env.TELEGRAM_CHAT_IDS ?? '')
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean)
+
+  if (!token || chatIds.length === 0) {
+    return
+  }
+
+  await Promise.all(
+    chatIds.map(async (chatId) => {
+      try {
+        const form = new FormData()
+        form.append('chat_id', chatId)
+        form.append(
+          'document',
+          new Blob([Buffer.from(input.bytes)], { type: input.mime }),
+          input.fileName,
+        )
+        if (input.caption) form.append('caption', input.caption)
+
+        await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
+          method: 'POST',
+          body: form,
+          signal: AbortSignal.timeout(15_000),
+        })
+      } catch (error) {
+        console.error('[telegram] No fue posible enviar el documento al chat', chatId, error)
+      }
+    }),
+  )
+}

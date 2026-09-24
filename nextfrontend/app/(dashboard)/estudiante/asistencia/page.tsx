@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
 import { StudentAttendancePunch } from '@/components/dashboard/student/StudentAttendancePunch'
 import { FamilyQuickSwitcher } from '@/components/dashboard/student/FamilyQuickSwitcher'
-import { getStudentAttendancePunchData, getStudentKataProgress } from '@/lib/dashboard/student-queries'
+import { getStudentAttendancePunchData } from '@/lib/dashboard/student-queries'
 import { getFamilyMembers, resolveStudentView } from '@/lib/family/guardians'
 import { redirect } from 'next/navigation'
 import { hasAnyRole } from '@/lib/auth/roles'
@@ -24,10 +24,7 @@ export default async function StudentAttendancePage({ searchParams }: StudentAtt
         redirect('/no-autorizado')
     }
 
-    const [data, kataSummary] = await Promise.all([
-        getStudentAttendancePunchData(view.studentId),
-        getStudentKataProgress(view.studentId),
-    ])
+    const data = await getStudentAttendancePunchData(view.studentId)
 
     if (!data) {
         redirect('/dashboard/estudiante')
@@ -46,7 +43,7 @@ export default async function StudentAttendancePage({ searchParams }: StudentAtt
                 </section>
             )}
             <section className="mt-7">
-                <StudentAttendancePunch data={data} grado={kataSummary?.grado ?? null} studentId={view.studentId} />
+                <StudentAttendancePunch data={data} studentId={view.studentId} />
             </section>
         </main>
     )

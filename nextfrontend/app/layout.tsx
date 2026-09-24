@@ -111,7 +111,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <Script src="/theme-init.js" strategy="beforeInteractive" />
       </head>
-      <body suppressHydrationWarning className={`${montserrat.variable} ${openSans.variable} min-h-screen bg-white text-[#dee2f0] flex flex-col font-sans relative antialiased selection:bg-brand-accent selection:text-gray-700`}>
+      <body suppressHydrationWarning className={`${montserrat.variable} ${openSans.variable} min-h-dvh bg-white text-[#dee2f0] flex flex-col font-sans relative antialiased selection:bg-brand-accent selection:text-gray-700`}>
         <ThemeProvider>
           <PwaRegister />
           <AppChrome>

@@ -8,6 +8,7 @@ import { linkGuardianToChildren } from '@/lib/family/guardians'
 import type { Program } from '@/lib/curriculum/programs'
 import { buildStudentExportRecord } from '@/lib/dashboard/student-export'
 import { postToN8n } from '@/lib/integrations/n8n'
+import { generateCarnetForStudent } from '@/lib/pdf/carnet-data'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -308,6 +309,10 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
       }),
     )
   }
+
+  // Carnet de la federación: se genera y envía por Telegram solo si el alumno
+  // convertido ya tiene completos todos los campos del formulario.
+  await generateCarnetForStudent(student.id)
 
   return NextResponse.json({
     ok: true,

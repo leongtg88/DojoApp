@@ -445,7 +445,7 @@ export interface CuatrimestreProgress {
 	capacitySessions: number
 	/** Horas de las clases asistidas en su horario de referencia. */
 	classHours: number
-	/** Clases asistidas en su horario de referencia. */
+	/** Asistencias confirmadas en el cuatrimestre (clase + punch). */
 	classSessions: number
 	/** Horas de entrenamiento que no es su clase regular (libre/casa + fuera de horario). */
 	extraHours: number

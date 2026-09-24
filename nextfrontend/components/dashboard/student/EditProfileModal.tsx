@@ -76,10 +76,10 @@ export function EditProfileModal({ onClose, profile, studentId, restricted = fal
     return (
         <div
             aria-modal="true"
-            className="fixed inset-0 z-50 flex items-center justify-center bg-surface-1/80 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-50 overflow-y-auto bg-surface-1/80 backdrop-blur-sm"
             role="dialog"
         >
-            <div className="w-full max-w-lg rounded-xl border border-edge-strong bg-surface-2 shadow-2xl">
+            <div className="mx-auto my-6 w-full max-w-lg rounded-xl border border-edge-strong bg-surface-2 shadow-2xl">
                 <div className="flex items-center justify-between border-b border-edge px-5 py-4">
                     <div>
                         <h2 className="font-display text-base font-bold text-ink">{restricted ? `Editar datos de ${profile.firstName}` : 'Editar datos personales'}</h2>

@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
 import { StudentProgressOverview } from '@/components/dashboard/student/StudentProgressOverview'
-import { getStudentDashboardSummary, getStudentKataProgress } from '@/lib/dashboard/student-queries'
+import { getStudentAttendancePunchData, getStudentDashboardSummary, getStudentKataProgress } from '@/lib/dashboard/student-queries'
 import { resolveStudentView } from '@/lib/family/guardians'
 import { redirect } from 'next/navigation'
 import { hasAnyRole } from '@/lib/auth/roles'
@@ -23,11 +23,11 @@ export default async function StudentProgressPage({ searchParams }: StudentProgr
         redirect('/no-autorizado')
     }
 
-    const [kataSummary, summary] = await Promise.all([getStudentKataProgress(view.studentId), getStudentDashboardSummary(view.studentId)])
+    const [kataSummary, summary, attendanceData] = await Promise.all([getStudentKataProgress(view.studentId), getStudentDashboardSummary(view.studentId), getStudentAttendancePunchData(view.studentId)])
 
-    if (!kataSummary || !summary) {
+    if (!kataSummary || !summary || !attendanceData) {
         redirect('/dashboard/estudiante')
     }
 
-    return <StudentProgressOverview kataSummary={kataSummary} summary={summary} />
+    return <StudentProgressOverview attendanceData={attendanceData} kataSummary={kataSummary} summary={summary} />
 }
