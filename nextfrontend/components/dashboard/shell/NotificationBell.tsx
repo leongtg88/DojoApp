@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { Bell, BellOff, BellRing, CheckCheck } from 'lucide-react'
 import type { NotificationView } from '@/lib/notifications/queries'
 import { NOTIFICATION_PRIORITY_STYLES, formatNotificationRelative } from '@/lib/notifications/format'
+import { setUnreadBadge } from '@/lib/badge'
+import { isStandalone } from '@/lib/pwa'
 
 interface NotificationBellProps {
     initialUnreadCount?: number
@@ -44,6 +46,7 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
     const [items, setItems] = useState<NotificationView[]>([])
     const [pushState, setPushState] = useState<PushState>(resolvePushState)
     const [pushBusy, setPushBusy] = useState(false)
+    const [pushHint, setPushHint] = useState<string | null>(null)
     const containerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -71,6 +74,12 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
             active = false
         }
     }, [])
+
+    // Sincroniza el contador de no leídas con el badge del ícono de la app
+    // instalada (solo Android/desktop; en iOS no hay Badging API).
+    useEffect(() => {
+        setUnreadBadge(unreadCount)
+    }, [unreadCount])
 
     useEffect(() => {
         if (pushState !== 'loading') return
@@ -137,7 +146,18 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
     async function subscribePush() {
         if (!VAPID_PUBLIC_KEY) return
         setPushBusy(true)
+        setPushHint(null)
         try {
+            // En iOS Safari el permiso push solo funciona si la PWA está añadida
+            // a la pantalla de inicio. Si aún no lo está, se orienta al usuario.
+            const isIos =
+                /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+                (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1 && 'ontouchend' in document)
+            if (isIos && !isStandalone()) {
+                setPushHint('Añade la app a tu pantalla de inicio para activar las notificaciones en iPhone.')
+                return
+            }
+
             const permission = await Notification.requestPermission()
             if (permission !== 'granted') {
                 setPushState(permission === 'denied' ? 'denied' : 'unsubscribed')
@@ -273,6 +293,12 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
                             )}
                             <span>{pushLabel}</span>
                         </button>
+                    )}
+
+                    {pushHint && (
+                        <p className="border-t border-edge px-3 py-2 text-[11px] leading-snug text-ink-3">
+                            {pushHint}
+                        </p>
                     )}
 
                     <Link

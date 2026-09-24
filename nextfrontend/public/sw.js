@@ -1,4 +1,4 @@
-const CACHE = 'tosei-gusoku-v3';
+const CACHE = 'tosei-gusoku-v4';
 const PRECACHE_URLS = ['/', '/manifest.webmanifest', '/icons/icon-192.png'];
 
 self.addEventListener('install', (event) => {
@@ -75,7 +75,7 @@ self.addEventListener('fetch', (event) => {
 });
 
 self.addEventListener('push', (event) => {
-  let payload = { title: 'Tosei Gusoku', body: 'Tienes una notificación', url: '/' };
+  let payload = { title: 'Tosei Gusoku', body: 'Tienes una notificación', url: '/', badge: 0 };
   try {
     if (event.data) payload = { ...payload, ...event.data.json() };
   } catch {
@@ -83,12 +83,20 @@ self.addEventListener('push', (event) => {
   }
 
   event.waitUntil(
-    self.registration.showNotification(payload.title, {
-      body: payload.body,
-      icon: '/icons/icon-192.png',
-      badge: '/icons/icon-192.png',
-      data: { url: payload.url || '/' },
-    })
+    (async () => {
+      await self.registration.showNotification(payload.title, {
+        body: payload.body,
+        icon: '/icons/icon-192.png',
+        badge: '/icons/icon-192.png',
+        data: { url: payload.url || '/' },
+      });
+
+      // Contador de no leídas en el ícono de la app instalada (Android/desktop).
+      // En iOS no existe la Badging API: la llamada se ignora.
+      if (typeof payload.badge === 'number' && payload.badge > 0 && 'setAppBadge' in self.navigator) {
+        await self.navigator.setAppBadge(payload.badge);
+      }
+    })()
   );
 });
 

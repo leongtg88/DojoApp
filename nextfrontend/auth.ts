@@ -6,10 +6,12 @@ import { db } from '@/lib/db'
 import { consumeRateLimit, getClientIp, peekRateLimit, resetRateLimit } from '@/lib/security/rate-limit'
 import type { DashboardRole } from '@/types/dashboard'
 
+const SESSION_VERIFY_INTERVAL_MS = 60 * 60 * 1000 // 1 hora entre chequeos de validez de sesión
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: 'jwt',
-    maxAge: 60 * 60 * 24 * 7, // 7 días en lugar de los 30 por defecto
+    maxAge: 60 * 60 * 24 * 30, // 30 días: quien use el app al menos una vez al mes no vuelve a loguearse
   },
 
   // Cookie de sesión con atributos de seguridad explícitos.
@@ -164,15 +166,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.id = user.id
         token.roles = user.roles as DashboardRole[]
         token.sessionVersion = (user as { sessionVersion?: number }).sessionVersion ?? 0
+        token.sessionVerifiedAt = Date.now()
       } else if (token.id) {
         // Sesión ya emitida: si el usuario cambió su contraseña (sessionVersion
-        // aumentó) o ya no existe, la sesión deja de ser válida.
-        const dbUser = await db.user.findUnique({
-          where: { id: String(token.id) },
-          select: { sessionVersion: true },
-        })
-        if (!dbUser || dbUser.sessionVersion !== token.sessionVersion) {
-          return null
+        // aumentó) o ya no existe, la sesión deja de ser válida. El chequeo se
+        // hace como máximo una vez por hora (throttle) para reducir la carga de
+        // la DB y evitar que un error transitorio de red móvil invalide la
+        // sesión y saque al usuario del dashboard sin aviso.
+        const now = Date.now()
+        const lastVerified = (token.sessionVerifiedAt as number | undefined) ?? 0
+        if (now - lastVerified >= SESSION_VERIFY_INTERVAL_MS) {
+          try {
+            const dbUser = await db.user.findUnique({
+              where: { id: String(token.id) },
+              select: { sessionVersion: true },
+            })
+            if (!dbUser || dbUser.sessionVersion !== token.sessionVersion) {
+              return null
+            }
+            token.sessionVerifiedAt = now
+          } catch {
+            // Error transitorio de la DB: se conserva la sesión vigente en vez
+            // de invalidarla. Se reintenta en la siguiente verificación.
+          }
         }
       }
 

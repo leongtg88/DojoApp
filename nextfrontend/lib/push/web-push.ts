@@ -5,12 +5,15 @@ export interface PushPayload {
   title: string
   body: string
   url?: string
+  /** Conteo de notificaciones no leídas para el badge del ícono (opcional). */
+  badge?: number
 }
 
 interface PushSubscriptionRecord {
   endpoint: string
   p256dh: string
   auth: string
+  userId?: string
 }
 
 let configured = false
@@ -37,14 +40,19 @@ function configure(): boolean {
   }
 }
 
-async function sendToSubscriptions(subscriptions: PushSubscriptionRecord[], payload: PushPayload): Promise<void> {
+async function sendToSubscriptions(
+  subscriptions: PushSubscriptionRecord[],
+  payload: PushPayload,
+  unreadMap?: Map<string, number>,
+): Promise<void> {
   if (subscriptions.length === 0) return
-
-  const body = JSON.stringify(payload)
 
   await Promise.all(
     subscriptions.map(async (subscription) => {
       try {
+        const badge =
+          unreadMap && subscription.userId ? (unreadMap.get(subscription.userId) ?? 0) : (payload.badge ?? 0)
+        const body = JSON.stringify({ ...payload, badge })
         await webpush.sendNotification(
           { endpoint: subscription.endpoint, keys: { p256dh: subscription.p256dh, auth: subscription.auth } },
           body,
@@ -72,11 +80,23 @@ export async function sendPushToUsers(userIds: string[], payload: PushPayload): 
   if (uniqueUserIds.length === 0) return
 
   try {
-    const subscriptions = await db.pushSubscription.findMany({
-      where: { userId: { in: uniqueUserIds } },
-      select: { endpoint: true, p256dh: true, auth: true },
-    })
-    await sendToSubscriptions(subscriptions, payload)
+    const [subscriptions, unreadGroups] = await Promise.all([
+      db.pushSubscription.findMany({
+        where: { userId: { in: uniqueUserIds } },
+        select: { endpoint: true, p256dh: true, auth: true, userId: true },
+      }),
+      db.notification.groupBy({
+        by: ['userId'],
+        where: { userId: { in: uniqueUserIds }, readAt: null },
+        _count: { _all: true },
+      }),
+    ])
+
+    const unreadMap = new Map<string, number>(
+      unreadGroups.map((group) => [group.userId, group._count._all]),
+    )
+
+    await sendToSubscriptions(subscriptions, payload, unreadMap)
   } catch (error) {
     console.error('[push] No fue posible obtener las suscripciones', error)
   }
