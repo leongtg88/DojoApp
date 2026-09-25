@@ -610,9 +610,13 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     (attendance) => !attendance.present && (attendance.status === 'CONFIRMED' || attendance.status === 'JUSTIFIED') && !attendance.recoveredById,
   )
 
-  // Horas de entrenamiento: TATAMI (cualquier clase, regular o extra:
-  // classId != null) vs LIBRE (casa/autónomo: classId null). La división por
-  // bloques/cuatrimestres se hace más abajo sobre `attendedRecords`.
+  // Horas de entrenamiento: TATAMI vs LIBRE, según el tipo de sesión que el
+  // alumno eligió al punchar (o el instructor al confirmar). "Entrenamiento
+  // libre" (sessionType 'autonomous') es la única categoría de casa/libre; todo
+  // lo demás ('class', 'private', 'seminar', 'other', null) es tatami/dojo. No
+  // se usa classId porque el punch puede quedar sin clase coincidente aunque
+  // sea una clase real. La división por bloques se hace más abajo.
+  const isLibreTraining = (attendance: { sessionType: string | null }) => attendance.sessionType === 'autonomous'
   const attendedSessionsGrade = attendedRecords.length
   const pendingSessionsGrade = pendingRecords.length
 
@@ -725,8 +729,8 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     const effectiveStart = block.start.getTime() < gradeStart.getTime() ? gradeStart : block.start
     const available = availableTrainingHours(scheduleClasses, { audience, start: effectiveStart, end: block.end, holidays })
     const blockAttended = attendedRecords.filter((attendance) => attendance.date >= effectiveStart && attendance.date < block.end)
-    const blockTatami = blockAttended.filter((attendance) => attendance.classId != null)
-    const blockLibre = blockAttended.filter((attendance) => attendance.classId == null)
+    const blockTatami = blockAttended.filter((attendance) => !isLibreTraining(attendance))
+    const blockLibre = blockAttended.filter(isLibreTraining)
     const classHours = Number(blockTatami.reduce((sum, attendance) => sum + attendance.hoursTrained, 0).toFixed(2))
     const libreHours = Number(blockLibre.reduce((sum, attendance) => sum + attendance.hoursTrained, 0).toFixed(2))
     const classSessions = blockAttended.length

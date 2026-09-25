@@ -2,11 +2,9 @@ import type { StudentDashboardSummary, StudentKataProgressSummary } from '@/type
 import { StudentBirthdayCard } from './StudentBirthdayCard'
 import { ExaminationCriteriaCard } from './ExaminationCriteriaCard'
 import { FocusTechniquesList } from './FocusTechniquesList'
-import { KataToEvaluateCard } from './KataToEvaluateCard'
 import { MartialGradeCard } from './MartialGradeCard'
 import { StudentGreeting } from './StudentGreeting'
 import { StudentMetricsGrid } from './StudentMetricsGrid'
-import { StudentMonthlyProgress } from './StudentMonthlyProgress'
 import { NextClassCard } from './NextClassCard'
 
 interface StudentDashboardOverviewProps {
@@ -22,24 +20,24 @@ export function StudentDashboardOverview({ summary, kataSummary }: StudentDashbo
     return (
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
             <StudentGreeting profile={profile} />
-            <div className="mt-7"><NextClassCard classes={upcomingClasses} studentId={profile.id} /></div>
-            <section className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="mt-7">
                 <MartialGradeCard approvedTechniques={approvedTechniques} grado={kataSummary?.grado} rank={profile.currentRank} studentName={studentName} totalTechniques={techniques.length} studentId={profile.id} />
+            </div>
+            <div className="mt-5">
+                <NextClassCard classes={upcomingClasses} studentId={profile.id} />
+            </div>
+            <div className="mt-5">
                 <StudentBirthdayCard dateOfBirth={profile.dateOfBirth} />
-            </section>
-            <div className="mt-5"><StudentMetricsGrid attendance={attendance} techniques={techniques} grado={kataSummary?.grado ?? null} /></div>
-            <section className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
+            </div>
+            <div className="mt-5">
+                <StudentMetricsGrid attendance={attendance} techniques={techniques} grado={kataSummary?.grado ?? null} />
+            </div>
+            <div className="mt-5">
                 <FocusTechniquesList techniques={techniques} studentId={profile.id} />
-                <KataToEvaluateCard katas={kataSummary?.katas ?? []} studentId={profile.id} />
-            </section>
-            <section className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
-                <StudentMonthlyProgress studentId={profile.id} />
-                <div className="flex flex-col gap-5">
-                    {kataSummary && (
-                        <ExaminationCriteriaCard grado={kataSummary.grado} />
-                    )}
-                </div>
-            </section>
+            </div>
+            <div className="mt-5">
+                {kataSummary && <ExaminationCriteriaCard grado={kataSummary.grado} />}
+            </div>
         </main>
     )
 }

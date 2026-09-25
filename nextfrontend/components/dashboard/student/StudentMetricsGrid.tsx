@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { CalendarCheck2, ClipboardCheck, Star } from 'lucide-react'
-import { formatHoursHM } from '@/lib/dashboard/balance'
 import type { AttendanceSummary, GradoProgressData, StudentTechnique } from '@/types/dashboard'
 
 interface StudentMetricsGridProps {
@@ -15,16 +14,9 @@ export function StudentMetricsGrid({ attendance, techniques, grado = null }: Stu
     const averageScore = evaluatedScores.length === 0 ? null : Math.round((evaluatedScores.reduce((total, score) => total + score, 0) / evaluatedScores.length) * 10) / 10
 
     const attendanceSummary = grado?.attendance ?? attendance
-    const currentPeriod = grado?.currentPeriod ?? null
-    const hoursReq = grado?.hoursRequirement ?? null
 
-    const monthBreakdown = currentPeriod && currentPeriod.monthAbsences.length > 0
-        ? currentPeriod.monthAbsences.map((month) => `${month.label}: ${month.count}/${month.max}`).join(' · ')
-        : '0'
     const attendanceValue = `${attendanceSummary.attendedSessions} de ${attendanceSummary.totalSessions}`
-    const attendanceDetail = hoursReq
-        ? `${formatHoursHM(hoursReq.totalHours)} h de entrenamiento · inasistencia ${monthBreakdown}${grado && grado.pendingSessions > 0 ? ` · ${grado.pendingSessions} por confirmar` : ''}`
-        : `${attendanceSummary.percentage}% del grado`
+    const attendanceDetail = `${attendanceSummary.percentage}% del grado${grado && grado.pendingSessions > 0 ? ` · ${grado.pendingSessions} por confirmar` : ''}`
 
     const cards = [
         { href: '/dashboard/estudiante/asistencia', icon: CalendarCheck2, label: 'Asistencia', value: attendanceValue, detail: attendanceDetail },
