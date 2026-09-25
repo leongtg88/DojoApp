@@ -10,6 +10,19 @@ export function PwaRegister() {
 
         const onLoad = () => {
             navigator.serviceWorker.register('/sw.js').catch(() => {})
+
+            // Pide almacenamiento persistente para la PWA instalada: WebKit
+            // otorga el modo persistente a las apps del home screen, lo que
+            // evita que se evacúen cookies/cache al cerrar la app y se pierda
+            // la sesión en iOS.
+            if (navigator.storage?.persisted && navigator.storage?.persist) {
+                navigator.storage
+                    .persisted()
+                    .then((persisted) => {
+                        if (!persisted) return navigator.storage.persist()
+                    })
+                    .catch(() => {})
+            }
         }
 
         window.addEventListener('load', onLoad)

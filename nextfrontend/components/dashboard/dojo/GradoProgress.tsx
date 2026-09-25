@@ -1,11 +1,25 @@
 'use client'
 
 import { AlertTriangle, Award, CalendarDays, CheckCircle2, Clock, Shield } from 'lucide-react'
+import { formatHoursHM } from '@/lib/dashboard/balance'
 import type { GradoProgressData, GradoMetric } from '@/types/dashboard'
 
 interface GradoProgressProps {
     grado: GradoProgressData
     className?: string
+}
+
+interface MetricSegment {
+    value: number
+    color: string
+    legend: string
+}
+
+interface MetricItem {
+    label: string
+    detail: string
+    value: number
+    segments?: MetricSegment[]
 }
 
 const percent = (value: number, goal: number) => (goal > 0 ? Math.min(100, Math.round((value / goal) * 100)) : 100)
@@ -23,23 +37,35 @@ function formatDate(value: string | null): string {
 
 export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
     const kataPercent = percent(grado.approvedKatas, grado.requiredKatas)
-    const monthsPercent = percent(grado.monthsInRank, grado.minMonths)
     const hoursReq = grado.hoursRequirement
-    const currentPeriod = grado.currentPeriod
-    const classPercent = currentPeriod && currentPeriod.capacitySessions > 0
-        ? percent(currentPeriod.classSessions, currentPeriod.capacitySessions)
-        : 100
+    const attendance = grado.attendance
+    const attendancePercent = attendance.totalSessions > 0
+        ? Math.min(100, Math.round((attendance.attendedSessions / attendance.totalSessions) * 100))
+        : 0
     const hoursGoal = hoursReq?.effectiveRequiredHours ?? hoursReq?.requiredHours ?? null
     const hoursPercent = hoursReq && hoursGoal != null
-        ? percent(hoursReq.classHours, hoursGoal)
+        ? percent(hoursReq.totalHours, hoursGoal)
         : 100
+
+    const tatamiHours = hoursReq?.classHours ?? 0
+    const libreHours = hoursReq?.libreHours ?? 0
+    const totalHours = hoursReq?.totalHours ?? 0
+    const hoursExempt = hoursReq?.exempt ?? true
+
+    // Segmentos de la barra apilada de horas de entrenamiento. Si hay meta del
+    // plan, los anchos son relativos a la meta (con tope 100%); si el plan está
+    // exento, relativos al total acumulado.
+    const hoursScale = hoursGoal != null ? hoursGoal : Math.max(totalHours, 1)
+    const tatamiWidth = Math.min(100, (tatamiHours / hoursScale) * 100)
+    const libreWidth = Math.max(0, Math.min(100 - tatamiWidth, (libreHours / hoursScale) * 100))
+
     const hoursDetail = hoursReq
-        ? hoursReq.exempt
-            ? `${hoursReq.classHours} h de clase · plan exento`
-            : `${hoursReq.classHours} de ${hoursGoal} h · extra ${hoursReq.extraHours} h${hoursReq.creditHours > 0 ? ` · crédito ${hoursReq.creditHours} h` : ''}`
+        ? hoursExempt
+            ? `${formatHoursHM(totalHours)} total (tatami ${formatHoursHM(tatamiHours)} + libre ${formatHoursHM(libreHours)}) · plan sin mínimo`
+            : `${formatHoursHM(totalHours)} total (tatami ${formatHoursHM(tatamiHours)} + libre ${formatHoursHM(libreHours)}) de ${formatHoursHM(hoursGoal ?? 0)} meta${hoursReq.creditHours > 0 ? ` · crédito ${formatHoursHM(hoursReq.creditHours)}` : ''}`
         : ''
 
-    const metrics = [
+    const metrics: MetricItem[] = [
         {
             label: 'Katas oficiales',
             detail: grado.requiredKatas > 0 ? `${grado.approvedKatas} de ${grado.requiredKatas} aprobadas` : 'Sin katas configuradas',
@@ -47,19 +73,18 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
         },
         {
             label: 'Asistencia',
-            detail: `${currentPeriod?.classSessions ?? 0} de ${currentPeriod?.capacitySessions ?? 0} clases`,
-            value: classPercent,
-        },
-        {
-            label: 'Permanencia en grado',
-            detail: `${grado.monthsInRank} de ${grado.minMonths} meses${grado.monthsInRankEstimated ? ' (estimado)' : ''}`,
-            value: monthsPercent,
+            detail: `${attendance.attendedSessions} de ${attendance.totalSessions} clases${grado.pendingSessions > 0 ? ` · ${grado.pendingSessions} por confirmar` : ''}`,
+            value: attendancePercent,
         },
         ...(hoursReq
             ? [{
-                label: 'Horas de tatami',
+                label: 'Horas de entrenamiento',
                 detail: hoursDetail,
                 value: hoursPercent,
+                segments: [
+                    { value: tatamiWidth, color: 'bg-gradient-to-r from-cyan-500 to-emerald-500', legend: 'Tatami' },
+                    { value: libreWidth, color: 'bg-violet-500', legend: 'Libre' },
+                ],
             }]
             : []),
     ]
@@ -93,15 +118,46 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
                                 {metric.detail} <b className="text-accent">{metric.value}%</b>
                             </span>
                         </div>
-                        <div className="h-2 overflow-hidden rounded-full bg-surface-1">
-                            <div
-                                className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500 transition-all duration-700"
-                                style={{ width: `${metric.value}%` }}
-                            />
+                        <div className="flex h-2 w-full overflow-hidden rounded-full bg-surface-1">
+                            {metric.segments ? (
+                                metric.segments.map((segment) => (
+                                    <div
+                                        className={`h-full ${segment.color} transition-all duration-700`}
+                                        key={segment.legend}
+                                        style={{ width: `${segment.value}%` }}
+                                    />
+                                ))
+                            ) : (
+                                <div
+                                    className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500 transition-all duration-700"
+                                    style={{ width: `${metric.value}%` }}
+                                />
+                            )}
                         </div>
+                        {metric.segments && (
+                            <div className="mt-1.5 flex gap-3 text-[10px] text-ink-3">
+                                {metric.segments.map((segment) => (
+                                    <span className="flex items-center gap-1" key={segment.legend}>
+                                        <span className={`size-2 rounded-full ${segment.color}`} />
+                                        {segment.legend}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>
+
+            {grado.pendingSessions > 0 && (
+                <div className="mt-5 flex items-center gap-3 rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-2.5 text-xs text-ink-2">
+                    <Clock aria-hidden="true" className="size-4 shrink-0 text-warn-text" />
+                    <p>
+                        <span className="font-bold text-warn-text">{grado.pendingSessions}</span>{' '}
+                        {grado.pendingSessions === 1 ? 'clase marcada pendiente' : 'clases marcadas pendientes'} de confirmar por tu sensei.{' '}
+                        <span className="text-ink-4">El progreso ya cuenta; se ajusta si se rechaza.</span>
+                    </p>
+                </div>
+            )}
 
             {grado.nextExam && (
                 <div className="mt-5 flex flex-wrap items-center gap-3 rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-2.5">
@@ -170,9 +226,9 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
                                                 <div className="h-full rounded-full bg-cyan-500" style={{ width: `${classTarget}%` }} />
                                             </div>
                                             <p className="mt-1 text-ink-4">
-                                                {cuatrimestre.extraHours > 0 || cuatrimestre.extraClasses > 0
-                                                    ? `${cuatrimestre.extraHours} h extra · ${cuatrimestre.extraClasses} clases extra`
-                                                    : 'Sin entrenamiento extra'}
+                                                {cuatrimestre.libreHours > 0 || cuatrimestre.extraClasses > 0
+                                                    ? `${cuatrimestre.libreHours} h libre · ${cuatrimestre.extraClasses} clases extra`
+                                                    : 'Sin entrenamiento libre'}
                                             </p>
                                         </div>
                                         <div>

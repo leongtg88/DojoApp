@@ -39,37 +39,39 @@ export function ExaminationCriteriaCard({ grado }: ExaminationCriteriaCardProps)
                         <CheckCircle2 aria-hidden="true" className="size-4 text-ink-4" />
                     </div>
                     <p className="mt-3 font-display text-2xl font-extrabold text-ink">
-                        {currentPeriod?.classSessions ?? 0}
-                        <span className="text-xs font-normal text-ink-3"> / {currentPeriod?.capacitySessions ?? 0} clases</span>
+                        {grado.attendance.attendedSessions}
+                        <span className="text-xs font-normal text-ink-3"> / {grado.attendance.totalSessions} clases</span>
                     </p>
                     <p className="mt-1 text-xs text-ink-4">{monthBreakdown}</p>
                 </div>
 
                 <div className="rounded-lg border border-edge bg-surface-1 p-4">
                     <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-wide text-ink-3">Tatami</span>
+                        <span className="text-[10px] font-bold uppercase tracking-wide text-ink-3">Horas de entrenamiento</span>
                         <Clock aria-hidden="true" className={`size-4 ${hoursReq && hoursGoal != null && !hoursReq.met ? 'text-warn-text' : 'text-accent'}`} />
                     </div>
                     {hoursReq && hoursGoal != null ? (
                         <>
                             <p className="mt-3 font-display text-2xl font-extrabold text-ink">
-                                {formatHoursHM(hoursReq.classHours)}
+                                {formatHoursHM(hoursReq.totalHours)}
                                 <span className="text-xs font-normal text-ink-3"> / {formatHoursHM(hoursGoal)} h</span>
+                            </p>
+                            <p className="mt-1 text-xs text-ink-4">
+                                tatami {formatHoursHM(hoursReq.classHours)} · libre {formatHoursHM(hoursReq.libreHours)}
                             </p>
                             <p className={`mt-1 text-xs ${hoursReq.met ? 'text-ok-text' : 'text-warn-text'}`}>
                                 {hoursReq.met
-                                    ? hasCredit ? `Cumplido · crédito ${formatHoursHM(hoursReq.creditHours)}` : 'Mínimo del plan cumplido'
-                                    : `Reponer ${formatHoursHM(hoursPending)} para el examen`}
+                                    ? hasCredit ? `Mínimo de tatami cumplido · crédito ${formatHoursHM(hoursReq.creditHours)}` : 'Mínimo de tatami cumplido'
+                                    : `Faltan ${formatHoursHM(hoursPending)} de tatami para el examen`}
                             </p>
-                            <p className="mt-1 text-[11px] text-ink-4">extra ponderable {formatHoursHM(hoursReq.extraHours)}</p>
                         </>
                     ) : (
                         <>
                             <p className="mt-3 font-display text-2xl font-extrabold text-ink">
-                                {hoursReq ? hoursReq.classHours : currentPeriod?.classHours ?? 0}
-                                <span className="text-xs font-normal text-ink-3"> h de clase</span>
+                                {formatHoursHM(hoursReq ? hoursReq.totalHours : (currentPeriod?.classHours ?? 0) + (currentPeriod?.libreHours ?? 0))}
+                                <span className="text-xs font-normal text-ink-3"> h de entrenamiento</span>
                             </p>
-                            <p className="mt-1 text-xs text-ink-4">Plan sin mínimo de horas de tatami</p>
+                            <p className="mt-1 text-xs text-ink-4">Plan sin mínimo de horas</p>
                         </>
                     )}
                 </div>

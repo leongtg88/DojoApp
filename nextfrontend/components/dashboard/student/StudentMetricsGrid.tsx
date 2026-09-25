@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { CalendarCheck2, ClipboardCheck, Star } from 'lucide-react'
+import { formatHoursHM } from '@/lib/dashboard/balance'
 import type { AttendanceSummary, GradoProgressData, StudentTechnique } from '@/types/dashboard'
 
 interface StudentMetricsGridProps {
@@ -15,15 +16,14 @@ export function StudentMetricsGrid({ attendance, techniques, grado = null }: Stu
 
     const attendanceSummary = grado?.attendance ?? attendance
     const currentPeriod = grado?.currentPeriod ?? null
+    const hoursReq = grado?.hoursRequirement ?? null
 
     const monthBreakdown = currentPeriod && currentPeriod.monthAbsences.length > 0
         ? currentPeriod.monthAbsences.map((month) => `${month.label}: ${month.count}/${month.max}`).join(' · ')
         : '0'
-    const attendanceValue = currentPeriod
-        ? `${currentPeriod.classSessions} / ${currentPeriod.capacitySessions}`
-        : `${attendanceSummary.attendedSessions} de ${attendanceSummary.totalSessions}`
-    const attendanceDetail = currentPeriod
-        ? `inasistencia ${monthBreakdown} · horas extra ${currentPeriod.extraHours} h`
+    const attendanceValue = `${attendanceSummary.attendedSessions} de ${attendanceSummary.totalSessions}`
+    const attendanceDetail = hoursReq
+        ? `${formatHoursHM(hoursReq.totalHours)} h de entrenamiento · inasistencia ${monthBreakdown}${grado && grado.pendingSessions > 0 ? ` · ${grado.pendingSessions} por confirmar` : ''}`
         : `${attendanceSummary.percentage}% del grado`
 
     const cards = [

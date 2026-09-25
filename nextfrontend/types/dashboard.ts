@@ -443,13 +443,13 @@ export interface CuatrimestreProgress {
 	capacityHours: number
 	/** Sesiones máximas que el horario del alumno permite en el cuatrimestre. */
 	capacitySessions: number
-	/** Horas de las clases asistidas en su horario de referencia. */
+	/** Horas de tatami (clase regular + extra) en el cuatrimestre. */
 	classHours: number
-	/** Asistencias confirmadas en el cuatrimestre (clase + punch). */
+	/** Asistencias presentadas en el cuatrimestre (clase + punch, incluye PENDING). */
 	classSessions: number
-	/** Horas de entrenamiento que no es su clase regular (libre/casa + fuera de horario). */
-	extraHours: number
-	/** Clases de tipo class fuera de su horario de referencia. */
+	/** Horas de entrenamiento en casa / libre (sin clase coincidente, classId null). */
+	libreHours: number
+	/** Clases de tipo class fuera de su horario de referencia (extra). */
 	extraClasses: number
 	hoursMet: boolean
 	hoursExempt: boolean
@@ -465,13 +465,15 @@ export interface CuatrimestreProgress {
 }
 
 export interface GradeHoursRequirement {
-	/** Horas de las clases asistidas en el tramo del grado. */
+	/** Horas de tatami (clase regular + extra) del tramo. Base del mínimo exigido para el examen. */
 	classHours: number
+	/** Horas de entrenamiento en casa / libre del tramo (no cuentan para el mínimo de tatami). */
+	libreHours: number
+	/** Horas totales de entrenamiento del tramo (tatami + libre). */
+	totalHours: number
 	requiredHours: number | null
 	/** Meta ya descontado el crédito acumulado de grados previos. */
 	effectiveRequiredHours: number | null
-	/** Horas extra (casa/fuera de horario) del tramo, ponderables. */
-	extraHours: number
 	/** Crédito heredado de grados previos. */
 	creditHours: number
 	capacityHours: number
@@ -492,7 +494,7 @@ export interface CurrentPeriod {
 	capacitySessions: number
 	classHours: number
 	requiredHours: number | null
-	extraHours: number
+	libreHours: number
 	extraClasses: number
 	creditHours: number
 	monthAbsences: MonthAbsence[]
@@ -518,6 +520,10 @@ export interface GradoProgressData {
 	requiredKatas: number
 	attendance: AttendanceSummary
 	minAttendancePercent: number
+	/** Clases presentadas (confirmadas + PENDING) acumuladas en el grado. */
+	attendedSessions: number
+	/** Clases PENDING (punch sin confirmar) en el grado, para el aviso. */
+	pendingSessions: number
 	monthsInRank: number
 	monthsInRankEstimated: boolean
 	minMonths: number

@@ -531,7 +531,7 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
         },
         orderBy: { createdAt: 'desc' },
       },
-      attendances: { select: { date: true, present: true, status: true, hoursTrained: true, recoveredById: true, sessionType: true, classId: true } },
+      attendances: { select: { date: true, present: true, status: true, hoursTrained: true, recoveredById: true, sessionType: true, classId: true, isOutOfSchedule: true } },
       rankHistory: { orderBy: { promotedAt: 'desc' }, select: { beltRankId: true, promotedAt: true } },
       classEnrollments: { where: { status: 'ACTIVE' }, select: { classId: true } },
     },
@@ -596,24 +596,25 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
   // grado actual es la diferencia con el siguiente (los dan ya son "desde anterior").
   const minMonths = monthsForGrade(currentRank, nextRank)
 
-  // Asistencia de clase vs horas de práctica. Solo confirmadas cuentan; las
-  // faltas confirmadas o justificadas sin recuperar son inasistencias.
+  // Asistencia vs horas de entrenamiento. Cuentan TODAS las asistencias
+  // presentadas (present=true), incluidas las PENDING de punch-in: el alumno ve
+  // progreso de inmediato y, si luego se rechaza la marca, se descuenta sola
+  // (el rechazo pone present=false). Las faltas confirmadas o justificadas sin
+  // recuperar son inasistencias.
   const referenceClassIds = new Set(student.classEnrollments.map((entry) => entry.classId))
-  const isClassAttendance = (attendance: {
-    sessionType: string | null
-    classId: string | null
-  }) => attendance.sessionType === 'class' && attendance.classId != null && referenceClassIds.has(attendance.classId)
 
   const scopedAttendances = student.attendances.filter((attendance) => attendance.date.getTime() >= gradeStart.getTime())
-  const confirmedRecords = scopedAttendances.filter((attendance) => attendance.present && attendance.status === 'CONFIRMED')
-  const classRecords = confirmedRecords.filter(isClassAttendance)
+  const attendedRecords = scopedAttendances.filter((attendance) => attendance.present)
+  const pendingRecords = attendedRecords.filter((attendance) => attendance.status === 'PENDING')
   const absenceRecords = scopedAttendances.filter(
     (attendance) => !attendance.present && (attendance.status === 'CONFIRMED' || attendance.status === 'JUSTIFIED') && !attendance.recoveredById,
   )
 
-  // Asistencias contabilizadas para la barra y las metas: TODAS las confirmadas
-  // (clase del horario + punch), para que el registro de asistencia mueva el progreso.
-  const confirmedSessionsGrade = confirmedRecords.length
+  // Horas de entrenamiento: TATAMI (cualquier clase, regular o extra:
+  // classId != null) vs LIBRE (casa/autónomo: classId null). La división por
+  // bloques/cuatrimestres se hace más abajo sobre `attendedRecords`.
+  const attendedSessionsGrade = attendedRecords.length
+  const pendingSessionsGrade = pendingRecords.length
 
   const approvedKatas = student.techniques.filter(({ technique, approved }) => gradeKataIdsSet.has(technique.id) && approved).length
   const totalRequiredKatas = gradeKataIds.length
@@ -723,14 +724,13 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
 
     const effectiveStart = block.start.getTime() < gradeStart.getTime() ? gradeStart : block.start
     const available = availableTrainingHours(scheduleClasses, { audience, start: effectiveStart, end: block.end, holidays })
-    const blockConfirmed = confirmedRecords.filter((attendance) => attendance.date >= effectiveStart && attendance.date < block.end)
-    const blockClass = classRecords.filter((attendance) => attendance.date >= effectiveStart && attendance.date < block.end)
-    const classHours = Number(blockClass.reduce((sum, attendance) => sum + attendance.hoursTrained, 0).toFixed(2))
-    const classSessions = blockConfirmed.length
-    const extraHours = Number((blockConfirmed.reduce((sum, attendance) => sum + attendance.hoursTrained, 0) - classHours).toFixed(2))
-    const extraClasses = blockConfirmed.filter(
-      (attendance) => attendance.sessionType === 'class' && (attendance.classId == null || !referenceClassIds.has(attendance.classId)),
-    ).length
+    const blockAttended = attendedRecords.filter((attendance) => attendance.date >= effectiveStart && attendance.date < block.end)
+    const blockTatami = blockAttended.filter((attendance) => attendance.classId != null)
+    const blockLibre = blockAttended.filter((attendance) => attendance.classId == null)
+    const classHours = Number(blockTatami.reduce((sum, attendance) => sum + attendance.hoursTrained, 0).toFixed(2))
+    const libreHours = Number(blockLibre.reduce((sum, attendance) => sum + attendance.hoursTrained, 0).toFixed(2))
+    const classSessions = blockAttended.length
+    const extraClasses = blockTatami.filter((attendance) => attendance.isOutOfSchedule).length
 
     const requiredHours = hoursExempt ? null : Number((planMonthlyHours * monthsCovered(effectiveStart, block.end)).toFixed(2))
     const capacityHours = available.hours
@@ -776,7 +776,7 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
       capacitySessions,
       classHours,
       classSessions,
-      extraHours,
+      libreHours,
       extraClasses,
       hoursMet,
       hoursExempt,
@@ -810,13 +810,14 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
         }
       : null
 
-  // Requisito de tatami (opción A): las horas de clase cumplen el mínimo; las
-  // horas extra (casa/fuera de horario) quedan como ponderables y el excedente
-  // de grados previos se descuenta de la meta.
+  // Requisito de horas de entrenamiento: la barra muestra el TOTAL (tatami +
+  // libre) contra la meta del plan; la elegibilidad de examen exige un mínimo de
+  // TATAMI (clase regular + extra). El excedente de grados previos se descuenta.
   const examIndex = examBlock ? cuatrimestres.indexOf(examBlock) : -1
   const hoursBlocks = examIndex >= 0 ? cuatrimestres.slice(0, examIndex + 1) : cuatrimestres
   const classHoursTramo = Number(hoursBlocks.reduce((sum, block) => sum + block.classHours, 0).toFixed(2))
-  const extraHoursTramo = Number(hoursBlocks.reduce((sum, block) => sum + block.extraHours, 0).toFixed(2))
+  const libreHoursTramo = Number(hoursBlocks.reduce((sum, block) => sum + block.libreHours, 0).toFixed(2))
+  const totalHoursTramo = Number((classHoursTramo + libreHoursTramo).toFixed(2))
   const hoursCapacity = Number(hoursBlocks.reduce((sum, block) => sum + block.capacityHours, 0).toFixed(2))
   const hoursLabel = hoursBlocks.length > 1
     ? `${hoursBlocks[0].label} – ${hoursBlocks[hoursBlocks.length - 1].label}`
@@ -840,9 +841,10 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
   const hoursRequirement: GradeHoursRequirement | null = examBlock
     ? {
         classHours: classHoursTramo,
+        libreHours: libreHoursTramo,
+        totalHours: totalHoursTramo,
         requiredHours: requiredHoursTramo,
         effectiveRequiredHours,
-        extraHours: extraHoursTramo,
         creditHours,
         capacityHours: hoursCapacity,
         label: hoursLabel,
@@ -879,7 +881,7 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
         capacitySessions: currentBlock.capacitySessions,
         classHours: currentBlock.classHours,
         requiredHours: currentBlock.requiredHours,
-        extraHours: currentBlock.extraHours,
+        libreHours: currentBlock.libreHours,
         extraClasses: currentBlock.extraClasses,
         creditHours: hoursRequirement?.creditHours ?? 0,
         monthAbsences: currentBlock.monthAbsences,
@@ -898,10 +900,12 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     approvedKatas,
     requiredKatas: totalRequiredKatas,
     attendance: {
-      attendedSessions: confirmedSessionsGrade,
+      attendedSessions: attendedSessionsGrade,
       totalSessions: capacitySessionsGrade,
-      percentage: capacitySessionsGrade > 0 ? Math.round((confirmedSessionsGrade / capacitySessionsGrade) * 100) : 0,
+      percentage: capacitySessionsGrade > 0 ? Math.round((attendedSessionsGrade / capacitySessionsGrade) * 100) : 0,
     },
+    attendedSessions: attendedSessionsGrade,
+    pendingSessions: pendingSessionsGrade,
     minAttendancePercent,
     monthsInRank,
     monthsInRankEstimated,

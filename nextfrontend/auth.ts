@@ -14,7 +14,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     maxAge: 60 * 60 * 24 * 30, // 30 días: quien use el app al menos una vez al mes no vuelve a loguearse
   },
 
-  // Cookie de sesión con atributos de seguridad explícitos.
+  // Cookies con atributos de seguridad explícitos. Todas llevan maxAge (30
+  // días) para que sean PERSISTENTES: en las PWA instaladas (iOS/WebKit) las
+  // cookies de solo sesión se pierden al cerrar/reabrir la app, y mezclar
+  // cookies de sesión con persistentes dispara el bug de rollback de cookies
+  // (WebKit #272325). Con todas persistentes el bug no se reproduce.
   cookies: {
     sessionToken: {
       options: {
@@ -22,6 +26,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production',
         path: '/',
+        maxAge: 60 * 60 * 24 * 30,
+      },
+    },
+    csrfToken: {
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30,
+      },
+    },
+    callbackUrl: {
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30,
       },
     },
   },
