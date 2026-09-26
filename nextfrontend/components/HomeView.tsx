@@ -1,16 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { MOCK_BENEFITS, MOCK_TESTIMONIALS, MOCK_FAQS, DOJO_CLASSES, MOCK_INSTRUCTORS } from '@/lib/types';
+import { MOCK_BENEFITS, MOCK_FAQS, DOJO_CLASSES, MOCK_INSTRUCTORS } from '@/lib/types';
 import {
   BrainCircuit, Flame, ShieldAlert, HeartHandshake, ChevronDown,
-  Star, MapPin, Phone, Clock, Navigation, ArrowRight, Sparkles,
-  Users, Award, CalendarDays, Smile, ShieldCheck
+  MapPin, Clock, Navigation, ArrowRight, Sparkles,
+  Users, Award, CalendarDays, ShieldCheck
 } from 'lucide-react';
 import GalleryLightbox from './GalleryLightbox';
 import Hero5 from './Hero5';
 import Link from 'next/link';
 import { InstallAppBand } from './InstallAppBand';
+import ReviewsSection from './ReviewsSection';
 
 interface HomeViewProps {
   onOpenEnrollment: (program?: string) => void;
@@ -256,40 +257,7 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
         </div>
       </section>
 
-      {/* Testimonios 
-      <section className="md:py-20 px-8 md:px-[50px]">
-        <div className="max-w-7xl mx-auto md:space-y-12">
-          <div className="text-left space-y-3">
-            <div className="inline-flex items-center gap-2 bg-brand-secondary/10 text-brand-secondary px-3 py-1 rounded-full text-xs font-bold font-display uppercase tracking-wider">
-              <Smile className="w-3.5 h-3.5" /> Voces de Familia
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold font-display tracking-tight text-gray-700">Testimonios Reales</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-            {MOCK_TESTIMONIALS.map((test) => (
-              <div key={test.id} className="p-6 md:p-8 rounded-2xl border border-white/5 space-y-6 flex flex-col justify-between text-left relative overflow-hidden">
-                <span className="absolute top-6 right-6 font-serif text-gray-700/5 text-8xl pointer-events-none select-none">&ldquo;</span>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-1">
-                    {[...Array(test.rating)].map((_, i) => <Star key={i} className="w-4 h-4 text-brand-accent fill-brand-accent" />)}
-                  </div>
-                  <p className="text-sm sm:text-base text-gray-700/80 italic leading-relaxed font-sans">&ldquo;{test.quote}&rdquo;</p>
-                </div>
-                <div className="flex items-center gap-4 pt-4 border-t border-white/5">
-                  <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-800 border-2 border-brand-accent/60 shrink-0">
-                    <img src={test.avatarUrl} alt={test.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-sm text-gray-700 font-display uppercase tracking-wide">{test.name}</h4>
-                    <p className="text-xs text-brand-accent font-semibold">{test.relationship}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      */}
+      {/* Testimonios / Reviews */}
 
       {/* Avales */}
       <section className="py-14 md:py-12 border-y border-white/10 font-display overflow-hidden">
@@ -353,6 +321,9 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
 
       {/* Instala la app */}
       <InstallAppBand />
+
+      {/* Reviews */}
+      <ReviewsSection />
 
       {/* CTA Final */}
       <section className="relative md:py-24 pt-10 pb-20 px-8 text-center overflow-hidden bg-brand-bg">

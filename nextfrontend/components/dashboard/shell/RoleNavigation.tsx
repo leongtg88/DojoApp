@@ -10,6 +10,7 @@ import {
     GraduationCap,
     LayoutDashboard,
     ListChecks,
+    Star,
     Users,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -58,6 +59,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/admin/balance', label: 'Balance de horas', icon: Clock3 },
         { href: '/dashboard/admin/asistencia', label: 'Asistencia', icon: CalendarDays },
         { href: '/dashboard/admin/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
+        { href: '/dashboard/admin/reviews', label: 'Reseñas', icon: Star },
     ],
     SUPERADMIN: [
         { href: '/dashboard/admin', label: 'Resumen', icon: LayoutDashboard },
@@ -70,16 +72,17 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/admin/balance', label: 'Balance de horas', icon: Clock3 },
         { href: '/dashboard/admin/asistencia', label: 'Asistencia', icon: CalendarDays },
         { href: '/dashboard/admin/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
+        { href: '/dashboard/admin/reviews', label: 'Reseñas', icon: Star },
     ],
 }
 
-export function getRoleNavigation(role: DashboardRole, pendingEnrollmentCount = 0, pendingDocumentCount = 0) {
+export function getRoleNavigation(role: DashboardRole, pendingEnrollmentCount = 0, newStudentCount = 0) {
     return navigationByRole[role].map((item) => {
         if (item.href === '/dashboard/admin/inscripciones' && pendingEnrollmentCount > 0) {
             return { ...item, badge: pendingEnrollmentCount }
         }
-        if (item.href === '/dashboard/admin/alumnos' && pendingDocumentCount > 0) {
-            return { ...item, badge: pendingDocumentCount }
+        if (item.href === '/dashboard/admin/alumnos' && newStudentCount > 0) {
+            return { ...item, badge: newStudentCount }
         }
         return item
     })

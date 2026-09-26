@@ -4,7 +4,7 @@ import { DashboardShell } from '@/components/dashboard/shell/DashboardShell'
 import type { DashboardRole } from '@/types/dashboard'
 import { hasAnyRole } from '@/lib/auth/roles'
 import { getFamilyMembers } from '@/lib/family/guardians'
-import { getAdminPendingEnrollmentCount, getAdminPendingDocumentCount } from '@/lib/dashboard/admin-queries'
+import { getAdminPendingEnrollmentCount, getAdminNewStudentCount } from '@/lib/dashboard/admin-queries'
 import { getUnreadNotificationCount } from '@/lib/notifications/queries'
 import { redirect } from 'next/navigation'
 
@@ -22,9 +22,9 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     const roles = (session.user.roles && session.user.roles.length > 0 ? session.user.roles : [session.user.roles[0]]) as DashboardRole[]
     const primaryRole = roles[0] ?? 'STUDENT'
     const pendingEnrollmentCount = hasAnyRole(session.user, ['SCHOOL_ADMIN', 'SUPERADMIN']) ? await getAdminPendingEnrollmentCount(session.user.id) : 0
-    const pendingDocumentCount = hasAnyRole(session.user, ['SCHOOL_ADMIN', 'SUPERADMIN']) ? await getAdminPendingDocumentCount(session.user.id) : 0
+    const newStudentCount = hasAnyRole(session.user, ['SCHOOL_ADMIN', 'SUPERADMIN']) ? await getAdminNewStudentCount(session.user.id) : 0
     const unreadNotificationCount = await getUnreadNotificationCount(session.user.id)
     const familyMembers = hasAnyRole(session.user, ['GUARDIAN']) ? await getFamilyMembers(session.user.id) : { self: null, children: [] }
 
-    return <DashboardShell roles={roles} userName={session.user.name} primaryRole={primaryRole} pendingEnrollmentCount={pendingEnrollmentCount} pendingDocumentCount={pendingDocumentCount} unreadNotificationCount={unreadNotificationCount} familyMembers={familyMembers}>{children}</DashboardShell>
+    return <DashboardShell roles={roles} userName={session.user.name} primaryRole={primaryRole} pendingEnrollmentCount={pendingEnrollmentCount} newStudentCount={newStudentCount} unreadNotificationCount={unreadNotificationCount} familyMembers={familyMembers}>{children}</DashboardShell>
 }

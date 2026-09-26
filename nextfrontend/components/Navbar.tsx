@@ -37,10 +37,10 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 w-full h-20 bg-white backdrop-blur-xs border-b border-white/60 shadow-lg z-50 flex items-center px-4 sm:px-8 md:px-12">
+      <nav className="fixed top-0 w-full h-17 bg-white backdrop-blur-xs border-b border-white/60 shadow-lg z-50 flex items-center px-4 sm:px-8 md:px-12">
         <div className="flex-1 flex justify-start">
           <Link href="/" className="flex items-center gap-3 cursor-pointer focus:outline-none text-left">
-            <div className="w-[125px] h-[50px] shrink-0 min-w-0 sm:w-[180px] md:w-[220px] flex items-center justify-center font-extrabold font-display text-lg text-gray-700">
+            <div className="w-[170px] h-auto shrink-0 min-w-0 sm:w-[180px] md:w-[220px] flex items-center justify-center font-extrabold font-display text-lg text-gray-700">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/assets/LogoRectangularNegro.svg" alt="Logo Tosei Gusoku" />
             </div>
@@ -72,18 +72,18 @@ export default function Navbar() {
               onClick={requestAppInstall}
               aria-label="Instalar la app"
               title="Instalar la app"
-              className="hidden min-[1200px]:flex size-10 items-center justify-center rounded-lg border border-brand-accent/20 bg-brand-accent/10 text-brand-accent hover:bg-brand-accent hover:text-black transition-colors"
+              className="hidden min-[1200px]:flex size-5 items-center justify-center text-gray-700  hover:text-brand-accent transition-colors"
             >
-              <Smartphone aria-hidden="true" className="size-4" />
+              <Smartphone aria-hidden="true" className="size-5" />
             </button>
           )}
           <Link
             aria-label="Iniciar sesión"
-            className={`flex size-10 items-center justify-center rounded-lg border transition-colors ${pathname === '/login' ? 'border-brand-accent bg-brand-accent text-black' : 'border-brand-accent/20 bg-brand-accent/10 text-brand-accent hover:bg-brand-accent hover:text-black'}`}
+            className={`flex size-8 items-center justify-center  ${pathname === '/login' ? ' text-black' : 'text-gray-600  hover:text-brand-accent'}`}
             href="/login"
             title="Iniciar sesión"
           >
-            <UserRound aria-hidden="true" className="size-4" />
+            <UserRound aria-hidden="true" className="size-5" />
           </Link>
           <button
             onClick={() => handleOpenEnrollment('adult')}

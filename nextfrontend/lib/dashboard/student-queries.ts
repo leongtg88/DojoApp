@@ -2,7 +2,7 @@ import { db } from '@/lib/db'
 import { createPrivateDocumentUrl } from '@/lib/document-storage'
 import { ClassEnrollmentStatus } from '@/lib/generated/prisma'
 import { ageFromDob, programForAge, resolveDefaultRank } from '@/lib/dashboard/program'
-import { computeBalance, formatTime, monthRange, pendingRecoveries } from '@/lib/dashboard/balance'
+import { computeBalance, formatTime, monthRange } from '@/lib/dashboard/balance'
 import { introLevelFromBeltRankKatas } from '@/lib/dashboard/kata-level'
 import { buildHolidaySet } from '@/lib/dashboard/holidays'
 import { monthsForGrade } from '@/lib/dashboard/rank-months'
@@ -26,7 +26,7 @@ import type {
   KataProgressItem,
   TechniqueStatus,
   AttendanceRecord,
-  StudentMonthlyStatus,
+  MonthlyProgressInfo,
 } from '@/types/dashboard'
 
 const MAX_ABSENCES_PER_MONTH = 2
@@ -304,100 +304,6 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
   }
 }
 
-export async function getStudentMonthlyStatus(studentId: string, date = new Date()): Promise<StudentMonthlyStatus | null> {
-  const { start, end } = monthRange(date)
-  const student = await db.student.findUnique({
-    where: { id: studentId },
-    select: {
-      id: true,
-      planId: true,
-      planStartDate: true,
-      scholarshipType: true,
-      scholarshipNote: true,
-      isCompetitor: true,
-      plan: {
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          monthlyHours: true,
-          price: true,
-          isUnlimited: true,
-          active: true,
-          sortOrder: true,
-        },
-      },
-      classEnrollments: {
-        where: { status: 'ACTIVE' },
-        select: { classId: true },
-      },
-      attendances: {
-        where: { date: { gte: start, lt: end } },
-        select: {
-          id: true,
-          date: true,
-          present: true,
-          status: true,
-          hoursTrained: true,
-          isOutOfSchedule: true,
-          recovery: { select: { id: true } },
-          class: { select: { name: true } },
-          session: { select: { class: { select: { name: true } } } },
-        },
-      },
-    },
-  })
-
-  if (!student) {
-    return null
-  }
-
-  const confirmedHours = student.attendances
-    .filter((attendance) => attendance.present && attendance.status === 'CONFIRMED')
-    .reduce((sum, attendance) => sum + attendance.hoursTrained, 0)
-
-  const balance = computeBalance({
-    confirmedHours,
-    planMonthlyHours: student.plan?.monthlyHours ?? null,
-    isUnlimited: student.plan?.isUnlimited ?? false,
-    scholarshipType: student.scholarshipType,
-    isCompetitor: student.isCompetitor,
-  })
-
-  const justifiedAbsences = student.attendances
-    .filter((attendance) => attendance.status === 'JUSTIFIED')
-    .map((attendance) => ({
-      id: attendance.id,
-      date: attendance.date,
-      recovery: attendance.recovery,
-      className: attendance.class?.name ?? attendance.session?.class.name ?? null,
-    }))
-
-  const pending = pendingRecoveries(justifiedAbsences)
-
-  return {
-    plan: student.plan ? { ...student.plan, price: student.plan.price?.toNumber() ?? null } : null,
-    planStartDate: student.planStartDate?.toISOString() ?? null,
-    scholarshipType: student.scholarshipType,
-    scholarshipNote: student.scholarshipNote,
-    isCompetitor: student.isCompetitor,
-    confirmedHours: Number(confirmedHours.toFixed(2)),
-    expectedHours: balance.planHours,
-    balanceDiff: balance.diff,
-    balanceLevel: balance.level,
-    balanceAlert: balance.alert,
-    balanceMessage: balance.message,
-    pendingRecoveries: pending.map((absence) => ({
-      id: absence.id,
-      date: absence.date.toISOString(),
-      className: absence.className,
-    })),
-    outOfScheduleCount: student.attendances.filter((attendance) => attendance.isOutOfSchedule && attendance.status === 'CONFIRMED').length,
-    needsPlan: !student.planId,
-    needsSchedule: student.classEnrollments.length === 0,
-  }
-}
-
 export async function getStudentSchedule(studentId: string) {
   const student = await db.student.findUnique({
     where: { id: studentId },
@@ -513,7 +419,7 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
   const student = await db.student.findUnique({
     where: { id: studentId },
     include: {
-      plan: { select: { monthlyHours: true, isUnlimited: true } },
+      plan: { select: { name: true, monthlyHours: true, isUnlimited: true } },
       techniques: {
         include: {
           technique: {
@@ -595,6 +501,33 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
   // `minMonths` del currículum de kyu es acumulado desde Blanco; el tramo del
   // grado actual es la diferencia con el siguiente (los dan ya son "desde anterior").
   const minMonths = monthsForGrade(currentRank, nextRank)
+
+  // Progreso del mes en curso: barra informativa dentro de "Progreso de grado".
+  // No participa del `overallPercent` ni de la elegibilidad a examen.
+  const { start: monthStart, end: monthEnd } = monthRange(today)
+  const confirmedHoursMonth = student.attendances
+    .filter((attendance) => attendance.present && attendance.status === 'CONFIRMED' && attendance.date >= monthStart && attendance.date < monthEnd)
+    .reduce((sum, attendance) => sum + attendance.hoursTrained, 0)
+  const isUnlimitedPlan = student.plan?.isUnlimited ?? false
+  const planMonthlyHoursForMonth = student.plan?.monthlyHours ?? null
+  const monthlyBalance = computeBalance({
+    confirmedHours: confirmedHoursMonth,
+    planMonthlyHours: planMonthlyHoursForMonth,
+    isUnlimited: isUnlimitedPlan,
+    scholarshipType: student.scholarshipType,
+    isCompetitor: student.isCompetitor,
+  })
+  const monthly: MonthlyProgressInfo = {
+    planName: student.plan?.name ?? null,
+    confirmedHours: Number(confirmedHoursMonth.toFixed(2)),
+    expectedHours: monthlyBalance.planHours,
+    percent:
+      !isUnlimitedPlan && monthlyBalance.planHours != null && monthlyBalance.planHours > 0
+        ? Math.min(100, Math.round((confirmedHoursMonth / monthlyBalance.planHours) * 100))
+        : 0,
+    balanceLevel: monthlyBalance.level,
+    isUnlimited: isUnlimitedPlan,
+  }
 
   // Asistencia vs horas de entrenamiento. Cuentan TODAS las asistencias
   // presentadas (present=true), incluidas las PENDING de punch-in: el alumno ve
@@ -924,6 +857,7 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     maxAbsencesPerMonth: MAX_ABSENCES_PER_MONTH,
     examRightLost,
     bottleneck,
+    monthly,
   }
 
   return { grado, katas }

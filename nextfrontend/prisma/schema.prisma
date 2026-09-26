@@ -23,6 +23,7 @@ model School {
   holidays         Holiday[]
   examConvocations ExamConvocation[]
   auditLogs        AuditLog[]
+  reviews          Review[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 }
@@ -754,6 +755,27 @@ model ExamConvocation {
 
   @@unique([schoolId, date, examDay])
   @@index([schoolId, date])
+}
+
+// ==================== Reseñas públicas ====================
+// Mensajes positivos que dejan los padres/tutores desde la web. Requieren
+// aprobación del staff antes de mostrarse en el sitio.
+model Review {
+  id           String         @id @default(cuid())
+  schoolId     String?
+  school       School?        @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+  authorName   String
+  relationship String?
+  rating       Int            @default(5)
+  message      String
+  email        String?
+  status       ApprovalStatus @default(PENDING)
+  approvedAt   DateTime?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([schoolId, status])
+  @@index([status, createdAt])
 }
 
 // Tabla para rate limiting simple por ventana fija. `key` identifica la acción

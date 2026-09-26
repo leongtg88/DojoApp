@@ -21,7 +21,7 @@ interface DashboardShellProps {
     primaryRole: DashboardRole
     userName: string | null | undefined
     pendingEnrollmentCount?: number
-    pendingDocumentCount?: number
+    newStudentCount?: number
     unreadNotificationCount?: number
     familyMembers?: FamilyView
 }
@@ -35,7 +35,7 @@ function resolveActiveRole(pathname: string, roles: DashboardRole[], primaryRole
     return primaryRole
 }
 
-export function DashboardShell({ children, roles, primaryRole, userName, pendingEnrollmentCount, pendingDocumentCount, unreadNotificationCount, familyMembers }: DashboardShellProps) {
+export function DashboardShell({ children, roles, primaryRole, userName, pendingEnrollmentCount, newStudentCount, unreadNotificationCount, familyMembers }: DashboardShellProps) {
     const pathname = usePathname()
     const activeRole = resolveActiveRole(pathname, roles, primaryRole)
     const initials = (userName ?? 'Usuario').split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()
@@ -46,7 +46,7 @@ export function DashboardShell({ children, roles, primaryRole, userName, pending
     }
 
     return (
-        <div className="min-h-dvh bg-surface-1 text-ink">
+        <div className="flex min-h-dvh flex-col bg-surface-1 text-ink">
             <header className="sticky top-0 z-30 border-b border-edge bg-surface-2/95 shadow-[0_1px_8px_rgba(0,0,0,0.35)] backdrop-blur print:hidden">
                 <div className="flex h-16 w-full items-center justify-between px-4 sm:px-6 lg:px-8">
                     <div className="flex min-w-0 items-center">
@@ -74,14 +74,14 @@ export function DashboardShell({ children, roles, primaryRole, userName, pending
                 </div>
             </header>
 
-            <div className="flex w-full">
-                <DashboardSidebar onSignOut={handleSignOut} activeRole={activeRole} roles={roles} userName={userName} pendingEnrollmentCount={pendingEnrollmentCount} pendingDocumentCount={pendingDocumentCount} familyMembers={familyMembers} />
+            <div className="flex w-full flex-1">
+                <DashboardSidebar onSignOut={handleSignOut} activeRole={activeRole} roles={roles} userName={userName} pendingEnrollmentCount={pendingEnrollmentCount} newStudentCount={newStudentCount} familyMembers={familyMembers} />
                 <div className="min-w-0 flex-1">{children}</div>
             </div>
 
-            <MobileDashboardNav activeRole={activeRole} pendingEnrollmentCount={pendingEnrollmentCount} pendingDocumentCount={pendingDocumentCount} />
+            <MobileDashboardNav activeRole={activeRole} pendingEnrollmentCount={pendingEnrollmentCount} newStudentCount={newStudentCount} />
 
-            <MobileDashboardSidebar open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} onSignOut={handleSignOut} activeRole={activeRole} roles={roles} userName={userName} pendingEnrollmentCount={pendingEnrollmentCount} pendingDocumentCount={pendingDocumentCount} unreadNotificationCount={unreadNotificationCount} familyMembers={familyMembers} />
+            <MobileDashboardSidebar open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} onSignOut={handleSignOut} activeRole={activeRole} roles={roles} userName={userName} pendingEnrollmentCount={pendingEnrollmentCount} newStudentCount={newStudentCount} unreadNotificationCount={unreadNotificationCount} familyMembers={familyMembers} />
         </div>
     )
 }

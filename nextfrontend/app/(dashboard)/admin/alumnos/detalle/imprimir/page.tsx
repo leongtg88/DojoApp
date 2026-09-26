@@ -194,7 +194,7 @@ export default async function PrintStudentPage({ searchParams }: PrintStudentPag
                                         <th className="py-2">Kata / técnica</th>
                                         <th className="py-2">Categoría</th>
                                         <th className="py-2">Estado</th>
-                                        <th className="py-2">Aprobada</th>
+                                        <th className="py-2">Revisada</th>
                                         <th className="py-2">Repeticiones</th>
                                     </tr>
                                 </thead>

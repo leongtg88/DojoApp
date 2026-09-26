@@ -1,8 +1,9 @@
 'use client'
 
-import { AlertTriangle, Award, CalendarDays, CheckCircle2, Clock, Shield } from 'lucide-react'
+import { useState } from 'react'
+import { AlertTriangle, Award, CalendarDays, CheckCircle2, ChevronDown, Clock, Shield } from 'lucide-react'
 import { formatHoursHM } from '@/lib/dashboard/balance'
-import type { GradoProgressData, GradoMetric } from '@/types/dashboard'
+import type { BalanceLevel, CuatrimestreProgress, GradoProgressData, GradoMetric } from '@/types/dashboard'
 
 interface GradoProgressProps {
     grado: GradoProgressData
@@ -19,10 +20,26 @@ interface MetricItem {
     label: string
     detail: string
     value: number
+    barClass?: string
+    note?: string
     segments?: MetricSegment[]
 }
 
 const percent = (value: number, goal: number) => (goal > 0 ? Math.min(100, Math.round((value / goal) * 100)) : 100)
+
+const MONTHLY_BAR_CLASS: Record<BalanceLevel, string> = {
+    OK: 'bg-emerald-400',
+    HIGH: 'bg-cyan-400',
+    VERY_HIGH: 'bg-amber-400',
+    LOW: 'bg-rose-400',
+}
+
+const MONTHLY_LEVEL_LABEL: Record<BalanceLevel, string> = {
+    OK: 'Dentro del plan',
+    HIGH: 'Entrena como un plan superior',
+    VERY_HIGH: 'Muy por encima del plan, revisar',
+    LOW: 'Baja asistencia, contactar',
+}
 
 const BOTTLENECK_LABEL: Record<GradoMetric, string> = {
     KATAS: 'Faltan katas por aprobar',
@@ -35,7 +52,83 @@ function formatDate(value: string | null): string {
     return new Date(value).toLocaleDateString('es-DO', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
+function CuatrimestreCard({ cuatrimestre, maxAbsencesPerMonth }: { cuatrimestre: CuatrimestreProgress; maxAbsencesPerMonth: number }) {
+    const katasTarget = cuatrimestre.expectedKatas > 0
+        ? Math.min(100, Math.round((cuatrimestre.approvedKatas / cuatrimestre.expectedKatas) * 100))
+        : 100
+    const classTarget = cuatrimestre.capacitySessions > 0
+        ? Math.min(100, Math.round((cuatrimestre.classSessions / cuatrimestre.capacitySessions) * 100))
+        : 100
+
+    return (
+        <li className={`rounded-md border p-3 ${cuatrimestre.isCurrent ? 'border-cyan-500/40 bg-cyan-500/5' : 'border-edge bg-surface-1'}`}>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="flex items-center gap-2 text-sm font-semibold text-ink">
+                    {cuatrimestre.label}
+                    {cuatrimestre.isCurrent && (
+                        <span className="rounded-full border border-cyan-500/40 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent-text">En curso</span>
+                    )}
+                </p>
+                {cuatrimestre.examDate && (
+                    <p className="flex items-center gap-1.5 text-[11px] text-ink-3">
+                        <CalendarDays aria-hidden="true" className="size-3.5 text-warn-text" />
+                        Examen {cuatrimestre.examTentative ? 'tentativo' : 'confirmado'}: {formatDate(cuatrimestre.examDate)}
+                    </p>
+                )}
+            </div>
+
+            <div className="mt-3 grid gap-2 text-[11px] sm:grid-cols-3">
+                <div>
+                    <div className="flex justify-between text-ink-3">
+                        <span>Katas</span>
+                        <span className="font-semibold text-ink">{cuatrimestre.approvedKatas}/{cuatrimestre.expectedKatas}</span>
+                    </div>
+                    <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-2">
+                        <div className="h-full rounded-full bg-cyan-500" style={{ width: `${katasTarget}%` }} />
+                    </div>
+                </div>
+                <div>
+                    <div className="flex justify-between text-ink-3">
+                        <span>Clases</span>
+                        <span className="font-semibold text-ink">{cuatrimestre.classSessions}/{cuatrimestre.capacitySessions}</span>
+                    </div>
+                    <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-2">
+                        <div className="h-full rounded-full bg-cyan-500" style={{ width: `${classTarget}%` }} />
+                    </div>
+                    <p className="mt-1 text-ink-4">
+                        {cuatrimestre.libreHours > 0 || cuatrimestre.extraClasses > 0
+                            ? `${cuatrimestre.libreHours} h libre · ${cuatrimestre.extraClasses} clases extra`
+                            : 'Sin entrenamiento libre'}
+                    </p>
+                </div>
+                <div>
+                    <div className="flex justify-between text-ink-3">
+                        <span>Inasistencia (máx. mes)</span>
+                        <span className={`font-semibold ${cuatrimestre.exceededAbsenceLimit ? 'text-danger-text' : 'text-ink'}`}>
+                            {cuatrimestre.maxMonthAbsences}/{maxAbsencesPerMonth}
+                        </span>
+                    </div>
+                    <p className="mt-1 text-ink-4">
+                        {cuatrimestre.absences} inasistencias en el cuatrimestre
+                        {cuatrimestre.excessMonth ? ` · excedió en ${cuatrimestre.excessMonth}` : ''}
+                    </p>
+                </div>
+            </div>
+        </li>
+    )
+}
+
 export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
+    const [showAllCuatrimestres, setShowAllCuatrimestres] = useState(false)
+    const currentCuatrimestre =
+        grado.cuatrimestres.find((cuatrimestre) => cuatrimestre.isCurrent) ??
+        [...grado.cuatrimestres].reverse().find((cuatrimestre) => !cuatrimestre.isFuture) ??
+        grado.cuatrimestres[0] ??
+        null
+    const otherCuatrimestres = currentCuatrimestre
+        ? grado.cuatrimestres.filter((cuatrimestre) => cuatrimestre !== currentCuatrimestre)
+        : []
+
     const kataPercent = percent(grado.approvedKatas, grado.requiredKatas)
     const hoursReq = grado.hoursRequirement
     const attendance = grado.attendance
@@ -68,7 +161,7 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
     const metrics: MetricItem[] = [
         {
             label: 'Katas oficiales',
-            detail: grado.requiredKatas > 0 ? `${grado.approvedKatas} de ${grado.requiredKatas} aprobadas` : 'Sin katas configuradas',
+            detail: grado.requiredKatas > 0 ? `${grado.approvedKatas} de ${grado.requiredKatas} revisadas` : 'Sin katas configuradas',
             value: grado.requiredKatas > 0 ? kataPercent : 100,
         },
         {
@@ -85,6 +178,19 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
                     { value: tatamiWidth, color: 'bg-gradient-to-r from-cyan-500 to-emerald-500', legend: 'Tatami' },
                     { value: libreWidth, color: 'bg-violet-500', legend: 'Libre' },
                 ],
+            }]
+            : []),
+        ...(grado.monthly
+            ? [{
+                label: 'Progreso mensual',
+                detail: grado.monthly.isUnlimited
+                    ? `${formatHoursHM(grado.monthly.confirmedHours)} · plan ilimitado`
+                    : grado.monthly.expectedHours != null
+                        ? `${formatHoursHM(grado.monthly.confirmedHours)} de ${formatHoursHM(grado.monthly.expectedHours)}${grado.monthly.planName ? ` · ${grado.monthly.planName}` : ''}`
+                        : `${formatHoursHM(grado.monthly.confirmedHours)} · sin meta asignada`,
+                value: grado.monthly.percent,
+                barClass: MONTHLY_BAR_CLASS[grado.monthly.balanceLevel],
+                note: MONTHLY_LEVEL_LABEL[grado.monthly.balanceLevel],
             }]
             : []),
     ]
@@ -129,11 +235,12 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
                                 ))
                             ) : (
                                 <div
-                                    className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500 transition-all duration-700"
+                                    className={`h-full rounded-full transition-all duration-700 ${metric.barClass ?? 'bg-gradient-to-r from-cyan-500 to-emerald-500'}`}
                                     style={{ width: `${metric.value}%` }}
                                 />
                             )}
                         </div>
+                        {metric.note && <p className="mt-1.5 text-[10px] text-ink-3">{metric.note}</p>}
                         {metric.segments && (
                             <div className="mt-1.5 flex gap-3 text-[10px] text-ink-3">
                                 {metric.segments.map((segment) => (
@@ -180,74 +287,33 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
                         <span className="text-[10px] text-ink-4">Máximo {grado.maxAbsencesPerMonth} inasistencias por mes</span>
                     </div>
                     <ul className="mt-3 space-y-2">
-                        {grado.cuatrimestres.map((cuatrimestre) => {
-                            const katasTarget = cuatrimestre.expectedKatas > 0
-                                ? Math.min(100, Math.round((cuatrimestre.approvedKatas / cuatrimestre.expectedKatas) * 100))
-                                : 100
-                            const classTarget = cuatrimestre.capacitySessions > 0
-                                ? Math.min(100, Math.round((cuatrimestre.classSessions / cuatrimestre.capacitySessions) * 100))
-                                : 100
-                            return (
-                                <li
-                                    className={`rounded-md border p-3 ${cuatrimestre.isCurrent ? 'border-cyan-500/40 bg-cyan-500/5' : 'border-edge bg-surface-1'}`}
+                        {currentCuatrimestre && (
+                            <CuatrimestreCard
+                                cuatrimestre={currentCuatrimestre}
+                                key={`${currentCuatrimestre.year}-${currentCuatrimestre.index}`}
+                                maxAbsencesPerMonth={grado.maxAbsencesPerMonth}
+                            />
+                        )}
+                        {showAllCuatrimestres &&
+                            otherCuatrimestres.map((cuatrimestre) => (
+                                <CuatrimestreCard
+                                    cuatrimestre={cuatrimestre}
                                     key={`${cuatrimestre.year}-${cuatrimestre.index}`}
-                                >
-                                    <div className="flex flex-wrap items-center justify-between gap-2">
-                                        <p className="flex items-center gap-2 text-sm font-semibold text-ink">
-                                            {cuatrimestre.label}
-                                            {cuatrimestre.isCurrent && (
-                                                <span className="rounded-full border border-cyan-500/40 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent-text">En curso</span>
-                                            )}
-                                        </p>
-                                        {cuatrimestre.examDate && (
-                                            <p className="flex items-center gap-1.5 text-[11px] text-ink-3">
-                                                <CalendarDays aria-hidden="true" className="size-3.5 text-warn-text" />
-                                                Examen {cuatrimestre.examTentative ? 'tentativo' : 'confirmado'}: {formatDate(cuatrimestre.examDate)}
-                                            </p>
-                                        )}
-                                    </div>
-
-                                    <div className="mt-3 grid gap-2 text-[11px] sm:grid-cols-3">
-                                        <div>
-                                            <div className="flex justify-between text-ink-3">
-                                                <span>Katas</span>
-                                                <span className="font-semibold text-ink">{cuatrimestre.approvedKatas}/{cuatrimestre.expectedKatas}</span>
-                                            </div>
-                                            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-2">
-                                                <div className="h-full rounded-full bg-cyan-500" style={{ width: `${katasTarget}%` }} />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div className="flex justify-between text-ink-3">
-                                                <span>Clases</span>
-                                                <span className="font-semibold text-ink">{cuatrimestre.classSessions}/{cuatrimestre.capacitySessions}</span>
-                                            </div>
-                                            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-2">
-                                                <div className="h-full rounded-full bg-cyan-500" style={{ width: `${classTarget}%` }} />
-                                            </div>
-                                            <p className="mt-1 text-ink-4">
-                                                {cuatrimestre.libreHours > 0 || cuatrimestre.extraClasses > 0
-                                                    ? `${cuatrimestre.libreHours} h libre · ${cuatrimestre.extraClasses} clases extra`
-                                                    : 'Sin entrenamiento libre'}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <div className="flex justify-between text-ink-3">
-                                                <span>Inasistencia (máx. mes)</span>
-                                                <span className={`font-semibold ${cuatrimestre.exceededAbsenceLimit ? 'text-danger-text' : 'text-ink'}`}>
-                                                    {cuatrimestre.maxMonthAbsences}/{grado.maxAbsencesPerMonth}
-                                                </span>
-                                            </div>
-                                            <p className="mt-1 text-ink-4">
-                                                {cuatrimestre.absences} inasistencias en el cuatrimestre
-                                                {cuatrimestre.excessMonth ? ` · excedió en ${cuatrimestre.excessMonth}` : ''}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </li>
-                            )
-                        })}
+                                    maxAbsencesPerMonth={grado.maxAbsencesPerMonth}
+                                />
+                            ))}
                     </ul>
+                    {otherCuatrimestres.length > 0 && (
+                        <button
+                            type="button"
+                            aria-expanded={showAllCuatrimestres}
+                            onClick={() => setShowAllCuatrimestres((value) => !value)}
+                            className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs font-semibold text-ink-2 transition-colors hover:bg-surface-3 hover:text-ink"
+                        >
+                            {showAllCuatrimestres ? 'Ocultar cuatrimestres' : `Ver todos los cuatrimestres (${grado.cuatrimestres.length})`}
+                            <ChevronDown aria-hidden="true" className={`size-3.5 transition-transform ${showAllCuatrimestres ? 'rotate-180' : ''}`} />
+                        </button>
+                    )}
                 </div>
             )}
 

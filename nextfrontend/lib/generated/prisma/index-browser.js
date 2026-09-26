@@ -522,6 +522,20 @@ exports.Prisma.ExamConvocationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ReviewScalarFieldEnum = {
+  id: 'id',
+  schoolId: 'schoolId',
+  authorName: 'authorName',
+  relationship: 'relationship',
+  rating: 'rating',
+  message: 'message',
+  email: 'email',
+  status: 'status',
+  approvedAt: 'approvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ApiUsageScalarFieldEnum = {
   id: 'id',
   key: 'key',
@@ -731,6 +745,7 @@ exports.Prisma.ModelName = {
   PushSubscription: 'PushSubscription',
   Holiday: 'Holiday',
   ExamConvocation: 'ExamConvocation',
+  Review: 'Review',
   ApiUsage: 'ApiUsage',
   AuditLog: 'AuditLog'
 };

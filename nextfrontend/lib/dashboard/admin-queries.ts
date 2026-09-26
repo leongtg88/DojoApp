@@ -28,6 +28,7 @@ import type {
   DashboardBirthday,
   InstructorAttendanceBoardData,
   PlanSummary,
+  ReviewSummary,
   ScholarshipType,
 } from '@/types/dashboard'
 
@@ -248,6 +249,23 @@ export async function getAdminPendingDocumentCount(userId: string): Promise<numb
       status: StudentDocumentStatus.PENDING,
       studentId: { not: null },
       ...(scope.isSuperAdmin ? {} : { student: { schoolId: scope.schoolId! } }),
+    },
+  })
+}
+
+export async function getAdminNewStudentCount(userId: string): Promise<number> {
+  const scope = await getAdminScope(userId)
+
+  if (!scope) {
+    return 0
+  }
+
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+
+  return db.student.count({
+    where: {
+      ...scopeSchoolFilter(scope),
+      createdAt: { gte: sevenDaysAgo },
     },
   })
 }
@@ -782,6 +800,31 @@ export async function getAdminPlans(userId: string): Promise<PlanSummary[] | nul
     ...plan,
     price: price?.toNumber() ?? null,
     studentCount: _count.students,
+  }))
+}
+
+export async function getAdminReviews(userId: string): Promise<ReviewSummary[] | null> {
+  const scope = await getAdminScope(userId)
+
+  if (!scope) {
+    return null
+  }
+
+  const reviews = await db.review.findMany({
+    where: scope.isSuperAdmin ? {} : { schoolId: scope.schoolId },
+    orderBy: [{ status: 'asc' }, { createdAt: 'desc' }],
+  })
+
+  return reviews.map((review) => ({
+    id: review.id,
+    authorName: review.authorName,
+    relationship: review.relationship,
+    email: review.email,
+    rating: review.rating,
+    message: review.message,
+    status: review.status,
+    createdAt: review.createdAt.toISOString(),
+    approvedAt: review.approvedAt?.toISOString() ?? null,
   }))
 }
 

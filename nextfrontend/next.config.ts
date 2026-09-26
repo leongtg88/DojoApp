@@ -74,7 +74,7 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co",
               "font-src 'self' data:",
               "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://analytics.google.com https://*.vercel-analytics.com",
-              "frame-src 'self'",
+              "frame-src 'self' https://www.google.com https://maps.google.com",
               "object-src 'none'",
               "worker-src 'self'",
               "manifest-src 'self'",

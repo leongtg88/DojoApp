@@ -76,7 +76,7 @@ export function MartialGradeCard({ rank, studentName, approvedTechniques, totalT
                 </div>
 
                 <div className="mt-5 flex items-center justify-between gap-3 text-xs">
-                    <span className="font-semibold text-ink">{approvedTechniques} de {totalTechniques} técnicas aprobadas</span>
+                    <span className="font-semibold text-ink">{approvedTechniques} de {totalTechniques} técnicas revisadas</span>
                     <Link className="inline-flex shrink-0 items-center gap-0.5 font-bold text-accent hover:underline" href={studentHref('/dashboard/estudiante/progreso', studentId)}>Ver progreso <ChevronRight aria-hidden="true" className="size-4" /></Link>
                 </div>
                 <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface-1 p-0.5"><div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-300 transition-all" style={{ width: `${progress}%` }} /></div>

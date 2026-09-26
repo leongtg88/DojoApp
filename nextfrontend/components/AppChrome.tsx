@@ -19,7 +19,7 @@ export function AppChrome({ children }: { children: ReactNode }) {
             <Suspense>
                 <ScrollToTop />
             </Suspense>
-            <main className={isDashboard || isAuth ? 'flex-grow' : 'flex-grow pt-20 md:pb-20'}>{children}</main>
+            <main className={isDashboard || isAuth ? 'flex-grow' : 'flex-grow pt-17 md:pb-20'}>{children}</main>
             {!isDashboard && !isAuth && <ConditionalFooter />}
             {!isDashboard && !isAuth && <InstallPrompt />}
         </>

@@ -3,9 +3,10 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, type ReactNode } from 'react'
-import { Award, BookOpenCheck, CalendarDays, Check, FileSpreadsheet, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
+import { Award, BookOpenCheck, CalendarDays, Check, ChevronDown, FileSpreadsheet, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
 import { InvitationLinkModal } from './InvitationLinkModal'
+import { AdminBulkKataAssignment } from './AdminBulkKataAssignment'
 import { DAY_LABELS } from '@/lib/dashboard/balance'
 import type { AdminBeltRankSummary, AdminStudentSummary, PlanSummary, ScholarshipType, ScheduleOption } from '@/types/dashboard'
 
@@ -517,9 +518,24 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 	const [deletingStudent, setDeletingStudent] = useState<AdminStudentSummary | null>(null)
 	const [isDeleting, setIsDeleting] = useState(false)
 	const [isExporting, setIsExporting] = useState(false)
-	const [isApplyingKatas, setIsApplyingKatas] = useState(false)
+	const [isBulkKataOpen, setIsBulkKataOpen] = useState(false)
 	const [katasNotice, setKatasNotice] = useState<string | null>(null)
 	const [actionError, setActionError] = useState<string | null>(null)
+	const [expandedAction, setExpandedAction] = useState<'export' | 'katas' | 'create' | null>(null)
+	const [filtersOpen, setFiltersOpen] = useState(false)
+
+	function handleActionClick(action: 'export' | 'katas' | 'create', run: () => void) {
+		if (typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches) {
+			run()
+			return
+		}
+		if (expandedAction === action) {
+			setExpandedAction(null)
+			run()
+			return
+		}
+		setExpandedAction(action)
+	}
 
 	const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
 	const statuses = [...new Set(students.map(({ status }) => status))].sort()
@@ -609,23 +625,6 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 		}
 	}
 
-	async function handleApplyKatas() {
-		setIsApplyingKatas(true)
-		setActionError(null)
-		setKatasNotice(null)
-		try {
-			const response = await fetch('/api/dashboard/admin/students/apply-katas', { method: 'POST' })
-			const payload = await response.json().catch(() => ({})) as { error?: string; studentsProcessed?: number; linksAdded?: number }
-			if (!response.ok) throw new Error(payload.error ?? 'No fue posible asignar las katas.')
-			setKatasNotice(`${payload.studentsProcessed ?? 0} alumnos actualizados · ${payload.linksAdded ?? 0} katas asignadas`)
-			router.refresh()
-		} catch (reason: unknown) {
-			setActionError(reason instanceof Error ? reason.message : 'No fue posible asignar las katas.')
-		} finally {
-			setIsApplyingKatas(false)
-		}
-	}
-
 	function handleDelete(student: AdminStudentSummary) {
 		setIsDeleting(true)
 		setActionError(null)
@@ -651,16 +650,16 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 					<p className="mt-2 text-sm text-ink-3">Padrón, matrículas, progreso técnico y altas/bajas dentro de tu escuela.</p>
 				</div>
 				<div className="flex flex-wrap items-center gap-2 self-start">
-					<button type="button" onClick={handleExport} disabled={isExporting || students.length === 0} className="inline-flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-surface-3 hover:text-ink disabled:opacity-50">
+					<button type="button" aria-label="Exportar Excel" onClick={() => handleActionClick('export', handleExport)} disabled={isExporting || students.length === 0} className="inline-flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-surface-3 hover:text-ink disabled:opacity-50">
 						{isExporting ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <FileSpreadsheet aria-hidden="true" className="size-4" />}
-						{isExporting ? 'Exportando…' : 'Exportar Excel'}
+						<span className={expandedAction === 'export' ? 'inline' : 'hidden sm:inline'}>{isExporting ? 'Exportando…' : 'Exportar Excel'}</span>
 					</button>
-					<button type="button" onClick={handleApplyKatas} disabled={isApplyingKatas || students.length === 0} className="inline-flex items-center gap-2 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-4 py-2.5 text-sm font-semibold text-accent-text transition-colors hover:bg-cyan-900/50 disabled:opacity-50">
-						{isApplyingKatas ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <BookOpenCheck aria-hidden="true" className="size-4" />}
-						{isApplyingKatas ? 'Asignando…' : 'Asignar katas por grado'}
+					<button type="button" aria-label="Asignar katas" onClick={() => handleActionClick('katas', () => setIsBulkKataOpen(true))} disabled={students.length === 0} className="inline-flex items-center gap-2 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-4 py-2.5 text-sm font-semibold text-accent-text transition-colors hover:bg-cyan-900/50 disabled:opacity-50">
+						<BookOpenCheck aria-hidden="true" className="size-4" />
+						<span className={expandedAction === 'katas' ? 'inline' : 'hidden sm:inline'}>Asignar katas</span>
 					</button>
-					<button type="button" onClick={() => setIsCreateOpen(true)} className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] hover:bg-cyan-400">
-						<Plus className="size-4" />Nuevo alumno
+					<button type="button" aria-label="Nuevo alumno" onClick={() => handleActionClick('create', () => setIsCreateOpen(true))} className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] hover:bg-cyan-400">
+						<Plus className="size-4" /><span className={expandedAction === 'create' ? 'inline' : 'hidden sm:inline'}>Nuevo alumno</span>
 					</button>
 				</div>
 			</div>
@@ -675,11 +674,17 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 				</section>
 			) : (
 				<section className="mt-7 rounded-lg border border-edge bg-surface-2 shadow-sm">
-					<div className="grid gap-3 border-b border-edge p-4 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:p-5">
-						<label className="relative block" htmlFor="admin-student-search">
+					<div className="space-y-3 border-b border-edge p-4 sm:grid sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:gap-3 sm:space-y-0 sm:p-5">
+						<div className="flex items-center gap-2 sm:contents">
+						<label className="relative block flex-1" htmlFor="admin-student-search">
 							<Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-accent" />
 							<input className="w-full rounded-md border border-edge-strong bg-surface-1 py-2.5 pl-10 pr-3 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="admin-student-search" onChange={(event) => setSearchTerm(event.target.value)} placeholder="Buscar por alumno, matrícula, grado o clase" type="search" value={searchTerm} />
 						</label>
+							<button type="button" aria-controls="admin-student-filters" aria-expanded={filtersOpen} aria-label={filtersOpen ? 'Ocultar filtros' : 'Mostrar filtros'} onClick={() => setFiltersOpen((open) => !open)} className={`inline-flex size-[42px] shrink-0 items-center justify-center rounded-md border sm:hidden ${filtersOpen || statusFilter !== 'ALL' || beltFilter !== 'ALL' || branchFilter !== 'ALL' ? 'border-cyan-500/50 bg-cyan-500/10 text-accent' : 'border-edge-strong bg-surface-1 text-ink-3'}`}>
+								<ChevronDown aria-hidden="true" className={`size-4 transition-transform ${filtersOpen ? 'rotate-180' : ''}`} />
+							</button>
+						</div>
+						<div className={`space-y-3 ${filtersOpen ? 'block' : 'hidden'} sm:contents`} id="admin-student-filters">
 						<label className="text-xs font-semibold text-ink-2" htmlFor="admin-student-status">
 							Estado
 							<select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="admin-student-status" onChange={(event) => setStatusFilter(event.target.value)} value={statusFilter}>
@@ -707,6 +712,7 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 								))}
 							</select>
 						</label>
+						</div>
 					</div>
 
 					{filteredStudents.length === 0 ? (
@@ -720,15 +726,15 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 							<table className="w-full min-w-[880px] text-left text-sm">
 								<thead className="border-b border-edge text-xs font-semibold uppercase tracking-wide text-ink-3">
 									<tr>
-										<th className="px-5 py-3">Alumno</th>
-										<th className="px-5 py-3">Grado</th>
-										<th className="px-5 py-3">Plan</th>
-										<th className="px-5 py-3">Katas dominadas</th>
-										<th className="px-5 py-3">Asistencia</th>
-										<th className="px-5 py-3">Sucursal</th>
-										<th className="px-5 py-3">Estado</th>
-										<th className="px-5 py-3">Cuenta</th>
-										<th className="px-5 py-3 text-right">Acciones</th>
+										<th className="px-4 py-2 sm:px-5 sm:py-3">Alumno</th>
+										<th className="px-4 py-2 sm:px-5 sm:py-3">Grado</th>
+										<th className="px-4 py-2 sm:px-5 sm:py-3">Plan</th>
+										<th className="px-4 py-2 sm:px-5 sm:py-3">Katas revisadas</th>
+										<th className="px-4 py-2 sm:px-5 sm:py-3">Asistencia</th>
+										<th className="px-4 py-2 sm:px-5 sm:py-3">Sucursal</th>
+										<th className="px-4 py-2 sm:px-5 sm:py-3">Estado</th>
+										<th className="px-4 py-2 sm:px-5 sm:py-3">Cuenta</th>
+										<th className="px-4 py-2 text-right sm:px-5 sm:py-3">Acciones</th>
 									</tr>
 								</thead>
 								<tbody className="divide-y divide-edge">
@@ -738,7 +744,7 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 
 										return (
 											<tr key={student.id} className="transition-colors hover:bg-surface-3/50">
-												<td className="px-5 py-4">
+												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
 													<div className="flex min-w-0 items-center gap-3">
 														<span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-cyan-500/15 font-display text-sm font-extrabold text-accent-text">{initials}</span>
 														<div className="min-w-0">
@@ -749,7 +755,7 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 														</div>
 													</div>
 												</td>
-												<td className="px-5 py-4">
+												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
 													<div className="flex items-center gap-2">
 														<BeltRankIndicator rank={{ beltColor: student.beltColor, beltSecondaryColor: student.beltSecondaryColor }} size="sm" />
 														<div>
@@ -758,7 +764,7 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 														</div>
 													</div>
 												</td>
-												<td className="px-5 py-4">
+												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
 													<p className="text-sm font-semibold text-ink">{student.planName ?? 'Sin plan'}</p>
 													{student.scholarshipType !== 'NONE' && <p className="text-[11px] text-accent">{student.scholarshipType === 'ECONOMIC' ? 'Beca económica' : student.scholarshipType === 'MERIT' ? 'Beca mérito' : 'Beca competidor'}</p>}
 													{(student.needsPlan || student.needsSchedule) && (
@@ -768,24 +774,24 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 														</div>
 													)}
 												</td>
-												<td className="px-5 py-4">
+												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
 													<div className="text-sm font-semibold text-ink">{student.kataMasteredCount}<span className="text-ink-4"> / {student.kataTotalCount}</span></div>
 													<div className="mt-1 h-1.5 w-24 overflow-hidden rounded-full bg-surface-3">
 														<div className="h-full rounded-full bg-cyan-400" style={{ width: `${kataPercent}%` }} />
 													</div>
 												</td>
-												<td className="px-5 py-4">
+												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
 													<span className={`rounded-md border px-2 py-0.5 text-xs font-bold ${student.attendancePercent === null ? 'border-edge-strong text-ink-2' : attendanceBadgeClass(student.attendancePercent)}`}>{student.attendancePercent ?? 0}%</span>
 												</td>
-												<td className="px-5 py-4 text-xs text-ink-2">{student.branchName}</td>
-												<td className="px-5 py-4">
+												<td className="px-4 py-2.5 text-xs text-ink-2 sm:px-5 sm:py-4">{student.branchName}</td>
+												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
 													<span className={`rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${statusBadgeClass(student.status)}`}>{student.status}</span>
 												</td>
-												<td className="px-5 py-4">
+												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
 													<span className={`rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${accountBadgeClass(student.accountStatus)}`}>{student.accountStatus}</span>
 													{student.accountStatus === 'INVITADO' && student.email && <p className="mt-1 max-w-[160px] truncate font-mono text-[11px] text-ink-4">{student.email}</p>}
 												</td>
-												<td className="px-5 py-4">
+												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
 													<div className="flex items-center justify-end gap-1">
 														{(student.accountStatus !== 'ACTIVO' && student.email) && (
 															<button type="button" title={student.accountStatus === 'INVITADO' ? 'Reenviar invitación' : 'Enviar invitación al correo'} onClick={() => setInvitingStudent(student)} className="flex items-center gap-1 rounded px-2 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-cyan-950/40 hover:text-accent">
@@ -825,6 +831,18 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 
 			<StudentFormModal open={isCreateOpen} mode="create" student={null} students={students} onClose={() => setIsCreateOpen(false)} onSaved={() => setIsCreateOpen(false)} />
 			<StudentFormModal open={editingStudent !== null} mode="edit" student={editingStudent} students={students} onClose={() => setEditingStudent(null)} onSaved={() => setEditingStudent(null)} />
+
+			{isBulkKataOpen && (
+				<AdminBulkKataAssignment
+					students={students}
+					onClose={() => setIsBulkKataOpen(false)}
+					onAssigned={({ studentsProcessed, linksAdded }) => {
+						setKatasNotice(`${studentsProcessed} alumnos procesados · ${linksAdded} katas agregadas`)
+						setIsBulkKataOpen(false)
+						router.refresh()
+					}}
+				/>
+			)}
 
 			<ConfirmModal
 				open={togglingStudent !== null}

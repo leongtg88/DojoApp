@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useReducer } from 'react';
+import { useCallback, useReducer, useRef } from 'react';
 import {
   flow,
   INPUT_FIELD,
@@ -268,12 +268,42 @@ function buildWaUrl(kind: WaTextKind, draft: EnrollmentDraft): string {
 
 export default function useEnrollmentChat(startNodeId?: FlowNodeId) {
   const [state, dispatch] = useReducer(reducer, startNodeId, init);
+  const sentQuotesRef = useRef<Set<string>>(new Set());
 
   const applyEffects = useCallback((effect: FlowEffect | undefined, draft: EnrollmentDraft) => {
     if (!effect) return;
     if (effect.openWhatsApp) {
       const url = buildWaUrl(effect.waText ?? 'auto', draft);
       window.open(url, '_blank', 'noopener,noreferrer');
+    }
+    if (effect.post === 'cotizacion') {
+      const signature = [
+        draft.nombre,
+        draft.whatsapp,
+        draft.email,
+        draft.plan_seleccionado,
+        draft.protecciones,
+        draft.descuento_seleccionado,
+        draft.acuerdo_pago ? '1' : '0',
+      ].join('|');
+      if (sentQuotesRef.current.has(signature)) return;
+      sentQuotesRef.current.add(signature);
+      fetch('/api/assistant/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: draft.nombre,
+          whatsapp: draft.whatsapp,
+          email: draft.email,
+          plan_seleccionado: draft.plan_seleccionado,
+          plan_precio: draft.plan_precio,
+          protecciones: draft.protecciones,
+          protecciones_precio: draft.protecciones_precio,
+          descuento_seleccionado: draft.descuento_seleccionado,
+          acuerdo_pago: draft.acuerdo_pago,
+        }),
+      }).catch(() => {});
+      return;
     }
     if (effect.post && draft.email) {
       fetch('/api/enrollments', {

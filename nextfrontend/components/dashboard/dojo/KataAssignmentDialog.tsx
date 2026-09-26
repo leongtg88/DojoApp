@@ -69,7 +69,7 @@ export function KataAssignmentDialog({ studentId, studentName, isOpen, onClose, 
 				if (!response.ok) throw new Error(payload.error ?? 'No fue posible actualizar la asignación.')
 				router.refresh()
 				if (payload.skipped && payload.skipped > 0) {
-					setNotice(`${payload.skipped} kata(s) aprobada(s) o evaluada(s) se conservaron en el expediente y no se pueden quitar.`)
+					setNotice(`${payload.skipped} kata(s) revisada(s) o evaluada(s) se conservaron en el expediente y no se pueden quitar.`)
 					return
 				}
 				onClose()
@@ -108,7 +108,7 @@ export function KataAssignmentDialog({ studentId, studentName, isOpen, onClose, 
 						<span className="font-bold text-accent">{selectedIds.length} seleccionadas de {availableTechniques.length} disponibles</span>
 						{selectedIds.some((id) => !lockedIds.has(id)) && (
 							<button type="button" onClick={() => setSelectedIds((previous) => previous.filter((id) => lockedIds.has(id)))} className="text-[11px] text-ink-3 underline transition-colors hover:text-ink">
-								Quitar no aprobadas
+								Quitar no revisadas
 							</button>
 						)}
 					</div>
@@ -132,7 +132,7 @@ export function KataAssignmentDialog({ studentId, studentName, isOpen, onClose, 
 									</div>
 								</div>
 								<div className="ml-2 flex shrink-0 items-center gap-2">
-									{isLocked && <span className="inline-flex items-center gap-1 rounded border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-ok-text"><Lock className="size-3" />Aprobada</span>}
+									{isLocked && <span className="inline-flex items-center gap-1 rounded border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-ok-text"><Lock className="size-3" />Revisada</span>}
 									<span className="rounded border border-edge-strong bg-surface-2 px-2 py-0.5 text-[10px] font-semibold text-ink-2">{technique.category}</span>
 								</div>
 							</label>

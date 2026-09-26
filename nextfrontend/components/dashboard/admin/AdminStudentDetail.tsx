@@ -64,6 +64,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 	const [isPlacementOpen, setIsPlacementOpen] = useState(false)
 	const [isPurgeOpen, setIsPurgeOpen] = useState(false)
 	const [isPurging, setIsPurging] = useState(false)
+	const [pendingKataId, setPendingKataId] = useState<string | null>(null)
 	const [actionError, setActionError] = useState<string | null>(null)
 	const [invitationLink, setInvitationLink] = useState<{ url: string; name: string; email: string | null } | null>(null)
 	const [documents, setDocuments] = useState(student.documents)
@@ -113,6 +114,27 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 			setActionError(reason instanceof Error ? reason.message : 'No fue posible eliminar la información de inscripción.')
 		} finally {
 			setIsPurging(false)
+		}
+	}
+
+	async function handleKataApproval(techniqueId: string, approved: boolean) {
+		setPendingKataId(techniqueId)
+		setActionError(null)
+		try {
+			const response = await fetch(`/api/dashboard/admin/students/${student.id}/techniques/${techniqueId}`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ approved }),
+			})
+			const payload = await response.json().catch(() => ({})) as { error?: string }
+			if (!response.ok) {
+				throw new Error(payload.error ?? 'No fue posible actualizar la kata.')
+			}
+			router.refresh()
+		} catch (reason: unknown) {
+			setActionError(reason instanceof Error ? reason.message : 'No fue posible actualizar la kata.')
+		} finally {
+			setPendingKataId(null)
 		}
 	}
 
@@ -336,7 +358,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 								<h2 className="font-display text-base font-bold text-ink">Katas requeridas hacia {student.nextRankName ?? 'el grado máximo'}</h2>
 								<p className="mt-1 text-xs text-ink-3">Katas del plan del grado siguiente. Las que no están en el expediente aparecen como &ldquo;sin asignar&rdquo;; usa &ldquo;Asignar katas&rdquo; para incorporarlas.</p>
 							</div>
-							<span className="text-xs font-semibold text-accent">{masteredTowardNext} de {requiredKatas.length} dominadas</span>
+							<span className="text-xs font-semibold text-accent">{masteredTowardNext} de {requiredKatas.length} revisadas</span>
 						</div>
 						{requiredKatas.length === 0 ? (
 							<div className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 px-4 py-8 text-center text-sm text-ink-3">
@@ -363,7 +385,21 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 												{entry?.practiceHours ? <span className="text-[11px] text-ink-3">{entry.practiceHours} h</span> : null}
 												{entry?.practiceRepetitions ? <span className="text-[11px] text-ink-3">{entry.practiceRepetitions} rep.</span> : null}
 												{isAssigned ? (
-													<KataBadge status={entry!.status} />
+													<>
+														<KataBadge status={entry!.status} />
+														<button
+															type="button"
+															disabled={pendingKataId !== null}
+															onClick={() => handleKataApproval(required.id, !entry!.approved)}
+															className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-semibold transition-colors disabled:opacity-50 ${
+																entry!.approved
+																	? 'border-edge-strong bg-surface-2 text-ink-2 hover:bg-surface-3'
+																	: 'border-cyan-500/40 bg-cyan-500/10 text-accent-text hover:bg-cyan-500/20'
+															}`}
+														>
+															{pendingKataId === required.id ? <Loader2 className="size-3.5 animate-spin" aria-hidden="true" /> : entry!.approved ? 'Revertir' : 'Marcar revisada'}
+														</button>
+													</>
 												) : (
 													<span className="rounded border border-edge-strong bg-surface-2 px-2 py-0.5 text-[10px] font-semibold text-ink-3">Sin asignar</span>
 												)}
@@ -407,6 +443,18 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 											<div className="flex items-center gap-3">
 												<KataBadge status={entry.status} />
 												{entry.approvedAt && <span className="text-[11px] text-ink-3" suppressHydrationWarning>{formatDateTime(entry.approvedAt)}</span>}
+												<button
+													type="button"
+													disabled={pendingKataId !== null}
+													onClick={() => handleKataApproval(entry.technique.id, !entry.approved)}
+													className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-semibold transition-colors disabled:opacity-50 ${
+														entry.approved
+															? 'border-edge-strong bg-surface-2 text-ink-2 hover:bg-surface-3'
+															: 'border-cyan-500/40 bg-cyan-500/10 text-accent-text hover:bg-cyan-500/20'
+													}`}
+												>
+													{pendingKataId === entry.technique.id ? <Loader2 className="size-3.5 animate-spin" aria-hidden="true" /> : entry.approved ? 'Revertir' : 'Marcar revisada'}
+												</button>
 											</div>
 										</div>
 										{entry.practiceLogs.length > 0 && (

@@ -88,7 +88,7 @@ export function InstructorKatasModal({ open, studentId, studentName, onClose }: 
             if (!response.ok) throw new Error(payload?.error ?? 'No se pudo guardar la asignación')
             router.refresh()
             if (payload?.skipped && payload.skipped > 0) {
-                setNotice(`${payload.skipped} kata(s) aprobada(s) o evaluada(s) se conservaron en el expediente y no se pueden quitar.`)
+                setNotice(`${payload.skipped} kata(s) revisada(s) o evaluada(s) se conservaron en el expediente y no se pueden quitar.`)
                 return
             }
             onClose()
@@ -165,7 +165,7 @@ export function InstructorKatasModal({ open, studentId, studentName, onClose }: 
                                                         </div>
                                                         {kata.status === 'APPROVED' && (
                                                             <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-ok-text">
-                                                                <CheckCircle2 className="size-3" aria-hidden="true" />Aprobada
+                                                                <CheckCircle2 className="size-3" aria-hidden="true" />Revisada
                                                             </span>
                                                         )}
                                                     </label>

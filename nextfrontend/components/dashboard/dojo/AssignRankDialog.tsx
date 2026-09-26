@@ -148,7 +148,7 @@ export function AssignRankDialog({ student, currentRankOrder, ranks, isOpen, onC
 							{direction === 'descenso' ? (
 								<p>
 									Al confirmar el <strong className="text-ink">descenso</strong> a <strong className="text-ink">{chosenRank?.name} ({chosenRank?.kyuDan ?? '—'})</strong>, el grado del alumno quedará por debajo de su nivel actual y su próxima meta pasará a ser{' '}
-									<strong className="text-ink">{chosenRank && nextTargetRank ? `${nextTargetRank.name} (${nextTargetRank.kyuDan ?? '—'})` : 'el siguiente grado del syllabus'}</strong>. Las katas ya dominadas se conservan en su expediente.
+									<strong className="text-ink">{chosenRank && nextTargetRank ? `${nextTargetRank.name} (${nextTargetRank.kyuDan ?? '—'})` : 'el siguiente grado del syllabus'}</strong>. Las katas ya revisadas se conservan en su expediente.
 								</p>
 							) : direction === 'ascenso' ? (
 								<p>

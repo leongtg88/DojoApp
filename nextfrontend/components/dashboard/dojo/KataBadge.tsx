@@ -11,7 +11,7 @@ interface KataBadgeProps {
 }
 
 const statusStyles: Record<KataStatus, { label: string; className: string; Icon: typeof CheckCircle2 }> = {
-    APPROVED: { label: 'Aprobada', className: 'bg-emerald-500/20 border-emerald-500/40 text-ok-text', Icon: CheckCircle2 },
+    APPROVED: { label: 'Revisada', className: 'bg-emerald-500/20 border-emerald-500/40 text-ok-text', Icon: CheckCircle2 },
     IN_PROGRESS: { label: 'En Práctica', className: 'bg-amber-500/20 border-amber-500/40 text-warn-text', Icon: Flame },
     PENDING: { label: 'Por Iniciar', className: 'bg-surface-3 border-edge-strong text-ink-2', Icon: CircleDot },
 }

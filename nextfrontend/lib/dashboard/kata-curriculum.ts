@@ -1,7 +1,5 @@
 import { db } from '@/lib/db'
-import { StudentStatus } from '@/lib/generated/prisma'
 import { KATAS, RANKS_BY_PROGRAM, type Program } from '@/lib/curriculum/programs'
-import { ageFromDob, programForAge } from '@/lib/dashboard/program'
 import { scopeSchoolFilter, type AdminScope } from '@/lib/dashboard/scope'
 
 interface TechniqueLookup {
@@ -13,17 +11,6 @@ interface CurriculumApplicationSummary {
   ranksUpdated: number
   linksCreated: number
   missingKatas: string[]
-}
-
-interface StudentKataAssignment {
-  studentId: string
-  added: number
-}
-
-interface StudentKataSummary {
-  studentsProcessed: number
-  linksAdded: number
-  assignments: StudentKataAssignment[]
 }
 
 async function loadTechniqueLookup(scope: AdminScope): Promise<TechniqueLookup> {
@@ -173,81 +160,4 @@ export async function resolveProgressionKataIds({
   }
 
   return [...ids]
-}
-
-/**
- * Asegura que los alumnos activos tengan asignadas las katas de su grado actual
- * y del siguiente (las requeridas para pasar de nivel). Agrega las que falten
- * con `skipDuplicates`; nunca elimina asignaciones existentes. Aplica a todos
- * los alumnos con grado, no solo a los que no tienen katas.
- */
-export async function assignCurriculumKatasToStudents(scope: AdminScope): Promise<StudentKataSummary> {
-  const students = await db.student.findMany({
-    where: {
-      ...scopeSchoolFilter(scope),
-      status: StudentStatus.ACTIVE,
-    },
-    select: { id: true, schoolId: true, currentRankId: true, currentRank: true, dateOfBirth: true },
-  })
-
-  let studentsProcessed = 0
-  let linksAdded = 0
-  const assignments: StudentKataAssignment[] = []
-
-  for (const student of students) {
-    let program: Program
-    let order: number
-
-    if (student.currentRankId) {
-      const rank = await db.beltRank.findFirst({
-        where: { id: student.currentRankId },
-        select: { program: true, order: true },
-      })
-
-      if (!rank) {
-        continue
-      }
-
-      program = rank.program as Program
-      order = rank.order
-    } else if (student.currentRank) {
-      program = programForAge(ageFromDob(student.dateOfBirth))
-      const scoped = await db.beltRank.findFirst({
-        where: { name: student.currentRank, program, schoolId: student.schoolId },
-        select: { order: true },
-      })
-      const rank = scoped ?? (await db.beltRank.findFirst({
-        where: { name: student.currentRank, program, schoolId: null },
-        select: { order: true },
-      }))
-
-      if (!rank) {
-        continue
-      }
-
-      order = rank.order
-    } else {
-      continue
-    }
-
-    const techniqueIds = await resolveProgressionKataIds({ schoolId: student.schoolId, program, order })
-
-    if (techniqueIds.length === 0) {
-      continue
-    }
-
-    const result = await db.studentTechnique.createMany({
-      data: techniqueIds.map((techniqueId) => ({ studentId: student.id, techniqueId })),
-      skipDuplicates: true,
-    })
-
-    studentsProcessed += 1
-    linksAdded += result.count
-
-    if (result.count > 0) {
-      assignments.push({ studentId: student.id, added: result.count })
-    }
-  }
-
-  return { studentsProcessed, linksAdded, assignments }
 }

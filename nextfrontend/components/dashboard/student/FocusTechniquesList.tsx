@@ -33,7 +33,7 @@ export function FocusTechniquesList({ techniques, studentId }: FocusTechniquesLi
                     ))}
                 </ul>
             )}
-            {techniques.length > 0 && displayTechniques.length === 0 && <div className="flex items-center gap-2 border-t border-edge px-5 py-3 text-xs font-semibold text-ok-text"><CheckCheck aria-hidden="true" className="size-4" />Todas tus técnicas asignadas están aprobadas.</div>}
+            {techniques.length > 0 && displayTechniques.length === 0 && <div className="flex items-center gap-2 border-t border-edge px-5 py-3 text-xs font-semibold text-ok-text"><CheckCheck aria-hidden="true" className="size-4" />Todas tus técnicas asignadas están revisadas.</div>}
         </section>
     )
 }

@@ -46,7 +46,7 @@ export interface PriceCard {
 export type FlowCard = ScheduleCard | PriceCard;
 
 export interface FlowEffect {
-  post?: 'internal' | 'whatsapp';
+  post?: 'internal' | 'whatsapp' | 'cotizacion';
   openWhatsApp?: boolean;
   waText?: WaTextKind;
 }
@@ -607,6 +607,7 @@ export const flow: Record<string, FlowNode> = {
   precio_resumen: {
     message: 'Revisa tus precios antes de enviar. Todo incluye carnet de federación, sello de uniforme y uniforme de principiante.',
     summary: true,
+    effect: { post: 'cotizacion' },
     store: (draft, option) => {
       if (option === 'Agendar clase de cortesía') {
         return { ...draft, from_cotizacion: true, tipo: 'clase_prueba', cotizacion_nombre: draft.nombre };

@@ -40,7 +40,7 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
                         <p className="mt-1 text-2xl font-bold text-ink">{students.length}</p>
                     </article>
                     <article className="rounded-lg border border-edge bg-surface-2 p-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-ink-3">Katas dominadas (promedio)</p>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-ink-3">Katas revisadas (promedio)</p>
                         <p className="mt-1 text-2xl font-bold text-ink">
                             {students.length ? (students.reduce((sum, student) => sum + student.masteredCount, 0) / students.length).toFixed(1) : '0.0'}
                         </p>
@@ -110,7 +110,7 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
                                                 >
                                                     <BookOpenCheck className="size-3.5" aria-hidden="true" />Katas
                                                 </button>
-                                                <div className="hidden sm:block" title={`Katas dominadas: ${student.masteredCount} de ${student.requiredCount}`}>
+                                                <div className="hidden sm:block" title={`Katas revisadas: ${student.masteredCount} de ${student.requiredCount}`}>
                                                     <p className="text-right text-[11px] font-semibold uppercase tracking-wide text-ink-3">Katas</p>
                                                     <div className="mt-1.5 flex items-center gap-2">
                                                         <div className="h-1.5 w-20 overflow-hidden rounded-full bg-surface-3">

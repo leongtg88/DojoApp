@@ -19,7 +19,7 @@ interface KataListProps {
 
 const filters: Array<{ value: StatusFilter; label: string }> = [
     { value: 'ALL', label: 'Todas' },
-    { value: 'APPROVED', label: 'Aprobadas' },
+    { value: 'APPROVED', label: 'Revisadas' },
     { value: 'IN_PROGRESS', label: 'En práctica' },
     { value: 'PENDING', label: 'Por iniciar' },
 ]

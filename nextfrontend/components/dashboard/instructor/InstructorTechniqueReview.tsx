@@ -104,7 +104,7 @@ export function InstructorTechniqueReview({ review }: InstructorTechniqueReviewP
                             <p className="text-xs font-semibold uppercase tracking-wide text-accent">Seguimiento de alumno</p>
                             <h2 className="mt-1 font-display text-lg font-bold text-ink">Técnicas asignadas</h2>
                         </div>
-                        <span className="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-ok-text"><CheckCheck aria-hidden="true" className="size-3.5" />{approvedCount} dominadas</span>
+                        <span className="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-ok-text"><CheckCheck aria-hidden="true" className="size-3.5" />{approvedCount} revisadas</span>
                     </div>
                     {review.techniques.length > 0 && (
                         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -113,7 +113,7 @@ export function InstructorTechniqueReview({ review }: InstructorTechniqueReviewP
                                     ['ALL', 'Todas', review.techniques.length],
                                     ['PENDING', 'Por practicar', review.techniques.filter(({ status }) => status === 'PENDING').length],
                                     ['IN_PROGRESS', 'En práctica', review.techniques.filter(({ status }) => status === 'IN_PROGRESS').length],
-                                    ['APPROVED', 'Dominadas', approvedCount],
+                                    ['APPROVED', 'Revisadas', approvedCount],
                                 ] as const).map(([status, label, count]) => (
                                     <button aria-pressed={statusFilter === status} className={`shrink-0 rounded-md border px-3 py-1.5 text-xs font-bold transition-colors ${statusFilter === status ? 'border-cyan-500/50 bg-cyan-500/15 text-accent-text' : 'border-edge-strong bg-surface-1 text-ink-3 hover:border-edge-strong'}`} key={status} onClick={() => setStatusFilter(status)} type="button">{label} ({count})</button>
                                 ))}
@@ -204,7 +204,7 @@ function TechniqueRow({
                     {([
                         ['PENDING', 'Por practicar', CircleDashed, 'bg-surface-3 text-ink', 'text-ink-3 hover:text-ink'],
                         ['IN_PROGRESS', 'En práctica', RefreshCw, 'bg-blue-500/20 text-info-text', 'text-ink-3 hover:text-ink'],
-                        ['APPROVED', 'Dominada', CheckCheck, 'bg-emerald-500 text-[#0d1117]', 'text-ink-3 hover:text-ink'],
+                        ['APPROVED', 'Revisada', CheckCheck, 'bg-emerald-500 text-[#0d1117]', 'text-ink-3 hover:text-ink'],
                     ] as const).map(([value, label, Icon, activeClass, idleClass]) => {
                         const isActive = status === value
                         return (

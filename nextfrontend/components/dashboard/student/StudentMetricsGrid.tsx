@@ -25,7 +25,7 @@ export function StudentMetricsGrid({ attendance, techniques, grado = null }: Stu
     ]
 
     return (
-        <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {cards.map(({ detail, href, icon: Icon, label, value }) => (
                 <Link className="rounded-lg border border-edge bg-surface-2 p-4 shadow-sm transition-colors hover:border-cyan-500/40 hover:bg-surface-3" href={href} key={label}>
                     <div className="flex items-center justify-between text-accent"><Icon aria-hidden="true" className="size-4" /><span className="text-[11px] font-semibold uppercase tracking-wide">{label}</span></div>

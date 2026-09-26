@@ -155,8 +155,8 @@ const builders: Record<NotificationType, NotificationBuilder> = {
   TECHNIQUE_APPROVED: ({ studentName, data }) => {
     const techniqueName = readString(data, 'techniqueName') ?? 'Una técnica'
     return {
-      title: 'Técnica aprobada',
-      body: `${studentName}, aprobaste ${techniqueName}.`,
+      title: 'Técnica revisada',
+      body: `${studentName}, marcaste ${techniqueName} como revisada.`,
       link: PROGRESS_LINK,
       priority: 'INFO',
     }

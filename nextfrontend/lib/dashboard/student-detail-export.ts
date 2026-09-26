@@ -33,6 +33,11 @@ const STATUS_LABELS: Record<string, string> = {
   REJECTED: 'Rechazado',
   EXPIRED: 'Expirado',
 }
+const TECHNIQUE_STATUS_LABELS: Record<string, string> = {
+  PENDING: 'Pendiente',
+  IN_PROGRESS: 'En práctica',
+  APPROVED: 'Revisada',
+}
 
 function toDateLabel(value: string | null): string | null {
   if (!value) return null
@@ -132,13 +137,13 @@ function buildDocumentsSheet(detail: AdminStudentDetail): (string | number | nul
 }
 
 function buildTechniquesSheet(detail: AdminStudentDetail): (string | number | null)[][] {
-  const rows: (string | number | null)[][] = [['Kata / técnica', 'Kanji', 'Categoría', 'Estado', 'Aprobada', 'Horas de práctica', 'Repeticiones', 'Notas']]
+  const rows: (string | number | null)[][] = [['Kata / técnica', 'Kanji', 'Categoría', 'Estado', 'Revisada', 'Horas de práctica', 'Repeticiones', 'Notas']]
   for (const entry of detail.techniques) {
     rows.push([
       entry.technique.name,
       entry.technique.kanji,
       entry.technique.category,
-      STATUS_LABELS[entry.status] ?? entry.status,
+      TECHNIQUE_STATUS_LABELS[entry.status] ?? entry.status,
       entry.approved ? 'Sí' : 'No',
       entry.practiceHours,
       entry.practiceRepetitions,

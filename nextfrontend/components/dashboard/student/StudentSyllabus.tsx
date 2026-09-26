@@ -72,7 +72,7 @@ export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
 
             <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div aria-label="Filtrar técnicas por estado" className="flex gap-2 overflow-x-auto pb-1 sm:pb-0">
-                    {([['ALL', 'Todos los estados', techniques.length], ['PENDING', 'Pendientes', techniques.length - approvedCount], ['APPROVED', 'Aprobadas', approvedCount]] as const).map(([status, label, count]) => <button aria-pressed={statusFilter === status} className={`shrink-0 rounded-md border px-3 py-1.5 text-xs font-bold transition-colors ${statusFilter === status ? 'border-emerald-500/50 bg-emerald-500/15 text-ok-text' : 'border-edge-strong bg-surface-2 text-ink-3 hover:border-edge-strong'}`} key={status} onClick={() => setStatusFilter(status)} type="button">{label} ({count})</button>)}
+                    {([['ALL', 'Todos los estados', techniques.length], ['PENDING', 'Pendientes', techniques.length - approvedCount], ['APPROVED', 'Revisadas', approvedCount]] as const).map(([status, label, count]) => <button aria-pressed={statusFilter === status} className={`shrink-0 rounded-md border px-3 py-1.5 text-xs font-bold transition-colors ${statusFilter === status ? 'border-emerald-500/50 bg-emerald-500/15 text-ok-text' : 'border-edge-strong bg-surface-2 text-ink-3 hover:border-edge-strong'}`} key={status} onClick={() => setStatusFilter(status)} type="button">{label} ({count})</button>)}
                 </div>
                 <label className="relative block sm:w-60" htmlFor="student-technique-search">
                     <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-accent" />
@@ -104,7 +104,7 @@ export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
                                     </div>
                                     <span className={`inline-flex shrink-0 items-center gap-1 rounded-md border px-2.5 py-1 text-[11px] font-bold ${approved ? 'border-emerald-500/40 bg-emerald-500/15 text-ok-text' : 'border-edge-strong bg-surface-1 text-ink-2'}`}>
                                         {approved ? <CheckCheck aria-hidden="true" className="size-3.5" /> : <CircleDashed aria-hidden="true" className="size-3.5" />}
-                                        {approved ? 'Aprobada' : 'Pendiente'}
+                                        {approved ? 'Revisada' : 'Pendiente'}
                                     </span>
                                 </div>
                                 {technique.description && <p className="mt-3 pl-4 text-sm leading-6 text-ink-2">{technique.description}</p>}

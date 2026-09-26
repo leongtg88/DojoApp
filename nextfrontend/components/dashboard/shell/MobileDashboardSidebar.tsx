@@ -21,16 +21,16 @@ interface MobileDashboardSidebarProps {
     roles: DashboardRole[]
     userName: string | null | undefined
     pendingEnrollmentCount?: number
-    pendingDocumentCount?: number
+    newStudentCount?: number
     unreadNotificationCount?: number
     familyMembers?: FamilyView
 }
 
-export function MobileDashboardSidebar({ open, onClose, onSignOut, activeRole, roles, userName, pendingEnrollmentCount = 0, pendingDocumentCount = 0, unreadNotificationCount = 0, familyMembers }: MobileDashboardSidebarProps) {
+export function MobileDashboardSidebar({ open, onClose, onSignOut, activeRole, roles, userName, pendingEnrollmentCount = 0, newStudentCount = 0, unreadNotificationCount = 0, familyMembers }: MobileDashboardSidebarProps) {
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const activeStudentId = searchParams.get('estudiante')
-    const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount, pendingDocumentCount)
+    const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount, newStudentCount)
     const activeHref = getPanelHref(activeRole)
     const currentHref = navigation
         .filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))
@@ -104,7 +104,7 @@ export function MobileDashboardSidebar({ open, onClose, onSignOut, activeRole, r
 
                                 return (
                                     <Link
-                                        className={`flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${active ? 'bg-cyan-500/15 text-accent-text shadow-sm ring-1 ring-cyan-500/30' : 'text-ink-3 hover:bg-surface-3 hover:text-ink'}`}
+                                        className={`flex origin-center items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-all duration-150 hover:scale-[1.03] active:scale-[1.06] motion-reduce:transform-none ${active ? 'bg-cyan-500/15 text-accent-text shadow-sm ring-1 ring-cyan-500/30' : 'text-ink-3 hover:bg-surface-3 hover:text-ink'}`}
                                         href={withStudentContext(href)}
                                         key={href}
                                         onClick={onClose}
@@ -130,7 +130,7 @@ export function MobileDashboardSidebar({ open, onClose, onSignOut, activeRole, r
                                 <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-ink-4">Cambiar de rol</p>
                                 <div className="flex flex-col gap-1.5">
                                     {switchOptions.map(({ href, shortLabel, icon: Icon }) => (
-                                        <Link className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink" href={href} key={href} onClick={onClose}>
+                                        <Link className="flex origin-center items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold text-ink-3 transition-all duration-150 hover:scale-[1.03] hover:bg-surface-3 hover:text-ink active:scale-[1.06] motion-reduce:transform-none" href={href} key={href} onClick={onClose}>
                                             <Icon aria-hidden="true" className="size-4" />{shortLabel}
                                         </Link>
                                     ))}

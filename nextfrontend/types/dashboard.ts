@@ -537,6 +537,17 @@ export interface GradoProgressData {
 	maxAbsencesPerMonth: number
 	examRightLost: boolean
 	bottleneck: GradoMetric | null
+	/** Progreso del mes en curso. Informativo: no cuenta para `overallPercent` ni elegibilidad. */
+	monthly: MonthlyProgressInfo | null
+}
+
+export interface MonthlyProgressInfo {
+	planName: string | null
+	confirmedHours: number
+	expectedHours: number | null
+	percent: number
+	balanceLevel: BalanceLevel
+	isUnlimited: boolean
 }
 
 export interface StudentKataProgressSummary {
@@ -665,6 +676,20 @@ export interface PlanSummary {
 	studentCount?: number
 }
 
+export type ReviewStatus = 'PENDING' | 'APPROVED' | 'REJECTED'
+
+export interface ReviewSummary {
+	id: string
+	authorName: string
+	relationship: string | null
+	email: string | null
+	rating: number
+	message: string
+	status: ReviewStatus
+	createdAt: string
+	approvedAt: string | null
+}
+
 export type ScheduleAudience = 'ADULTS' | 'CHILDREN' | 'MIXED'
 
 export interface ScheduleOption {
@@ -692,31 +717,7 @@ export interface AdminInstructor {
 	name: string
 }
 
-export interface StudentPendingRecovery {
-	id: string
-	date: string
-	className: string | null
-}
-
 export type BalanceLevel = 'OK' | 'LOW' | 'HIGH' | 'VERY_HIGH'
-
-export interface StudentMonthlyStatus {
-	plan: PlanSummary | null
-	planStartDate: string | null
-	scholarshipType: ScholarshipType
-	scholarshipNote: string | null
-	isCompetitor: boolean
-	confirmedHours: number
-	expectedHours: number | null
-	balanceDiff: number | null
-	balanceLevel: BalanceLevel
-	balanceAlert: boolean
-	balanceMessage: string
-	pendingRecoveries: StudentPendingRecovery[]
-	outOfScheduleCount: number
-	needsPlan: boolean
-	needsSchedule: boolean
-}
 
 export interface AdminBalanceRow {
 	studentId: string
