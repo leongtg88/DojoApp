@@ -209,6 +209,7 @@ model Student {
   attendances         Attendance[]
   achievements        StudentAchievement[]
   techniques          StudentTechnique[]
+  techniquePracticeLogs TechniquePracticeLog[]
   fitnessReports      FitnessReport[]
   classEnrollments    ClassEnrollment[]
   rankHistory         StudentRankHistory[]
@@ -431,6 +432,7 @@ model Technique {
   school           School?            @relation(fields: [schoolId], references: [id])
   beltRankKatas    BeltRankKata[]
   students         StudentTechnique[]
+  practiceLogs     TechniquePracticeLog[]
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
 
@@ -466,18 +468,27 @@ enum PracticePlace {
 }
 
 model TechniquePracticeLog {
-  id                 String           @id @default(cuid())
-  studentTechniqueId String
-  studentTechnique   StudentTechnique @relation(fields: [studentTechniqueId], references: [id], onDelete: Cascade)
-  date               DateTime         @default(now())
+  id                 String            @id @default(cuid())
+  // Registro "asignado": cuelga del expediente del alumno y acumula repeticiones.
+  studentTechniqueId String?
+  studentTechnique   StudentTechnique? @relation(fields: [studentTechniqueId], references: [id], onDelete: Cascade)
+  // Registro libre ("diario"): técnica del catálogo practicada sin estar asignada.
+  // No altera contadores del expediente ni las métricas de grado.
+  studentId          String?
+  student            Student?          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  techniqueId        String?
+  technique          Technique?        @relation(fields: [techniqueId], references: [id], onDelete: Cascade)
+  date               DateTime          @default(now())
   repetitions        Int
-  place              PracticePlace    @default(DOJO)
+  place              PracticePlace     @default(DOJO)
   notes              String?
   attendanceId       String?
-  attendance         Attendance?      @relation(fields: [attendanceId], references: [id], onDelete: SetNull)
-  createdAt          DateTime         @default(now())
+  attendance         Attendance?       @relation(fields: [attendanceId], references: [id], onDelete: SetNull)
+  createdAt          DateTime          @default(now())
 
   @@index([studentTechniqueId, date])
+  @@index([studentId, date])
+  @@index([techniqueId])
   @@index([attendanceId])
 }
 

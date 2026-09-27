@@ -24,9 +24,11 @@ import type {
   MonthAbsence,
   NextExamInfo,
   KataProgressItem,
+  TechniqueCategory,
   TechniqueStatus,
   AttendanceRecord,
   MonthlyProgressInfo,
+  StudentPracticeGradeGroup,
 } from '@/types/dashboard'
 
 const MAX_ABSENCES_PER_MONTH = 2
@@ -238,6 +240,7 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
               repetitions: true,
               place: true,
               studentTechnique: { select: { technique: { select: { name: true } } } },
+              technique: { select: { name: true } },
             },
           },
         },
@@ -279,11 +282,81 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
     notes: attendance.notes,
     punchedAt: attendance.punchedAt.toISOString(),
     practiceLogs: attendance.practiceLogs.map((log) => ({
-      techniqueName: log.studentTechnique.technique.name,
+      techniqueName: log.studentTechnique?.technique.name ?? log.technique?.name ?? 'Técnica',
       repetitions: log.repetitions,
       place: log.place,
     })),
   }))
+
+  // Syllabus completo de la escuela, agrupado por grado (ambos programas), para
+  // que el alumno pueda registrar repeticiones de cualquier técnica del programa,
+  // no sólo las asignadas a su expediente. Las no asignadas se guardan como
+  // registro libre (diario) y no alteran el expediente.
+  const assignedRepetitions = new Map(
+    student.techniques.map(({ practiceRepetitions, technique }) => [technique.id, practiceRepetitions]),
+  )
+
+  const techniqueOption = (technique: {
+    id: string
+    name: string
+    category: TechniqueCategory
+    repetitionsCount: number | null
+    movementsCount: number | null
+  }) => ({
+    id: technique.id,
+    name: technique.name,
+    category: technique.category,
+    targetRepetitions: targetRepetitionsFor(technique),
+    practiceRepetitions: assignedRepetitions.get(technique.id) ?? 0,
+    assigned: assignedRepetitions.has(technique.id),
+  })
+
+  const schoolFilter = { OR: [{ schoolId: student.schoolId }, { schoolId: null }] }
+
+  const [grades, looseTechniques] = await Promise.all([
+    db.beltRank.findMany({
+      where: schoolFilter,
+      orderBy: [{ program: 'asc' }, { order: 'asc' }],
+      select: {
+        id: true,
+        name: true,
+        program: true,
+        order: true,
+        kyuDan: true,
+        katas: {
+          orderBy: { order: 'asc' },
+          select: {
+            kata: { select: { id: true, name: true, category: true, repetitionsCount: true, movementsCount: true } },
+          },
+        },
+      },
+    }),
+    db.technique.findMany({
+      where: { ...schoolFilter, beltRankKatas: { none: {} } },
+      orderBy: [{ category: 'asc' }, { name: 'asc' }],
+      select: { id: true, name: true, category: true, repetitionsCount: true, movementsCount: true },
+    }),
+  ])
+
+  const availableTechniqueGroups: StudentPracticeGradeGroup[] = grades.map((grade) => ({
+    key: grade.id,
+    label: grade.name,
+    program: grade.program,
+    order: grade.order,
+    kyuDan: grade.kyuDan,
+    techniques: grade.katas.map(({ kata }) => techniqueOption(kata)),
+  }))
+
+  if (looseTechniques.length > 0) {
+    availableTechniqueGroups.push({
+      key: 'other',
+      label: 'Otras técnicas',
+      program: null,
+      order: Number.MAX_SAFE_INTEGER,
+      kyuDan: null,
+      techniques: looseTechniques.map(techniqueOption),
+    })
+  }
 
   return {
     summary: {
@@ -294,13 +367,7 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
       attendancePercent,
     },
     records,
-    availableTechniques: student.techniques.map(({ practiceRepetitions, technique }) => ({
-      id: technique.id,
-      name: technique.name,
-      category: technique.category,
-      targetRepetitions: targetRepetitionsFor(technique),
-      practiceRepetitions,
-    })),
+    availableTechniqueGroups,
   }
 }
 

@@ -240,6 +240,7 @@ export async function getInstructorAttendanceBoard(userId: string): Promise<Inst
           repetitions: true,
           place: true,
           studentTechnique: { select: { technique: { select: { name: true } } } },
+          technique: { select: { name: true } },
         },
       },
     },
@@ -260,7 +261,7 @@ export async function getInstructorAttendanceBoard(userId: string): Promise<Inst
     className: attendance.session?.class.name ?? attendance.class?.name ?? null,
     sessionId: attendance.sessionId,
     practiceLogs: attendance.practiceLogs.map((log) => ({
-      techniqueName: log.studentTechnique.technique.name,
+      techniqueName: log.studentTechnique?.technique.name ?? log.technique?.name ?? 'Técnica',
       repetitions: log.repetitions,
       place: log.place,
     })),

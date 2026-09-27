@@ -16,7 +16,8 @@ import {
   Trash2,
   X,
 } from 'lucide-react'
-import type { AttendanceRecord, PracticePlace, StudentAttendancePunchData } from '@/types/dashboard'
+import type { AttendanceRecord, PracticePlace, StudentAttendancePunchData, StudentPracticeGradeGroup } from '@/types/dashboard'
+import { formatDateTime } from '@/lib/format/datetime'
 
 interface StudentAttendancePunchProps {
   data: StudentAttendancePunchData
@@ -30,6 +31,17 @@ const SESSION_OPTIONS = [
   { value: 'seminar', label: 'Seminario / Especial' },
   { value: 'other', label: 'Otro' },
 ]
+
+const PROGRAM_LABELS: Record<'ADULT' | 'YOUTH', string> = {
+  ADULT: 'Adultos',
+  YOUTH: 'Niños',
+}
+
+function gradeGroupLabel(group: StudentPracticeGradeGroup): string {
+  const programPrefix = group.program ? `${PROGRAM_LABELS[group.program]} · ` : ''
+  const kyuSuffix = group.kyuDan ? ` (${group.kyuDan})` : ''
+  return `${programPrefix}${group.label}${kyuSuffix}`
+}
 
 const STATUS_LABELS: Record<'CONFIRMED' | 'PENDING' | 'REJECTED' | 'JUSTIFIED', string> = {
   CONFIRMED: 'Confirmada',
@@ -70,7 +82,6 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
   const [editSessionType, setEditSessionType] = useState<string>('class')
   const [editNotes, setEditNotes] = useState<string>('')
 
-  const formatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })
   const quickHours = [1.0, 1.5, 2.0, 2.5]
 
   const visiblePracticeLines = practiceLines
@@ -278,7 +289,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
             </div>
           </div>
 
-          {data.availableTechniques.length > 0 && (
+          {data.availableTechniqueGroups.some((group) => group.techniques.length > 0) && (
             <div className="rounded-lg border border-edge bg-surface-1 p-3.5">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-ink-2">
@@ -292,7 +303,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                   <Plus className="size-3.5" aria-hidden="true" />Añadir
                 </button>
               </div>
-              <p className="mt-1 text-[11px] text-ink-4">Opcional. Registra cuántas repeticiones hiciste por técnica, en el dojo o fuera. No afecta tu examen de grado. ¿Falta una técnica? Pídele a tu sensei que la asigne a tu expediente.</p>
+              <p className="mt-1 text-[11px] text-ink-4">Opcional. Registra cuántas repeticiones hiciste por técnica, en el dojo o fuera. Puedes elegir cualquier técnica del programa, incluso de otro nivel. No afecta tu examen de grado.</p>
               {practiceLines.length > 0 && (
                 <div className="mt-3 space-y-2">
                   {practiceLines.map((line, index) => (
@@ -303,9 +314,18 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                         value={line.techniqueId}
                       >
                         <option value="">Selecciona técnica</option>
-                        {data.availableTechniques.map((technique) => (
-                          <option key={technique.id} value={technique.id}>{technique.category}: {technique.name}</option>
-                        ))}
+                        {data.availableTechniqueGroups.map((group) => {
+                          if (group.techniques.length === 0) return null
+                          return (
+                            <optgroup key={group.key} label={gradeGroupLabel(group)}>
+                              {group.techniques.map((technique) => (
+                                <option key={technique.id} value={technique.id}>
+                                  {technique.name}{technique.assigned ? ` · ${technique.practiceRepetitions} rep.` : ''}
+                                </option>
+                              ))}
+                            </optgroup>
+                          )
+                        })}
                       </select>
                       <input
                         className="w-24 rounded-md border border-edge-strong bg-surface-2 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
@@ -398,7 +418,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                     </div>
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-mono text-sm font-bold text-ink">{formatter.format(new Date(record.date))}</span>
+                        <span className="font-mono text-sm font-bold text-ink">{formatDateTime(record.date)}</span>
                         <span className="rounded bg-surface-3 px-2 py-0.5 font-mono text-xs text-ink-2">{record.hoursTrained}h</span>
                         <span className="text-xs font-medium text-ink-2">{sessionLabel(record.sessionType)}</span>
                       </div>

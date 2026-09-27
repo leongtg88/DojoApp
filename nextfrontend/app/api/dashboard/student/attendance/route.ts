@@ -139,7 +139,7 @@ export async function POST(request: Request) {
   let practiceWarning: string | null = null
   if (practiceLines.length > 0) {
     try {
-      const registered = await registerPracticeLogs(
+      const practiceResult = await registerPracticeLogs(
         student.id,
         practiceLines.map((line) => ({
           techniqueId: line.techniqueId,
@@ -150,8 +150,8 @@ export async function POST(request: Request) {
           date: punchDate,
         })),
       )
-      if (registered === 0) {
-        practiceWarning = 'No se pudo registrar las repeticiones (técnicas no asignadas al expediente).'
+      if (practiceResult.invalid > 0) {
+        practiceWarning = 'Algunas repeticiones no se registraron porque la técnica no pertenece al catálogo de la escuela.'
       }
     } catch (error) {
       console.error('Error registrando repeticiones del punch:', error)

@@ -27,10 +27,10 @@ export function StudentDashboardOverview({ summary, kataSummary }: StudentDashbo
                 <NextClassCard classes={upcomingClasses} studentId={profile.id} />
             </div>
             <div className="mt-5">
-                <StudentBirthdayCard dateOfBirth={profile.dateOfBirth} />
+                <StudentMetricsGrid attendance={attendance} techniques={techniques} grado={kataSummary?.grado ?? null} />
             </div>
             <div className="mt-5">
-                <StudentMetricsGrid attendance={attendance} techniques={techniques} grado={kataSummary?.grado ?? null} />
+                <StudentBirthdayCard dateOfBirth={profile.dateOfBirth} />
             </div>
             <div className="mt-5">
                 <FocusTechniquesList techniques={techniques} studentId={profile.id} />

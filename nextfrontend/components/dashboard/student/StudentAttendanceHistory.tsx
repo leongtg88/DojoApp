@@ -1,19 +1,12 @@
 import { CalendarCheck2, CircleX } from 'lucide-react'
 import type { StudentAttendanceRecord } from '@/types/dashboard'
+import { formatDateTime } from '@/lib/format/datetime'
 
 interface StudentAttendanceHistoryProps {
     records: StudentAttendanceRecord[]
 }
 
 export function StudentAttendanceHistory({ records }: StudentAttendanceHistoryProps) {
-    const formatter = new Intl.DateTimeFormat('es-DO', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-    })
-
     return (
         <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
             <p className="text-sm font-semibold uppercase tracking-wide text-accent">Mi asistencia</p>
@@ -38,7 +31,7 @@ export function StudentAttendanceHistory({ records }: StudentAttendanceHistoryPr
                                     )}
                                     <div className="min-w-0">
                                         <p className="truncate text-sm font-semibold text-ink">{record.className}</p>
-                                        <p className="mt-1 text-xs text-ink-3">{formatter.format(new Date(record.date))}</p>
+                                        <p className="mt-1 text-xs text-ink-3">{formatDateTime(record.date)}</p>
                                         {record.notes && <p className="mt-2 text-sm text-ink-2">{record.notes}</p>}
                                     </div>
                                 </div>

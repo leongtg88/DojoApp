@@ -661,6 +661,7 @@ export async function getAdminAttendance(userId: string): Promise<AdminAttendanc
           repetitions: true,
           place: true,
           studentTechnique: { select: { technique: { select: { name: true } } } },
+          technique: { select: { name: true } },
         },
       },
     },
@@ -679,7 +680,7 @@ export async function getAdminAttendance(userId: string): Promise<AdminAttendanc
     confirmedByName: record.confirmedBy?.name ?? null,
     notes: record.notes,
     practiceLogs: record.practiceLogs.map((log) => ({
-      techniqueName: log.studentTechnique.technique.name,
+      techniqueName: log.studentTechnique?.technique.name ?? log.technique?.name ?? 'Técnica',
       repetitions: log.repetitions,
       place: log.place,
     })),
@@ -705,6 +706,7 @@ export async function getAdminAttendanceBoard(userId: string): Promise<Instructo
           repetitions: true,
           place: true,
           studentTechnique: { select: { technique: { select: { name: true } } } },
+          technique: { select: { name: true } },
         },
       },
     },
@@ -723,7 +725,7 @@ export async function getAdminAttendanceBoard(userId: string): Promise<Instructo
     notes: attendance.notes,
     punchedAt: attendance.punchedAt.toISOString(),
     practiceLogs: attendance.practiceLogs.map((log) => ({
-      techniqueName: log.studentTechnique.technique.name,
+      techniqueName: log.studentTechnique?.technique.name ?? log.technique?.name ?? 'Técnica',
       repetitions: log.repetitions,
       place: log.place,
     })),

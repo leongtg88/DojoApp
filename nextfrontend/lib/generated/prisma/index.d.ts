@@ -4506,6 +4506,7 @@ export namespace Prisma {
     attendances: number
     achievements: number
     techniques: number
+    techniquePracticeLogs: number
     fitnessReports: number
     classEnrollments: number
     rankHistory: number
@@ -4520,6 +4521,7 @@ export namespace Prisma {
     attendances?: boolean | StudentCountOutputTypeCountAttendancesArgs
     achievements?: boolean | StudentCountOutputTypeCountAchievementsArgs
     techniques?: boolean | StudentCountOutputTypeCountTechniquesArgs
+    techniquePracticeLogs?: boolean | StudentCountOutputTypeCountTechniquePracticeLogsArgs
     fitnessReports?: boolean | StudentCountOutputTypeCountFitnessReportsArgs
     classEnrollments?: boolean | StudentCountOutputTypeCountClassEnrollmentsArgs
     rankHistory?: boolean | StudentCountOutputTypeCountRankHistoryArgs
@@ -4572,6 +4574,13 @@ export namespace Prisma {
    */
   export type StudentCountOutputTypeCountTechniquesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StudentTechniqueWhereInput
+  }
+
+  /**
+   * StudentCountOutputType without action
+   */
+  export type StudentCountOutputTypeCountTechniquePracticeLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TechniquePracticeLogWhereInput
   }
 
   /**
@@ -4745,12 +4754,14 @@ export namespace Prisma {
     bunkaiApplications: number
     beltRankKatas: number
     students: number
+    practiceLogs: number
   }
 
   export type TechniqueCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bunkaiApplications?: boolean | TechniqueCountOutputTypeCountBunkaiApplicationsArgs
     beltRankKatas?: boolean | TechniqueCountOutputTypeCountBeltRankKatasArgs
     students?: boolean | TechniqueCountOutputTypeCountStudentsArgs
+    practiceLogs?: boolean | TechniqueCountOutputTypeCountPracticeLogsArgs
   }
 
   // Custom InputTypes
@@ -4783,6 +4794,13 @@ export namespace Prisma {
    */
   export type TechniqueCountOutputTypeCountStudentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StudentTechniqueWhereInput
+  }
+
+  /**
+   * TechniqueCountOutputType without action
+   */
+  export type TechniqueCountOutputTypeCountPracticeLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TechniquePracticeLogWhereInput
   }
 
 
@@ -13955,6 +13973,7 @@ export namespace Prisma {
     attendances?: boolean | Student$attendancesArgs<ExtArgs>
     achievements?: boolean | Student$achievementsArgs<ExtArgs>
     techniques?: boolean | Student$techniquesArgs<ExtArgs>
+    techniquePracticeLogs?: boolean | Student$techniquePracticeLogsArgs<ExtArgs>
     fitnessReports?: boolean | Student$fitnessReportsArgs<ExtArgs>
     classEnrollments?: boolean | Student$classEnrollmentsArgs<ExtArgs>
     rankHistory?: boolean | Student$rankHistoryArgs<ExtArgs>
@@ -14086,6 +14105,7 @@ export namespace Prisma {
     attendances?: boolean | Student$attendancesArgs<ExtArgs>
     achievements?: boolean | Student$achievementsArgs<ExtArgs>
     techniques?: boolean | Student$techniquesArgs<ExtArgs>
+    techniquePracticeLogs?: boolean | Student$techniquePracticeLogsArgs<ExtArgs>
     fitnessReports?: boolean | Student$fitnessReportsArgs<ExtArgs>
     classEnrollments?: boolean | Student$classEnrollmentsArgs<ExtArgs>
     rankHistory?: boolean | Student$rankHistoryArgs<ExtArgs>
@@ -14126,6 +14146,7 @@ export namespace Prisma {
       attendances: Prisma.$AttendancePayload<ExtArgs>[]
       achievements: Prisma.$StudentAchievementPayload<ExtArgs>[]
       techniques: Prisma.$StudentTechniquePayload<ExtArgs>[]
+      techniquePracticeLogs: Prisma.$TechniquePracticeLogPayload<ExtArgs>[]
       fitnessReports: Prisma.$FitnessReportPayload<ExtArgs>[]
       classEnrollments: Prisma.$ClassEnrollmentPayload<ExtArgs>[]
       rankHistory: Prisma.$StudentRankHistoryPayload<ExtArgs>[]
@@ -14569,6 +14590,7 @@ export namespace Prisma {
     attendances<T extends Student$attendancesArgs<ExtArgs> = {}>(args?: Subset<T, Student$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     achievements<T extends Student$achievementsArgs<ExtArgs> = {}>(args?: Subset<T, Student$achievementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentAchievementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     techniques<T extends Student$techniquesArgs<ExtArgs> = {}>(args?: Subset<T, Student$techniquesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentTechniquePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    techniquePracticeLogs<T extends Student$techniquePracticeLogsArgs<ExtArgs> = {}>(args?: Subset<T, Student$techniquePracticeLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     fitnessReports<T extends Student$fitnessReportsArgs<ExtArgs> = {}>(args?: Subset<T, Student$fitnessReportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FitnessReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     classEnrollments<T extends Student$classEnrollmentsArgs<ExtArgs> = {}>(args?: Subset<T, Student$classEnrollmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClassEnrollmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     rankHistory<T extends Student$rankHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Student$rankHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentRankHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -15228,6 +15250,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StudentTechniqueScalarFieldEnum | StudentTechniqueScalarFieldEnum[]
+  }
+
+  /**
+   * Student.techniquePracticeLogs
+   */
+  export type Student$techniquePracticeLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogInclude<ExtArgs> | null
+    where?: TechniquePracticeLogWhereInput
+    orderBy?: TechniquePracticeLogOrderByWithRelationInput | TechniquePracticeLogOrderByWithRelationInput[]
+    cursor?: TechniquePracticeLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TechniquePracticeLogScalarFieldEnum | TechniquePracticeLogScalarFieldEnum[]
   }
 
   /**
@@ -24221,6 +24267,7 @@ export namespace Prisma {
     school?: boolean | Technique$schoolArgs<ExtArgs>
     beltRankKatas?: boolean | Technique$beltRankKatasArgs<ExtArgs>
     students?: boolean | Technique$studentsArgs<ExtArgs>
+    practiceLogs?: boolean | Technique$practiceLogsArgs<ExtArgs>
     _count?: boolean | TechniqueCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["technique"]>
 
@@ -24310,6 +24357,7 @@ export namespace Prisma {
     school?: boolean | Technique$schoolArgs<ExtArgs>
     beltRankKatas?: boolean | Technique$beltRankKatasArgs<ExtArgs>
     students?: boolean | Technique$studentsArgs<ExtArgs>
+    practiceLogs?: boolean | Technique$practiceLogsArgs<ExtArgs>
     _count?: boolean | TechniqueCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TechniqueIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -24329,6 +24377,7 @@ export namespace Prisma {
       school: Prisma.$SchoolPayload<ExtArgs> | null
       beltRankKatas: Prisma.$BeltRankKataPayload<ExtArgs>[]
       students: Prisma.$StudentTechniquePayload<ExtArgs>[]
+      practiceLogs: Prisma.$TechniquePracticeLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -24752,6 +24801,7 @@ export namespace Prisma {
     school<T extends Technique$schoolArgs<ExtArgs> = {}>(args?: Subset<T, Technique$schoolArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     beltRankKatas<T extends Technique$beltRankKatasArgs<ExtArgs> = {}>(args?: Subset<T, Technique$beltRankKatasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BeltRankKataPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     students<T extends Technique$studentsArgs<ExtArgs> = {}>(args?: Subset<T, Technique$studentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentTechniquePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    practiceLogs<T extends Technique$practiceLogsArgs<ExtArgs> = {}>(args?: Subset<T, Technique$practiceLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -25311,6 +25361,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StudentTechniqueScalarFieldEnum | StudentTechniqueScalarFieldEnum[]
+  }
+
+  /**
+   * Technique.practiceLogs
+   */
+  export type Technique$practiceLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TechniquePracticeLog
+     */
+    select?: TechniquePracticeLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TechniquePracticeLog
+     */
+    omit?: TechniquePracticeLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniquePracticeLogInclude<ExtArgs> | null
+    where?: TechniquePracticeLogWhereInput
+    orderBy?: TechniquePracticeLogOrderByWithRelationInput | TechniquePracticeLogOrderByWithRelationInput[]
+    cursor?: TechniquePracticeLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TechniquePracticeLogScalarFieldEnum | TechniquePracticeLogScalarFieldEnum[]
   }
 
   /**
@@ -26635,6 +26709,8 @@ export namespace Prisma {
   export type TechniquePracticeLogMinAggregateOutputType = {
     id: string | null
     studentTechniqueId: string | null
+    studentId: string | null
+    techniqueId: string | null
     date: Date | null
     repetitions: number | null
     place: $Enums.PracticePlace | null
@@ -26646,6 +26722,8 @@ export namespace Prisma {
   export type TechniquePracticeLogMaxAggregateOutputType = {
     id: string | null
     studentTechniqueId: string | null
+    studentId: string | null
+    techniqueId: string | null
     date: Date | null
     repetitions: number | null
     place: $Enums.PracticePlace | null
@@ -26657,6 +26735,8 @@ export namespace Prisma {
   export type TechniquePracticeLogCountAggregateOutputType = {
     id: number
     studentTechniqueId: number
+    studentId: number
+    techniqueId: number
     date: number
     repetitions: number
     place: number
@@ -26678,6 +26758,8 @@ export namespace Prisma {
   export type TechniquePracticeLogMinAggregateInputType = {
     id?: true
     studentTechniqueId?: true
+    studentId?: true
+    techniqueId?: true
     date?: true
     repetitions?: true
     place?: true
@@ -26689,6 +26771,8 @@ export namespace Prisma {
   export type TechniquePracticeLogMaxAggregateInputType = {
     id?: true
     studentTechniqueId?: true
+    studentId?: true
+    techniqueId?: true
     date?: true
     repetitions?: true
     place?: true
@@ -26700,6 +26784,8 @@ export namespace Prisma {
   export type TechniquePracticeLogCountAggregateInputType = {
     id?: true
     studentTechniqueId?: true
+    studentId?: true
+    techniqueId?: true
     date?: true
     repetitions?: true
     place?: true
@@ -26797,7 +26883,9 @@ export namespace Prisma {
 
   export type TechniquePracticeLogGroupByOutputType = {
     id: string
-    studentTechniqueId: string
+    studentTechniqueId: string | null
+    studentId: string | null
+    techniqueId: string | null
     date: Date
     repetitions: number
     place: $Enums.PracticePlace
@@ -26828,45 +26916,59 @@ export namespace Prisma {
   export type TechniquePracticeLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     studentTechniqueId?: boolean
+    studentId?: boolean
+    techniqueId?: boolean
     date?: boolean
     repetitions?: boolean
     place?: boolean
     notes?: boolean
     attendanceId?: boolean
     createdAt?: boolean
-    studentTechnique?: boolean | StudentTechniqueDefaultArgs<ExtArgs>
+    studentTechnique?: boolean | TechniquePracticeLog$studentTechniqueArgs<ExtArgs>
+    student?: boolean | TechniquePracticeLog$studentArgs<ExtArgs>
+    technique?: boolean | TechniquePracticeLog$techniqueArgs<ExtArgs>
     attendance?: boolean | TechniquePracticeLog$attendanceArgs<ExtArgs>
   }, ExtArgs["result"]["techniquePracticeLog"]>
 
   export type TechniquePracticeLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     studentTechniqueId?: boolean
+    studentId?: boolean
+    techniqueId?: boolean
     date?: boolean
     repetitions?: boolean
     place?: boolean
     notes?: boolean
     attendanceId?: boolean
     createdAt?: boolean
-    studentTechnique?: boolean | StudentTechniqueDefaultArgs<ExtArgs>
+    studentTechnique?: boolean | TechniquePracticeLog$studentTechniqueArgs<ExtArgs>
+    student?: boolean | TechniquePracticeLog$studentArgs<ExtArgs>
+    technique?: boolean | TechniquePracticeLog$techniqueArgs<ExtArgs>
     attendance?: boolean | TechniquePracticeLog$attendanceArgs<ExtArgs>
   }, ExtArgs["result"]["techniquePracticeLog"]>
 
   export type TechniquePracticeLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     studentTechniqueId?: boolean
+    studentId?: boolean
+    techniqueId?: boolean
     date?: boolean
     repetitions?: boolean
     place?: boolean
     notes?: boolean
     attendanceId?: boolean
     createdAt?: boolean
-    studentTechnique?: boolean | StudentTechniqueDefaultArgs<ExtArgs>
+    studentTechnique?: boolean | TechniquePracticeLog$studentTechniqueArgs<ExtArgs>
+    student?: boolean | TechniquePracticeLog$studentArgs<ExtArgs>
+    technique?: boolean | TechniquePracticeLog$techniqueArgs<ExtArgs>
     attendance?: boolean | TechniquePracticeLog$attendanceArgs<ExtArgs>
   }, ExtArgs["result"]["techniquePracticeLog"]>
 
   export type TechniquePracticeLogSelectScalar = {
     id?: boolean
     studentTechniqueId?: boolean
+    studentId?: boolean
+    techniqueId?: boolean
     date?: boolean
     repetitions?: boolean
     place?: boolean
@@ -26875,29 +26977,39 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type TechniquePracticeLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "studentTechniqueId" | "date" | "repetitions" | "place" | "notes" | "attendanceId" | "createdAt", ExtArgs["result"]["techniquePracticeLog"]>
+  export type TechniquePracticeLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "studentTechniqueId" | "studentId" | "techniqueId" | "date" | "repetitions" | "place" | "notes" | "attendanceId" | "createdAt", ExtArgs["result"]["techniquePracticeLog"]>
   export type TechniquePracticeLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    studentTechnique?: boolean | StudentTechniqueDefaultArgs<ExtArgs>
+    studentTechnique?: boolean | TechniquePracticeLog$studentTechniqueArgs<ExtArgs>
+    student?: boolean | TechniquePracticeLog$studentArgs<ExtArgs>
+    technique?: boolean | TechniquePracticeLog$techniqueArgs<ExtArgs>
     attendance?: boolean | TechniquePracticeLog$attendanceArgs<ExtArgs>
   }
   export type TechniquePracticeLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    studentTechnique?: boolean | StudentTechniqueDefaultArgs<ExtArgs>
+    studentTechnique?: boolean | TechniquePracticeLog$studentTechniqueArgs<ExtArgs>
+    student?: boolean | TechniquePracticeLog$studentArgs<ExtArgs>
+    technique?: boolean | TechniquePracticeLog$techniqueArgs<ExtArgs>
     attendance?: boolean | TechniquePracticeLog$attendanceArgs<ExtArgs>
   }
   export type TechniquePracticeLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    studentTechnique?: boolean | StudentTechniqueDefaultArgs<ExtArgs>
+    studentTechnique?: boolean | TechniquePracticeLog$studentTechniqueArgs<ExtArgs>
+    student?: boolean | TechniquePracticeLog$studentArgs<ExtArgs>
+    technique?: boolean | TechniquePracticeLog$techniqueArgs<ExtArgs>
     attendance?: boolean | TechniquePracticeLog$attendanceArgs<ExtArgs>
   }
 
   export type $TechniquePracticeLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "TechniquePracticeLog"
     objects: {
-      studentTechnique: Prisma.$StudentTechniquePayload<ExtArgs>
+      studentTechnique: Prisma.$StudentTechniquePayload<ExtArgs> | null
+      student: Prisma.$StudentPayload<ExtArgs> | null
+      technique: Prisma.$TechniquePayload<ExtArgs> | null
       attendance: Prisma.$AttendancePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      studentTechniqueId: string
+      studentTechniqueId: string | null
+      studentId: string | null
+      techniqueId: string | null
       date: Date
       repetitions: number
       place: $Enums.PracticePlace
@@ -27298,7 +27410,9 @@ export namespace Prisma {
    */
   export interface Prisma__TechniquePracticeLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    studentTechnique<T extends StudentTechniqueDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudentTechniqueDefaultArgs<ExtArgs>>): Prisma__StudentTechniqueClient<$Result.GetResult<Prisma.$StudentTechniquePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    studentTechnique<T extends TechniquePracticeLog$studentTechniqueArgs<ExtArgs> = {}>(args?: Subset<T, TechniquePracticeLog$studentTechniqueArgs<ExtArgs>>): Prisma__StudentTechniqueClient<$Result.GetResult<Prisma.$StudentTechniquePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    student<T extends TechniquePracticeLog$studentArgs<ExtArgs> = {}>(args?: Subset<T, TechniquePracticeLog$studentArgs<ExtArgs>>): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    technique<T extends TechniquePracticeLog$techniqueArgs<ExtArgs> = {}>(args?: Subset<T, TechniquePracticeLog$techniqueArgs<ExtArgs>>): Prisma__TechniqueClient<$Result.GetResult<Prisma.$TechniquePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     attendance<T extends TechniquePracticeLog$attendanceArgs<ExtArgs> = {}>(args?: Subset<T, TechniquePracticeLog$attendanceArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -27331,6 +27445,8 @@ export namespace Prisma {
   interface TechniquePracticeLogFieldRefs {
     readonly id: FieldRef<"TechniquePracticeLog", 'String'>
     readonly studentTechniqueId: FieldRef<"TechniquePracticeLog", 'String'>
+    readonly studentId: FieldRef<"TechniquePracticeLog", 'String'>
+    readonly techniqueId: FieldRef<"TechniquePracticeLog", 'String'>
     readonly date: FieldRef<"TechniquePracticeLog", 'DateTime'>
     readonly repetitions: FieldRef<"TechniquePracticeLog", 'Int'>
     readonly place: FieldRef<"TechniquePracticeLog", 'PracticePlace'>
@@ -27735,6 +27851,63 @@ export namespace Prisma {
      * Limit how many TechniquePracticeLogs to delete.
      */
     limit?: number
+  }
+
+  /**
+   * TechniquePracticeLog.studentTechnique
+   */
+  export type TechniquePracticeLog$studentTechniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StudentTechnique
+     */
+    select?: StudentTechniqueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StudentTechnique
+     */
+    omit?: StudentTechniqueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentTechniqueInclude<ExtArgs> | null
+    where?: StudentTechniqueWhereInput
+  }
+
+  /**
+   * TechniquePracticeLog.student
+   */
+  export type TechniquePracticeLog$studentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Student
+     */
+    select?: StudentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Student
+     */
+    omit?: StudentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StudentInclude<ExtArgs> | null
+    where?: StudentWhereInput
+  }
+
+  /**
+   * TechniquePracticeLog.technique
+   */
+  export type TechniquePracticeLog$techniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Technique
+     */
+    select?: TechniqueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Technique
+     */
+    omit?: TechniqueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TechniqueInclude<ExtArgs> | null
+    where?: TechniqueWhereInput
   }
 
   /**
@@ -46617,6 +46790,8 @@ export namespace Prisma {
   export const TechniquePracticeLogScalarFieldEnum: {
     id: 'id',
     studentTechniqueId: 'studentTechniqueId',
+    studentId: 'studentId',
+    techniqueId: 'techniqueId',
     date: 'date',
     repetitions: 'repetitions',
     place: 'place',
@@ -47859,6 +48034,7 @@ export namespace Prisma {
     attendances?: AttendanceListRelationFilter
     achievements?: StudentAchievementListRelationFilter
     techniques?: StudentTechniqueListRelationFilter
+    techniquePracticeLogs?: TechniquePracticeLogListRelationFilter
     fitnessReports?: FitnessReportListRelationFilter
     classEnrollments?: ClassEnrollmentListRelationFilter
     rankHistory?: StudentRankHistoryListRelationFilter
@@ -47909,6 +48085,7 @@ export namespace Prisma {
     attendances?: AttendanceOrderByRelationAggregateInput
     achievements?: StudentAchievementOrderByRelationAggregateInput
     techniques?: StudentTechniqueOrderByRelationAggregateInput
+    techniquePracticeLogs?: TechniquePracticeLogOrderByRelationAggregateInput
     fitnessReports?: FitnessReportOrderByRelationAggregateInput
     classEnrollments?: ClassEnrollmentOrderByRelationAggregateInput
     rankHistory?: StudentRankHistoryOrderByRelationAggregateInput
@@ -47962,6 +48139,7 @@ export namespace Prisma {
     attendances?: AttendanceListRelationFilter
     achievements?: StudentAchievementListRelationFilter
     techniques?: StudentTechniqueListRelationFilter
+    techniquePracticeLogs?: TechniquePracticeLogListRelationFilter
     fitnessReports?: FitnessReportListRelationFilter
     classEnrollments?: ClassEnrollmentListRelationFilter
     rankHistory?: StudentRankHistoryListRelationFilter
@@ -48701,6 +48879,7 @@ export namespace Prisma {
     school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
     beltRankKatas?: BeltRankKataListRelationFilter
     students?: StudentTechniqueListRelationFilter
+    practiceLogs?: TechniquePracticeLogListRelationFilter
   }
 
   export type TechniqueOrderByWithRelationInput = {
@@ -48731,6 +48910,7 @@ export namespace Prisma {
     school?: SchoolOrderByWithRelationInput
     beltRankKatas?: BeltRankKataOrderByRelationAggregateInput
     students?: StudentTechniqueOrderByRelationAggregateInput
+    practiceLogs?: TechniquePracticeLogOrderByRelationAggregateInput
   }
 
   export type TechniqueWhereUniqueInput = Prisma.AtLeast<{
@@ -48764,6 +48944,7 @@ export namespace Prisma {
     school?: XOR<SchoolNullableScalarRelationFilter, SchoolWhereInput> | null
     beltRankKatas?: BeltRankKataListRelationFilter
     students?: StudentTechniqueListRelationFilter
+    practiceLogs?: TechniquePracticeLogListRelationFilter
   }, "id">
 
   export type TechniqueOrderByWithAggregationInput = {
@@ -48934,20 +49115,26 @@ export namespace Prisma {
     OR?: TechniquePracticeLogWhereInput[]
     NOT?: TechniquePracticeLogWhereInput | TechniquePracticeLogWhereInput[]
     id?: StringFilter<"TechniquePracticeLog"> | string
-    studentTechniqueId?: StringFilter<"TechniquePracticeLog"> | string
+    studentTechniqueId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    studentId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    techniqueId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
     date?: DateTimeFilter<"TechniquePracticeLog"> | Date | string
     repetitions?: IntFilter<"TechniquePracticeLog"> | number
     place?: EnumPracticePlaceFilter<"TechniquePracticeLog"> | $Enums.PracticePlace
     notes?: StringNullableFilter<"TechniquePracticeLog"> | string | null
     attendanceId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
     createdAt?: DateTimeFilter<"TechniquePracticeLog"> | Date | string
-    studentTechnique?: XOR<StudentTechniqueScalarRelationFilter, StudentTechniqueWhereInput>
+    studentTechnique?: XOR<StudentTechniqueNullableScalarRelationFilter, StudentTechniqueWhereInput> | null
+    student?: XOR<StudentNullableScalarRelationFilter, StudentWhereInput> | null
+    technique?: XOR<TechniqueNullableScalarRelationFilter, TechniqueWhereInput> | null
     attendance?: XOR<AttendanceNullableScalarRelationFilter, AttendanceWhereInput> | null
   }
 
   export type TechniquePracticeLogOrderByWithRelationInput = {
     id?: SortOrder
-    studentTechniqueId?: SortOrder
+    studentTechniqueId?: SortOrderInput | SortOrder
+    studentId?: SortOrderInput | SortOrder
+    techniqueId?: SortOrderInput | SortOrder
     date?: SortOrder
     repetitions?: SortOrder
     place?: SortOrder
@@ -48955,6 +49142,8 @@ export namespace Prisma {
     attendanceId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     studentTechnique?: StudentTechniqueOrderByWithRelationInput
+    student?: StudentOrderByWithRelationInput
+    technique?: TechniqueOrderByWithRelationInput
     attendance?: AttendanceOrderByWithRelationInput
   }
 
@@ -48963,20 +49152,26 @@ export namespace Prisma {
     AND?: TechniquePracticeLogWhereInput | TechniquePracticeLogWhereInput[]
     OR?: TechniquePracticeLogWhereInput[]
     NOT?: TechniquePracticeLogWhereInput | TechniquePracticeLogWhereInput[]
-    studentTechniqueId?: StringFilter<"TechniquePracticeLog"> | string
+    studentTechniqueId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    studentId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    techniqueId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
     date?: DateTimeFilter<"TechniquePracticeLog"> | Date | string
     repetitions?: IntFilter<"TechniquePracticeLog"> | number
     place?: EnumPracticePlaceFilter<"TechniquePracticeLog"> | $Enums.PracticePlace
     notes?: StringNullableFilter<"TechniquePracticeLog"> | string | null
     attendanceId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
     createdAt?: DateTimeFilter<"TechniquePracticeLog"> | Date | string
-    studentTechnique?: XOR<StudentTechniqueScalarRelationFilter, StudentTechniqueWhereInput>
+    studentTechnique?: XOR<StudentTechniqueNullableScalarRelationFilter, StudentTechniqueWhereInput> | null
+    student?: XOR<StudentNullableScalarRelationFilter, StudentWhereInput> | null
+    technique?: XOR<TechniqueNullableScalarRelationFilter, TechniqueWhereInput> | null
     attendance?: XOR<AttendanceNullableScalarRelationFilter, AttendanceWhereInput> | null
   }, "id">
 
   export type TechniquePracticeLogOrderByWithAggregationInput = {
     id?: SortOrder
-    studentTechniqueId?: SortOrder
+    studentTechniqueId?: SortOrderInput | SortOrder
+    studentId?: SortOrderInput | SortOrder
+    techniqueId?: SortOrderInput | SortOrder
     date?: SortOrder
     repetitions?: SortOrder
     place?: SortOrder
@@ -48995,7 +49190,9 @@ export namespace Prisma {
     OR?: TechniquePracticeLogScalarWhereWithAggregatesInput[]
     NOT?: TechniquePracticeLogScalarWhereWithAggregatesInput | TechniquePracticeLogScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"TechniquePracticeLog"> | string
-    studentTechniqueId?: StringWithAggregatesFilter<"TechniquePracticeLog"> | string
+    studentTechniqueId?: StringNullableWithAggregatesFilter<"TechniquePracticeLog"> | string | null
+    studentId?: StringNullableWithAggregatesFilter<"TechniquePracticeLog"> | string | null
+    techniqueId?: StringNullableWithAggregatesFilter<"TechniquePracticeLog"> | string | null
     date?: DateTimeWithAggregatesFilter<"TechniquePracticeLog"> | Date | string
     repetitions?: IntWithAggregatesFilter<"TechniquePracticeLog"> | number
     place?: EnumPracticePlaceWithAggregatesFilter<"TechniquePracticeLog"> | $Enums.PracticePlace
@@ -50909,6 +51106,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -50953,6 +51151,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -50997,6 +51196,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -51041,6 +51241,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -51832,6 +52033,7 @@ export namespace Prisma {
     school?: SchoolCreateNestedOneWithoutTechniquesInput
     beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
     students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutTechniqueInput
   }
 
   export type TechniqueUncheckedCreateInput = {
@@ -51860,6 +52062,7 @@ export namespace Prisma {
     bunkaiApplications?: TechniqueUncheckedCreateNestedManyWithoutOriginKataInput
     beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
     students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutTechniqueInput
   }
 
   export type TechniqueUpdateInput = {
@@ -51888,6 +52091,7 @@ export namespace Prisma {
     school?: SchoolUpdateOneWithoutTechniquesNestedInput
     beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutTechniqueNestedInput
   }
 
   export type TechniqueUncheckedUpdateInput = {
@@ -51916,6 +52120,7 @@ export namespace Prisma {
     bunkaiApplications?: TechniqueUncheckedUpdateManyWithoutOriginKataNestedInput
     beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutTechniqueNestedInput
   }
 
   export type TechniqueCreateManyInput = {
@@ -52108,13 +52313,17 @@ export namespace Prisma {
     place?: $Enums.PracticePlace
     notes?: string | null
     createdAt?: Date | string
-    studentTechnique: StudentTechniqueCreateNestedOneWithoutPracticeLogsInput
+    studentTechnique?: StudentTechniqueCreateNestedOneWithoutPracticeLogsInput
+    student?: StudentCreateNestedOneWithoutTechniquePracticeLogsInput
+    technique?: TechniqueCreateNestedOneWithoutPracticeLogsInput
     attendance?: AttendanceCreateNestedOneWithoutPracticeLogsInput
   }
 
   export type TechniquePracticeLogUncheckedCreateInput = {
     id?: string
-    studentTechniqueId: string
+    studentTechniqueId?: string | null
+    studentId?: string | null
+    techniqueId?: string | null
     date?: Date | string
     repetitions: number
     place?: $Enums.PracticePlace
@@ -52130,13 +52339,17 @@ export namespace Prisma {
     place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    studentTechnique?: StudentTechniqueUpdateOneRequiredWithoutPracticeLogsNestedInput
+    studentTechnique?: StudentTechniqueUpdateOneWithoutPracticeLogsNestedInput
+    student?: StudentUpdateOneWithoutTechniquePracticeLogsNestedInput
+    technique?: TechniqueUpdateOneWithoutPracticeLogsNestedInput
     attendance?: AttendanceUpdateOneWithoutPracticeLogsNestedInput
   }
 
   export type TechniquePracticeLogUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    studentTechniqueId?: StringFieldUpdateOperationsInput | string
+    studentTechniqueId?: NullableStringFieldUpdateOperationsInput | string | null
+    studentId?: NullableStringFieldUpdateOperationsInput | string | null
+    techniqueId?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     repetitions?: IntFieldUpdateOperationsInput | number
     place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
@@ -52147,7 +52360,9 @@ export namespace Prisma {
 
   export type TechniquePracticeLogCreateManyInput = {
     id?: string
-    studentTechniqueId: string
+    studentTechniqueId?: string | null
+    studentId?: string | null
+    techniqueId?: string | null
     date?: Date | string
     repetitions: number
     place?: $Enums.PracticePlace
@@ -52167,7 +52382,9 @@ export namespace Prisma {
 
   export type TechniquePracticeLogUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    studentTechniqueId?: StringFieldUpdateOperationsInput | string
+    studentTechniqueId?: NullableStringFieldUpdateOperationsInput | string | null
+    studentId?: NullableStringFieldUpdateOperationsInput | string | null
+    techniqueId?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     repetitions?: IntFieldUpdateOperationsInput | number
     place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
@@ -54244,6 +54461,12 @@ export namespace Prisma {
     isNot?: BranchWhereInput
   }
 
+  export type TechniquePracticeLogListRelationFilter = {
+    every?: TechniquePracticeLogWhereInput
+    some?: TechniquePracticeLogWhereInput
+    none?: TechniquePracticeLogWhereInput
+  }
+
   export type ClassEnrollmentListRelationFilter = {
     every?: ClassEnrollmentWhereInput
     some?: ClassEnrollmentWhereInput
@@ -54259,6 +54482,10 @@ export namespace Prisma {
     every?: StudentDocumentWhereInput
     some?: StudentDocumentWhereInput
     none?: StudentDocumentWhereInput
+  }
+
+  export type TechniquePracticeLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type ClassEnrollmentOrderByRelationAggregateInput = {
@@ -55095,16 +55322,6 @@ export namespace Prisma {
     isNot?: TechniqueEvaluationWhereInput | null
   }
 
-  export type TechniquePracticeLogListRelationFilter = {
-    every?: TechniquePracticeLogWhereInput
-    some?: TechniquePracticeLogWhereInput
-    none?: TechniquePracticeLogWhereInput
-  }
-
-  export type TechniquePracticeLogOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type StudentTechniqueStudentIdTechniqueIdCompoundUniqueInput = {
     studentId: string
     techniqueId: string
@@ -55188,9 +55405,9 @@ export namespace Prisma {
     not?: NestedEnumPracticePlaceFilter<$PrismaModel> | $Enums.PracticePlace
   }
 
-  export type StudentTechniqueScalarRelationFilter = {
-    is?: StudentTechniqueWhereInput
-    isNot?: StudentTechniqueWhereInput
+  export type StudentTechniqueNullableScalarRelationFilter = {
+    is?: StudentTechniqueWhereInput | null
+    isNot?: StudentTechniqueWhereInput | null
   }
 
   export type AttendanceNullableScalarRelationFilter = {
@@ -55201,6 +55418,8 @@ export namespace Prisma {
   export type TechniquePracticeLogCountOrderByAggregateInput = {
     id?: SortOrder
     studentTechniqueId?: SortOrder
+    studentId?: SortOrder
+    techniqueId?: SortOrder
     date?: SortOrder
     repetitions?: SortOrder
     place?: SortOrder
@@ -55216,6 +55435,8 @@ export namespace Prisma {
   export type TechniquePracticeLogMaxOrderByAggregateInput = {
     id?: SortOrder
     studentTechniqueId?: SortOrder
+    studentId?: SortOrder
+    techniqueId?: SortOrder
     date?: SortOrder
     repetitions?: SortOrder
     place?: SortOrder
@@ -55227,6 +55448,8 @@ export namespace Prisma {
   export type TechniquePracticeLogMinOrderByAggregateInput = {
     id?: SortOrder
     studentTechniqueId?: SortOrder
+    studentId?: SortOrder
+    techniqueId?: SortOrder
     date?: SortOrder
     repetitions?: SortOrder
     place?: SortOrder
@@ -55247,6 +55470,11 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPracticePlaceFilter<$PrismaModel>
     _max?: NestedEnumPracticePlaceFilter<$PrismaModel>
+  }
+
+  export type StudentTechniqueScalarRelationFilter = {
+    is?: StudentTechniqueWhereInput
+    isNot?: StudentTechniqueWhereInput
   }
 
   export type TechniqueEvaluationCountOrderByAggregateInput = {
@@ -57674,6 +57902,13 @@ export namespace Prisma {
     connect?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
   }
 
+  export type TechniquePracticeLogCreateNestedManyWithoutStudentInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutStudentInput, TechniquePracticeLogUncheckedCreateWithoutStudentInput> | TechniquePracticeLogCreateWithoutStudentInput[] | TechniquePracticeLogUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutStudentInput | TechniquePracticeLogCreateOrConnectWithoutStudentInput[]
+    createMany?: TechniquePracticeLogCreateManyStudentInputEnvelope
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+  }
+
   export type FitnessReportCreateNestedManyWithoutStudentInput = {
     create?: XOR<FitnessReportCreateWithoutStudentInput, FitnessReportUncheckedCreateWithoutStudentInput> | FitnessReportCreateWithoutStudentInput[] | FitnessReportUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: FitnessReportCreateOrConnectWithoutStudentInput | FitnessReportCreateOrConnectWithoutStudentInput[]
@@ -57755,6 +57990,13 @@ export namespace Prisma {
     connectOrCreate?: StudentTechniqueCreateOrConnectWithoutStudentInput | StudentTechniqueCreateOrConnectWithoutStudentInput[]
     createMany?: StudentTechniqueCreateManyStudentInputEnvelope
     connect?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
+  }
+
+  export type TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutStudentInput, TechniquePracticeLogUncheckedCreateWithoutStudentInput> | TechniquePracticeLogCreateWithoutStudentInput[] | TechniquePracticeLogUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutStudentInput | TechniquePracticeLogCreateOrConnectWithoutStudentInput[]
+    createMany?: TechniquePracticeLogCreateManyStudentInputEnvelope
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
   }
 
   export type FitnessReportUncheckedCreateNestedManyWithoutStudentInput = {
@@ -57947,6 +58189,20 @@ export namespace Prisma {
     deleteMany?: StudentTechniqueScalarWhereInput | StudentTechniqueScalarWhereInput[]
   }
 
+  export type TechniquePracticeLogUpdateManyWithoutStudentNestedInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutStudentInput, TechniquePracticeLogUncheckedCreateWithoutStudentInput> | TechniquePracticeLogCreateWithoutStudentInput[] | TechniquePracticeLogUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutStudentInput | TechniquePracticeLogCreateOrConnectWithoutStudentInput[]
+    upsert?: TechniquePracticeLogUpsertWithWhereUniqueWithoutStudentInput | TechniquePracticeLogUpsertWithWhereUniqueWithoutStudentInput[]
+    createMany?: TechniquePracticeLogCreateManyStudentInputEnvelope
+    set?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    disconnect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    delete?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    update?: TechniquePracticeLogUpdateWithWhereUniqueWithoutStudentInput | TechniquePracticeLogUpdateWithWhereUniqueWithoutStudentInput[]
+    updateMany?: TechniquePracticeLogUpdateManyWithWhereWithoutStudentInput | TechniquePracticeLogUpdateManyWithWhereWithoutStudentInput[]
+    deleteMany?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
+  }
+
   export type FitnessReportUpdateManyWithoutStudentNestedInput = {
     create?: XOR<FitnessReportCreateWithoutStudentInput, FitnessReportUncheckedCreateWithoutStudentInput> | FitnessReportCreateWithoutStudentInput[] | FitnessReportUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: FitnessReportCreateOrConnectWithoutStudentInput | FitnessReportCreateOrConnectWithoutStudentInput[]
@@ -58109,6 +58365,20 @@ export namespace Prisma {
     update?: StudentTechniqueUpdateWithWhereUniqueWithoutStudentInput | StudentTechniqueUpdateWithWhereUniqueWithoutStudentInput[]
     updateMany?: StudentTechniqueUpdateManyWithWhereWithoutStudentInput | StudentTechniqueUpdateManyWithWhereWithoutStudentInput[]
     deleteMany?: StudentTechniqueScalarWhereInput | StudentTechniqueScalarWhereInput[]
+  }
+
+  export type TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutStudentInput, TechniquePracticeLogUncheckedCreateWithoutStudentInput> | TechniquePracticeLogCreateWithoutStudentInput[] | TechniquePracticeLogUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutStudentInput | TechniquePracticeLogCreateOrConnectWithoutStudentInput[]
+    upsert?: TechniquePracticeLogUpsertWithWhereUniqueWithoutStudentInput | TechniquePracticeLogUpsertWithWhereUniqueWithoutStudentInput[]
+    createMany?: TechniquePracticeLogCreateManyStudentInputEnvelope
+    set?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    disconnect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    delete?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    update?: TechniquePracticeLogUpdateWithWhereUniqueWithoutStudentInput | TechniquePracticeLogUpdateWithWhereUniqueWithoutStudentInput[]
+    updateMany?: TechniquePracticeLogUpdateManyWithWhereWithoutStudentInput | TechniquePracticeLogUpdateManyWithWhereWithoutStudentInput[]
+    deleteMany?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
   }
 
   export type FitnessReportUncheckedUpdateManyWithoutStudentNestedInput = {
@@ -58764,6 +59034,13 @@ export namespace Prisma {
     connect?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
   }
 
+  export type TechniquePracticeLogCreateNestedManyWithoutTechniqueInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutTechniqueInput, TechniquePracticeLogUncheckedCreateWithoutTechniqueInput> | TechniquePracticeLogCreateWithoutTechniqueInput[] | TechniquePracticeLogUncheckedCreateWithoutTechniqueInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutTechniqueInput | TechniquePracticeLogCreateOrConnectWithoutTechniqueInput[]
+    createMany?: TechniquePracticeLogCreateManyTechniqueInputEnvelope
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+  }
+
   export type TechniqueUncheckedCreateNestedManyWithoutOriginKataInput = {
     create?: XOR<TechniqueCreateWithoutOriginKataInput, TechniqueUncheckedCreateWithoutOriginKataInput> | TechniqueCreateWithoutOriginKataInput[] | TechniqueUncheckedCreateWithoutOriginKataInput[]
     connectOrCreate?: TechniqueCreateOrConnectWithoutOriginKataInput | TechniqueCreateOrConnectWithoutOriginKataInput[]
@@ -58783,6 +59060,13 @@ export namespace Prisma {
     connectOrCreate?: StudentTechniqueCreateOrConnectWithoutTechniqueInput | StudentTechniqueCreateOrConnectWithoutTechniqueInput[]
     createMany?: StudentTechniqueCreateManyTechniqueInputEnvelope
     connect?: StudentTechniqueWhereUniqueInput | StudentTechniqueWhereUniqueInput[]
+  }
+
+  export type TechniquePracticeLogUncheckedCreateNestedManyWithoutTechniqueInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutTechniqueInput, TechniquePracticeLogUncheckedCreateWithoutTechniqueInput> | TechniquePracticeLogCreateWithoutTechniqueInput[] | TechniquePracticeLogUncheckedCreateWithoutTechniqueInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutTechniqueInput | TechniquePracticeLogCreateOrConnectWithoutTechniqueInput[]
+    createMany?: TechniquePracticeLogCreateManyTechniqueInputEnvelope
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
   }
 
   export type EnumTechniqueCategoryFieldUpdateOperationsInput = {
@@ -58851,6 +59135,20 @@ export namespace Prisma {
     deleteMany?: StudentTechniqueScalarWhereInput | StudentTechniqueScalarWhereInput[]
   }
 
+  export type TechniquePracticeLogUpdateManyWithoutTechniqueNestedInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutTechniqueInput, TechniquePracticeLogUncheckedCreateWithoutTechniqueInput> | TechniquePracticeLogCreateWithoutTechniqueInput[] | TechniquePracticeLogUncheckedCreateWithoutTechniqueInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutTechniqueInput | TechniquePracticeLogCreateOrConnectWithoutTechniqueInput[]
+    upsert?: TechniquePracticeLogUpsertWithWhereUniqueWithoutTechniqueInput | TechniquePracticeLogUpsertWithWhereUniqueWithoutTechniqueInput[]
+    createMany?: TechniquePracticeLogCreateManyTechniqueInputEnvelope
+    set?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    disconnect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    delete?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    update?: TechniquePracticeLogUpdateWithWhereUniqueWithoutTechniqueInput | TechniquePracticeLogUpdateWithWhereUniqueWithoutTechniqueInput[]
+    updateMany?: TechniquePracticeLogUpdateManyWithWhereWithoutTechniqueInput | TechniquePracticeLogUpdateManyWithWhereWithoutTechniqueInput[]
+    deleteMany?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
+  }
+
   export type TechniqueUncheckedUpdateManyWithoutOriginKataNestedInput = {
     create?: XOR<TechniqueCreateWithoutOriginKataInput, TechniqueUncheckedCreateWithoutOriginKataInput> | TechniqueCreateWithoutOriginKataInput[] | TechniqueUncheckedCreateWithoutOriginKataInput[]
     connectOrCreate?: TechniqueCreateOrConnectWithoutOriginKataInput | TechniqueCreateOrConnectWithoutOriginKataInput[]
@@ -58891,6 +59189,20 @@ export namespace Prisma {
     update?: StudentTechniqueUpdateWithWhereUniqueWithoutTechniqueInput | StudentTechniqueUpdateWithWhereUniqueWithoutTechniqueInput[]
     updateMany?: StudentTechniqueUpdateManyWithWhereWithoutTechniqueInput | StudentTechniqueUpdateManyWithWhereWithoutTechniqueInput[]
     deleteMany?: StudentTechniqueScalarWhereInput | StudentTechniqueScalarWhereInput[]
+  }
+
+  export type TechniquePracticeLogUncheckedUpdateManyWithoutTechniqueNestedInput = {
+    create?: XOR<TechniquePracticeLogCreateWithoutTechniqueInput, TechniquePracticeLogUncheckedCreateWithoutTechniqueInput> | TechniquePracticeLogCreateWithoutTechniqueInput[] | TechniquePracticeLogUncheckedCreateWithoutTechniqueInput[]
+    connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutTechniqueInput | TechniquePracticeLogCreateOrConnectWithoutTechniqueInput[]
+    upsert?: TechniquePracticeLogUpsertWithWhereUniqueWithoutTechniqueInput | TechniquePracticeLogUpsertWithWhereUniqueWithoutTechniqueInput[]
+    createMany?: TechniquePracticeLogCreateManyTechniqueInputEnvelope
+    set?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    disconnect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    delete?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    connect?: TechniquePracticeLogWhereUniqueInput | TechniquePracticeLogWhereUniqueInput[]
+    update?: TechniquePracticeLogUpdateWithWhereUniqueWithoutTechniqueInput | TechniquePracticeLogUpdateWithWhereUniqueWithoutTechniqueInput[]
+    updateMany?: TechniquePracticeLogUpdateManyWithWhereWithoutTechniqueInput | TechniquePracticeLogUpdateManyWithWhereWithoutTechniqueInput[]
+    deleteMany?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
   }
 
   export type StudentCreateNestedOneWithoutTechniquesInput = {
@@ -59025,6 +59337,18 @@ export namespace Prisma {
     connect?: StudentTechniqueWhereUniqueInput
   }
 
+  export type StudentCreateNestedOneWithoutTechniquePracticeLogsInput = {
+    create?: XOR<StudentCreateWithoutTechniquePracticeLogsInput, StudentUncheckedCreateWithoutTechniquePracticeLogsInput>
+    connectOrCreate?: StudentCreateOrConnectWithoutTechniquePracticeLogsInput
+    connect?: StudentWhereUniqueInput
+  }
+
+  export type TechniqueCreateNestedOneWithoutPracticeLogsInput = {
+    create?: XOR<TechniqueCreateWithoutPracticeLogsInput, TechniqueUncheckedCreateWithoutPracticeLogsInput>
+    connectOrCreate?: TechniqueCreateOrConnectWithoutPracticeLogsInput
+    connect?: TechniqueWhereUniqueInput
+  }
+
   export type AttendanceCreateNestedOneWithoutPracticeLogsInput = {
     create?: XOR<AttendanceCreateWithoutPracticeLogsInput, AttendanceUncheckedCreateWithoutPracticeLogsInput>
     connectOrCreate?: AttendanceCreateOrConnectWithoutPracticeLogsInput
@@ -59035,12 +59359,34 @@ export namespace Prisma {
     set?: $Enums.PracticePlace
   }
 
-  export type StudentTechniqueUpdateOneRequiredWithoutPracticeLogsNestedInput = {
+  export type StudentTechniqueUpdateOneWithoutPracticeLogsNestedInput = {
     create?: XOR<StudentTechniqueCreateWithoutPracticeLogsInput, StudentTechniqueUncheckedCreateWithoutPracticeLogsInput>
     connectOrCreate?: StudentTechniqueCreateOrConnectWithoutPracticeLogsInput
     upsert?: StudentTechniqueUpsertWithoutPracticeLogsInput
+    disconnect?: StudentTechniqueWhereInput | boolean
+    delete?: StudentTechniqueWhereInput | boolean
     connect?: StudentTechniqueWhereUniqueInput
     update?: XOR<XOR<StudentTechniqueUpdateToOneWithWhereWithoutPracticeLogsInput, StudentTechniqueUpdateWithoutPracticeLogsInput>, StudentTechniqueUncheckedUpdateWithoutPracticeLogsInput>
+  }
+
+  export type StudentUpdateOneWithoutTechniquePracticeLogsNestedInput = {
+    create?: XOR<StudentCreateWithoutTechniquePracticeLogsInput, StudentUncheckedCreateWithoutTechniquePracticeLogsInput>
+    connectOrCreate?: StudentCreateOrConnectWithoutTechniquePracticeLogsInput
+    upsert?: StudentUpsertWithoutTechniquePracticeLogsInput
+    disconnect?: StudentWhereInput | boolean
+    delete?: StudentWhereInput | boolean
+    connect?: StudentWhereUniqueInput
+    update?: XOR<XOR<StudentUpdateToOneWithWhereWithoutTechniquePracticeLogsInput, StudentUpdateWithoutTechniquePracticeLogsInput>, StudentUncheckedUpdateWithoutTechniquePracticeLogsInput>
+  }
+
+  export type TechniqueUpdateOneWithoutPracticeLogsNestedInput = {
+    create?: XOR<TechniqueCreateWithoutPracticeLogsInput, TechniqueUncheckedCreateWithoutPracticeLogsInput>
+    connectOrCreate?: TechniqueCreateOrConnectWithoutPracticeLogsInput
+    upsert?: TechniqueUpsertWithoutPracticeLogsInput
+    disconnect?: TechniqueWhereInput | boolean
+    delete?: TechniqueWhereInput | boolean
+    connect?: TechniqueWhereUniqueInput
+    update?: XOR<XOR<TechniqueUpdateToOneWithWhereWithoutPracticeLogsInput, TechniqueUpdateWithoutPracticeLogsInput>, TechniqueUncheckedUpdateWithoutPracticeLogsInput>
   }
 
   export type AttendanceUpdateOneWithoutPracticeLogsNestedInput = {
@@ -60553,6 +60899,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -60596,6 +60943,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -60748,6 +61096,7 @@ export namespace Prisma {
     bunkaiApplications?: TechniqueCreateNestedManyWithoutOriginKataInput
     beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
     students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutTechniqueInput
   }
 
   export type TechniqueUncheckedCreateWithoutSchoolInput = {
@@ -60775,6 +61124,7 @@ export namespace Prisma {
     bunkaiApplications?: TechniqueUncheckedCreateNestedManyWithoutOriginKataInput
     beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
     students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutTechniqueInput
   }
 
   export type TechniqueCreateOrConnectWithoutSchoolInput = {
@@ -61545,6 +61895,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -61588,6 +61939,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -61953,6 +62305,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -61996,6 +62349,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -62066,6 +62420,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -62109,6 +62464,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -62718,6 +63074,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -62761,6 +63118,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -63501,6 +63859,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -63544,6 +63903,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -63670,6 +64030,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -63713,6 +64074,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -64422,6 +64784,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TechniquePracticeLogCreateWithoutStudentInput = {
+    id?: string
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    createdAt?: Date | string
+    studentTechnique?: StudentTechniqueCreateNestedOneWithoutPracticeLogsInput
+    technique?: TechniqueCreateNestedOneWithoutPracticeLogsInput
+    attendance?: AttendanceCreateNestedOneWithoutPracticeLogsInput
+  }
+
+  export type TechniquePracticeLogUncheckedCreateWithoutStudentInput = {
+    id?: string
+    studentTechniqueId?: string | null
+    techniqueId?: string | null
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    attendanceId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type TechniquePracticeLogCreateOrConnectWithoutStudentInput = {
+    where: TechniquePracticeLogWhereUniqueInput
+    create: XOR<TechniquePracticeLogCreateWithoutStudentInput, TechniquePracticeLogUncheckedCreateWithoutStudentInput>
+  }
+
+  export type TechniquePracticeLogCreateManyStudentInputEnvelope = {
+    data: TechniquePracticeLogCreateManyStudentInput | TechniquePracticeLogCreateManyStudentInput[]
+    skipDuplicates?: boolean
+  }
+
   export type FitnessReportCreateWithoutStudentInput = {
     id?: string
     report: string
@@ -65055,6 +65451,38 @@ export namespace Prisma {
     data: XOR<StudentTechniqueUpdateManyMutationInput, StudentTechniqueUncheckedUpdateManyWithoutStudentInput>
   }
 
+  export type TechniquePracticeLogUpsertWithWhereUniqueWithoutStudentInput = {
+    where: TechniquePracticeLogWhereUniqueInput
+    update: XOR<TechniquePracticeLogUpdateWithoutStudentInput, TechniquePracticeLogUncheckedUpdateWithoutStudentInput>
+    create: XOR<TechniquePracticeLogCreateWithoutStudentInput, TechniquePracticeLogUncheckedCreateWithoutStudentInput>
+  }
+
+  export type TechniquePracticeLogUpdateWithWhereUniqueWithoutStudentInput = {
+    where: TechniquePracticeLogWhereUniqueInput
+    data: XOR<TechniquePracticeLogUpdateWithoutStudentInput, TechniquePracticeLogUncheckedUpdateWithoutStudentInput>
+  }
+
+  export type TechniquePracticeLogUpdateManyWithWhereWithoutStudentInput = {
+    where: TechniquePracticeLogScalarWhereInput
+    data: XOR<TechniquePracticeLogUpdateManyMutationInput, TechniquePracticeLogUncheckedUpdateManyWithoutStudentInput>
+  }
+
+  export type TechniquePracticeLogScalarWhereInput = {
+    AND?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
+    OR?: TechniquePracticeLogScalarWhereInput[]
+    NOT?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
+    id?: StringFilter<"TechniquePracticeLog"> | string
+    studentTechniqueId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    studentId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    techniqueId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    date?: DateTimeFilter<"TechniquePracticeLog"> | Date | string
+    repetitions?: IntFilter<"TechniquePracticeLog"> | number
+    place?: EnumPracticePlaceFilter<"TechniquePracticeLog"> | $Enums.PracticePlace
+    notes?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    attendanceId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
+    createdAt?: DateTimeFilter<"TechniquePracticeLog"> | Date | string
+  }
+
   export type FitnessReportUpsertWithWhereUniqueWithoutStudentInput = {
     where: FitnessReportWhereUniqueInput
     update: XOR<FitnessReportUpdateWithoutStudentInput, FitnessReportUncheckedUpdateWithoutStudentInput>
@@ -65320,6 +65748,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -65363,6 +65792,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -65495,6 +65925,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -65538,6 +65969,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -65649,6 +66081,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -65692,6 +66125,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -65905,6 +66339,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -65948,6 +66383,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -66083,6 +66519,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -66126,6 +66563,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -66278,6 +66716,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -66321,6 +66760,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -66452,6 +66892,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -66495,6 +66936,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -66638,6 +67080,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -66681,6 +67124,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -66816,6 +67260,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -66859,6 +67304,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -67061,6 +67507,7 @@ export namespace Prisma {
     bunkaiApplications?: TechniqueCreateNestedManyWithoutOriginKataInput
     school?: SchoolCreateNestedOneWithoutTechniquesInput
     students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutTechniqueInput
   }
 
   export type TechniqueUncheckedCreateWithoutBeltRankKatasInput = {
@@ -67088,6 +67535,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     bunkaiApplications?: TechniqueUncheckedCreateNestedManyWithoutOriginKataInput
     students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutTechniqueInput
   }
 
   export type TechniqueCreateOrConnectWithoutBeltRankKatasInput = {
@@ -67190,6 +67638,7 @@ export namespace Prisma {
     bunkaiApplications?: TechniqueUpdateManyWithoutOriginKataNestedInput
     school?: SchoolUpdateOneWithoutTechniquesNestedInput
     students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutTechniqueNestedInput
   }
 
   export type TechniqueUncheckedUpdateWithoutBeltRankKatasInput = {
@@ -67217,6 +67666,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bunkaiApplications?: TechniqueUncheckedUpdateManyWithoutOriginKataNestedInput
     students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutTechniqueNestedInput
   }
 
   export type StudentCreateWithoutRankHistoryInput = {
@@ -67254,6 +67704,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
@@ -67297,6 +67748,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
@@ -67476,6 +67928,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
@@ -67519,6 +67972,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
@@ -67684,6 +68138,7 @@ export namespace Prisma {
     school?: SchoolCreateNestedOneWithoutTechniquesInput
     beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
     students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutTechniqueInput
   }
 
   export type TechniqueUncheckedCreateWithoutBunkaiApplicationsInput = {
@@ -67711,6 +68166,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
     students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutTechniqueInput
   }
 
   export type TechniqueCreateOrConnectWithoutBunkaiApplicationsInput = {
@@ -67743,6 +68199,7 @@ export namespace Prisma {
     school?: SchoolCreateNestedOneWithoutTechniquesInput
     beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
     students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutTechniqueInput
   }
 
   export type TechniqueUncheckedCreateWithoutOriginKataInput = {
@@ -67770,6 +68227,7 @@ export namespace Prisma {
     bunkaiApplications?: TechniqueUncheckedCreateNestedManyWithoutOriginKataInput
     beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
     students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutTechniqueInput
   }
 
   export type TechniqueCreateOrConnectWithoutOriginKataInput = {
@@ -67887,6 +68345,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TechniquePracticeLogCreateWithoutTechniqueInput = {
+    id?: string
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    createdAt?: Date | string
+    studentTechnique?: StudentTechniqueCreateNestedOneWithoutPracticeLogsInput
+    student?: StudentCreateNestedOneWithoutTechniquePracticeLogsInput
+    attendance?: AttendanceCreateNestedOneWithoutPracticeLogsInput
+  }
+
+  export type TechniquePracticeLogUncheckedCreateWithoutTechniqueInput = {
+    id?: string
+    studentTechniqueId?: string | null
+    studentId?: string | null
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    attendanceId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type TechniquePracticeLogCreateOrConnectWithoutTechniqueInput = {
+    where: TechniquePracticeLogWhereUniqueInput
+    create: XOR<TechniquePracticeLogCreateWithoutTechniqueInput, TechniquePracticeLogUncheckedCreateWithoutTechniqueInput>
+  }
+
+  export type TechniquePracticeLogCreateManyTechniqueInputEnvelope = {
+    data: TechniquePracticeLogCreateManyTechniqueInput | TechniquePracticeLogCreateManyTechniqueInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TechniqueUpsertWithoutBunkaiApplicationsInput = {
     update: XOR<TechniqueUpdateWithoutBunkaiApplicationsInput, TechniqueUncheckedUpdateWithoutBunkaiApplicationsInput>
     create: XOR<TechniqueCreateWithoutBunkaiApplicationsInput, TechniqueUncheckedCreateWithoutBunkaiApplicationsInput>
@@ -67923,6 +68415,7 @@ export namespace Prisma {
     school?: SchoolUpdateOneWithoutTechniquesNestedInput
     beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutTechniqueNestedInput
   }
 
   export type TechniqueUncheckedUpdateWithoutBunkaiApplicationsInput = {
@@ -67950,6 +68443,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutTechniqueNestedInput
   }
 
   export type TechniqueUpsertWithWhereUniqueWithoutOriginKataInput = {
@@ -68047,6 +68541,22 @@ export namespace Prisma {
     data: XOR<StudentTechniqueUpdateManyMutationInput, StudentTechniqueUncheckedUpdateManyWithoutTechniqueInput>
   }
 
+  export type TechniquePracticeLogUpsertWithWhereUniqueWithoutTechniqueInput = {
+    where: TechniquePracticeLogWhereUniqueInput
+    update: XOR<TechniquePracticeLogUpdateWithoutTechniqueInput, TechniquePracticeLogUncheckedUpdateWithoutTechniqueInput>
+    create: XOR<TechniquePracticeLogCreateWithoutTechniqueInput, TechniquePracticeLogUncheckedCreateWithoutTechniqueInput>
+  }
+
+  export type TechniquePracticeLogUpdateWithWhereUniqueWithoutTechniqueInput = {
+    where: TechniquePracticeLogWhereUniqueInput
+    data: XOR<TechniquePracticeLogUpdateWithoutTechniqueInput, TechniquePracticeLogUncheckedUpdateWithoutTechniqueInput>
+  }
+
+  export type TechniquePracticeLogUpdateManyWithWhereWithoutTechniqueInput = {
+    where: TechniquePracticeLogScalarWhereInput
+    data: XOR<TechniquePracticeLogUpdateManyMutationInput, TechniquePracticeLogUncheckedUpdateManyWithoutTechniqueInput>
+  }
+
   export type StudentCreateWithoutTechniquesInput = {
     id?: string
     firstName: string
@@ -68081,6 +68591,7 @@ export namespace Prisma {
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -68124,6 +68635,7 @@ export namespace Prisma {
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -68163,6 +68675,7 @@ export namespace Prisma {
     bunkaiApplications?: TechniqueCreateNestedManyWithoutOriginKataInput
     school?: SchoolCreateNestedOneWithoutTechniquesInput
     beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutTechniqueInput
   }
 
   export type TechniqueUncheckedCreateWithoutStudentsInput = {
@@ -68190,6 +68703,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     bunkaiApplications?: TechniqueUncheckedCreateNestedManyWithoutOriginKataInput
     beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutTechniqueInput
   }
 
   export type TechniqueCreateOrConnectWithoutStudentsInput = {
@@ -68296,11 +68810,15 @@ export namespace Prisma {
     place?: $Enums.PracticePlace
     notes?: string | null
     createdAt?: Date | string
+    student?: StudentCreateNestedOneWithoutTechniquePracticeLogsInput
+    technique?: TechniqueCreateNestedOneWithoutPracticeLogsInput
     attendance?: AttendanceCreateNestedOneWithoutPracticeLogsInput
   }
 
   export type TechniquePracticeLogUncheckedCreateWithoutStudentTechniqueInput = {
     id?: string
+    studentId?: string | null
+    techniqueId?: string | null
     date?: Date | string
     repetitions: number
     place?: $Enums.PracticePlace
@@ -68364,6 +68882,7 @@ export namespace Prisma {
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -68407,6 +68926,7 @@ export namespace Prisma {
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -68452,6 +68972,7 @@ export namespace Prisma {
     bunkaiApplications?: TechniqueUpdateManyWithoutOriginKataNestedInput
     school?: SchoolUpdateOneWithoutTechniquesNestedInput
     beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutTechniqueNestedInput
   }
 
   export type TechniqueUncheckedUpdateWithoutStudentsInput = {
@@ -68479,6 +69000,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bunkaiApplications?: TechniqueUncheckedUpdateManyWithoutOriginKataNestedInput
     beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutTechniqueNestedInput
   }
 
   export type UserUpsertWithoutTechniquesApprovedInput = {
@@ -68601,20 +69123,6 @@ export namespace Prisma {
     data: XOR<TechniquePracticeLogUpdateManyMutationInput, TechniquePracticeLogUncheckedUpdateManyWithoutStudentTechniqueInput>
   }
 
-  export type TechniquePracticeLogScalarWhereInput = {
-    AND?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
-    OR?: TechniquePracticeLogScalarWhereInput[]
-    NOT?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
-    id?: StringFilter<"TechniquePracticeLog"> | string
-    studentTechniqueId?: StringFilter<"TechniquePracticeLog"> | string
-    date?: DateTimeFilter<"TechniquePracticeLog"> | Date | string
-    repetitions?: IntFilter<"TechniquePracticeLog"> | number
-    place?: EnumPracticePlaceFilter<"TechniquePracticeLog"> | $Enums.PracticePlace
-    notes?: StringNullableFilter<"TechniquePracticeLog"> | string | null
-    attendanceId?: StringNullableFilter<"TechniquePracticeLog"> | string | null
-    createdAt?: DateTimeFilter<"TechniquePracticeLog"> | Date | string
-  }
-
   export type StudentTechniqueCreateWithoutPracticeLogsInput = {
     id?: string
     approved?: boolean
@@ -68650,6 +69158,160 @@ export namespace Prisma {
   export type StudentTechniqueCreateOrConnectWithoutPracticeLogsInput = {
     where: StudentTechniqueWhereUniqueInput
     create: XOR<StudentTechniqueCreateWithoutPracticeLogsInput, StudentTechniqueUncheckedCreateWithoutPracticeLogsInput>
+  }
+
+  export type StudentCreateWithoutTechniquePracticeLogsInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    gender?: $Enums.Gender | null
+    email?: string | null
+    contactPhone?: string | null
+    medicalInfo?: string | null
+    emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
+    enrollmentDate?: Date | string
+    memberNumber?: string | null
+    status?: $Enums.StudentStatus
+    currentRank?: string | null
+    photoKey?: string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planStartDate?: Date | string | null
+    scholarshipType?: $Enums.ScholarshipType
+    scholarshipNote?: string | null
+    isCompetitor?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
+    plan?: PlanCreateNestedOneWithoutStudentsInput
+    school: SchoolCreateNestedOneWithoutStudentsInput
+    branch: BranchCreateNestedOneWithoutStudentsInput
+    user?: UserCreateNestedOneWithoutStudentProfileInput
+    guardian?: UserCreateNestedOneWithoutGuardianOfStudentsInput
+    guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
+    enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
+    attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
+    techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
+    classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
+    rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
+    enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
+    invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
+    documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentUncheckedCreateWithoutTechniquePracticeLogsInput = {
+    id?: string
+    userId?: string | null
+    guardianId?: string | null
+    schoolId: string
+    branchId: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    gender?: $Enums.Gender | null
+    email?: string | null
+    contactPhone?: string | null
+    medicalInfo?: string | null
+    emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
+    enrollmentDate?: Date | string
+    memberNumber?: string | null
+    status?: $Enums.StudentStatus
+    currentRank?: string | null
+    currentRankId?: string | null
+    photoKey?: string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planId?: string | null
+    planStartDate?: Date | string | null
+    scholarshipType?: $Enums.ScholarshipType
+    scholarshipNote?: string | null
+    isCompetitor?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
+    techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
+    classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
+    rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
+    enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
+    invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
+    documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentCreateOrConnectWithoutTechniquePracticeLogsInput = {
+    where: StudentWhereUniqueInput
+    create: XOR<StudentCreateWithoutTechniquePracticeLogsInput, StudentUncheckedCreateWithoutTechniquePracticeLogsInput>
+  }
+
+  export type TechniqueCreateWithoutPracticeLogsInput = {
+    id?: string
+    name: string
+    japaneseName?: string | null
+    kanji?: string | null
+    description?: string | null
+    category?: $Enums.TechniqueCategory
+    order?: number
+    movementsCount?: number | null
+    embusen?: string | null
+    difficulty?: string | null
+    videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    originKata?: TechniqueCreateNestedOneWithoutBunkaiApplicationsInput
+    bunkaiApplications?: TechniqueCreateNestedManyWithoutOriginKataInput
+    school?: SchoolCreateNestedOneWithoutTechniquesInput
+    beltRankKatas?: BeltRankKataCreateNestedManyWithoutKataInput
+    students?: StudentTechniqueCreateNestedManyWithoutTechniqueInput
+  }
+
+  export type TechniqueUncheckedCreateWithoutPracticeLogsInput = {
+    id?: string
+    name: string
+    japaneseName?: string | null
+    kanji?: string | null
+    description?: string | null
+    category?: $Enums.TechniqueCategory
+    order?: number
+    movementsCount?: number | null
+    embusen?: string | null
+    difficulty?: string | null
+    videoUrl?: string | null
+    repetitionsCount?: number | null
+    stance?: string | null
+    level?: string | null
+    kumiteType?: string | null
+    distance?: string | null
+    role?: string | null
+    applicationType?: string | null
+    originKataId?: string | null
+    schoolId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bunkaiApplications?: TechniqueUncheckedCreateNestedManyWithoutOriginKataInput
+    beltRankKatas?: BeltRankKataUncheckedCreateNestedManyWithoutKataInput
+    students?: StudentTechniqueUncheckedCreateNestedManyWithoutTechniqueInput
+  }
+
+  export type TechniqueCreateOrConnectWithoutPracticeLogsInput = {
+    where: TechniqueWhereUniqueInput
+    create: XOR<TechniqueCreateWithoutPracticeLogsInput, TechniqueUncheckedCreateWithoutPracticeLogsInput>
   }
 
   export type AttendanceCreateWithoutPracticeLogsInput = {
@@ -68740,6 +69402,172 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     evaluation?: TechniqueEvaluationUncheckedUpdateOneWithoutStudentTechniqueNestedInput
+  }
+
+  export type StudentUpsertWithoutTechniquePracticeLogsInput = {
+    update: XOR<StudentUpdateWithoutTechniquePracticeLogsInput, StudentUncheckedUpdateWithoutTechniquePracticeLogsInput>
+    create: XOR<StudentCreateWithoutTechniquePracticeLogsInput, StudentUncheckedCreateWithoutTechniquePracticeLogsInput>
+    where?: StudentWhereInput
+  }
+
+  export type StudentUpdateToOneWithWhereWithoutTechniquePracticeLogsInput = {
+    where?: StudentWhereInput
+    data: XOR<StudentUpdateWithoutTechniquePracticeLogsInput, StudentUncheckedUpdateWithoutTechniquePracticeLogsInput>
+  }
+
+  export type StudentUpdateWithoutTechniquePracticeLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
+    currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    photoKey?: NullableStringFieldUpdateOperationsInput | string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
+    scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
+    isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
+    plan?: PlanUpdateOneWithoutStudentsNestedInput
+    school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
+    branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
+    user?: UserUpdateOneWithoutStudentProfileNestedInput
+    guardian?: UserUpdateOneWithoutGuardianOfStudentsNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
+    attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
+    techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
+    classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
+    rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
+    enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
+    invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
+    documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
+  }
+
+  export type StudentUncheckedUpdateWithoutTechniquePracticeLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    guardianId?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolId?: StringFieldUpdateOperationsInput | string
+    branchId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
+    currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
+    photoKey?: NullableStringFieldUpdateOperationsInput | string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planId?: NullableStringFieldUpdateOperationsInput | string | null
+    planStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
+    scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
+    isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+    attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
+    techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
+    classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+    rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
+    enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
+    invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
+    documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+  }
+
+  export type TechniqueUpsertWithoutPracticeLogsInput = {
+    update: XOR<TechniqueUpdateWithoutPracticeLogsInput, TechniqueUncheckedUpdateWithoutPracticeLogsInput>
+    create: XOR<TechniqueCreateWithoutPracticeLogsInput, TechniqueUncheckedCreateWithoutPracticeLogsInput>
+    where?: TechniqueWhereInput
+  }
+
+  export type TechniqueUpdateToOneWithWhereWithoutPracticeLogsInput = {
+    where?: TechniqueWhereInput
+    data: XOR<TechniqueUpdateWithoutPracticeLogsInput, TechniqueUncheckedUpdateWithoutPracticeLogsInput>
+  }
+
+  export type TechniqueUpdateWithoutPracticeLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
+    kanji?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
+    order?: IntFieldUpdateOperationsInput | number
+    movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    embusen?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableStringFieldUpdateOperationsInput | string | null
+    videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    originKata?: TechniqueUpdateOneWithoutBunkaiApplicationsNestedInput
+    bunkaiApplications?: TechniqueUpdateManyWithoutOriginKataNestedInput
+    school?: SchoolUpdateOneWithoutTechniquesNestedInput
+    beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
+    students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
+  }
+
+  export type TechniqueUncheckedUpdateWithoutPracticeLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    japaneseName?: NullableStringFieldUpdateOperationsInput | string | null
+    kanji?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
+    order?: IntFieldUpdateOperationsInput | number
+    movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    embusen?: NullableStringFieldUpdateOperationsInput | string | null
+    difficulty?: NullableStringFieldUpdateOperationsInput | string | null
+    videoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    repetitionsCount?: NullableIntFieldUpdateOperationsInput | number | null
+    stance?: NullableStringFieldUpdateOperationsInput | string | null
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    kumiteType?: NullableStringFieldUpdateOperationsInput | string | null
+    distance?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationType?: NullableStringFieldUpdateOperationsInput | string | null
+    originKataId?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bunkaiApplications?: TechniqueUncheckedUpdateManyWithoutOriginKataNestedInput
+    beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
+    students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
   }
 
   export type AttendanceUpsertWithoutPracticeLogsInput = {
@@ -69090,6 +69918,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -69133,6 +69962,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -69658,6 +70488,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
@@ -69701,6 +70532,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
@@ -69805,6 +70637,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
@@ -69848,6 +70681,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
@@ -70063,6 +70897,7 @@ export namespace Prisma {
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -70106,6 +70941,7 @@ export namespace Prisma {
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -70327,12 +71163,16 @@ export namespace Prisma {
     place?: $Enums.PracticePlace
     notes?: string | null
     createdAt?: Date | string
-    studentTechnique: StudentTechniqueCreateNestedOneWithoutPracticeLogsInput
+    studentTechnique?: StudentTechniqueCreateNestedOneWithoutPracticeLogsInput
+    student?: StudentCreateNestedOneWithoutTechniquePracticeLogsInput
+    technique?: TechniqueCreateNestedOneWithoutPracticeLogsInput
   }
 
   export type TechniquePracticeLogUncheckedCreateWithoutAttendanceInput = {
     id?: string
-    studentTechniqueId: string
+    studentTechniqueId?: string | null
+    studentId?: string | null
+    techniqueId?: string | null
     date?: Date | string
     repetitions: number
     place?: $Enums.PracticePlace
@@ -70422,6 +71262,7 @@ export namespace Prisma {
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -70465,6 +71306,7 @@ export namespace Prisma {
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -70884,6 +71726,7 @@ export namespace Prisma {
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -70927,6 +71770,7 @@ export namespace Prisma {
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -71074,6 +71918,7 @@ export namespace Prisma {
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -71117,6 +71962,7 @@ export namespace Prisma {
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -71261,6 +72107,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
@@ -71304,6 +72151,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
@@ -71430,6 +72278,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
@@ -71473,6 +72322,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
@@ -71656,6 +72506,7 @@ export namespace Prisma {
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
@@ -71699,6 +72550,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
     classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
     rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
@@ -71831,6 +72683,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -71874,6 +72727,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -72832,6 +73686,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -72875,6 +73730,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -73067,6 +73923,7 @@ export namespace Prisma {
     bunkaiApplications?: TechniqueUpdateManyWithoutOriginKataNestedInput
     beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutTechniqueNestedInput
   }
 
   export type TechniqueUncheckedUpdateWithoutSchoolInput = {
@@ -73094,6 +73951,7 @@ export namespace Prisma {
     bunkaiApplications?: TechniqueUncheckedUpdateManyWithoutOriginKataNestedInput
     beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutTechniqueNestedInput
   }
 
   export type TechniqueUncheckedUpdateManyWithoutSchoolInput = {
@@ -73503,6 +74361,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -73546,6 +74405,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -73928,6 +74788,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -73971,6 +74832,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -74534,6 +75396,18 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type TechniquePracticeLogCreateManyStudentInput = {
+    id?: string
+    studentTechniqueId?: string | null
+    techniqueId?: string | null
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    attendanceId?: string | null
+    createdAt?: Date | string
+  }
+
   export type FitnessReportCreateManyStudentInput = {
     id?: string
     report: string
@@ -74817,6 +75691,42 @@ export namespace Prisma {
     practiceRepetitions?: IntFieldUpdateOperationsInput | number
     lastPracticeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TechniquePracticeLogUpdateWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    studentTechnique?: StudentTechniqueUpdateOneWithoutPracticeLogsNestedInput
+    technique?: TechniqueUpdateOneWithoutPracticeLogsNestedInput
+    attendance?: AttendanceUpdateOneWithoutPracticeLogsNestedInput
+  }
+
+  export type TechniquePracticeLogUncheckedUpdateWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentTechniqueId?: NullableStringFieldUpdateOperationsInput | string | null
+    techniqueId?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TechniquePracticeLogUncheckedUpdateManyWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentTechniqueId?: NullableStringFieldUpdateOperationsInput | string | null
+    techniqueId?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -75329,6 +76239,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -75372,6 +76283,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -75456,6 +76368,18 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type TechniquePracticeLogCreateManyTechniqueInput = {
+    id?: string
+    studentTechniqueId?: string | null
+    studentId?: string | null
+    date?: Date | string
+    repetitions: number
+    place?: $Enums.PracticePlace
+    notes?: string | null
+    attendanceId?: string | null
+    createdAt?: Date | string
+  }
+
   export type TechniqueUpdateWithoutOriginKataInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -75481,6 +76405,7 @@ export namespace Prisma {
     school?: SchoolUpdateOneWithoutTechniquesNestedInput
     beltRankKatas?: BeltRankKataUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUpdateManyWithoutTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutTechniqueNestedInput
   }
 
   export type TechniqueUncheckedUpdateWithoutOriginKataInput = {
@@ -75508,6 +76433,7 @@ export namespace Prisma {
     bunkaiApplications?: TechniqueUncheckedUpdateManyWithoutOriginKataNestedInput
     beltRankKatas?: BeltRankKataUncheckedUpdateManyWithoutKataNestedInput
     students?: StudentTechniqueUncheckedUpdateManyWithoutTechniqueNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutTechniqueNestedInput
   }
 
   export type TechniqueUncheckedUpdateManyWithoutOriginKataInput = {
@@ -75598,8 +76524,46 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TechniquePracticeLogUpdateWithoutTechniqueInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    studentTechnique?: StudentTechniqueUpdateOneWithoutPracticeLogsNestedInput
+    student?: StudentUpdateOneWithoutTechniquePracticeLogsNestedInput
+    attendance?: AttendanceUpdateOneWithoutPracticeLogsNestedInput
+  }
+
+  export type TechniquePracticeLogUncheckedUpdateWithoutTechniqueInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentTechniqueId?: NullableStringFieldUpdateOperationsInput | string | null
+    studentId?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TechniquePracticeLogUncheckedUpdateManyWithoutTechniqueInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentTechniqueId?: NullableStringFieldUpdateOperationsInput | string | null
+    studentId?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    repetitions?: IntFieldUpdateOperationsInput | number
+    place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type TechniquePracticeLogCreateManyStudentTechniqueInput = {
     id?: string
+    studentId?: string | null
+    techniqueId?: string | null
     date?: Date | string
     repetitions: number
     place?: $Enums.PracticePlace
@@ -75615,11 +76579,15 @@ export namespace Prisma {
     place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentUpdateOneWithoutTechniquePracticeLogsNestedInput
+    technique?: TechniqueUpdateOneWithoutPracticeLogsNestedInput
     attendance?: AttendanceUpdateOneWithoutPracticeLogsNestedInput
   }
 
   export type TechniquePracticeLogUncheckedUpdateWithoutStudentTechniqueInput = {
     id?: StringFieldUpdateOperationsInput | string
+    studentId?: NullableStringFieldUpdateOperationsInput | string | null
+    techniqueId?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     repetitions?: IntFieldUpdateOperationsInput | number
     place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
@@ -75630,6 +76598,8 @@ export namespace Prisma {
 
   export type TechniquePracticeLogUncheckedUpdateManyWithoutStudentTechniqueInput = {
     id?: StringFieldUpdateOperationsInput | string
+    studentId?: NullableStringFieldUpdateOperationsInput | string | null
+    techniqueId?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     repetitions?: IntFieldUpdateOperationsInput | number
     place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
@@ -75703,6 +76673,7 @@ export namespace Prisma {
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
@@ -75746,6 +76717,7 @@ export namespace Prisma {
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
     classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
@@ -76022,7 +76994,9 @@ export namespace Prisma {
 
   export type TechniquePracticeLogCreateManyAttendanceInput = {
     id?: string
-    studentTechniqueId: string
+    studentTechniqueId?: string | null
+    studentId?: string | null
+    techniqueId?: string | null
     date?: Date | string
     repetitions: number
     place?: $Enums.PracticePlace
@@ -76037,12 +77011,16 @@ export namespace Prisma {
     place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    studentTechnique?: StudentTechniqueUpdateOneRequiredWithoutPracticeLogsNestedInput
+    studentTechnique?: StudentTechniqueUpdateOneWithoutPracticeLogsNestedInput
+    student?: StudentUpdateOneWithoutTechniquePracticeLogsNestedInput
+    technique?: TechniqueUpdateOneWithoutPracticeLogsNestedInput
   }
 
   export type TechniquePracticeLogUncheckedUpdateWithoutAttendanceInput = {
     id?: StringFieldUpdateOperationsInput | string
-    studentTechniqueId?: StringFieldUpdateOperationsInput | string
+    studentTechniqueId?: NullableStringFieldUpdateOperationsInput | string | null
+    studentId?: NullableStringFieldUpdateOperationsInput | string | null
+    techniqueId?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     repetitions?: IntFieldUpdateOperationsInput | number
     place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace
@@ -76052,7 +77030,9 @@ export namespace Prisma {
 
   export type TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceInput = {
     id?: StringFieldUpdateOperationsInput | string
-    studentTechniqueId?: StringFieldUpdateOperationsInput | string
+    studentTechniqueId?: NullableStringFieldUpdateOperationsInput | string | null
+    studentId?: NullableStringFieldUpdateOperationsInput | string | null
+    techniqueId?: NullableStringFieldUpdateOperationsInput | string | null
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     repetitions?: IntFieldUpdateOperationsInput | number
     place?: EnumPracticePlaceFieldUpdateOperationsInput | $Enums.PracticePlace

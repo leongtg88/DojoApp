@@ -25,12 +25,12 @@ export function StudentMetricsGrid({ attendance, techniques, grado = null }: Stu
     ]
 
     return (
-        <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <section className="grid grid-cols-3 gap-2 sm:gap-3">
             {cards.map(({ detail, href, icon: Icon, label, value }) => (
-                <Link className="rounded-lg border border-edge bg-surface-2 p-4 shadow-sm transition-colors hover:border-cyan-500/40 hover:bg-surface-3" href={href} key={label}>
-                    <div className="flex items-center justify-between text-accent"><Icon aria-hidden="true" className="size-4" /><span className="text-[11px] font-semibold uppercase tracking-wide">{label}</span></div>
-                    <p className="mt-5 font-display text-3xl font-extrabold text-ink">{value}</p>
-                    <p className="mt-1 text-xs text-ink-3">{detail}</p>
+                <Link className="rounded-lg border border-edge bg-surface-2 p-3 shadow-sm transition-colors hover:border-cyan-500/40 hover:bg-surface-3 sm:p-4" href={href} key={label}>
+                    <div className="flex flex-col gap-1.5 text-accent sm:flex-row sm:items-center sm:justify-between"><Icon aria-hidden="true" className="size-4 shrink-0" /><span className="text-[10px] font-semibold uppercase leading-tight tracking-wide sm:text-[11px]">{label}</span></div>
+                    <p className="mt-3 font-display text-xl font-extrabold text-ink sm:mt-5 sm:text-3xl">{value}</p>
+                    <p className="mt-1 text-[11px] text-ink-3 sm:text-xs">{detail}</p>
                 </Link>
             ))}
         </section>

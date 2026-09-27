@@ -357,6 +357,8 @@ exports.Prisma.StudentTechniqueScalarFieldEnum = {
 exports.Prisma.TechniquePracticeLogScalarFieldEnum = {
   id: 'id',
   studentTechniqueId: 'studentTechniqueId',
+  studentId: 'studentId',
+  techniqueId: 'techniqueId',
   date: 'date',
   repetitions: 'repetitions',
   place: 'place',

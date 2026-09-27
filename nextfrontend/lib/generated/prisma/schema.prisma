@@ -171,53 +171,54 @@ model InstructorProfile {
 }
 
 model Student {
-  id                  String                   @id @default(cuid())
-  userId              String?                  @unique // si el estudiante tiene cuenta propia (mayor de edad)
-  guardianId          String? // referencia al User tutor (si es menor)
-  schoolId            String
-  branchId            String
-  firstName           String
-  lastName            String
-  dateOfBirth         DateTime
-  gender              Gender? // género declarado
-  email               String? // correo de contacto para la invitación de acceso
-  contactPhone        String?
-  medicalInfo         String?
-  emergencyContact    String?
-  giSize              String? // talla de karategi (uniforme)
-  beltSize            String? // talla de cinturón
-  enrollmentDate      DateTime                 @default(now())
-  memberNumber        String?                  @unique // matrícula KYU-YYYY-NNN
-  status              StudentStatus            @default(ACTIVE)
-  currentRank         String? // nombre denormalizado del grado actual (fallback)
-  currentRankId       String? // grado actual (FK al catálogo BeltRank)
-  currentRankRef      BeltRank?                @relation("studentCurrentRank", fields: [currentRankId], references: [id], onDelete: SetNull)
-  photoKey            String? // clave en Supabase Storage
-  registrationData    Json?
-  planId              String?
-  plan                Plan?                    @relation(fields: [planId], references: [id])
-  planStartDate       DateTime? // fecha de inicio en el plan actual (para historial)
-  scholarshipType     ScholarshipType          @default(NONE)
-  scholarshipNote     String? // razón escrita de la beca
-  isCompetitor        Boolean                  @default(false)
-  school              School                   @relation(fields: [schoolId], references: [id])
-  branch              Branch                   @relation(fields: [branchId], references: [id])
-  user                User?                    @relation(fields: [userId], references: [id])
-  guardian            User?                    @relation("primaryGuardian", fields: [guardianId], references: [id])
-  guardians           GuardianStudent[]        @relation("student")
-  enrollments         Enrollment[]
-  attendances         Attendance[]
-  achievements        StudentAchievement[]
-  techniques          StudentTechnique[]
-  fitnessReports      FitnessReport[]
-  classEnrollments    ClassEnrollment[]
-  rankHistory         StudentRankHistory[]
-  enrollmentApplicant EnrollmentApplicant?
-  invitationTokens    StudentInvitationToken[]
-  documents           StudentDocument[]
-  notifications       Notification[]
-  createdAt           DateTime                 @default(now())
-  updatedAt           DateTime                 @updatedAt
+  id                    String                   @id @default(cuid())
+  userId                String?                  @unique // si el estudiante tiene cuenta propia (mayor de edad)
+  guardianId            String? // referencia al User tutor (si es menor)
+  schoolId              String
+  branchId              String
+  firstName             String
+  lastName              String
+  dateOfBirth           DateTime
+  gender                Gender? // género declarado
+  email                 String? // correo de contacto para la invitación de acceso
+  contactPhone          String?
+  medicalInfo           String?
+  emergencyContact      String?
+  giSize                String? // talla de karategi (uniforme)
+  beltSize              String? // talla de cinturón
+  enrollmentDate        DateTime                 @default(now())
+  memberNumber          String?                  @unique // matrícula KYU-YYYY-NNN
+  status                StudentStatus            @default(ACTIVE)
+  currentRank           String? // nombre denormalizado del grado actual (fallback)
+  currentRankId         String? // grado actual (FK al catálogo BeltRank)
+  currentRankRef        BeltRank?                @relation("studentCurrentRank", fields: [currentRankId], references: [id], onDelete: SetNull)
+  photoKey              String? // clave en Supabase Storage
+  registrationData      Json?
+  planId                String?
+  plan                  Plan?                    @relation(fields: [planId], references: [id])
+  planStartDate         DateTime? // fecha de inicio en el plan actual (para historial)
+  scholarshipType       ScholarshipType          @default(NONE)
+  scholarshipNote       String? // razón escrita de la beca
+  isCompetitor          Boolean                  @default(false)
+  school                School                   @relation(fields: [schoolId], references: [id])
+  branch                Branch                   @relation(fields: [branchId], references: [id])
+  user                  User?                    @relation(fields: [userId], references: [id])
+  guardian              User?                    @relation("primaryGuardian", fields: [guardianId], references: [id])
+  guardians             GuardianStudent[]        @relation("student")
+  enrollments           Enrollment[]
+  attendances           Attendance[]
+  achievements          StudentAchievement[]
+  techniques            StudentTechnique[]
+  techniquePracticeLogs TechniquePracticeLog[]
+  fitnessReports        FitnessReport[]
+  classEnrollments      ClassEnrollment[]
+  rankHistory           StudentRankHistory[]
+  enrollmentApplicant   EnrollmentApplicant?
+  invitationTokens      StudentInvitationToken[]
+  documents             StudentDocument[]
+  notifications         Notification[]
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
 
   @@index([planId])
   @@index([scholarshipType])
@@ -405,13 +406,13 @@ model StudentRankHistory {
 }
 
 model Technique {
-  id                 String             @id @default(cuid())
+  id                 String                 @id @default(cuid())
   name               String // nombre de la técnica (kata, kihon, etc.)
   japaneseName       String?
   kanji              String?
   description        String?
-  category           TechniqueCategory  @default(KIHON)
-  order              Int                @default(0) // orden pedagógico dentro del grado
+  category           TechniqueCategory      @default(KIHON)
+  order              Int                    @default(0) // orden pedagógico dentro del grado
   movementsCount     Int? // katas: movimientos; kumite: pasos/técnicas; bunkai: secuencias
   embusen            String? // patrón de desplazamiento (I, H, Cruz...) — solo kata
   difficulty         String? // Básica, Intermedia, Avanzada
@@ -425,14 +426,15 @@ model Technique {
   role               String? // kumite: rol (Aka, Ao, Tori, Uke)
   applicationType    String? // bunkai: tipo de aplicación (Defensa personal, Proyección...)
   originKataId       String? // bunkai: kata de origen
-  originKata         Technique?         @relation("BunkaiOrigin", fields: [originKataId], references: [id], onDelete: SetNull)
-  bunkaiApplications Technique[]        @relation("BunkaiOrigin")
+  originKata         Technique?             @relation("BunkaiOrigin", fields: [originKataId], references: [id], onDelete: SetNull)
+  bunkaiApplications Technique[]            @relation("BunkaiOrigin")
   schoolId           String?
-  school             School?            @relation(fields: [schoolId], references: [id])
+  school             School?                @relation(fields: [schoolId], references: [id])
   beltRankKatas      BeltRankKata[]
   students           StudentTechnique[]
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
+  practiceLogs       TechniquePracticeLog[]
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
 
   @@index([originKataId])
 }
@@ -466,18 +468,27 @@ enum PracticePlace {
 }
 
 model TechniquePracticeLog {
-  id                 String           @id @default(cuid())
-  studentTechniqueId String
-  studentTechnique   StudentTechnique @relation(fields: [studentTechniqueId], references: [id], onDelete: Cascade)
-  date               DateTime         @default(now())
+  id                 String            @id @default(cuid())
+  // Registro "asignado": cuelga del expediente del alumno y acumula repeticiones.
+  studentTechniqueId String?
+  studentTechnique   StudentTechnique? @relation(fields: [studentTechniqueId], references: [id], onDelete: Cascade)
+  // Registro libre ("diario"): técnica del catálogo practicada sin estar asignada.
+  // No altera contadores del expediente ni las métricas de grado.
+  studentId          String?
+  student            Student?          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  techniqueId        String?
+  technique          Technique?        @relation(fields: [techniqueId], references: [id], onDelete: Cascade)
+  date               DateTime          @default(now())
   repetitions        Int
-  place              PracticePlace    @default(DOJO)
+  place              PracticePlace     @default(DOJO)
   notes              String?
   attendanceId       String?
-  attendance         Attendance?      @relation(fields: [attendanceId], references: [id], onDelete: SetNull)
-  createdAt          DateTime         @default(now())
+  attendance         Attendance?       @relation(fields: [attendanceId], references: [id], onDelete: SetNull)
+  createdAt          DateTime          @default(now())
 
   @@index([studentTechniqueId, date])
+  @@index([studentId, date])
+  @@index([techniqueId])
   @@index([attendanceId])
 }
 

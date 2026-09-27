@@ -608,6 +608,18 @@ export interface StudentPracticeTechniqueOption {
 	category: TechniqueCategory
 	targetRepetitions: number | null
 	practiceRepetitions: number
+	/** true si la técnica está asignada al expediente; false = registro libre (diario). */
+	assigned: boolean
+}
+
+export interface StudentPracticeGradeGroup {
+	/** rankId del grado, o 'other' para técnicas sin grado asignado. */
+	key: string
+	label: string
+	program: 'ADULT' | 'YOUTH' | null
+	order: number
+	kyuDan: string | null
+	techniques: StudentPracticeTechniqueOption[]
 }
 
 export interface StudentAttendancePunchData {
@@ -619,7 +631,7 @@ export interface StudentAttendancePunchData {
 		attendancePercent: number
 	}
 	records: AttendanceRecord[]
-	availableTechniques: StudentPracticeTechniqueOption[]
+	availableTechniqueGroups: StudentPracticeGradeGroup[]
 }
 
 export interface InstructorAttendanceBoardData {

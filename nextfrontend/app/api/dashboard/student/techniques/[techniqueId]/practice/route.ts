@@ -40,7 +40,7 @@ export async function POST(request: Request, { params }: PracticeRouteContext) {
   }
 
   const { techniqueId } = await params
-  const created = await registerPracticeLogs(view.studentId, [
+  const { created, invalid } = await registerPracticeLogs(view.studentId, [
     {
       techniqueId,
       repetitions: result.data.repetitions,
@@ -51,7 +51,8 @@ export async function POST(request: Request, { params }: PracticeRouteContext) {
   ])
 
   if (created === 0) {
-    return NextResponse.json({ error: 'La técnica no está asignada a tu expediente' }, { status: 404 })
+    const message = invalid > 0 ? 'La técnica no pertenece al catálogo de tu escuela' : 'No se pudo registrar la práctica'
+    return NextResponse.json({ error: message }, { status: invalid > 0 ? 400 : 404 })
   }
 
   return NextResponse.json({ ok: true }, { status: 201 })
