@@ -9,7 +9,7 @@ interface FocusTechniquesListProps {
 }
 
 export function FocusTechniquesList({ techniques, studentId }: FocusTechniquesListProps) {
-    const displayTechniques = techniques.filter(({ status }) => status !== 'APPROVED').slice(0, 3)
+    const displayTechniques = techniques.filter(({ status }) => status !== 'APPROVED')
 
     return (
         <section className="rounded-lg border border-edge bg-surface-2 shadow-sm">
@@ -20,7 +20,7 @@ export function FocusTechniquesList({ techniques, studentId }: FocusTechniquesLi
             {displayTechniques.length === 0 ? (
                 <p className="px-5 py-8 text-sm text-ink-3">No tienes técnicas pendientes de práctica.</p>
             ) : (
-                <ul className="divide-y divide-edge">
+                <ul className="max-h-72 divide-y divide-edge overflow-y-auto">
                     {displayTechniques.map((technique) => (
                         <li className="px-5 py-4" key={technique.id}>
                             <div className="flex items-start justify-between gap-4">
