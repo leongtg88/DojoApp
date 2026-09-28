@@ -322,6 +322,8 @@ exports.Prisma.TechniqueScalarFieldEnum = {
   description: 'description',
   category: 'category',
   order: 'order',
+  kihonCategory: 'kihonCategory',
+  kumiteCategory: 'kumiteCategory',
   movementsCount: 'movementsCount',
   embusen: 'embusen',
   difficulty: 'difficulty',
@@ -658,6 +660,25 @@ exports.TechniqueCategory = exports.$Enums.TechniqueCategory = {
   KATA: 'KATA',
   KUMITE: 'KUMITE',
   BUNKAI: 'BUNKAI'
+};
+
+exports.KihonCategory = exports.$Enums.KihonCategory = {
+  DACHI: 'DACHI',
+  TSUKI_WAZA: 'TSUKI_WAZA',
+  UCHI_WAZA: 'UCHI_WAZA',
+  GERI_WAZA: 'GERI_WAZA',
+  UKE_WAZA: 'UKE_WAZA',
+  RENZOKU_WAZA: 'RENZOKU_WAZA',
+  IDO_KIHON: 'IDO_KIHON'
+};
+
+exports.KumiteCategory = exports.$Enums.KumiteCategory = {
+  GOHON_KUMITE: 'GOHON_KUMITE',
+  SANBON_KUMITE: 'SANBON_KUMITE',
+  IPPON_KUMITE: 'IPPON_KUMITE',
+  JIYU_IPPON_KUMITE: 'JIYU_IPPON_KUMITE',
+  JIYU_KUMITE: 'JIYU_KUMITE',
+  SHIAI_KUMITE: 'SHIAI_KUMITE'
 };
 
 exports.PracticePlace = exports.$Enums.PracticePlace = {

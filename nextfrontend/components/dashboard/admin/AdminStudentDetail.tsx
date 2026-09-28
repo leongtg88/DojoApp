@@ -198,7 +198,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 		...(nextRank?.techniques ?? []).map((technique) => technique.id),
 	])]
 
-	const availableTechniques = [...new Map(student.availableRanks.flatMap((rank) => rank.techniques).map((technique) => [technique.id, technique])).values()]
+	const availableTechniques = student.catalogTechniques
 	const assignedTechniques = student.techniques.map((entry) => ({ id: entry.technique.id, approved: entry.approved }))
 
 	return (
@@ -235,7 +235,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 						<CalendarDays className="size-4" />Plan y horarios
 					</button>
 					<button type="button" onClick={() => setIsKataAssignOpen(true)} className="inline-flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-3.5 py-2 text-xs font-semibold text-ink transition-colors hover:bg-surface-3 hover:text-ink">
-						<BookOpen className="size-4" />Asignar katas
+						<BookOpen className="size-4" />Asignar técnicas
 					</button>
 					<button type="button" onClick={() => setIsAssignRankOpen(true)} className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-3.5 py-2 text-xs font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400">
 						<Award className="size-4" />Asignar nuevo grado
@@ -355,14 +355,14 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 					<section className="rounded-lg border border-edge bg-surface-2 p-5 shadow-sm">
 						<div className="flex flex-wrap items-start justify-between gap-2">
 							<div>
-								<h2 className="font-display text-base font-bold text-ink">Katas requeridas hacia {student.nextRankName ?? 'el grado máximo'}</h2>
-								<p className="mt-1 text-xs text-ink-3">Katas del plan del grado siguiente. Las que no están en el expediente aparecen como &ldquo;sin asignar&rdquo;; usa &ldquo;Asignar katas&rdquo; para incorporarlas.</p>
+								<h2 className="font-display text-base font-bold text-ink">Técnicas requeridas hacia {student.nextRankName ?? 'el grado máximo'}</h2>
+								<p className="mt-1 text-xs text-ink-3">Técnicas del plan del grado siguiente. Las que no están en el expediente aparecen como &ldquo;sin asignar&rdquo;; usa &ldquo;Asignar técnicas&rdquo; para incorporarlas.</p>
 							</div>
 							<span className="text-xs font-semibold text-accent">{masteredTowardNext} de {requiredKatas.length} revisadas</span>
 						</div>
 						{requiredKatas.length === 0 ? (
 							<div className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 px-4 py-8 text-center text-sm text-ink-3">
-								El grado {student.nextRankName ?? 'siguiente'} no tiene katas en el plan. Configúralas en{' '}
+								El grado {student.nextRankName ?? 'siguiente'} no tiene técnicas en el plan. Configúralas en{' '}
 								<Link className="font-semibold text-accent hover:text-accent-text" href="/dashboard/admin/grados-y-katas">Grados y katas</Link>.
 							</div>
 						) : (
@@ -421,7 +421,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 						</div>
 						{student.techniques.length === 0 ? (
 							<p className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 px-4 py-8 text-center text-sm text-ink-3">
-								Sin técnicas vinculadas. Usa &ldquo;Asignar katas&rdquo; para incorporar katas al expediente.
+								Sin técnicas vinculadas. Usa &ldquo;Asignar técnicas&rdquo; para incorporar técnicas al expediente.
 							</p>
 						) : (
 							<div className="mt-4 divide-y divide-edge overflow-hidden rounded-lg border border-edge bg-surface-1">

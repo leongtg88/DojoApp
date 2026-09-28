@@ -2,16 +2,20 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { BookOpen, CheckSquare, Loader2, Pencil, Plus, Search, Shield, Swords, Trash2, X } from 'lucide-react'
+import { BookOpen, CheckSquare, Loader2, Pencil, Plus, Search, Send, Shield, Swords, Trash2, X } from 'lucide-react'
 import { TECHNIQUE_CATEGORIES, TECHNIQUE_CATEGORY_LABELS, techniqueMetaLine } from '@/lib/dashboard/technique-format'
+import { KIHON_CATEGORIES, KIHON_CATEGORY_LABELS, KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
+import { KUMITE_CATEGORIES, KUMITE_CATEGORY_LABELS, KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
 import { buildProgramKataLevels } from '@/lib/dashboard/kata-level'
 import { KataBeltChip } from '../shared/KataBeltChip'
+import { TechniqueAssignDialog } from './TechniqueAssignDialog'
 import type { Program } from '@/lib/curriculum/programs'
-import type { AdminBeltRankSummary, AdminTechniqueSummary, TechniqueCategory } from '@/types/dashboard'
+import type { AdminBeltRankSummary, AdminTechniqueSummary, KihonCategory, KumiteCategory, TechniqueCategory } from '@/types/dashboard'
 
 interface AdminTechniqueManagerProps {
     ranks: AdminBeltRankSummary[]
     techniques: AdminTechniqueSummary[]
+    selectedRank?: AdminBeltRankSummary | null
 }
 
 interface TechniqueForm {
@@ -32,6 +36,10 @@ interface TechniqueForm {
     role: string
     applicationType: string
     originKataId: string
+    rankId: string
+    assignToStudents: boolean
+    kihonCategory: KihonCategory | ''
+    kumiteCategory: KumiteCategory | ''
 }
 
 const CATEGORY_DESCRIPTIONS: Record<TechniqueCategory, string> = {
@@ -41,7 +49,7 @@ const CATEGORY_DESCRIPTIONS: Record<TechniqueCategory, string> = {
     BUNKAI: 'Aplicación práctica de una kata, con secuencias y kata de origen.',
 }
 
-function emptyTechniqueForm(category: TechniqueCategory | '' = ''): TechniqueForm {
+function emptyTechniqueForm(category: TechniqueCategory | '' = '', rankId = ''): TechniqueForm {
     return {
         name: '',
         japaneseName: '',
@@ -60,13 +68,19 @@ function emptyTechniqueForm(category: TechniqueCategory | '' = ''): TechniqueFor
         role: '',
         applicationType: '',
         originKataId: '',
+        rankId,
+        assignToStudents: false,
+        kihonCategory: category === 'KIHON' ? KIHON_CATEGORIES[0] : '',
+        kumiteCategory: category === 'KUMITE' ? KUMITE_CATEGORIES[0] : '',
     }
 }
 
-export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManagerProps) {
+export function AdminTechniqueManager({ ranks, techniques, selectedRank = null }: AdminTechniqueManagerProps) {
     const router = useRouter()
     const [searchTerm, setSearchTerm] = useState('')
     const [categoryFilter, setCategoryFilter] = useState<'ALL' | TechniqueCategory>('ALL')
+    const [kihonFilter, setKihonFilter] = useState<'ALL' | KihonCategory>('ALL')
+    const [kumiteFilter, setKumiteFilter] = useState<'ALL' | KumiteCategory>('ALL')
     const [programFilter, setProgramFilter] = useState<Program>('YOUTH')
     const [editingTechnique, setEditingTechnique] = useState<AdminTechniqueSummary | null>(null)
     const [form, setForm] = useState<TechniqueForm>(emptyTechniqueForm())
@@ -74,6 +88,8 @@ export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManag
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [notice, setNotice] = useState<string | null>(null)
+    const [assigningTechnique, setAssigningTechnique] = useState<AdminTechniqueSummary | null>(null)
 
     const kataOptions = techniques.filter(({ category }) => category === 'KATA')
     const programLevels = buildProgramKataLevels(ranks, programFilter)
@@ -81,9 +97,11 @@ export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManag
     const visibleTechniques = techniques
         .filter((technique) => {
             const matchesCategory = categoryFilter === 'ALL' || technique.category === categoryFilter
-            const matchesSearch = !normalizedSearch || [technique.name, technique.japaneseName ?? '', technique.difficulty ?? '', TECHNIQUE_CATEGORY_LABELS[technique.category]]
+            const matchesKihon = categoryFilter !== 'KIHON' || kihonFilter === 'ALL' || technique.kihonCategory === kihonFilter
+            const matchesKumite = categoryFilter !== 'KUMITE' || kumiteFilter === 'ALL' || technique.kumiteCategory === kumiteFilter
+            const matchesSearch = !normalizedSearch || [technique.name, technique.japaneseName ?? '', technique.difficulty ?? '', TECHNIQUE_CATEGORY_LABELS[technique.category], technique.kihonCategory ? KIHON_CATEGORY_SHORT_LABELS[technique.kihonCategory] : '', technique.kumiteCategory ? KUMITE_CATEGORY_SHORT_LABELS[technique.kumiteCategory] : '']
                 .some((value) => value.toLocaleLowerCase('es').includes(normalizedSearch))
-            if (!matchesCategory || !matchesSearch) return false
+            if (!matchesCategory || !matchesKihon || !matchesKumite || !matchesSearch) return false
             if (technique.category === 'KATA' && !programLevels.has(technique.id)) return false
             return true
         })
@@ -102,9 +120,10 @@ export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManag
 
     function chooseCategory(category: TechniqueCategory) {
         setEditingTechnique(null)
-        setForm(emptyTechniqueForm(category))
+        setForm(emptyTechniqueForm(category, selectedRank?.id ?? ''))
         setIsCategoryPickerOpen(false)
         setError(null)
+        setNotice(null)
         setIsDialogOpen(true)
     }
 
@@ -128,8 +147,13 @@ export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManag
             role: technique.role ?? '',
             applicationType: technique.applicationType ?? '',
             originKataId: technique.originKataId ?? '',
+            rankId: '',
+            assignToStudents: false,
+            kihonCategory: technique.kihonCategory ?? (technique.category === 'KIHON' ? KIHON_CATEGORIES[0] : ''),
+            kumiteCategory: technique.kumiteCategory ?? (technique.category === 'KUMITE' ? KUMITE_CATEGORIES[0] : ''),
         })
         setError(null)
+        setNotice(null)
         setIsDialogOpen(true)
     }
 
@@ -156,6 +180,14 @@ export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManag
             role: form.category === 'KUMITE' ? form.role.trim() || null : null,
             applicationType: form.category === 'BUNKAI' ? form.applicationType.trim() || null : null,
             originKataId: form.category === 'BUNKAI' ? form.originKataId || null : null,
+            kihonCategory: form.category === 'KIHON' ? form.kihonCategory || null : null,
+            kumiteCategory: form.category === 'KUMITE' ? form.kumiteCategory || null : null,
+            ...(editingTechnique
+                ? {}
+                : {
+                    rankId: form.rankId || null,
+                    assignToStudents: form.assignToStudents,
+                }),
         }
         const response = await fetch(
             editingTechnique ? `/api/dashboard/admin/techniques/${editingTechnique.id}` : '/api/dashboard/admin/techniques',
@@ -171,6 +203,18 @@ export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManag
             const data = await response.json().catch(() => null)
             setError(data?.error ?? 'No fue posible guardar la técnica.')
             return false
+        }
+
+        const data = await response.json().catch(() => null) as { studentsAssigned?: number; linksCreated?: number } | null
+
+        if (editingTechnique) {
+            setNotice('Técnica actualizada.')
+        } else if (data?.studentsAssigned) {
+            setNotice(`Técnica creada y asignada a ${data.studentsAssigned} ${data.studentsAssigned === 1 ? 'alumno' : 'alumnos'} del grado.`)
+        } else if (data?.linksCreated) {
+            setNotice('Técnica creada y añadida al grado seleccionado.')
+        } else {
+            setNotice('Técnica creada en el catálogo.')
         }
 
         setIsDialogOpen(false)
@@ -228,6 +272,22 @@ export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManag
                             {([['ALL', 'Todas'], ['KATA', 'Katas'], ['KIHON', 'Kihon'], ['KUMITE', 'Kumite'], ['BUNKAI', 'Bunkai']] as const).map(([category, label]) => (
                                 <button aria-pressed={categoryFilter === category} className={`shrink-0 rounded-md border px-3 py-1.5 text-xs font-bold transition-colors ${categoryFilter === category ? 'border-cyan-500/50 bg-cyan-500/15 text-accent-text' : 'border-edge-strong bg-surface-1 text-ink-3 hover:border-edge-strong'}`} key={category} onClick={() => setCategoryFilter(category)} type="button">{label}</button>
                             ))}
+                            {categoryFilter === 'KIHON' && (
+                                <div className="flex w-full shrink-0 flex-wrap items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
+                                    <button aria-pressed={kihonFilter === 'ALL'} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${kihonFilter === 'ALL' ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} onClick={() => setKihonFilter('ALL')} type="button">Todas</button>
+                                    {KIHON_CATEGORIES.map((option) => (
+                                        <button aria-pressed={kihonFilter === option} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${kihonFilter === option ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={option} onClick={() => setKihonFilter(option)} type="button">{KIHON_CATEGORY_SHORT_LABELS[option]}</button>
+                                    ))}
+                                </div>
+                            )}
+                            {categoryFilter === 'KUMITE' && (
+                                <div className="flex w-full shrink-0 flex-wrap items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
+                                    <button aria-pressed={kumiteFilter === 'ALL'} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${kumiteFilter === 'ALL' ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} onClick={() => setKumiteFilter('ALL')} type="button">Todas</button>
+                                    {KUMITE_CATEGORIES.map((option) => (
+                                        <button aria-pressed={kumiteFilter === option} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${kumiteFilter === option ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={option} onClick={() => setKumiteFilter(option)} type="button">{KUMITE_CATEGORY_SHORT_LABELS[option]}</button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
@@ -254,6 +314,7 @@ export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManag
                                         ) : null}
                                     </div>
                                     <div className="flex shrink-0 items-center gap-1.5">
+                                        <button aria-label={`Asignar ${technique.name}`} className="rounded p-1.5 text-ink-4 transition-colors hover:bg-cyan-500/10 hover:text-accent disabled:opacity-60" disabled={saving} onClick={() => setAssigningTechnique(technique)} type="button"><Send aria-hidden="true" className="size-4" /></button>
                                         <button aria-label={`Editar ${technique.name}`} className="rounded p-1.5 text-ink-4 transition-colors hover:bg-surface-3 hover:text-ink disabled:opacity-60" disabled={saving} onClick={() => openEdit(technique)} type="button"><Pencil aria-hidden="true" className="size-4" /></button>
                                         <button aria-label={`Eliminar ${technique.name}`} className="rounded p-1.5 text-ink-4 transition-colors hover:bg-red-500/10 hover:text-danger-text disabled:opacity-60" disabled={saving} onClick={() => deleteTechnique(technique)} type="button"><Trash2 aria-hidden="true" className="size-4" /></button>
                                     </div>
@@ -265,6 +326,7 @@ export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManag
             </section>
 
             {error && <p className="mt-4 text-sm font-medium text-danger-text">{error}</p>}
+            {notice && <p className="mt-4 text-sm font-medium text-ok-text">{notice}</p>}
 
             {isCategoryPickerOpen && (
                 <CategoryPickerDialog onClose={() => setIsCategoryPickerOpen(false)} onSelect={chooseCategory} />
@@ -278,7 +340,22 @@ export function AdminTechniqueManager({ ranks, techniques }: AdminTechniqueManag
                     onChange={setForm}
                     onClose={() => setIsDialogOpen(false)}
                     onSubmit={submitTechnique}
+                    ranks={ranks}
                     saving={saving}
+                    selectedRankId={selectedRank?.id ?? ''}
+                />
+            )}
+
+            {assigningTechnique && (
+                <TechniqueAssignDialog
+                    onAssigned={(summary) => {
+                        setNotice(`Técnica asignada: ${summary.gradesLinked} ${summary.gradesLinked === 1 ? 'grado enlazado' : 'grados enlazados'} · ${summary.studentsAssigned} ${summary.studentsAssigned === 1 ? 'alumno' : 'alumnos'}.`)
+                        setAssigningTechnique(null)
+                        router.refresh()
+                    }}
+                    onClose={() => setAssigningTechnique(null)}
+                    ranks={ranks}
+                    technique={assigningTechnique}
                 />
             )}
         </main>
@@ -327,7 +404,9 @@ function TechniqueDialog({
     onChange,
     onClose,
     onSubmit,
+    ranks,
     saving,
+    selectedRankId,
 }: {
     form: TechniqueForm
     isNew: boolean
@@ -335,16 +414,20 @@ function TechniqueDialog({
     onChange: (form: TechniqueForm) => void
     onClose: () => void
     onSubmit: (event: React.FormEvent<HTMLFormElement>) => Promise<unknown>
+    ranks: AdminBeltRankSummary[]
     saving: boolean
+    selectedRankId: string
 }) {
     const category = form.category as TechniqueCategory
+    const formRank = form.rankId ? ranks.find(({ id }) => id === form.rankId) ?? null : null
+    const sortedRanks = [...ranks].sort((a, b) => a.program.localeCompare(b.program) || a.order - b.order)
 
     function set<K extends keyof TechniqueForm>(key: K, value: TechniqueForm[K]) {
         onChange({ ...form, [key]: value })
     }
 
     function changeCategory(nextCategory: TechniqueCategory) {
-        onChange({ ...emptyTechniqueForm(nextCategory), name: form.name, japaneseName: form.japaneseName, videoUrl: form.videoUrl, description: form.description })
+        onChange({ ...emptyTechniqueForm(nextCategory, form.rankId), name: form.name, japaneseName: form.japaneseName, videoUrl: form.videoUrl, description: form.description, assignToStudents: form.assignToStudents })
     }
 
     return (
@@ -377,6 +460,7 @@ function TechniqueDialog({
 
                     {category === 'KIHON' && (
                         <div className="grid gap-4 sm:grid-cols-2">
+                            <label className="text-xs font-semibold text-ink-2 sm:col-span-2" htmlFor="technique-kihon-category">Categoría de Kihon<select className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="technique-kihon-category" onChange={(event) => set('kihonCategory', event.target.value as KihonCategory)} required value={form.kihonCategory}>{KIHON_CATEGORIES.map((option) => <option key={option} value={option}>{KIHON_CATEGORY_LABELS[option]}</option>)}</select></label>
                             <label className="text-xs font-semibold text-ink-2" htmlFor="technique-difficulty">Dificultad<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="technique-difficulty" onChange={(event) => set('difficulty', event.target.value)} placeholder="Baja" value={form.difficulty} /></label>
                             <label className="text-xs font-semibold text-ink-2" htmlFor="technique-repetitions">N.º de repeticiones<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="technique-repetitions" min="0" onChange={(event) => set('repetitionsCount', event.target.value)} placeholder="10" type="number" value={form.repetitionsCount} /></label>
                             <label className="text-xs font-semibold text-ink-2" htmlFor="technique-stance">Posición / Guardia<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="technique-stance" onChange={(event) => set('stance', event.target.value)} placeholder="Zenkutsu Dachi" value={form.stance} /></label>
@@ -386,7 +470,8 @@ function TechniqueDialog({
 
                     {category === 'KUMITE' && (
                         <div className="grid gap-4 sm:grid-cols-2">
-                            <label className="text-xs font-semibold text-ink-2" htmlFor="technique-kumite-type">Tipo de kumite<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="technique-kumite-type" onChange={(event) => set('kumiteType', event.target.value)} placeholder="Kihon Ippon, Jiyu Ippon, Shiai..." value={form.kumiteType} /></label>
+                            <label className="text-xs font-semibold text-ink-2 sm:col-span-2" htmlFor="technique-kumite-category">Categoría de Kumite<select className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="technique-kumite-category" onChange={(event) => set('kumiteCategory', event.target.value as KumiteCategory)} required value={form.kumiteCategory}>{KUMITE_CATEGORIES.map((option) => <option key={option} value={option}>{KUMITE_CATEGORY_LABELS[option]}</option>)}</select></label>
+                            <label className="text-xs font-semibold text-ink-2" htmlFor="technique-kumite-type">Tipo de kumite<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="technique-kumite-type" onChange={(event) => set('kumiteType', event.target.value)} placeholder="Jodan, Chudan, Mae..." value={form.kumiteType} /></label>
                             <label className="text-xs font-semibold text-ink-2" htmlFor="technique-difficulty">Dificultad<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="technique-difficulty" onChange={(event) => set('difficulty', event.target.value)} placeholder="Media" value={form.difficulty} /></label>
                             <label className="text-xs font-semibold text-ink-2" htmlFor="technique-movements">N.º de pasos / técnicas<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="technique-movements" min="0" onChange={(event) => set('movementsCount', event.target.value)} type="number" value={form.movementsCount} /></label>
                             <label className="text-xs font-semibold text-ink-2" htmlFor="technique-distance">Distancia<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="technique-distance" onChange={(event) => set('distance', event.target.value)} placeholder="Toma, Chika Ma, Ma..." value={form.distance} /></label>
@@ -405,6 +490,33 @@ function TechniqueDialog({
 
                     <label className="text-xs font-semibold text-ink-2" htmlFor="technique-video">URL de video de referencia<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="technique-video" onChange={(event) => set('videoUrl', event.target.value)} placeholder="https://..." value={form.videoUrl} /></label>
                     <label className="text-xs font-semibold text-ink-2" htmlFor="technique-desc">Descripción y requisitos<textarea className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="technique-desc" onChange={(event) => set('description', event.target.value)} placeholder={category === 'KUMITE' ? 'El atacante avanza con Oi Zuki Jodan, el defensor retrocede con Age Uke y contraataca...' : 'Detalle técnico de la ejecución'} rows={3} value={form.description} /></label>
+
+                    {isNew && (
+                        <div className="grid gap-3 rounded-lg border border-edge-strong bg-surface-1 p-4">
+                            <label className="text-xs font-semibold text-ink-2" htmlFor="technique-rank">Grado del currículo
+                                <select className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="technique-rank" onChange={(event) => set('rankId', event.target.value)} value={form.rankId}>
+                                    <option value="">Sin grado (solo catálogo)</option>
+                                    {sortedRanks.map((rank) => (
+                                        <option key={rank.id} value={rank.id}>{rank.program === 'YOUTH' ? 'Niños' : 'Adultos'} · {rank.name}{rank.kyuDan ? ` (${rank.kyuDan})` : ''}</option>
+                                    ))}
+                                </select>
+                            </label>
+                            {formRank && formRank.id === selectedRankId && (
+                                <p className="text-[11px] text-ink-4">Es el grado seleccionado en «Grados y técnicas».</p>
+                            )}
+                            <label className={`flex items-start gap-3 text-xs leading-5 ${formRank && formRank.studentCount > 0 ? 'text-ink-3' : 'text-ink-4'}`} htmlFor="technique-assign">
+                                <input checked={form.assignToStudents} className="mt-0.5 size-4 shrink-0 accent-cyan-500" disabled={!formRank || formRank.studentCount === 0} id="technique-assign" onChange={(event) => set('assignToStudents', event.target.checked)} type="checkbox" />
+                                <span>
+                                    <span className="font-semibold text-ink">Asignar a los alumnos actuales del grado</span>
+                                    {formRank
+                                        ? formRank.studentCount > 0
+                                            ? ` — ${formRank.studentCount} ${formRank.studentCount === 1 ? 'alumno activo recibirá' : 'alumnos activos recibirán'} la técnica en su expediente y una notificación.`
+                                            : ' — este grado no tiene alumnos activos.'
+                                        : ' — selecciona un grado para asignarla a sus alumnos.'}
+                                </span>
+                            </label>
+                        </div>
+                    )}
                 </div>
 
                 <div className="mt-6 flex justify-end gap-3">

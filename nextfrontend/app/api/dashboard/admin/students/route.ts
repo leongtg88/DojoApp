@@ -35,6 +35,50 @@ async function buildMemberNumber(schoolId: string): Promise<string> {
   return memberNumber
 }
 
+export async function GET() {
+  const session = await auth()
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+  }
+
+  const scope = await getAdminScope(session.user.id)
+
+  if (!scope) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+  }
+
+  const students = await db.student.findMany({
+    where: {
+      ...(scope.isSuperAdmin ? {} : { schoolId: scope.schoolId! }),
+      status: 'ACTIVE',
+    },
+    orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      currentRank: true,
+      branch: { select: { name: true } },
+      classEnrollments: {
+        where: { status: 'ACTIVE' },
+        select: { class: { select: { name: true } } },
+      },
+    },
+  })
+
+  return NextResponse.json({
+    students: students.map((student) => ({
+      id: student.id,
+      firstName: student.firstName,
+      lastName: student.lastName,
+      currentRank: student.currentRank,
+      branchName: student.branch.name,
+      activeClassNames: student.classEnrollments.map((enrollment) => enrollment.class.name),
+    })),
+  })
+}
+
 export async function POST(request: Request) {
   const session = await auth()
 

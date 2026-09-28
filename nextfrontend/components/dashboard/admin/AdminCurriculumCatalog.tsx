@@ -6,12 +6,16 @@ import { BookOpen, CheckSquare, Clock, GraduationCap, ListChecks, Loader2, MoveD
 import { RankCatalog } from '../shared/RankCatalog'
 import { ADULT_RANKS, BELT_COLORS, YOUTH_RANKS } from '@/lib/curriculum/programs'
 import { techniqueMetaLine } from '@/lib/dashboard/technique-format'
+import { KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
+import { KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
 import type { AdminBeltRankSummary, AdminTechniqueSummary, TechniqueCategory } from '@/types/dashboard'
 
 interface AdminCurriculumCatalogProps {
     ranks: AdminBeltRankSummary[]
     techniques: AdminTechniqueSummary[]
     canReorder?: boolean
+    selectedRankId: string
+    onSelectRank: (rankId: string) => void
 }
 
 const CATEGORY_LABELS: Record<TechniqueCategory, string> = {
@@ -66,10 +70,9 @@ function rankMetaFor(form: RankForm) {
     return RANK_META_BY_PROGRAM[form.program].get(orderNum) ?? null
 }
 
-export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalog, canReorder = false }: AdminCurriculumCatalogProps) {
+export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalog, canReorder = false, selectedRankId, onSelectRank }: AdminCurriculumCatalogProps) {
     const router = useRouter()
     const ranks = initialRanks
-    const [selectedRankId, setSelectedRankId] = useState(initialRanks[0]?.id ?? '')
     const [editingRank, setEditingRank] = useState<AdminBeltRankSummary | null>(null)
     const [rankForm, setRankForm] = useState<RankForm>(EMPTY_RANK_FORM)
     const [isRankDialogOpen, setIsRankDialogOpen] = useState(false)
@@ -163,17 +166,19 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
             return
         }
 
-        if (selectedRankId === rank.id) setSelectedRankId('')
+        if (selectedRankId === rank.id) {
+            onSelectRank(ranks.find((entry) => entry.id !== rank.id)?.id ?? '')
+        }
         router.refresh()
     }
 
-    async function saveKatas(rankId: string, techniqueIds: string[]) {
+    async function saveKatas(rankId: string, techniqueIds: string[], assignToStudents = false) {
         setSaving(true)
         setError(null)
         const response = await fetch(`/api/dashboard/admin/belt-ranks/${rankId}/katas`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ techniqueIds }),
+            body: JSON.stringify({ techniqueIds, assignToStudents }),
         })
         setSaving(false)
 
@@ -181,6 +186,13 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
             const data = await response.json().catch(() => null)
             setError(data?.error ?? 'No fue posible guardar las técnicas.')
             return false
+        }
+
+        const data = await response.json().catch(() => null) as { studentsAssigned?: number } | null
+        if (assignToStudents && data?.studentsAssigned) {
+            setNotice(`Técnicas asignadas a ${data.studentsAssigned} ${data.studentsAssigned === 1 ? 'alumno' : 'alumnos'} del grado.`)
+        } else {
+            setNotice(null)
         }
 
         router.refresh()
@@ -279,7 +291,7 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
                             }}
                             onEditRank={openEditRank}
                             onReorderRanks={reorderRanks}
-                            onSelectRank={setSelectedRankId}
+                            onSelectRank={onSelectRank}
                             ranks={ranks}
                             selectedRankId={selectedRankId}
                         />
@@ -367,9 +379,10 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
                     assignedTechniques={selectedRank.techniques}
                     catalogSize={catalog.length}
                     onClose={() => setIsKataDialogOpen(false)}
-                    onSave={(techniqueIds) => saveKatas(selectedRank.id, techniqueIds)}
+                    onSave={(techniqueIds, assignToStudents) => saveKatas(selectedRank.id, techniqueIds, assignToStudents)}
                     ranks={ranks}
                     saving={saving}
+                    studentCount={selectedRank.studentCount}
                     unassignedTechniques={unassignedTechniques}
                 />
             )}
@@ -471,17 +484,20 @@ function AssignKatasDialog({
     onSave,
     ranks,
     saving,
+    studentCount,
     unassignedTechniques,
 }: {
     assignedTechniques: AdminTechniqueSummary[]
     catalogSize: number
     onClose: () => void
-    onSave: (techniqueIds: string[]) => Promise<boolean>
+    onSave: (techniqueIds: string[], assignToStudents: boolean) => Promise<boolean>
     ranks: AdminBeltRankSummary[]
     saving: boolean
+    studentCount: number
     unassignedTechniques: AdminTechniqueSummary[]
 }) {
     const [selected, setSelected] = useState<Set<string>>(() => new Set(assignedTechniques.map(({ id }) => id)))
+    const [assignToStudents, setAssignToStudents] = useState(false)
     const allCatalog = [...unassignedTechniques, ...assignedTechniques]
     const allSelected = allCatalog.length > 0 && selected.size === allCatalog.length
 
@@ -541,7 +557,7 @@ function AssignKatasDialog({
                                             <button className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition-colors hover:bg-surface-3" onClick={() => toggle(technique.id)} type="button">
                                                 <span className="min-w-0">
                                                     <span className="block truncate text-sm font-semibold text-ink">{technique.name}</span>
-                                                    <span className="block text-xs text-ink-3">{CATEGORY_LABELS[technique.category]}{technique.difficulty ? ` · ${technique.difficulty}` : ''}</span>
+                                                    <span className="block text-xs text-ink-3">{CATEGORY_LABELS[technique.category]}{technique.kihonCategory ? ` · ${KIHON_CATEGORY_SHORT_LABELS[technique.kihonCategory]}` : ''}{technique.kumiteCategory ? ` · ${KUMITE_CATEGORY_SHORT_LABELS[technique.kumiteCategory]}` : ''}{technique.difficulty ? ` · ${technique.difficulty}` : ''}</span>
                                                 </span>
                                                 {selected.has(technique.id) ? <CheckSquare aria-hidden="true" className="size-5 shrink-0 text-accent" /> : <Square aria-hidden="true" className="size-5 shrink-0 text-ink-4" />}
                                             </button>
@@ -553,9 +569,26 @@ function AssignKatasDialog({
                     </ul>
                 )}
 
+                <label className="mt-4 flex items-start gap-3 rounded-md border border-cyan-500/30 bg-cyan-950/20 p-3" htmlFor="assign-to-students">
+                    <input
+                        checked={assignToStudents}
+                        className="mt-0.5 size-4 shrink-0 accent-cyan-500"
+                        disabled={studentCount === 0}
+                        id="assign-to-students"
+                        onChange={(event) => setAssignToStudents(event.target.checked)}
+                        type="checkbox"
+                    />
+                    <span className="min-w-0 text-xs leading-5 text-ink-3">
+                        <span className="font-semibold text-ink">Asignar al expediente de los alumnos actuales del grado</span>
+                        {studentCount > 0
+                            ? ` — ${studentCount} ${studentCount === 1 ? 'alumno activo recibirá' : 'alumnos activos recibirán'} sólo las técnicas que aún no tengan y se les notificará.`
+                            : ' — este grado no tiene alumnos activos.'}
+                    </span>
+                </label>
+
                 <div className="mt-6 flex justify-end gap-3">
                     <button className="rounded-md border border-edge-strong px-4 py-2 text-sm font-semibold text-ink-2 transition-colors hover:border-edge-strong hover:text-ink" onClick={onClose} type="button">Cancelar</button>
-                    <button className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400 disabled:opacity-60" disabled={saving} onClick={() => onSave([...selected])} type="button">{saving ? <Loader2 aria-label="Guardando" className="size-4 animate-spin" /> : <CheckSquare aria-hidden="true" className="size-4" />}Guardar técnicas</button>
+                    <button className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400 disabled:opacity-60" disabled={saving} onClick={() => onSave([...selected], assignToStudents)} type="button">{saving ? <Loader2 aria-label="Guardando" className="size-4 animate-spin" /> : <CheckSquare aria-hidden="true" className="size-4" />}Guardar técnicas</button>
                 </div>
             </div>
         </div>

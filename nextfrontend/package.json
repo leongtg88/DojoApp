@@ -9,6 +9,8 @@
     "start": "next start",
     "icons": "node scripts/generate-icons.mjs",
     "sync:curriculum": "tsx prisma/sync-curriculum.ts",
+    "sync:kihon": "tsx prisma/sync-kihon.ts",
+    "sync:kumite": "tsx prisma/sync-kumite.ts",
     "lint": "eslint",
     "guard:env": "node scripts/guard-env.mjs",
     "db:deploy": "prisma migrate deploy",

@@ -34,22 +34,31 @@ export async function getCurriculumForSchool(schoolId: string | null): Promise<A
       estimatedDurationMonths: true,
       description: true,
       examDay: true,
-      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, repetitionsCount: true, stance: true, level: true, kumiteType: true, distance: true, role: true, applicationType: true, originKataId: true, originKata: { select: { name: true } }, beltRankKatas: { select: { beltRankId: true }, orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }, { order: 'asc' }] } } } } },
+      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, kihonCategory: true, kumiteCategory: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, repetitionsCount: true, stance: true, level: true, kumiteType: true, distance: true, role: true, applicationType: true, originKataId: true, originKata: { select: { name: true } }, beltRankKatas: { select: { beltRankId: true }, orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }, { order: 'asc' }] } } } } },
       _count: { select: { promotions: true } },
     },
   })
 
+  const rankIds = ranks.map(({ id }) => id)
   const rankNames = ranks.map(({ name }) => name)
-  const studentCounts = await db.student.groupBy({
-    by: ['currentRank'],
-    where: {
-      currentRank: { in: rankNames },
-      ...(schoolId ? { schoolId } : {}),
-      status: StudentStatus.ACTIVE,
-    },
-    _count: { _all: true },
-  })
-  const countByRankName = new Map(studentCounts.map(({ currentRank, _count }) => [currentRank, _count._all]))
+  const scopeFilter = schoolId ? { schoolId } : {}
+
+  // El conteo replica el match de la propagación: por `currentRankId` y, como
+  // respaldo, por el nombre denormalizado de expedientes antiguos sin FK.
+  const [studentCountsById, legacyCountsByName] = await Promise.all([
+    db.student.groupBy({
+      by: ['currentRankId'],
+      where: { currentRankId: { in: rankIds }, ...scopeFilter, status: StudentStatus.ACTIVE },
+      _count: { _all: true },
+    }),
+    db.student.groupBy({
+      by: ['currentRank'],
+      where: { currentRankId: null, currentRank: { in: rankNames }, ...scopeFilter, status: StudentStatus.ACTIVE },
+      _count: { _all: true },
+    }),
+  ])
+  const countByRankId = new Map(studentCountsById.map(({ currentRankId, _count }) => [currentRankId, _count._all]))
+  const legacyCountByRankName = new Map(legacyCountsByName.map(({ currentRank, _count }) => [currentRank, _count._all]))
 
   const techniques = await db.technique.findMany({
     where: schoolFilter,
@@ -61,6 +70,7 @@ export async function getCurriculumForSchool(schoolId: string | null): Promise<A
       kanji: true,
       description: true,
       category: true,
+      kihonCategory: true, kumiteCategory: true,
       order: true,
       difficulty: true,
       embusen: true,
@@ -97,7 +107,7 @@ export async function getCurriculumForSchool(schoolId: string | null): Promise<A
     description: rank.description,
     examDay: rank.examDay,
     techniqueCount: rank.katas.length,
-    studentCount: countByRankName.get(rank.name) ?? 0,
+    studentCount: (countByRankId.get(rank.id) ?? 0) + (legacyCountByRankName.get(rank.name) ?? 0),
     techniques: rank.katas.map(({ kata }) => techniqueWithRanks(kata)),
   }))
 

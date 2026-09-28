@@ -1,11 +1,15 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
+import { propagateTechniquesToRankStudents } from '@/lib/dashboard/technique-propagate'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
 const assignKatasSchema = z.object({
   techniqueIds: z.array(z.string().trim().min(1)).max(500),
+  // Cuando es true, las técnicas del grado se asignan también al expediente de
+  // los alumnos activos del grado (sólo se crean las que falten).
+  assignToStudents: z.boolean().optional().default(false),
 })
 
 interface RankKatasContext {
@@ -67,5 +71,16 @@ export async function PUT(request: Request, { params }: RankKatasContext) {
       : []),
   ])
 
-  return NextResponse.json({ ok: true })
+  let studentsAssigned = 0
+
+  if (result.data.assignToStudents && techniqueIds.length > 0) {
+    const summary = await propagateTechniquesToRankStudents({
+      scope,
+      rank: { id: rank.id, name: rank.name },
+      techniqueIds,
+    })
+    studentsAssigned = summary.studentsAssigned
+  }
+
+  return NextResponse.json({ ok: true, studentsAssigned })
 }

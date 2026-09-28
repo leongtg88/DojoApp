@@ -160,6 +160,8 @@ export async function getStudentDashboardSummary(
       name: technique.name,
       description: technique.description,
       category: technique.category,
+      kihonCategory: technique.kihonCategory,
+      kumiteCategory: technique.kumiteCategory,
       level: null,
       beltColor: null,
       beltSecondaryColor: null,

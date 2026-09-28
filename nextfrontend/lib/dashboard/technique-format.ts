@@ -1,4 +1,6 @@
 import type { AdminTechniqueSummary, TechniqueCategory } from '@/types/dashboard'
+import { KIHON_CATEGORY_SHORT_LABELS } from './kihon-categories'
+import { KUMITE_CATEGORY_SHORT_LABELS } from './kumite-categories'
 
 export const TECHNIQUE_CATEGORY_LABELS: Record<TechniqueCategory, string> = {
   KIHON: 'Kihon',
@@ -14,12 +16,14 @@ export function techniqueMetaLine(technique: AdminTechniqueSummary): string {
 
   switch (technique.category) {
     case 'KIHON':
+      if (technique.kihonCategory) parts.push(KIHON_CATEGORY_SHORT_LABELS[technique.kihonCategory])
       if (technique.difficulty) parts.push(technique.difficulty)
       if (technique.repetitionsCount != null) parts.push(`${technique.repetitionsCount} repeticiones`)
       if (technique.stance) parts.push(technique.stance)
       if (technique.level) parts.push(technique.level)
       break
     case 'KUMITE':
+      if (technique.kumiteCategory) parts.push(KUMITE_CATEGORY_SHORT_LABELS[technique.kumiteCategory])
       if (technique.kumiteType) parts.push(technique.kumiteType)
       if (technique.difficulty) parts.push(technique.difficulty)
       if (technique.movementsCount != null) parts.push(`${technique.movementsCount} pasos/técnicas`)

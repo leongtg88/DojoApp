@@ -287,6 +287,31 @@ export const TechniqueCategory: {
 export type TechniqueCategory = (typeof TechniqueCategory)[keyof typeof TechniqueCategory]
 
 
+export const KihonCategory: {
+  DACHI: 'DACHI',
+  TSUKI_WAZA: 'TSUKI_WAZA',
+  UCHI_WAZA: 'UCHI_WAZA',
+  GERI_WAZA: 'GERI_WAZA',
+  UKE_WAZA: 'UKE_WAZA',
+  RENZOKU_WAZA: 'RENZOKU_WAZA',
+  IDO_KIHON: 'IDO_KIHON'
+};
+
+export type KihonCategory = (typeof KihonCategory)[keyof typeof KihonCategory]
+
+
+export const KumiteCategory: {
+  GOHON_KUMITE: 'GOHON_KUMITE',
+  SANBON_KUMITE: 'SANBON_KUMITE',
+  IPPON_KUMITE: 'IPPON_KUMITE',
+  JIYU_IPPON_KUMITE: 'JIYU_IPPON_KUMITE',
+  JIYU_KUMITE: 'JIYU_KUMITE',
+  SHIAI_KUMITE: 'SHIAI_KUMITE'
+};
+
+export type KumiteCategory = (typeof KumiteCategory)[keyof typeof KumiteCategory]
+
+
 export const Program: {
   ADULT: 'ADULT',
   YOUTH: 'YOUTH'
@@ -410,6 +435,14 @@ export const StudentDocumentStatus: typeof $Enums.StudentDocumentStatus
 export type TechniqueCategory = $Enums.TechniqueCategory
 
 export const TechniqueCategory: typeof $Enums.TechniqueCategory
+
+export type KihonCategory = $Enums.KihonCategory
+
+export const KihonCategory: typeof $Enums.KihonCategory
+
+export type KumiteCategory = $Enums.KumiteCategory
+
+export const KumiteCategory: typeof $Enums.KumiteCategory
 
 export type Program = $Enums.Program
 
@@ -23952,6 +23985,8 @@ export namespace Prisma {
     description: string | null
     category: $Enums.TechniqueCategory | null
     order: number | null
+    kihonCategory: $Enums.KihonCategory | null
+    kumiteCategory: $Enums.KumiteCategory | null
     movementsCount: number | null
     embusen: string | null
     difficulty: string | null
@@ -23977,6 +24012,8 @@ export namespace Prisma {
     description: string | null
     category: $Enums.TechniqueCategory | null
     order: number | null
+    kihonCategory: $Enums.KihonCategory | null
+    kumiteCategory: $Enums.KumiteCategory | null
     movementsCount: number | null
     embusen: string | null
     difficulty: string | null
@@ -24002,6 +24039,8 @@ export namespace Prisma {
     description: number
     category: number
     order: number
+    kihonCategory: number
+    kumiteCategory: number
     movementsCount: number
     embusen: number
     difficulty: number
@@ -24041,6 +24080,8 @@ export namespace Prisma {
     description?: true
     category?: true
     order?: true
+    kihonCategory?: true
+    kumiteCategory?: true
     movementsCount?: true
     embusen?: true
     difficulty?: true
@@ -24066,6 +24107,8 @@ export namespace Prisma {
     description?: true
     category?: true
     order?: true
+    kihonCategory?: true
+    kumiteCategory?: true
     movementsCount?: true
     embusen?: true
     difficulty?: true
@@ -24091,6 +24134,8 @@ export namespace Prisma {
     description?: true
     category?: true
     order?: true
+    kihonCategory?: true
+    kumiteCategory?: true
     movementsCount?: true
     embusen?: true
     difficulty?: true
@@ -24203,6 +24248,8 @@ export namespace Prisma {
     description: string | null
     category: $Enums.TechniqueCategory
     order: number
+    kihonCategory: $Enums.KihonCategory | null
+    kumiteCategory: $Enums.KumiteCategory | null
     movementsCount: number | null
     embusen: string | null
     difficulty: string | null
@@ -24247,6 +24294,8 @@ export namespace Prisma {
     description?: boolean
     category?: boolean
     order?: boolean
+    kihonCategory?: boolean
+    kumiteCategory?: boolean
     movementsCount?: boolean
     embusen?: boolean
     difficulty?: boolean
@@ -24279,6 +24328,8 @@ export namespace Prisma {
     description?: boolean
     category?: boolean
     order?: boolean
+    kihonCategory?: boolean
+    kumiteCategory?: boolean
     movementsCount?: boolean
     embusen?: boolean
     difficulty?: boolean
@@ -24306,6 +24357,8 @@ export namespace Prisma {
     description?: boolean
     category?: boolean
     order?: boolean
+    kihonCategory?: boolean
+    kumiteCategory?: boolean
     movementsCount?: boolean
     embusen?: boolean
     difficulty?: boolean
@@ -24333,6 +24386,8 @@ export namespace Prisma {
     description?: boolean
     category?: boolean
     order?: boolean
+    kihonCategory?: boolean
+    kumiteCategory?: boolean
     movementsCount?: boolean
     embusen?: boolean
     difficulty?: boolean
@@ -24350,7 +24405,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type TechniqueOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "japaneseName" | "kanji" | "description" | "category" | "order" | "movementsCount" | "embusen" | "difficulty" | "videoUrl" | "repetitionsCount" | "stance" | "level" | "kumiteType" | "distance" | "role" | "applicationType" | "originKataId" | "schoolId" | "createdAt" | "updatedAt", ExtArgs["result"]["technique"]>
+  export type TechniqueOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "japaneseName" | "kanji" | "description" | "category" | "order" | "kihonCategory" | "kumiteCategory" | "movementsCount" | "embusen" | "difficulty" | "videoUrl" | "repetitionsCount" | "stance" | "level" | "kumiteType" | "distance" | "role" | "applicationType" | "originKataId" | "schoolId" | "createdAt" | "updatedAt", ExtArgs["result"]["technique"]>
   export type TechniqueInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     originKata?: boolean | Technique$originKataArgs<ExtArgs>
     bunkaiApplications?: boolean | Technique$bunkaiApplicationsArgs<ExtArgs>
@@ -24387,6 +24442,8 @@ export namespace Prisma {
       description: string | null
       category: $Enums.TechniqueCategory
       order: number
+      kihonCategory: $Enums.KihonCategory | null
+      kumiteCategory: $Enums.KumiteCategory | null
       movementsCount: number | null
       embusen: string | null
       difficulty: string | null
@@ -24838,6 +24895,8 @@ export namespace Prisma {
     readonly description: FieldRef<"Technique", 'String'>
     readonly category: FieldRef<"Technique", 'TechniqueCategory'>
     readonly order: FieldRef<"Technique", 'Int'>
+    readonly kihonCategory: FieldRef<"Technique", 'KihonCategory'>
+    readonly kumiteCategory: FieldRef<"Technique", 'KumiteCategory'>
     readonly movementsCount: FieldRef<"Technique", 'Int'>
     readonly embusen: FieldRef<"Technique", 'String'>
     readonly difficulty: FieldRef<"Technique", 'String'>
@@ -46749,6 +46808,8 @@ export namespace Prisma {
     description: 'description',
     category: 'category',
     order: 'order',
+    kihonCategory: 'kihonCategory',
+    kumiteCategory: 'kumiteCategory',
     movementsCount: 'movementsCount',
     embusen: 'embusen',
     difficulty: 'difficulty',
@@ -47309,6 +47370,34 @@ export namespace Prisma {
    * Reference to a field of type 'TechniqueCategory[]'
    */
   export type ListEnumTechniqueCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TechniqueCategory[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'KihonCategory'
+   */
+  export type EnumKihonCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KihonCategory'>
+    
+
+
+  /**
+   * Reference to a field of type 'KihonCategory[]'
+   */
+  export type ListEnumKihonCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KihonCategory[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'KumiteCategory'
+   */
+  export type EnumKumiteCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KumiteCategory'>
+    
+
+
+  /**
+   * Reference to a field of type 'KumiteCategory[]'
+   */
+  export type ListEnumKumiteCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KumiteCategory[]'>
     
 
 
@@ -48859,6 +48948,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Technique"> | string | null
     category?: EnumTechniqueCategoryFilter<"Technique"> | $Enums.TechniqueCategory
     order?: IntFilter<"Technique"> | number
+    kihonCategory?: EnumKihonCategoryNullableFilter<"Technique"> | $Enums.KihonCategory | null
+    kumiteCategory?: EnumKumiteCategoryNullableFilter<"Technique"> | $Enums.KumiteCategory | null
     movementsCount?: IntNullableFilter<"Technique"> | number | null
     embusen?: StringNullableFilter<"Technique"> | string | null
     difficulty?: StringNullableFilter<"Technique"> | string | null
@@ -48890,6 +48981,8 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     category?: SortOrder
     order?: SortOrder
+    kihonCategory?: SortOrderInput | SortOrder
+    kumiteCategory?: SortOrderInput | SortOrder
     movementsCount?: SortOrderInput | SortOrder
     embusen?: SortOrderInput | SortOrder
     difficulty?: SortOrderInput | SortOrder
@@ -48924,6 +49017,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Technique"> | string | null
     category?: EnumTechniqueCategoryFilter<"Technique"> | $Enums.TechniqueCategory
     order?: IntFilter<"Technique"> | number
+    kihonCategory?: EnumKihonCategoryNullableFilter<"Technique"> | $Enums.KihonCategory | null
+    kumiteCategory?: EnumKumiteCategoryNullableFilter<"Technique"> | $Enums.KumiteCategory | null
     movementsCount?: IntNullableFilter<"Technique"> | number | null
     embusen?: StringNullableFilter<"Technique"> | string | null
     difficulty?: StringNullableFilter<"Technique"> | string | null
@@ -48955,6 +49050,8 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     category?: SortOrder
     order?: SortOrder
+    kihonCategory?: SortOrderInput | SortOrder
+    kumiteCategory?: SortOrderInput | SortOrder
     movementsCount?: SortOrderInput | SortOrder
     embusen?: SortOrderInput | SortOrder
     difficulty?: SortOrderInput | SortOrder
@@ -48988,6 +49085,8 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Technique"> | string | null
     category?: EnumTechniqueCategoryWithAggregatesFilter<"Technique"> | $Enums.TechniqueCategory
     order?: IntWithAggregatesFilter<"Technique"> | number
+    kihonCategory?: EnumKihonCategoryNullableWithAggregatesFilter<"Technique"> | $Enums.KihonCategory | null
+    kumiteCategory?: EnumKumiteCategoryNullableWithAggregatesFilter<"Technique"> | $Enums.KumiteCategory | null
     movementsCount?: IntNullableWithAggregatesFilter<"Technique"> | number | null
     embusen?: StringNullableWithAggregatesFilter<"Technique"> | string | null
     difficulty?: StringNullableWithAggregatesFilter<"Technique"> | string | null
@@ -52015,6 +52114,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -52044,6 +52145,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -52073,6 +52176,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52102,6 +52207,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52131,6 +52238,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -52156,6 +52265,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52179,6 +52290,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55204,6 +55317,20 @@ export namespace Prisma {
     not?: NestedEnumTechniqueCategoryFilter<$PrismaModel> | $Enums.TechniqueCategory
   }
 
+  export type EnumKihonCategoryNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.KihonCategory | EnumKihonCategoryFieldRefInput<$PrismaModel> | null
+    in?: $Enums.KihonCategory[] | ListEnumKihonCategoryFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.KihonCategory[] | ListEnumKihonCategoryFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumKihonCategoryNullableFilter<$PrismaModel> | $Enums.KihonCategory | null
+  }
+
+  export type EnumKumiteCategoryNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.KumiteCategory | EnumKumiteCategoryFieldRefInput<$PrismaModel> | null
+    in?: $Enums.KumiteCategory[] | ListEnumKumiteCategoryFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.KumiteCategory[] | ListEnumKumiteCategoryFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumKumiteCategoryNullableFilter<$PrismaModel> | $Enums.KumiteCategory | null
+  }
+
   export type TechniqueNullableScalarRelationFilter = {
     is?: TechniqueWhereInput | null
     isNot?: TechniqueWhereInput | null
@@ -55217,6 +55344,8 @@ export namespace Prisma {
     description?: SortOrder
     category?: SortOrder
     order?: SortOrder
+    kihonCategory?: SortOrder
+    kumiteCategory?: SortOrder
     movementsCount?: SortOrder
     embusen?: SortOrder
     difficulty?: SortOrder
@@ -55248,6 +55377,8 @@ export namespace Prisma {
     description?: SortOrder
     category?: SortOrder
     order?: SortOrder
+    kihonCategory?: SortOrder
+    kumiteCategory?: SortOrder
     movementsCount?: SortOrder
     embusen?: SortOrder
     difficulty?: SortOrder
@@ -55273,6 +55404,8 @@ export namespace Prisma {
     description?: SortOrder
     category?: SortOrder
     order?: SortOrder
+    kihonCategory?: SortOrder
+    kumiteCategory?: SortOrder
     movementsCount?: SortOrder
     embusen?: SortOrder
     difficulty?: SortOrder
@@ -55304,6 +55437,26 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTechniqueCategoryFilter<$PrismaModel>
     _max?: NestedEnumTechniqueCategoryFilter<$PrismaModel>
+  }
+
+  export type EnumKihonCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.KihonCategory | EnumKihonCategoryFieldRefInput<$PrismaModel> | null
+    in?: $Enums.KihonCategory[] | ListEnumKihonCategoryFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.KihonCategory[] | ListEnumKihonCategoryFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumKihonCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.KihonCategory | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumKihonCategoryNullableFilter<$PrismaModel>
+    _max?: NestedEnumKihonCategoryNullableFilter<$PrismaModel>
+  }
+
+  export type EnumKumiteCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.KumiteCategory | EnumKumiteCategoryFieldRefInput<$PrismaModel> | null
+    in?: $Enums.KumiteCategory[] | ListEnumKumiteCategoryFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.KumiteCategory[] | ListEnumKumiteCategoryFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumKumiteCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.KumiteCategory | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumKumiteCategoryNullableFilter<$PrismaModel>
+    _max?: NestedEnumKumiteCategoryNullableFilter<$PrismaModel>
   }
 
   export type FloatFilter<$PrismaModel = never> = {
@@ -59073,6 +59226,14 @@ export namespace Prisma {
     set?: $Enums.TechniqueCategory
   }
 
+  export type NullableEnumKihonCategoryFieldUpdateOperationsInput = {
+    set?: $Enums.KihonCategory | null
+  }
+
+  export type NullableEnumKumiteCategoryFieldUpdateOperationsInput = {
+    set?: $Enums.KumiteCategory | null
+  }
+
   export type TechniqueUpdateOneWithoutBunkaiApplicationsNestedInput = {
     create?: XOR<TechniqueCreateWithoutBunkaiApplicationsInput, TechniqueUncheckedCreateWithoutBunkaiApplicationsInput>
     connectOrCreate?: TechniqueCreateOrConnectWithoutBunkaiApplicationsInput
@@ -60572,6 +60733,20 @@ export namespace Prisma {
     not?: NestedEnumTechniqueCategoryFilter<$PrismaModel> | $Enums.TechniqueCategory
   }
 
+  export type NestedEnumKihonCategoryNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.KihonCategory | EnumKihonCategoryFieldRefInput<$PrismaModel> | null
+    in?: $Enums.KihonCategory[] | ListEnumKihonCategoryFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.KihonCategory[] | ListEnumKihonCategoryFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumKihonCategoryNullableFilter<$PrismaModel> | $Enums.KihonCategory | null
+  }
+
+  export type NestedEnumKumiteCategoryNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.KumiteCategory | EnumKumiteCategoryFieldRefInput<$PrismaModel> | null
+    in?: $Enums.KumiteCategory[] | ListEnumKumiteCategoryFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.KumiteCategory[] | ListEnumKumiteCategoryFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumKumiteCategoryNullableFilter<$PrismaModel> | $Enums.KumiteCategory | null
+  }
+
   export type NestedEnumTechniqueCategoryWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.TechniqueCategory | EnumTechniqueCategoryFieldRefInput<$PrismaModel>
     in?: $Enums.TechniqueCategory[] | ListEnumTechniqueCategoryFieldRefInput<$PrismaModel>
@@ -60580,6 +60755,26 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTechniqueCategoryFilter<$PrismaModel>
     _max?: NestedEnumTechniqueCategoryFilter<$PrismaModel>
+  }
+
+  export type NestedEnumKihonCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.KihonCategory | EnumKihonCategoryFieldRefInput<$PrismaModel> | null
+    in?: $Enums.KihonCategory[] | ListEnumKihonCategoryFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.KihonCategory[] | ListEnumKihonCategoryFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumKihonCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.KihonCategory | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumKihonCategoryNullableFilter<$PrismaModel>
+    _max?: NestedEnumKihonCategoryNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumKumiteCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.KumiteCategory | EnumKumiteCategoryFieldRefInput<$PrismaModel> | null
+    in?: $Enums.KumiteCategory[] | ListEnumKumiteCategoryFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.KumiteCategory[] | ListEnumKumiteCategoryFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumKumiteCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.KumiteCategory | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumKumiteCategoryNullableFilter<$PrismaModel>
+    _max?: NestedEnumKumiteCategoryNullableFilter<$PrismaModel>
   }
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -61079,6 +61274,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -61107,6 +61304,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -61547,6 +61746,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"Technique"> | string | null
     category?: EnumTechniqueCategoryFilter<"Technique"> | $Enums.TechniqueCategory
     order?: IntFilter<"Technique"> | number
+    kihonCategory?: EnumKihonCategoryNullableFilter<"Technique"> | $Enums.KihonCategory | null
+    kumiteCategory?: EnumKumiteCategoryNullableFilter<"Technique"> | $Enums.KumiteCategory | null
     movementsCount?: IntNullableFilter<"Technique"> | number | null
     embusen?: StringNullableFilter<"Technique"> | string | null
     difficulty?: StringNullableFilter<"Technique"> | string | null
@@ -67490,6 +67691,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -67518,6 +67721,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -67621,6 +67826,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -67649,6 +67856,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68121,6 +68330,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -68149,6 +68360,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -68182,6 +68395,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -68210,6 +68425,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -68398,6 +68615,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68426,6 +68645,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68658,6 +68879,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -68686,6 +68909,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -68955,6 +69180,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68983,6 +69210,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -69261,6 +69490,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -69289,6 +69520,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -69522,6 +69755,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -69550,6 +69785,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73467,6 +73704,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -73906,6 +74145,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73934,6 +74175,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -73962,6 +74205,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76332,6 +76577,8 @@ export namespace Prisma {
     description?: string | null
     category?: $Enums.TechniqueCategory
     order?: number
+    kihonCategory?: $Enums.KihonCategory | null
+    kumiteCategory?: $Enums.KumiteCategory | null
     movementsCount?: number | null
     embusen?: string | null
     difficulty?: string | null
@@ -76388,6 +76635,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76416,6 +76665,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76444,6 +76695,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     category?: EnumTechniqueCategoryFieldUpdateOperationsInput | $Enums.TechniqueCategory
     order?: IntFieldUpdateOperationsInput | number
+    kihonCategory?: NullableEnumKihonCategoryFieldUpdateOperationsInput | $Enums.KihonCategory | null
+    kumiteCategory?: NullableEnumKumiteCategoryFieldUpdateOperationsInput | $Enums.KumiteCategory | null
     movementsCount?: NullableIntFieldUpdateOperationsInput | number | null
     embusen?: NullableStringFieldUpdateOperationsInput | string | null
     difficulty?: NullableStringFieldUpdateOperationsInput | string | null

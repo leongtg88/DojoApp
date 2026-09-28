@@ -128,6 +128,7 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
               kanji: true,
               description: true,
               category: true,
+              kihonCategory: true, kumiteCategory: true,
               order: true,
               difficulty: true,
               embusen: true,
@@ -415,6 +416,7 @@ documents: {
               kanji: true,
               description: true,
               category: true,
+              kihonCategory: true, kumiteCategory: true,
               order: true,
               difficulty: true,
               embusen: true,
@@ -492,10 +494,43 @@ documents: {
       estimatedDurationMonths: true,
       description: true,
       examDay: true,
-      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, repetitionsCount: true, stance: true, level: true, kumiteType: true, distance: true, role: true, applicationType: true, originKataId: true, originKata: { select: { name: true } }, beltRankKatas: { select: { beltRankId: true }, orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }, { order: 'asc' }] } } } } },
+      katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, kihonCategory: true, kumiteCategory: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, repetitionsCount: true, stance: true, level: true, kumiteType: true, distance: true, role: true, applicationType: true, originKataId: true, originKata: { select: { name: true } }, beltRankKatas: { select: { beltRankId: true }, orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }, { order: 'asc' }] } } } } },
       _count: { select: { katas: true } },
     },
   })
+
+  // Catálogo completo de la escuela (todas las categorías), para poder asignar
+  // cualquier técnica al expediente del alumno, no solo las enlazadas a grados.
+  const catalogTechniques = await db.technique.findMany({
+    where: { OR: [{ schoolId: student.schoolId }, { schoolId: null }] },
+    orderBy: [{ order: 'asc' }, { name: 'asc' }],
+    select: {
+      id: true,
+      name: true,
+      japaneseName: true,
+      kanji: true,
+      description: true,
+      category: true,
+      kihonCategory: true,
+      kumiteCategory: true,
+      order: true,
+      difficulty: true,
+      embusen: true,
+      movementsCount: true,
+      videoUrl: true,
+      repetitionsCount: true,
+      stance: true,
+      level: true,
+      kumiteType: true,
+      distance: true,
+      role: true,
+      applicationType: true,
+      originKataId: true,
+      originKata: { select: { name: true } },
+      beltRankKatas: { select: { beltRankId: true }, orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }, { order: 'asc' }] },
+    },
+  })
+
   const studentProgram = student.dateOfBirth
     ? programForAge(ageFromDob(new Date(student.dateOfBirth)))
     : 'ADULT'
@@ -605,6 +640,7 @@ techniques: rank.katas.map(({ kata }) => techniqueWithRanks(kata)),
       confirmedByName: entry.confirmedBy?.name ?? null,
       notes: entry.notes,
     })),
+    catalogTechniques: catalogTechniques.map(techniqueWithRanks),
     rankAwardedAt: student.rankHistory[0]?.promotedAt.toISOString() ?? null,
     attendancePercent: Math.min(100, Math.round((attendedCount / TARGET_ATTENDANCES) * 100)),
     attendedCount,

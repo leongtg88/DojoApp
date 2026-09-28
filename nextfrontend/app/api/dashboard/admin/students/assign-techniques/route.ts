@@ -2,11 +2,11 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
 import { notifyAssignment } from '@/lib/notifications/create'
-import { ClassEnrollmentStatus, StudentStatus, TechniqueCategory } from '@/lib/generated/prisma'
+import { ClassEnrollmentStatus, StudentStatus } from '@/lib/generated/prisma'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
-const assignKatasSchema = z.object({
+const assignTechniquesSchema = z.object({
   techniqueIds: z.array(z.string().trim().min(1)).min(1).max(300),
   target: z.object({
     type: z.enum(['ALL', 'GRADE', 'BRANCH', 'CLASS']),
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
-  const result = assignKatasSchema.safeParse(await request.json().catch(() => null))
+  const result = assignTechniquesSchema.safeParse(await request.json().catch(() => null))
 
   if (!result.success) {
     return NextResponse.json({ error: 'Datos de asignación no válidos' }, { status: 400 })
@@ -46,13 +46,12 @@ export async function POST(request: Request) {
   const available = await db.technique.count({
     where: {
       id: { in: requestedIds },
-      category: TechniqueCategory.KATA,
       ...(scope.isSuperAdmin ? {} : { OR: [{ schoolId: scope.schoolId! }, { schoolId: null }] }),
     },
   })
 
   if (available !== requestedIds.length) {
-    return NextResponse.json({ error: 'Alguna kata no está disponible para esta escuela' }, { status: 400 })
+    return NextResponse.json({ error: 'Alguna técnica no está disponible para esta escuela' }, { status: 400 })
   }
 
   const targetFilter =

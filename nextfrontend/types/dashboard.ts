@@ -35,6 +35,10 @@ export type TechniqueStatus = 'PENDING' | 'IN_PROGRESS' | 'APPROVED'
 
 export type TechniqueCategory = 'KIHON' | 'KATA' | 'KUMITE' | 'BUNKAI'
 
+export type KihonCategory = 'DACHI' | 'TSUKI_WAZA' | 'UCHI_WAZA' | 'GERI_WAZA' | 'UKE_WAZA' | 'RENZOKU_WAZA' | 'IDO_KIHON'
+
+export type KumiteCategory = 'GOHON_KUMITE' | 'SANBON_KUMITE' | 'IPPON_KUMITE' | 'JIYU_IPPON_KUMITE' | 'JIYU_KUMITE' | 'SHIAI_KUMITE'
+
 export type PracticePlace = 'DOJO' | 'FUERA'
 
 export interface TechniquePracticeLogEntry {
@@ -99,6 +103,8 @@ export interface StudentTechnique {
 	name: string
 	description: string | null
 	category: TechniqueCategory
+	kihonCategory: KihonCategory | null
+	kumiteCategory: KumiteCategory | null
 	level: string | null
 	beltColor: string | null
 	beltSecondaryColor: string | null
@@ -331,6 +337,7 @@ export interface AdminStudentDetail {
 	documents: StudentDocumentSummary[]
 	rankHistory: AdminRankHistoryEntry[]
 	availableRanks: AdminBeltRankSummary[]
+	catalogTechniques: AdminTechniqueSummary[]
 	techniques: AdminStudentTechnique[]
 	attendanceHistory: AdminStudentAttendanceRecord[]
 	rankAwardedAt: string | null
@@ -651,6 +658,8 @@ export interface AdminTechniqueSummary {
 	description: string | null
 	category: TechniqueCategory
 	order: number
+	kihonCategory: KihonCategory | null
+	kumiteCategory: KumiteCategory | null
 	difficulty: string | null
 	embusen: string | null
 	movementsCount: number | null

@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { Award, CheckCheck, CircleDashed, Info, Repeat, Search, Star } from 'lucide-react'
+import { KIHON_CATEGORIES, KIHON_CATEGORY_LABELS, KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
+import { KUMITE_CATEGORIES, KUMITE_CATEGORY_LABELS, KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
 import type { StudentTechnique, TechniqueCategory } from '@/types/dashboard'
 
 interface StudentSyllabusProps {
@@ -14,6 +16,56 @@ const categories: { id: TechniqueCategory; label: string; accent: string }[] = [
     { id: 'KUMITE', label: 'Kumite', accent: 'bg-[#dc2626]' },
     { id: 'BUNKAI', label: 'Bunkai', accent: 'bg-[#b8b070]' },
 ]
+
+const categoryById = new Map(categories.map(({ id, label, accent }) => [id, { label, accent }]))
+const KIHON_ACCENT = 'bg-[#00617f]'
+const KUMITE_ACCENT = 'bg-[#dc2626]'
+
+interface SyllabusSection {
+    key: string
+    label: string
+    accent: string
+    items: StudentTechnique[]
+}
+
+/** Dentro de Kihon y Kumite agrupa por sub-categoría; el resto por categoría superior. */
+function buildSections(techniques: StudentTechnique[]): SyllabusSection[] {
+    const sections: SyllabusSection[] = []
+
+    const kihon = techniques.filter(({ category }) => category === 'KIHON')
+    for (const subCategory of KIHON_CATEGORIES) {
+        const items = kihon.filter((technique) => technique.kihonCategory === subCategory)
+        if (items.length > 0) {
+            sections.push({ key: `KIHON:${subCategory}`, label: KIHON_CATEGORY_LABELS[subCategory], accent: KIHON_ACCENT, items })
+        }
+    }
+    const uncategorized = kihon.filter((technique) => !technique.kihonCategory)
+    if (uncategorized.length > 0) {
+        sections.push({ key: 'KIHON:__none__', label: 'Kihon (sin categoría)', accent: KIHON_ACCENT, items: uncategorized })
+    }
+
+    const kumite = techniques.filter(({ category }) => category === 'KUMITE')
+    for (const subCategory of KUMITE_CATEGORIES) {
+        const items = kumite.filter((technique) => technique.kumiteCategory === subCategory)
+        if (items.length > 0) {
+            sections.push({ key: `KUMITE:${subCategory}`, label: KUMITE_CATEGORY_LABELS[subCategory], accent: KUMITE_ACCENT, items })
+        }
+    }
+    const uncategorizedKumite = kumite.filter((technique) => !technique.kumiteCategory)
+    if (uncategorizedKumite.length > 0) {
+        sections.push({ key: 'KUMITE:__none__', label: 'Kumite (sin categoría)', accent: KUMITE_ACCENT, items: uncategorizedKumite })
+    }
+
+    for (const category of categories) {
+        if (category.id === 'KIHON' || category.id === 'KUMITE') continue
+        const items = techniques.filter((technique) => technique.category === category.id)
+        if (items.length > 0) {
+            sections.push({ key: category.id, label: category.label, accent: category.accent, items })
+        }
+    }
+
+    return sections
+}
 
 export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
     const [activeCategory, setActiveCategory] = useState<TechniqueCategory | 'ALL'>('ALL')
@@ -31,6 +83,7 @@ export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
         return matchesStatus && matchesSearch
     })
     const approvedCount = techniques.filter(({ status }) => status === 'APPROVED').length
+    const sections = buildSections(filteredTechniques)
 
     return (
         <section className="mt-8">
@@ -87,36 +140,52 @@ export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
                     <p className="mt-1 text-sm text-ink-3">Prueba con otra categoría, estado o término de búsqueda.</p>
                 </div>
             ) : (
-                <ul className="mt-4 space-y-3">
-                    {filteredTechniques.map((technique) => {
-                        const category = categories.find(({ id }) => id === technique.category)
-                        const approved = technique.status === 'APPROVED'
+                <div className="mt-4 space-y-6">
+                    {sections.map((section) => (
+                        <div key={section.key}>
+                            <div className="flex items-center gap-2 px-1">
+                                <span aria-hidden="true" className={`h-3 w-1 rounded-full ${section.accent}`} />
+                                <h3 className="text-xs font-bold uppercase tracking-wide text-ink-3">{section.label}</h3>
+                                <span className="text-xs text-ink-4">{section.items.length}</span>
+                            </div>
+                            <ul className="mt-2 space-y-3">
+                                {section.items.map((technique) => {
+                                    const category = categoryById.get(technique.category)
+                                    const categoryLabel = technique.category === 'KIHON' && technique.kihonCategory
+                                        ? KIHON_CATEGORY_SHORT_LABELS[technique.kihonCategory]
+                                        : technique.category === 'KUMITE' && technique.kumiteCategory
+                                            ? KUMITE_CATEGORY_SHORT_LABELS[technique.kumiteCategory]
+                                            : category?.label ?? technique.category
+                                    const approved = technique.status === 'APPROVED'
 
-                        return (
-                            <li className="rounded-lg border border-edge bg-surface-2 p-4 shadow-sm" key={technique.id}>
-                                <div className="flex items-start justify-between gap-3">
-                                    <div className="flex min-w-0 gap-3">
-                                        <span aria-hidden="true" className={`mt-0.5 h-10 w-1 shrink-0 rounded-full ${category?.accent ?? 'bg-neutral-600'}`} />
-                                        <div className="min-w-0">
-                                            <p className="text-[11px] font-bold uppercase tracking-wide text-accent">{category?.label ?? technique.category}</p>
-                                            <h3 className="mt-1 text-base font-bold text-ink">{technique.name}</h3>
-                                        </div>
-                                    </div>
-                                    <span className={`inline-flex shrink-0 items-center gap-1 rounded-md border px-2.5 py-1 text-[11px] font-bold ${approved ? 'border-emerald-500/40 bg-emerald-500/15 text-ok-text' : 'border-edge-strong bg-surface-1 text-ink-2'}`}>
-                                        {approved ? <CheckCheck aria-hidden="true" className="size-3.5" /> : <CircleDashed aria-hidden="true" className="size-3.5" />}
-                                        {approved ? 'Revisada' : 'Pendiente'}
-                                    </span>
-                                </div>
-                                {technique.description && <p className="mt-3 pl-4 text-sm leading-6 text-ink-2">{technique.description}</p>}
-                                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 pl-4 text-xs text-ink-3">
-                                    <span className="inline-flex items-center gap-1"><Repeat aria-hidden="true" className="size-3.5 text-accent" />{technique.practiceRepetitions} rep.{technique.targetRepetitions ? ` / ${technique.targetRepetitions}` : ''}</span>
-                                </div>
-                                {technique.notes && <p className="mt-3 flex items-start gap-2 rounded-md border border-cyan-900/50 bg-cyan-950/20 p-2.5 text-xs leading-5 text-accent-text"><Info aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-accent" />{technique.notes}</p>}
-                                {technique.evaluation && <div className="mt-3 flex items-start gap-2 rounded-md border border-emerald-900/50 bg-emerald-950/20 p-2.5 text-xs leading-5 text-ok-text"><Star aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-ok-text" /><div><p className="font-bold">Evaluación: {technique.evaluation.score} / 10</p>{technique.evaluation.feedback && <p className="mt-1">{technique.evaluation.feedback}</p>}<p className="mt-1 text-ok-text/80">{new Date(technique.evaluation.evaluatedAt).toLocaleString('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}{technique.evaluation.evaluatorName ? ` · ${technique.evaluation.evaluatorName}` : ''}</p></div></div>}
-                            </li>
-                        )
-                    })}
-                </ul>
+                                    return (
+                                        <li className="rounded-lg border border-edge bg-surface-2 p-4 shadow-sm" key={technique.id}>
+                                            <div className="flex items-start justify-between gap-3">
+                                                <div className="flex min-w-0 gap-3">
+                                                    <span aria-hidden="true" className={`mt-0.5 h-10 w-1 shrink-0 rounded-full ${category?.accent ?? 'bg-neutral-600'}`} />
+                                                    <div className="min-w-0">
+                                                        <p className="text-[11px] font-bold uppercase tracking-wide text-accent">{categoryLabel}</p>
+                                                        <h3 className="mt-1 text-base font-bold text-ink">{technique.name}</h3>
+                                                    </div>
+                                                </div>
+                                                <span className={`inline-flex shrink-0 items-center gap-1 rounded-md border px-2.5 py-1 text-[11px] font-bold ${approved ? 'border-emerald-500/40 bg-emerald-500/15 text-ok-text' : 'border-edge-strong bg-surface-1 text-ink-2'}`}>
+                                                    {approved ? <CheckCheck aria-hidden="true" className="size-3.5" /> : <CircleDashed aria-hidden="true" className="size-3.5" />}
+                                                    {approved ? 'Revisada' : 'Pendiente'}
+                                                </span>
+                                            </div>
+                                            {technique.description && <p className="mt-3 pl-4 text-sm leading-6 text-ink-2">{technique.description}</p>}
+                                            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 pl-4 text-xs text-ink-3">
+                                                <span className="inline-flex items-center gap-1"><Repeat aria-hidden="true" className="size-3.5 text-accent" />{technique.practiceRepetitions} rep.{technique.targetRepetitions ? ` / ${technique.targetRepetitions}` : ''}</span>
+                                            </div>
+                                            {technique.notes && <p className="mt-3 flex items-start gap-2 rounded-md border border-cyan-900/50 bg-cyan-950/20 p-2.5 text-xs leading-5 text-accent-text"><Info aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-accent" />{technique.notes}</p>}
+                                            {technique.evaluation && <div className="mt-3 flex items-start gap-2 rounded-md border border-emerald-900/50 bg-emerald-950/20 p-2.5 text-xs leading-5 text-ok-text"><Star aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-ok-text" /><div><p className="font-bold">Evaluación: {technique.evaluation.score} / 10</p>{technique.evaluation.feedback && <p className="mt-1">{technique.evaluation.feedback}</p>}<p className="mt-1 text-ok-text/80">{new Date(technique.evaluation.evaluatedAt).toLocaleString('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}{technique.evaluation.evaluatorName ? ` · ${technique.evaluation.evaluatorName}` : ''}</p></div></div>}
+                                        </li>
+                                    )
+                                })}
+                            </ul>
+                        </div>
+                    ))}
+                </div>
             )}
         </section>
     )

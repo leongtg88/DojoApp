@@ -270,6 +270,27 @@ enum TechniqueCategory {
   BUNKAI
 }
 
+// Sub-categorías dentro de Kihon (solo aplican cuando category = KIHON).
+enum KihonCategory {
+  DACHI
+  TSUKI_WAZA
+  UCHI_WAZA
+  GERI_WAZA
+  UKE_WAZA
+  RENZOKU_WAZA
+  IDO_KIHON
+}
+
+// Sub-categorías dentro de Kumite (solo aplican cuando category = KUMITE).
+enum KumiteCategory {
+  GOHON_KUMITE
+  SANBON_KUMITE
+  IPPON_KUMITE
+  JIYU_IPPON_KUMITE
+  JIYU_KUMITE
+  SHIAI_KUMITE
+}
+
 model Enrollment {
   id               String                @id @default(cuid())
   origin           EnrollmentOrigin
@@ -413,6 +434,8 @@ model Technique {
   description      String?
   category         TechniqueCategory  @default(KIHON)
   order            Int                @default(0) // orden pedagógico dentro del grado
+  kihonCategory    KihonCategory? // kihon: sub-categoría (Dachi, Tsuki Waza...)
+  kumiteCategory   KumiteCategory? // kumite: sub-categoría (Ippon, Jiyu...)
   movementsCount   Int? // katas: movimientos; kumite: pasos/técnicas; bunkai: secuencias
   embusen          String? // patrón de desplazamiento (I, H, Cruz...) — solo kata
   difficulty       String? // Básica, Intermedia, Avanzada

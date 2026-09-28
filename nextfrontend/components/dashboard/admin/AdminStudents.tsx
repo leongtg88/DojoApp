@@ -654,9 +654,9 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 						{isExporting ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <FileSpreadsheet aria-hidden="true" className="size-4" />}
 						<span className={expandedAction === 'export' ? 'inline' : 'hidden sm:inline'}>{isExporting ? 'Exportando…' : 'Exportar Excel'}</span>
 					</button>
-					<button type="button" aria-label="Asignar katas" onClick={() => handleActionClick('katas', () => setIsBulkKataOpen(true))} disabled={students.length === 0} className="inline-flex items-center gap-2 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-4 py-2.5 text-sm font-semibold text-accent-text transition-colors hover:bg-cyan-900/50 disabled:opacity-50">
+					<button type="button" aria-label="Asignar técnicas" onClick={() => handleActionClick('katas', () => setIsBulkKataOpen(true))} disabled={students.length === 0} className="inline-flex items-center gap-2 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-4 py-2.5 text-sm font-semibold text-accent-text transition-colors hover:bg-cyan-900/50 disabled:opacity-50">
 						<BookOpenCheck aria-hidden="true" className="size-4" />
-						<span className={expandedAction === 'katas' ? 'inline' : 'hidden sm:inline'}>Asignar katas</span>
+						<span className={expandedAction === 'katas' ? 'inline' : 'hidden sm:inline'}>Asignar técnicas</span>
 					</button>
 					<button type="button" aria-label="Nuevo alumno" onClick={() => handleActionClick('create', () => setIsCreateOpen(true))} className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] hover:bg-cyan-400">
 						<Plus className="size-4" /><span className={expandedAction === 'create' ? 'inline' : 'hidden sm:inline'}>Nuevo alumno</span>

@@ -62,8 +62,8 @@ const builders: Record<NotificationType, NotificationBuilder> = {
     const rankName = readString(data, 'rankName')
     const suffix = rankName ? ` para ${rankName}` : ''
     return {
-      title: 'Katas desbloqueadas',
-      body: `${studentName}, tienes ${count} ${pluralize(count, 'kata nuevo', 'katas nuevos')} que practicar${suffix}.`,
+      title: 'Técnicas desbloqueadas',
+      body: `${studentName}, tienes ${count} ${pluralize(count, 'técnica nueva', 'técnicas nuevas')} que practicar${suffix}.`,
       link: PROGRESS_LINK,
       priority: 'ACTION',
     }

@@ -11,6 +11,8 @@ const updateTechniqueSchema = z.object({
   description: z.string().trim().max(2_000).optional().nullable(),
   category: z.enum(['KIHON', 'KATA', 'KUMITE', 'BUNKAI']).optional(),
   order: z.number().int().min(0).optional(),
+  kihonCategory: z.enum(['DACHI', 'TSUKI_WAZA', 'UCHI_WAZA', 'GERI_WAZA', 'UKE_WAZA', 'RENZOKU_WAZA', 'IDO_KIHON']).optional().nullable(),
+  kumiteCategory: z.enum(['GOHON_KUMITE', 'SANBON_KUMITE', 'IPPON_KUMITE', 'JIYU_IPPON_KUMITE', 'JIYU_KUMITE', 'SHIAI_KUMITE']).optional().nullable(),
   movementsCount: z.number().int().min(0).optional().nullable(),
   embusen: z.string().trim().max(50).optional().nullable(),
   difficulty: z.string().trim().max(50).optional().nullable(),
@@ -74,6 +76,16 @@ export async function PATCH(request: Request, { params }: TechniqueRouteContext)
   const data = Object.fromEntries(
     Object.entries(result.data).filter(([, value]) => value !== undefined),
   )
+
+  // La sub-categoría de Kihon solo tiene sentido cuando la categoría es KIHON.
+  if (result.data.category && result.data.category !== 'KIHON') {
+    data.kihonCategory = null
+  }
+
+  // La sub-categoría de Kumite solo tiene sentido cuando la categoría es KUMITE.
+  if (result.data.category && result.data.category !== 'KUMITE') {
+    data.kumiteCategory = null
+  }
 
   const updated = await db.technique.update({ where: { id: technique.id }, data })
 

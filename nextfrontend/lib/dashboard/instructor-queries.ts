@@ -409,6 +409,8 @@ export async function getInstructorTechniqueReview(
         name: technique.name,
         description: technique.description,
         category: technique.category,
+        kihonCategory: technique.kihonCategory,
+        kumiteCategory: technique.kumiteCategory,
         level: level?.level ?? null,
         beltColor: level?.beltColor ?? null,
         beltSecondaryColor: level?.beltSecondaryColor ?? null,

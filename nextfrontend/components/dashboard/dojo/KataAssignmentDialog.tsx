@@ -3,7 +3,17 @@
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AlertTriangle, BookOpen, Check, Loader2, Lock, Search, X } from 'lucide-react'
+import { TECHNIQUE_CATEGORY_LABELS } from '@/lib/dashboard/technique-format'
+import { KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
+import { KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
 import type { AdminTechniqueSummary } from '@/types/dashboard'
+
+function techniqueCategoryLabel(technique: AdminTechniqueSummary): string {
+	const label = TECHNIQUE_CATEGORY_LABELS[technique.category]
+	if (technique.category === 'KIHON' && technique.kihonCategory) return `${label} · ${KIHON_CATEGORY_SHORT_LABELS[technique.kihonCategory]}`
+	if (technique.category === 'KUMITE' && technique.kumiteCategory) return `${label} · ${KUMITE_CATEGORY_SHORT_LABELS[technique.kumiteCategory]}`
+	return label
+}
 
 export interface AssignedTechniqueRef {
 	id: string
@@ -44,7 +54,7 @@ export function KataAssignmentDialog({ studentId, studentName, isOpen, onClose, 
 		const term = searchTerm.trim().toLocaleLowerCase('es')
 		if (!term) return availableTechniques
 		return availableTechniques.filter((technique) =>
-			[technique.name, technique.kanji ?? '', technique.japaneseName ?? '', technique.description ?? '', technique.category].some((value) => value.toLocaleLowerCase('es').includes(term)),
+			[technique.name, technique.kanji ?? '', technique.japaneseName ?? '', technique.description ?? '', techniqueCategoryLabel(technique)].some((value) => value.toLocaleLowerCase('es').includes(term)),
 		)
 	}, [availableTechniques, searchTerm])
 
@@ -69,7 +79,7 @@ export function KataAssignmentDialog({ studentId, studentName, isOpen, onClose, 
 				if (!response.ok) throw new Error(payload.error ?? 'No fue posible actualizar la asignación.')
 				router.refresh()
 				if (payload.skipped && payload.skipped > 0) {
-					setNotice(`${payload.skipped} kata(s) revisada(s) o evaluada(s) se conservaron en el expediente y no se pueden quitar.`)
+					setNotice(`${payload.skipped} técnica(s) revisada(s) o evaluada(s) se conservaron en el expediente y no se pueden quitar.`)
 					return
 				}
 				onClose()
@@ -87,7 +97,7 @@ export function KataAssignmentDialog({ studentId, studentName, isOpen, onClose, 
 							<BookOpen className="h-5 w-5" />
 						</div>
 						<div>
-							<h3 className="text-sm font-bold text-ink">Asignar katas al expediente</h3>
+							<h3 className="text-sm font-bold text-ink">Asignar técnicas al expediente</h3>
 							<p className="text-xs text-ink-3">Destino: {studentName}</p>
 						</div>
 					</div>
@@ -98,11 +108,11 @@ export function KataAssignmentDialog({ studentId, studentName, isOpen, onClose, 
 
 				<div className="flex shrink-0 flex-col gap-2.5 border-b border-edge p-4">
 					<p className="rounded-md border border-edge bg-surface-1 px-3 py-2 text-[11px] leading-relaxed text-ink-3">
-						Esto actualiza el <span className="font-semibold text-ink">expediente técnico</span> del alumno. Las katas <span className="font-semibold text-ink">requeridas por grado</span> se editan en <span className="font-semibold text-accent">Grados y katas</span>.
+						Esto actualiza el <span className="font-semibold text-ink">expediente técnico</span> del alumno. Las técnicas <span className="font-semibold text-ink">requeridas por grado</span> se editan en <span className="font-semibold text-accent">Grados y técnicas</span>.
 					</p>
 					<div className="relative">
 						<Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-4" />
-						<input type="text" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Buscar kata por nombre, linaje o kanji..." className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-4 text-xs text-ink placeholder:text-ink-4 focus:border-cyan-500 focus:outline-none" />
+						<input type="text" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Buscar técnica por nombre o kanji..." className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-4 text-xs text-ink placeholder:text-ink-4 focus:border-cyan-500 focus:outline-none" />
 					</div>
 					<div className="flex items-center justify-between px-0.5 text-xs">
 						<span className="font-bold text-accent">{selectedIds.length} seleccionadas de {availableTechniques.length} disponibles</span>
@@ -133,7 +143,7 @@ export function KataAssignmentDialog({ studentId, studentName, isOpen, onClose, 
 								</div>
 								<div className="ml-2 flex shrink-0 items-center gap-2">
 									{isLocked && <span className="inline-flex items-center gap-1 rounded border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-ok-text"><Lock className="size-3" />Revisada</span>}
-									<span className="rounded border border-edge-strong bg-surface-2 px-2 py-0.5 text-[10px] font-semibold text-ink-2">{technique.category}</span>
+									<span className="rounded border border-edge-strong bg-surface-2 px-2 py-0.5 text-[10px] font-semibold text-ink-2">{techniqueCategoryLabel(technique)}</span>
 								</div>
 							</label>
 						)
