@@ -24,11 +24,11 @@ import type {
   MonthAbsence,
   NextExamInfo,
   KataProgressItem,
-  TechniqueCategory,
   TechniqueStatus,
   AttendanceRecord,
   MonthlyProgressInfo,
-  StudentPracticeGradeGroup,
+  StudentPracticeKataLevel,
+  StudentPracticeTechniqueOption,
 } from '@/types/dashboard'
 
 const MAX_ABSENCES_PER_MONTH = 2
@@ -251,7 +251,7 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
         select: {
           practiceRepetitions: true,
           technique: {
-            select: { id: true, name: true, category: true, repetitionsCount: true, movementsCount: true },
+            select: { id: true, name: true, japaneseName: true, category: true, repetitionsCount: true, movementsCount: true, kihonCategory: true, kumiteCategory: true },
           },
         },
         orderBy: { technique: { name: 'asc' } },
@@ -290,75 +290,63 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
     })),
   }))
 
-  // Syllabus completo de la escuela, agrupado por grado (ambos programas), para
-  // que el alumno pueda registrar repeticiones de cualquier técnica del programa,
-  // no sólo las asignadas a su expediente. Las no asignadas se guardan como
-  // registro libre (diario) y no alteran el expediente.
+  // Todo el catálogo de la escuela (más el global). El alumno puede registrar
+  // repeticiones de cualquier técnica: las que están en su expediente suman a su
+  // experiencia; las demás quedan como registro libre (no tocan el expediente).
+  const schoolTechniques = await db.technique.findMany({
+    where: { OR: [{ schoolId: student.schoolId }, { schoolId: null }] },
+    orderBy: [{ category: 'asc' }, { name: 'asc' }],
+    select: {
+      id: true,
+      name: true,
+      japaneseName: true,
+      category: true,
+      kihonCategory: true,
+      kumiteCategory: true,
+      repetitionsCount: true,
+      movementsCount: true,
+      beltRankKatas: {
+        select: {
+          order: true,
+          beltRank: { select: { name: true, program: true, order: true, beltColor: true, beltSecondaryColor: true } },
+        },
+      },
+    },
+  })
+
   const assignedRepetitions = new Map(
     student.techniques.map(({ practiceRepetitions, technique }) => [technique.id, practiceRepetitions]),
   )
 
-  const techniqueOption = (technique: {
-    id: string
-    name: string
-    category: TechniqueCategory
-    repetitionsCount: number | null
-    movementsCount: number | null
-  }) => ({
+  const programs: Array<'YOUTH' | 'ADULT'> = ['YOUTH', 'ADULT']
+
+  const practiceTechniques: StudentPracticeTechniqueOption[] = schoolTechniques.map((technique) => ({
     id: technique.id,
     name: technique.name,
+    japaneseName: technique.japaneseName,
     category: technique.category,
+    kihonCategory: technique.kihonCategory,
+    kumiteCategory: technique.kumiteCategory,
     targetRepetitions: targetRepetitionsFor(technique),
     practiceRepetitions: assignedRepetitions.get(technique.id) ?? 0,
     assigned: assignedRepetitions.has(technique.id),
-  })
-
-  const schoolFilter = { OR: [{ schoolId: student.schoolId }, { schoolId: null }] }
-
-  const [grades, looseTechniques] = await Promise.all([
-    db.beltRank.findMany({
-      where: schoolFilter,
-      orderBy: [{ program: 'asc' }, { order: 'asc' }],
-      select: {
-        id: true,
-        name: true,
-        program: true,
-        order: true,
-        kyuDan: true,
-        katas: {
-          orderBy: { order: 'asc' },
-          select: {
-            kata: { select: { id: true, name: true, category: true, repetitionsCount: true, movementsCount: true } },
-          },
-        },
-      },
-    }),
-    db.technique.findMany({
-      where: { ...schoolFilter, beltRankKatas: { none: {} } },
-      orderBy: [{ category: 'asc' }, { name: 'asc' }],
-      select: { id: true, name: true, category: true, repetitionsCount: true, movementsCount: true },
-    }),
-  ])
-
-  const availableTechniqueGroups: StudentPracticeGradeGroup[] = grades.map((grade) => ({
-    key: grade.id,
-    label: grade.name,
-    program: grade.program,
-    order: grade.order,
-    kyuDan: grade.kyuDan,
-    techniques: grade.katas.map(({ kata }) => techniqueOption(kata)),
+    kataLevels: technique.category === 'KATA'
+      ? programs
+        .map((program) => {
+          const info = introLevelFromBeltRankKatas(technique.beltRankKatas, program)
+          if (!info) return null
+          return {
+            program,
+            rankName: info.rankName,
+            order: info.gradeOrder,
+            level: info.level,
+            beltColor: info.beltColor,
+            beltSecondaryColor: info.beltSecondaryColor,
+          } satisfies StudentPracticeKataLevel
+        })
+        .filter((entry): entry is StudentPracticeKataLevel => entry !== null)
+      : [],
   }))
-
-  if (looseTechniques.length > 0) {
-    availableTechniqueGroups.push({
-      key: 'other',
-      label: 'Otras técnicas',
-      program: null,
-      order: Number.MAX_SAFE_INTEGER,
-      kyuDan: null,
-      techniques: looseTechniques.map(techniqueOption),
-    })
-  }
 
   return {
     summary: {
@@ -369,7 +357,7 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
       attendancePercent,
     },
     records,
-    availableTechniqueGroups,
+    practiceTechniques,
   }
 }
 

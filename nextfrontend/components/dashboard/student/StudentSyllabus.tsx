@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { Award, CheckCheck, CircleDashed, Info, Repeat, Search, Star } from 'lucide-react'
-import { KIHON_CATEGORIES, KIHON_CATEGORY_LABELS, KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
-import { KUMITE_CATEGORIES, KUMITE_CATEGORY_LABELS, KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
+import { KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
+import { KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
+import { buildTechniqueSections } from '@/lib/dashboard/technique-sections'
 import type { StudentTechnique, TechniqueCategory } from '@/types/dashboard'
 
 interface StudentSyllabusProps {
@@ -18,54 +19,6 @@ const categories: { id: TechniqueCategory; label: string; accent: string }[] = [
 ]
 
 const categoryById = new Map(categories.map(({ id, label, accent }) => [id, { label, accent }]))
-const KIHON_ACCENT = 'bg-[#00617f]'
-const KUMITE_ACCENT = 'bg-[#dc2626]'
-
-interface SyllabusSection {
-    key: string
-    label: string
-    accent: string
-    items: StudentTechnique[]
-}
-
-/** Dentro de Kihon y Kumite agrupa por sub-categoría; el resto por categoría superior. */
-function buildSections(techniques: StudentTechnique[]): SyllabusSection[] {
-    const sections: SyllabusSection[] = []
-
-    const kihon = techniques.filter(({ category }) => category === 'KIHON')
-    for (const subCategory of KIHON_CATEGORIES) {
-        const items = kihon.filter((technique) => technique.kihonCategory === subCategory)
-        if (items.length > 0) {
-            sections.push({ key: `KIHON:${subCategory}`, label: KIHON_CATEGORY_LABELS[subCategory], accent: KIHON_ACCENT, items })
-        }
-    }
-    const uncategorized = kihon.filter((technique) => !technique.kihonCategory)
-    if (uncategorized.length > 0) {
-        sections.push({ key: 'KIHON:__none__', label: 'Kihon (sin categoría)', accent: KIHON_ACCENT, items: uncategorized })
-    }
-
-    const kumite = techniques.filter(({ category }) => category === 'KUMITE')
-    for (const subCategory of KUMITE_CATEGORIES) {
-        const items = kumite.filter((technique) => technique.kumiteCategory === subCategory)
-        if (items.length > 0) {
-            sections.push({ key: `KUMITE:${subCategory}`, label: KUMITE_CATEGORY_LABELS[subCategory], accent: KUMITE_ACCENT, items })
-        }
-    }
-    const uncategorizedKumite = kumite.filter((technique) => !technique.kumiteCategory)
-    if (uncategorizedKumite.length > 0) {
-        sections.push({ key: 'KUMITE:__none__', label: 'Kumite (sin categoría)', accent: KUMITE_ACCENT, items: uncategorizedKumite })
-    }
-
-    for (const category of categories) {
-        if (category.id === 'KIHON' || category.id === 'KUMITE') continue
-        const items = techniques.filter((technique) => technique.category === category.id)
-        if (items.length > 0) {
-            sections.push({ key: category.id, label: category.label, accent: category.accent, items })
-        }
-    }
-
-    return sections
-}
 
 export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
     const [activeCategory, setActiveCategory] = useState<TechniqueCategory | 'ALL'>('ALL')
@@ -83,7 +36,7 @@ export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
         return matchesStatus && matchesSearch
     })
     const approvedCount = techniques.filter(({ status }) => status === 'APPROVED').length
-    const sections = buildSections(filteredTechniques)
+    const sections = buildTechniqueSections(filteredTechniques)
 
     return (
         <section className="mt-8">

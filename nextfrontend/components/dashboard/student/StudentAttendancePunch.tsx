@@ -6,17 +6,25 @@ import {
   AlertCircle,
   Calendar,
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
   Clock,
   Hourglass,
   Pencil,
   Plus,
   Repeat,
   Save,
+  Search,
   ShieldCheck,
   Trash2,
   X,
 } from 'lucide-react'
-import type { AttendanceRecord, PracticePlace, StudentAttendancePunchData, StudentPracticeGradeGroup } from '@/types/dashboard'
+import type { AttendanceRecord, KihonCategory, KumiteCategory, PracticePlace, StudentAttendancePunchData, StudentPracticeTechniqueOption, TechniqueCategory } from '@/types/dashboard'
+import { TECHNIQUE_CATEGORY_LABELS } from '@/lib/dashboard/technique-format'
+import { KIHON_CATEGORIES, KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
+import { KUMITE_CATEGORIES, KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
+import { buildTechniqueSections } from '@/lib/dashboard/technique-sections'
+import { KataBeltChip } from '@/components/dashboard/shared/KataBeltChip'
 import { formatDateTime } from '@/lib/format/datetime'
 
 interface StudentAttendancePunchProps {
@@ -37,12 +45,6 @@ const PROGRAM_LABELS: Record<'ADULT' | 'YOUTH', string> = {
   YOUTH: 'Niños',
 }
 
-function gradeGroupLabel(group: StudentPracticeGradeGroup): string {
-  const programPrefix = group.program ? `${PROGRAM_LABELS[group.program]} · ` : ''
-  const kyuSuffix = group.kyuDan ? ` (${group.kyuDan})` : ''
-  return `${programPrefix}${group.label}${kyuSuffix}`
-}
-
 const STATUS_LABELS: Record<'CONFIRMED' | 'PENDING' | 'REJECTED' | 'JUSTIFIED', string> = {
   CONFIRMED: 'Confirmada',
   PENDING: 'Esperando al Sensei',
@@ -54,6 +56,98 @@ function sessionLabel(sessionType: string | null): string {
   return SESSION_OPTIONS.find(({ value }) => value === sessionType)?.label ?? sessionType ?? 'Clase'
 }
 
+interface KataLevelGroup {
+  key: string
+  programLabel: string
+  rankName: string
+  order: number
+  level: string | null
+  beltColor: string | null
+  beltSecondaryColor: string | null
+  items: StudentPracticeTechniqueOption[]
+}
+
+/** Agrupa las katas por grado/cinturón (acordeón) y programa. Si `program` está
+ *  activo ('YOUTH'/'ADULT'), sólo crea grupos de ese programa. */
+function buildKataLevelGroups(katas: StudentPracticeTechniqueOption[], program: 'ALL' | 'YOUTH' | 'ADULT'): KataLevelGroup[] {
+  const map = new Map<string, KataLevelGroup>()
+  const ungrouped: StudentPracticeTechniqueOption[] = []
+
+  for (const kata of katas) {
+    const levels = program === 'ALL' ? kata.kataLevels : kata.kataLevels.filter((level) => level.program === program)
+    if (levels.length === 0) {
+      if (kata.kataLevels.length === 0) ungrouped.push(kata)
+      continue
+    }
+    for (const level of levels) {
+      const key = `${level.program}:${level.order}`
+      let group = map.get(key)
+      if (!group) {
+        group = {
+          key,
+          programLabel: PROGRAM_LABELS[level.program],
+          rankName: level.rankName,
+          order: level.order,
+          level: level.level,
+          beltColor: level.beltColor,
+          beltSecondaryColor: level.beltSecondaryColor,
+          items: [],
+        }
+        map.set(key, group)
+      }
+      group.items.push(kata)
+    }
+  }
+
+  const groups = [...map.values()].sort((a, b) => a.programLabel.localeCompare(b.programLabel) || a.order - b.order)
+
+  if (ungrouped.length > 0) {
+    groups.push({ key: 'KATA:__none__', programLabel: '', rankName: 'Sin grado', order: Number.MAX_SAFE_INTEGER, level: null, beltColor: null, beltSecondaryColor: null, items: ungrouped })
+  }
+
+  return groups
+}
+
+function PracticeTechniqueRow({ technique, checked, reps, onToggle, onRepsChange }: {
+  technique: StudentPracticeTechniqueOption
+  checked: boolean
+  reps: string
+  onToggle: () => void
+  onRepsChange: (value: string) => void
+}) {
+  return (
+    <li className={`flex items-center gap-2.5 rounded-lg border px-3 py-2 transition-colors ${checked ? 'border-cyan-500/50 bg-cyan-500/5' : 'border-edge bg-surface-2'}`}>
+      <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-2.5">
+        <input
+          checked={checked}
+          className="size-4 shrink-0 accent-cyan-500"
+          onChange={onToggle}
+          type="checkbox"
+        />
+        <span className="flex min-w-0 flex-1 flex-col">
+          <span className="flex min-w-0 items-baseline gap-1.5">
+            <span className="min-w-0 truncate text-sm font-semibold text-ink">{technique.name}</span>
+            {technique.japaneseName && <span className="hidden shrink-0 text-xs font-normal text-ink-3 sm:inline">{technique.japaneseName}</span>}
+          </span>
+          <span className={`text-[11px] font-semibold ${technique.assigned ? 'text-ok-text' : 'text-ink-4'}`}>
+            {technique.assigned ? 'En tu expediente' : 'Práctica libre'}
+          </span>
+        </span>
+      </label>
+      <input
+        aria-label={`Repeticiones de ${technique.name}`}
+        className="w-14 shrink-0 rounded-md border border-edge-strong bg-surface-2 px-2 py-1.5 text-center text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500 disabled:opacity-40"
+        disabled={!checked}
+        min={1}
+        onChange={(event) => onRepsChange(event.target.value)}
+        placeholder="Reps"
+        type="number"
+        value={reps}
+      />
+    </li>
+  )
+}
+
 export function StudentAttendancePunch({ data, studentId }: StudentAttendancePunchProps) {
   const router = useRouter()
   const { summary, records } = data
@@ -63,9 +157,18 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
   const [sessionType, setSessionType] = useState<string>('class')
   const [notes, setNotes] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [practiceLines, setPracticeLines] = useState<Array<{ techniqueId: string; repetitions: string; place: PracticePlace }>>([])
+  const [practiceReps, setPracticeReps] = useState<Record<string, string>>({})
+  const [practicePlace, setPracticePlace] = useState<PracticePlace>('DOJO')
+  const [isPickerOpen, setIsPickerOpen] = useState(false)
   const [showPunchSuccess, setShowPunchSuccess] = useState(false)
   const [punchWarning, setPunchWarning] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState<'ALL' | TechniqueCategory>('ALL')
+  const [kihonFilter, setKihonFilter] = useState<'ALL' | KihonCategory>('ALL')
+  const [kumiteFilter, setKumiteFilter] = useState<'ALL' | KumiteCategory>('ALL')
+  const [scopeFilter, setScopeFilter] = useState<'ALL' | 'ASSIGNED'>('ALL')
+  const [programFilter, setProgramFilter] = useState<'ALL' | 'YOUTH' | 'ADULT'>('ALL')
+  const [openKataLevels, setOpenKataLevels] = useState<Record<string, boolean>>({})
 
   const pad = (value: number) => String(value).padStart(2, '0')
   const localNow = new Date()
@@ -84,13 +187,59 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
 
   const quickHours = [1.0, 1.5, 2.0, 2.5]
 
-  const visiblePracticeLines = practiceLines
-    .map((line) => ({
-      techniqueId: line.techniqueId,
-      repetitions: Number.parseInt(line.repetitions, 10),
-      place: line.place,
-    }))
+  const practiceLogs = Object.entries(practiceReps)
+    .map(([techniqueId, repetitions]) => ({ techniqueId, repetitions: Number.parseInt(repetitions, 10), place: practicePlace }))
     .filter((line) => line.techniqueId && Number.isFinite(line.repetitions) && line.repetitions > 0)
+
+  const selectedCount = Object.values(practiceReps).filter((value) => Number.parseInt(value, 10) > 0).length
+  const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
+
+  const matchesFilter = (technique: StudentPracticeTechniqueOption): boolean => {
+    const matchesCategory = categoryFilter === 'ALL' || technique.category === categoryFilter
+    const matchesKihon = categoryFilter !== 'KIHON' || kihonFilter === 'ALL' || technique.kihonCategory === kihonFilter
+    const matchesKumite = categoryFilter !== 'KUMITE' || kumiteFilter === 'ALL' || technique.kumiteCategory === kumiteFilter
+    const matchesSearch = !normalizedSearch || [
+      technique.name,
+      technique.japaneseName ?? '',
+      TECHNIQUE_CATEGORY_LABELS[technique.category],
+      technique.kihonCategory ? KIHON_CATEGORY_SHORT_LABELS[technique.kihonCategory] : '',
+      technique.kumiteCategory ? KUMITE_CATEGORY_SHORT_LABELS[technique.kumiteCategory] : '',
+    ].some((value) => value.toLocaleLowerCase('es').includes(normalizedSearch))
+    return matchesCategory && matchesKihon && matchesKumite && matchesSearch
+  }
+
+  const filteredTechniques = data.practiceTechniques
+    .filter((technique) => scopeFilter === 'ALL' || technique.assigned)
+    .filter((technique) => {
+      if (programFilter === 'ALL') return true
+      // Con un programa activo sólo se muestran katas: las que tienen nivel de
+      // ese programa y las katas sin grado (se conservan siempre).
+      if (technique.category !== 'KATA') return false
+      return technique.kataLevels.length === 0 || technique.kataLevels.some((level) => level.program === programFilter)
+    })
+    .filter(matchesFilter)
+  const sections = buildTechniqueSections(filteredTechniques.filter((technique) => technique.category !== 'KATA'))
+  const kataGroups = buildKataLevelGroups(filteredTechniques.filter((technique) => technique.category === 'KATA'), programFilter)
+  const searchActive = normalizedSearch.length > 0
+
+  const toggleKataLevel = (key: string) => {
+    setOpenKataLevels((current) => ({ ...current, [key]: !current[key] }))
+  }
+
+  const toggleTechnique = (techniqueId: string) => {
+    setPracticeReps((current) => {
+      if (techniqueId in current) {
+        const next = { ...current }
+        delete next[techniqueId]
+        return next
+      }
+      return { ...current, [techniqueId]: '' }
+    })
+  }
+
+  const setReps = (techniqueId: string, value: string) => {
+    setPracticeReps((current) => ({ ...current, [techniqueId]: value }))
+  }
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -112,7 +261,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
         // coincida con la que el alumno seleccionó, sin importar la zona del servidor.
         date: new Date(`${punchDate}T${punchTime}`).toISOString(),
         notes: notes.trim(),
-        ...(visiblePracticeLines.length > 0 ? { practiceLogs: visiblePracticeLines } : {}),
+        ...(practiceLogs.length > 0 ? { practiceLogs } : {}),
       }),
     })
     setIsSubmitting(false)
@@ -121,7 +270,8 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
       const payload = await response.json().catch(() => null) as { practiceWarning?: string } | null
       setPunchWarning(payload?.practiceWarning ?? null)
       setNotes('')
-      setPracticeLines([])
+      setPracticeReps({})
+      setPracticePlace('DOJO')
       const now = new Date()
       setPunchDate(`${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`)
       setPunchTime(`${pad(now.getHours())}:${pad(now.getMinutes())}`)
@@ -289,74 +439,150 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
             </div>
           </div>
 
-          {data.availableTechniqueGroups.some((group) => group.techniques.length > 0) && (
-            <div className="rounded-lg border border-edge bg-surface-1 p-3.5">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-ink-2">
-                  <Repeat className="size-4 text-accent" aria-hidden="true" />Repeticiones de técnicas
-                </p>
+          <div className="rounded-lg border border-edge bg-surface-1 p-3.5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-ink-2">
+                <Repeat className="size-4 text-accent" aria-hidden="true" />Repeticiones de técnicas
+              </p>
+              {data.practiceTechniques.length > 0 && (
                 <button
+                  aria-expanded={isPickerOpen}
                   className="inline-flex items-center gap-1 rounded-md border border-cyan-500/40 bg-cyan-500/10 px-2.5 py-1.5 text-xs font-bold text-accent-text transition-colors hover:bg-cyan-500/20"
-                  onClick={() => setPracticeLines((current) => [...current, { techniqueId: '', repetitions: '', place: 'DOJO' }])}
+                  onClick={() => setIsPickerOpen((open) => !open)}
                   type="button"
                 >
-                  <Plus className="size-3.5" aria-hidden="true" />Añadir
+                  {isPickerOpen ? <ChevronUp className="size-3.5" aria-hidden="true" /> : <ChevronDown className="size-3.5" aria-hidden="true" />}
+                  {isPickerOpen ? 'Ocultar' : 'Añadir'}
+                  {selectedCount > 0 && <span className="ml-1 rounded-full bg-cyan-500 px-1.5 text-[10px] font-bold text-[#0d1117]">{selectedCount}</span>}
                 </button>
-              </div>
-              <p className="mt-1 text-[11px] text-ink-4">Opcional. Registra cuántas repeticiones hiciste por técnica, en el dojo o fuera. Puedes elegir cualquier técnica del programa, incluso de otro nivel. No afecta tu examen de grado.</p>
-              {practiceLines.length > 0 && (
-                <div className="mt-3 space-y-2">
-                  {practiceLines.map((line, index) => (
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center" key={index}>
-                      <select
-                        className="min-w-0 flex-1 rounded-md border border-edge-strong bg-surface-2 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
-                        onChange={(event) => setPracticeLines((current) => current.map((item, itemIndex) => (itemIndex === index ? { ...item, techniqueId: event.target.value } : item)))}
-                        value={line.techniqueId}
-                      >
-                        <option value="">Selecciona técnica</option>
-                        {data.availableTechniqueGroups.map((group) => {
-                          if (group.techniques.length === 0) return null
-                          return (
-                            <optgroup key={group.key} label={gradeGroupLabel(group)}>
-                              {group.techniques.map((technique) => (
-                                <option key={technique.id} value={technique.id}>
-                                  {technique.name}{technique.assigned ? ` · ${technique.practiceRepetitions} rep.` : ''}
-                                </option>
-                              ))}
-                            </optgroup>
-                          )
-                        })}
-                      </select>
-                      <input
-                        className="w-24 rounded-md border border-edge-strong bg-surface-2 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
-                        min={1}
-                        onChange={(event) => setPracticeLines((current) => current.map((item, itemIndex) => (itemIndex === index ? { ...item, repetitions: event.target.value } : item)))}
-                        placeholder="Reps"
-                        type="number"
-                        value={line.repetitions}
-                      />
-                      <select
-                        className="rounded-md border border-edge-strong bg-surface-2 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
-                        onChange={(event) => setPracticeLines((current) => current.map((item, itemIndex) => (itemIndex === index ? { ...item, place: event.target.value as PracticePlace } : item)))}
-                        value={line.place}
-                      >
-                        <option value="DOJO">En el dojo</option>
-                        <option value="FUERA">Fuera del dojo</option>
-                      </select>
-                      <button
-                        aria-label="Quitar repeticiones"
-                        className="self-start rounded border border-edge p-2 text-ink-4 transition-colors hover:border-red-500/40 hover:text-danger-text sm:self-center"
-                        onClick={() => setPracticeLines((current) => current.filter((_, itemIndex) => itemIndex !== index))}
-                        type="button"
-                      >
-                        <Trash2 className="size-3.5" aria-hidden="true" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
               )}
             </div>
-          )}
+            {data.practiceTechniques.length === 0 ? (
+              <p className="mt-3 rounded-md border border-dashed border-edge-strong px-3 py-4 text-center text-xs text-ink-4">Aún no hay técnicas en el catálogo de la escuela. Pídele a tu sensei que las cree para poder registrar repeticiones.</p>
+            ) : isPickerOpen ? (
+              <>
+                <p className="mt-1 text-[11px] text-ink-4">Marca las técnicas que practicaste y escribe sus repeticiones. <span className="font-semibold text-ok-text">Solo las que están en tu expediente</span> suman a tu progreso; las demás se guardan como práctica libre y no cuentan para tu experiencia.</p>
+                <div className="mt-3 flex flex-col gap-2 rounded-md border border-edge-strong bg-surface-1 p-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-ink-3">Mostrar</span>
+                    <div className="flex items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
+                      {([['ALL', 'Todo el catálogo'], ['ASSIGNED', 'Solo asignadas']] as const).map(([value, label]) => (
+                        <button aria-pressed={scopeFilter === value} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${scopeFilter === value ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={value} onClick={() => setScopeFilter(value)} type="button">{label}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-ink-3">Programa</span>
+                    <div className="flex items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
+                      {([['ALL', 'Todos'], ['YOUTH', 'Niños'], ['ADULT', 'Adultos']] as const).map(([value, label]) => (
+                        <button aria-pressed={programFilter === value} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${programFilter === value ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={value} onClick={() => setProgramFilter(value)} type="button">{label}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-ink-3">Lugar</span>
+                    <div className="flex items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
+                      {([['DOJO', 'En el dojo'], ['FUERA', 'Fuera del dojo']] as const).map(([value, label]) => (
+                        <button aria-pressed={practicePlace === value} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${practicePlace === value ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={value} onClick={() => setPracticePlace(value)} type="button">{label}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="relative block sm:w-64" htmlFor="practice-technique-search">
+                      <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-accent" />
+                      <input className="w-full rounded-md border border-edge-strong bg-surface-2 py-1.5 pl-9 pr-3 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="practice-technique-search" onChange={(event) => setSearchTerm(event.target.value)} placeholder="Buscar técnica" type="search" value={searchTerm} />
+                    </label>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {([['ALL', 'Todas'], ['KATA', 'Katas'], ['KIHON', 'Kihon'], ['KUMITE', 'Kumite'], ['BUNKAI', 'Bunkai']] as const).map(([category, label]) => (
+                        <button aria-pressed={categoryFilter === category} className={`shrink-0 rounded-md border px-2.5 py-1 text-xs font-bold transition-colors ${categoryFilter === category ? 'border-cyan-500/50 bg-cyan-500/15 text-accent-text' : 'border-edge-strong bg-surface-1 text-ink-3 hover:border-edge-strong'}`} key={category} onClick={() => setCategoryFilter(category)} type="button">{label}</button>
+                      ))}
+                    </div>
+                  </div>
+                  {categoryFilter === 'KIHON' && (
+                    <div className="flex w-full flex-wrap items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
+                      <button aria-pressed={kihonFilter === 'ALL'} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${kihonFilter === 'ALL' ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} onClick={() => setKihonFilter('ALL')} type="button">Todas</button>
+                      {KIHON_CATEGORIES.map((option) => (
+                        <button aria-pressed={kihonFilter === option} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${kihonFilter === option ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={option} onClick={() => setKihonFilter(option)} type="button">{KIHON_CATEGORY_SHORT_LABELS[option]}</button>
+                      ))}
+                    </div>
+                  )}
+                  {categoryFilter === 'KUMITE' && (
+                    <div className="flex w-full flex-wrap items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
+                      <button aria-pressed={kumiteFilter === 'ALL'} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${kumiteFilter === 'ALL' ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} onClick={() => setKumiteFilter('ALL')} type="button">Todas</button>
+                      {KUMITE_CATEGORIES.map((option) => (
+                        <button aria-pressed={kumiteFilter === option} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${kumiteFilter === option ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={option} onClick={() => setKumiteFilter(option)} type="button">{KUMITE_CATEGORY_SHORT_LABELS[option]}</button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {sections.length === 0 && kataGroups.length === 0 ? (
+                  <p className="mt-3 rounded-md border border-dashed border-edge-strong px-3 py-4 text-center text-xs text-ink-4">
+                    {scopeFilter === 'ASSIGNED' ? 'No tienes técnicas asignadas que coincidan con los filtros.' : 'No hay técnicas que coincidan con los filtros.'}
+                  </p>
+                ) : (
+                  <div className="mt-3 space-y-4">
+                    {kataGroups.map((group) => {
+                      const isOpen = searchActive || Boolean(openKataLevels[group.key])
+                      return (
+                        <div className="overflow-hidden rounded-lg border border-edge bg-surface-2" key={group.key}>
+                          <button
+                            aria-expanded={isOpen}
+                            className="flex w-full items-center gap-2 px-3 py-2.5 text-left transition-colors hover:bg-surface-3/40"
+                            onClick={() => toggleKataLevel(group.key)}
+                            type="button"
+                          >
+                            {isOpen ? <ChevronUp className="size-4 shrink-0 text-ink-3" aria-hidden="true" /> : <ChevronDown className="size-4 shrink-0 text-ink-3" aria-hidden="true" />}
+                            <KataBeltChip level={group.level} beltColor={group.beltColor} beltSecondaryColor={group.beltSecondaryColor} />
+                            <span className="min-w-0 truncate text-xs font-bold uppercase tracking-wide text-ink-3">
+                              {group.programLabel ? `${group.programLabel} · ${group.rankName}` : group.rankName}
+                            </span>
+                            <span className="ml-auto shrink-0 text-[11px] text-ink-4">{group.items.length}</span>
+                          </button>
+                          {isOpen && (
+                            <ul className="space-y-2 border-t border-edge p-2">
+                              {group.items.map((technique) => (
+                                <PracticeTechniqueRow
+                                  checked={technique.id in practiceReps}
+                                  key={`${group.key}:${technique.id}`}
+                                  onRepsChange={(value) => setReps(technique.id, value)}
+                                  onToggle={() => toggleTechnique(technique.id)}
+                                  reps={practiceReps[technique.id] ?? ''}
+                                  technique={technique}
+                                />
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      )
+                    })}
+
+                    {sections.map((section) => (
+                      <div key={section.key}>
+                        <div className="flex items-center gap-2 px-1">
+                          <span aria-hidden="true" className={`h-3 w-1 rounded-full ${section.accent}`} />
+                          <h4 className="text-[11px] font-bold uppercase tracking-wide text-ink-3">{section.label}</h4>
+                          <span className="text-[11px] text-ink-4">{section.items.length}</span>
+                        </div>
+                        <ul className="mt-2 space-y-2">
+                          {section.items.map((technique) => (
+                            <PracticeTechniqueRow
+                              checked={technique.id in practiceReps}
+                              key={technique.id}
+                              onRepsChange={(value) => setReps(technique.id, value)}
+                              onToggle={() => toggleTechnique(technique.id)}
+                              reps={practiceReps[technique.id] ?? ''}
+                              technique={technique}
+                            />
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : null}
+          </div>
 
           <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-xs text-ink-3">

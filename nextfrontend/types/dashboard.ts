@@ -609,24 +609,28 @@ export interface AttendanceRecord {
 	}>
 }
 
+export interface StudentPracticeKataLevel {
+	program: 'ADULT' | 'YOUTH'
+	rankName: string
+	order: number
+	level: string | null
+	beltColor: string | null
+	beltSecondaryColor: string | null
+}
+
 export interface StudentPracticeTechniqueOption {
 	id: string
 	name: string
+	japaneseName: string | null
 	category: TechniqueCategory
+	kihonCategory: KihonCategory | null
+	kumiteCategory: KumiteCategory | null
 	targetRepetitions: number | null
 	practiceRepetitions: number
-	/** true si la técnica está asignada al expediente; false = registro libre (diario). */
+	/** true si está en el expediente del alumno; sólo esas suman a su experiencia. */
 	assigned: boolean
-}
-
-export interface StudentPracticeGradeGroup {
-	/** rankId del grado, o 'other' para técnicas sin grado asignado. */
-	key: string
-	label: string
-	program: 'ADULT' | 'YOUTH' | null
-	order: number
-	kyuDan: string | null
-	techniques: StudentPracticeTechniqueOption[]
+	/** Grados de introducción de la kata (uno por programa). Vacío si no es kata. */
+	kataLevels: StudentPracticeKataLevel[]
 }
 
 export interface StudentAttendancePunchData {
@@ -638,7 +642,7 @@ export interface StudentAttendancePunchData {
 		attendancePercent: number
 	}
 	records: AttendanceRecord[]
-	availableTechniqueGroups: StudentPracticeGradeGroup[]
+	practiceTechniques: StudentPracticeTechniqueOption[]
 }
 
 export interface InstructorAttendanceBoardData {
