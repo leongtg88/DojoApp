@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, type ReactNode } from 'react'
-import { usePathname } from 'next/navigation'
+import { useEffect, useState, type ReactNode } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 import { LogOut, Menu } from 'lucide-react'
 import type { DashboardRole } from '@/types/dashboard'
@@ -37,9 +37,32 @@ function resolveActiveRole(pathname: string, roles: DashboardRole[], primaryRole
 
 export function DashboardShell({ children, roles, primaryRole, userName, pendingEnrollmentCount, newStudentCount, unreadNotificationCount, familyMembers }: DashboardShellProps) {
     const pathname = usePathname()
+    const router = useRouter()
     const activeRole = resolveActiveRole(pathname, roles, primaryRole)
     const initials = (userName ?? 'Usuario').split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+    // Los layouts se preservan entre navegaciones del cliente, así que los
+    // contadores que se calculan en el servidor (p. ej. inscripciones
+    // pendientes) quedan con el valor viejo si otro dispositivo hizo cambios.
+    // Al volver la app a primer plano refrescamos los Server Components.
+    useEffect(() => {
+        let hiddenAt = 0
+
+        function handleVisibility() {
+            if (document.visibilityState === 'hidden') {
+                hiddenAt = Date.now()
+                return
+            }
+
+            if (Date.now() - hiddenAt > 1_000) {
+                router.refresh()
+            }
+        }
+
+        document.addEventListener('visibilitychange', handleVisibility)
+        return () => document.removeEventListener('visibilitychange', handleVisibility)
+    }, [router])
 
     function handleSignOut() {
         void signOut({ redirectTo: '/login' })

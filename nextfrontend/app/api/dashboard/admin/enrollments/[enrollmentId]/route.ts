@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
 import { recordAudit } from '@/lib/security/audit'
 import { deletePrivateDocuments } from '@/lib/document-storage'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 interface EnrollmentRouteContext {
@@ -48,6 +49,14 @@ export async function DELETE(_request: Request, { params }: EnrollmentRouteConte
   }
 
   await db.enrollment.delete({ where: { id: enrollment.id } })
+
+  // El contador de inscripciones pendientes vive en el layout del dashboard.
+  // Sin invalidar, otros clientes (p. ej. la PWA en mobile) pueden seguir
+  // mostrando el conteo anterior hasta un reload completo.
+  revalidatePath('/dashboard', 'layout')
+  revalidatePath('/dashboard/admin/inscripciones')
+  revalidatePath('/admin', 'layout')
+  revalidatePath('/admin/inscripciones')
 
   await recordAudit({
     actorId: session.user.id,

@@ -24,6 +24,7 @@ import { TECHNIQUE_CATEGORY_LABELS } from '@/lib/dashboard/technique-format'
 import { KIHON_CATEGORIES, KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
 import { KUMITE_CATEGORIES, KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
 import { buildTechniqueSections } from '@/lib/dashboard/technique-sections'
+import { KATA_BANDS, bandForOrder } from '@/lib/dashboard/kata-bands'
 import { formatDateTime } from '@/lib/format/datetime'
 
 interface StudentAttendancePunchProps {
@@ -61,25 +62,6 @@ interface KataBandGroup {
   programLabel: string
   label: string
   items: StudentPracticeTechniqueOption[]
-}
-
-type KataBand = 'PRINCIPIANTE' | 'INTERMEDIO' | 'AVANZADO'
-
-const KATA_BANDS: Record<'YOUTH' | 'ADULT', Array<{ band: KataBand; label: string; maxOrder: number }>> = {
-  YOUTH: [
-    { band: 'PRINCIPIANTE', label: 'Principiante · 11th Kyu – 9th Kyu', maxOrder: 5 },
-    { band: 'INTERMEDIO', label: 'Intermedio · 8th Kyu – 4th Kyu', maxOrder: 12 },
-    { band: 'AVANZADO', label: 'Avanzado · 3rd Kyu – Cinturón Negro', maxOrder: Number.MAX_SAFE_INTEGER },
-  ],
-  ADULT: [
-    { band: 'PRINCIPIANTE', label: 'Principiante · 11th Kyu – 9th Kyu', maxOrder: 3 },
-    { band: 'INTERMEDIO', label: 'Intermedio · 8th Kyu – 4th Kyu', maxOrder: 8 },
-    { band: 'AVANZADO', label: 'Avanzado · 3rd Kyu – Cinturón Negro', maxOrder: Number.MAX_SAFE_INTEGER },
-  ],
-}
-
-function bandForOrder(program: 'YOUTH' | 'ADULT', order: number): KataBand {
-  return KATA_BANDS[program].find((entry) => order <= entry.maxOrder)?.band ?? 'AVANZADO'
 }
 
 interface BandBeltChip {

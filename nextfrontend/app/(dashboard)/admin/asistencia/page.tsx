@@ -1,7 +1,5 @@
 import { auth } from '@/auth'
-import { AdminAttendanceBoard } from '@/components/dashboard/admin/AdminAttendanceBoard'
-import { AdminAttendanceReport } from '@/components/dashboard/admin/AdminAttendanceReport'
-import { getAdminAttendance } from '@/lib/dashboard/admin-queries'
+import { AdminAttendanceView } from '@/components/dashboard/admin/AdminAttendanceView'
 import { redirect } from 'next/navigation'
 import { hasAnyRole } from '@/lib/auth/roles'
 
@@ -13,26 +11,14 @@ export default async function AdminAttendancePage() {
         redirect('/no-autorizado')
     }
 
-    const records = await getAdminAttendance(userId)
-
-    if (!records) {
-        redirect('/no-autorizado')
-    }
-
     return (
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
             <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
             <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Asistencia</h1>
-            <section className="mt-6 space-y-6">
-                <div>
-                    <h2 className="mb-3 font-display text-lg font-bold text-ink">Revisión de registros</h2>
-                    <AdminAttendanceBoard />
-                </div>
-                <div>
-                    <h2 className="mb-3 font-display text-lg font-bold text-ink">Reporte general</h2>
-                    <AdminAttendanceReport records={records} />
-                </div>
-            </section>
+            <p className="mt-2 text-sm text-ink-3">Registros de asistencia dentro del alcance de tu escuela. Filtra y revisa los punch-in pendientes.</p>
+            <div className="mt-6">
+                <AdminAttendanceView />
+            </div>
         </main>
     )
 }

@@ -361,23 +361,40 @@ export interface AdminStudentDetail {
 	registration: StudentRegistrationView
 }
 
-export interface AdminAttendanceRecord {
+export interface AdminAttendancePracticeLog {
+	techniqueName: string
+	repetitions: number
+	place: 'DOJO' | 'FUERA'
+}
+
+export interface AdminAttendanceItem {
 	id: string
-	studentName: string
-	className: string | null
-	branchName: string | null
 	date: string
 	present: boolean
 	hoursTrained: number
 	sessionType: string | null
 	status: AttendanceStatus
-	confirmedByName: string | null
 	notes: string | null
-	practiceLogs?: Array<{
-		techniqueName: string
-		repetitions: number
-		place: 'DOJO' | 'FUERA'
-	}>
+	punchedAt: string
+	confirmedAt: string | null
+	confirmedByName: string | null
+	className: string | null
+	branchId: string | null
+	branchName: string | null
+	isOutOfSchedule: boolean
+	practiceLogs: AdminAttendancePracticeLog[]
+	student: {
+		id: string
+		firstName: string
+		lastName: string
+		memberNumber: string | null
+		planName: string | null
+	}
+}
+
+export interface AdminAttendanceBranch {
+	id: string
+	name: string
 }
 
 export interface DashboardBirthday {

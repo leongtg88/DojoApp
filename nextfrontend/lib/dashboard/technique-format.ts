@@ -11,8 +11,8 @@ export const TECHNIQUE_CATEGORY_LABELS: Record<TechniqueCategory, string> = {
 
 export const TECHNIQUE_CATEGORIES = Object.keys(TECHNIQUE_CATEGORY_LABELS) as TechniqueCategory[]
 
-export function techniqueMetaLine(technique: AdminTechniqueSummary): string {
-  const parts: string[] = [TECHNIQUE_CATEGORY_LABELS[technique.category]]
+export function techniqueMetaLine(technique: AdminTechniqueSummary, includeCategory = true): string {
+  const parts: string[] = includeCategory ? [TECHNIQUE_CATEGORY_LABELS[technique.category]] : []
 
   switch (technique.category) {
     case 'KIHON':

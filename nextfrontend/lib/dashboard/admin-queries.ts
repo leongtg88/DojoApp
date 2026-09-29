@@ -16,7 +16,6 @@ import type {
   AdminBalanceRow,
   AdminDashboardSummary,
   AdminBeltRankSummary,
-  AdminAttendanceRecord,
   AdminCurriculumData,
   AdminEnrollmentSummary,
   AdminInstructor,
@@ -664,63 +663,6 @@ techniques: rank.katas.map(({ kata }) => techniqueWithRanks(kata)),
       enrollments: student.enrollments,
     }),
   }
-}
-
-export async function getAdminAttendance(userId: string): Promise<AdminAttendanceRecord[] | null> {
-  const scope = await getAdminScope(userId)
-
-  if (!scope) {
-    return null
-  }
-
-  const records = await db.attendance.findMany({
-    where: scope.isSuperAdmin ? {} : { student: { schoolId: scope.schoolId! } },
-    orderBy: { date: 'desc' },
-    take: 100,
-    select: {
-      id: true,
-      present: true,
-      notes: true,
-      date: true,
-      hoursTrained: true,
-      sessionType: true,
-      status: true,
-      student: { select: { firstName: true, lastName: true } },
-      confirmedBy: { select: { name: true } },
-      session: {
-        select: {
-          class: { select: { name: true, branch: { select: { name: true } } } },
-        },
-      },
-      practiceLogs: {
-        select: {
-          repetitions: true,
-          place: true,
-          studentTechnique: { select: { technique: { select: { name: true } } } },
-          technique: { select: { name: true } },
-        },
-      },
-    },
-  })
-
-  return records.map((record) => ({
-    id: record.id,
-    studentName: `${record.student.firstName} ${record.student.lastName}`,
-    className: record.session?.class.name ?? null,
-    branchName: record.session?.class.branch.name ?? null,
-    date: record.date.toISOString(),
-    present: record.present,
-    hoursTrained: record.hoursTrained,
-    sessionType: record.sessionType,
-    status: record.status,
-    confirmedByName: record.confirmedBy?.name ?? null,
-    notes: record.notes,
-    practiceLogs: record.practiceLogs.map((log) => ({
-      techniqueName: log.studentTechnique?.technique.name ?? log.technique?.name ?? 'Técnica',
-      repetitions: log.repetitions,
-      place: log.place,
-    })),
-  }))
 }
 
 export async function getAdminAttendanceBoard(userId: string): Promise<InstructorAttendanceBoardData | null> {

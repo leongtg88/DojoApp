@@ -276,7 +276,7 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
                 </section>
             ) : (
                 <>
-                    <section className="mt-7 grid gap-3 sm:grid-cols-2">
+                    <section className="mt-7 grid grid-cols-2 gap-3">
                         <article className="rounded-lg border border-edge bg-surface-2 p-5 shadow-sm"><Rows3 aria-hidden="true" className="size-5 text-accent" /><p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink-3">Grados configurados</p><p className="mt-1 text-3xl font-bold text-ink">{ranks.length}</p></article>
                         <article className="rounded-lg border border-edge bg-surface-2 p-5 shadow-sm"><BookOpen aria-hidden="true" className="size-5 text-ok-text" /><p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink-3">Técnicas asociadas</p><p className="mt-1 text-3xl font-bold text-ink">{totalTechniques}</p></article>
                     </section>
