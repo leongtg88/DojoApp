@@ -739,10 +739,12 @@ export async function getAdminAttendanceBoard(userId: string): Promise<Instructo
       confirmedBy: { select: { name: true } },
       practiceLogs: {
         select: {
+          id: true,
+          techniqueId: true,
           repetitions: true,
           place: true,
-          studentTechnique: { select: { technique: { select: { name: true } } } },
-          technique: { select: { name: true } },
+          studentTechnique: { select: { technique: { select: { id: true, name: true } } } },
+          technique: { select: { id: true, name: true } },
         },
       },
     },
@@ -761,6 +763,8 @@ export async function getAdminAttendanceBoard(userId: string): Promise<Instructo
     notes: attendance.notes,
     punchedAt: attendance.punchedAt.toISOString(),
     practiceLogs: attendance.practiceLogs.map((log) => ({
+      id: log.id,
+      techniqueId: log.studentTechnique?.technique.id ?? log.technique?.id ?? log.techniqueId ?? null,
       techniqueName: log.studentTechnique?.technique.name ?? log.technique?.name ?? 'Técnica',
       repetitions: log.repetitions,
       place: log.place,

@@ -239,10 +239,12 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
           confirmedBy: { select: { name: true } },
           practiceLogs: {
             select: {
+              id: true,
+              techniqueId: true,
               repetitions: true,
               place: true,
-              studentTechnique: { select: { technique: { select: { name: true } } } },
-              technique: { select: { name: true } },
+              studentTechnique: { select: { technique: { select: { id: true, name: true } } } },
+              technique: { select: { id: true, name: true } },
             },
           },
         },
@@ -284,6 +286,8 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
     notes: attendance.notes,
     punchedAt: attendance.punchedAt.toISOString(),
     practiceLogs: attendance.practiceLogs.map((log) => ({
+      id: log.id,
+      techniqueId: log.studentTechnique?.technique.id ?? log.technique?.id ?? log.techniqueId ?? null,
       techniqueName: log.studentTechnique?.technique.name ?? log.technique?.name ?? 'Técnica',
       repetitions: log.repetitions,
       place: log.place,
@@ -308,7 +312,7 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
       beltRankKatas: {
         select: {
           order: true,
-          beltRank: { select: { name: true, program: true, order: true, beltColor: true, beltSecondaryColor: true } },
+          beltRank: { select: { name: true, program: true, order: true, kyuDan: true, beltColor: true, beltSecondaryColor: true } },
         },
       },
     },
@@ -338,6 +342,7 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
           return {
             program,
             rankName: info.rankName,
+            kyuDan: info.kyuDan,
             order: info.gradeOrder,
             level: info.level,
             beltColor: info.beltColor,
@@ -358,6 +363,7 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
     },
     records,
     practiceTechniques,
+    program: programForAge(ageFromDob(student.dateOfBirth)),
   }
 }
 
@@ -484,7 +490,7 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
               beltRankKatas: {
                 select: {
                   order: true,
-                  beltRank: { select: { name: true, program: true, order: true, beltColor: true, beltSecondaryColor: true } },
+                  beltRank: { select: { name: true, program: true, order: true, kyuDan: true, beltColor: true, beltSecondaryColor: true } },
                 },
                 orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }],
               },

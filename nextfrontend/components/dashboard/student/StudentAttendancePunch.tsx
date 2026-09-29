@@ -24,7 +24,6 @@ import { TECHNIQUE_CATEGORY_LABELS } from '@/lib/dashboard/technique-format'
 import { KIHON_CATEGORIES, KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
 import { KUMITE_CATEGORIES, KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
 import { buildTechniqueSections } from '@/lib/dashboard/technique-sections'
-import { KataBeltChip } from '@/components/dashboard/shared/KataBeltChip'
 import { formatDateTime } from '@/lib/format/datetime'
 
 interface StudentAttendancePunchProps {
@@ -56,53 +55,70 @@ function sessionLabel(sessionType: string | null): string {
   return SESSION_OPTIONS.find(({ value }) => value === sessionType)?.label ?? sessionType ?? 'Clase'
 }
 
-interface KataLevelGroup {
+interface KataBandGroup {
   key: string
+  program: 'YOUTH' | 'ADULT'
   programLabel: string
-  rankName: string
-  order: number
-  level: string | null
-  beltColor: string | null
-  beltSecondaryColor: string | null
+  label: string
   items: StudentPracticeTechniqueOption[]
 }
 
-/** Agrupa las katas por grado/cinturón (acordeón) y programa. Si `program` está
- *  activo ('YOUTH'/'ADULT'), sólo crea grupos de ese programa. */
-function buildKataLevelGroups(katas: StudentPracticeTechniqueOption[], program: 'ALL' | 'YOUTH' | 'ADULT'): KataLevelGroup[] {
-  const map = new Map<string, KataLevelGroup>()
-  const ungrouped: StudentPracticeTechniqueOption[] = []
+type KataBand = 'PRINCIPIANTE' | 'INTERMEDIO' | 'AVANZADO'
 
-  for (const kata of katas) {
-    const levels = program === 'ALL' ? kata.kataLevels : kata.kataLevels.filter((level) => level.program === program)
-    if (levels.length === 0) {
-      if (kata.kataLevels.length === 0) ungrouped.push(kata)
-      continue
-    }
-    for (const level of levels) {
-      const key = `${level.program}:${level.order}`
-      let group = map.get(key)
-      if (!group) {
-        group = {
-          key,
-          programLabel: PROGRAM_LABELS[level.program],
-          rankName: level.rankName,
-          order: level.order,
-          level: level.level,
-          beltColor: level.beltColor,
-          beltSecondaryColor: level.beltSecondaryColor,
-          items: [],
-        }
-        map.set(key, group)
-      }
-      group.items.push(kata)
+const KATA_BANDS: Record<'YOUTH' | 'ADULT', Array<{ band: KataBand; label: string; maxOrder: number }>> = {
+  YOUTH: [
+    { band: 'PRINCIPIANTE', label: 'Principiante · 11th Kyu – 9th Kyu', maxOrder: 5 },
+    { band: 'INTERMEDIO', label: 'Intermedio · 8th Kyu – 4th Kyu', maxOrder: 12 },
+    { band: 'AVANZADO', label: 'Avanzado · 3rd Kyu – Cinturón Negro', maxOrder: Number.MAX_SAFE_INTEGER },
+  ],
+  ADULT: [
+    { band: 'PRINCIPIANTE', label: 'Principiante · 11th Kyu – 9th Kyu', maxOrder: 3 },
+    { band: 'INTERMEDIO', label: 'Intermedio · 8th Kyu – 4th Kyu', maxOrder: 8 },
+    { band: 'AVANZADO', label: 'Avanzado · 3rd Kyu – Cinturón Negro', maxOrder: Number.MAX_SAFE_INTEGER },
+  ],
+}
+
+function bandForOrder(program: 'YOUTH' | 'ADULT', order: number): KataBand {
+  return KATA_BANDS[program].find((entry) => order <= entry.maxOrder)?.band ?? 'AVANZADO'
+}
+
+interface BandBeltChip {
+  key: string
+  beltColor: string
+}
+
+/** Colores de cinturón distintos (sólidos) presentes en un tramo, sin repetir. */
+function bandBeltChips(items: StudentPracticeTechniqueOption[], program: 'YOUTH' | 'ADULT'): BandBeltChip[] {
+  const byOrder = new Map<number, BandBeltChip>()
+  const seenColors = new Set<string>()
+  for (const kata of items) {
+    for (const level of kata.kataLevels) {
+      if (level.program !== program) continue
+      const color = (level.beltColor ?? '#3f3f46').toUpperCase()
+      if (seenColors.has(color)) continue
+      seenColors.add(color)
+      byOrder.set(level.order, { key: `${program}:${color}`, beltColor: level.beltColor ?? '#3f3f46' })
     }
   }
+  return [...byOrder.entries()].sort((a, b) => a[0] - b[0]).map((entry) => entry[1])
+}
 
-  const groups = [...map.values()].sort((a, b) => a.programLabel.localeCompare(b.programLabel) || a.order - b.order)
+/** Agrupa las katas por tramo (Principiante/Intermedio/Avanzado) dentro de cada
+ *  programa. Si `program` está activo, sólo genera los tramos de ese programa.
+ *  Cada kata se lista una sola vez por tramo. */
+function buildKataBandGroups(katas: StudentPracticeTechniqueOption[], program: 'ALL' | 'YOUTH' | 'ADULT'): KataBandGroup[] {
+  const programs: Array<'YOUTH' | 'ADULT'> = program === 'ALL' ? ['YOUTH', 'ADULT'] : [program]
+  const groups: KataBandGroup[] = []
 
-  if (ungrouped.length > 0) {
-    groups.push({ key: 'KATA:__none__', programLabel: '', rankName: 'Sin grado', order: Number.MAX_SAFE_INTEGER, level: null, beltColor: null, beltSecondaryColor: null, items: ungrouped })
+  for (const prog of programs) {
+    for (const band of KATA_BANDS[prog]) {
+      const items = katas.filter((kata) =>
+        kata.kataLevels.some((level) => level.program === prog && bandForOrder(prog, level.order) === band.band),
+      )
+      if (items.length > 0) {
+        groups.push({ key: `${prog}:${band.band}`, program: prog, programLabel: PROGRAM_LABELS[prog], label: band.label, items })
+      }
+    }
   }
 
   return groups
@@ -166,8 +182,8 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
   const [categoryFilter, setCategoryFilter] = useState<'ALL' | TechniqueCategory>('ALL')
   const [kihonFilter, setKihonFilter] = useState<'ALL' | KihonCategory>('ALL')
   const [kumiteFilter, setKumiteFilter] = useState<'ALL' | KumiteCategory>('ALL')
-  const [scopeFilter, setScopeFilter] = useState<'ALL' | 'ASSIGNED'>('ALL')
-  const [programFilter, setProgramFilter] = useState<'ALL' | 'YOUTH' | 'ADULT'>('ALL')
+  const [scopeFilter, setScopeFilter] = useState<'ALL' | 'ASSIGNED'>('ASSIGNED')
+  const [programFilter, setProgramFilter] = useState<'ALL' | 'YOUTH' | 'ADULT'>(data.program)
   const [openKataLevels, setOpenKataLevels] = useState<Record<string, boolean>>({})
 
   const pad = (value: number) => String(value).padStart(2, '0')
@@ -184,6 +200,9 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
   const [editHours, setEditHours] = useState<number>(1.5)
   const [editSessionType, setEditSessionType] = useState<string>('class')
   const [editNotes, setEditNotes] = useState<string>('')
+  const [editPractice, setEditPractice] = useState<Array<{ id: string; techniqueId: string; name: string; repetitions: string; place: PracticePlace }>>([])
+  const [editAddQuery, setEditAddQuery] = useState('')
+  const [editAddReps, setEditAddReps] = useState('')
 
   const quickHours = [1.0, 1.5, 2.0, 2.5]
 
@@ -219,7 +238,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
     })
     .filter(matchesFilter)
   const sections = buildTechniqueSections(filteredTechniques.filter((technique) => technique.category !== 'KATA'))
-  const kataGroups = buildKataLevelGroups(filteredTechniques.filter((technique) => technique.category === 'KATA'), programFilter)
+  const kataGroups = buildKataBandGroups(filteredTechniques.filter((technique) => technique.category === 'KATA'), programFilter)
   const searchActive = normalizedSearch.length > 0
 
   const toggleKataLevel = (key: string) => {
@@ -288,21 +307,72 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
     setEditHours(record.hoursTrained)
     setEditSessionType(record.sessionType ?? 'class')
     setEditNotes(record.notes ?? '')
+    setEditPractice(
+      (record.practiceLogs ?? []).map((log) => ({
+        id: log.id,
+        techniqueId: log.techniqueId ?? '',
+        name: log.techniqueName,
+        repetitions: String(log.repetitions),
+        place: log.place,
+      })),
+    )
+  }
+
+  const setEditPracticeReps = (id: string, value: string) => {
+    setEditPractice((current) => current.map((line) => (line.id === id ? { ...line, repetitions: value } : line)))
+  }
+
+  const setEditPracticePlace = (id: string, place: PracticePlace) => {
+    setEditPractice((current) => current.map((line) => (line.id === id ? { ...line, place } : line)))
+  }
+
+  const EDIT_PRACTICE_LIMIT = 30
+  const editAddNormalized = editAddQuery.trim().toLocaleLowerCase('es')
+  const editAddResults = editAddNormalized.length === 0
+    ? []
+    : data.practiceTechniques
+      .filter((technique) => {
+        if (editPractice.some((line) => line.techniqueId === technique.id)) return false
+        return [technique.name, technique.japaneseName ?? ''].some((value) => value.toLocaleLowerCase('es').includes(editAddNormalized))
+      })
+      .slice(0, 8)
+
+  const addEditPractice = (technique: StudentPracticeTechniqueOption) => {
+    if (editPractice.length >= EDIT_PRACTICE_LIMIT) return
+    if (editPractice.some((line) => line.techniqueId === technique.id)) return
+    setEditPractice((current) => [
+      ...current,
+      { id: `${technique.id}-${Date.now()}`, techniqueId: technique.id, name: technique.name, repetitions: editAddReps.trim(), place: practicePlace },
+    ])
+    setEditAddQuery('')
+    setEditAddReps('')
   }
 
   const handleSaveEdit = async () => {
     if (!editingRecord || isSubmitting) return
 
+    const practiceLogs = editPractice
+      .map((line) => ({ techniqueId: line.techniqueId, repetitions: Number.parseInt(line.repetitions, 10), place: line.place }))
+      .filter((line) => line.techniqueId && Number.isFinite(line.repetitions) && line.repetitions > 0)
+
     setIsSubmitting(true)
     const response = await fetch(`/api/dashboard/student/attendance/${editingRecord.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', ...studentHeader },
-      body: JSON.stringify({ hoursTrained: editHours, sessionType: editSessionType, notes: editNotes.trim() }),
+      body: JSON.stringify({
+        hoursTrained: editHours,
+        sessionType: editSessionType,
+        notes: editNotes.trim(),
+        ...(editPractice.length > 0 ? { practiceLogs } : {}),
+      }),
     })
     setIsSubmitting(false)
 
     if (response.ok) {
+      const payload = await response.json().catch(() => null) as { practiceWarning?: string } | null
+      if (payload?.practiceWarning) setPunchWarning(payload.practiceWarning)
       setEditingRecord(null)
+      setEditPractice([])
       router.refresh()
     } else {
       const { error } = await response.json().catch(() => ({ error: 'Error al corregir tu práctica' }))
@@ -463,54 +533,54 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
               <>
                 <p className="mt-1 text-[11px] text-ink-4">Marca las técnicas que practicaste y escribe sus repeticiones. <span className="font-semibold text-ok-text">Solo las que están en tu expediente</span> suman a tu progreso; las demás se guardan como práctica libre y no cuentan para tu experiencia.</p>
                 <div className="mt-3 flex flex-col gap-2 rounded-md border border-edge-strong bg-surface-1 p-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-ink-3">Mostrar</span>
-                    <div className="flex items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
+                  <div className="flex w-full flex-wrap items-center gap-2">
+                    <span className="w-full text-[11px] font-bold uppercase tracking-wider text-ink-3 sm:w-20">Mostrar</span>
+                    <div className="flex w-full flex-1 items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
                       {([['ALL', 'Todo el catálogo'], ['ASSIGNED', 'Solo asignadas']] as const).map(([value, label]) => (
-                        <button aria-pressed={scopeFilter === value} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${scopeFilter === value ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={value} onClick={() => setScopeFilter(value)} type="button">{label}</button>
+                        <button aria-pressed={scopeFilter === value} className={`flex-1 rounded px-2.5 py-1.5 text-center text-xs font-bold transition-colors ${scopeFilter === value ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={value} onClick={() => setScopeFilter(value)} type="button">{label}</button>
                       ))}
                     </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-ink-3">Programa</span>
-                    <div className="flex items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
+                  <div className="flex w-full flex-wrap items-center gap-2">
+                    <span className="w-full text-[11px] font-bold uppercase tracking-wider text-ink-3 sm:w-20">Programa</span>
+                    <div className="flex w-full flex-1 items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
                       {([['ALL', 'Todos'], ['YOUTH', 'Niños'], ['ADULT', 'Adultos']] as const).map(([value, label]) => (
-                        <button aria-pressed={programFilter === value} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${programFilter === value ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={value} onClick={() => setProgramFilter(value)} type="button">{label}</button>
+                        <button aria-pressed={programFilter === value} className={`flex-1 rounded px-2.5 py-1.5 text-center text-xs font-bold transition-colors ${programFilter === value ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={value} onClick={() => setProgramFilter(value)} type="button">{label}</button>
                       ))}
                     </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-ink-3">Lugar</span>
-                    <div className="flex items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
+                  <div className="flex w-full flex-wrap items-center gap-2">
+                    <span className="w-full text-[11px] font-bold uppercase tracking-wider text-ink-3 sm:w-20">Lugar</span>
+                    <div className="flex w-full flex-1 items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
                       {([['DOJO', 'En el dojo'], ['FUERA', 'Fuera del dojo']] as const).map(([value, label]) => (
-                        <button aria-pressed={practicePlace === value} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${practicePlace === value ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={value} onClick={() => setPracticePlace(value)} type="button">{label}</button>
+                        <button aria-pressed={practicePlace === value} className={`flex-1 rounded px-2.5 py-1.5 text-center text-xs font-bold transition-colors ${practicePlace === value ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={value} onClick={() => setPracticePlace(value)} type="button">{label}</button>
                       ))}
                     </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <label className="relative block sm:w-64" htmlFor="practice-technique-search">
+                  <div className="flex w-full flex-col gap-2">
+                    <label className="relative block w-full" htmlFor="practice-technique-search">
                       <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-accent" />
                       <input className="w-full rounded-md border border-edge-strong bg-surface-2 py-1.5 pl-9 pr-3 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="practice-technique-search" onChange={(event) => setSearchTerm(event.target.value)} placeholder="Buscar técnica" type="search" value={searchTerm} />
                     </label>
-                    <div className="flex flex-wrap items-center gap-1.5">
+                    <div className="scrollbar-thin-x flex w-full items-center gap-1.5 overflow-x-auto pb-1">
                       {([['ALL', 'Todas'], ['KATA', 'Katas'], ['KIHON', 'Kihon'], ['KUMITE', 'Kumite'], ['BUNKAI', 'Bunkai']] as const).map(([category, label]) => (
-                        <button aria-pressed={categoryFilter === category} className={`shrink-0 rounded-md border px-2.5 py-1 text-xs font-bold transition-colors ${categoryFilter === category ? 'border-cyan-500/50 bg-cyan-500/15 text-accent-text' : 'border-edge-strong bg-surface-1 text-ink-3 hover:border-edge-strong'}`} key={category} onClick={() => setCategoryFilter(category)} type="button">{label}</button>
+                        <button aria-pressed={categoryFilter === category} className={`shrink-0 whitespace-nowrap rounded-md border px-3 py-1.5 text-center text-xs font-bold transition-colors ${categoryFilter === category ? 'border-cyan-500/50 bg-cyan-500/15 text-accent-text' : 'border-edge-strong bg-surface-1 text-ink-3 hover:border-edge-strong'}`} key={category} onClick={() => setCategoryFilter(category)} type="button">{label}</button>
                       ))}
                     </div>
                   </div>
                   {categoryFilter === 'KIHON' && (
                     <div className="flex w-full flex-wrap items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
-                      <button aria-pressed={kihonFilter === 'ALL'} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${kihonFilter === 'ALL' ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} onClick={() => setKihonFilter('ALL')} type="button">Todas</button>
+                      <button aria-pressed={kihonFilter === 'ALL'} className={`flex-1 rounded px-2.5 py-1.5 text-center text-xs font-bold transition-colors ${kihonFilter === 'ALL' ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} onClick={() => setKihonFilter('ALL')} type="button">Todas</button>
                       {KIHON_CATEGORIES.map((option) => (
-                        <button aria-pressed={kihonFilter === option} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${kihonFilter === option ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={option} onClick={() => setKihonFilter(option)} type="button">{KIHON_CATEGORY_SHORT_LABELS[option]}</button>
+                        <button aria-pressed={kihonFilter === option} className={`flex-1 rounded px-2.5 py-1.5 text-center text-xs font-bold transition-colors ${kihonFilter === option ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={option} onClick={() => setKihonFilter(option)} type="button">{KIHON_CATEGORY_SHORT_LABELS[option]}</button>
                       ))}
                     </div>
                   )}
                   {categoryFilter === 'KUMITE' && (
                     <div className="flex w-full flex-wrap items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
-                      <button aria-pressed={kumiteFilter === 'ALL'} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${kumiteFilter === 'ALL' ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} onClick={() => setKumiteFilter('ALL')} type="button">Todas</button>
+                      <button aria-pressed={kumiteFilter === 'ALL'} className={`flex-1 rounded px-2.5 py-1.5 text-center text-xs font-bold transition-colors ${kumiteFilter === 'ALL' ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} onClick={() => setKumiteFilter('ALL')} type="button">Todas</button>
                       {KUMITE_CATEGORIES.map((option) => (
-                        <button aria-pressed={kumiteFilter === option} className={`rounded px-2.5 py-1 text-xs font-bold transition-colors ${kumiteFilter === option ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={option} onClick={() => setKumiteFilter(option)} type="button">{KUMITE_CATEGORY_SHORT_LABELS[option]}</button>
+                        <button aria-pressed={kumiteFilter === option} className={`flex-1 rounded px-2.5 py-1.5 text-center text-xs font-bold transition-colors ${kumiteFilter === option ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={option} onClick={() => setKumiteFilter(option)} type="button">{KUMITE_CATEGORY_SHORT_LABELS[option]}</button>
                       ))}
                     </div>
                   )}
@@ -524,6 +594,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                   <div className="mt-3 space-y-4">
                     {kataGroups.map((group) => {
                       const isOpen = searchActive || Boolean(openKataLevels[group.key])
+                      const belts = bandBeltChips(group.items, group.program)
                       return (
                         <div className="overflow-hidden rounded-lg border border-edge bg-surface-2" key={group.key}>
                           <button
@@ -533,11 +604,25 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                             type="button"
                           >
                             {isOpen ? <ChevronUp className="size-4 shrink-0 text-ink-3" aria-hidden="true" /> : <ChevronDown className="size-4 shrink-0 text-ink-3" aria-hidden="true" />}
-                            <KataBeltChip level={group.level} beltColor={group.beltColor} beltSecondaryColor={group.beltSecondaryColor} />
-                            <span className="min-w-0 truncate text-xs font-bold uppercase tracking-wide text-ink-3">
-                              {group.programLabel ? `${group.programLabel} · ${group.rankName}` : group.rankName}
+                            <span className="min-w-0 flex-1">
+                              <span className="block truncate text-xs font-bold uppercase tracking-wide text-ink-3">
+                                {programFilter === 'ALL' ? `${group.programLabel} · ${group.label}` : group.label}
+                              </span>
+                              <span className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                                {belts.map((belt) => {
+                                  const isDark = belt.beltColor.toUpperCase() === '#212121'
+                                  return (
+                                    <span
+                                      aria-hidden="true"
+                                      className="inline-block h-3 w-5 rounded-sm border border-white/30"
+                                      key={belt.key}
+                                      style={{ backgroundColor: belt.beltColor, boxShadow: isDark ? '0 0 0 1px rgba(255,255,255,0.5)' : undefined }}
+                                    />
+                                  )
+                                })}
+                              </span>
                             </span>
-                            <span className="ml-auto shrink-0 text-[11px] text-ink-4">{group.items.length}</span>
+                            <span className="shrink-0 text-[11px] text-ink-4">{group.items.length}</span>
                           </button>
                           {isOpen && (
                             <ul className="space-y-2 border-t border-edge p-2">
@@ -799,6 +884,90 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                   rows={2}
                   value={editNotes}
                 />
+              </div>
+
+              {editPractice.length > 0 && (
+                <div>
+                  <label className="mb-1 block font-medium text-ink-3">Repeticiones registradas</label>
+                  <div className="space-y-2">
+                    {editPractice.map((line) => (
+                      <div className="flex items-center gap-2" key={line.id}>
+                        <span className="min-w-0 flex-1 truncate text-xs font-semibold text-ink">{line.name}</span>
+                        <input
+                          aria-label={`Repeticiones de ${line.name}`}
+                          className="w-16 rounded-lg border border-edge-strong bg-surface-1 p-2 text-center text-xs text-ink focus:border-cyan-500 focus:outline-none"
+                          min={1}
+                          onChange={(event) => setEditPracticeReps(line.id, event.target.value)}
+                          type="number"
+                          value={line.repetitions}
+                        />
+                        <select
+                          className="rounded-lg border border-edge-strong bg-surface-1 p-2 text-xs text-ink focus:border-cyan-500 focus:outline-none"
+                          onChange={(event) => setEditPracticePlace(line.id, event.target.value as PracticePlace)}
+                          value={line.place}
+                        >
+                          <option value="DOJO">En el dojo</option>
+                          <option value="FUERA">Fuera del dojo</option>
+                        </select>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-1 text-[11px] text-ink-4">Ajusta las repeticiones o el lugar. Si dejas una en cero, no se guardará.</p>
+                </div>
+              )}
+
+              <div>
+                <label className="mb-1 block font-medium text-ink-3" htmlFor="edit-add-technique">Añadir técnica o kata que faltó</label>
+                <div className="flex items-center gap-2">
+                  <div className="relative min-w-0 flex-1">
+                    <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-accent" />
+                    <input
+                      className="w-full rounded-lg border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
+                      disabled={editPractice.length >= EDIT_PRACTICE_LIMIT}
+                      id="edit-add-technique"
+                      onChange={(event) => setEditAddQuery(event.target.value)}
+                      placeholder="Buscar técnica"
+                      type="search"
+                      value={editAddQuery}
+                    />
+                  </div>
+                  <input
+                    aria-label="Repeticiones de la técnica a añadir"
+                    className="w-16 rounded-lg border border-edge-strong bg-surface-1 p-2 text-center text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
+                    min={1}
+                    onChange={(event) => setEditAddReps(event.target.value)}
+                    placeholder="Reps"
+                    type="number"
+                    value={editAddReps}
+                  />
+                </div>
+                {editPractice.length >= EDIT_PRACTICE_LIMIT && (
+                  <p className="mt-1 text-[11px] text-ink-4">Alcanzaste el máximo de {EDIT_PRACTICE_LIMIT} técnicas.</p>
+                )}
+                {editAddResults.length > 0 && (
+                  <ul className="mt-1 max-h-40 overflow-y-auto rounded-lg border border-edge-strong bg-surface-1">
+                    {editAddResults.map((technique) => (
+                      <li key={technique.id}>
+                        <button
+                          className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-xs transition-colors hover:bg-surface-3/50"
+                          onClick={() => addEditPractice(technique)}
+                          type="button"
+                        >
+                          <span className="min-w-0 truncate text-ink">
+                            {technique.name}
+                            {technique.japaneseName && <span className="ml-1.5 text-ink-3">{technique.japaneseName}</span>}
+                          </span>
+                          <span className="flex shrink-0 items-center gap-1 text-accent-text">
+                            <Plus className="size-3.5" aria-hidden="true" />Añadir
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {editAddNormalized.length > 0 && editAddResults.length === 0 && (
+                  <p className="mt-1 text-[11px] text-ink-4">Sin coincidencias (o ya está en la lista).</p>
+                )}
               </div>
             </div>
 

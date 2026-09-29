@@ -603,6 +603,8 @@ export interface AttendanceRecord {
 	className?: string | null
 	sessionId?: string | null
 	practiceLogs?: Array<{
+		id: string
+		techniqueId: string | null
 		techniqueName: string
 		repetitions: number
 		place: 'DOJO' | 'FUERA'
@@ -612,6 +614,7 @@ export interface AttendanceRecord {
 export interface StudentPracticeKataLevel {
 	program: 'ADULT' | 'YOUTH'
 	rankName: string
+	kyuDan: string | null
 	order: number
 	level: string | null
 	beltColor: string | null
@@ -643,6 +646,8 @@ export interface StudentAttendancePunchData {
 	}
 	records: AttendanceRecord[]
 	practiceTechniques: StudentPracticeTechniqueOption[]
+	/** Programa del alumno según su edad; define el filtro por defecto. */
+	program: 'ADULT' | 'YOUTH'
 }
 
 export interface InstructorAttendanceBoardData {

@@ -8,6 +8,7 @@ export interface KataLevelInfo {
 	beltColor: string | null
 	beltSecondaryColor: string | null
 	rankName: string
+	kyuDan: string | null
 }
 
 /** Deriva el nivel (grado de introducción) de cada kata dentro de un programa,
@@ -26,6 +27,7 @@ export function buildProgramKataLevels(ranks: AdminBeltRankSummary[], program: P
 				beltColor: rank.beltColor,
 				beltSecondaryColor: rank.beltSecondaryColor,
 				rankName: rank.name,
+				kyuDan: rank.kyuDan,
 			})
 		})
 	}
@@ -39,6 +41,7 @@ export interface BeltRankKataLike {
 		program: Program
 		order: number
 		name: string
+		kyuDan: string | null
 		beltColor: string | null
 		beltSecondaryColor: string | null
 	}
@@ -63,5 +66,6 @@ export function introLevelFromBeltRankKatas(entries: BeltRankKataLike[], program
 		beltColor: intro.beltRank.beltColor,
 		beltSecondaryColor: intro.beltRank.beltSecondaryColor,
 		rankName: intro.beltRank.name,
+		kyuDan: intro.beltRank.kyuDan,
 	}
 }

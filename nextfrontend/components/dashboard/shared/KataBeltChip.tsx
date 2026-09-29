@@ -4,10 +4,12 @@ interface KataBeltChipProps {
 	level?: string | null
 	beltColor?: string | null
 	beltSecondaryColor?: string | null
+	/** Oculta la franja secundaria para dejar la chip de color sólido. */
+	showStripe?: boolean
 	className?: string
 }
 
-export function KataBeltChip({ level, beltColor, beltSecondaryColor, className = '' }: KataBeltChipProps) {
+export function KataBeltChip({ level, beltColor, beltSecondaryColor, showStripe = true, className = '' }: KataBeltChipProps) {
 	if (!level) return null
 
 	const color = beltColor ?? '#3f3f46'
@@ -20,7 +22,7 @@ export function KataBeltChip({ level, beltColor, beltSecondaryColor, className =
 				className="relative inline-block h-2.5 w-3.5 overflow-hidden rounded-sm border border-white/30"
 				style={{ backgroundColor: color, boxShadow: isDark ? '0 0 0 1px rgba(255,255,255,0.5)' : undefined }}
 			>
-				{beltSecondaryColor && <span className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2" style={{ backgroundColor: beltSecondaryColor }} />}
+				{showStripe && beltSecondaryColor && <span className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2" style={{ backgroundColor: beltSecondaryColor }} />}
 			</span>
 			{level}
 		</span>

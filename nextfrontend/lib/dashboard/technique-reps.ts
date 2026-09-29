@@ -140,3 +140,52 @@ export async function removePracticeLog(studentId: string, logId: string): Promi
 
   return true
 }
+
+/**
+ * Descarta todos los registros de práctica ligados a una asistencia, revirtiendo
+ * el contador de las técnicas asignadas. Debe ejecutarse antes de borrar la
+ * asistencia o al reemplazar sus repeticiones, para no dejar contadores inflados
+ * ni registros huérfanos (el `attendanceId` es `onDelete: SetNull`).
+ */
+export async function clearAttendancePracticeLogs(
+  tx: Parameters<Parameters<typeof db.$transaction>[0]>[0],
+  attendanceId: string,
+): Promise<void> {
+  const logs = await tx.techniquePracticeLog.findMany({
+    where: { attendanceId },
+    select: { id: true, studentTechniqueId: true, repetitions: true },
+  })
+
+  if (logs.length === 0) return
+
+  for (const log of logs) {
+    if (log.studentTechniqueId) {
+      await tx.studentTechnique.update({
+        where: { id: log.studentTechniqueId },
+        data: { practiceRepetitions: { decrement: log.repetitions } },
+      })
+    }
+  }
+
+  await tx.techniquePracticeLog.deleteMany({ where: { attendanceId } })
+}
+
+/**
+ * Reemplaza el set de repeticiones de una asistencia: revierte y borra los
+ * registros previos y vuelve a registrarlos desde cero. Mantiene consistentes
+ * los contadores del expediente.
+ */
+export async function replaceAttendancePracticeLogs(
+  studentId: string,
+  attendanceId: string,
+  entries: PracticeLogInput[],
+): Promise<RegisterPracticeLogsResult> {
+  await db.$transaction(async (tx) => {
+    await clearAttendancePracticeLogs(tx, attendanceId)
+  })
+
+  return registerPracticeLogs(
+    studentId,
+    entries.map((entry) => ({ ...entry, attendanceId })),
+  )
+}
