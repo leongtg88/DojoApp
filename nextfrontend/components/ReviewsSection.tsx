@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { CheckCircle2, ChevronDown, Loader2, Send, Smile, Star } from 'lucide-react';
+import { CheckCircle2, ChevronDown, Copy, ExternalLink, Loader2, Send, Smile, Star } from 'lucide-react';
+import { getGoogleWriteReviewUrl } from '@/lib/seo';
 
 interface PublicReview {
   id: string;
@@ -57,6 +58,8 @@ export default function ReviewsSection() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [submittedMessage, setSubmittedMessage] = useState('');
+  const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -124,6 +127,8 @@ export default function ReviewsSection() {
         setSubmitError(data?.error ?? 'No pudimos enviar tu reseña. Inténtalo de nuevo.');
         return;
       }
+      setSubmittedMessage(message.trim());
+      setIsCopied(false);
       setIsSubmitted(true);
       setIsFormOpen(false);
       setAuthorName('');
@@ -133,6 +138,16 @@ export default function ReviewsSection() {
       setEmail('');
     } finally {
       setIsSubmitting(false);
+    }
+  }
+
+  async function handleCopyReview() {
+    try {
+      await navigator.clipboard.writeText(submittedMessage);
+      setIsCopied(true);
+      window.setTimeout(() => setIsCopied(false), 2000);
+    } catch {
+      setIsCopied(false);
     }
   }
 
@@ -364,20 +379,56 @@ export default function ReviewsSection() {
                 transition={{ type: 'spring', duration: 0.5 }}
                 className="relative z-10 w-full max-w-sm rounded-2xl border border-brand-accent/20 bg-white p-6 text-center shadow-2xl"
               >
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-brand-accent/30 bg-brand-accent/10">
-                  <CheckCircle2 className="h-7 w-7 text-brand-accent" />
-                </div>
+                <img
+                  src="/assets/LogoSolo.svg"
+                  alt="Tosei Gusoku Dojo"
+                  className="mx-auto h-16 w-16 drop-shadow-lg"
+                />
                 <h3 id="review-thanks-title" className="mt-4 font-display text-lg font-extrabold text-gray-800">
                   ¡Gracias por tu reseña!
                 </h3>
                 <p id="review-thanks-desc" className="mt-2 text-sm text-gray-600">
                   Estaremos revisándola y publicándola pronto. Tu opinión ayuda a más familias a conocer el dojo.
                 </p>
+
+                <div className="mt-5 space-y-3 border-t border-gray-200 pt-4 text-left">
+                  <p className="text-xs text-gray-600">
+                    <span className="font-semibold text-gray-700">¿Nos ayudas en Google?</span> Publica la misma
+                    reseña en nuestra ficha de Google Maps. Allí la ven muchas más familias.
+                  </p>
+                  <a
+                    href={getGoogleWriteReviewUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-accent px-4 py-3 text-sm font-bold text-black transition hover:brightness-105 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                  >
+                    Publicar en Google <ExternalLink className="w-4 h-4" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={handleCopyReview}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-brand-accent/40 px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-brand-accent/10 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                  >
+                    {isCopied ? (
+                      <>
+                        ¡Copiado! <CheckCircle2 className="w-4 h-4 text-brand-accent" />
+                      </>
+                    ) : (
+                      <>
+                        Copiar mi reseña <Copy className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                  <p className="text-[11px] leading-relaxed text-gray-500">
+                    Copia tu reseña, abre Google con el botón de arriba e inicia sesión para pegarla.
+                  </p>
+                </div>
+
                 <button
                   type="button"
                   autoFocus
                   onClick={() => setIsSubmitted(false)}
-                  className="mt-6 w-full cursor-pointer rounded-xl bg-brand-accent px-4 py-3 text-sm font-bold text-black transition hover:brightness-105 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                  className="mt-5 w-full cursor-pointer rounded-xl px-4 py-2 text-xs font-semibold text-gray-500 transition hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
                 >
                   Entendido
                 </button>

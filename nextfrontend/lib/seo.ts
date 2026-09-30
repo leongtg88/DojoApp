@@ -18,6 +18,7 @@ export const SITE = {
     openingHours: 'Mo 20:20-21:20, Tu 15:15-18:00, We 20:20-21:20, Th 15:15-18:00, Sa 06:00-11:00, Su 06:00-09:00',
     mapsUrl:
     'https://www.google.com/maps/place/Karate+Do+Tosei+Gusoku+Dojo+Shito+Ryu+Inoue+Ha/@18.4574589,-69.9520022,825m/data=!3m2!1e3!4b1!4m6!3m5!1s0x8ea563c15898befd:0x386c75f4f249964f!8m2!3d18.4574538!4d-69.9494273!16s%2Fg%2F11rckyjhp1?entry=ttu',
+    googlePlaceId: 'ChIJ_b6YWMFjpY4RT5ZJ8vR1bDg',
     social: {
     facebook: 'https://www.facebook.com/people/Tosei-Gusoku/100065134015633/',
     instagram: 'https://www.instagram.com/toseigusokurd/',
@@ -144,6 +145,11 @@ export function generateFAQSchema(
       },
     })),
   };
+}
+
+export function getGoogleWriteReviewUrl(): string {
+  if (!SITE.googlePlaceId) return SITE.mapsUrl;
+  return `https://search.google.com/local/writereview?placeid=${SITE.googlePlaceId}`;
 }
 
 export function generateBreadcrumbSchema(
