@@ -152,7 +152,7 @@ export default function ReviewsSection() {
   }
 
   return (
-    <section id="reviews" className="md:py-20 px-8 md:px-[50px] border-t border-white/5 scroll-mt-24">
+    <section id="reviews" className="md:py-20 px-8 pb-4 md:px-[50px] border-t border-white/5 scroll-mt-24">
       <div className="max-w-7xl mx-auto md:space-y-12">
         <div className="text-left space-y-3">
           <div className="inline-flex items-center gap-2 bg-brand-secondary/10 text-brand-secondary px-3 py-1 rounded-full text-xs font-bold font-display uppercase tracking-wider">
