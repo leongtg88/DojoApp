@@ -58,6 +58,9 @@
   --dash-danger-text: #f87171;
   --dash-info-text: #7dd3fc;
   --dash-violet-text: #c4b5fd;
+  --dash-scrollbar-track: #0a0a0a;
+  --dash-scrollbar-thumb: #27272a;
+  --dash-scrollbar-thumb-hover: #3f3f46;
   --color-scheme: dark;
 }
 
@@ -85,6 +88,9 @@
   --dash-danger-text: #b91c1c;
 --dash-info-text: #0369a1;
   --dash-violet-text: #6d28d9;
+  --dash-scrollbar-track: #f3f4f6;
+  --dash-scrollbar-thumb: #d1d5db;
+  --dash-scrollbar-thumb-hover: #9ca3af;
   --color-scheme: light;
 }
 
@@ -241,11 +247,16 @@
   color: #1a1a1a;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar (colores por tema) */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0a0a0a; }
-::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+::-webkit-scrollbar-track { background: var(--dash-scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--dash-scrollbar-thumb); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--dash-scrollbar-thumb-hover); }
+
+/* Firefox: mismos colores que el tema activo */
+* {
+  scrollbar-color: var(--dash-scrollbar-thumb) var(--dash-scrollbar-track);
+}
 
 /* Barra de scroll horizontal más delgada (mitad) para filtros con overflow-x. */
 .scrollbar-thin-x { scrollbar-width: thin; }

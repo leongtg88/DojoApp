@@ -47,7 +47,7 @@ export function AdminDashboardOverview({ summary, birthdays, instructorCandidate
                         {pendingEnrollmentCount > 0 ? `${pendingEnrollmentCount} solicitud${pendingEnrollmentCount === 1 ? '' : 'es'} por revisar` : 'Sin solicitudes pendientes'}
                     </p>
                 </Link>
-                <Link className={`group rounded-lg border bg-surface-2 p-3 transition-colors hover:bg-surface-3 sm:p-5 ${pendingDocumentCount > 0 ? 'border-amber-500/40' : 'border-edge'}`} href="/dashboard/admin/alumnos">
+                <Link className={`group rounded-lg border bg-surface-2 p-3 transition-colors hover:bg-surface-3 sm:p-5 ${pendingDocumentCount > 0 ? 'border-amber-500/40' : 'border-edge'}`} href="/dashboard/admin/alumnos?docs=pending">
                     <div className="flex items-center justify-between">
                         <Users aria-hidden="true" className={`size-5 ${pendingDocumentCount > 0 ? 'text-warn-text' : 'text-ink-3'}`} />
                         {pendingDocumentCount > 0 && <span className="rounded-full bg-amber-500/20 px-2.5 py-1 text-xs font-extrabold text-warn-text">{pendingDocumentCount}</span>}

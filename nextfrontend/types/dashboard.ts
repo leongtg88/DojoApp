@@ -218,6 +218,7 @@ export interface AdminStudentSummary {
 	studentCount: number
 	kataMasteredCount: number
 	kataTotalCount: number
+	pendingDocumentCount: number
 	attendancePercent: number | null
 	rankAwardedAt: string | null
 	nextRankName: string | null

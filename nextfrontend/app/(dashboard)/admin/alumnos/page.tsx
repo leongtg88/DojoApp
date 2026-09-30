@@ -4,7 +4,11 @@ import { getAdminStudents } from '@/lib/dashboard/admin-queries'
 import { redirect } from 'next/navigation'
 import { hasAnyRole } from '@/lib/auth/roles'
 
-export default async function AdminStudentsPage() {
+interface AdminStudentsPageProps {
+    searchParams: Promise<{ docs?: string }>
+}
+
+export default async function AdminStudentsPage({ searchParams }: AdminStudentsPageProps) {
     const session = await auth()
     const userId = session?.user?.id
 
@@ -12,11 +16,12 @@ export default async function AdminStudentsPage() {
         redirect('/no-autorizado')
     }
 
+    const { docs } = await searchParams
     const students = await getAdminStudents(userId)
 
     if (!students) {
         redirect('/no-autorizado')
     }
 
-    return <AdminStudents students={students} />
+    return <AdminStudents initialDocsOnly={docs === 'pending'} students={students} />
 }

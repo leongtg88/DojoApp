@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, type ReactNode } from 'react'
-import { Award, BookOpenCheck, CalendarDays, Check, ChevronDown, FileSpreadsheet, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
+import { Award, BookOpenCheck, CalendarDays, Check, ChevronDown, FileSpreadsheet, FileText, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
 import { InvitationLinkModal } from './InvitationLinkModal'
 import { AdminBulkKataAssignment } from './AdminBulkKataAssignment'
@@ -12,6 +12,7 @@ import type { AdminBeltRankSummary, AdminStudentSummary, PlanSummary, Scholarshi
 
 interface AdminStudentsProps {
 	students: AdminStudentSummary[]
+	initialDocsOnly?: boolean
 }
 
 interface BranchOption {
@@ -501,9 +502,10 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 	)
 }
 
-export function AdminStudents({ students }: AdminStudentsProps) {
+export function AdminStudents({ students, initialDocsOnly = false }: AdminStudentsProps) {
 	const router = useRouter()
 	const [searchTerm, setSearchTerm] = useState('')
+	const [docsOnly, setDocsOnly] = useState(initialDocsOnly)
 	const [statusFilter, setStatusFilter] = useState('ALL')
 	const [branchFilter, setBranchFilter] = useState('ALL')
 	const [beltFilter, setBeltFilter] = useState('ALL')
@@ -542,14 +544,17 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 	const branches = [...new Set(students.map(({ branchName }) => branchName))].sort()
 	const belts = [...new Set(students.map(({ currentRank }) => currentRank ?? 'SIN_GRADO'))].sort()
 
+	const pendingDocsTotal = students.filter((student) => student.pendingDocumentCount > 0).length
+
 	const filteredStudents = students.filter((student) => {
 		const matchesStatus = statusFilter === 'ALL' || student.status === statusFilter
 		const matchesBranch = branchFilter === 'ALL' || student.branchName === branchFilter
 		const matchesBelt = beltFilter === 'ALL' || (beltFilter === 'SIN_GRADO' ? !student.currentRank : student.currentRank === beltFilter)
+		const matchesDocs = !docsOnly || student.pendingDocumentCount > 0
 		const searchable = [student.firstName, student.lastName, student.memberNumber ?? '', student.currentRank ?? '', student.branchName, ...student.activeClassNames]
 		const matchesSearch = !normalizedSearch || searchable.some((value) => value.toLocaleLowerCase('es').includes(normalizedSearch))
 
-		return matchesStatus && matchesBranch && matchesBelt && matchesSearch
+		return matchesStatus && matchesBranch && matchesBelt && matchesDocs && matchesSearch
 	})
 
 	function handleToggleStatus(student: AdminStudentSummary) {
@@ -713,6 +718,16 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 							</select>
 						</label>
 						</div>
+						<button
+							type="button"
+							aria-pressed={docsOnly}
+							onClick={() => setDocsOnly((value) => !value)}
+							className={`inline-flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-xs font-semibold transition-colors sm:col-span-4 sm:justify-start ${docsOnly ? 'border-amber-500/50 bg-amber-500/10 text-warn-text' : 'border-edge-strong bg-surface-1 text-ink-2 hover:bg-surface-3'}`}
+						>
+							<FileText aria-hidden="true" className="size-4" />
+							Documentos pendientes
+							{pendingDocsTotal > 0 && <span className={`rounded-full px-2 py-0.5 text-[10px] font-extrabold ${docsOnly ? 'bg-amber-500/20 text-warn-text' : 'bg-surface-3 text-ink-3'}`}>{pendingDocsTotal}</span>}
+						</button>
 					</div>
 
 					{filteredStudents.length === 0 ? (
@@ -723,7 +738,7 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 						</div>
 					) : (
 						<div className="overflow-x-auto">
-							<table className="w-full min-w-[880px] text-left text-sm">
+							<table className="w-full min-w-[1024px] text-left text-sm">
 								<thead className="border-b border-edge text-xs font-semibold uppercase tracking-wide text-ink-3">
 									<tr>
 										<th className="px-4 py-2 sm:px-5 sm:py-3">Alumno</th>
@@ -750,25 +765,30 @@ export function AdminStudents({ students }: AdminStudentsProps) {
 														<div className="min-w-0">
 															<div className="flex flex-wrap items-center gap-2">
 																<Link href={`/dashboard/admin/alumnos/${student.id}`} title={`Ver ficha de ${student.firstName} ${student.lastName}`} className="truncate rounded text-sm font-bold text-ink transition-colors hover:text-accent hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400">{student.firstName} {student.lastName}</Link>
+																{student.pendingDocumentCount > 0 && (
+																	<Link href={`/dashboard/admin/alumnos/${student.id}`} title={`${student.pendingDocumentCount} documento${student.pendingDocumentCount === 1 ? '' : 's'} por revisar`} className="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-warn-text">
+																		<FileText aria-hidden="true" className="size-3" />{student.pendingDocumentCount}
+																	</Link>
+																)}
 															</div>
 															<p className="mt-1 font-mono text-xs text-ink-3">{student.memberNumber ?? '—'}</p>
 														</div>
 													</div>
 												</td>
-												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
+												<td className="whitespace-nowrap px-4 py-2.5 sm:px-5 sm:py-4">
 													<div className="flex items-center gap-2">
-														<BeltRankIndicator rank={{ beltColor: student.beltColor, beltSecondaryColor: student.beltSecondaryColor }} size="sm" />
+														<BeltRankIndicator className="shrink-0" rank={{ beltColor: student.beltColor, beltSecondaryColor: student.beltSecondaryColor }} size="sm" />
 														<div>
 															<p className="text-sm font-semibold text-ink">{student.currentRank ?? 'Sin grado'}</p>
 															{student.nextRankName && <p className="text-[11px] text-ink-3">Próximo: {student.nextRankName}</p>}
 														</div>
 													</div>
 												</td>
-												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
+												<td className="whitespace-nowrap px-4 py-2.5 sm:px-5 sm:py-4">
 													<p className="text-sm font-semibold text-ink">{student.planName ?? 'Sin plan'}</p>
 													{student.scholarshipType !== 'NONE' && <p className="text-[11px] text-accent">{student.scholarshipType === 'ECONOMIC' ? 'Beca económica' : student.scholarshipType === 'MERIT' ? 'Beca mérito' : 'Beca competidor'}</p>}
 													{(student.needsPlan || student.needsSchedule) && (
-														<div className="mt-1 flex flex-wrap gap-1">
+														<div className="mt-1 flex flex-nowrap gap-1">
 															{student.needsPlan && <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-warn-text">Asignar plan</span>}
 															{student.needsSchedule && <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-warn-text">Asignar horario</span>}
 														</div>

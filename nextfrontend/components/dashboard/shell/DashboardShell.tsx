@@ -90,6 +90,7 @@ export function DashboardShell({ children, roles, primaryRole, userName, pending
                             <span aria-label="Usuario activo" className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-cyan-400/50 bg-cyan-500/20 font-display text-xs font-extrabold text-accent-text shadow-sm">{initials}</span>
                         </div>
                         <button aria-label="Cerrar sesión" className="hidden size-9 shrink-0 items-center justify-center rounded-lg text-ink-3 transition-colors hover:bg-red-950/50 hover:text-danger-text md:flex" onClick={handleSignOut} title="Cerrar sesión" type="button"><LogOut aria-hidden="true" className="size-4" /></button>
+                        <span className="flex md:hidden"><NotificationBell initialUnreadCount={unreadNotificationCount} /></span>
                         <button aria-label="Abrir menú" className="flex size-9 shrink-0 items-center justify-center rounded-lg text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink md:hidden" onClick={() => setMobileMenuOpen(true)} type="button">
                             <Menu aria-hidden="true" className="size-5" />
                         </button>

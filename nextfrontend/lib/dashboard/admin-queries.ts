@@ -152,6 +152,9 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
         take: 1,
         select: { promotedAt: true },
       },
+      _count: {
+        select: { documents: { where: { status: StudentDocumentStatus.PENDING } } },
+      },
     },
   })
 
@@ -213,6 +216,7 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       studentCount: student.techniques.length,
       kataMasteredCount: student.techniques.filter(({ approved }) => approved).length,
       kataTotalCount: student.techniques.length,
+      pendingDocumentCount: student._count.documents,
       attendancePercent: Math.min(100, Math.round((confirmedCount / TARGET_ATTENDANCES) * 100)),
       rankAwardedAt: student.rankHistory[0]?.promotedAt.toISOString() ?? null,
       nextRankName: nextBeltRank?.name ?? null,
@@ -247,8 +251,9 @@ export async function getAdminPendingDocumentCount(userId: string): Promise<numb
   return db.studentDocument.count({
     where: {
       status: StudentDocumentStatus.PENDING,
-      studentId: { not: null },
-      ...(scope.isSuperAdmin ? {} : { student: { schoolId: scope.schoolId! } }),
+      student: scope.isSuperAdmin
+        ? { status: StudentStatus.ACTIVE }
+        : { schoolId: scope.schoolId!, status: StudentStatus.ACTIVE },
     },
   })
 }
@@ -845,6 +850,7 @@ export async function getAdminInstructorCandidates(userId: string): Promise<Admi
     where: {
       ...scopeSchoolFilter(scope),
       userId: { not: null },
+      status: StudentStatus.ACTIVE,
     },
     orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
     select: {
