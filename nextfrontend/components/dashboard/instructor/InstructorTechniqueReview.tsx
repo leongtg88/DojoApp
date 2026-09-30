@@ -88,12 +88,12 @@ export function InstructorTechniqueReview({ review }: InstructorTechniqueReviewP
                     <span className="rounded-md border border-edge-strong bg-surface-1 px-2.5 py-1 text-xs font-bold text-ink-2">{unassignedTechniques.length} disponibles</span>
                 </div>
                 <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
-                    <select className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500" onChange={(event) => setSelectedTechniqueId(event.target.value)} value={selectedTechniqueId}>
+                    <select className="w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500" onChange={(event) => setSelectedTechniqueId(event.target.value)} value={selectedTechniqueId}>
                         <option value="">Selecciona una técnica</option>
                         {unassignedTechniques.map((technique) => <option key={technique.id} value={technique.id}>{technique.category}: {technique.name}</option>)}
                     </select>
-                    <input className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" onChange={(event) => setAssignmentNotes(event.target.value)} placeholder="Observación opcional" value={assignmentNotes} />
-                    <button className="inline-flex items-center justify-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400 disabled:opacity-60" disabled={isSaving} type="submit"><Plus aria-hidden="true" className="size-4" />Asignar</button>
+                    <input className="w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" onChange={(event) => setAssignmentNotes(event.target.value)} placeholder="Observación opcional" value={assignmentNotes} />
+                    <button className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400 disabled:opacity-60 sm:w-auto" disabled={isSaving} type="submit"><Plus aria-hidden="true" className="size-4" />Asignar</button>
                 </div>
             </form>
 

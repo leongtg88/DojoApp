@@ -27,7 +27,7 @@ export default async function InstructorEvaluationsPage({ searchParams }: Instru
             <form className="mt-7 rounded-lg border border-edge bg-surface-2 p-5" method="get">
                 <label className="flex flex-col gap-1.5 text-sm font-semibold text-ink" htmlFor="studentId">
                     Alumno
-                    <select className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" defaultValue={studentId} id="studentId" name="studentId">
+                    <select className="w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" defaultValue={studentId} id="studentId" name="studentId">
                         {students.map((student) => <option key={student.id} value={student.id}>{student.firstName} {student.lastName}</option>)}
                     </select>
                 </label>
