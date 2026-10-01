@@ -34,20 +34,20 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
             <p className="mt-2 text-sm text-ink-3">Alumnos activos de tu escuela.</p>
 
             {students.length > 0 && (
-                <section className="mt-6 grid gap-3 sm:grid-cols-3">
-                    <article className="rounded-lg border border-edge bg-surface-2 p-4">
+                <section className="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
+                    <article className="rounded-lg border border-edge bg-surface-2 p-3 sm:p-4">
                         <p className="text-xs font-semibold uppercase tracking-wide text-ink-3">Alumnos activos</p>
-                        <p className="mt-1 text-2xl font-bold text-ink">{students.length}</p>
+                        <p className="mt-1 text-lg font-bold text-ink sm:text-2xl">{students.length}</p>
                     </article>
-                    <article className="rounded-lg border border-edge bg-surface-2 p-4">
+                    <article className="rounded-lg border border-edge bg-surface-2 p-3 sm:p-4">
                         <p className="text-xs font-semibold uppercase tracking-wide text-ink-3">Katas revisadas (promedio)</p>
-                        <p className="mt-1 text-2xl font-bold text-ink">
+                        <p className="mt-1 text-lg font-bold text-ink sm:text-2xl">
                             {students.length ? (students.reduce((sum, student) => sum + student.masteredCount, 0) / students.length).toFixed(1) : '0.0'}
                         </p>
                     </article>
-                    <article className="rounded-lg border border-edge bg-surface-2 p-4">
+                    <article className="rounded-lg border border-edge bg-surface-2 p-3 sm:p-4">
                         <p className="text-xs font-semibold uppercase tracking-wide text-ink-3">Asistencia (promedio)</p>
-                        <p className="mt-1 text-2xl font-bold text-ok-text">{averageAttendance}%</p>
+                        <p className="mt-1 text-lg font-bold text-ok-text sm:text-2xl">{averageAttendance}%</p>
                     </article>
                 </section>
             )}

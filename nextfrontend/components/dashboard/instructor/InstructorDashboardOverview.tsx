@@ -66,17 +66,17 @@ export function InstructorDashboardOverview({ birthdays, classes, pendingCount, 
                 </Link>
             </section>
 
-            <section className="mt-3 grid gap-3 sm:grid-cols-2">
-                <Link className="rounded-lg border border-edge bg-surface-2 p-5 transition-colors hover:border-cyan-500/40 hover:bg-surface-3" href="/dashboard/instructor/clases">
+            <section className="mt-3 grid grid-cols-2 gap-2 sm:gap-3">
+                <Link className="rounded-lg border border-edge bg-surface-2 p-4 transition-colors hover:border-cyan-500/40 hover:bg-surface-3 sm:p-5" href="/dashboard/instructor/clases">
                     <CalendarDays aria-hidden="true" className="size-5 text-accent" />
                     <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink-3">Clases asignadas</p>
-                    <p className="mt-1 text-3xl font-bold text-ink">{classes.length}</p>
+                    <p className="mt-1 text-2xl font-bold text-ink sm:text-3xl">{classes.length}</p>
                     <p className="mt-2 text-sm text-ink-3">Ver horario y composición de grupos.</p>
                 </Link>
-                <Link className="rounded-lg border border-edge bg-surface-2 p-5 transition-colors hover:border-emerald-500/40 hover:bg-surface-3" href="/dashboard/instructor/estudiantes">
+                <Link className="rounded-lg border border-edge bg-surface-2 p-4 transition-colors hover:border-emerald-500/40 hover:bg-surface-3 sm:p-5" href="/dashboard/instructor/estudiantes">
                     <Users aria-hidden="true" className="size-5 text-ok-text" />
                     <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink-3">Estudiantes activos</p>
-                    <p className="mt-1 text-3xl font-bold text-ink">{students.length}</p>
+                    <p className="mt-1 text-2xl font-bold text-ink sm:text-3xl">{students.length}</p>
                     <p className="mt-2 text-sm text-ink-3">Ver alumnos activos de tu escuela.</p>
                 </Link>
             </section>

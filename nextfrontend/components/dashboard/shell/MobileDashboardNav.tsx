@@ -51,10 +51,10 @@ function NavLinkContent({ active, label, icon: Icon, badge, href, pendingHref, o
         <>
             <span className={`flex flex-col items-center gap-1 ${contentClass}`}>
                 <span className="relative">
-                    <Icon aria-hidden="true" className="size-5" />
+                    <Icon aria-hidden="true" className="size-[22px]" />
                     {badge && <span className="absolute -right-2 -top-1.5 rounded-full bg-cyan-500 px-1.5 py-0.5 text-[9px] font-bold leading-none text-[#0d1117]">{badge > 99 ? '99+' : badge}</span>}
                 </span>
-                <span className="max-w-16 truncate">{label}</span>
+                <span className="max-w-16 truncate text-[10px]">{label}</span>
             </span>
             <span aria-hidden="true" className={`mobile-nav-underline ${underlineClass}`} />
         </>
