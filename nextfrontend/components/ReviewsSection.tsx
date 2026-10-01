@@ -396,14 +396,6 @@ export default function ReviewsSection() {
                     <span className="font-semibold text-gray-700">¿Nos ayudas en Google?</span> Publica la misma
                     reseña en nuestra ficha de Google Maps. Allí la ven muchas más familias.
                   </p>
-                  <a
-                    href={getGoogleWriteReviewUrl()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-accent px-4 py-3 text-sm font-bold text-black transition hover:brightness-105 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-                  >
-                    Publicar en Google <ExternalLink className="w-4 h-4" />
-                  </a>
                   <button
                     type="button"
                     onClick={handleCopyReview}
@@ -419,8 +411,16 @@ export default function ReviewsSection() {
                       </>
                     )}
                   </button>
+                  <a
+                    href={getGoogleWriteReviewUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-accent px-4 py-3 text-sm font-bold text-black transition hover:brightness-105 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                  >
+                    Publicar en Google <ExternalLink className="w-4 h-4" />
+                  </a>
                   <p className="text-[11px] leading-relaxed text-gray-500">
-                    Copia tu reseña, abre Google con el botón de arriba e inicia sesión para pegarla.
+                    Copia tu reseña, abre Google con el botón de abajo e inicia sesión para pegarla.
                   </p>
                 </div>
 

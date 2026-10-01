@@ -347,4 +347,115 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--ocean-blue);
   }
 }
+
+/* ============ Blog: lectura larga ============ */
+/* Color-agnóstico (hereda el color del contenedor) para servir tanto al
+   detalle público (claro) como a la vista previa del admin (oscuro). */
+.blog-prose {
+  color: inherit;
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  overflow-wrap: break-word;
+}
+
+.blog-prose > * + * {
+  margin-top: 1.35rem;
+}
+
+.blog-prose h1,
+.blog-prose h2,
+.blog-prose h3,
+.blog-prose h4 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.25;
+  color: inherit;
+  margin-top: 2.4rem;
+}
+
+.blog-prose h1 { font-size: 1.9rem; }
+.blog-prose h2 { font-size: 1.55rem; }
+.blog-prose h3 { font-size: 1.3rem; }
+.blog-prose h4 { font-size: 1.1rem; }
+
+.blog-prose a {
+  color: var(--color-brand-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.blog-prose a:hover {
+  color: var(--color-brand-accent-hover);
+}
+
+.blog-prose strong { font-weight: 700; }
+
+.blog-prose ul,
+.blog-prose ol {
+  padding-left: 1.4rem;
+}
+
+.blog-prose ul { list-style: disc; }
+.blog-prose ol { list-style: decimal; }
+
+.blog-prose li + li {
+  margin-top: 0.4rem;
+}
+
+.blog-prose blockquote {
+  border-left: 4px solid var(--color-brand-accent);
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.blog-prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  background: rgba(127, 127, 127, 0.18);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+.blog-prose pre {
+  background: #1a1a1a;
+  color: #f4f4f5;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  overflow-x: auto;
+  font-size: 0.9rem;
+}
+
+.blog-prose pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.blog-prose img {
+  border-radius: 12px;
+  max-width: 100%;
+  height: auto;
+}
+
+.blog-prose hr {
+  border-color: rgba(127, 127, 127, 0.25);
+}
+
+.blog-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.blog-prose th,
+.blog-prose td {
+  border: 1px solid rgba(127, 127, 127, 0.3);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.blog-prose th {
+  font-weight: 700;
+}
  

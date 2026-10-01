@@ -560,6 +560,22 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.PostScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  slug: 'slug',
+  excerpt: 'excerpt',
+  content: 'content',
+  coverImageUrl: 'coverImageUrl',
+  coverImageKey: 'coverImageKey',
+  category: 'category',
+  published: 'published',
+  publishedAt: 'publishedAt',
+  authorId: 'authorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -736,6 +752,13 @@ exports.NotificationPriority = exports.$Enums.NotificationPriority = {
   URGENT: 'URGENT'
 };
 
+exports.PostCategory = exports.$Enums.PostCategory = {
+  FILOSOFIA: 'FILOSOFIA',
+  GUIA_PARA_PADRES: 'GUIA_PARA_PADRES',
+  TESTIMONIOS: 'TESTIMONIOS',
+  EDUCATIVO: 'EDUCATIVO'
+};
+
 exports.Prisma.ModelName = {
   School: 'School',
   Branch: 'Branch',
@@ -770,7 +793,8 @@ exports.Prisma.ModelName = {
   ExamConvocation: 'ExamConvocation',
   Review: 'Review',
   ApiUsage: 'ApiUsage',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  Post: 'Post'
 };
 
 /**

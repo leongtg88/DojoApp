@@ -10,6 +10,7 @@ import {
     GraduationCap,
     LayoutDashboard,
     ListChecks,
+    Newspaper,
     Star,
     Users,
 } from 'lucide-react'
@@ -60,6 +61,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/admin/asistencia', label: 'Asistencia', icon: CalendarDays },
         { href: '/dashboard/admin/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
         { href: '/dashboard/admin/reviews', label: 'Reseñas', icon: Star },
+        { href: '/dashboard/admin/blog', label: 'Blog', icon: Newspaper },
     ],
     SUPERADMIN: [
         { href: '/dashboard/admin', label: 'Resumen', icon: LayoutDashboard },
@@ -73,6 +75,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/admin/asistencia', label: 'Asistencia', icon: CalendarDays },
         { href: '/dashboard/admin/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
         { href: '/dashboard/admin/reviews', label: 'Reseñas', icon: Star },
+        { href: '/dashboard/admin/blog', label: 'Blog', icon: Newspaper },
     ],
 }
 

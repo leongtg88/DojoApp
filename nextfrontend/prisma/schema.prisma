@@ -113,6 +113,7 @@ model User {
   pushSubscriptions       PushSubscription[]
   auditLogs               AuditLog[]
   classes                 Class[]                  @relation("instructor")
+  posts                   Post[]
   createdAt               DateTime                 @default(now())
   updatedAt               DateTime                 @updatedAt
 
@@ -844,4 +845,34 @@ model AuditLog {
   @@index([actorId])
   @@index([schoolId, createdAt])
   @@index([action])
+}
+
+// ==================== Blog ====================
+// Artículos del blog. El contenido se guarda en Markdown y se renderiza en el
+// servidor con react-markdown (sin HTML crudo, por seguridad).
+enum PostCategory {
+  FILOSOFIA
+  GUIA_PARA_PADRES
+  TESTIMONIOS
+  EDUCATIVO
+}
+
+model Post {
+  id            String       @id @default(cuid())
+  title         String
+  slug          String       @unique // generado a partir del título (único)
+  excerpt       String // resumen corto para el listado
+  content       String // Markdown
+  coverImageUrl String?
+  coverImageKey String? // clave en Supabase Storage (para poder borrar la imagen)
+  category      PostCategory
+  published     Boolean      @default(false)
+  publishedAt   DateTime?
+  authorId      String
+  author        User         @relation(fields: [authorId], references: [id])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([published, publishedAt])
+  @@index([category, published, publishedAt])
 }

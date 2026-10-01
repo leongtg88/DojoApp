@@ -52,6 +52,7 @@ export default function Footer() {
           <ul className="space-y-2 text-xs font-semibold text-gray-700/60">
             <li><Link href="/" className="hover:text-brand-accent cursor-pointer">Inicio (Dojo Home)</Link></li>
             <li><Link href="/nosotros" className="hover:text-brand-accent cursor-pointer">Sobre Nosotros</Link></li>
+            <li><Link href="/blog" className="hover:text-brand-accent cursor-pointer">Blog</Link></li>
             <li><button onClick={() => scrollToSection('horarios')} className="hover:text-brand-accent cursor-pointer">Horarios de Práctica</button></li>
             <li><button onClick={() => scrollToSection('contacto')} className="hover:text-brand-accent cursor-pointer">Sucursal Bella Vista</button></li>
             <li><Link href="/inscripcion" className="hover:text-brand-accent cursor-pointer">Formulario de Inscripción</Link></li>

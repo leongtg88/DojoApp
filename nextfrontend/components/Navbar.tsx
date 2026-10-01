@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Menu, X, BookOpen, Calendar, MapPin, Camera, MessagesSquare,
-  Play, Home, ClipboardList, UserRound, Smartphone
+  Play, Home, ClipboardList, UserRound, Smartphone, Newspaper
 } from 'lucide-react';
 import DojoEnrollmentModal from './DojoEnrollmentModal';
 import { requestAppInstall, useIsInstalledPwa } from '@/lib/pwa';
@@ -53,6 +53,9 @@ export default function Navbar() {
           </Link>
           <Link href="/nosotros" className={`cursor-pointer transition-colors hover:text-brand-accent ${pathname === '/nosotros' ? 'text-brand-accent font-bold' : 'text-gray-700'}`}>
             Sobre Nosotros
+          </Link>
+          <Link href="/blog" className={`cursor-pointer transition-colors hover:text-brand-accent ${pathname.startsWith('/blog') ? 'text-brand-accent font-bold' : 'text-gray-700'}`}>
+            Blog
           </Link>
           <Link href="/#horarios" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 hover:text-brand-accent transition-colors cursor-pointer">
             Horarios
@@ -148,6 +151,9 @@ export default function Navbar() {
                   </Link>
                   <Link href="/nosotros" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname === '/nosotros' ? 'text-brand-accent' : 'text-gray-700/80'}`}>
                     <BookOpen className="w-4 h-4 shrink-0" /><span>Sobre Nosotros</span>
+                  </Link>
+                  <Link href="/blog" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname.startsWith('/blog') ? 'text-brand-accent' : 'text-gray-700/80'}`}>
+                    <Newspaper className="w-4 h-4 shrink-0" /><span>Blog del Dojo</span>
                   </Link>
                   <Link href="/#horarios" onClick={() => setIsMobileMenuOpen(false)} className="text-left text-gray-700/80 hover:text-brand-accent transition-colors flex items-center gap-3 py-1">
                     <Calendar className="w-4 h-4 shrink-0" /><span>Horarios Semanales</span>
