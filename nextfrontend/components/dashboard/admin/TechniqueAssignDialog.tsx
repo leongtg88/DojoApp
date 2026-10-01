@@ -24,6 +24,12 @@ interface TechniqueAssignDialogProps {
     ranks: AdminBeltRankSummary[]
     onClose: () => void
     onAssigned: (summary: { gradesLinked: number; studentsAssigned: number }) => void
+    /** Endpoint que devuelve `{ students }` para poblar la pestaña Alumno/Grupo. */
+    studentsEndpoint?: string
+    /** URL del endpoint de asignación para una técnica concreta. */
+    assignUrl?: (techniqueId: string) => string
+    /** Si es `false`, la pestaña Grado sólo propaga a los alumnos y no enlaza el plan. */
+    allowPlanLinking?: boolean
 }
 
 function techniqueCategoryLabel(technique: AdminTechniqueSummary): string {
@@ -46,7 +52,15 @@ const GROUP_TYPE_OPTIONS: { value: GroupType; label: string }[] = [
     { value: 'CLASS', label: 'Por clase' },
 ]
 
-export function TechniqueAssignDialog({ technique, ranks, onClose, onAssigned }: TechniqueAssignDialogProps) {
+export function TechniqueAssignDialog({
+    technique,
+    ranks,
+    onClose,
+    onAssigned,
+    studentsEndpoint = '/api/dashboard/admin/students',
+    assignUrl = (techniqueId) => `/api/dashboard/admin/techniques/${techniqueId}/assign`,
+    allowPlanLinking = true,
+}: TechniqueAssignDialogProps) {
     const [tab, setTab] = useState<Tab>('GRADE')
     const [selectedGrades, setSelectedGrades] = useState<Set<string>>(new Set())
     const [assignToStudents, setAssignToStudents] = useState(false)
@@ -66,7 +80,7 @@ export function TechniqueAssignDialog({ technique, ranks, onClose, onAssigned }:
 
     useEffect(() => {
         let cancelled = false
-        fetch('/api/dashboard/admin/students')
+        fetch(studentsEndpoint)
             .then((response) => response.json())
             .then((payload: { students?: StudentOption[] }) => {
                 if (!cancelled) setStudents(payload.students ?? [])
@@ -80,7 +94,7 @@ export function TechniqueAssignDialog({ technique, ranks, onClose, onAssigned }:
         return () => {
             cancelled = true
         }
-    }, [])
+    }, [studentsEndpoint])
 
     const gradeOptions = useMemo(() => [...new Set(students.map((student) => student.currentRank).filter((value): value is string => Boolean(value)))].sort(), [students])
     const branchOptions = useMemo(() => [...new Set(students.map((student) => student.branchName))].sort(), [students])
@@ -123,7 +137,7 @@ export function TechniqueAssignDialog({ technique, ranks, onClose, onAssigned }:
         setError(null)
         let targets
         if (tab === 'GRADE') {
-            targets = [{ kind: 'GRADE', gradeIds: [...selectedGrades], assignToStudents }]
+            targets = [{ kind: 'GRADE', gradeIds: [...selectedGrades], assignToStudents: allowPlanLinking ? assignToStudents : true }]
         } else if (tab === 'STUDENT') {
             targets = [{ kind: 'STUDENT', studentIds: [...selectedStudents] }]
         } else {
@@ -131,7 +145,7 @@ export function TechniqueAssignDialog({ technique, ranks, onClose, onAssigned }:
         }
 
         try {
-            const response = await fetch(`/api/dashboard/admin/techniques/${technique.id}/assign`, {
+            const response = await fetch(assignUrl(technique.id), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ targets }),
@@ -181,7 +195,7 @@ export function TechniqueAssignDialog({ technique, ranks, onClose, onAssigned }:
                 <div className="flex-1 space-y-3 overflow-y-auto p-5">
                     {tab === 'GRADE' && (
                         <>
-                            <p className="text-xs text-ink-3">Elige los grados a cuyo plan se enlazará esta técnica.</p>
+                            <p className="text-xs text-ink-3">{allowPlanLinking ? 'Elige los grados a cuyo plan se enlazará esta técnica.' : 'Elige los grados cuyos alumnos activos recibirán esta técnica.'}</p>
                             <ul className="max-h-56 space-y-1.5 overflow-y-auto rounded-md border border-edge bg-surface-1 p-2">
                                 {sortedRanks.map((rank) => {
                                     const checked = selectedGrades.has(rank.id)
@@ -190,7 +204,7 @@ export function TechniqueAssignDialog({ technique, ranks, onClose, onAssigned }:
                                             <label className={`flex cursor-pointer items-center justify-between rounded-md px-2 py-1.5 transition-colors ${checked ? 'bg-surface-3' : 'hover:bg-surface-3/50'}`}>
                                                 <span className="min-w-0">
                                                     <span className="block truncate text-xs font-semibold text-ink">{rank.name}{rank.kyuDan ? ` · ${rank.kyuDan}` : ''}</span>
-                                                    <span className="block text-[11px] text-ink-3">{rank.program === 'YOUTH' ? 'Niños' : 'Adultos'}</span>
+                                                    <span className="block text-[11px] text-ink-3">{rank.program === 'YOUTH' ? 'Niños' : 'Adultos'}{allowPlanLinking ? '' : ` · ${rank.studentCount} ${rank.studentCount === 1 ? 'alumno' : 'alumnos'}`}</span>
                                                 </span>
                                                 <input type="checkbox" checked={checked} onChange={() => toggleGrade(rank.id)} className="size-4 shrink-0 cursor-pointer rounded accent-cyan-400" />
                                             </label>
@@ -198,10 +212,16 @@ export function TechniqueAssignDialog({ technique, ranks, onClose, onAssigned }:
                                     )
                                 })}
                             </ul>
-                            <label className="flex items-start gap-3 rounded-md border border-cyan-500/30 bg-cyan-950/20 p-3 text-xs leading-5 text-ink-3" htmlFor="assign-propagation">
-                                <input id="assign-propagation" type="checkbox" checked={assignToStudents} onChange={(event) => setAssignToStudents(event.target.checked)} className="mt-0.5 size-4 shrink-0 accent-cyan-500" />
-                                <span><span className="font-semibold text-ink">Asignar a los alumnos actuales de esos grados</span> — recibirán la técnica en su expediente y una notificación.</span>
-                            </label>
+                            {allowPlanLinking ? (
+                                <label className="flex items-start gap-3 rounded-md border border-cyan-500/30 bg-cyan-950/20 p-3 text-xs leading-5 text-ink-3" htmlFor="assign-propagation">
+                                    <input id="assign-propagation" type="checkbox" checked={assignToStudents} onChange={(event) => setAssignToStudents(event.target.checked)} className="mt-0.5 size-4 shrink-0 accent-cyan-500" />
+                                    <span><span className="font-semibold text-ink">Asignar a los alumnos actuales de esos grados</span> — recibirán la técnica en su expediente y una notificación.</span>
+                                </label>
+                            ) : (
+                                <p className="rounded-md border border-edge bg-surface-1 px-3 py-2 text-[11px] text-ink-3">
+                                    Se agregará la técnica al expediente de los alumnos activos de los grados elegidos. No se modifica el plan ni los requisitos de examen.
+                                </p>
+                            )}
                         </>
                     )}
 

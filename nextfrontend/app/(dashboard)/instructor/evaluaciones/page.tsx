@@ -1,5 +1,6 @@
 import { auth } from '@/auth'
 import { InstructorTechniqueReview } from '@/components/dashboard/instructor/InstructorTechniqueReview'
+import { StudentSearchSelect } from '@/components/dashboard/instructor/StudentSearchSelect'
 import { getInstructorStudents, getInstructorTechniqueReview } from '@/lib/dashboard/instructor-queries'
 import { redirect } from 'next/navigation'
 import { hasRole } from '@/lib/auth/roles'
@@ -24,15 +25,9 @@ export default async function InstructorEvaluationsPage({ searchParams }: Instru
         <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
             <p className="text-sm font-semibold uppercase tracking-wide text-accent">Panel de instructor</p>
             <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Técnicas y katas</h1>
-            <form className="mt-7 rounded-lg border border-edge bg-surface-2 p-5" method="get">
-                <label className="flex flex-col gap-1.5 text-sm font-semibold text-ink" htmlFor="studentId">
-                    Alumno
-                    <select className="w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" defaultValue={studentId} id="studentId" name="studentId">
-                        {students.map((student) => <option key={student.id} value={student.id}>{student.firstName} {student.lastName}</option>)}
-                    </select>
-                </label>
-                <button className="mt-3 rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117]" type="submit">Cargar alumno</button>
-            </form>
+            <section className="mt-7 rounded-lg border border-edge bg-surface-2 p-5">
+                <StudentSearchSelect students={students} studentId={studentId} />
+            </section>
             {review ? <InstructorTechniqueReview review={review} /> : <p className="mt-6 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-8 text-sm text-ink-3">No tienes alumnos activos para evaluar.</p>}
         </main>
     )

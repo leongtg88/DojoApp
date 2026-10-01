@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { CheckCheck, CircleDashed, ClipboardCheck, Clock, Info, Loader2, Plus, RefreshCw, Save, Search, Star, X } from 'lucide-react'
 import type { InstructorTechniqueReview as TechniqueReview, StudentTechnique, TechniqueStatus } from '@/types/dashboard'
 import { KataBeltChip } from '../shared/KataBeltChip'
+import { TechniqueCatalogFilter } from '../shared/TechniqueCatalogFilter'
 
 interface InstructorTechniqueReviewProps {
     review: TechniqueReview
@@ -14,23 +15,19 @@ type StatusFilter = 'ALL' | TechniqueStatus
 
 export function InstructorTechniqueReview({ review }: InstructorTechniqueReviewProps) {
     const router = useRouter()
-    const [selectedTechniqueId, setSelectedTechniqueId] = useState('')
-    const [assignmentNotes, setAssignmentNotes] = useState('')
     const [searchTerm, setSearchTerm] = useState('')
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL')
     const [rubricTechnique, setRubricTechnique] = useState<StudentTechnique | null>(null)
+    const [assigningId, setAssigningId] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
-    const [isSaving, setIsSaving] = useState(false)
 
     async function sendUpdate(method: 'POST' | 'PATCH', body: object) {
         setError(null)
-        setIsSaving(true)
         const response = await fetch('/api/dashboard/instructor/techniques', {
             method,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
         })
-        setIsSaving(false)
 
         if (!response.ok) {
             setError('No fue posible guardar la evaluación. Inténtalo nuevamente.')
@@ -41,24 +38,15 @@ export function InstructorTechniqueReview({ review }: InstructorTechniqueReviewP
         return true
     }
 
-    async function assignTechnique(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault()
-
-        if (!selectedTechniqueId) {
-            setError('Selecciona una técnica para asignar.')
-            return
-        }
-
-        const saved = await sendUpdate('POST', {
+    async function assignTechnique(techniqueId: string) {
+        if (assigningId) return
+        setAssigningId(techniqueId)
+        await sendUpdate('POST', {
             studentId: review.student.id,
-            techniqueId: selectedTechniqueId,
-            notes: assignmentNotes.trim() || null,
+            techniqueId,
+            notes: null,
         })
-
-        if (saved) {
-            setSelectedTechniqueId('')
-            setAssignmentNotes('')
-        }
+        setAssigningId(null)
     }
 
     async function updateTechnique(techniqueId: string, body: object) {
@@ -79,23 +67,39 @@ export function InstructorTechniqueReview({ review }: InstructorTechniqueReviewP
 
     return (
         <section className="mt-6 space-y-6">
-            <form className="rounded-lg border border-edge bg-surface-2 p-5 shadow-sm" onSubmit={assignTechnique}>
-                <div className="flex flex-wrap items-start justify-between gap-3">
+            <section className="rounded-lg border border-edge bg-surface-2 shadow-sm">
+                <div className="flex flex-wrap items-start justify-between gap-3 border-b border-edge px-5 py-4">
                     <div>
                         <p className="text-xs font-semibold uppercase tracking-wide text-accent">Plan técnico</p>
-                        <h2 className="mt-1 font-display text-lg font-bold text-ink">Asignar técnica</h2>
+                        <h2 className="mt-1 font-display text-lg font-bold text-ink">Asignar técnica para evaluación</h2>
                     </div>
                     <span className="rounded-md border border-edge-strong bg-surface-1 px-2.5 py-1 text-xs font-bold text-ink-2">{unassignedTechniques.length} disponibles</span>
                 </div>
-                <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
-                    <select className="w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500" onChange={(event) => setSelectedTechniqueId(event.target.value)} value={selectedTechniqueId}>
-                        <option value="">Selecciona una técnica</option>
-                        {unassignedTechniques.map((technique) => <option key={technique.id} value={technique.id}>{technique.category}: {technique.name}</option>)}
-                    </select>
-                    <input className="w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" onChange={(event) => setAssignmentNotes(event.target.value)} placeholder="Observación opcional" value={assignmentNotes} />
-                    <button className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400 disabled:opacity-60 sm:w-auto" disabled={isSaving} type="submit"><Plus aria-hidden="true" className="size-4" />Asignar</button>
-                </div>
-            </form>
+                {unassignedTechniques.length === 0 ? (
+                    <p className="px-5 py-8 text-sm text-ink-3">Este alumno ya tiene asignadas todas las técnicas del catálogo.</p>
+                ) : (
+                    <TechniqueCatalogFilter
+                        defaultProgram={review.student.program}
+                        emptyMessage="No hay técnicas que coincidan con los filtros."
+                        idPrefix="plan-tecnico"
+                        key={review.student.id}
+                        ranks={review.ranks}
+                        renderActions={(technique) => (
+                            <button
+                                aria-label={`Asignar ${technique.name}`}
+                                className="inline-flex items-center justify-center rounded-md border border-cyan-500/40 bg-cyan-500/10 p-1.5 text-accent-text transition-colors hover:bg-cyan-500/20 disabled:opacity-60"
+                                disabled={assigningId === technique.id}
+                                onClick={() => void assignTechnique(technique.id)}
+                                title="Asignar para evaluación"
+                                type="button"
+                            >
+                                {assigningId === technique.id ? <Loader2 aria-label="Asignando" className="size-4 animate-spin" /> : <Plus aria-hidden="true" className="size-4" />}
+                            </button>
+                        )}
+                        techniques={unassignedTechniques}
+                    />
+                )}
+            </section>
 
             <section className="rounded-lg border border-edge bg-surface-2 shadow-sm">
                 <div className="border-b border-edge px-5 py-4">

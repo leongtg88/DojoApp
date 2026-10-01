@@ -13,6 +13,7 @@ import type {
   InstructorAttendanceBoardData,
   InstructorAttendanceRoster,
   InstructorClassSummary,
+  InstructorAssignableStudent,
   InstructorKataAssignmentData,
   InstructorStudentSearchResult,
   InstructorStudentSummary,
@@ -391,13 +392,7 @@ export async function getInstructorTechniqueReview(
 
   const program = programForAge(ageFromDob(student.dateOfBirth))
 
-  const availableTechniques = await db.technique.findMany({
-    where: {
-      OR: [{ schoolId: student.schoolId }, { schoolId: null }],
-    },
-    orderBy: [{ category: 'asc' }, { name: 'asc' }],
-    select: { id: true, name: true, description: true, category: true },
-  })
+  const { ranks, techniques: catalogTechniques } = await getCurriculumForSchool(student.schoolId)
 
   return {
     student: {
@@ -405,6 +400,7 @@ export async function getInstructorTechniqueReview(
       firstName: student.firstName,
       lastName: student.lastName,
       currentRank: student.currentRank,
+      program,
     },
     techniques: student.techniques.map(({ approved, approvedAt, inPractice, notes, practiceHours, practiceRepetitions, technique, evaluation }) => {
       const level = introLevelFromBeltRankKatas(technique.beltRankKatas, program)
@@ -432,7 +428,8 @@ export async function getInstructorTechniqueReview(
         } : null,
       }
     }),
-    availableTechniques,
+    availableTechniques: catalogTechniques,
+    ranks,
   }
 }
 
@@ -582,5 +579,42 @@ export async function getInstructorStudentsSearch(
   return students.map((student) => ({
     ...student,
     enrolledInClass: enrolledSet.has(student.id),
+  }))
+}
+
+/**
+ * Alumnos activos de la escuela del instructor con sucursal y clases, para
+ * poblar el diálogo de asignación de técnicas (mismo shape que usa el admin).
+ */
+export async function getInstructorAssignableStudents(userId: string): Promise<InstructorAssignableStudent[]> {
+  const schoolId = await getInstructorSchoolId(userId)
+
+  if (!schoolId) {
+    return []
+  }
+
+  const students = await db.student.findMany({
+    where: { schoolId, status: StudentStatus.ACTIVE },
+    orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      currentRank: true,
+      branch: { select: { name: true } },
+      classEnrollments: {
+        where: { status: ClassEnrollmentStatus.ACTIVE },
+        select: { class: { select: { name: true } } },
+      },
+    },
+  })
+
+  return students.map((student) => ({
+    id: student.id,
+    firstName: student.firstName,
+    lastName: student.lastName,
+    currentRank: student.currentRank,
+    branchName: student.branch.name,
+    activeClassNames: student.classEnrollments.map((enrollment) => enrollment.class.name),
   }))
 }

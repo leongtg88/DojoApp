@@ -124,13 +124,6 @@ export interface TechniqueEvaluation {
 	evaluatorName: string | null
 }
 
-export interface TechniqueCatalogItem {
-	id: string
-	name: string
-	description: string | null
-	category: TechniqueCategory
-}
-
 export interface ClassSchedule {
 	id: string
 	name: string
@@ -179,9 +172,10 @@ export interface InstructorAttendanceRoster {
 }
 
 export interface InstructorTechniqueReview {
-	student: Pick<InstructorStudentSummary, 'id' | 'firstName' | 'lastName' | 'currentRank'>
+	student: Pick<InstructorStudentSummary, 'id' | 'firstName' | 'lastName' | 'currentRank'> & { program: 'ADULT' | 'YOUTH' }
 	techniques: StudentTechnique[]
-	availableTechniques: TechniqueCatalogItem[]
+	availableTechniques: AdminTechniqueSummary[]
+	ranks: AdminBeltRankSummary[]
 }
 
 export interface AdminStudentSummary {
@@ -820,4 +814,13 @@ export interface InstructorStudentSearchResult {
 	lastName: string
 	currentRank: string | null
 	enrolledInClass: boolean
+}
+
+export interface InstructorAssignableStudent {
+	id: string
+	firstName: string
+	lastName: string
+	currentRank: string | null
+	branchName: string
+	activeClassNames: string[]
 }

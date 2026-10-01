@@ -2,12 +2,12 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { BookOpen, CheckSquare, ChevronDown, ChevronUp, Loader2, Pencil, Plus, Search, Send, Shield, Swords, Trash2, X } from 'lucide-react'
-import { TECHNIQUE_CATEGORIES, TECHNIQUE_CATEGORY_LABELS, techniqueMetaLine } from '@/lib/dashboard/technique-format'
+import { BookOpen, CheckSquare, Loader2, Pencil, Plus, Search, Send, Shield, Swords, Trash2, X } from 'lucide-react'
+import { TECHNIQUE_CATEGORIES, TECHNIQUE_CATEGORY_LABELS } from '@/lib/dashboard/technique-format'
 import { KIHON_CATEGORIES, KIHON_CATEGORY_LABELS, KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
 import { KUMITE_CATEGORIES, KUMITE_CATEGORY_LABELS, KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
 import { buildProgramKataLevels, type KataLevelInfo } from '@/lib/dashboard/kata-level'
-import { KATA_BANDS, bandForOrder, beltChipsForLevels, type KataBand } from '@/lib/dashboard/kata-bands'
+import { TechniqueCatalogExplorer } from '../shared/TechniqueCatalogExplorer'
 import { TechniqueAssignDialog } from './TechniqueAssignDialog'
 import type { Program } from '@/lib/curriculum/programs'
 import type { AdminBeltRankSummary, AdminTechniqueSummary, KihonCategory, KumiteCategory, TechniqueCategory } from '@/types/dashboard'
@@ -51,34 +51,6 @@ const CATEGORY_DESCRIPTIONS: Record<TechniqueCategory, string> = {
 
 type ProgramFilter = 'ALL' | Program
 
-const PROGRAM_LABELS: Record<Program, string> = {
-    YOUTH: 'Niños',
-    ADULT: 'Adultos',
-}
-
-interface TechniqueBandGroup {
-    key: string
-    band: KataBand
-    label: string
-    items: AdminTechniqueSummary[]
-}
-
-/** Muestra de color de cinturón (con franja secundaria opcional). Se usa en las
- *  cabeceras de tramo y al lado del nombre de cada técnica. */
-function BeltSwatch({ beltColor, beltSecondaryColor }: { beltColor: string | null; beltSecondaryColor?: string | null }) {
-    const color = beltColor ?? '#3f3f46'
-    const isDark = color.toUpperCase() === '#212121'
-    return (
-        <span
-            aria-hidden="true"
-            className="relative inline-block h-3 w-5 shrink-0 overflow-hidden rounded-sm border border-white/30"
-            style={{ backgroundColor: color, boxShadow: isDark ? '0 0 0 1px rgba(255,255,255,0.5)' : undefined }}
-        >
-            {beltSecondaryColor && <span className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2" style={{ backgroundColor: beltSecondaryColor }} />}
-        </span>
-    )
-}
-
 function emptyTechniqueForm(category: TechniqueCategory | '' = '', rankId = ''): TechniqueForm {
     return {
         name: '',
@@ -120,7 +92,6 @@ export function AdminTechniqueManager({ ranks, techniques, selectedRank = null }
     const [error, setError] = useState<string | null>(null)
     const [notice, setNotice] = useState<string | null>(null)
     const [assigningTechnique, setAssigningTechnique] = useState<AdminTechniqueSummary | null>(null)
-    const [openBands, setOpenBands] = useState<Record<string, boolean>>({})
 
     const kataOptions = techniques.filter(({ category }) => category === 'KATA')
     const levelsByProgram: Record<Program, Map<string, KataLevelInfo>> = {
@@ -130,10 +101,6 @@ export function AdminTechniqueManager({ ranks, techniques, selectedRank = null }
     const visiblePrograms: Program[] = programFilter === 'ALL' ? ['YOUTH', 'ADULT'] : [programFilter]
     const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
     const searchActive = normalizedSearch.length > 0
-    const isBandOpen = (key: string) => searchActive || Boolean(openBands[key])
-    function toggleBand(key: string) {
-        setOpenBands((current) => ({ ...current, [key]: !current[key] }))
-    }
     const visibleTechniques = techniques.filter((technique) => {
         const matchesCategory = categoryFilter === 'ALL' || technique.category === categoryFilter
         const matchesKihon = categoryFilter !== 'KIHON' || kihonFilter === 'ALL' || technique.kihonCategory === kihonFilter
@@ -144,30 +111,6 @@ export function AdminTechniqueManager({ ranks, techniques, selectedRank = null }
         if (technique.category === 'KATA' && !visiblePrograms.some((program) => levelsByProgram[program].has(technique.id))) return false
         return true
     })
-
-    function bandGroupsForProgram(program: Program): TechniqueBandGroup[] {
-        const groups: TechniqueBandGroup[] = []
-        for (const definition of KATA_BANDS[program]) {
-            const items = visibleTechniques
-                .filter((technique) => {
-                    const level = levelsByProgram[program].get(technique.id)
-                    return level != null && bandForOrder(program, level.gradeOrder) === definition.band
-                })
-                .sort((a, b) => {
-                    const levelA = levelsByProgram[program].get(a.id)
-                    const levelB = levelsByProgram[program].get(b.id)
-                    const rankA = levelA ? levelA.gradeOrder * 1000 + levelA.position : 100000 + a.order
-                    const rankB = levelB ? levelB.gradeOrder * 1000 + levelB.position : 100000 + b.order
-                    return rankA - rankB || a.name.localeCompare(b.name)
-                })
-            if (items.length > 0) groups.push({ key: `${program}:${definition.band}`, band: definition.band, label: definition.label, items })
-        }
-        return groups
-    }
-
-    const ungradedTechniques = visibleTechniques
-        .filter((technique) => !visiblePrograms.some((program) => levelsByProgram[program].has(technique.id)))
-        .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name))
 
     function openCategoryPicker() {
         setError(null)
@@ -294,26 +237,13 @@ export function AdminTechniqueManager({ ranks, techniques, selectedRank = null }
         router.refresh()
     }
 
-    function renderTechnique(technique: AdminTechniqueSummary, level: KataLevelInfo | undefined) {
-        const rank = technique.rankIds.length > 0 ? ranks.find(({ id }) => id === technique.rankIds[0]) : undefined
-        const meta = techniqueMetaLine(technique, technique.category !== 'KATA')
+    function renderActions(technique: AdminTechniqueSummary) {
         return (
-            <li className="flex items-start justify-between gap-4 px-5 py-4" key={technique.id}>
-                <div className="min-w-0">
-                    <p className="flex items-center gap-2 text-sm font-semibold text-ink">
-                        {(level || rank) && <BeltSwatch beltColor={level?.beltColor ?? rank?.beltColor ?? null} beltSecondaryColor={level?.beltSecondaryColor} />}
-                        <span className="min-w-0 truncate">{technique.name}</span>
-                        {technique.japaneseName && <span className="shrink-0 text-xs font-normal text-ink-3">{technique.japaneseName}</span>}
-                    </p>
-                    {meta && <p className="mt-1 text-xs text-ink-3">{meta}</p>}
-                    {technique.description && <p className="mt-2 text-sm text-ink-3">{technique.description}</p>}
-                </div>
-                <div className="flex shrink-0 items-center gap-1.5">
-                    <button aria-label={`Asignar ${technique.name}`} className="rounded p-1.5 text-ink-4 transition-colors hover:bg-cyan-500/10 hover:text-accent disabled:opacity-60" disabled={saving} onClick={() => setAssigningTechnique(technique)} type="button"><Send aria-hidden="true" className="size-4" /></button>
-                    <button aria-label={`Editar ${technique.name}`} className="rounded p-1.5 text-ink-4 transition-colors hover:bg-surface-3 hover:text-ink disabled:opacity-60" disabled={saving} onClick={() => openEdit(technique)} type="button"><Pencil aria-hidden="true" className="size-4" /></button>
-                    <button aria-label={`Eliminar ${technique.name}`} className="rounded p-1.5 text-ink-4 transition-colors hover:bg-red-500/10 hover:text-danger-text disabled:opacity-60" disabled={saving} onClick={() => deleteTechnique(technique)} type="button"><Trash2 aria-hidden="true" className="size-4" /></button>
-                </div>
-            </li>
+            <>
+                <button aria-label={`Asignar ${technique.name}`} className="rounded p-1.5 text-ink-4 transition-colors hover:bg-cyan-500/10 hover:text-accent disabled:opacity-60" disabled={saving} onClick={() => setAssigningTechnique(technique)} type="button"><Send aria-hidden="true" className="size-4" /></button>
+                <button aria-label={`Editar ${technique.name}`} className="rounded p-1.5 text-ink-4 transition-colors hover:bg-surface-3 hover:text-ink disabled:opacity-60" disabled={saving} onClick={() => openEdit(technique)} type="button"><Pencil aria-hidden="true" className="size-4" /></button>
+                <button aria-label={`Eliminar ${technique.name}`} className="rounded p-1.5 text-ink-4 transition-colors hover:bg-red-500/10 hover:text-danger-text disabled:opacity-60" disabled={saving} onClick={() => deleteTechnique(technique)} type="button"><Trash2 aria-hidden="true" className="size-4" /></button>
+            </>
         )
     }
 
@@ -376,70 +306,14 @@ export function AdminTechniqueManager({ ranks, techniques, selectedRank = null }
                 ) : visibleTechniques.length === 0 ? (
                     <p className="px-5 py-10 text-center text-sm text-ink-3">No hay técnicas que coincidan con los filtros.</p>
                 ) : (
-                    <div>
-                        {visiblePrograms.map((program) => {
-                            const groups = bandGroupsForProgram(program)
-                            if (groups.length === 0) return null
-                            return (
-                                <div key={program}>
-                                    <p className="border-b border-edge bg-surface-1/60 px-5 py-2 text-xs font-bold uppercase tracking-wider text-accent">{PROGRAM_LABELS[program]}</p>
-                                    {groups.map((group) => {
-                                        const levels = group.items
-                                            .map((technique) => levelsByProgram[program].get(technique.id))
-                                            .filter((level): level is KataLevelInfo => level != null)
-                                        const belts = beltChipsForLevels(levels)
-                                        const isOpen = isBandOpen(group.key)
-                                        return (
-                                            <div key={group.key}>
-                                                <button
-                                                    aria-expanded={isOpen}
-                                                    className="flex w-full flex-col gap-1.5 border-b border-edge bg-surface-1/40 px-5 py-2 text-left transition-colors hover:bg-surface-1/70"
-                                                    onClick={() => toggleBand(group.key)}
-                                                    type="button"
-                                                >
-                                                    <span className="flex w-full items-center gap-2">
-                                                        {isOpen ? <ChevronUp aria-hidden="true" className="size-4 shrink-0 text-ink-3" /> : <ChevronDown aria-hidden="true" className="size-4 shrink-0 text-ink-3" />}
-                                                        <span className="text-[11px] font-bold uppercase tracking-wide text-ink-3">{group.label}</span>
-                                                        <span className="ml-auto text-[11px] text-ink-4">{group.items.length}</span>
-                                                    </span>
-                                                    {!isOpen && belts.length > 0 && (
-                                                        <span className="flex flex-wrap items-center gap-1.5 pl-6">
-                                                            {belts.map((belt) => <BeltSwatch beltColor={belt.beltColor} key={belt.key} />)}
-                                                        </span>
-                                                    )}
-                                                </button>
-                                                {isOpen && (
-                                                    <ul className="divide-y divide-edge">
-                                                        {group.items.map((technique) => renderTechnique(technique, levelsByProgram[program].get(technique.id)))}
-                                                    </ul>
-                                                )}
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                            )
-                        })}
-
-                        {ungradedTechniques.length > 0 && (
-                            <div>
-                                <button
-                                    aria-expanded={isBandOpen('__ungraded__')}
-                                    className="flex w-full items-center gap-2 border-b border-edge bg-surface-1/40 px-5 py-1.5 text-left transition-colors hover:bg-surface-1/70"
-                                    onClick={() => toggleBand('__ungraded__')}
-                                    type="button"
-                                >
-                                    {isBandOpen('__ungraded__') ? <ChevronUp aria-hidden="true" className="size-4 shrink-0 text-ink-3" /> : <ChevronDown aria-hidden="true" className="size-4 shrink-0 text-ink-3" />}
-                                    <span className="text-[11px] font-bold uppercase tracking-wide text-ink-3">Sin grado</span>
-                                    <span className="ml-auto text-[11px] text-ink-4">{ungradedTechniques.length}</span>
-                                </button>
-                                {isBandOpen('__ungraded__') && (
-                                    <ul className="divide-y divide-edge">
-                                        {ungradedTechniques.map((technique) => renderTechnique(technique, undefined))}
-                                    </ul>
-                                )}
-                            </div>
-                        )}
-                    </div>
+                    <TechniqueCatalogExplorer
+                        levelsByProgram={levelsByProgram}
+                        ranks={ranks}
+                        renderActions={renderActions}
+                        searchActive={searchActive}
+                        techniques={visibleTechniques}
+                        visiblePrograms={visiblePrograms}
+                    />
                 )}
             </section>
 
