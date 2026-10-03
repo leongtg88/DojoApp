@@ -79,22 +79,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Solo puedes registrar práctica de los últimos 7 días.' }, { status: 400 })
   }
 
-  // El cliente envía el instante con zona (ISO), así que el día de referencia
-  // para evitar duplicados se calcula en límites UTC, consistente en cualquier zona.
-  const startOfDay = new Date(Date.UTC(punchDate.getUTCFullYear(), punchDate.getUTCMonth(), punchDate.getUTCDate()))
-  const startOfNextDay = new Date(Date.UTC(punchDate.getUTCFullYear(), punchDate.getUTCMonth(), punchDate.getUTCDate() + 1))
-
-  const existing = await db.attendance.findFirst({
+  // Se permiten varias prácticas el mismo día (p. ej. clase + entrenamiento
+  // libre). Solo se bloquea un duplicado exacto: misma fecha y hora.
+  const duplicate = await db.attendance.findFirst({
     where: {
       studentId: student.id,
       sessionId: null,
-      date: { gte: startOfDay, lt: startOfNextDay },
+      date: punchDate,
     },
     select: { id: true },
   })
 
-  if (existing) {
-    return NextResponse.json({ error: 'Ya registraste tu práctica en esa fecha. Puedes editarla mientras esté pendiente.' }, { status: 409 })
+  if (duplicate) {
+    return NextResponse.json({ error: 'Ya registraste una práctica a esa misma hora. Puedes editarla mientras esté pendiente.' }, { status: 409 })
   }
 
   const sessionType = result.data.sessionType ?? 'class'

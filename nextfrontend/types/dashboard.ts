@@ -693,6 +693,8 @@ export interface StudentAttendancePunchData {
 	practiceTechniques: StudentPracticeTechniqueOption[]
 	/** Programa del alumno según su edad; define el filtro por defecto. */
 	program: 'ADULT' | 'YOUTH'
+	/** Horarios de referencia del alumno, para sugerir la hora de la práctica. */
+	schedule: ClassSchedule[]
 }
 
 export interface InstructorAttendanceBoardData {

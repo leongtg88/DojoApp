@@ -72,15 +72,18 @@ export async function saveClassAttendance({
       }
 
       // Si el alumno hizo punch-in el mismo día (sessionId null), fusiona el registro
-      // en el pase de lista para evitar el doble conteo (punch + clase).
-      const punch = await transaction.attendance.findFirst({
+      // en el pase de lista para evitar el doble conteo (punch + clase). Si hay varios
+      // (clase + entrenamiento libre), se prefiere el que corresponde a esta clase.
+      const sameDayPunches = await transaction.attendance.findMany({
         where: {
           studentId: record.studentId,
           sessionId: null,
           date: { gte: sessionDate, lt: dayAfter },
         },
+        orderBy: { date: 'asc' },
         select: { id: true, hoursTrained: true, notes: true, classId: true, isOutOfSchedule: true },
       })
+      const punch = sameDayPunches.find((entry) => entry.classId === classId) ?? sameDayPunches[0]
 
       if (punch) {
         await transaction.attendance.deleteMany({ where: { sessionId: classSession.id, studentId: record.studentId } })

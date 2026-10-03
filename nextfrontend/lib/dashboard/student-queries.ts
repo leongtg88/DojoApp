@@ -26,6 +26,7 @@ import type {
   KataProgressItem,
   TechniqueStatus,
   AttendanceRecord,
+  ClassSchedule,
   MonthlyProgressInfo,
   StudentPracticeKataLevel,
   StudentPracticeTechniqueOption,
@@ -258,6 +259,23 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
         },
         orderBy: { technique: { name: 'asc' } },
       },
+      classEnrollments: {
+        where: { status: ClassEnrollmentStatus.ACTIVE },
+        orderBy: { class: { dayOfWeek: 'asc' } },
+        select: {
+          class: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              dayOfWeek: true,
+              startTime: true,
+              endTime: true,
+              instructor: { select: { name: true } },
+            },
+          },
+        },
+      },
     },
   })
 
@@ -353,6 +371,16 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
       : [],
   }))
 
+  const schedule: ClassSchedule[] = student.classEnrollments.map(({ class: scheduledClass }) => ({
+    id: scheduledClass.id,
+    name: scheduledClass.name,
+    description: scheduledClass.description,
+    dayOfWeek: scheduledClass.dayOfWeek,
+    startTime: formatTime(scheduledClass.startTime),
+    endTime: formatTime(scheduledClass.endTime),
+    instructorName: scheduledClass.instructor?.name ?? null,
+  }))
+
   return {
     summary: {
       confirmedCount,
@@ -364,6 +392,7 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
     records,
     practiceTechniques,
     program: programForAge(ageFromDob(student.dateOfBirth)),
+    schedule,
   }
 }
 

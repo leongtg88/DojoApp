@@ -20,7 +20,7 @@ import {
   Trash2,
   X,
 } from 'lucide-react'
-import type { AttendanceRecord, KihonCategory, KumiteCategory, PracticePlace, StudentAttendancePunchData, StudentPracticeTechniqueOption, TechniqueCategory } from '@/types/dashboard'
+import type { AttendanceRecord, ClassSchedule, KihonCategory, KumiteCategory, PracticePlace, StudentAttendancePunchData, StudentPracticeTechniqueOption, TechniqueCategory } from '@/types/dashboard'
 import { TECHNIQUE_CATEGORY_LABELS } from '@/lib/dashboard/technique-format'
 import { KIHON_CATEGORIES, KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
 import { KUMITE_CATEGORIES, KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
@@ -57,6 +57,34 @@ const STATUS_LABELS: Record<'CONFIRMED' | 'PENDING' | 'REJECTED' | 'JUSTIFIED' |
 
 function sessionLabel(sessionType: string | null): string {
   return SESSION_OPTIONS.find(({ value }) => value === sessionType)?.label ?? sessionType ?? 'Clase'
+}
+
+function timeToMinutes(value: string): number {
+  const [hours, minutes] = value.split(':').map(Number)
+  return (Number.isFinite(hours) ? hours : 0) * 60 + (Number.isFinite(minutes) ? minutes : 0)
+}
+
+/** Hora por defecto de la práctica: la de la clase del día (la más cercana a ahora si es hoy). */
+function defaultPunchTime(schedule: ClassSchedule[], dateValue: string, now: Date): string {
+  const pad = (value: number) => String(value).padStart(2, '0')
+  const nowValue = `${pad(now.getHours())}:${pad(now.getMinutes())}`
+  const [year, month, day] = dateValue.split('-').map(Number)
+  if (!year || !month || !day) return nowValue
+
+  const weekday = new Date(year, month - 1, day).getDay()
+  const classes = schedule.filter((entry) => entry.dayOfWeek === weekday)
+  if (classes.length === 0) return nowValue
+
+  const todayValue = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
+  if (dateValue === todayValue) {
+    const nowMinutes = now.getHours() * 60 + now.getMinutes()
+    return classes.reduce((best, entry) => {
+      const diff = Math.abs(timeToMinutes(entry.startTime) - nowMinutes)
+      return diff < best.diff ? { startTime: entry.startTime, diff } : best
+    }, { startTime: classes[0].startTime, diff: Number.POSITIVE_INFINITY }).startTime
+  }
+
+  return [...classes].sort((a, b) => a.startTime.localeCompare(b.startTime))[0].startTime
 }
 
 interface KataBandGroup {
@@ -225,7 +253,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
     return `${min.getFullYear()}-${pad(min.getMonth() + 1)}-${pad(min.getDate())}`
   })()
   const [punchDate, setPunchDate] = useState(todayValue)
-  const [punchTime, setPunchTime] = useState(() => `${pad(localNow.getHours())}:${pad(localNow.getMinutes())}`)
+  const [punchTime, setPunchTime] = useState(() => defaultPunchTime(data.schedule, todayValue, localNow))
 
   const [editingRecord, setEditingRecord] = useState<AttendanceRecord | null>(null)
   const [editHours, setEditHours] = useState<number>(1.5)
@@ -326,8 +354,9 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
       setPracticeReps({})
       setPracticePlace('DOJO')
       const now = new Date()
-      setPunchDate(`${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`)
-      setPunchTime(`${pad(now.getHours())}:${pad(now.getMinutes())}`)
+      const resetDate = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
+      setPunchDate(resetDate)
+      setPunchTime(defaultPunchTime(data.schedule, resetDate, now))
       router.refresh()
       setShowPunchSuccess(true)
     } else {
@@ -458,7 +487,11 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                 id="punch-date"
                 max={todayValue}
                 min={minDateValue}
-                onChange={(event) => setPunchDate(event.target.value)}
+                onChange={(event) => {
+                  const value = event.target.value
+                  setPunchDate(value)
+                  setPunchTime(defaultPunchTime(data.schedule, value, new Date()))
+                }}
                 type="date"
                 value={punchDate}
               />
@@ -477,7 +510,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
             </div>
           </div>
           <p className="-mt-1 text-[11px] text-ink-4">
-            Por defecto ahora. Puedes registrar hasta 7 días atrás; tu Sensei confirma la asistencia.
+            Por defecto la hora de tu clase. Puedes registrar hasta 7 días atrás; tu Sensei confirma la asistencia.
           </p>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
