@@ -47,11 +47,12 @@ const PROGRAM_LABELS: Record<'ADULT' | 'YOUTH', string> = {
   YOUTH: 'Niños',
 }
 
-const STATUS_LABELS: Record<'CONFIRMED' | 'PENDING' | 'REJECTED' | 'JUSTIFIED', string> = {
+const STATUS_LABELS: Record<'CONFIRMED' | 'PENDING' | 'REJECTED' | 'JUSTIFIED' | 'ABSENT', string> = {
   CONFIRMED: 'Confirmada',
   PENDING: 'Esperando al Sensei',
   REJECTED: 'Rechazada',
   JUSTIFIED: 'Justificada',
+  ABSENT: 'Falta',
 }
 
 function sessionLabel(sessionType: string | null): string {
@@ -754,6 +755,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
               const isPending = record.status === 'PENDING'
               const isJustified = record.status === 'JUSTIFIED'
               const isRejected = record.status === 'REJECTED'
+              const isAbsent = record.status === 'ABSENT'
 
               return (
                 <div className="flex flex-col justify-between gap-3 p-4 transition-colors hover:bg-surface-3/30 sm:flex-row sm:items-center" key={record.id}>
@@ -805,6 +807,11 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                           No fue validado por el Sensei. Registra tu práctica de nuevo.
                         </p>
                       )}
+                      {isAbsent && (
+                        <p className="mt-0.5 text-[11px] text-danger-text/90">
+                          Tu Sensei registró una falta. Recupérala entrenando fuera de tu horario habitual.
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -827,6 +834,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                       {isPending && <Hourglass className="size-3.5" aria-hidden="true" />}
                       {isJustified && <ShieldCheck className="size-3.5" aria-hidden="true" />}
                       {isRejected && <AlertCircle className="size-3.5" aria-hidden="true" />}
+                      {isAbsent && <AlertCircle className="size-3.5" aria-hidden="true" />}
                       <span>{STATUS_LABELS[record.status]}</span>
                     </span>
 

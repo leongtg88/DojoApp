@@ -354,7 +354,8 @@ export const AttendanceStatus: {
   PENDING: 'PENDING',
   CONFIRMED: 'CONFIRMED',
   REJECTED: 'REJECTED',
-  JUSTIFIED: 'JUSTIFIED'
+  JUSTIFIED: 'JUSTIFIED',
+  ABSENT: 'ABSENT'
 };
 
 export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]

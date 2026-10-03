@@ -9,6 +9,7 @@ const STATUS_META: Record<AttendanceStatus, { label: string; className: string }
     CONFIRMED: { label: 'Confirmada', className: 'border-emerald-500/30 bg-emerald-500/10 text-ok-text' },
     REJECTED: { label: 'Rechazada', className: 'border-rose-500/30 bg-rose-500/10 text-danger-text' },
     JUSTIFIED: { label: 'Justificada', className: 'border-sky-500/30 bg-sky-500/10 text-info-text' },
+    ABSENT: { label: 'Falta', className: 'border-rose-500/40 bg-rose-500/15 text-danger-text' },
 }
 
 const SESSION_TYPE_LABELS: Record<string, string> = {
@@ -40,6 +41,7 @@ export function AdminAttendanceView() {
     const [present, setPresent] = useState<'all' | 'present' | 'absent'>('all')
     const [branch, setBranch] = useState('all')
     const [selected, setSelected] = useState<Set<string>>(new Set())
+    const [reason, setReason] = useState('')
     const [acting, setActing] = useState(false)
     const [refreshKey, setRefreshKey] = useState(0)
 
@@ -81,6 +83,9 @@ export function AdminAttendanceView() {
     }, [date, status, present, branch, debouncedQuery, refreshKey])
 
     const hasActiveFilters = Boolean(date) || status !== 'PENDING' || present !== 'all' || branch !== 'all' || query.trim().length > 0
+    const selectedRecords = records.filter((record) => selected.has(record.id))
+    const canConfirm = selectedRecords.length > 0 && selectedRecords.every((record) => record.status === 'PENDING' && record.present)
+    const canJustifyOrReject = selectedRecords.length > 0 && selectedRecords.every((record) => record.status === 'PENDING' || record.status === 'ABSENT')
 
     function clearFilters() {
         setQuery('')
@@ -108,10 +113,11 @@ export function AdminAttendanceView() {
             const response = await fetch('/api/dashboard/admin/attendance', {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
-                body: JSON.stringify({ action, ids: [...selected] }),
+                body: JSON.stringify({ action, ids: [...selected], notes: reason.trim() || null }),
             })
             const data = await response.json().catch(() => null)
             if (!response.ok) throw new Error(data?.error ?? 'No se pudo aplicar la acción')
+            setReason('')
             setLoading(true)
             setRefreshKey((key) => key + 1)
         } catch (cause) {
@@ -171,6 +177,7 @@ export function AdminAttendanceView() {
                                     <option value="CONFIRMED">Confirmadas</option>
                                     <option value="REJECTED">Rechazadas</option>
                                     <option value="JUSTIFIED">Justificadas</option>
+                                    <option value="ABSENT">Faltas</option>
                                 </select>
                             </label>
                             <label className="text-xs font-semibold text-ink-2" htmlFor="attendance-branch">Sucursal
@@ -204,15 +211,21 @@ export function AdminAttendanceView() {
                 {selected.size > 0 && (
                     <div className="flex flex-wrap items-center gap-2 border-b border-edge px-4 py-3">
                         <span className="text-xs text-ink-3">{selected.size} seleccionados</span>
-                        <button type="button" onClick={() => void bulkAction('CONFIRMED')} disabled={acting} className="flex items-center gap-1.5 rounded-md bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-[#0d1117] hover:bg-emerald-400 disabled:opacity-50">
+                        <input
+                            className="min-w-52 flex-1 rounded-md border border-edge-strong bg-surface-1 px-3 py-1.5 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
+                            onChange={(event) => setReason(event.target.value)}
+                            placeholder="Motivo / observación (opcional)"
+                            value={reason}
+                        />
+                        <button type="button" onClick={() => void bulkAction('CONFIRMED')} disabled={acting || !canConfirm} className="flex items-center gap-1.5 rounded-md bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-[#0d1117] hover:bg-emerald-400 disabled:opacity-50">
                             {acting ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <ShieldCheck className="size-4" aria-hidden="true" />}
                             Confirmar
                         </button>
-                        <button type="button" onClick={() => void bulkAction('JUSTIFIED')} disabled={acting} className="flex items-center gap-1.5 rounded-md bg-sky-500 px-3 py-1.5 text-xs font-semibold text-[#0d1117] hover:bg-sky-400 disabled:opacity-50">
+                        <button type="button" onClick={() => void bulkAction('JUSTIFIED')} disabled={acting || !canJustifyOrReject} className="flex items-center gap-1.5 rounded-md bg-sky-500 px-3 py-1.5 text-xs font-semibold text-[#0d1117] hover:bg-sky-400 disabled:opacity-50">
                             {acting ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <ShieldCheck className="size-4" aria-hidden="true" />}
                             Justificar falta
                         </button>
-                        <button type="button" onClick={() => void bulkAction('REJECTED')} disabled={acting} className="flex items-center gap-1.5 rounded-md bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-500 disabled:opacity-50">
+                        <button type="button" onClick={() => void bulkAction('REJECTED')} disabled={acting || !canJustifyOrReject} className="flex items-center gap-1.5 rounded-md bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-500 disabled:opacity-50">
                             {acting ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <X className="size-4" aria-hidden="true" />}
                             Rechazar
                         </button>
@@ -222,10 +235,10 @@ export function AdminAttendanceView() {
                 <ul className="divide-y divide-edge">
                     {records.map((record) => {
                         const statusMeta = STATUS_META[record.status]
-                        const isPending = record.status === 'PENDING'
+                        const selectable = record.status === 'PENDING' || record.status === 'ABSENT'
                         return (
                             <li key={record.id} className="flex items-start gap-3 px-4 py-4 hover:bg-surface-3/40">
-                                <input type="checkbox" checked={selected.has(record.id)} disabled={!isPending} onChange={() => toggle(record.id)} className="mt-1 size-4 shrink-0 accent-cyan-500" />
+                                <input type="checkbox" checked={selected.has(record.id)} disabled={!selectable} onChange={() => toggle(record.id)} className="mt-1 size-4 shrink-0 accent-cyan-500" />
                                 <div className="flex min-w-0 flex-1 gap-3">
                                     {record.present ? <CalendarCheck2 aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-ok-text" /> : <CircleX aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-danger-text" />}
                                     <div className="min-w-0">

@@ -614,6 +614,7 @@ enum AttendanceStatus {
   CONFIRMED
   REJECTED
   JUSTIFIED
+  ABSENT
 }
 
 enum ScholarshipType {

@@ -719,7 +719,8 @@ exports.AttendanceStatus = exports.$Enums.AttendanceStatus = {
   PENDING: 'PENDING',
   CONFIRMED: 'CONFIRMED',
   REJECTED: 'REJECTED',
-  JUSTIFIED: 'JUSTIFIED'
+  JUSTIFIED: 'JUSTIFIED',
+  ABSENT: 'ABSENT'
 };
 
 exports.ApprovalStatus = exports.$Enums.ApprovalStatus = {

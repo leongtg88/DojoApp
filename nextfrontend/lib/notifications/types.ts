@@ -21,6 +21,7 @@ const SCHEDULE_LINK = '/dashboard/estudiante/horario'
 const ATTENDANCE_LINK = '/dashboard/estudiante/asistencia'
 const PROFILE_LINK = '/dashboard/estudiante/perfil'
 const ADMIN_STUDENTS_LINK = '/dashboard/admin/alumnos'
+const ADMIN_ATTENDANCE_LINK = '/dashboard/admin/asistencia'
 
 function readString(data: Record<string, unknown>, key: string): string | null {
   const value = data[key]
@@ -138,7 +139,7 @@ const builders: Record<NotificationType, NotificationBuilder> = {
     link: ATTENDANCE_LINK,
     priority: 'INFO',
   }),
-  ATTENDANCE_PUNCHED: ({ studentName, studentId, data }) => {
+  ATTENDANCE_PUNCHED: ({ studentName, data }) => {
     const hours = readNumber(data, 'hoursTrained')
     const className = readString(data, 'className')
     const suffix = className ? ` en ${className}` : ''
@@ -148,7 +149,7 @@ const builders: Record<NotificationType, NotificationBuilder> = {
         hours !== null
           ? `${studentName} marcó ${hours}h${suffix}. Revísalo para confirmarlo.`
           : `${studentName} marcó asistencia${suffix}. Revísala para confirmarla.`,
-      link: `${ADMIN_STUDENTS_LINK}/${studentId}`,
+      link: ADMIN_ATTENDANCE_LINK,
       priority: 'ACTION',
     }
   },

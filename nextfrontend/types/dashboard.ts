@@ -630,7 +630,7 @@ export interface StudentPracticeNote {
 }
 
 
-export type AttendanceStatus = 'PENDING' | 'CONFIRMED' | 'REJECTED' | 'JUSTIFIED'
+export type AttendanceStatus = 'PENDING' | 'CONFIRMED' | 'REJECTED' | 'JUSTIFIED' | 'ABSENT'
 
 export interface AttendanceRecord {
 	id: string

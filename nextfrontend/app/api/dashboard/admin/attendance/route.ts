@@ -8,6 +8,7 @@ import { z } from 'zod'
 const bulkActionSchema = z.object({
   action: z.enum(['CONFIRMED', 'REJECTED', 'JUSTIFIED']),
   ids: z.array(z.string().trim().min(1)).max(200),
+  notes: z.string().trim().max(500).nullable().optional(),
 })
 
 function schoolStudentsFilter(scope: { isSuperAdmin: boolean; schoolId: string | null }): Prisma.AttendanceWhereInput {
@@ -170,33 +171,41 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Datos de la acción no válidos' }, { status: 400 })
   }
 
-  const { action, ids } = result.data
+  const { action, ids, notes } = result.data
+  const reason = notes?.trim() ? notes.trim() : null
+
+  const allowedStatuses: AttendanceStatus[] = action === 'CONFIRMED' ? ['PENDING'] : ['PENDING', 'ABSENT']
 
   const pending = await db.attendance.findMany({
     where: {
       id: { in: ids },
-      status: 'PENDING',
+      status: { in: allowedStatuses },
+      ...(action === 'CONFIRMED' ? { present: true } : {}),
       ...schoolStudentsFilter(scope),
     },
-    select: { id: true },
+    select: { id: true, notes: true },
   })
 
   if (pending.length !== new Set(ids).size) {
-    return NextResponse.json({ error: 'Algunos registros no están pendientes o no pertenecen a esta escuela' }, { status: 400 })
+    return NextResponse.json({ error: 'Algunos registros no son válidos para esta acción o no pertenecen a esta escuela' }, { status: 400 })
   }
 
   const isConfirmed = action === 'CONFIRMED'
+  const confirmedAt = new Date()
 
-  await db.attendance.updateMany({
-    where: { id: { in: pending.map((record) => record.id) } },
-    data: {
-      status: action,
-      present: isConfirmed,
-      hoursTrained: isConfirmed ? undefined : 0,
-      confirmedById: session.user.id,
-      confirmedAt: new Date(),
-    },
-  })
+  await db.$transaction(
+    pending.map((record) => db.attendance.update({
+      where: { id: record.id },
+      data: {
+        status: action,
+        present: isConfirmed,
+        hoursTrained: isConfirmed ? undefined : 0,
+        notes: reason ? (record.notes ? `${record.notes} · ${reason}` : reason) : record.notes,
+        confirmedById: session.user.id,
+        confirmedAt,
+      },
+    })),
+  )
 
   return NextResponse.json({ ok: true, updated: pending.length })
 }

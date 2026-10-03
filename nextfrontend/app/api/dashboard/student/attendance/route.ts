@@ -5,6 +5,8 @@ import { resolveRequestStudent } from '@/lib/family/guardians'
 import { resolveClassByTime, classHours, formatTime } from '@/lib/dashboard/balance'
 import { registerPracticeLogs } from '@/lib/dashboard/technique-reps'
 import { notifySchoolStaff } from '@/lib/notifications/create'
+import { sendPushToSchoolAdmins } from '@/lib/push/web-push'
+import { notifyAttendancePunchByTelegram } from '@/lib/integrations/telegram'
 import type { PracticePlace } from '@/lib/generated/prisma'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -52,6 +54,7 @@ export async function POST(request: Request) {
       firstName: true,
       lastName: true,
       branchId: true,
+      schoolId: true,
       classEnrollments: { where: { status: 'ACTIVE' }, select: { classId: true } },
     },
   })
@@ -164,6 +167,24 @@ export async function POST(request: Request) {
     type: 'ATTENDANCE_PUNCHED',
     studentId: student.id,
     data: { hoursTrained: attendance.hoursTrained, className: resolvedClass?.name ?? null },
+  })
+
+  // Aviso por Telegram (best-effort) con enlace al panel de confirmación.
+  await notifyAttendancePunchByTelegram({
+    studentName: `${student.firstName} ${student.lastName}`,
+    hoursTrained: attendance.hoursTrained,
+    className: resolvedClass?.name ?? null,
+    sessionType,
+    date: attendance.date,
+    isOutOfSchedule: attendance.isOutOfSchedule,
+  })
+
+  // Push al navegador/móvil de los administradores (el badge de no leídas ya
+  // incluye la notificación in-app recién creada).
+  await sendPushToSchoolAdmins(student.schoolId, {
+    title: 'Nuevo punch-in',
+    body: `${student.firstName} ${student.lastName} marcó ${attendance.hoursTrained}h${resolvedClass?.name ? ` en ${resolvedClass.name}` : ''}. Revísalo para confirmarlo.`,
+    url: '/dashboard/admin/asistencia',
   })
 
   return NextResponse.json({

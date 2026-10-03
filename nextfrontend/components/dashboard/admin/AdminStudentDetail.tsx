@@ -44,11 +44,13 @@ const ATTENDANCE_STATUS_LABELS: Record<string, string> = {
 	CONFIRMED: 'Confirmada',
 	REJECTED: 'Rechazada',
 	JUSTIFIED: 'Justificada',
+	ABSENT: 'Falta',
 }
 
 function attendanceStatusClass(status: string) {
 	if (status === 'CONFIRMED') return 'border-emerald-500/30 bg-emerald-500/10 text-ok-text'
 	if (status === 'JUSTIFIED') return 'border-cyan-500/30 bg-cyan-500/10 text-accent-text'
+	if (status === 'ABSENT') return 'border-rose-500/40 bg-rose-500/15 text-danger-text'
 	if (status === 'REJECTED') return 'border-red-500/30 bg-red-500/10 text-danger-text'
 	return 'border-edge-strong bg-surface-1 text-ink-2'
 }

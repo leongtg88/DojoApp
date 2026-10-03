@@ -595,15 +595,15 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
   // Asistencia vs horas de entrenamiento. Cuentan TODAS las asistencias
   // presentadas (present=true), incluidas las PENDING de punch-in: el alumno ve
   // progreso de inmediato y, si luego se rechaza la marca, se descuenta sola
-  // (el rechazo pone present=false). Las faltas confirmadas o justificadas sin
-  // recuperar son inasistencias.
+  // (el rechazo pone present=false). Las faltas marcadas (ABSENT) o justificadas
+  // (JUSTIFIED) sin recuperar son inasistencias; un punch rechazado (REJECTED) no.
   const referenceClassIds = new Set(student.classEnrollments.map((entry) => entry.classId))
 
   const scopedAttendances = student.attendances.filter((attendance) => attendance.date.getTime() >= gradeStart.getTime())
   const attendedRecords = scopedAttendances.filter((attendance) => attendance.present)
   const pendingRecords = attendedRecords.filter((attendance) => attendance.status === 'PENDING')
   const absenceRecords = scopedAttendances.filter(
-    (attendance) => !attendance.present && (attendance.status === 'CONFIRMED' || attendance.status === 'JUSTIFIED') && !attendance.recoveredById,
+    (attendance) => !attendance.present && (attendance.status === 'ABSENT' || attendance.status === 'CONFIRMED' || attendance.status === 'JUSTIFIED') && !attendance.recoveredById,
   )
 
   // Horas de entrenamiento: TATAMI vs LIBRE, según el tipo de sesión que el

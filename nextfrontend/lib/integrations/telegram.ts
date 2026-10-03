@@ -20,12 +20,33 @@ interface ReviewNotification {
   message: string
 }
 
+interface AttendancePunchNotification {
+  studentName: string
+  hoursTrained: number
+  className: string | null
+  sessionType: string | null
+  date: Date
+  isOutOfSchedule: boolean
+}
+
+const SESSION_TYPE_LABELS: Record<string, string> = {
+  class: 'Clase',
+  private: 'Clase privada',
+  autonomous: 'Entrenamiento libre',
+  seminar: 'Seminario',
+  other: 'Otro',
+}
+
 export function isTelegramConfigured(): boolean {
   return Boolean(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_IDS)
 }
 
 function escapeHtml(value: string): string {
   return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+function getAppUrl(): string {
+  return process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTDOJO_APP ?? 'http://localhost:3000'
 }
 
 function getChatIds(): string[] {
@@ -35,12 +56,12 @@ function getChatIds(): string[] {
     .filter(Boolean)
 }
 
-function formatDate(): string {
+function formatDate(date: Date = new Date()): string {
   return new Intl.DateTimeFormat('es-DO', {
     dateStyle: 'short',
     timeStyle: 'short',
     timeZone: 'America/Santo_Domingo',
-  }).format(new Date())
+  }).format(date)
 }
 
 /**
@@ -57,20 +78,32 @@ async function sendMessageToTelegram(text: string): Promise<void> {
 
   await Promise.all(
     chatIds.map(async (chatId) => {
-      try {
-        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text,
-            parse_mode: 'HTML',
-            disable_web_page_preview: true,
-          }),
-          signal: AbortSignal.timeout(5000),
-        })
-      } catch (error) {
-        console.error('[telegram] No fue posible enviar la notificación al chat', chatId, error)
+      for (let attempt = 1; attempt <= 2; attempt += 1) {
+        try {
+          const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text,
+              parse_mode: 'HTML',
+              disable_web_page_preview: true,
+            }),
+            signal: AbortSignal.timeout(5000),
+          })
+
+          if (response.ok) {
+            return
+          }
+
+          const detail = await response.text().catch(() => '')
+          console.error('[telegram] La API rechazó el mensaje', response.status, detail)
+          return
+        } catch (error) {
+          if (attempt === 2) {
+            console.error('[telegram] No fue posible enviar la notificación al chat', chatId, error)
+          }
+        }
       }
     }),
   )
@@ -122,6 +155,22 @@ function buildReviewMessage(input: ReviewNotification): string {
   return lines.join('\n')
 }
 
+function buildAttendancePunchMessage(input: AttendancePunchNotification): string {
+  const sessionLabel = input.className ?? SESSION_TYPE_LABELS[input.sessionType ?? ''] ?? 'Entrenamiento'
+  const lines = [
+    '🥋 <b>Nuevo punch-in</b>',
+    `Alumno: ${escapeHtml(input.studentName)}`,
+    `Horas: ${input.hoursTrained}h`,
+    `Sesión: ${escapeHtml(sessionLabel)}`,
+    `Fecha: ${formatDate(input.date)}`,
+  ]
+
+  if (input.isOutOfSchedule) lines.push('⚠️ Fuera de horario')
+  lines.push('', `<a href="${getAppUrl()}/dashboard/admin/asistencia">Confirmar en el panel</a>`)
+
+  return lines.join('\n')
+}
+
 /**
  * Envía la notificación de una nueva inscripción a todos los chats configurados.
  * Es "best-effort": nunca lanza error para no romper el flujo que la invoca.
@@ -143,6 +192,14 @@ export async function notifyPriceRequestByTelegram(input: PriceRequestNotificati
  */
 export async function notifyReviewByTelegram(input: ReviewNotification): Promise<void> {
   await sendMessageToTelegram(buildReviewMessage(input))
+}
+
+/**
+ * Notifica un punch-in de asistencia recién marcado por un alumno, con enlace
+ * al panel de confirmación. Es "best-effort".
+ */
+export async function notifyAttendancePunchByTelegram(input: AttendancePunchNotification): Promise<void> {
+  await sendMessageToTelegram(buildAttendancePunchMessage(input))
 }
 
 /**

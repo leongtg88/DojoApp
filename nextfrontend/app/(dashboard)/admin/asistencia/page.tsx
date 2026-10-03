@@ -1,7 +1,10 @@
 import { auth } from '@/auth'
 import { AdminAttendanceView } from '@/components/dashboard/admin/AdminAttendanceView'
-import { AdminExpectedAttendance } from '@/components/dashboard/admin/AdminExpectedAttendance'
+import { AdminExpectedControls } from '@/components/dashboard/admin/AdminExpectedControls'
+import { AdminExpectedSummary } from '@/components/dashboard/admin/AdminExpectedSummary'
+import { AdminExpectedTable } from '@/components/dashboard/admin/AdminExpectedTable'
 import { getAdminAttendanceRoster, getAdminSchedules } from '@/lib/dashboard/admin-queries'
+import { ensureClassAbsences } from '@/lib/dashboard/attendance-absences'
 import { redirect } from 'next/navigation'
 import { hasAnyRole } from '@/lib/auth/roles'
 
@@ -22,18 +25,22 @@ export default async function AdminAttendancePage({ searchParams }: AdminAttenda
     const activeClasses = classes.filter((scheduledClass) => scheduledClass.active)
     const selectedClassId = parameters.classId || activeClasses[0]?.id || null
     const date = parameters.date && /^\d{4}-\d{2}-\d{2}$/.test(parameters.date) ? parameters.date : new Date().toISOString().slice(0, 10)
+
+    if (selectedClassId) {
+        await ensureClassAbsences(userId, selectedClassId, date)
+    }
+
     const roster = selectedClassId ? await getAdminAttendanceRoster(userId, selectedClassId, date) : null
 
     return (
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
             <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
             <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Asistencia</h1>
-            <p className="mt-2 text-sm text-ink-3">Compara los alumnos esperados por clase con los registros del día y audita los punch-in pendientes de tu escuela.</p>
-            <div className="mt-6">
-                <AdminExpectedAttendance classes={classes} date={date} roster={roster} selectedClassId={selectedClassId} />
-            </div>
-            <div className="mt-6">
+            <div className="mt-6 space-y-6">
+                {roster && <AdminExpectedSummary roster={roster} />}
                 <AdminAttendanceView />
+                <AdminExpectedControls classes={classes} date={date} hasRoster={Boolean(roster)} selectedClassId={selectedClassId} />
+                {roster && <AdminExpectedTable roster={roster} />}
             </div>
         </main>
     )
