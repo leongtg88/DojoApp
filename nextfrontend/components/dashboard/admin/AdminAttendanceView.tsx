@@ -80,8 +80,6 @@ export function AdminAttendanceView() {
         }
     }, [date, status, present, branch, debouncedQuery, refreshKey])
 
-    const presentCount = records.filter((record) => record.present).length
-    const totalHours = records.reduce((total, record) => total + (record.hoursTrained ?? 0), 0)
     const hasActiveFilters = Boolean(date) || status !== 'PENDING' || present !== 'all' || branch !== 'all' || query.trim().length > 0
 
     function clearFilters() {
@@ -125,14 +123,7 @@ export function AdminAttendanceView() {
 
     return (
         <>
-            <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <article className="rounded-lg border border-edge bg-surface-2 p-4 shadow-sm"><p className="text-xs font-semibold uppercase tracking-wide text-ink-3">Registros auditados</p><p className="mt-1 text-2xl font-bold text-ink">{records.length}</p></article>
-                <article className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-ok-text">Presencias</p><p className="mt-1 text-2xl font-bold text-ok-text">{presentCount}</p></article>
-                <article className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-danger-text">Ausencias</p><p className="mt-1 text-2xl font-bold text-danger-text">{records.length - presentCount}</p></article>
-                <article className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-accent-text">Horas entrenadas</p><p className="mt-1 text-2xl font-bold text-accent-text">{totalHours.toFixed(1)}h</p></article>
-            </section>
-
-            <section className="mt-5 rounded-lg border border-edge bg-surface-2 shadow-sm">
+            <section className="rounded-lg border border-edge bg-surface-2 shadow-sm">
                 <div className="flex items-center justify-between gap-3 border-b border-edge p-4">
                     <div className="min-w-0">
                         <p className="text-sm font-semibold text-ink">Registros de asistencia</p>

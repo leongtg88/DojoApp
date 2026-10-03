@@ -10,6 +10,7 @@ import {
   ChevronUp,
   Clock,
   Hourglass,
+  Minus,
   Pencil,
   Plus,
   Repeat,
@@ -25,6 +26,7 @@ import { KIHON_CATEGORIES, KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/k
 import { KUMITE_CATEGORIES, KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
 import { buildTechniqueSections } from '@/lib/dashboard/technique-sections'
 import { KATA_BANDS, bandForOrder } from '@/lib/dashboard/kata-bands'
+import { formatHoursHM } from '@/lib/dashboard/balance'
 import { formatDateTime } from '@/lib/format/datetime'
 
 interface StudentAttendancePunchProps {
@@ -106,6 +108,55 @@ function buildKataBandGroups(katas: StudentPracticeTechniqueOption[], program: '
   return groups
 }
 
+function RepsStepper({ value, onChange, disabled, label, compact = false, minValue = 1 }: {
+  value: string
+  onChange: (value: string) => void
+  disabled?: boolean
+  label: string
+  compact?: boolean
+  minValue?: number
+}) {
+  const parsed = Number.parseInt(value, 10)
+  const current = Number.isFinite(parsed) && parsed > 0 ? parsed : 0
+  const step = (delta: number) => {
+    onChange(String(Math.max(minValue, Math.min(100_000, current + delta))))
+  }
+  return (
+    <div className={`flex shrink-0 items-center overflow-hidden rounded-md border border-edge-strong bg-surface-2 ${disabled ? 'opacity-40' : ''}`}>
+      <button
+        aria-label={`Quitar una repetición de ${label}`}
+        className="flex size-7 items-center justify-center text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+        disabled={disabled}
+        onClick={() => step(-1)}
+        type="button"
+      >
+        <Minus aria-hidden="true" className="size-3.5" />
+      </button>
+      <input
+        aria-label={`Repeticiones de ${label}`}
+        className={`${compact ? 'w-10' : 'w-12'} border-x border-edge-strong bg-transparent py-1.5 text-center text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500 disabled:cursor-not-allowed`}
+        disabled={disabled}
+        inputMode="numeric"
+        min={minValue}
+        max={100_000}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder="Reps"
+        type="number"
+        value={value}
+      />
+      <button
+        aria-label={`Añadir una repetición de ${label}`}
+        className="flex size-7 items-center justify-center text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+        disabled={disabled}
+        onClick={() => step(1)}
+        type="button"
+      >
+        <Plus aria-hidden="true" className="size-3.5" />
+      </button>
+    </div>
+  )
+}
+
 function PracticeTechniqueRow({ technique, checked, reps, onToggle, onRepsChange }: {
   technique: StudentPracticeTechniqueOption
   checked: boolean
@@ -132,14 +183,10 @@ function PracticeTechniqueRow({ technique, checked, reps, onToggle, onRepsChange
           </span>
         </span>
       </label>
-      <input
-        aria-label={`Repeticiones de ${technique.name}`}
-        className="w-14 shrink-0 rounded-md border border-edge-strong bg-surface-2 px-2 py-1.5 text-center text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500 disabled:opacity-40"
+      <RepsStepper
         disabled={!checked}
-        min={1}
-        onChange={(event) => onRepsChange(event.target.value)}
-        placeholder="Reps"
-        type="number"
+        label={technique.name}
+        onChange={onRepsChange}
         value={reps}
       />
     </li>
@@ -152,6 +199,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
   const studentHeader: Record<string, string> = studentId ? { 'X-Student-Id': studentId } : {}
 
   const [hours, setHours] = useState<number>(1)
+  const [minutes, setMinutes] = useState<number>(0)
   const [sessionType, setSessionType] = useState<string>('class')
   const [notes, setNotes] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -180,6 +228,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
 
   const [editingRecord, setEditingRecord] = useState<AttendanceRecord | null>(null)
   const [editHours, setEditHours] = useState<number>(1.5)
+  const [editMinutes, setEditMinutes] = useState<number>(0)
   const [editSessionType, setEditSessionType] = useState<string>('class')
   const [editNotes, setEditNotes] = useState<string>('')
   const [editPractice, setEditPractice] = useState<Array<{ id: string; techniqueId: string; name: string; repetitions: string; place: PracticePlace }>>([])
@@ -187,6 +236,8 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
   const [editAddReps, setEditAddReps] = useState('')
 
   const quickHours = [1.0, 1.5, 2.0, 2.5]
+
+  const totalHours = hours + minutes / 60
 
   const practiceLogs = Object.entries(practiceReps)
     .map(([techniqueId, repetitions]) => ({ techniqueId, repetitions: Number.parseInt(repetitions, 10), place: practicePlace }))
@@ -249,14 +300,14 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
       alert('Selecciona la fecha y hora de la práctica para continuar.')
       return
     }
-    if (hours <= 0) return
+    if (totalHours <= 0) return
 
     setIsSubmitting(true)
     const response = await fetch('/api/dashboard/student/attendance', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...studentHeader },
       body: JSON.stringify({
-        hoursTrained: hours,
+        hoursTrained: totalHours,
         sessionType,
         // Se envía el instante con zona horaria para que la hora registrada
         // coincida con la que el alumno seleccionó, sin importar la zona del servidor.
@@ -286,7 +337,9 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
 
   const handleOpenEdit = (record: AttendanceRecord) => {
     setEditingRecord(record)
-    setEditHours(record.hoursTrained)
+    const editTotalMinutes = Math.round(record.hoursTrained * 60)
+    setEditHours(Math.floor(editTotalMinutes / 60))
+    setEditMinutes(editTotalMinutes % 60)
     setEditSessionType(record.sessionType ?? 'class')
     setEditNotes(record.notes ?? '')
     setEditPractice(
@@ -342,7 +395,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', ...studentHeader },
       body: JSON.stringify({
-        hoursTrained: editHours,
+        hoursTrained: editHours + editMinutes / 60,
         sessionType: editSessionType,
         notes: editNotes.trim(),
         ...(editPractice.length > 0 ? { practiceLogs } : {}),
@@ -429,28 +482,42 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-2" htmlFor="punch-hours">
-                Horas Entrenadas
+                Tiempo Entrenado
               </label>
-              <div className="flex items-center gap-2">
-                <input
-                  className="w-24 rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 font-mono text-sm text-ink focus:border-red-500 focus:outline-none"
-                  id="punch-hours"
-                  max="8"
-                  min="0.5"
-                  onChange={(event) => setHours(parseFloat(event.target.value) || 0)}
-                  step="0.5"
-                  type="number"
-                  value={hours}
-                />
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex items-center gap-1.5">
+                  <input
+                    className="w-10 rounded-lg border border-edge-strong bg-surface-1 px-2 py-2 text-center font-mono text-sm text-ink focus:border-red-500 focus:outline-none"
+                    id="punch-hours"
+                    max="8"
+                    min="0"
+                    onChange={(event) => setHours(Math.max(0, Math.min(8, Number.parseInt(event.target.value, 10) || 0)))}
+                    step="1"
+                    type="number"
+                    value={hours}
+                  />
+                  <span className="text-xs font-semibold text-ink-3">h</span>
+                  <input
+                    aria-label="Minutos entrenados"
+                    className="w-10 rounded-lg border border-edge-strong bg-surface-1 px-2 py-2 text-center font-mono text-sm text-ink focus:border-red-500 focus:outline-none"
+                    max="55"
+                    min="0"
+                    onChange={(event) => setMinutes(Math.max(0, Math.min(55, Number.parseInt(event.target.value, 10) || 0)))}
+                    step="5"
+                    type="number"
+                    value={minutes}
+                  />
+                  <span className="text-xs font-semibold text-ink-3">min</span>
+                </div>
                 <div className="flex flex-1 items-center gap-1">
                   {quickHours.map((quickHour) => (
                     <button
-                      className={`rounded px-2 py-1.5 font-mono text-xs transition-colors ${hours === quickHour
+                      className={`rounded px-2 py-1.5 font-mono text-xs transition-colors ${hours === quickHour && minutes === 0
                         ? 'bg-red-600 font-bold text-white'
                         : 'bg-surface-3 text-ink-2 hover:bg-surface-3'
                       }`}
                       key={quickHour}
-                      onClick={() => setHours(quickHour)}
+                      onClick={() => { setHours(quickHour); setMinutes(0) }}
                       type="button"
                     >
                       {quickHour}h
@@ -657,11 +724,11 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
             </span>
             <button
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-red-950/40 transition-all hover:bg-red-500 disabled:opacity-50 sm:w-auto"
-              disabled={isSubmitting || hours <= 0}
+              disabled={isSubmitting || totalHours <= 0}
               type="submit"
             >
               <Plus className="size-4" aria-hidden="true" />
-              <span>Punch Asistencia ({hours}h)</span>
+              <span>Punch Asistencia ({formatHoursHM(totalHours)})</span>
             </button>
           </div>
         </form>
@@ -712,7 +779,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-mono text-sm font-bold text-ink">{formatDateTime(record.date)}</span>
-                        <span className="rounded bg-surface-3 px-2 py-0.5 font-mono text-xs text-ink-2">{record.hoursTrained}h</span>
+                        <span className="rounded bg-surface-3 px-2 py-0.5 font-mono text-xs text-ink-2">{formatHoursHM(record.hoursTrained)}</span>
                         <span className="text-xs font-medium text-ink-2">{sessionLabel(record.sessionType)}</span>
                       </div>
                       {record.notes && <p className="mt-1 text-xs italic text-ink-3">&ldquo;{record.notes}&rdquo;</p>}
@@ -815,26 +882,40 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="mb-1 block font-medium text-ink-3">Horas entrenadas</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    className="w-24 rounded-lg border border-edge-strong bg-surface-1 p-2.5 font-mono font-bold text-ink focus:border-cyan-500 focus:outline-none"
-                    max="8"
-                    min="0.5"
-                    onChange={(event) => setEditHours(parseFloat(event.target.value) || 0.5)}
-                    step="0.5"
-                    type="number"
-                    value={editHours}
-                  />
+                <label className="mb-1 block font-medium text-ink-3">Tiempo entrenado</label>
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      className="w-16 rounded-lg border border-edge-strong bg-surface-1 p-2.5 text-center font-mono font-bold text-ink focus:border-cyan-500 focus:outline-none"
+                      max="8"
+                      min="0"
+                      onChange={(event) => setEditHours(Math.max(0, Math.min(8, Number.parseInt(event.target.value, 10) || 0)))}
+                      step="1"
+                      type="number"
+                      value={editHours}
+                    />
+                    <span className="text-xs font-semibold text-ink-3">h</span>
+                    <input
+                      aria-label="Minutos entrenados"
+                      className="w-16 rounded-lg border border-edge-strong bg-surface-1 p-2.5 text-center font-mono font-bold text-ink focus:border-cyan-500 focus:outline-none"
+                      max="55"
+                      min="0"
+                      onChange={(event) => setEditMinutes(Math.max(0, Math.min(55, Number.parseInt(event.target.value, 10) || 0)))}
+                      step="5"
+                      type="number"
+                      value={editMinutes}
+                    />
+                    <span className="text-xs font-semibold text-ink-3">min</span>
+                  </div>
                   <div className="flex items-center gap-1">
                     {quickHours.map((quickHour) => (
                       <button
-                        className={`rounded border px-2 py-1 text-xs font-mono font-semibold ${editHours === quickHour
+                        className={`rounded border px-2 py-1 text-xs font-mono font-semibold ${editHours === quickHour && editMinutes === 0
                           ? 'border-cyan-500 bg-cyan-500/20 text-accent'
                           : 'border-edge-strong text-ink-3 hover:text-ink'
                         }`}
                         key={quickHour}
-                        onClick={() => setEditHours(quickHour)}
+                        onClick={() => { setEditHours(quickHour); setEditMinutes(0) }}
                         type="button"
                       >
                         {quickHour}h
@@ -875,12 +956,11 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                     {editPractice.map((line) => (
                       <div className="flex items-center gap-2" key={line.id}>
                         <span className="min-w-0 flex-1 truncate text-xs font-semibold text-ink">{line.name}</span>
-                        <input
-                          aria-label={`Repeticiones de ${line.name}`}
-                          className="w-16 rounded-lg border border-edge-strong bg-surface-1 p-2 text-center text-xs text-ink focus:border-cyan-500 focus:outline-none"
-                          min={1}
-                          onChange={(event) => setEditPracticeReps(line.id, event.target.value)}
-                          type="number"
+                        <RepsStepper
+                          compact
+                          label={line.name}
+                          minValue={0}
+                          onChange={(value) => setEditPracticeReps(line.id, value)}
                           value={line.repetitions}
                         />
                         <select
@@ -913,13 +993,11 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                       value={editAddQuery}
                     />
                   </div>
-                  <input
-                    aria-label="Repeticiones de la técnica a añadir"
-                    className="w-16 rounded-lg border border-edge-strong bg-surface-1 p-2 text-center text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
-                    min={1}
-                    onChange={(event) => setEditAddReps(event.target.value)}
-                    placeholder="Reps"
-                    type="number"
+                  <RepsStepper
+                    compact
+                    disabled={editPractice.length >= EDIT_PRACTICE_LIMIT}
+                    label="la técnica a añadir"
+                    onChange={setEditAddReps}
                     value={editAddReps}
                   />
                 </div>

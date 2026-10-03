@@ -18,6 +18,8 @@ import type {
   AdminBeltRankSummary,
   AdminCurriculumData,
   AdminEnrollmentSummary,
+  AdminExpectedAttendanceRoster,
+  AdminExpectedAttendanceStudent,
   AdminInstructor,
   AdminInstructorCandidate,
   AdminScheduleSummary,
@@ -727,6 +729,130 @@ export async function getAdminAttendanceBoard(userId: string): Promise<Instructo
     instructorName: 'Administración',
     records,
     availableDates,
+  }
+}
+
+export async function getAdminAttendanceRoster(
+  userId: string,
+  classId: string,
+  date: string,
+): Promise<AdminExpectedAttendanceRoster | null> {
+  const scope = await getAdminScope(userId)
+
+  if (!scope) {
+    return null
+  }
+
+  const sessionDate = new Date(`${date}T00:00:00.000Z`)
+  const dayAfter = new Date(sessionDate.getTime() + 86_400_000)
+
+  const scheduledClass = await db.class.findFirst({
+    where: {
+      id: classId,
+      active: true,
+      ...(scope.isSuperAdmin ? {} : { branch: { schoolId: scope.schoolId! } }),
+    },
+    select: {
+      id: true,
+      name: true,
+      dayOfWeek: true,
+      branch: { select: { name: true } },
+      enrollments: {
+        where: { status: ClassEnrollmentStatus.ACTIVE, student: { status: StudentStatus.ACTIVE } },
+        orderBy: { student: { lastName: 'asc' } },
+        select: {
+          student: {
+            select: { id: true, firstName: true, lastName: true, currentRank: true },
+          },
+        },
+      },
+    },
+  })
+
+  if (!scheduledClass) {
+    return null
+  }
+
+  const enrolledStudentIds = scheduledClass.enrollments.map(({ student }) => student.id)
+
+  const [classSession, punches] = await Promise.all([
+    db.classSession.findUnique({
+      where: { classId_date: { classId, date: sessionDate } },
+      select: {
+        attendances: {
+          select: { studentId: true, present: true, status: true, hoursTrained: true, notes: true, isOutOfSchedule: true },
+        },
+      },
+    }),
+    db.attendance.findMany({
+      where: {
+        studentId: { in: enrolledStudentIds },
+        sessionId: null,
+        date: { gte: sessionDate, lt: dayAfter },
+      },
+      select: { studentId: true, present: true, status: true, hoursTrained: true, notes: true, isOutOfSchedule: true },
+    }),
+  ])
+
+  const rosterByStudent = new Map((classSession?.attendances ?? []).map((attendance) => [attendance.studentId, attendance]))
+  const punchByStudent = new Map(punches.map((attendance) => [attendance.studentId, attendance]))
+
+  const students: AdminExpectedAttendanceStudent[] = scheduledClass.enrollments.map(({ student }) => {
+    const roster = rosterByStudent.get(student.id)
+    if (roster) {
+      return {
+        ...student,
+        state: roster.present ? 'PRESENT' : 'ABSENT',
+        status: roster.status,
+        hoursTrained: roster.hoursTrained,
+        notes: roster.notes,
+        outOfSchedule: roster.isOutOfSchedule,
+      }
+    }
+
+    const punch = punchByStudent.get(student.id)
+    if (punch) {
+      return {
+        ...student,
+        state: punch.present ? 'PUNCH' : 'ABSENT',
+        status: punch.status,
+        hoursTrained: punch.hoursTrained,
+        notes: punch.notes,
+        outOfSchedule: punch.isOutOfSchedule,
+      }
+    }
+
+    return {
+      ...student,
+      state: 'NONE',
+      status: null,
+      hoursTrained: 0,
+      notes: null,
+      outOfSchedule: false,
+    }
+  })
+
+  const registered = students.filter((student) => student.state !== 'NONE').length
+  const present = students.filter((student) => student.state === 'PRESENT' || student.state === 'PUNCH').length
+  const absent = students.filter((student) => student.state === 'ABSENT').length
+  const unmergedPunches = punches.filter((punch) => !rosterByStudent.has(punch.studentId)).length
+  const audited = (classSession?.attendances.length ?? 0) + unmergedPunches
+
+  return {
+    classId: scheduledClass.id,
+    className: scheduledClass.name,
+    branchName: scheduledClass.branch.name,
+    date,
+    dayMatches: scheduledClass.dayOfWeek === sessionDate.getUTCDay(),
+    students,
+    summary: {
+      audited,
+      expected: students.length,
+      registered,
+      present,
+      absent,
+      noRecord: students.length - registered,
+    },
   }
 }
 

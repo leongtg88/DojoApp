@@ -392,6 +392,39 @@ export interface AdminAttendanceBranch {
 	name: string
 }
 
+export type AdminExpectedAttendanceState = 'PRESENT' | 'ABSENT' | 'PUNCH' | 'NONE'
+
+export interface AdminExpectedAttendanceStudent {
+	id: string
+	firstName: string
+	lastName: string
+	currentRank: string | null
+	state: AdminExpectedAttendanceState
+	status: AttendanceStatus | null
+	hoursTrained: number
+	notes: string | null
+	outOfSchedule: boolean
+}
+
+export interface AdminExpectedAttendanceSummary {
+	audited: number
+	expected: number
+	registered: number
+	present: number
+	absent: number
+	noRecord: number
+}
+
+export interface AdminExpectedAttendanceRoster {
+	classId: string
+	className: string
+	branchName: string
+	date: string
+	dayMatches: boolean
+	students: AdminExpectedAttendanceStudent[]
+	summary: AdminExpectedAttendanceSummary
+}
+
 export interface DashboardBirthday {
 	id: string
 	name: string

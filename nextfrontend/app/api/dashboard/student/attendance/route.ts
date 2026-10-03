@@ -17,7 +17,7 @@ const practiceLineSchema = z.object({
 })
 
 const punchInSchema = z.object({
-  hoursTrained: z.number().min(0.5).max(12).optional(),
+  hoursTrained: z.number().min(0.01).max(12).optional(),
   sessionType: z.string().trim().min(1).max(50).optional(),
   date: z.string().refine((value) => !Number.isNaN(new Date(value).getTime()), { message: 'Fecha de práctica inválida' }).optional(),
   notes: z.string().trim().max(500).optional().nullable(),
