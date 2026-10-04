@@ -19,6 +19,7 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
     const presentCount = records.filter(({ present }) => present).length
     const justifiedCount = records.filter(({ justified }) => justified).length
     const absentCount = records.length - presentCount
+    const readOnly = !roster.isOwnClass
 
     function updateRecord(studentId: string, update: Partial<(typeof records)[number]>) {
         setRecords((currentRecords) => currentRecords.map((record) => (
@@ -90,18 +91,25 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                 </div>
                 <p className="mt-2 text-sm text-ink-3">{roster.students.length} alumnos activos en esta clase.</p>
             </div>
+            {readOnly && (
+                <p className="border-b border-edge bg-amber-500/10 px-5 py-2.5 text-xs font-semibold text-warn-text">
+                    Solo lectura: este horario no es tuyo. Puedes consultarlo, pero solo validas la asistencia de tus horarios.
+                </p>
+            )}
             <form onSubmit={handleSubmit}>
                 {records.length === 0 ? (
                     <p className="px-5 py-8 text-sm text-ink-3">No hay alumnos activos en esta clase.</p>
                 ) : (
                     <>
                         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-edge bg-surface-1 px-5 py-3">
-                            <p className="inline-flex items-center gap-2 text-xs font-semibold text-ink-3"><Users aria-hidden="true" className="size-4 text-accent" />Marca primero el estado general y ajusta casos individuales.</p>
-                            <div className="flex gap-2">
-                                <button className="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/40 px-3 py-1.5 text-xs font-bold text-ok-text hover:bg-emerald-500/10" onClick={() => updateAllRecords(true)} type="button"><CheckCheck aria-hidden="true" className="size-3.5" />Todos presentes</button>
-                                <button className="inline-flex items-center gap-1.5 rounded-md border border-edge-strong px-3 py-1.5 text-xs font-bold text-ink-2 hover:bg-surface-3" onClick={() => updateAllRecords(false)} type="button"><CircleX aria-hidden="true" className="size-3.5" />Todos ausentes</button>
-                                <button className="inline-flex items-center gap-1.5 rounded-md border border-sky-500/40 px-3 py-1.5 text-xs font-bold text-info-text hover:bg-sky-500/10" onClick={() => setIsAddOpen(true)} type="button"><UserPlus aria-hidden="true" className="size-3.5" />Agregar alumno</button>
-                            </div>
+                            <p className="inline-flex items-center gap-2 text-xs font-semibold text-ink-3"><Users aria-hidden="true" className="size-4 text-accent" />{readOnly ? 'Consulta la asistencia de este horario.' : 'Marca primero el estado general y ajusta casos individuales.'}</p>
+                            {!readOnly && (
+                                <div className="flex gap-2">
+                                    <button className="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/40 px-3 py-1.5 text-xs font-bold text-ok-text hover:bg-emerald-500/10" onClick={() => updateAllRecords(true)} type="button"><CheckCheck aria-hidden="true" className="size-3.5" />Todos presentes</button>
+                                    <button className="inline-flex items-center gap-1.5 rounded-md border border-edge-strong px-3 py-1.5 text-xs font-bold text-ink-2 hover:bg-surface-3" onClick={() => updateAllRecords(false)} type="button"><CircleX aria-hidden="true" className="size-3.5" />Todos ausentes</button>
+                                    <button className="inline-flex items-center gap-1.5 rounded-md border border-sky-500/40 px-3 py-1.5 text-xs font-bold text-info-text hover:bg-sky-500/10" onClick={() => setIsAddOpen(true)} type="button"><UserPlus aria-hidden="true" className="size-3.5" />Agregar alumno</button>
+                                </div>
+                            )}
                         </div>
                         <ul className="divide-y divide-edge">
                             {records.map((record) => (
@@ -109,29 +117,42 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                                     <div>
                                         <p className="text-sm font-semibold text-ink">{record.firstName} {record.lastName}</p>
                                         <p className="mt-1 text-xs text-ink-3">{record.currentRank ?? 'Sin grado asignado'}</p>
-                                        <input
-                                            className="mt-3 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
-                                            onChange={(event) => updateRecord(record.id, { notes: event.target.value })}
-                                            placeholder="Observación opcional"
-                                            value={record.notes ?? ''}
-                                        />
+                                        {readOnly ? (
+                                            record.notes && <p className="mt-3 rounded-md border border-edge bg-surface-1 px-3 py-2 text-sm text-ink-2">{record.notes}</p>
+                                        ) : (
+                                            <input
+                                                className="mt-3 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
+                                                onChange={(event) => updateRecord(record.id, { notes: event.target.value })}
+                                                placeholder="Observación opcional"
+                                                value={record.notes ?? ''}
+                                            />
+                                        )}
                                     </div>
                                     <div aria-label={`Asistencia de ${record.firstName} ${record.lastName}`} className="inline-flex flex-col items-end gap-2 self-start">
-                                            <div className="inline-flex rounded-md border border-edge-strong bg-surface-1 p-1 text-xs font-bold">
-                                                <button aria-pressed={record.present} className={`rounded px-3 py-1.5 ${record.present ? 'bg-emerald-500 text-[#0d1117]' : 'text-ink-3 hover:bg-surface-3'}`} onClick={() => updateRecord(record.id, { present: true, justified: false })} type="button">Presente</button>
-                                                <button aria-pressed={!record.present} className={`rounded px-3 py-1.5 ${!record.present ? 'bg-surface-3 text-ink' : 'text-ink-3 hover:bg-surface-3'}`} onClick={() => updateRecord(record.id, { present: false })} type="button">Ausente</button>
+                                        {readOnly ? (
+                                            <div className="inline-flex flex-col items-end gap-1.5">
+                                                <span className={`rounded-md border px-3 py-1.5 text-xs font-bold ${record.present ? 'border-emerald-500/30 bg-emerald-500/10 text-ok-text' : 'border-rose-500/30 bg-rose-500/10 text-danger-text'}`}>{record.present ? 'Presente' : 'Ausente'}</span>
+                                                {record.justified && <span className="text-xs font-semibold text-info-text">Falta justificada</span>}
                                             </div>
-                                            {!record.present && (
-                                                <label className="flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-info-text">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={record.justified ?? false}
-                                                        onChange={(event) => toggleJustified(record.id, event.target.checked)}
-                                                        className="size-3.5 accent-sky-500"
-                                                    />
-                                                    Falta justificada
-                                                </label>
-                                            )}
+                                        ) : (
+                                            <>
+                                                <div className="inline-flex rounded-md border border-edge-strong bg-surface-1 p-1 text-xs font-bold">
+                                                    <button aria-pressed={record.present} className={`rounded px-3 py-1.5 ${record.present ? 'bg-emerald-500 text-[#0d1117]' : 'text-ink-3 hover:bg-surface-3'}`} onClick={() => updateRecord(record.id, { present: true, justified: false })} type="button">Presente</button>
+                                                    <button aria-pressed={!record.present} className={`rounded px-3 py-1.5 ${!record.present ? 'bg-surface-3 text-ink' : 'text-ink-3 hover:bg-surface-3'}`} onClick={() => updateRecord(record.id, { present: false })} type="button">Ausente</button>
+                                                </div>
+                                                {!record.present && (
+                                                    <label className="flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-info-text">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={record.justified ?? false}
+                                                            onChange={(event) => toggleJustified(record.id, event.target.checked)}
+                                                            className="size-3.5 accent-sky-500"
+                                                        />
+                                                        Falta justificada
+                                                    </label>
+                                                )}
+                                            </>
+                                        )}
                                         </div>
                                 </li>
                             ))}
@@ -139,24 +160,28 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                     </>
                 )}
                 {error && <p className="px-5 pt-4 text-sm font-medium text-danger-text">{error}</p>}
-                <div className="border-t border-edge px-5 py-4">
-                    <button
-                        className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] disabled:cursor-not-allowed disabled:opacity-60"
-                        disabled={isSaving}
-                        type="submit"
-                    >
-                        <Save aria-hidden="true" className="size-4" />
-                        {isSaving ? 'Guardando...' : 'Guardar asistencia'}
-                    </button>
-                </div>
+                {!readOnly && (
+                    <div className="border-t border-edge px-5 py-4">
+                        <button
+                            className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] disabled:cursor-not-allowed disabled:opacity-60"
+                            disabled={isSaving}
+                            type="submit"
+                        >
+                            <Save aria-hidden="true" className="size-4" />
+                            {isSaving ? 'Guardando...' : 'Guardar asistencia'}
+                        </button>
+                    </div>
+                )}
             </form>
 
-            <InstructorAddStudentModal
-                open={isAddOpen}
-                alreadyPresentIds={new Set(records.map(({ id }) => id))}
-                onAdd={addStudent}
-                onClose={() => setIsAddOpen(false)}
-            />
+            {!readOnly && (
+                <InstructorAddStudentModal
+                    open={isAddOpen}
+                    alreadyPresentIds={new Set(records.map(({ id }) => id))}
+                    onAdd={addStudent}
+                    onClose={() => setIsAddOpen(false)}
+                />
+            )}
         </section>
     )
 }

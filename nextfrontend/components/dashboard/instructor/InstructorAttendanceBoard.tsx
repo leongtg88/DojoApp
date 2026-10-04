@@ -302,7 +302,9 @@ export function InstructorAttendanceBoard({ data }: InstructorAttendanceBoardPro
                                     </div>
 
                                     <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 self-end md:self-center">
-                                        {isPending ? (
+                                        {record.canValidate === false ? (
+                                            <span className="rounded-lg border border-edge-strong bg-surface-1 px-2.5 py-1.5 text-xs font-semibold text-ink-3" title="Este alumno no pertenece a tus horarios">Solo lectura</span>
+                                        ) : isPending ? (
                                             <>
                                                 <button
                                                     className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition-all hover:bg-emerald-500"
@@ -327,16 +329,18 @@ export function InstructorAttendanceBoard({ data }: InstructorAttendanceBoardPro
                                             </>
                                         ) : null}
 
-                                        <button
-                                            className="flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-950/30 px-2.5 py-1.5 text-xs font-semibold text-accent transition-all hover:border-cyan-400 hover:bg-cyan-900/50"
-                                            disabled={busy}
-                                            onClick={() => handleOpenEdit(record)}
-                                            title="Rectificar horas, contenido o notas"
-                                            type="button"
-                                        >
-                                            <Pencil className="size-3.5 text-accent" aria-hidden="true" />
-                                            <span>Editar</span>
-                                        </button>
+                                        {record.canValidate !== false && (
+                                            <button
+                                                className="flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-950/30 px-2.5 py-1.5 text-xs font-semibold text-accent transition-all hover:border-cyan-400 hover:bg-cyan-900/50"
+                                                disabled={busy}
+                                                onClick={() => handleOpenEdit(record)}
+                                                title="Rectificar horas, contenido o notas"
+                                                type="button"
+                                            >
+                                                <Pencil className="size-3.5 text-accent" aria-hidden="true" />
+                                                <span>Editar</span>
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             )

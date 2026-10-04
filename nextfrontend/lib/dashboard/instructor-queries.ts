@@ -13,6 +13,7 @@ import type {
   InstructorAttendanceBoardData,
   InstructorAttendanceRoster,
   InstructorClassSummary,
+  InstructorScheduleOption,
   InstructorAssignableStudent,
   InstructorKataAssignmentData,
   InstructorStudentSearchResult,
@@ -88,6 +89,52 @@ export async function getInstructorClasses(userId: string): Promise<InstructorCl
   }))
 }
 
+/**
+ * Todos los horarios activos de la escuela del instructor (incluidos los que no
+ * le pertenecen), marcando cuáles son suyos. El instructor puede verlos en modo
+ * lectura; solo valida los de su grupo.
+ */
+export async function getInstructorScheduleOptions(userId: string): Promise<InstructorScheduleOption[]> {
+  const schoolId = await getInstructorSchoolId(userId)
+
+  if (!schoolId) {
+    return []
+  }
+
+  const classes = await db.class.findMany({
+    where: { branch: { schoolId }, active: true },
+    orderBy: [{ dayOfWeek: 'asc' }, { startTime: 'asc' }],
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      dayOfWeek: true,
+      startTime: true,
+      endTime: true,
+      instructorId: true,
+      branch: { select: { name: true } },
+      instructor: { select: { name: true } },
+      enrollments: {
+        where: { status: 'ACTIVE' },
+        select: { id: true },
+      },
+    },
+  })
+
+  return classes.map((scheduledClass) => ({
+    id: scheduledClass.id,
+    name: scheduledClass.name,
+    description: scheduledClass.description,
+    dayOfWeek: scheduledClass.dayOfWeek,
+    startTime: formatTime(scheduledClass.startTime),
+    endTime: formatTime(scheduledClass.endTime),
+    instructorName: scheduledClass.instructor?.name ?? null,
+    branchName: scheduledClass.branch.name,
+    activeStudentCount: scheduledClass.enrollments.length,
+    isOwnClass: scheduledClass.instructorId === userId,
+  }))
+}
+
 export async function getInstructorStudents(userId: string): Promise<InstructorStudentSummary[]> {
   const schoolId = await getInstructorSchoolId(userId)
 
@@ -158,7 +205,10 @@ export async function getInstructorPendingCount(userId: string): Promise<number>
       status: 'PENDING',
       student: { status: StudentStatus.ACTIVE },
       OR: [
+        // Punch libres (sin clase) de alumnos inscritos en horarios del instructor.
         {
+          sessionId: null,
+          classId: null,
           student: {
             classEnrollments: {
               some: {
@@ -215,7 +265,10 @@ export async function getInstructorAttendanceBoard(userId: string): Promise<Inst
     where: {
       student: { status: StudentStatus.ACTIVE },
       OR: [
+        // Punch libres (sin clase) de alumnos inscritos en horarios del instructor.
         {
+          sessionId: null,
+          classId: null,
           student: {
             classEnrollments: {
               some: {
@@ -232,10 +285,20 @@ export async function getInstructorAttendanceBoard(userId: string): Promise<Inst
     orderBy: { date: 'desc' },
     take: 200,
     include: {
-      student: { select: { id: true, firstName: true, lastName: true } },
+      student: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          classEnrollments: {
+            where: { status: ClassEnrollmentStatus.ACTIVE, class: { instructorId: userId } },
+            select: { id: true },
+          },
+        },
+      },
       confirmedBy: { select: { name: true } },
-      class: { select: { name: true } },
-      session: { select: { class: { select: { name: true } } } },
+      class: { select: { name: true, instructorId: true } },
+      session: { select: { class: { select: { name: true, instructorId: true } } } },
       practiceLogs: {
         select: {
           id: true,
@@ -249,28 +312,33 @@ export async function getInstructorAttendanceBoard(userId: string): Promise<Inst
     },
   })
 
-  const records: AttendanceRecord[] = attendances.map((attendance) => ({
-    id: attendance.id,
-    studentId: attendance.student.id,
-    studentName: `${attendance.student.firstName} ${attendance.student.lastName}`,
-    date: attendance.date.toISOString(),
-    hoursTrained: attendance.hoursTrained,
-    sessionType: attendance.sessionType,
-    status: attendance.status,
-    present: attendance.present,
-    confirmedByName: attendance.confirmedBy?.name ?? null,
-    notes: attendance.notes,
-    punchedAt: attendance.punchedAt.toISOString(),
-    className: attendance.session?.class.name ?? attendance.class?.name ?? null,
-    sessionId: attendance.sessionId,
-    practiceLogs: attendance.practiceLogs.map((log) => ({
-      id: log.id,
-      techniqueId: log.studentTechnique?.technique.id ?? log.technique?.id ?? log.techniqueId ?? null,
-      techniqueName: log.studentTechnique?.technique.name ?? log.technique?.name ?? 'Técnica',
-      repetitions: log.repetitions,
-      place: log.place,
-    })),
-  }))
+  const records: AttendanceRecord[] = attendances.map((attendance) => {
+    const classInstructorId = attendance.session?.class.instructorId ?? attendance.class?.instructorId ?? null
+    const belongsToGroup = classInstructorId === userId || attendance.student.classEnrollments.length > 0
+    return {
+      id: attendance.id,
+      studentId: attendance.student.id,
+      studentName: `${attendance.student.firstName} ${attendance.student.lastName}`,
+      date: attendance.date.toISOString(),
+      hoursTrained: attendance.hoursTrained,
+      sessionType: attendance.sessionType,
+      status: attendance.status,
+      present: attendance.present,
+      confirmedByName: attendance.confirmedBy?.name ?? null,
+      notes: attendance.notes,
+      punchedAt: attendance.punchedAt.toISOString(),
+      className: attendance.session?.class.name ?? attendance.class?.name ?? null,
+      sessionId: attendance.sessionId,
+      canValidate: belongsToGroup,
+      practiceLogs: attendance.practiceLogs.map((log) => ({
+        id: log.id,
+        techniqueId: log.studentTechnique?.technique.id ?? log.technique?.id ?? log.techniqueId ?? null,
+        techniqueName: log.studentTechnique?.technique.name ?? log.technique?.name ?? 'Técnica',
+        repetitions: log.repetitions,
+        place: log.place,
+      })),
+    }
+  })
 
   const availableDates = [...new Set(records.map(({ date }) => date.slice(0, 10)))].sort().reverse()
 
@@ -289,12 +357,18 @@ export async function getInstructorAttendanceRoster(
   classId: string,
   date: string,
 ): Promise<InstructorAttendanceRoster | null> {
+  const schoolId = await getInstructorSchoolId(userId)
   const sessionDate = new Date(`${date}T00:00:00.000Z`)
   const assignedClass = await db.class.findFirst({
-    where: { id: classId, instructorId: userId, active: true },
+    where: {
+      id: classId,
+      active: true,
+      ...(schoolId ? { branch: { schoolId } } : { instructorId: userId }),
+    },
     select: {
       id: true,
       name: true,
+      instructorId: true,
       enrollments: {
         where: { status: 'ACTIVE', student: { status: StudentStatus.ACTIVE } },
         orderBy: { student: { lastName: 'asc' } },
@@ -330,6 +404,7 @@ export async function getInstructorAttendanceRoster(
     classId: assignedClass.id,
     className: assignedClass.name,
     date,
+    isOwnClass: assignedClass.instructorId === userId,
     students: assignedClass.enrollments.map(({ student }) => {
       const attendance = attendanceByStudent.get(student.id)
       return {

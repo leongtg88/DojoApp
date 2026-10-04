@@ -139,6 +139,11 @@ export interface InstructorClassSummary extends ClassSchedule {
 	activeStudentCount: number
 }
 
+/** Opción de horario para el selector de asistencia del instructor (incluye horarios de otros). */
+export interface InstructorScheduleOption extends InstructorClassSummary {
+	isOwnClass: boolean
+}
+
 export interface InstructorStudentSummary {
 	id: string
 	firstName: string
@@ -168,6 +173,8 @@ export interface InstructorAttendanceRoster {
 	classId: string
 	className: string
 	date: string
+	/** El horario consultado pertenece al instructor (puede guardar el pase de lista). */
+	isOwnClass: boolean
 	students: InstructorAttendanceStudent[]
 }
 
@@ -647,6 +654,8 @@ export interface AttendanceRecord {
 	isOutOfSchedule?: boolean
 	className?: string | null
 	sessionId?: string | null
+	/** Si el instructor que consulta puede validar/confirmar este registro (pertenece a su grupo). */
+	canValidate?: boolean
 	practiceLogs?: Array<{
 		id: string
 		techniqueId: string | null

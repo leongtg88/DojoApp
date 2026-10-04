@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
 import { InstructorAttendanceBoard } from '@/components/dashboard/instructor/InstructorAttendanceBoard'
 import { InstructorAttendanceRoster } from '@/components/dashboard/instructor/InstructorAttendanceRoster'
-import { getInstructorAttendanceBoard, getInstructorAttendanceRoster, getInstructorClasses } from '@/lib/dashboard/instructor-queries'
+import { getInstructorAttendanceBoard, getInstructorAttendanceRoster, getInstructorScheduleOptions } from '@/lib/dashboard/instructor-queries'
 import { redirect } from 'next/navigation'
 import { hasRole } from '@/lib/auth/roles'
 
@@ -17,8 +17,10 @@ export default async function InstructorAttendancePage({ searchParams }: Instruc
     }
 
     const parameters = await searchParams
-    const classes = await getInstructorClasses(session.user.id)
-    const selectedClassId = parameters.classId ?? classes[0]?.id
+    const classes = await getInstructorScheduleOptions(session.user.id)
+    const ownClasses = classes.filter((scheduledClass) => scheduledClass.isOwnClass)
+    const defaultClassId = classes.find((scheduledClass) => scheduledClass.isOwnClass)?.id ?? classes[0]?.id
+    const selectedClassId = parameters.classId ?? defaultClassId
     const date = parameters.date ?? new Date().toISOString().slice(0, 10)
     const [roster, board] = await Promise.all([
         selectedClassId ? getInstructorAttendanceRoster(session.user.id, selectedClassId, date) : null,
@@ -44,7 +46,16 @@ export default async function InstructorAttendancePage({ searchParams }: Instruc
                 <label className="flex min-w-52 flex-1 flex-col gap-1.5 text-sm font-semibold text-ink" htmlFor="classId">
                     Clase
                     <select className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" defaultValue={selectedClassId} id="classId" name="classId">
-                        {classes.map((scheduledClass) => <option key={scheduledClass.id} value={scheduledClass.id}>{scheduledClass.name}</option>)}
+                        {ownClasses.length > 0 && (
+                            <optgroup label="Mis horarios">
+                                {ownClasses.map((scheduledClass) => <option key={scheduledClass.id} value={scheduledClass.id}>{scheduledClass.name} · {scheduledClass.branchName}</option>)}
+                            </optgroup>
+                        )}
+                        {classes.some((scheduledClass) => !scheduledClass.isOwnClass) && (
+                            <optgroup label="Todos los horarios (solo lectura)">
+                                {classes.filter((scheduledClass) => !scheduledClass.isOwnClass).map((scheduledClass) => <option key={scheduledClass.id} value={scheduledClass.id}>{scheduledClass.name} · {scheduledClass.branchName}</option>)}
+                            </optgroup>
+                        )}
                     </select>
                 </label>
                 <label className="flex flex-col gap-1.5 text-sm font-semibold text-ink" htmlFor="date">
