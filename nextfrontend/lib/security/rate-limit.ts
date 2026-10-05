@@ -96,8 +96,8 @@ export async function resetRateLimit(key: string): Promise<void> {
   await db.apiUsage.deleteMany({ where: { key } })
 }
 
-export function rateLimitResponse(retryAfterSeconds: number, message: string): NextResponse {
-  return NextResponse.json({ error: message }, {
+export function rateLimitResponse(retryAfterSeconds: number, message: string, code = 'RATE_LIMIT'): NextResponse {
+  return NextResponse.json({ error: message, code }, {
     status: 429,
     headers: { 'Retry-After': String(retryAfterSeconds) },
   })

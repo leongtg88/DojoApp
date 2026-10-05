@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useMetaPixel } from '@adkit/meta-pixel-next';
 import { MOCK_BENEFITS } from '@/lib/types';
 import { KYU_OPTIONS } from '@/lib/curriculum/kyu-options';
-import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES, mimeForExtension } from '@/lib/file-validation';
+import { TIPOS_SANGRE, TALLAS_ROPA, soloDigitos, esCedulaValida, esTelefonoValido, esEmailValido, validarArchivo, validarArchivoBasico } from '@/lib/enrollment-validation';
 import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake, FileText, ChevronDown } from 'lucide-react';
 import LegalConsentModal from '@/components/LegalConsentModal';
 
@@ -96,34 +96,6 @@ const getBenefitIcon = (iconName: string) => {
 };
 
 const generarId = () => Math.random().toString(36).substr(2, 9);
-
-const TIPOS_SANGRE = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-const TALLAS_ROPA = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-
-// ========== VALIDACIONES COMPARTIDAS ==========
-const soloDigitos = (value: string) => value.replace(/\D/g, '');
-
-const esCedulaValida = (value: string) => /^\d{11}$/.test(soloDigitos(value));
-
-const esTelefonoValido = (value: string) => {
-  const digits = soloDigitos(value);
-  return digits.length >= 10 && digits.length <= 15;
-};
-
-// Devuelve un mensaje de error si el archivo no es válido, o null si es válido.
-// En móvil el navegador a veces reporta MIME vacío u "octet-stream" para JPG/PNG válidos,
-// por eso se infiere el tipo desde la extensión como respaldo.
-const archivoInvalido = (file: File, permitirPdf: boolean): string | null => {
-  if (!(file.size > 0 && file.size <= MAX_FILE_SIZE)) {
-    return 'El archivo supera los 5 MB. Comprime la imagen o usa otro archivo.';
-  }
-  const declared = file.type && file.type !== 'application/octet-stream' ? file.type : '';
-  const effective = declared || mimeForExtension(file.name);
-  if (!ALLOWED_MIME_TYPES.has(effective)) {
-    return `Formato no permitido. Usa ${permitirPdf ? 'JPG, PNG, WEBP o PDF' : 'JPG, PNG o WEBP'}.`;
-  }
-  return null;
-};
 
 // ========== COMPONENTE DRAG & DROP ==========
 const FileDropZone = ({ label, files, previews, error, accept, multiple, hint, onFiles, onRemove }: {
@@ -219,7 +191,7 @@ const KaratePrevioFields = ({ name, practico, kyu, error, onPractico, onKyu }: {
 }) => (
   <div className="bg-stone-50 border border-brand-accent/30 rounded-lg p-4 space-y-3">
     <label className="block text-sm font-medium text-stone-500 mb-1">
-      ¿La persona a inscribir practica o ha practicado karate?
+      ¿La persona a inscribir, practica o ha practicado karate?
     </label>
     <div className="flex flex-wrap gap-4">
       <label className="flex items-center gap-2 text-sm text-stone-700 cursor-pointer">
@@ -483,11 +455,11 @@ const ToseiGusokuForm = () => {
     }));
   };
 
-  const handleHijoFoto = (id: string, file: File | null) => {
+  const handleHijoFoto = async (id: string, file: File | null) => {
     if (!file) return;
     const index = formData.hijos.findIndex(h => h.id === id);
     if (index >= 0) {
-      const msg = archivoInvalido(file, false);
+      const msg = await validarArchivo(file, false);
       if (msg) {
         setErrors(prev => {
           const hijos = prev.hijos ? [...prev.hijos] : [];
@@ -526,11 +498,11 @@ const ToseiGusokuForm = () => {
     }
   };
 
-  const handleHijoIdentFiles = (id: string, files: File[]) => {
+  const handleHijoIdentFiles = async (id: string, files: File[]) => {
     if (!files.length) return;
     const index = formData.hijos.findIndex(h => h.id === id);
     for (const f of files) {
-      const msg = archivoInvalido(f, true);
+      const msg = await validarArchivo(f, true);
       if (msg) {
         if (index >= 0) {
           setErrors(prev => {
@@ -584,9 +556,9 @@ const ToseiGusokuForm = () => {
   };
 
   // Archivos para adulto
-  const handleAdultoFoto = (file: File | null) => {
+  const handleAdultoFoto = async (file: File | null) => {
     if (!file) return;
-    const msg = archivoInvalido(file, false);
+    const msg = await validarArchivo(file, false);
     if (msg) {
       setErrors(prev => ({ ...prev, fotoAdulto: msg }));
       return;
@@ -605,10 +577,10 @@ const ToseiGusokuForm = () => {
     setFormData(prev => ({ ...prev, fotoAdulto: null, fotoAdultoPreview: '' }));
   };
 
-  const handleAdultoIdentFiles = (files: File[]) => {
+  const handleAdultoIdentFiles = async (files: File[]) => {
     if (!files.length) return;
     for (const f of files) {
-      const msg = archivoInvalido(f, true);
+      const msg = await validarArchivo(f, true);
       if (msg) {
         setErrors(prev => ({ ...prev, identAdulto: msg }));
         return;
@@ -661,14 +633,14 @@ const ToseiGusokuForm = () => {
     else if (!esCedulaValida(formData.cedula)) newErrors.cedula = 'La cédula debe tener exactamente 11 dígitos (ej: 00123456789)';
     if (!formData.fotoAdulto) newErrors.fotoAdulto = 'Foto requerida';
     else {
-      const msg = archivoInvalido(formData.fotoAdulto, false);
+      const msg = validarArchivoBasico(formData.fotoAdulto, false);
       if (msg) newErrors.fotoAdulto = msg;
     }
     if (formData.identAdulto.length === 0) {
       newErrors.identAdulto = 'Identificación requerida';
     } else {
       for (const file of formData.identAdulto) {
-        const msg = archivoInvalido(file, true);
+        const msg = validarArchivoBasico(file, true);
         if (msg) { newErrors.identAdulto = msg; break; }
       }
     }
@@ -688,6 +660,7 @@ const ToseiGusokuForm = () => {
     formData.hijos.forEach((hijo, index) => {
       const err: { [key: string]: string } = {};
       if (!hijo.nombre.trim()) { err.nombre = `Nombre del hijo ${index + 1} requerido`; hasError = true; }
+      if (hijo.email.trim() && !esEmailValido(hijo.email)) { err.email = `Correo del hijo ${index + 1} inválido`; hasError = true; }
       if (!hijo.fechaNacimiento) { err.fechaNacimiento = `Fecha de nacimiento del hijo ${index + 1} requerida`; hasError = true; }
       if (!hijo.tipoSangre) { err.tipoSangre = `Tipo de sangre del hijo ${index + 1} requerido`; hasError = true; }
       if (!hijo.sexo) { err.sexo = `Sexo del hijo ${index + 1} requerido`; hasError = true; }
@@ -697,14 +670,14 @@ const ToseiGusokuForm = () => {
       else if (!hijo.tallaCamiseta) { err.tallaCamiseta = `Selecciona una talla para el hijo ${index + 1}`; hasError = true; }
       if (!hijo.foto) { err.foto = `Foto del hijo ${index + 1} requerida`; hasError = true; }
       else {
-        const msg = archivoInvalido(hijo.foto, false);
+        const msg = validarArchivoBasico(hijo.foto, false);
         if (msg) { err.foto = msg; hasError = true; }
       }
       if (hijo.practicoKarate === 'si' && !hijo.kyu) { err.kyu = `Grado del hijo ${index + 1} requerido`; hasError = true; }
       if (hijo.identificacion.length === 0) { err.identificacion = `Identificación del hijo ${index + 1} requerida`; hasError = true; }
       else {
         for (const file of hijo.identificacion) {
-          const msg = archivoInvalido(file, true);
+          const msg = validarArchivoBasico(file, true);
           if (msg) { err.identificacion = msg; hasError = true; break; }
         }
       }
@@ -832,19 +805,31 @@ const ToseiGusokuForm = () => {
     let response: Response;
     try {
       response = await fetch('/api/enrollments/family', { method: 'POST', body: uploadData });
-    } catch {
+    } catch (error) {
       setIsSubmitting(false);
-      setSubmitError('No fue posible enviar la inscripción. Verifica tu conexión e inténtalo nuevamente.');
+      const extra = error instanceof Error && error.message ? ` (${error.message})` : '';
+      setSubmitError(`No fue posible enviar la inscripción: falló la conexión con el servidor${extra}. Verifica tu conexión e inténtalo nuevamente.`);
       return;
     }
     setIsSubmitting(false);
     if (!response.ok) {
-      let message = 'No fue posible enviar la inscripción. Inténtalo nuevamente.';
+      const status = response.status;
+      let detail = '';
+      let code = '';
       try {
-        const data = await response.json();
-        if (data && typeof data.error === 'string') message = data.error;
-      } catch { /* ignore */ }
-      setSubmitError(message);
+        const data = await response.json() as { error?: string; message?: string; code?: string };
+        detail = (typeof data?.error === 'string' && data.error.trim())
+          || (typeof data?.message === 'string' && data.message.trim())
+          || '';
+        if (typeof data?.code === 'string') code = data.code;
+      } catch {
+        try {
+          const text = (await response.text()).trim();
+          if (text && !text.startsWith('<')) detail = text.slice(0, 180);
+        } catch { /* ignore */ }
+      }
+      const prefix = code ? `No fue posible enviar la inscripción [${code}]` : 'No fue posible enviar la inscripción';
+      setSubmitError(`${prefix}: ${detail || `el servidor respondió con un error ${status}`}. Inténtalo nuevamente.`);
       return;
     }
     setIsSuccess(true);
@@ -963,7 +948,8 @@ const ToseiGusokuForm = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-stone-500 mb-1">Número de Cédula <span className="text-red-500">*</span></label>
-              <input type="text" name="cedula" value={formData.cedula} onChange={handleChange}
+              <input type="text" inputMode="numeric" maxLength={11} name="cedula" value={formData.cedula}
+                onChange={(e) => setFormData(prev => ({ ...prev, cedula: soloDigitos(e.target.value).slice(0, 11) }))}
                 className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.cedula ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="Ej: 00123456789" />
               {errors.cedula && <p className="text-red-500 text-xs mt-1">{errors.cedula}</p>}
             </div>
@@ -975,7 +961,7 @@ const ToseiGusokuForm = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-stone-500 mb-1">Teléfono de Contacto <span className="text-red-500">*</span></label>
-              <input type="tel" name="telefonoContacto" value={formData.telefonoContacto} onChange={handleChange}
+              <input type="tel" inputMode="tel" maxLength={20} name="telefonoContacto" value={formData.telefonoContacto} onChange={handleChange}
                 className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.telefonoContacto ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="0412-1234567" />
               {errors.telefonoContacto && <p className="text-red-500 text-xs mt-1">{errors.telefonoContacto}</p>}
             </div>
@@ -1088,7 +1074,8 @@ const ToseiGusokuForm = () => {
                     <div>
                       <label className="block text-sm font-medium text-stone-500 mb-1">Correo del hijo (opcional)</label>
                       <input type="email" value={hijo.email} onChange={(e) => handleHijoChange(hijo.id, 'email', e.target.value)}
-                        className="w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" placeholder="correo@ejemplo.com" />
+                        className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.hijos?.[index]?.email ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="correo@ejemplo.com" />
+                      {errors.hijos?.[index]?.email && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.email}</p>}
                       <p className="text-xs text-stone-400 mt-1">Si tiene correo propio podrá tener su propia cuenta; si no, el padre lo verá desde su cuenta.</p>
                     </div>
                     <div>
@@ -1219,7 +1206,8 @@ const ToseiGusokuForm = () => {
                 <div>
                   <label className="block text-sm font-medium text-stone-500 mb-1">Correo del hijo (opcional)</label>
                   <input type="email" value={hijo.email} onChange={(e) => handleHijoChange(hijo.id, 'email', e.target.value)}
-                    className="w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" placeholder="correo@ejemplo.com" />
+                    className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.hijos?.[index]?.email ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="correo@ejemplo.com" />
+                  {errors.hijos?.[index]?.email && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.email}</p>}
                   <p className="text-xs text-stone-400 mt-1">Si tiene correo propio podrá tener su propia cuenta; si no, el padre lo verá desde su cuenta.</p>
                 </div>
                 <div>
@@ -1335,7 +1323,7 @@ const ToseiGusokuForm = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-stone-500 mb-1">Teléfono de la Madre</label>
-                  <input type="tel" name="telefonoMadre" value={formData.telefonoMadre} onChange={handleChange}
+                  <input type="tel" inputMode="tel" maxLength={20} name="telefonoMadre" value={formData.telefonoMadre} onChange={handleChange}
                     className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.telefonoMadre ? 'border-red-500' : 'border-brand-accent/60'}`} />
                   {errors.telefonoMadre && <p className="text-red-500 text-xs mt-1">{errors.telefonoMadre}</p>}
                 </div>
@@ -1347,7 +1335,7 @@ const ToseiGusokuForm = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-stone-500 mb-1">Teléfono del Padre</label>
-                  <input type="tel" name="telefonoPadre" value={formData.telefonoPadre} onChange={handleChange}
+                  <input type="tel" inputMode="tel" maxLength={20} name="telefonoPadre" value={formData.telefonoPadre} onChange={handleChange}
                     className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.telefonoPadre ? 'border-red-500' : 'border-brand-accent/60'}`} />
                   {errors.telefonoPadre && <p className="text-red-500 text-xs mt-1">{errors.telefonoPadre}</p>}
                 </div>

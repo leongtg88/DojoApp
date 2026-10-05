@@ -228,7 +228,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 					<button type="button" onClick={handlePrint} className="inline-flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-3.5 py-2 text-xs font-semibold text-ink transition-colors hover:bg-surface-3 hover:text-ink">
 						<FileText className="size-4" />Imprimir / PDF
 					</button>
-					{student.accountStatus !== 'ACTIVO' && student.email && (
+					{student.accountStatus !== 'ACTIVO' && student.email && !student.guardianManaged && (
 						<button type="button" onClick={() => setIsInviteConfirmOpen(true)} className="inline-flex items-center gap-2 rounded-md border border-cyan-500/40 bg-surface-1 px-3.5 py-2 text-xs font-semibold text-accent-text transition-colors hover:bg-cyan-500/10 hover:text-accent-text">
 							<Mail className="size-4" />{student.accountStatus === 'INVITADO' ? 'Reenviar invitación' : 'Invitar'}
 						</button>
@@ -265,8 +265,8 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 					<span className={`inline-flex w-fit items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-bold uppercase tracking-wide ${student.status === 'ACTIVE' ? 'border-emerald-500/30 bg-emerald-500/10 text-ok-text' : student.status === 'INACTIVE' ? 'border-amber-500/30 bg-amber-500/10 text-warn-text' : 'border-edge-strong bg-surface-1 text-ink-2'}`}>
 						<ShieldCheck aria-hidden="true" className="size-3.5" />{student.status}
 					</span>
-					<span className={`inline-flex w-fit items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-bold uppercase tracking-wide ${student.accountStatus === 'ACTIVO' ? 'border-cyan-500/30 bg-cyan-500/10 text-accent-text' : student.accountStatus === 'INVITADO' ? 'border-amber-500/30 bg-amber-500/10 text-warn-text' : 'border-edge-strong bg-surface-1 text-ink-3'}`}>
-						<Mail aria-hidden="true" className="size-3.5" />Cuenta: {student.accountStatus === 'ACTIVO' ? 'Activa' : student.accountStatus === 'INVITADO' ? 'Pendiente de registro' : 'Sin cuenta'}
+					<span title={student.guardianManaged && student.guardianName ? `Tutor: ${student.guardianName}` : undefined} className={`inline-flex w-fit items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-bold uppercase tracking-wide ${student.accountStatus === 'ACTIVO' ? 'border-cyan-500/30 bg-cyan-500/10 text-accent-text' : student.accountStatus === 'INVITADO' && !student.guardianManaged ? 'border-amber-500/30 bg-amber-500/10 text-warn-text' : 'border-edge-strong bg-surface-1 text-ink-3'}`}>
+						<Mail aria-hidden="true" className="size-3.5" />Cuenta: {student.guardianManaged ? 'A cargo del tutor' : student.accountStatus === 'ACTIVO' ? 'Activa' : student.accountStatus === 'INVITADO' ? 'Pendiente de registro' : 'Sin cuenta'}
 					</span>
 				</div>
 

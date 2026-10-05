@@ -57,7 +57,7 @@ const TEXT_FIELDS: TextField[] = [
 ]
 
 // Casillas de sexo (centros en coords top-left; M en x132.5-146, F en x175-185).
-const SEXO_M_BOX = { x: 139, topY: 390 }
+const SEXO_M_BOX = { x: 134, topY: 390 }
 const SEXO_F_BOX = { x: 180, topY: 390 }
 
 // Recuadro FOTO 2x2 (coords top-left). El área de recorte se centra sobre el

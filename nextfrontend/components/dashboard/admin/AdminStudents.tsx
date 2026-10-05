@@ -774,12 +774,13 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 													<span className={`rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${statusBadgeClass(student.status)}`}>{student.status}</span>
 												</td>
 												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
-													<span className={`rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${accountBadgeClass(student.accountStatus)}`}>{student.accountStatus}</span>
-													{student.accountStatus === 'INVITADO' && student.email && <p className="mt-1 max-w-[160px] truncate font-mono text-[11px] text-ink-4">{student.email}</p>}
+													<span className={`rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${accountBadgeClass(student.accountStatus)}`}>{student.guardianManaged ? 'A cargo del tutor' : student.accountStatus}</span>
+													{student.guardianManaged && <p className="mt-1 max-w-[160px] truncate text-[11px] text-ink-4">{student.guardianName ? `Tutor: ${student.guardianName}` : 'Gestionado desde la cuenta del tutor'}</p>}
+													{!student.guardianManaged && student.accountStatus === 'INVITADO' && student.email && <p className="mt-1 max-w-[160px] truncate font-mono text-[11px] text-ink-4">{student.email}</p>}
 												</td>
 												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
 													<div className="flex items-center justify-end gap-1">
-														{(student.accountStatus !== 'ACTIVO' && student.email) && (
+														{(student.accountStatus !== 'ACTIVO' && student.email && !student.guardianManaged) && (
 															<button type="button" title={student.accountStatus === 'INVITADO' ? 'Reenviar invitación' : 'Enviar invitación al correo'} onClick={() => setInvitingStudent(student)} className="flex items-center gap-1 rounded px-2 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-cyan-950/40 hover:text-accent">
 																<Mail className="size-4" />{student.accountStatus === 'INVITADO' ? 'Reenviar' : 'Invitar'}
 															</button>

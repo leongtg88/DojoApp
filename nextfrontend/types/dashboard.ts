@@ -206,6 +206,8 @@ export interface AdminStudentSummary {
 	emergencyContact: string | null
 	giSize: string | null
 	beltSize: string | null
+	guardianManaged: boolean
+	guardianName: string | null
 	activeClassNames: string[],
 	activeScheduleIds: string[],
 	planId: string | null,
@@ -336,6 +338,8 @@ export interface AdminStudentDetail {
 	emergencyContact: string | null
 	giSize: string | null
 	beltSize: string | null
+	guardianManaged: boolean
+	guardianName: string | null
 	documents: StudentDocumentSummary[]
 	rankHistory: AdminRankHistoryEntry[]
 	availableRanks: AdminBeltRankSummary[]

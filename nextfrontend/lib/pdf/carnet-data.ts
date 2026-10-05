@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import { resolveRegistrationSources, buildRegistrationFlatValues } from '@/lib/dashboard/registration-data'
+import { ageFromDob } from '@/lib/dashboard/program'
 import { buildCarnetPdf, type CarnetData } from './carnet'
 import { uploadPrivateDocument, downloadPrivateDocument, sanitizeStorageName } from '@/lib/document-storage'
 import { sendDocumentToTelegram } from '@/lib/integrations/telegram'
@@ -85,7 +86,7 @@ export async function generateCarnetForStudent(studentId: string): Promise<void>
         student.user?.phone ??
         (student.enrollments.find((enrollment) => enrollment.contactPhone)?.contactPhone ?? null),
       cedula: (perfil.nationalId as string | null) ?? null,
-      direccion: (perfil.address as string | null) ?? null,
+      direccion: (perfil.address as string | null) ?? (perfil.direccionPadres as string | null) ?? null,
       grado: student.currentRank ?? null,
     }
 
@@ -102,6 +103,9 @@ export async function generateCarnetForStudent(studentId: string): Promise<void>
     }
 
     // Gate de completitud: TODOS los campos del carnet deben estar presentes.
+    // En menores, la cédula y la dirección no aplican (no las captura el
+    // formulario), así que se omiten de los campos requeridos.
+    const isMinor = student.dateOfBirth ? ageFromDob(student.dateOfBirth) < 18 : false
     const missing: string[] = []
     const checks: Array<[string, unknown]> = [
       ['apellidos', data.apellidos],
@@ -110,8 +114,7 @@ export async function generateCarnetForStudent(studentId: string): Promise<void>
       ['sexo', data.sexo],
       ['tipoSangre', data.tipoSangre],
       ['telefono', data.telefono],
-      ['cedula', data.cedula],
-      ['direccion', data.direccion],
+      ...(isMinor ? [] : [['cedula', data.cedula] as [string, unknown], ['direccion', data.direccion] as [string, unknown]]),
       ['grado', data.grado],
       ['foto', data.foto],
     ]

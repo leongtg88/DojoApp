@@ -1,7 +1,7 @@
 import { Prisma } from '@/lib/generated/prisma'
 import { db } from '@/lib/db'
 import { uploadPrivateDocument, sanitizeStorageName } from '@/lib/document-storage'
-import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES, mimeForExtension, sniffMimeType } from '@/lib/file-validation'
+import { esCedulaValida, esTelefonoValido, validarArchivo, TALLAS_ROPA } from '@/lib/enrollment-validation'
 import { buildEnrollmentExportRecord } from '@/lib/dashboard/student-export'
 import { postToN8n } from '@/lib/integrations/n8n'
 import { notifyEnrollmentByTelegram } from '@/lib/integrations/telegram'
@@ -11,19 +11,22 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { consumeRateLimit, getClientIp, rateLimitResponse } from '@/lib/security/rate-limit'
 
-// ==================== Validaciones de negocio ====================
+// ==================== Respuestas de error ====================
 
-const TALLAS_ROPA = ['XS', 'S', 'M', 'L', 'XL', 'XXL'] as const
-
-const soloDigitos = (value: string) => value.replace(/\D/g, '')
-
-function esCedulaValida(value: string) {
-  return /^\d{11}$/.test(soloDigitos(value))
+// Todas las respuestas de error comparten la misma forma { error, code } para
+// que el cliente pueda mostrar el motivo y un código de correlación.
+function errorResponse(code: string, message: string, status: number) {
+  return NextResponse.json({ error: message, code }, { status })
 }
 
-function esTelefonoValido(value: string) {
-  const digits = soloDigitos(value)
-  return digits.length >= 10 && digits.length <= 15
+function describeDbError(error: unknown): string {
+  if (error instanceof Prisma.PrismaClientInitializationError) {
+    return 'No se pudo conectar con la base de datos. Inténtalo nuevamente en unos momentos.'
+  }
+  if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+    return 'Ya existe una inscripción en proceso con estos datos.'
+  }
+  return 'No fue posible guardar la inscripción. Inténtalo nuevamente en unos momentos.'
 }
 
 // ==================== Esquemas ====================
@@ -149,189 +152,190 @@ function readableValidationMessage(issues: z.ZodIssue[]) {
   return `Revisa la inscripción: ${details.join(' · ')}`
 }
 
-// ==================== Archivos ====================
-
-async function validateFile(file: File): Promise<{ ok: true } | { ok: false; message: string }> {
-  if (!(file.size > 0 && file.size <= MAX_FILE_SIZE)) {
-    return { ok: false, message: 'Un archivo supera los 5 MB. Comprime o usa otro archivo.' }
-  }
-  const bytes = new Uint8Array(await file.arrayBuffer())
-  const detected = sniffMimeType(bytes)
-  const declared = file.type && file.type !== 'application/octet-stream' ? file.type : ''
-  const effective = detected || declared || mimeForExtension(file.name)
-  if (!effective || !ALLOWED_MIME_TYPES.has(effective)) {
-    return { ok: false, message: 'El formato del archivo no es válido. Usa JPG, PNG, WEBP o PDF.' }
-  }
-  return { ok: true }
-}
-
 // ==================== Ruta ====================
 
 export async function POST(request: Request) {
-  // Rate limiting estricto: este endpoint recibe subidas de archivos anónimos.
-  const ip = getClientIp(request.headers)
-  const ipAttempt = await consumeRateLimit(`enroll-family:${ip}`, {
-    limit: 10,
-    windowMs: 60 * 60 * 1000,
-  })
-  if (!ipAttempt.allowed) {
-    return rateLimitResponse(ipAttempt.retryAfterSeconds, 'Demasiadas solicitudes desde esta dirección. Inténtalo de nuevo más tarde.')
-  }
-
-  const formData = await request.formData().catch(() => null)
-  const payload = formData?.get('payload')
-  let parsedPayload: string | null = null
-  if (typeof payload === 'string') {
-    try {
-      parsedPayload = JSON.parse(payload)
-    } catch {
-      parsedPayload = null
-    }
-  }
-  const parsed = parsedPayload ? payloadSchema.safeParse(parsedPayload) : null
-
-  if (!parsed?.success) {
-    const message = parsed && parsed.error
-      ? readableValidationMessage(parsed.error.issues)
-      : 'Datos de inscripción no válidos.'
-    return NextResponse.json({ error: message }, { status: 400 })
-  }
-
-  const email = String(parsed.data.email ?? '').toLowerCase()
-  const emailAttempt = await consumeRateLimit(`enroll-family:${email}`, {
-    limit: 3,
-    windowMs: 60 * 60 * 1000,
-  })
-  if (!emailAttempt.allowed) {
-    return rateLimitResponse(emailAttempt.retryAfterSeconds, 'Ya existe una solicitud reciente para este correo. Inténtalo de nuevo más tarde.')
-  }
-
-  if (!formData) {
-    return NextResponse.json({ error: 'Solicitud sin archivos adjuntos' }, { status: 400 })
-  }
-
-  const branch = await db.branch.findFirst({ orderBy: { createdAt: 'asc' }, select: { id: true, schoolId: true } })
-  if (!branch) {
-    return NextResponse.json({ error: 'No hay una sede disponible para la inscripción' }, { status: 503 })
-  }
-
-  let invalidMessage: string | null = null
-  for (const [key, value] of formData.entries()) {
-    if (key.startsWith('document-') && value instanceof File) {
-      const result = await validateFile(value)
-      if (!result.ok) {
-        invalidMessage = result.message
-        break
-      }
-    }
-  }
-  if (invalidMessage) {
-    return NextResponse.json({ error: invalidMessage }, { status: 400 })
-  }
-
-  const input = parsed.data
-  const reg = input.registrationData
-  const interest = reg.tipoRegistro === 'menor' ? 'Pequeños Guerreros' : reg.tipoRegistro === 'familiar' ? 'Familia (adulto + menores)' : 'Jóvenes y Adultos'
-  let enrollment: { id: string }
   try {
-    enrollment = await db.enrollment.upsert({
-      where: { contactEmail_status: { contactEmail: input.email.toLowerCase(), status: 'PENDING' } },
-      update: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, interest, registrationData: input.registrationData as Prisma.InputJsonValue, applicants: { deleteMany: { studentId: null } } },
-      create: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactEmail: input.email.toLowerCase(), contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, interest, registrationData: input.registrationData as Prisma.InputJsonValue },
-      select: { id: true },
+    // Rate limiting estricto: este endpoint recibe subidas de archivos anónimos.
+    const ip = getClientIp(request.headers)
+    const ipAttempt = await consumeRateLimit(`enroll-family:${ip}`, {
+      limit: 10,
+      windowMs: 60 * 60 * 1000,
     })
-
-    // Aspirantes ya convertidos en alumnos: se conservan y se reutilizan en el
-    // mismo orden del formulario en lugar de recrearlos (evita duplicados y
-    // que pierdan sus documentos al reenviar la solicitud).
-    const existingConverted = await db.enrollmentApplicant.findMany({
-      where: { enrollmentId: enrollment.id, studentId: { not: null } },
-      select: { id: true, name: true, dateOfBirth: true },
-    })
-
-    const applicants: { id: string; reused: boolean }[] = await Promise.all(
-      input.applicants.map(async (applicant) => {
-        const dateOfBirth = new Date(`${applicant.dateOfBirth}T00:00:00.000Z`)
-        const match = existingConverted.find(
-          (entry) => entry.name.trim().toLowerCase() === applicant.name.trim().toLowerCase() && entry.dateOfBirth.getTime() === dateOfBirth.getTime(),
-        )
-        if (match) {
-          return { id: match.id, reused: true }
-        }
-        const created = await db.enrollmentApplicant.create({
-          data: {
-            enrollmentId: enrollment.id,
-            name: applicant.name,
-            dateOfBirth,
-            profileData: {
-              ...(applicant.profileData as Record<string, unknown>),
-              ...(applicant.email ? { email: applicant.email } : {}),
-            } as Prisma.InputJsonValue,
-          },
-          select: { id: true },
-        })
-        return { id: created.id, reused: false }
-      }),
-    )
-
-    try {
-      for (const [key, value] of formData.entries()) {
-        if (!key.startsWith('document-') || !(value instanceof File)) continue
-        const [, applicantIndex, type] = key.split('-')
-        const applicant = applicants[Number(applicantIndex)]
-        if (!applicant || applicant.reused) continue
-        let storageKey = ''
-        try {
-          storageKey = `enrollments/${enrollment.id}/${applicant.id}/${crypto.randomUUID()}-${sanitizeStorageName(value.name)}`
-          await uploadPrivateDocument(storageKey, value)
-          await db.studentDocument.create({ data: { enrollmentId: enrollment.id, applicantId: applicant.id, type: type === 'PROFILE_PHOTO' ? 'PROFILE_PHOTO' : 'IDENTITY', fileName: value.name, storageKey, mimeType: value.type, fileSize: value.size } })
-        } catch (fileError) {
-          console.error('Error guardando documento de inscripción:', fileError, { storageKey, fileName: value.name, fileType: value.type, fileSize: value.size })
-          const cause = (fileError as { cause?: unknown }).cause
-          if (cause) console.error('Causa raíz de Supabase:', cause)
-          throw fileError
-        }
-      }
-    } catch (uploadError) {
-      console.error('Error guardando documentos de inscripción:', uploadError)
-      return NextResponse.json({ error: 'No fue posible guardar los documentos de la inscripción.' }, { status: 503 })
+    if (!ipAttempt.allowed) {
+      return rateLimitResponse(ipAttempt.retryAfterSeconds, 'Demasiadas solicitudes desde esta dirección. Inténtalo de nuevo más tarde.', 'RATE_LIMIT')
     }
-  } catch (dbError) {
-    console.error('Error guardando la inscripción:', dbError)
-    return NextResponse.json({ error: 'No fue posible guardar la inscripción. Inténtalo nuevamente en unos momentos.' }, { status: 503 })
+
+    const formData = await request.formData().catch(() => null)
+    const payload = formData?.get('payload')
+    let parsedPayload: string | null = null
+    if (typeof payload === 'string') {
+      try {
+        parsedPayload = JSON.parse(payload)
+      } catch {
+        parsedPayload = null
+      }
+    }
+    const parsed = parsedPayload ? payloadSchema.safeParse(parsedPayload) : null
+
+    if (!parsed?.success) {
+      const message = parsed && parsed.error
+        ? readableValidationMessage(parsed.error.issues)
+        : 'Datos de inscripción no válidos.'
+      return errorResponse('VALIDATION', message, 400)
+    }
+
+    const email = String(parsed.data.email ?? '').toLowerCase()
+    const emailAttempt = await consumeRateLimit(`enroll-family:${email}`, {
+      limit: 3,
+      windowMs: 60 * 60 * 1000,
+    })
+    if (!emailAttempt.allowed) {
+      return rateLimitResponse(emailAttempt.retryAfterSeconds, 'Ya existe una solicitud reciente para este correo. Inténtalo de nuevo más tarde.', 'RATE_LIMIT')
+    }
+
+    if (!formData) {
+      return errorResponse('NO_FILES', 'Solicitud sin archivos adjuntos', 400)
+    }
+
+    let branch: { id: string; schoolId: string } | null
+    try {
+      branch = await db.branch.findFirst({ orderBy: { createdAt: 'asc' }, select: { id: true, schoolId: true } })
+    } catch (branchError) {
+      console.error('Error consultando la sede para la inscripción:', branchError)
+      return errorResponse('DB', 'El servicio de inscripción no está disponible temporalmente. Inténtalo nuevamente en unos momentos.', 503)
+    }
+    if (!branch) {
+      return errorResponse('BRANCH', 'No hay una sede disponible para la inscripción en este momento. Contacta al dojo.', 503)
+    }
+
+    // Validación de archivos: la foto de perfil debe ser imagen; la
+    // identificación también admite PDF.
+    for (const [key, value] of formData.entries()) {
+      if (!key.startsWith('document-') || !(value instanceof File)) continue
+      const [, , type] = key.split('-')
+      const message = await validarArchivo(value, type !== 'PROFILE_PHOTO')
+      if (message) {
+        return errorResponse('VALIDATION', message, 400)
+      }
+    }
+
+    const input = parsed.data
+    const reg = input.registrationData
+    const interest = reg.tipoRegistro === 'menor' ? 'Pequeños Guerreros' : reg.tipoRegistro === 'familiar' ? 'Familia (adulto + menores)' : 'Jóvenes y Adultos'
+    let enrollment: { id: string }
+    try {
+      enrollment = await db.enrollment.upsert({
+        where: { contactEmail_status: { contactEmail: input.email.toLowerCase(), status: 'PENDING' } },
+        update: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, interest, registrationData: input.registrationData as Prisma.InputJsonValue, applicants: { deleteMany: { studentId: null } } },
+        create: { origin: 'FORM', applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`, contactEmail: input.email.toLowerCase(), contactPhone: input.phone, schoolId: branch.schoolId, branchId: branch.id, interest, registrationData: input.registrationData as Prisma.InputJsonValue },
+        select: { id: true },
+      })
+
+      // Aspirantes ya convertidos en alumnos: se conservan y se reutilizan en el
+      // mismo orden del formulario en lugar de recrearlos (evita duplicados y
+      // que pierdan sus documentos al reenviar la solicitud).
+      const existingConverted = await db.enrollmentApplicant.findMany({
+        where: { enrollmentId: enrollment.id, studentId: { not: null } },
+        select: { id: true, name: true, dateOfBirth: true },
+      })
+
+      const applicants: { id: string; reused: boolean }[] = await Promise.all(
+        input.applicants.map(async (applicant) => {
+          const dateOfBirth = new Date(`${applicant.dateOfBirth}T00:00:00.000Z`)
+          const match = existingConverted.find(
+            (entry) => entry.name.trim().toLowerCase() === applicant.name.trim().toLowerCase() && entry.dateOfBirth.getTime() === dateOfBirth.getTime(),
+          )
+          if (match) {
+            return { id: match.id, reused: true }
+          }
+          const created = await db.enrollmentApplicant.create({
+            data: {
+              enrollmentId: enrollment.id,
+              name: applicant.name,
+              dateOfBirth,
+              profileData: {
+                ...(applicant.profileData as Record<string, unknown>),
+                ...(applicant.email ? { email: applicant.email } : {}),
+              } as Prisma.InputJsonValue,
+            },
+            select: { id: true },
+          })
+          return { id: created.id, reused: false }
+        }),
+      )
+
+      let failedDocument = 'los documentos de la inscripción'
+      try {
+        for (const [key, value] of formData.entries()) {
+          if (!key.startsWith('document-') || !(value instanceof File)) continue
+          const [, applicantIndex, type] = key.split('-')
+          const applicant = applicants[Number(applicantIndex)]
+          if (!applicant || applicant.reused) continue
+          const documentLabel = type === 'PROFILE_PHOTO' ? 'la foto de perfil' : 'la identificación'
+          failedDocument = `${documentLabel} del aspirante ${Number(applicantIndex) + 1}`
+          let storageKey = ''
+          try {
+            storageKey = `enrollments/${enrollment.id}/${applicant.id}/${crypto.randomUUID()}-${sanitizeStorageName(value.name)}`
+            await uploadPrivateDocument(storageKey, value)
+            await db.studentDocument.create({ data: { enrollmentId: enrollment.id, applicantId: applicant.id, type: type === 'PROFILE_PHOTO' ? 'PROFILE_PHOTO' : 'IDENTITY', fileName: value.name, storageKey, mimeType: value.type, fileSize: value.size } })
+          } catch (fileError) {
+            console.error('Error guardando documento de inscripción:', fileError, { storageKey, fileName: value.name, fileType: value.type, fileSize: value.size })
+            const cause = (fileError as { cause?: unknown }).cause
+            if (cause) console.error('Causa raíz de Supabase:', cause)
+            throw fileError
+          }
+        }
+      } catch (uploadError) {
+        console.error('Error guardando documentos de inscripción:', uploadError)
+        return errorResponse('STORAGE', `No fue posible guardar ${failedDocument}. Inténtalo nuevamente en unos momentos.`, 503)
+      }
+    } catch (dbError) {
+      console.error('Error guardando la inscripción:', dbError)
+      return errorResponse('DB', describeDbError(dbError), 503)
+    }
+
+    // Notificaciones posteriores al guardado: nunca deben convertir un alta
+    // exitosa en un error visible para el usuario.
+    try {
+      await postToN8n(
+        'enrollment.created',
+        buildEnrollmentExportRecord({
+          id: enrollment.id,
+          origin: 'FORM',
+          applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`,
+          contactEmail: input.email.toLowerCase(),
+          contactPhone: input.phone,
+          interest,
+          createdAt: new Date(),
+          registrationData: input.registrationData,
+          applicants: input.applicants.map((applicant) => ({
+            name: applicant.name,
+            dateOfBirth: applicant.dateOfBirth,
+            profileData: applicant.profileData,
+          })),
+        }),
+      )
+
+      await sendPushToSchoolAdmins(branch.schoolId, {
+        title: 'Nueva inscripción',
+        body: `${input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`} · ${input.phone}`,
+        url: '/dashboard/admin',
+      })
+
+      await notifyEnrollmentByTelegram({
+        applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`,
+        phone: input.phone,
+        email: input.email,
+        interest,
+      })
+    } catch (notificationError) {
+      console.error('Error enviando notificaciones de inscripción:', notificationError)
+    }
+
+    return NextResponse.json({ ok: true, id: enrollment.id })
+  } catch (error) {
+    console.error('Error inesperado procesando la inscripción:', error)
+    return errorResponse('UNKNOWN', 'Ocurrió un error inesperado al procesar la inscripción. Inténtalo nuevamente o contacta al dojo.', 500)
   }
-
-  await postToN8n(
-    'enrollment.created',
-    buildEnrollmentExportRecord({
-      id: enrollment.id,
-      origin: 'FORM',
-      applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`,
-      contactEmail: input.email.toLowerCase(),
-      contactPhone: input.phone,
-      interest,
-      createdAt: new Date(),
-      registrationData: input.registrationData,
-      applicants: input.applicants.map((applicant) => ({
-        name: applicant.name,
-        dateOfBirth: applicant.dateOfBirth,
-        profileData: applicant.profileData,
-      })),
-    }),
-  )
-
-  await sendPushToSchoolAdmins(branch.schoolId, {
-    title: 'Nueva inscripción',
-    body: `${input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`} · ${input.phone}`,
-    url: '/dashboard/admin',
-  })
-
-  await notifyEnrollmentByTelegram({
-    applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`,
-    phone: input.phone,
-    email: input.email,
-    interest,
-  })
-
-  return NextResponse.json({ ok: true, id: enrollment.id })
 }

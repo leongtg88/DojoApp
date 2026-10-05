@@ -40,6 +40,31 @@ export function readGuardianMetadata(registrationData: unknown): GuardianMetadat
 }
 
 /**
+ * Indica si un expediente es un hijo de una inscripción FAMILIAR que no tiene
+ * correo propio y que, por lo tanto, se ve desde la cuenta del tutor y no debe
+ * recibir una invitación (compartir el correo del tutor provoca un conflicto al
+ * aceptarla). No aplica a inscripciones "Menor de edad (tutor)", donde el padre
+ * no es alumno y la invitación con el correo de contacto sí es el único camino.
+ */
+export function isManagedByGuardian(registrationData: unknown, studentEmail: string | null): boolean {
+  const meta = readGuardianMetadata(registrationData)
+  if (meta.rol === 'tutor') return false
+
+  const guardianEmail = meta.guardian?.email?.trim().toLowerCase()
+  if (!guardianEmail) return false
+
+  const email = (studentEmail ?? '').trim().toLowerCase()
+  if (!email || email !== guardianEmail) return false
+
+  // Datos nuevos: flag explícito. Expedientes previos (ya convertidos): el
+  // nombre del tutor solo se guarda cuando existió un aspirante tutor, que es
+  // precisamente el caso familiar.
+  const data = registrationData && typeof registrationData === 'object' ? (registrationData as Record<string, unknown>) : null
+  if (data?.gestionadaPorTutor === true) return true
+  return Boolean(meta.guardian?.name?.trim())
+}
+
+/**
  * Vincula (idempotente) a un usuario tutor con los expedientes de sus hijos.
  * Los hijos se identifican por la metadata `guardian.email` guardada durante la
  * conversión de la inscripción familiar. Crea las filas `GuardianStudent` y

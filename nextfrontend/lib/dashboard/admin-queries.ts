@@ -6,6 +6,7 @@ import { computeBalance, formatTime, monthRange } from '@/lib/dashboard/balance'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
 import { getCurriculumForSchool } from '@/lib/dashboard/curriculum-queries'
 import { buildStudentRegistrationView } from '@/lib/dashboard/registration-data'
+import { isManagedByGuardian, readGuardianMetadata } from '@/lib/family/guardians'
 import { createPrivateDocumentUrl } from '@/lib/document-storage'
 
 function techniqueWithRanks<T extends { beltRankKatas: { beltRankId: string }[]; originKata?: { name: string } | null }>(technique: T) {
@@ -93,6 +94,7 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       status: true,
       userId: true,
       email: true,
+      registrationData: true,
       dateOfBirth: true,
       contactPhone: true,
       medicalInfo: true,
@@ -183,6 +185,7 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
     const currentBeltRank = ranks.find((rank) => rank.name === student.currentRank)
     const nextBeltRank = currentBeltRank ? rankByOrder.get(currentBeltRank.order + 1) : null
     const confirmedCount = confirmedByStudent.get(student.id) ?? 0
+    const guardianManaged = isManagedByGuardian(student.registrationData, student.email)
 
     return {
       id: student.id,
@@ -205,6 +208,8 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       emergencyContact: student.emergencyContact,
       giSize: student.giSize,
       beltSize: student.beltSize,
+      guardianManaged,
+      guardianName: guardianManaged ? readGuardianMetadata(student.registrationData).guardian?.name?.trim() || null : null,
       activeClassNames: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.name),
       activeScheduleIds: student.classEnrollments.map(({ class: enrolledClass }) => enrolledClass.id),
       planId: student.plan?.id ?? null,
@@ -567,6 +572,8 @@ documents: {
     }),
   )
 
+  const guardianManaged = isManagedByGuardian(student.registrationData, student.email)
+
   return {
     id: student.id,
     firstName: student.firstName,
@@ -586,6 +593,8 @@ documents: {
     emergencyContact: student.emergencyContact,
     giSize: student.giSize,
     beltSize: student.beltSize,
+    guardianManaged,
+    guardianName: guardianManaged ? readGuardianMetadata(student.registrationData).guardian?.name?.trim() || null : null,
     documents,
     availableRanks: ranks.map((rank) => ({
       id: rank.id,

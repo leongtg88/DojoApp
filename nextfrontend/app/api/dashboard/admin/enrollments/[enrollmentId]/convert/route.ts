@@ -126,6 +126,9 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
   const registrationData: Prisma.InputJsonValue = {
     ...(isTutorApplicant ? { rol: 'tutor' } : { rol: 'alumno' }),
     ...(guardianMeta ? { guardian: guardianMeta } : {}),
+    // Hijo de inscripción familiar (el tutor también es alumno): se marca para
+    // no invitarlo si no tiene correo propio; se gestiona desde la cuenta del tutor.
+    ...(guardianMeta && tutorApplicant ? { gestionadaPorTutor: true } : {}),
   }
 
   const defaultRank = declaredRank ?? (await db.beltRank.findFirst({

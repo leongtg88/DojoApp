@@ -2,6 +2,7 @@ import { randomBytes, createHash } from 'node:crypto'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
+import { isManagedByGuardian } from '@/lib/family/guardians'
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
@@ -39,6 +40,7 @@ export async function POST(request: NextRequest, { params }: InviteRouteContext)
       firstName: true,
       lastName: true,
       userId: true,
+      registrationData: true,
     },
   })
 
@@ -52,6 +54,15 @@ export async function POST(request: NextRequest, { params }: InviteRouteContext)
 
   if (!student.email) {
     return NextResponse.json({ error: 'El alumno no tiene un correo de contacto para enviar la invitación' }, { status: 400 })
+  }
+
+  // Hijo de inscripción familiar sin correo propio: se gestiona desde la cuenta
+  // del tutor. Invitarlo enviaría el correo al tutor y fallaría al aceptarlo.
+  if (isManagedByGuardian(student.registrationData, student.email)) {
+    return NextResponse.json(
+      { error: 'Este alumno no tiene correo propio; se gestiona desde la cuenta de su tutor y no requiere invitación.' },
+      { status: 409 },
+    )
   }
 
   const rawToken = randomBytes(32).toString('hex')
