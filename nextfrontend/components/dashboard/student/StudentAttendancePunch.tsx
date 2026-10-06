@@ -76,15 +76,26 @@ function defaultPunchTime(schedule: ClassSchedule[], dateValue: string, now: Dat
   if (classes.length === 0) return nowValue
 
   const todayValue = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
+  const sorted = [...classes].sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime))
+
   if (dateValue === todayValue) {
     const nowMinutes = now.getHours() * 60 + now.getMinutes()
-    return classes.reduce((best, entry) => {
-      const diff = Math.abs(timeToMinutes(entry.startTime) - nowMinutes)
-      return diff < best.diff ? { startTime: entry.startTime, diff } : best
-    }, { startTime: classes[0].startTime, diff: Number.POSITIVE_INFINITY }).startTime
+
+    // 1) Clase en curso: la hora de inicio de la clase a la que está asistiendo.
+    const current = sorted.find(
+      (entry) => nowMinutes >= timeToMinutes(entry.startTime) && nowMinutes <= timeToMinutes(entry.endTime),
+    )
+    if (current) return current.startTime
+
+    // 2) Próxima clase del día.
+    const upcoming = sorted.find((entry) => timeToMinutes(entry.startTime) > nowMinutes)
+    if (upcoming) return upcoming.startTime
+
+    // 3) Todas las clases del día ya terminaron: la última.
+    return sorted[sorted.length - 1].startTime
   }
 
-  return [...classes].sort((a, b) => a.startTime.localeCompare(b.startTime))[0].startTime
+  return sorted[0].startTime
 }
 
 interface KataBandGroup {
@@ -256,7 +267,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
   const [punchTime, setPunchTime] = useState(() => defaultPunchTime(data.schedule, todayValue, localNow))
 
   const [editingRecord, setEditingRecord] = useState<AttendanceRecord | null>(null)
-  const [editHours, setEditHours] = useState<number>(1.5)
+  const [editHours, setEditHours] = useState<number>(1)
   const [editMinutes, setEditMinutes] = useState<number>(0)
   const [editSessionType, setEditSessionType] = useState<string>('class')
   const [editNotes, setEditNotes] = useState<string>('')
@@ -546,12 +557,12 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                 <div className="flex flex-1 items-center gap-1">
                   {quickHours.map((quickHour) => (
                     <button
-                      className={`rounded px-2 py-1.5 font-mono text-xs transition-colors ${hours === quickHour && minutes === 0
+                      className={`rounded px-2 py-1.5 font-mono text-xs transition-colors ${Math.abs(totalHours - quickHour) < 0.001
                         ? 'bg-red-600 font-bold text-white'
                         : 'bg-surface-3 text-ink-2 hover:bg-surface-3'
                       }`}
                       key={quickHour}
-                      onClick={() => { setHours(quickHour); setMinutes(0) }}
+                      onClick={() => { setHours(Math.floor(quickHour)); setMinutes(Math.round((quickHour % 1) * 60)) }}
                       type="button"
                     >
                       {quickHour}h
@@ -951,12 +962,12 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                   <div className="flex items-center gap-1">
                     {quickHours.map((quickHour) => (
                       <button
-                        className={`rounded border px-2 py-1 text-xs font-mono font-semibold ${editHours === quickHour && editMinutes === 0
+                        className={`rounded border px-2 py-1 text-xs font-mono font-semibold ${Math.abs(editHours + editMinutes / 60 - quickHour) < 0.001
                           ? 'border-cyan-500 bg-cyan-500/20 text-accent'
                           : 'border-edge-strong text-ink-3 hover:text-ink'
                         }`}
                         key={quickHour}
-                        onClick={() => { setEditHours(quickHour); setEditMinutes(0) }}
+                        onClick={() => { setEditHours(Math.floor(quickHour)); setEditMinutes(Math.round((quickHour % 1) * 60)) }}
                         type="button"
                       >
                         {quickHour}h
