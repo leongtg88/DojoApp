@@ -76,7 +76,7 @@ export function InstructorTechniqueReview({ review }: InstructorTechniqueReviewP
                     <span className="rounded-md border border-edge-strong bg-surface-1 px-2.5 py-1 text-xs font-bold text-ink-2">{unassignedTechniques.length} disponibles</span>
                 </div>
                 {unassignedTechniques.length === 0 ? (
-                    <p className="px-5 py-8 text-sm text-ink-3">Este alumno ya tiene asignadas todas las técnicas del catálogo.</p>
+                    <p className="px-5 py-8 text-xs text-ink-3">Este alumno ya tiene asignadas todas las técnicas del catálogo.</p>
                 ) : (
                     <TechniqueCatalogFilter
                         defaultProgram={review.student.program}
@@ -130,9 +130,9 @@ export function InstructorTechniqueReview({ review }: InstructorTechniqueReviewP
                     )}
                 </div>
                 {review.techniques.length === 0 ? (
-                    <p className="px-5 py-8 text-sm text-ink-3">Este alumno no tiene técnicas asignadas.</p>
+                    <p className="px-5 py-8 text-xs text-ink-3">Este alumno no tiene técnicas asignadas.</p>
                 ) : visibleTechniques.length === 0 ? (
-                    <p className="px-5 py-8 text-sm text-ink-3">No hay técnicas que coincidan con los filtros seleccionados.</p>
+                    <p className="px-5 py-8 text-xs text-ink-3">No hay técnicas que coincidan con los filtros seleccionados.</p>
                 ) : (
                     <ul className="divide-y divide-edge">
                         {visibleTechniques.map((technique) => (
@@ -200,7 +200,7 @@ function TechniqueRow({
                     <p className="text-xs font-semibold uppercase tracking-wide text-accent">{technique.category}</p>
                     <p className="mt-1 text-sm font-semibold text-ink">{technique.name}</p>
                     {technique.level && <div className="mt-1"><KataBeltChip beltColor={technique.beltColor} beltSecondaryColor={technique.beltSecondaryColor} level={technique.level} /></div>}
-                    {technique.description && <p className="mt-1 text-sm text-ink-3">{technique.description}</p>}
+                    {technique.description && <p className="mt-1 text-xs text-ink-3">{technique.description}</p>}
                     {technique.practiceHours > 0 && <p className="mt-1.5 text-xs font-semibold text-ink-2"><Clock aria-hidden="true" className="mr-1 inline size-3.5 text-accent" />{technique.practiceHours}h de práctica</p>}
                     {technique.practiceRepetitions > 0 && <p className="mt-1 text-xs font-semibold text-ink-2"><RefreshCw aria-hidden="true" className="mr-1 inline size-3.5 text-accent" />{technique.practiceRepetitions} rep.{technique.targetRepetitions ? ` / ${technique.targetRepetitions}` : ''}</p>}
                 </div>
@@ -227,10 +227,10 @@ function TechniqueRow({
                     })}
                 </div>
             </div>
-            <label className="mt-3 block text-xs font-semibold text-ink-2" htmlFor={`technique-notes-${technique.id}`}><span className="inline-flex items-center gap-1"><Info aria-hidden="true" className="size-3.5 text-accent" />Observación del instructor</span><textarea className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id={`technique-notes-${technique.id}`} onChange={(event) => setNotes(event.target.value)} placeholder="Añade una observación técnica" rows={2} value={notes} /></label>
+            <label className="mt-3 block text-xs font-semibold text-ink-2" htmlFor={`technique-notes-${technique.id}`}><span className="inline-flex items-center gap-1"><Info aria-hidden="true" className="size-3.5 text-accent" />Observación del instructor</span><textarea className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id={`technique-notes-${technique.id}`} onChange={(event) => setNotes(event.target.value)} placeholder="Añade una observación técnica" rows={2} value={notes} /></label>
             <div className="mt-3 grid gap-3 border-t border-edge pt-3 sm:grid-cols-[10rem_1fr]">
-                <label className="text-xs font-semibold text-ink-2" htmlFor={`technique-score-${technique.id}`}><span className="inline-flex items-center gap-1"><Star aria-hidden="true" className="size-3.5 text-accent" />Calificación / 10</span><input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id={`technique-score-${technique.id}`} max="10" min="0" onChange={(event) => setScore(event.target.value)} placeholder="Sin nota" step="1" type="number" value={score} /></label>
-                <label className="text-xs font-semibold text-ink-2" htmlFor={`technique-feedback-${technique.id}`}>Feedback de evaluación<textarea className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id={`technique-feedback-${technique.id}`} onChange={(event) => setFeedback(event.target.value)} placeholder="Correcciones técnicas y próximos objetivos" rows={2} value={feedback} /></label>
+                <label className="text-xs font-semibold text-ink-2" htmlFor={`technique-score-${technique.id}`}><span className="inline-flex items-center gap-1"><Star aria-hidden="true" className="size-3.5 text-accent" />Calificación / 10</span><input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id={`technique-score-${technique.id}`} max="10" min="0" onChange={(event) => setScore(event.target.value)} placeholder="Sin nota" step="1" type="number" value={score} /></label>
+                <label className="text-xs font-semibold text-ink-2" htmlFor={`technique-feedback-${technique.id}`}>Feedback de evaluación<textarea className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id={`technique-feedback-${technique.id}`} onChange={(event) => setFeedback(event.target.value)} placeholder="Correcciones técnicas y próximos objetivos" rows={2} value={feedback} /></label>
             </div>
             {technique.evaluation && <p className="mt-2 text-xs text-ok-text/80">Última evaluación: {technique.evaluation.score}/10 · {new Date(technique.evaluation.evaluatedAt).toLocaleString('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}{technique.evaluation.evaluatorName ? ` · ${technique.evaluation.evaluatorName}` : ''}</p>}
             <div className="mt-3 flex flex-wrap items-center gap-3">

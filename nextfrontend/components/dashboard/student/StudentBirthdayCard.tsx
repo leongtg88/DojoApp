@@ -27,7 +27,7 @@ export function StudentBirthdayCard({ dateOfBirth }: StudentBirthdayCardProps) {
                     <p className="mt-1 text-sm font-semibold text-ink">
                         {isToday ? 'Hoy celebramos tu cumpleaños en el dojo.' : `Tu próximo cumpleaños es el ${dateLabel}.`}
                     </p>
-                    {!isToday && <p className="mt-1 text-sm text-ink-3">Faltan {daysUntil} días.</p>}
+                    {!isToday && <p className="mt-1 text-xs text-ink-3">Faltan {daysUntil} días.</p>}
                 </div>
             </div>
         </aside>

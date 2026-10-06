@@ -59,7 +59,7 @@ export function InstructorAddStudentModal({ open, alreadyPresentIds, onAdd, onCl
                                 onChange={(event) => setQuery(event.target.value)}
                                 onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); void search() } }}
                                 placeholder="Nombre, apellido o matrícula (mín. 2 caracteres)"
-                                className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-sm text-ink outline-none focus:border-cyan-500"
+                                className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-xs text-ink outline-none focus:border-cyan-500"
                             />
                         </div>
                         <button type="button" onClick={() => void search()} disabled={searching || query.trim().length < 2} className="rounded-md bg-cyan-500 px-3.5 py-2 text-xs font-semibold text-[#0d1117] hover:bg-cyan-400 disabled:opacity-50">
@@ -72,7 +72,7 @@ export function InstructorAddStudentModal({ open, alreadyPresentIds, onAdd, onCl
                         <p className="py-6 text-center text-sm text-ink-4">Sin resultados.</p>
                     )}
                     {searching && (
-                        <p className="flex items-center gap-2 py-6 text-center text-sm text-ink-3">
+                        <p className="flex items-center gap-2 py-6 text-center text-xs text-ink-3">
                             <Loader2 className="size-4 animate-spin" aria-hidden="true" />Buscando…
                         </p>
                     )}

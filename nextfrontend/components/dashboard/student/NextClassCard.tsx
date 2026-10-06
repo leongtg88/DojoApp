@@ -32,7 +32,7 @@ export function NextClassCard({ classes, studentId }: NextClassCardProps) {
                         {next ? (
                             <>
                                 <p className="mt-1 font-display text-lg font-extrabold text-ink">{next.name}</p>
-                                <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-3">
+                                <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-3">
                                     <span className="font-semibold text-accent-text">{formatNextClass(next, now)}</span>
                                     <span className="inline-flex items-center gap-1.5">
                                         <UserRound aria-hidden="true" className="size-3.5 text-ink-4" />
@@ -47,7 +47,7 @@ export function NextClassCard({ classes, studentId }: NextClassCardProps) {
                         ) : (
                             <>
                                 <p className="mt-1 font-display text-lg font-extrabold text-ink">No tienes clases activas</p>
-                                <p className="mt-1 text-sm text-ink-3">Contacta a la administración para completar tu inscripción.</p>
+                                <p className="mt-1 text-xs text-ink-3">Contacta a la administración para completar tu inscripción.</p>
                             </>
                         )}
                     </div>

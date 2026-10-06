@@ -248,7 +248,7 @@ export function InstructorAttendanceBoard({ data }: InstructorAttendanceBoardPro
 
                 {filteredRecords.length === 0 ? (
                     <div className="p-12 text-center">
-                        <p className="text-sm text-ink-3">No se encontraron registros con los filtros seleccionados.</p>
+                        <p className="text-xs text-ink-3">No se encontraron registros con los filtros seleccionados.</p>
                     </div>
                 ) : (
                     <div className="divide-y divide-edge/80">

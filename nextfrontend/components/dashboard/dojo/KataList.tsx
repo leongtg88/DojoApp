@@ -74,7 +74,7 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                 <label className="relative block">
                     <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-accent" />
                     <input
-                        className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
+                        className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
                         onChange={(event) => setSearch(event.target.value)}
                         placeholder="Buscar Pinan Nidan, Bassai Dai, Seienchin..."
                         type="search"
@@ -141,7 +141,7 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                                                 </span>
                                             )}
                                         </div>
-                                        <p className="mt-1 text-sm text-ink-3">{kata.rankName ?? 'Programa del dojo'}</p>
+                                        <p className="mt-1 text-xs text-ink-3">{kata.rankName ?? 'Programa del dojo'}</p>
                                         {kata.level && <div className="mt-1"><KataBeltChip beltColor={kata.beltColor} beltSecondaryColor={kata.beltSecondaryColor} level={kata.level} /></div>}
                                     </div>
                                     <button

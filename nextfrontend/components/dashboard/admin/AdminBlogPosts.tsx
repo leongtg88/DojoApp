@@ -63,9 +63,9 @@ export function AdminBlogPosts({ posts }: AdminBlogPostsProps) {
         <div>
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
-                    <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Blog</h1>
-                    <p className="mt-2 max-w-xl text-sm text-ink-3">Crea, edita y publica los artículos del blog del dojo.</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-accent">Administración</p>
+                    <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Blog</h1>
+                    <p className="mt-2 max-w-xl text-xs text-ink-3">Crea, edita y publica los artículos del blog del dojo.</p>
                 </div>
                 <Link className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400" href="/dashboard/admin/blog/nuevo">
                     <Plus aria-hidden="true" className="size-4" />Nuevo artículo
@@ -89,7 +89,7 @@ export function AdminBlogPosts({ posts }: AdminBlogPostsProps) {
             {error && <p className="mt-4 rounded-md border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm font-medium text-danger-text">{error}</p>}
 
             {visible.length === 0 ? (
-                <p className="mt-6 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center text-sm text-ink-3">
+                <p className="mt-6 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center text-xs text-ink-3">
                     {posts.length === 0 ? 'Aún no hay artículos. Crea el primero.' : 'No hay artículos en este filtro.'}
                 </p>
             ) : (

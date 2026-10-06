@@ -12,8 +12,8 @@ export default async function AdminBlogNewPage() {
 
     return (
         <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-            <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
-            <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Nuevo artículo</h1>
+            <p className="text-xs font-semibold uppercase tracking-wide text-accent">Administración</p>
+            <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Nuevo artículo</h1>
             <div className="mt-7">
                 <PostForm mode="create" />
             </div>

@@ -18,9 +18,9 @@ export function InstructorDashboardOverview({ birthdays, classes, pendingCount, 
 
     return (
         <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-            <p className="text-sm font-semibold uppercase tracking-wide text-accent">Panel de instructor</p>
-            <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Resumen de tatami</h1>
-            <p className="mt-2 text-sm text-ink-3">Consulta tus grupos asignados y los alumnos bajo tu seguimiento.</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-accent">Panel de instructor</p>
+            <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Resumen de tatami</h1>
+            <p className="mt-2 text-xs text-ink-3">Consulta tus grupos asignados y los alumnos bajo tu seguimiento.</p>
 
             <section className="mt-7 rounded-lg border border-edge bg-surface-2 p-5 shadow-sm">
                 <div className="flex flex-wrap items-start justify-between gap-4">
@@ -33,14 +33,14 @@ export function InstructorDashboardOverview({ birthdays, classes, pendingCount, 
                             {nextClass ? (
                                 <>
                                     <p className="mt-1 font-display text-lg font-extrabold text-ink">{nextClass.name}</p>
-                                    <p className="mt-1 text-sm text-ink-3">
+                                    <p className="mt-1 text-xs text-ink-3">
                                         {formatNextClass(nextClass)} · {nextClass.startTime} - {nextClass.endTime} · {nextClass.branchName}
                                     </p>
                                 </>
                             ) : (
                                 <>
                                     <p className="mt-1 font-display text-lg font-extrabold text-ink">No tienes clases asignadas</p>
-                                    <p className="mt-1 text-sm text-ink-3">Contacta a la administración para asignarte un grupo.</p>
+                                    <p className="mt-1 text-xs text-ink-3">Contacta a la administración para asignarte un grupo.</p>
                                 </>
                             )}
                         </div>
@@ -71,13 +71,13 @@ export function InstructorDashboardOverview({ birthdays, classes, pendingCount, 
                     <CalendarDays aria-hidden="true" className="size-5 text-accent" />
                     <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink-3">Clases asignadas</p>
                     <p className="mt-1 text-2xl font-bold text-ink sm:text-3xl">{classes.length}</p>
-                    <p className="mt-2 text-sm text-ink-3">Ver horario y composición de grupos.</p>
+                    <p className="mt-2 text-xs text-ink-3">Ver horario y composición de grupos.</p>
                 </Link>
                 <Link className="rounded-lg border border-edge bg-surface-2 p-4 transition-colors hover:border-emerald-500/40 hover:bg-surface-3 sm:p-5" href="/dashboard/instructor/estudiantes">
                     <Users aria-hidden="true" className="size-5 text-ok-text" />
                     <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink-3">Estudiantes activos</p>
                     <p className="mt-1 text-2xl font-bold text-ink sm:text-3xl">{students.length}</p>
-                    <p className="mt-2 text-sm text-ink-3">Ver alumnos activos de tu escuela.</p>
+                    <p className="mt-2 text-xs text-ink-3">Ver alumnos activos de tu escuela.</p>
                 </Link>
             </section>
             <BirthdayWidget birthdays={birthdays} />

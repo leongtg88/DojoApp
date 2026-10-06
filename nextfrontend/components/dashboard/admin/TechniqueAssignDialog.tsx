@@ -258,14 +258,14 @@ export function TechniqueAssignDialog({
                     {tab === 'GROUP' && (
                         <>
                             <label className="text-xs font-semibold text-ink-2" htmlFor="assign-group-type">Destino
-                                <select id="assign-group-type" value={groupType} onChange={(event) => { setGroupType(event.target.value as GroupType); setGroupValue('') }} className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
+                                <select id="assign-group-type" value={groupType} onChange={(event) => { setGroupType(event.target.value as GroupType); setGroupValue('') }} className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink">
                                     {GROUP_TYPE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                                 </select>
                             </label>
                             {groupType !== 'ALL' && (
                                 <label className="text-xs font-semibold text-ink-2" htmlFor="assign-group-value">
                                     {groupType === 'GRADE' ? 'Grado' : groupType === 'BRANCH' ? 'Sucursal' : 'Clase'}
-                                    <select id="assign-group-value" value={groupValue} onChange={(event) => setGroupValue(event.target.value)} className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
+                                    <select id="assign-group-value" value={groupValue} onChange={(event) => setGroupValue(event.target.value)} className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink">
                                         <option value="">Selecciona…</option>
                                         {targetOptions.map((option) => <option key={option} value={option}>{option}</option>)}
                                     </select>

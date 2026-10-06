@@ -15,8 +15,8 @@ interface AdminDashboardOverviewProps {
 export function AdminDashboardOverview({ summary, birthdays, instructorCandidates, pendingEnrollmentCount, pendingDocumentCount }: AdminDashboardOverviewProps) {
     return (
         <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-            <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
-            <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Resumen del dojo</h1>
+            <p className="text-xs font-semibold uppercase tracking-wide text-accent">Administración</p>
+            <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Resumen del dojo</h1>
 
             <section className="mt-7 grid grid-cols-3 gap-2 sm:gap-3">
                 <Link className="rounded-lg border border-edge bg-surface-2 p-3 transition-colors hover:border-cyan-500/40 hover:bg-surface-3 sm:p-5" href="/dashboard/admin/alumnos">

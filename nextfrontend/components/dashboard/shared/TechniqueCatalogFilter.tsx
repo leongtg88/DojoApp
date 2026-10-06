@@ -77,7 +77,7 @@ export function TechniqueCatalogFilter({
                     <label className="relative block lg:w-64" htmlFor={`${idPrefix}-search`}>
                         <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-accent" />
                         <input
-                            className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
+                            className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
                             id={`${idPrefix}-search`}
                             onChange={(event) => setCatalogQuery(event.target.value)}
                             placeholder="Buscar técnica…"
@@ -116,7 +116,7 @@ export function TechniqueCatalogFilter({
             )}
 
             {catalog.length === 0 ? (
-                <p className="px-5 py-10 text-center text-sm text-ink-3">{emptyMessage}</p>
+                <p className="px-5 py-10 text-center text-xs text-ink-3">{emptyMessage}</p>
             ) : (
                 <TechniqueCatalogExplorer
                     levelsByProgram={levelsByProgram}

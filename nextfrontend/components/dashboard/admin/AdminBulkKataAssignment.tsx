@@ -146,14 +146,14 @@ export function AdminBulkKataAssignment({ students, onClose, onAssigned }: Admin
 					<div className="grid gap-3 sm:grid-cols-2">
 						<label className="text-xs font-semibold text-ink-2" htmlFor="bulk-kata-target-type">
 							Destino
-							<select id="bulk-kata-target-type" value={targetType} onChange={(event) => { setTargetType(event.target.value as TargetType); setTargetValue('') }} className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
+							<select id="bulk-kata-target-type" value={targetType} onChange={(event) => { setTargetType(event.target.value as TargetType); setTargetValue('') }} className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink">
 								{TARGET_TYPE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
 							</select>
 						</label>
 						{targetType !== 'ALL' && (
 							<label className="text-xs font-semibold text-ink-2" htmlFor="bulk-kata-target-value">
 								{targetType === 'GRADE' ? 'Grado' : targetType === 'BRANCH' ? 'Sucursal' : 'Clase'}
-								<select id="bulk-kata-target-value" value={targetValue} onChange={(event) => setTargetValue(event.target.value)} className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
+								<select id="bulk-kata-target-value" value={targetValue} onChange={(event) => setTargetValue(event.target.value)} className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink">
 									<option value="">Selecciona…</option>
 									{targetOptions.map((option) => <option key={option} value={option}>{option}</option>)}
 								</select>

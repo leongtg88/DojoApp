@@ -76,7 +76,7 @@ export function AdminStudentDocuments({ documents, studentId, onChange }: AdminS
                     <span className="text-xs font-bold text-accent">{documents.length} archivos</span>
                 </div>
                 {documents.length === 0 ? (
-                    <p className="px-5 py-8 text-sm text-ink-3">No hay documentos asociados a este alumno.</p>
+                    <p className="px-5 py-8 text-xs text-ink-3">No hay documentos asociados a este alumno.</p>
                 ) : (
                     <ul className="divide-y divide-edge">
                         {documents.map((document) => (
@@ -94,8 +94,8 @@ export function AdminStudentDocuments({ documents, studentId, onChange }: AdminS
                                     </div>
                                 </div>
                                 <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                                    <input className="min-w-0 flex-1 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" onChange={(event) => setNotes((current) => ({ ...current, [document.id]: event.target.value }))} placeholder="Observación de la revisión..." value={notes[document.id] ?? ''} />
-                                    <select className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500" onChange={(event) => setDraftStatus((current) => ({ ...current, [document.id]: event.target.value as StudentDocumentSummary['status'] }))} value={draftStatus[document.id] ?? document.status}>{STATUS_OPTIONS.map((status) => <option key={status} value={status}>{STATUS_LABELS[status]}</option>)}</select>
+                                    <input className="min-w-0 flex-1 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" onChange={(event) => setNotes((current) => ({ ...current, [document.id]: event.target.value }))} placeholder="Observación de la revisión..." value={notes[document.id] ?? ''} />
+                                    <select className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500" onChange={(event) => setDraftStatus((current) => ({ ...current, [document.id]: event.target.value as StudentDocumentSummary['status'] }))} value={draftStatus[document.id] ?? document.status}>{STATUS_OPTIONS.map((status) => <option key={status} value={status}>{STATUS_LABELS[status]}</option>)}</select>
                                     <button className="inline-flex items-center justify-center gap-1.5 rounded-md bg-cyan-500 px-3.5 py-2 text-xs font-bold text-[#0d1117] hover:bg-cyan-400 disabled:opacity-50" disabled={reviewingId === document.id || deletingId === document.id || (draftStatus[document.id] ?? document.status) === document.status} onClick={() => reviewDocument(document.id, draftStatus[document.id] ?? document.status)} type="button">{reviewingId === document.id ? <LoaderCircle className="size-3.5 animate-spin" /> : <Check className="size-3.5" />}Guardar</button>
                                 </div>
                             </li>

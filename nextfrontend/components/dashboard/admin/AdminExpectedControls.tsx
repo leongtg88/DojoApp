@@ -15,14 +15,14 @@ export function AdminExpectedControls({ classes, selectedClassId, date, hasRoste
             <div className="border-b border-edge p-5">
                 <p className="text-xs font-semibold uppercase tracking-wide text-accent">Esperados vs registrados</p>
                 <h2 className="mt-1 font-display text-xl font-bold text-ink">Asistencia esperada</h2>
-                <p className="mt-1 text-sm text-ink-3">Elige una fecha y una clase para ver qué alumnos activos tienen registro y quiénes no marcaron.</p>
+                <p className="mt-1 text-xs text-ink-3">Elige una fecha y una clase para ver qué alumnos activos tienen registro y quiénes no marcaron.</p>
             </div>
 
             <form className="flex flex-wrap items-end gap-3 p-5" method="get">
                 <label className="flex flex-col gap-1.5 text-sm font-semibold text-ink" htmlFor="expected-date">
                     Fecha
                     <input
-                        className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
+                        className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
                         defaultValue={date}
                         id="expected-date"
                         name="date"
@@ -32,7 +32,7 @@ export function AdminExpectedControls({ classes, selectedClassId, date, hasRoste
                 <label className="flex min-w-52 flex-1 flex-col gap-1.5 text-sm font-semibold text-ink" htmlFor="expected-class">
                     Clase
                     <select
-                        className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
+                        className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
                         defaultValue={selectedClassId ?? ''}
                         id="expected-class"
                         name="classId"
@@ -49,7 +49,7 @@ export function AdminExpectedControls({ classes, selectedClassId, date, hasRoste
             </form>
 
             {!hasRoster && (
-                <p className="border-t border-edge px-5 py-4 text-sm text-ink-3">Selecciona una clase con alumnos activos para ver la lista esperada.</p>
+                <p className="border-t border-edge px-5 py-4 text-xs text-ink-3">Selecciona una clase con alumnos activos para ver la lista esperada.</p>
             )}
         </section>
     )

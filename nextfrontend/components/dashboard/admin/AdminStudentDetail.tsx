@@ -252,7 +252,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 						<div className="min-w-0">
 							<p className="text-xs font-semibold uppercase tracking-wide text-accent">Expediente de alumno</p>
 							<div className="mt-1 flex flex-wrap items-center gap-2">
-								<h1 className="truncate font-display text-3xl font-extrabold text-ink">{student.firstName} {student.lastName}</h1>
+								<h1 className="truncate font-display text-2xl font-extrabold text-ink">{student.firstName} {student.lastName}</h1>
 								{student.memberNumber && <span className="rounded border border-edge-strong bg-surface-1 px-2 py-0.5 font-mono text-xs font-bold text-ink-2">{student.memberNumber}</span>}
 							</div>
 							<div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-3">
@@ -422,7 +422,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 							<span className="text-xs text-ink-3">Registro permanente</span>
 						</div>
 						{student.techniques.length === 0 ? (
-							<p className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 px-4 py-8 text-center text-sm text-ink-3">
+							<p className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 px-4 py-8 text-center text-xs text-ink-3">
 								Sin técnicas vinculadas. Usa &ldquo;Asignar técnicas&rdquo; para incorporar técnicas al expediente.
 							</p>
 						) : (
@@ -511,7 +511,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 							<span className="text-xs font-bold text-ink-3">{student.attendanceHistory.length} registros</span>
 						</div>
 						{student.attendanceHistory.length === 0 ? (
-							<p className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 px-4 py-8 text-center text-sm text-ink-3">Sin asistencias registradas.</p>
+							<p className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 px-4 py-8 text-center text-xs text-ink-3">Sin asistencias registradas.</p>
 						) : (
 							<div className="mt-4 divide-y divide-edge overflow-hidden rounded-lg border border-edge bg-surface-1">
 								{student.attendanceHistory.map((entry) => (
@@ -574,7 +574,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 						<section className="rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center">
 							<ClipboardList aria-hidden="true" className="mx-auto size-6 text-ink-4" />
 							<p className="mt-3 text-sm font-semibold text-ink">Sin formulario de inscripción.</p>
-							<p className="mt-1 text-sm text-ink-3">Este alumno fue creado manualmente o no tiene datos del formulario asociados.</p>
+							<p className="mt-1 text-xs text-ink-3">Este alumno fue creado manualmente o no tiene datos del formulario asociados.</p>
 						</section>
 					) : (
 						<div className="grid gap-4 lg:grid-cols-2">
@@ -643,7 +643,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 					<span className="text-xs font-bold text-ink-3">{student.rankHistory.length} registros</span>
 				</div>
 				{student.rankHistory.length === 0 ? (
-					<p className="px-5 py-8 text-sm text-ink-3">No hay ascensos registrados.</p>
+					<p className="px-5 py-8 text-xs text-ink-3">No hay ascensos registrados.</p>
 				) : (
 					<ul className="divide-y divide-edge">
 						{student.rankHistory.map((entry) => (

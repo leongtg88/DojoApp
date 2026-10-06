@@ -79,9 +79,9 @@ export function AdminReviews({ reviews }: AdminReviewsProps) {
     <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
-          <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Reseñas de familias</h1>
-          <p className="mt-2 max-w-xl text-sm text-ink-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-accent">Administración</p>
+          <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Reseñas de familias</h1>
+          <p className="mt-2 max-w-xl text-xs text-ink-3">
             Aprueba o rechaza los mensajes que dejan los padres desde la web. Solo las reseñas aprobadas se
             publican en el sitio.
           </p>
@@ -112,7 +112,7 @@ export function AdminReviews({ reviews }: AdminReviewsProps) {
       </div>
 
       {visible.length === 0 ? (
-        <p className="mt-6 rounded-lg border border-edge bg-surface-2 px-4 py-6 text-sm text-ink-3">
+        <p className="mt-6 rounded-lg border border-edge bg-surface-2 px-4 py-6 text-xs text-ink-3">
           No hay reseñas en este filtro.
         </p>
       ) : (

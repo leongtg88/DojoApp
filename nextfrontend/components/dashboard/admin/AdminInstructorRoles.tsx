@@ -115,7 +115,7 @@ export function AdminInstructorRoles({ candidates }: AdminInstructorRolesProps) 
       {error && <p className="mt-3 text-sm font-medium text-danger-text">{error}</p>}
 
       {candidates.length === 0 ? (
-        <p className="mt-4 flex items-center gap-2 rounded-md border border-dashed border-edge-strong bg-surface-1 p-4 text-sm text-ink-3">
+        <p className="mt-4 flex items-center gap-2 rounded-md border border-dashed border-edge-strong bg-surface-1 p-4 text-xs text-ink-3">
           <Users aria-hidden="true" className="size-4" />Aún no hay alumnos activos con cuenta para habilitar como instructores.
         </p>
       ) : (
@@ -128,7 +128,7 @@ export function AdminInstructorRoles({ candidates }: AdminInstructorRolesProps) 
                 <input
                   autoFocus
                   aria-label="Buscar alumno"
-                  className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
+                  className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Buscar alumno por nombre, correo o matrícula…"
                   value={query}
@@ -136,7 +136,7 @@ export function AdminInstructorRoles({ candidates }: AdminInstructorRolesProps) 
               </div>
 
               {filteredAvailable.length === 0 ? (
-                <p className="mt-3 rounded-md border border-dashed border-edge-strong bg-surface-2 p-4 text-sm text-ink-3">
+                <p className="mt-3 rounded-md border border-dashed border-edge-strong bg-surface-2 p-4 text-xs text-ink-3">
                   {available.length === 0 ? 'Todos los alumnos activos con cuenta ya son instructores.' : `Sin resultados para “${query}”.`}
                 </p>
               ) : (
@@ -149,7 +149,7 @@ export function AdminInstructorRoles({ candidates }: AdminInstructorRolesProps) 
 
           <div className="mt-4">
             {instructors.length === 0 ? (
-              <p className="rounded-md border border-dashed border-edge-strong bg-surface-1 p-4 text-sm text-ink-3">
+              <p className="rounded-md border border-dashed border-edge-strong bg-surface-1 p-4 text-xs text-ink-3">
                 Aún no hay instructores activos en el dojo.
               </p>
             ) : (

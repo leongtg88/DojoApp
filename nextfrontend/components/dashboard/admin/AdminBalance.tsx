@@ -72,9 +72,9 @@ export function AdminBalance({ rows }: AdminBalanceProps) {
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
-                    <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Balance de horas</h1>
-                    <p className="mt-2 max-w-xl text-sm text-ink-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-accent">Administración</p>
+                    <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Balance de horas</h1>
+                    <p className="mt-2 max-w-xl text-xs text-ink-3">
                         Horas confirmadas del mes natural frente a las horas del plan de cada alumno.
                     </p>
                 </div>
@@ -95,7 +95,7 @@ export function AdminBalance({ rows }: AdminBalanceProps) {
                         value={search}
                         onChange={(event) => setSearch(event.target.value)}
                         placeholder="Buscar por alumno, matrícula o plan..."
-                        className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-sm text-ink outline-none focus:border-cyan-500"
+                        className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-xs text-ink outline-none focus:border-cyan-500"
                     />
                 </div>
                 <label className="flex items-center gap-1.5 text-xs text-ink-3">

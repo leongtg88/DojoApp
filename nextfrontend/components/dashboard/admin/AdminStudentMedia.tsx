@@ -61,7 +61,7 @@ export function AdminStudentMedia({ documents }: AdminStudentMediaProps) {
 			</div>
 
 			{items.length === 0 ? (
-				<p className="flex items-center gap-2 px-5 py-8 text-sm text-ink-3">
+				<p className="flex items-center gap-2 px-5 py-8 text-xs text-ink-3">
 					<ImageOff aria-hidden="true" className="size-4 text-ink-4" />
 					No fue posible cargar las imágenes cargadas por el alumno.
 				</p>

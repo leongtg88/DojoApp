@@ -493,7 +493,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
               Entrenamiento
             </label>
             <select
-              className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink focus:border-red-500 focus:outline-none"
+              className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink focus:border-red-500 focus:outline-none"
               id="punch-session"
               onChange={(event) => setSessionType(event.target.value)}
               value={sessionType}
@@ -510,7 +510,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                 Fecha de la práctica <span className="text-red-500">*</span>
               </label>
               <input
-                className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink focus:border-red-500 focus:outline-none"
+                className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink focus:border-red-500 focus:outline-none"
                 id="punch-date"
                 max={todayValue}
                 min={minDateValue}
@@ -528,7 +528,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                 Hora de la práctica <span className="text-red-500">*</span>
               </label>
               <input
-                className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink focus:border-red-500 focus:outline-none"
+                className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink focus:border-red-500 focus:outline-none"
                 id="punch-time"
                 onChange={(event) => setPunchTime(event.target.value)}
                 type="time"
@@ -548,7 +548,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
               <div className="flex flex-wrap items-center gap-2">
                 <div className="flex items-center gap-1.5">
                   <input
-                    className="w-10 rounded-lg border border-edge-strong bg-surface-1 px-2 py-2 text-center font-mono text-sm text-ink focus:border-red-500 focus:outline-none"
+                    className="w-10 rounded-lg border border-edge-strong bg-surface-1 px-2 py-2 text-center font-mono text-xs text-ink focus:border-red-500 focus:outline-none"
                     id="punch-hours"
                     max="8"
                     min="0"
@@ -560,7 +560,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                   <span className="text-xs font-semibold text-ink-3">h</span>
                   <input
                     aria-label="Minutos entrenados"
-                    className="w-10 rounded-lg border border-edge-strong bg-surface-1 px-2 py-2 text-center font-mono text-sm text-ink focus:border-red-500 focus:outline-none"
+                    className="w-10 rounded-lg border border-edge-strong bg-surface-1 px-2 py-2 text-center font-mono text-xs text-ink focus:border-red-500 focus:outline-none"
                     max="55"
                     min="0"
                     onChange={(event) => setMinutes(Math.max(0, Math.min(55, Number.parseInt(event.target.value, 10) || 0)))}
@@ -593,7 +593,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                 Notas / Observaciones
               </label>
               <input
-                className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink placeholder:text-ink-4 focus:border-red-500 focus:outline-none"
+                className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink placeholder:text-ink-4 focus:border-red-500 focus:outline-none"
                 id="punch-notes"
                 onChange={(event) => setNotes(event.target.value)}
                 placeholder="Ej: Práctica de Heian Sandan, corrección de postura"
@@ -1111,7 +1111,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
               <CheckCircle2 className="size-9" aria-hidden="true" />
             </div>
             <h3 id="punch-success-title" className="mt-4 font-display text-xl font-extrabold text-ink">Asistencia Recibida</h3>
-            <p className="mt-2 text-sm text-ink-3">La puedes ver en el historial de asistencia.</p>
+            <p className="mt-2 text-xs text-ink-3">La puedes ver en el historial de asistencia.</p>
             {punchWarning && (
               <p className="mt-3 flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-left text-xs text-warn-text">
                 <AlertCircle className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />

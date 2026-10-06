@@ -156,22 +156,22 @@ export function AdminAttendanceView() {
                         <label className="block text-xs font-semibold text-ink-2" htmlFor="attendance-search">Buscar
                             <span className="relative mt-1 block">
                                 <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-accent" />
-                                <input className="w-full rounded-md border border-edge-strong bg-surface-1 py-2.5 pl-10 pr-3 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="attendance-search" onChange={(event) => setQuery(event.target.value)} placeholder="Alumno, clase o nota" type="search" value={query} />
+                                <input className="w-full rounded-md border border-edge-strong bg-surface-1 py-2.5 pl-10 pr-3 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="attendance-search" onChange={(event) => setQuery(event.target.value)} placeholder="Alumno, clase o nota" type="search" value={query} />
                             </span>
                         </label>
                         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                             <label className="text-xs font-semibold text-ink-2" htmlFor="attendance-date">Fecha
-                                <input className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500" id="attendance-date" onChange={(event) => setDate(event.target.value)} type="date" value={date} />
+                                <input className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500" id="attendance-date" onChange={(event) => setDate(event.target.value)} type="date" value={date} />
                             </label>
                             <label className="text-xs font-semibold text-ink-2" htmlFor="attendance-presence">Presencia
-                                <select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500" id="attendance-presence" onChange={(event) => setPresent(event.target.value as typeof present)} value={present}>
+                                <select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500" id="attendance-presence" onChange={(event) => setPresent(event.target.value as typeof present)} value={present}>
                                     <option value="all">Todas</option>
                                     <option value="present">Presentes</option>
                                     <option value="absent">Ausentes</option>
                                 </select>
                             </label>
                             <label className="text-xs font-semibold text-ink-2" htmlFor="attendance-status">Estado
-                                <select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500" id="attendance-status" onChange={(event) => setStatus(event.target.value as typeof status)} value={status}>
+                                <select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500" id="attendance-status" onChange={(event) => setStatus(event.target.value as typeof status)} value={status}>
                                     <option value="all">Todos</option>
                                     <option value="PENDING">Pendientes</option>
                                     <option value="CONFIRMED">Confirmadas</option>
@@ -181,7 +181,7 @@ export function AdminAttendanceView() {
                                 </select>
                             </label>
                             <label className="text-xs font-semibold text-ink-2" htmlFor="attendance-branch">Sucursal
-                                <select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500" id="attendance-branch" onChange={(event) => setBranch(event.target.value)} value={branch}>
+                                <select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500" id="attendance-branch" onChange={(event) => setBranch(event.target.value)} value={branch}>
                                     <option value="all">Todas</option>
                                     {branches.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
                                 </select>

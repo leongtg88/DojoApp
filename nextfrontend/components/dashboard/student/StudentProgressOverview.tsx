@@ -18,9 +18,9 @@ export function StudentProgressOverview({ kataSummary, summary, attendanceData }
         <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
             <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-accent">Mi progreso</p>
-                    <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Katas y grado</h1>
-                    <p className="mt-2 text-sm text-ink-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-accent">Mi progreso</p>
+                    <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Katas y grado</h1>
+                    <p className="mt-2 text-xs text-ink-3">
                         {grado.currentRankName ?? 'Grado actual'} · {grado.approvedKatas} de {grado.requiredKatas} katas revisadas
                     </p>
                 </div>

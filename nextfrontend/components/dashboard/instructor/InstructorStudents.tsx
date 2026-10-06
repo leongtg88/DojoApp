@@ -29,9 +29,9 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
 
     return (
         <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-            <p className="text-sm font-semibold uppercase tracking-wide text-accent">Panel de instructor</p>
-            <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Estudiantes de la escuela</h1>
-            <p className="mt-2 text-sm text-ink-3">Alumnos activos de tu escuela.</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-accent">Panel de instructor</p>
+            <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Estudiantes de la escuela</h1>
+            <p className="mt-2 text-xs text-ink-3">Alumnos activos de tu escuela.</p>
 
             {students.length > 0 && (
                 <section className="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
@@ -63,7 +63,7 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
                         <label className="relative block" htmlFor="student-search">
                             <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-accent" />
                             <input
-                                className="w-full rounded-md border border-edge-strong bg-surface-1 py-2.5 pl-10 pr-3 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
+                                className="w-full rounded-md border border-edge-strong bg-surface-1 py-2.5 pl-10 pr-3 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
                                 id="student-search"
                                 onChange={(event) => setSearchTerm(event.target.value)}
                                 placeholder="Buscar por alumno, grado o clase"
@@ -76,7 +76,7 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
                         <div className="px-5 py-10 text-center">
                             <Users aria-hidden="true" className="mx-auto size-6 text-accent" />
                             <p className="mt-3 text-sm font-semibold text-ink">No se encontraron alumnos.</p>
-                            <p className="mt-1 text-sm text-ink-3">Prueba con otro nombre, grado o clase.</p>
+                            <p className="mt-1 text-xs text-ink-3">Prueba con otro nombre, grado o clase.</p>
                         </div>
                     ) : (
                         <ul className="divide-y divide-edge">

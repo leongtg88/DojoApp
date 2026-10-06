@@ -130,15 +130,15 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
     return (
         <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
             <header>
-                <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
-                <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Inscripciones pendientes</h1>
-                <p className="mt-2 text-sm text-ink-3">Solicitudes recibidas desde el asistente de inscripción.</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-accent">Administración</p>
+                <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Inscripciones pendientes</h1>
+                <p className="mt-2 text-xs text-ink-3">Solicitudes recibidas desde el asistente de inscripción.</p>
             </header>
             {enrollments.length === 0 ? (
                 <section className="mt-7 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center">
                     <FilePlus2 aria-hidden="true" className="mx-auto size-7 text-accent" />
                     <p className="mt-3 text-sm font-semibold text-ink">No hay inscripciones pendientes.</p>
-                    <p className="mt-1 text-sm text-ink-3">Las nuevas solicitudes aparecerán aquí para completar su expediente.</p>
+                    <p className="mt-1 text-xs text-ink-3">Las nuevas solicitudes aparecerán aquí para completar su expediente.</p>
                 </section>
             ) : (
                 <ul className="mt-7 divide-y divide-edge rounded-lg border border-edge bg-surface-2">
@@ -162,7 +162,7 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" onClick={() => setSelectedEnrollment(null)} role="dialog" aria-modal="true" aria-label="Completar expediente de alumno">
                     <form className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border border-edge bg-surface-2 p-5" onClick={(event) => event.stopPropagation()} onSubmit={convertEnrollment}>
                         <h2 className="font-display text-lg font-bold text-ink">Completar expediente de alumno</h2>
-                        <p className="mt-1 text-sm text-ink-3">Se creará el expediente sin cuenta de acceso. La cuenta se invita en un paso posterior.</p>
+                        <p className="mt-1 text-xs text-ink-3">Se creará el expediente sin cuenta de acceso. La cuenta se invita en un paso posterior.</p>
                         <p className={`mt-3 rounded-md border px-3 py-2 text-xs ${declaredKarate?.haPracticadoKarate === true && declaredKarate?.kyu ? 'border-cyan-900/40 bg-cyan-950/20 text-accent-text' : 'border-edge bg-surface-1 text-ink-3'}`}>
                             {declaredKarate?.haPracticadoKarate === true && declaredKarate?.kyu
                                 ? <>Karate previo declarado: <span className="font-bold">{kyuLabel(declaredKarate.kyu)}</span> — se asignará ese grado al convertir.</>
@@ -170,26 +170,26 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                         </p>
                         <div className="mt-4 grid gap-3 sm:grid-cols-2">
                             {selectedEnrollment.applicants.length > 1 && <label className="sm:col-span-2 text-sm font-semibold text-ink" htmlFor="applicantId">Aspirante
-                                <select className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="applicantId" onChange={(event) => { const applicant = selectedEnrollment.applicants.find(({ id }) => id === event.target.value); setApplicantId(event.target.value); const parts = applicant?.name.split(/\s+/) ?? []; setFirstName(parts[0] ?? ''); setLastName(parts.slice(1).join(' ')); setDateOfBirth(applicant?.dateOfBirth.slice(0, 10) ?? ''); setGender(sexoToGender(applicant?.profileData?.sexo)); setEmail((applicant?.profileData as { email?: string } | null)?.email ?? '') }} value={applicantId}>{selectedEnrollment.applicants.map((applicant) => <option key={applicant.id} value={applicant.id}>{applicant.name}</option>)}</select>
+                                <select className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" id="applicantId" onChange={(event) => { const applicant = selectedEnrollment.applicants.find(({ id }) => id === event.target.value); setApplicantId(event.target.value); const parts = applicant?.name.split(/\s+/) ?? []; setFirstName(parts[0] ?? ''); setLastName(parts.slice(1).join(' ')); setDateOfBirth(applicant?.dateOfBirth.slice(0, 10) ?? ''); setGender(sexoToGender(applicant?.profileData?.sexo)); setEmail((applicant?.profileData as { email?: string } | null)?.email ?? '') }} value={applicantId}>{selectedEnrollment.applicants.map((applicant) => <option key={applicant.id} value={applicant.id}>{applicant.name}</option>)}</select>
                             </label>}
                             <label className="text-sm font-semibold text-ink" htmlFor="firstName">Nombre
-                                <input className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="firstName" onChange={(event) => setFirstName(event.target.value)} required value={firstName} />
+                                <input className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" id="firstName" onChange={(event) => setFirstName(event.target.value)} required value={firstName} />
                             </label>
                             <label className="text-sm font-semibold text-ink" htmlFor="lastName">Apellido
-                                <input className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="lastName" onChange={(event) => setLastName(event.target.value)} required value={lastName} />
+                                <input className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" id="lastName" onChange={(event) => setLastName(event.target.value)} required value={lastName} />
                             </label>
                             <label className="text-sm font-semibold text-ink" htmlFor="dateOfBirth">Fecha de nacimiento
-                                <input className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="dateOfBirth" onChange={(event) => setDateOfBirth(event.target.value)} required type="date" value={dateOfBirth} />
+                                <input className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" id="dateOfBirth" onChange={(event) => setDateOfBirth(event.target.value)} required type="date" value={dateOfBirth} />
                             </label>
 <label className="text-sm font-semibold text-ink" htmlFor="gender">Sexo
-<select className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="gender" onChange={(event) => setGender(event.target.value as 'FEMALE' | 'MALE' | '')} value={gender}>
+<select className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" id="gender" onChange={(event) => setGender(event.target.value as 'FEMALE' | 'MALE' | '')} value={gender}>
                                     <option value="">Seleccionar</option>
                                     <option value="FEMALE">Femenino</option>
                                     <option value="MALE">Masculino</option>
                                 </select>
                             </label>
                             <label className="sm:col-span-2 text-sm font-semibold text-ink" htmlFor="email">Correo (opcional)
-                                <input className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="email" onChange={(event) => setEmail(event.target.value)} placeholder="correo@ejemplo.com" type="email" value={email} />
+                                <input className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" id="email" onChange={(event) => setEmail(event.target.value)} placeholder="correo@ejemplo.com" type="email" value={email} />
                             </label>
                         </div>
                         {error && <p className="mt-4 text-sm font-medium text-danger-text">{error}</p>}

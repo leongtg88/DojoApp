@@ -9,9 +9,9 @@ interface StudentAttendanceHistoryProps {
 export function StudentAttendanceHistory({ records }: StudentAttendanceHistoryProps) {
     return (
         <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-            <p className="text-sm font-semibold uppercase tracking-wide text-accent">Mi asistencia</p>
-            <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Historial de entrenamientos</h1>
-            <p className="mt-2 text-sm text-ink-3">Registro de sesiones marcadas por tu instructor.</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-accent">Mi asistencia</p>
+            <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Historial de entrenamientos</h1>
+            <p className="mt-2 text-xs text-ink-3">Registro de sesiones marcadas por tu instructor.</p>
 
             {records.length === 0 ? (
                 <section className="mt-7 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center">

@@ -89,9 +89,9 @@ export function StudentProfileDetails({ profile, isChildView = false }: StudentP
                 </div>
             )}
 
-            <p className="text-sm font-semibold uppercase tracking-wide text-accent">{isChildView ? 'Perfil del hijo' : 'Mi perfil'}</p>
-            <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">{isChildView ? `Perfil de ${profile.firstName}` : 'Datos del dojo'}</h1>
-            <p className="mt-2 text-sm text-ink-3">Información registrada en la secretaría del dojo Tosei Gusoku.</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-accent">{isChildView ? 'Perfil del hijo' : 'Mi perfil'}</p>
+            <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">{isChildView ? `Perfil de ${profile.firstName}` : 'Datos del dojo'}</h1>
+            <p className="mt-2 text-xs text-ink-3">Información registrada en la secretaría del dojo Tosei Gusoku.</p>
 
             <section className="mt-7 rounded-xl border border-edge bg-surface-2 p-5 shadow-sm sm:p-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">

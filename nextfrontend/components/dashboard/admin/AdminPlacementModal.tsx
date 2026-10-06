@@ -130,7 +130,7 @@ export function AdminPlacementModal({
                 <div className="flex-1 space-y-5 overflow-y-auto px-5 py-4">
                     {error && <p className="rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-sm text-danger-text">{error}</p>}
                     {isLoading ? (
-                        <p className="flex items-center gap-2 py-10 text-sm text-ink-3">
+                        <p className="flex items-center gap-2 py-10 text-xs text-ink-3">
                             <Loader2 className="size-4 animate-spin" aria-hidden="true" />Cargando opciones…
                         </p>
                     ) : (
@@ -140,7 +140,7 @@ export function AdminPlacementModal({
                                 <select
                                     value={planId}
                                     onChange={(event) => setPlanId(event.target.value)}
-                                    className="mt-2 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
+                                    className="mt-2 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
                                 >
                                     <option value="">Sin plan asignado</option>
                                     {plans.map((plan) => (
@@ -188,7 +188,7 @@ export function AdminPlacementModal({
                                         <select
                                             value={scholarshipType}
                                             onChange={(event) => setScholarshipType(event.target.value as ScholarshipType)}
-                                            className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
+                                            className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
                                         >
                                             {(Object.keys(SCHOLARSHIP_LABELS) as ScholarshipType[]).map((type) => (
                                                 <option key={type} value={type}>{SCHOLARSHIP_LABELS[type]}</option>
@@ -209,7 +209,7 @@ export function AdminPlacementModal({
                                         <input
                                             value={scholarshipNote}
                                             onChange={(event) => setScholarshipNote(event.target.value)}
-                                            className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
+                                            className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
                                             placeholder="Ej: apoyo económico por situación familiar"
                                         />
                                     </label>

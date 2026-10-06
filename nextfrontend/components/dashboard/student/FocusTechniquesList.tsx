@@ -18,7 +18,7 @@ export function FocusTechniquesList({ techniques, studentId }: FocusTechniquesLi
                 <Link className="inline-flex items-center gap-0.5 text-xs font-bold text-accent hover:underline" href={studentHref('/dashboard/estudiante/progreso', studentId)}>Ver syllabus <ChevronRight aria-hidden="true" className="size-3.5" /></Link>
             </div>
             {displayTechniques.length === 0 ? (
-                <p className="px-5 py-8 text-sm text-ink-3">No tienes técnicas pendientes de práctica.</p>
+                <p className="px-5 py-8 text-xs text-ink-3">No tienes técnicas pendientes de práctica.</p>
             ) : (
                 <ul className="max-h-72 divide-y divide-edge overflow-y-auto">
                     {displayTechniques.map((technique) => (

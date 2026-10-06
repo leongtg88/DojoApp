@@ -56,7 +56,7 @@ export function PostForm({ mode, initial }: PostFormProps) {
                     <label className="flex flex-col gap-1.5 text-sm font-semibold text-ink" htmlFor="title">
                         Título
                         <input
-                            className="w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
+                            className="w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
                             defaultValue={initial?.title}
                             id="title"
                             maxLength={160}
@@ -70,7 +70,7 @@ export function PostForm({ mode, initial }: PostFormProps) {
                     <label className="flex flex-col gap-1.5 text-sm font-semibold text-ink" htmlFor="slug">
                         Slug (URL)
                         <input
-                            className="w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 font-mono text-sm font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
+                            className="w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 font-mono text-xs font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
                             defaultValue={initial?.slug}
                             id="slug"
                             maxLength={180}
@@ -84,7 +84,7 @@ export function PostForm({ mode, initial }: PostFormProps) {
                     <label className="flex flex-col gap-1.5 text-sm font-semibold text-ink" htmlFor="excerpt">
                         Resumen
                         <textarea
-                            className="w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
+                            className="w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
                             defaultValue={initial?.excerpt}
                             id="excerpt"
                             maxLength={320}
@@ -119,7 +119,7 @@ export function PostForm({ mode, initial }: PostFormProps) {
 
                         {tab === 'write' ? (
                             <textarea
-                                className="min-h-96 w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-4 py-3 font-mono text-sm font-normal leading-relaxed text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
+                                className="min-h-96 w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-4 py-3 font-mono text-xs font-normal leading-relaxed text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
                                 id="content"
                                 onChange={(event) => setContent(event.target.value)}
                                 placeholder={'# Título\n\nEscribe el artículo en **Markdown**.'}
@@ -150,7 +150,7 @@ export function PostForm({ mode, initial }: PostFormProps) {
                     <label className="flex flex-col gap-1.5 text-sm font-semibold text-ink" htmlFor="category">
                         Categoría
                         <select
-                            className="w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm font-normal text-ink outline-none focus:border-cyan-500"
+                            className="w-full min-w-0 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs font-normal text-ink outline-none focus:border-cyan-500"
                             defaultValue={initial?.category ?? 'FILOSOFIA'}
                             id="category"
                             name="category"

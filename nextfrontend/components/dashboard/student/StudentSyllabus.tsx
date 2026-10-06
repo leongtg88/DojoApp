@@ -90,7 +90,7 @@ export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
                 <div className="mt-4 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center">
                     <Award aria-hidden="true" className="mx-auto size-8 text-ink-4" />
                     <p className="mt-3 text-sm font-semibold text-ink">No hay técnicas en esta categoría</p>
-                    <p className="mt-1 text-sm text-ink-3">Prueba con otra categoría, estado o término de búsqueda.</p>
+                    <p className="mt-1 text-xs text-ink-3">Prueba con otra categoría, estado o término de búsqueda.</p>
                 </div>
             ) : (
                 <div className="mt-4 space-y-6">

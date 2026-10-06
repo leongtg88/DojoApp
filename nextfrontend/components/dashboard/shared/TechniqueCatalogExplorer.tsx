@@ -105,7 +105,7 @@ export function TechniqueCatalogExplorer({
                         {technique.japaneseName && <span className="shrink-0 text-xs font-normal text-ink-3">{technique.japaneseName}</span>}
                     </p>
                     {meta && <p className="mt-1 text-xs text-ink-3">{meta}</p>}
-                    {technique.description && <p className="mt-2 text-sm text-ink-3">{technique.description}</p>}
+                    {technique.description && <p className="mt-2 text-xs text-ink-3">{technique.description}</p>}
                 </div>
                 {renderActions && <div className="flex shrink-0 items-center gap-1.5">{renderActions(technique)}</div>}
             </li>

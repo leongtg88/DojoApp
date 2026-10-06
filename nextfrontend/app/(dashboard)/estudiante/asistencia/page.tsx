@@ -34,9 +34,9 @@ export default async function StudentAttendancePage({ searchParams }: StudentAtt
 
     return (
         <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-            <p className="text-sm font-semibold uppercase tracking-wide text-accent">Mi asistencia</p>
-            <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Punch &amp; Seguimiento</h1>
-            <p className="mt-2 text-sm text-ink-3">Marca tus prácticas y el Sensei confirma al finalizar el tatami.</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-accent">Mi asistencia</p>
+            <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Punch &amp; Seguimiento</h1>
+            <p className="mt-2 text-xs text-ink-3">Marca tus prácticas y el Sensei confirma al finalizar el tatami.</p>
             {familyMembers && (
                 <section className="mt-7">
                     <FamilyQuickSwitcher members={familyMembers} currentStudentId={view.studentId} baseHref="/dashboard/estudiante/asistencia" />

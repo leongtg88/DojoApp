@@ -77,9 +77,9 @@ export function AdminCalendar({ holidays, convocations }: AdminCalendarProps) {
   return (
     <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
       <header>
-        <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
-        <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Calendario del dojo</h1>
-        <p className="mt-2 text-sm text-ink-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-accent">Administración</p>
+        <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Calendario del dojo</h1>
+        <p className="mt-2 text-xs text-ink-3">
           Feriados y convocatorias de examen. Los feriados descuentan las horas disponibles de entrenamiento.
         </p>
       </header>
@@ -94,14 +94,14 @@ export function AdminCalendar({ holidays, convocations }: AdminCalendarProps) {
         <p className="mt-1 text-xs text-ink-3">Se incluyen automáticamente los feriados oficiales de RD; aquí puedes añadir cierres propios del dojo.</p>
 
         <form className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto_auto_auto]" onSubmit={createHoliday}>
-          <input className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" onChange={(event) => setHolidayName(event.target.value)} placeholder="Nombre del feriado" required value={holidayName} />
-          <input className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500" onChange={(event) => setHolidayDate(event.target.value)} required type="date" value={holidayDate} />
+          <input className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" onChange={(event) => setHolidayName(event.target.value)} placeholder="Nombre del feriado" required value={holidayName} />
+          <input className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500" onChange={(event) => setHolidayDate(event.target.value)} required type="date" value={holidayDate} />
           <label className="flex items-center gap-2 px-1 text-xs font-semibold text-ink-2"><input checked={holidayRecurring} className="size-4 accent-cyan-500" onChange={(event) => setHolidayRecurring(event.target.checked)} type="checkbox" />Anual</label>
           <button className="inline-flex items-center justify-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400 disabled:opacity-60" disabled={saving} type="submit">{saving ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <Plus aria-hidden="true" className="size-4" />}Añadir</button>
         </form>
 
         {holidays.length === 0 ? (
-          <p className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 p-4 text-sm text-ink-3">No hay feriados registrados.</p>
+          <p className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 p-4 text-xs text-ink-3">No hay feriados registrados.</p>
         ) : (
           <ul className="mt-4 divide-y divide-edge rounded-md border border-edge bg-surface-1">
             {holidays.map((holiday) => (
@@ -125,17 +125,17 @@ export function AdminCalendar({ holidays, convocations }: AdminCalendarProps) {
         <p className="mt-1 text-xs text-ink-3">Fija la fecha real de examen. Mientras no exista, el portal muestra la fecha tentativa por cuatrimestre.</p>
 
         <form className="mt-4 grid gap-3 sm:grid-cols-[auto_auto_1fr_auto]" onSubmit={createConvocation}>
-          <input className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500" onChange={(event) => setExamDate(event.target.value)} required type="date" value={examDate} />
-          <select className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500" onChange={(event) => setExamDay(event.target.value as 'SATURDAY' | 'SUNDAY')} value={examDay}>
+          <input className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500" onChange={(event) => setExamDate(event.target.value)} required type="date" value={examDate} />
+          <select className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500" onChange={(event) => setExamDay(event.target.value as 'SATURDAY' | 'SUNDAY')} value={examDay}>
             <option value="SATURDAY">Sábado (principiantes)</option>
             <option value="SUNDAY">Domingo (avanzados)</option>
           </select>
-          <input className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" onChange={(event) => setExamLabel(event.target.value)} placeholder="Nota o etiqueta (opcional)" value={examLabel} />
+          <input className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" onChange={(event) => setExamLabel(event.target.value)} placeholder="Nota o etiqueta (opcional)" value={examLabel} />
           <button className="inline-flex items-center justify-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400 disabled:opacity-60" disabled={saving} type="submit">{saving ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <Plus aria-hidden="true" className="size-4" />}Fijar</button>
         </form>
 
         {convocations.length === 0 ? (
-          <p className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 p-4 text-sm text-ink-3">Aún no hay convocatorias confirmadas.</p>
+          <p className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 p-4 text-xs text-ink-3">Aún no hay convocatorias confirmadas.</p>
         ) : (
           <ul className="mt-4 divide-y divide-edge rounded-md border border-edge bg-surface-1">
             {convocations.map((convocation) => (

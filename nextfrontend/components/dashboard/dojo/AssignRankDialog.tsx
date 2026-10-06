@@ -117,7 +117,7 @@ export function AssignRankDialog({ student, currentRankOrder, ranks, isOpen, onC
 
 					<label className="block text-sm font-semibold text-ink" htmlFor="assign-rank-select">
 						Seleccionar grado
-						<select id="assign-rank-select" value={beltRankId} onChange={(event) => setBeltRankId(event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
+						<select id="assign-rank-select" value={beltRankId} onChange={(event) => setBeltRankId(event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink">
 							{programRanks.length === 0 && <option value="">No hay grados disponibles</option>}
 							{programRanks.map((rank) => (
 								<option key={rank.id} value={rank.id}>{rank.kyuDan ? `${rank.kyuDan} · ` : ''}{rank.name}{rank.order === currentRankOrder ? ' (Actual)' : rank.order === (currentRankOrder ?? 0) + 1 ? ' (Siguiente en syllabus)' : ''}</option>
@@ -128,17 +128,17 @@ export function AssignRankDialog({ student, currentRankOrder, ranks, isOpen, onC
 					<div className="grid gap-3 sm:grid-cols-2">
 						<label className="block text-sm font-semibold text-ink" htmlFor="assign-rank-date">
 							Fecha de examen
-							<input id="assign-rank-date" type="date" value={promotedAt} onChange={(event) => setPromotedAt(event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+							<input id="assign-rank-date" type="date" value={promotedAt} onChange={(event) => setPromotedAt(event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" />
 						</label>
 						<label className="block text-sm font-semibold text-ink" htmlFor="assign-rank-examiner">
 							Sensei examinador
-							<input id="assign-rank-examiner" value={examinerName} onChange={(event) => setExaminerName(event.target.value)} placeholder="Ej: Sensei Roberto Castillo" className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+							<input id="assign-rank-examiner" value={examinerName} onChange={(event) => setExaminerName(event.target.value)} placeholder="Ej: Sensei Roberto Castillo" className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" />
 						</label>
 					</div>
 
 					<label className="block text-sm font-semibold text-ink" htmlFor="assign-rank-notes">
 						Notas
-						<textarea id="assign-rank-notes" rows={3} value={notes} onChange={(event) => setNotes(event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+						<textarea id="assign-rank-notes" rows={3} value={notes} onChange={(event) => setNotes(event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" />
 					</label>
 
 					<div className="flex gap-2.5 rounded-lg border border-amber-900/30 bg-amber-950/20 p-3.5">

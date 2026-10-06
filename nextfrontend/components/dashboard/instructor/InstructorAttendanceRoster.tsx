@@ -89,7 +89,7 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                         {justifiedCount > 0 && <span className="inline-flex items-center gap-1.5 rounded-md border border-sky-500/30 bg-sky-500/10 px-2.5 py-1 text-xs font-bold text-info-text"><ShieldCheck aria-hidden="true" className="size-3.5" />{justifiedCount} justificadas</span>}
                     </div>
                 </div>
-                <p className="mt-2 text-sm text-ink-3">{roster.students.length} alumnos activos en esta clase.</p>
+                <p className="mt-2 text-xs text-ink-3">{roster.students.length} alumnos activos en esta clase.</p>
             </div>
             {readOnly && (
                 <p className="border-b border-edge bg-amber-500/10 px-5 py-2.5 text-xs font-semibold text-warn-text">
@@ -98,7 +98,7 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
             )}
             <form onSubmit={handleSubmit}>
                 {records.length === 0 ? (
-                    <p className="px-5 py-8 text-sm text-ink-3">No hay alumnos activos en esta clase.</p>
+                    <p className="px-5 py-8 text-xs text-ink-3">No hay alumnos activos en esta clase.</p>
                 ) : (
                     <>
                         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-edge bg-surface-1 px-5 py-3">
@@ -121,7 +121,7 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                                             record.notes && <p className="mt-3 rounded-md border border-edge bg-surface-1 px-3 py-2 text-sm text-ink-2">{record.notes}</p>
                                         ) : (
                                             <input
-                                                className="mt-3 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
+                                                className="mt-3 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
                                                 onChange={(event) => updateRecord(record.id, { notes: event.target.value })}
                                                 placeholder="Observación opcional"
                                                 value={record.notes ?? ''}

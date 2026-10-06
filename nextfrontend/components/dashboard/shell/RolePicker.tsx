@@ -28,7 +28,7 @@ export function RolePicker({ roles, userName }: RolePickerProps) {
                 <p className="mt-10 font-display text-2xl font-extrabold text-ink sm:text-3xl">
                     {userName ? `¡Hola, ${userName}!` : 'Bienvenido'}
                 </p>
-                <p className="mt-2 text-sm text-ink-3">Tienes acceso a varios paneles. Elige desde dónde quieres entrar.</p>
+                <p className="mt-2 text-xs text-ink-3">Tienes acceso a varios paneles. Elige desde dónde quieres entrar.</p>
 
                 <div className="mt-10 grid gap-4 sm:grid-cols-2">
                     {options.map(({ role, href, label, icon: Icon }) => (

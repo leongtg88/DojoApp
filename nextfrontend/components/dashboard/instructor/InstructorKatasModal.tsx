@@ -125,7 +125,7 @@ export function InstructorKatasModal({ open, studentId, studentName, onClose }: 
                         </p>
                     )}
                     {loading && (
-                        <p className="flex items-center gap-2 py-10 text-sm text-ink-3">
+                        <p className="flex items-center gap-2 py-10 text-xs text-ink-3">
                             <Loader2 className="size-4 animate-spin" aria-hidden="true" />Cargando grados y katas…
                         </p>
                     )}

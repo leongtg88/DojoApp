@@ -40,7 +40,7 @@ export default async function StudentProfilePage({ searchParams }: StudentProfil
         <>
             <StudentProfileDetails profile={summary.profile} isChildView={isChildView} />
             <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 pb-8 sm:px-6 lg:px-8">
-                <p className="text-sm text-ink-3">
+                <p className="text-xs text-ink-3">
                     {isChildView
                         ? `¿Necesitas actualizar el teléfono, el contacto de emergencia o las notas médicas de ${summary.profile.firstName}?`
                         : '¿Necesitas actualizar tu nombre, fecha de nacimiento, teléfono, contacto de emergencia o notas médicas?'}

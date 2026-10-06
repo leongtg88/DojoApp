@@ -199,9 +199,9 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
-                    <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Horarios</h1>
-                    <p className="mt-2 max-w-xl text-sm text-ink-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-accent">Administración</p>
+                    <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Horarios</h1>
+                    <p className="mt-2 max-w-xl text-xs text-ink-3">
                         Agrupa por módulo y agrega varias franjas el mismo día, cada una con su instructor.
                     </p>
                 </div>
@@ -228,7 +228,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                             <input
                                 value={form.name}
                                 onChange={(event) => setForm({ ...form, name: event.target.value })}
-                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
+                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
                                 placeholder="Ej: Módulo Niños Tarde (usa el mismo nombre para todas sus franjas)"
                             />
                         </label>
@@ -237,7 +237,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                             <select
                                 value={form.audience}
                                 onChange={(event) => setForm({ ...form, audience: event.target.value as ScheduleAudience })}
-                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
+                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
                             >
                                 <option value="ADULTS">Adultos</option>
                                 <option value="CHILDREN">Niños</option>
@@ -249,7 +249,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                             <select
                                 value={form.dayOfWeek}
                                 onChange={(event) => setForm({ ...form, dayOfWeek: Number(event.target.value) })}
-                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
+                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
                             >
                                 {DAY_LABELS.map((label, index) => (
                                     <option key={label} value={index}>{label}</option>
@@ -261,7 +261,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                             <select
                                 value={form.instructorId}
                                 onChange={(event) => setForm({ ...form, instructorId: event.target.value })}
-                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
+                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
                             >
                                 <option value="">Sin instructor asignado</option>
                                 {instructors.map((instructor) => (
@@ -276,7 +276,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                                     type="time"
                                     value={form.startTime}
                                     onChange={(event) => setForm({ ...form, startTime: event.target.value })}
-                                    className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
+                                    className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
                                 />
                             </label>
                             <label className="text-sm text-ink-2">
@@ -285,7 +285,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                                     type="time"
                                     value={form.endTime}
                                     onChange={(event) => setForm({ ...form, endTime: event.target.value })}
-                                    className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
+                                    className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
                                 />
                             </label>
                         </div>
@@ -294,7 +294,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                             <input
                                 value={form.description}
                                 onChange={(event) => setForm({ ...form, description: event.target.value })}
-                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink outline-none focus:border-cyan-500"
+                                className="mt-1 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
                             />
                         </label>
                     </div>
@@ -438,7 +438,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                                     value={search}
                                     onChange={(event) => setSearch(event.target.value)}
                                     placeholder="Buscar alumno..."
-                                    className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-sm text-ink outline-none focus:border-cyan-500"
+                                    className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-9 pr-3 text-xs text-ink outline-none focus:border-cyan-500"
                                 />
                             </div>
                         </div>

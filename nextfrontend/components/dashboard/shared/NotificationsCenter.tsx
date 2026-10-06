@@ -75,8 +75,8 @@ export function NotificationsCenter({ initialItems, initialNextCursor, initialUn
         <div className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
             <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
-                    <h1 className="font-display text-xl font-extrabold text-ink">Notificaciones</h1>
-                    <p className="text-sm text-ink-3">
+                    <h1 className="font-display text-2xl font-extrabold text-ink">Notificaciones</h1>
+                    <p className="text-xs text-ink-3">
                         {unreadCount > 0 ? `${unreadCount} sin leer` : 'Estás al día'}
                     </p>
                 </div>
@@ -95,7 +95,7 @@ export function NotificationsCenter({ initialItems, initialNextCursor, initialUn
             {items.length === 0 ? (
                 <div className="flex flex-col items-center gap-2 rounded-xl border border-edge bg-surface-2 px-4 py-12 text-center">
                     <BellOff aria-hidden="true" className="size-6 text-ink-4" />
-                    <p className="text-sm text-ink-3">Todavía no tienes notificaciones.</p>
+                    <p className="text-xs text-ink-3">Todavía no tienes notificaciones.</p>
                 </div>
             ) : (
                 <ul className="space-y-2">
@@ -119,7 +119,7 @@ export function NotificationsCenter({ initialItems, initialNextCursor, initialUn
                                         {NOTIFICATION_PRIORITY_LABELS[item.priority]}
                                     </span>
                                 </div>
-                                <p className="mt-1 text-sm leading-snug text-ink-3">{item.body}</p>
+                                <p className="mt-1 text-xs leading-snug text-ink-3">{item.body}</p>
                                 <p className="mt-1.5 text-[10px] font-semibold uppercase tracking-wide text-ink-4">
                                     {formatNotificationRelative(item.createdAt)}
                                 </p>

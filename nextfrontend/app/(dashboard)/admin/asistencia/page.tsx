@@ -34,8 +34,8 @@ export default async function AdminAttendancePage({ searchParams }: AdminAttenda
 
     return (
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-            <p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
-            <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Asistencia</h1>
+            <p className="text-xs font-semibold uppercase tracking-wide text-accent">Administración</p>
+            <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Asistencia</h1>
             <div className="mt-6 space-y-6">
                 {roster && <AdminExpectedSummary roster={roster} />}
                 <AdminAttendanceView />

@@ -114,9 +114,9 @@ export function AdminStudentDetailExplorer({ students, detail, selectedId }: Adm
 	return (
 		<main className="w-full px-4 py-8 sm:px-6 lg:px-8">
 			<div className="flex flex-col gap-2">
-				<p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
-				<h1 className="font-display text-3xl font-extrabold text-ink">Detalles Alumno</h1>
-				<p className="text-sm text-ink-3">Busca y filtra un alumno para ver su expediente completo, documentos, imágenes y exportarlo.</p>
+				<p className="text-xs font-semibold uppercase tracking-wide text-accent">Administración</p>
+				<h1 className="font-display text-2xl font-extrabold text-ink">Detalles Alumno</h1>
+				<p className="text-xs text-ink-3">Busca y filtra un alumno para ver su expediente completo, documentos, imágenes y exportarlo.</p>
 			</div>
 
 			<section className="mt-6 rounded-lg border border-edge bg-surface-2 p-4 shadow-sm sm:p-5">
@@ -137,7 +137,7 @@ export function AdminStudentDetailExplorer({ students, detail, selectedId }: Adm
 								}}
 								onKeyDown={handleKeyDown}
 								placeholder="Nombre, matrícula, grado o clase"
-								className="w-full rounded-md border border-edge-strong bg-surface-1 py-2.5 pl-10 pr-10 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
+								className="w-full rounded-md border border-edge-strong bg-surface-1 py-2.5 pl-10 pr-10 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
 								autoComplete="off"
 							/>
 							{searchTerm && (
@@ -150,7 +150,7 @@ export function AdminStudentDetailExplorer({ students, detail, selectedId }: Adm
 						{isOpen && (
 							<div className="absolute z-20 mt-2 max-h-80 w-full overflow-y-auto rounded-lg border border-edge-strong bg-surface-1 shadow-xl">
 								{filteredStudents.length === 0 ? (
-									<p className="px-4 py-6 text-center text-sm text-ink-3">No se encontraron alumnos con esos criterios.</p>
+									<p className="px-4 py-6 text-center text-xs text-ink-3">No se encontraron alumnos con esos criterios.</p>
 								) : (
 									filteredStudents.slice(0, 30).map((student, index) => (
 										<button
@@ -177,7 +177,7 @@ export function AdminStudentDetailExplorer({ students, detail, selectedId }: Adm
 
 					<label className="text-xs font-semibold text-ink-2" htmlFor="detalle-status">
 						Estado
-						<select id="detalle-status" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2.5 text-sm text-ink">
+						<select id="detalle-status" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2.5 text-xs text-ink">
 							<option value="ALL">Todos</option>
 							{statuses.map((status) => <option key={status} value={status}>{status}</option>)}
 						</select>
@@ -185,7 +185,7 @@ export function AdminStudentDetailExplorer({ students, detail, selectedId }: Adm
 
 					<label className="text-xs font-semibold text-ink-2" htmlFor="detalle-grade">
 						Grado
-						<select id="detalle-grade" value={beltFilter} onChange={(event) => setBeltFilter(event.target.value)} className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2.5 text-sm text-ink">
+						<select id="detalle-grade" value={beltFilter} onChange={(event) => setBeltFilter(event.target.value)} className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2.5 text-xs text-ink">
 							<option value="ALL">Todos</option>
 							{belts.map((belt) => <option key={belt} value={belt}>{belt === 'SIN_GRADO' ? 'Sin grado' : belt}</option>)}
 						</select>
@@ -193,7 +193,7 @@ export function AdminStudentDetailExplorer({ students, detail, selectedId }: Adm
 
 					<label className="text-xs font-semibold text-ink-2" htmlFor="detalle-branch">
 						Sucursal
-						<select id="detalle-branch" value={branchFilter} onChange={(event) => setBranchFilter(event.target.value)} className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2.5 text-sm text-ink">
+						<select id="detalle-branch" value={branchFilter} onChange={(event) => setBranchFilter(event.target.value)} className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2.5 text-xs text-ink">
 							<option value="ALL">Todas</option>
 							{branches.map((branch) => <option key={branch} value={branch}>{branch}</option>)}
 						</select>
@@ -221,7 +221,7 @@ export function AdminStudentDetailExplorer({ students, detail, selectedId }: Adm
 				<section className="mt-7 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-14 text-center">
 					<UserRoundSearch aria-hidden="true" className="mx-auto size-8 text-accent" />
 					<p className="mt-4 text-sm font-semibold text-ink">Selecciona un alumno</p>
-					<p className="mx-auto mt-1 max-w-md text-sm text-ink-3">Usa el buscador o los filtros para localizar un expediente. Al seleccionarlo verás toda su información de inscripción, documentos e imágenes.</p>
+					<p className="mx-auto mt-1 max-w-md text-xs text-ink-3">Usa el buscador o los filtros para localizar un expediente. Al seleccionarlo verás toda su información de inscripción, documentos e imágenes.</p>
 				</section>
 			) : isPending ? (
 				<section className="mt-7 flex items-center justify-center gap-2 rounded-lg border border-edge bg-surface-2 px-5 py-20 text-sm font-semibold text-ink-2">
@@ -233,7 +233,7 @@ export function AdminStudentDetailExplorer({ students, detail, selectedId }: Adm
 				<section className="mt-7 rounded-lg border border-dashed border-red-900/40 bg-red-950/10 px-5 py-14 text-center">
 					<IdCard aria-hidden="true" className="mx-auto size-8 text-danger-text" />
 					<p className="mt-4 text-sm font-semibold text-ink">No se pudo cargar el expediente</p>
-					<p className="mx-auto mt-1 max-w-md text-sm text-ink-3">El alumno pudo haber sido eliminado o no pertenece a tu alcance.</p>
+					<p className="mx-auto mt-1 max-w-md text-xs text-ink-3">El alumno pudo haber sido eliminado o no pertenece a tu alcance.</p>
 				</section>
 			)}
 		</main>

@@ -305,19 +305,19 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 					<div className="grid gap-3 sm:grid-cols-2">
 						<label className="text-sm font-semibold text-ink" htmlFor="student-first-name">
 							Nombre *
-							<input id="student-first-name" value={form.firstName} onChange={(event) => updateField('firstName', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+							<input id="student-first-name" value={form.firstName} onChange={(event) => updateField('firstName', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" />
 						</label>
 						<label className="text-sm font-semibold text-ink" htmlFor="student-last-name">
 							Apellido *
-							<input id="student-last-name" value={form.lastName} onChange={(event) => updateField('lastName', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+							<input id="student-last-name" value={form.lastName} onChange={(event) => updateField('lastName', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" />
 						</label>
 						<label className="text-sm font-semibold text-ink" htmlFor="student-dob">
 							Fecha de nacimiento *
-							<input id="student-dob" type="date" value={form.dateOfBirth} onChange={(event) => updateField('dateOfBirth', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+							<input id="student-dob" type="date" value={form.dateOfBirth} onChange={(event) => updateField('dateOfBirth', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" />
 						</label>
 						<label className="text-sm font-semibold text-ink" htmlFor="student-gender">
 							Sexo
-							<select id="student-gender" value={form.gender} onChange={(event) => updateField('gender', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
+							<select id="student-gender" value={form.gender} onChange={(event) => updateField('gender', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink">
 								<option value="">No especificado</option>
 								<option value="FEMALE">Femenino</option>
 								<option value="MALE">Masculino</option>
@@ -325,15 +325,15 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 						</label>
 						<label className="text-sm font-semibold text-ink" htmlFor="student-email">
 							Correo de contacto / acceso
-							<input id="student-email" type="email" value={form.email} onChange={(event) => updateField('email', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+							<input id="student-email" type="email" value={form.email} onChange={(event) => updateField('email', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" />
 						</label>
 						<label className="text-sm font-semibold text-ink" htmlFor="student-phone">
 							Teléfono de contacto
-							<input id="student-phone" value={form.contactPhone} onChange={(event) => updateField('contactPhone', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+							<input id="student-phone" value={form.contactPhone} onChange={(event) => updateField('contactPhone', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" />
 						</label>
 						<label className="text-sm font-semibold text-ink" htmlFor="student-branch">
 							Sucursal *
-							<select id="student-branch" value={form.branchId} disabled={mode === 'edit'} onChange={(event) => updateField('branchId', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink disabled:cursor-not-allowed disabled:opacity-60">
+							<select id="student-branch" value={form.branchId} disabled={mode === 'edit'} onChange={(event) => updateField('branchId', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink disabled:cursor-not-allowed disabled:opacity-60">
 								<option value="">Selecciona una sucursal</option>
 								{branches.map((branch) => (
 									<option key={branch.id} value={branch.id}>{branch.name}</option>
@@ -343,7 +343,7 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 						{mode === 'create' ? (
 							<label className="text-sm font-semibold text-ink" htmlFor="student-initial-rank">
 								Grado inicial
-								<select id="student-initial-rank" value={form.beltRankId} onChange={(event) => updateField('beltRankId', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
+								<select id="student-initial-rank" value={form.beltRankId} onChange={(event) => updateField('beltRankId', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink">
 									<option value="">Sin grado asignado</option>
 									{ranks.map((rank) => (
 										<option key={rank.id} value={rank.id}>{rank.kyuDan ? `${rank.kyuDan} · ` : ''}{rank.name}</option>
@@ -357,16 +357,16 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 						)}
 						<label className="text-sm font-semibold text-ink" htmlFor="student-gi-size">
 							Talla de karategi (uniforme)
-							<input id="student-gi-size" maxLength={20} value={form.giSize} onChange={(event) => updateField('giSize', event.target.value)} placeholder="Ej: 2, 160 cm, Adulto M" className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+							<input id="student-gi-size" maxLength={20} value={form.giSize} onChange={(event) => updateField('giSize', event.target.value)} placeholder="Ej: 2, 160 cm, Adulto M" className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" />
 						</label>
 						<label className="text-sm font-semibold text-ink" htmlFor="student-belt-size">
 							Talla de cinturón
-							<input id="student-belt-size" maxLength={20} value={form.beltSize} onChange={(event) => updateField('beltSize', event.target.value)} placeholder="Ej: 160, 180 cm" className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+							<input id="student-belt-size" maxLength={20} value={form.beltSize} onChange={(event) => updateField('beltSize', event.target.value)} placeholder="Ej: 160, 180 cm" className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" />
 						</label>
 						{mode === 'edit' && (
 							<label className="text-sm font-semibold text-ink" htmlFor="student-status">
 								Estado
-								<select id="student-status" value={form.status} onChange={(event) => updateField('status', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
+								<select id="student-status" value={form.status} onChange={(event) => updateField('status', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink">
 									<option value="ACTIVE">Activo</option>
 									<option value="INACTIVE">Inactivo</option>
 									<option value="GRADUATED">Graduado</option>
@@ -375,11 +375,11 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 						)}
 						<label className="text-sm font-semibold text-ink sm:col-span-2" htmlFor="student-medical">
 							Información médica
-							<textarea id="student-medical" rows={2} value={form.medicalInfo} onChange={(event) => updateField('medicalInfo', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+							<textarea id="student-medical" rows={2} value={form.medicalInfo} onChange={(event) => updateField('medicalInfo', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" />
 						</label>
 						<label className="text-sm font-semibold text-ink sm:col-span-2" htmlFor="student-emergency">
 							Contacto de emergencia
-							<input id="student-emergency" value={form.emergencyContact} onChange={(event) => updateField('emergencyContact', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" />
+							<input id="student-emergency" value={form.emergencyContact} onChange={(event) => updateField('emergencyContact', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" />
 						</label>
 						<div className="mt-1 border-t border-edge pt-4 sm:col-span-2">
 							<p className="flex items-center gap-2 text-sm font-bold text-ink">
@@ -388,7 +388,7 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 
 							<label className="mt-3 block text-xs font-semibold text-ink-2" htmlFor="student-plan">
 								Plan de mensualidad
-								<select id="student-plan" value={planId} onChange={(event) => { setPlanId(event.target.value); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
+								<select id="student-plan" value={planId} onChange={(event) => { setPlanId(event.target.value); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink">
 									<option value="">Sin plan asignado</option>
 									{selectablePlans.map((plan) => (
 										<option key={plan.id} value={plan.id}>
@@ -422,7 +422,7 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 							<div className="mt-3 grid gap-3 sm:grid-cols-2">
 								<label className="block text-xs font-semibold text-ink-2" htmlFor="student-scholarship">
 									Tipo de beca
-									<select id="student-scholarship" value={scholarshipType} onChange={(event) => { setScholarshipType(event.target.value as ScholarshipType); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink">
+									<select id="student-scholarship" value={scholarshipType} onChange={(event) => { setScholarshipType(event.target.value as ScholarshipType); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink">
 										{(Object.keys(SCHOLARSHIP_LABELS) as ScholarshipType[]).map((type) => (
 											<option key={type} value={type}>{SCHOLARSHIP_LABELS[type]}</option>
 										))}
@@ -434,7 +434,7 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 								</label>
 								<label className="block text-xs font-semibold text-ink-2 sm:col-span-2" htmlFor="student-scholarship-note">
 									Nota de la beca
-									<input id="student-scholarship-note" value={scholarshipNote} onChange={(event) => { setScholarshipNote(event.target.value); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" placeholder="Ej: apoyo económico por situación familiar" />
+									<input id="student-scholarship-note" value={scholarshipNote} onChange={(event) => { setScholarshipNote(event.target.value); setIsDirty(true) }} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" placeholder="Ej: apoyo económico por situación familiar" />
 								</label>
 							</div>
 						</div>
@@ -616,9 +616,9 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 		<main className="w-full px-4 py-8 sm:px-6 lg:px-8">
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 				<div>
-					<p className="text-sm font-semibold uppercase tracking-wide text-accent">Administración</p>
-					<h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Gestión de alumnos</h1>
-					<p className="mt-2 text-sm text-ink-3">Padrón, matrículas, progreso técnico y altas/bajas dentro de tu escuela.</p>
+					<p className="text-xs font-semibold uppercase tracking-wide text-accent">Administración</p>
+					<h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Gestión de alumnos</h1>
+					<p className="mt-2 text-xs text-ink-3">Padrón, matrículas, progreso técnico y altas/bajas dentro de tu escuela.</p>
 				</div>
 				<div className="flex flex-wrap items-center gap-2 self-start">
 					<button type="button" aria-label="Exportar Excel" onClick={() => handleActionClick('export', handleExport)} disabled={isExporting || students.length === 0} className="inline-flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-surface-3 hover:text-ink disabled:opacity-50">
@@ -649,7 +649,7 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 						<div className="flex items-center gap-2 sm:contents">
 						<label className="relative block flex-1" htmlFor="admin-student-search">
 							<Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-accent" />
-							<input className="w-full rounded-md border border-edge-strong bg-surface-1 py-2.5 pl-10 pr-3 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="admin-student-search" onChange={(event) => setSearchTerm(event.target.value)} placeholder="Buscar por alumno, matrícula, grado o clase" type="search" value={searchTerm} />
+							<input className="w-full rounded-md border border-edge-strong bg-surface-1 py-2.5 pl-10 pr-3 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="admin-student-search" onChange={(event) => setSearchTerm(event.target.value)} placeholder="Buscar por alumno, matrícula, grado o clase" type="search" value={searchTerm} />
 						</label>
 							<button type="button" aria-controls="admin-student-filters" aria-expanded={filtersOpen} aria-label={filtersOpen ? 'Ocultar filtros' : 'Mostrar filtros'} onClick={() => setFiltersOpen((open) => !open)} className={`inline-flex size-[42px] shrink-0 items-center justify-center rounded-md border sm:hidden ${filtersOpen || statusFilter !== 'ALL' || beltFilter !== 'ALL' || branchFilter !== 'ALL' ? 'border-cyan-500/50 bg-cyan-500/10 text-accent' : 'border-edge-strong bg-surface-1 text-ink-3'}`}>
 								<ChevronDown aria-hidden="true" className={`size-4 transition-transform ${filtersOpen ? 'rotate-180' : ''}`} />
@@ -658,7 +658,7 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 						<div className={`space-y-3 ${filtersOpen ? 'block' : 'hidden'} sm:contents`} id="admin-student-filters">
 						<label className="text-xs font-semibold text-ink-2" htmlFor="admin-student-status">
 							Estado
-							<select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="admin-student-status" onChange={(event) => setStatusFilter(event.target.value)} value={statusFilter}>
+							<select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" id="admin-student-status" onChange={(event) => setStatusFilter(event.target.value)} value={statusFilter}>
 								<option value="ALL">Todos</option>
 								{statuses.map((status) => (
 									<option key={status} value={status}>{status}</option>
@@ -667,7 +667,7 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 						</label>
 						<label className="text-xs font-semibold text-ink-2" htmlFor="admin-student-grade">
 							Grado
-							<select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="admin-student-grade" onChange={(event) => setBeltFilter(event.target.value)} value={beltFilter}>
+							<select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" id="admin-student-grade" onChange={(event) => setBeltFilter(event.target.value)} value={beltFilter}>
 								<option value="ALL">Todos</option>
 								{belts.map((belt) => (
 									<option key={belt} value={belt}>{belt === 'SIN_GRADO' ? 'Sin grado' : belt}</option>
@@ -676,7 +676,7 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 						</label>
 						<label className="text-xs font-semibold text-ink-2" htmlFor="admin-student-branch">
 							Sucursal
-							<select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink" id="admin-student-branch" onChange={(event) => setBranchFilter(event.target.value)} value={branchFilter}>
+							<select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" id="admin-student-branch" onChange={(event) => setBranchFilter(event.target.value)} value={branchFilter}>
 								<option value="ALL">Todas</option>
 								{branches.map((branch) => (
 									<option key={branch} value={branch}>{branch}</option>
@@ -700,7 +700,7 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 						<div className="px-5 py-10 text-center">
 							<Users aria-hidden="true" className="mx-auto size-6 text-ink-4" />
 							<p className="mt-3 text-sm font-semibold text-ink">No se encontraron alumnos.</p>
-							<p className="mt-1 text-sm text-ink-3">Ajusta los filtros para ver otros expedientes.</p>
+							<p className="mt-1 text-xs text-ink-3">Ajusta los filtros para ver otros expedientes.</p>
 						</div>
 					) : (
 						<div className="overflow-x-auto">

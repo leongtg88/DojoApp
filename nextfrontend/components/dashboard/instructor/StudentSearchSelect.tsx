@@ -84,7 +84,7 @@ export function StudentSearchSelect({ students, studentId }: StudentSearchSelect
                 <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-accent" />
                 <input
                     autoComplete="off"
-                    className="w-full rounded-md border border-edge-strong bg-surface-1 py-2.5 pl-10 pr-10 text-sm text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
+                    className="w-full rounded-md border border-edge-strong bg-surface-1 py-2.5 pl-10 pr-10 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500"
                     id="evaluaciones-student-search"
                     onChange={(event) => {
                         setSearchTerm(event.target.value)
@@ -116,7 +116,7 @@ export function StudentSearchSelect({ students, studentId }: StudentSearchSelect
             {isOpen && (
                 <div className="absolute z-20 mt-2 max-h-80 w-full overflow-y-auto rounded-lg border border-edge-strong bg-surface-1 shadow-xl">
                     {filteredStudents.length === 0 ? (
-                        <p className="px-4 py-6 text-center text-sm text-ink-3">No se encontraron alumnos con ese criterio.</p>
+                        <p className="px-4 py-6 text-center text-xs text-ink-3">No se encontraron alumnos con ese criterio.</p>
                     ) : (
                         filteredStudents.slice(0, 30).map((student, index) => {
                             const isSelected = student.id === studentId

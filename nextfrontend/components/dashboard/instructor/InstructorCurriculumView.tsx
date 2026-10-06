@@ -25,9 +25,9 @@ export function InstructorCurriculumView({ curriculum }: InstructorCurriculumVie
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-      <p className="text-sm font-semibold uppercase tracking-wide text-accent">Panel de instructor</p>
-      <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Grados y katas</h1>
-      <p className="mt-2 text-sm text-ink-3">Currículo de tu escuela en modo consulta. Puedes revisar grados y asignar técnicas al expediente de tus alumnos.</p>
+      <p className="text-xs font-semibold uppercase tracking-wide text-accent">Panel de instructor</p>
+      <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Grados y katas</h1>
+      <p className="mt-2 text-xs text-ink-3">Currículo de tu escuela en modo consulta. Puedes revisar grados y asignar técnicas al expediente de tus alumnos.</p>
 
       {ranks.length === 0 ? (
         <section className="mt-7 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center">
@@ -67,7 +67,7 @@ export function InstructorCurriculumView({ curriculum }: InstructorCurriculumVie
                       {selectedRank.program === 'YOUTH' ? 'Niños' : 'Adultos'}
                     </span>
                   </h2>
-                  <p className="mt-1 text-sm text-ink-3">
+                  <p className="mt-1 text-xs text-ink-3">
                     {selectedRank.kyuDan ?? `Posición ${selectedRank.order}`}
                     {selectedRank.isMaximumRank ? ' · Grado máximo' : ''}
                     {' · '}{selectedRank.techniqueCount} katas requeridas
@@ -78,7 +78,7 @@ export function InstructorCurriculumView({ curriculum }: InstructorCurriculumVie
               <div className="mt-5 border-t border-edge pt-5">
                 <p className="text-sm font-semibold text-ink-2">Katas del plan ({selectedRank.techniques.length})</p>
                 {selectedRank.techniques.length === 0 ? (
-                  <p className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 p-4 text-sm text-ink-3">Este grado aún no tiene katas asociadas.</p>
+                  <p className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 p-4 text-xs text-ink-3">Este grado aún no tiene katas asociadas.</p>
                 ) : (
                   <ul className="mt-4 divide-y divide-edge rounded-md border border-edge bg-surface-1">
                     {selectedRank.techniques.map((technique) => (
