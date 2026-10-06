@@ -40,13 +40,31 @@ function techniqueStatus(approved: boolean, inPractice: boolean): TechniqueStatu
   return 'PENDING'
 }
 
+/**
+ * Lee el opt-in de WhatsApp de forma aislada y tolerante a fallos. Se consulta
+ * aparte del resumen principal para que una migración pendiente de la tabla
+ * WhatsAppContact no tumbe el dashboard del alumno (resumen, perfil, progreso).
+ */
+async function getWhatsappOptInSafe(userId: string | null): Promise<boolean> {
+  if (!userId) return false
+  try {
+    const contact = await db.whatsAppContact.findUnique({
+      where: { userId },
+      select: { optIn: true },
+    })
+    return contact?.optIn ?? false
+  } catch {
+    return false
+  }
+}
+
 export async function getStudentDashboardSummary(
   studentId: string,
 ): Promise<StudentDashboardSummary | null> {
   const student = await db.student.findUnique({
     where: { id: studentId },
     include: {
-      user: { select: { email: true, whatsappContact: { select: { optIn: true } } } },
+      user: { select: { email: true } },
       guardian: { select: { name: true, phone: true } },
       techniques: {
         include: { technique: true, evaluation: { include: { evaluator: { select: { name: true } } } } },
@@ -130,6 +148,8 @@ export async function getStudentDashboardSummary(
       ? (registrationData.guardian as { name?: string; relationship?: string })
       : null
 
+  const whatsappOptIn = await getWhatsappOptInSafe(student.userId)
+
   return {
     profile: {
       id: student.id,
@@ -150,7 +170,7 @@ export async function getStudentDashboardSummary(
       giSize: student.giSize,
       beltSize: student.beltSize,
       enrollmentDate: student.enrollmentDate.toISOString(),
-      whatsappOptIn: student.user?.whatsappContact?.optIn ?? false,
+      whatsappOptIn,
     },
     attendance: {
       attendedSessions,
