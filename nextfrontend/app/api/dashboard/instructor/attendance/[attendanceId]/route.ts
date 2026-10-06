@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
 import { notifyAssignment } from '@/lib/notifications/create'
 import { recordAudit } from '@/lib/security/audit'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -20,6 +21,10 @@ interface AttendanceRouteContext {
 }
 
 export async function PATCH(request: Request, { params }: AttendanceRouteContext) {
+  if (!isSameOrigin(request)) {
+    return sameOriginResponse()
+  }
+
   const session = await auth()
 
   if (!session?.user?.id || !hasRole(session?.user, 'INSTRUCTOR')) {

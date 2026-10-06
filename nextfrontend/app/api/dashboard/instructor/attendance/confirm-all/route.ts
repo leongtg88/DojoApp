@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
 import { notifyAssignment } from '@/lib/notifications/create'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -12,6 +13,10 @@ const confirmAllSchema = z.object({
 })
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) {
+    return sameOriginResponse()
+  }
+
   const session = await auth()
 
   if (!session?.user?.id || !hasRole(session?.user, 'INSTRUCTOR')) {

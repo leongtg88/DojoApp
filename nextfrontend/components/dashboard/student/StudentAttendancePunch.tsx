@@ -488,6 +488,22 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-2" htmlFor="punch-session">
+              Entrenamiento
+            </label>
+            <select
+              className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink focus:border-red-500 focus:outline-none"
+              id="punch-session"
+              onChange={(event) => setSessionType(event.target.value)}
+              value={sessionType}
+            >
+              {SESSION_OPTIONS.map(({ value, label }) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+          </div>
+
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-2" htmlFor="punch-date">
@@ -524,7 +540,7 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
             Por defecto la hora de tu clase. Puedes registrar hasta 7 días atrás; tu Sensei confirma la asistencia.
           </p>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-2" htmlFor="punch-hours">
                 Tiempo Entrenado
@@ -570,22 +586,6 @@ export function StudentAttendancePunch({ data, studentId }: StudentAttendancePun
                   ))}
                 </div>
               </div>
-            </div>
-
-            <div>
-              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-2" htmlFor="punch-session">
-                Contenido / Sesión
-              </label>
-              <select
-                className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-sm text-ink focus:border-red-500 focus:outline-none"
-                id="punch-session"
-                onChange={(event) => setSessionType(event.target.value)}
-                value={sessionType}
-              >
-                {SESSION_OPTIONS.map(({ value, label }) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </select>
             </div>
 
             <div>

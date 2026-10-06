@@ -57,18 +57,47 @@ export function isTimeWithin(startTime: string, endTime: string, minutes: number
   return adjusted >= start - toleranceMinutes && adjusted <= end
 }
 
+const SANTO_DOMINGO_TIME_ZONE = 'America/Santo_Domingo'
+
+const zonedPartsFormatter = new Intl.DateTimeFormat('en-CA', {
+  timeZone: SANTO_DOMINGO_TIME_ZONE,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false,
+})
+
+/**
+ * Día de la semana (0=domingo) y minutos desde las 00:00 de un instante,
+ * expresados en la zona horaria del dojo (América/Santo_Domingo). Evita que el
+ * servidor (UTC en Vercel) resuelva el horario con la hora equivocada.
+ */
+function zonedDayAndMinutes(date: Date): { weekday: number; minutes: number } {
+  const parts = zonedPartsFormatter.formatToParts(date)
+  const get = (type: Intl.DateTimeFormatPartTypes) => Number(parts.find((part) => part.type === type)?.value)
+  const year = get('year')
+  const month = get('month')
+  const day = get('day')
+  const hour = get('hour') % 24
+  const minute = get('minute')
+  const weekday = new Date(Date.UTC(year, month - 1, day)).getUTCDay()
+  return { weekday, minutes: hour * 60 + minute }
+}
+
 /**
  * Resuelve qué horario (Class) corresponde a una fecha/hora dada. Busca entre los
  * horarios activos el que coincide con el día de la semana y cuya ventana de tiempo
- * (con tolerancia de 1h) contiene el momento. Devuelve `null` si no hay coincidencia.
+ * (con tolerancia de 1h) contiene el momento, usando la hora local del dojo.
+ * Devuelve `null` si no hay coincidencia.
  */
 export function resolveClassByTime(
   classes: ScheduleClass[],
   date: Date,
   toleranceMinutes = 60,
 ): ScheduleClass | null {
-  const minutes = date.getHours() * 60 + date.getMinutes()
-  const weekday = date.getDay()
+  const { weekday, minutes } = zonedDayAndMinutes(date)
   return (
     classes.find(
       (scheduledClass) =>

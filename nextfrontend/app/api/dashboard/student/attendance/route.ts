@@ -151,7 +151,20 @@ export async function POST(request: Request) {
   )
   const referenceIds = new Set(student.classEnrollments.map((entry) => entry.classId))
 
-  const effectiveHours = result.data.hoursTrained ?? (resolvedClass ? classHours(resolvedClass) : 1)
+  // Una "clase regular" solo puede registrarse si hay un horario real a esa
+  // fecha/hora (evita auto-asignarse una clase en días sin clase). Las horas se
+  // derivan de la duración del horario, no del valor que envíe el cliente.
+  if (sessionType === 'class' && !resolvedClass) {
+    return NextResponse.json(
+      { error: 'No hay una clase programada a esa hora. Selecciona otro tipo de entrenamiento.' },
+      { status: 400 },
+    )
+  }
+
+  const effectiveHours =
+    sessionType === 'class' && resolvedClass
+      ? classHours(resolvedClass)
+      : (result.data.hoursTrained ?? (resolvedClass ? classHours(resolvedClass) : 1))
   const dailyReps = (result.data.practiceLogs ?? []).reduce((total, line) => total + line.repetitions, 0)
 
   // Topes anti-abuso del auto-reporte (no aplican a pases de lista con sessionId).

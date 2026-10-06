@@ -4,6 +4,7 @@ import { hasRole } from '@/lib/auth/roles'
 import { classHours, formatTime } from '@/lib/dashboard/balance'
 import { ClassEnrollmentStatus } from '@/lib/generated/prisma'
 import { saveClassAttendance } from '@/lib/dashboard/attendance-roster'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -19,6 +20,10 @@ const attendanceUpdateSchema = z.object({
 })
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) {
+    return sameOriginResponse()
+  }
+
   const session = await auth()
 
   if (!session?.user?.id || !hasRole(session?.user, 'INSTRUCTOR')) {

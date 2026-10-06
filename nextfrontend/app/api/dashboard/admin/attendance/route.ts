@@ -3,6 +3,7 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
 import { recordAudit } from '@/lib/security/audit'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -154,6 +155,10 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) {
+    return sameOriginResponse()
+  }
+
   const session = await auth()
 
   if (!session?.user?.id) {
