@@ -1,6 +1,7 @@
 import { db } from '@/lib/db'
 import type { NotificationType, Prisma } from '@/lib/generated/prisma'
 import { buildNotificationContent } from './types'
+import { dispatchStaffNotification, dispatchStudentNotification } from '@/lib/integrations/whatsapp'
 
 interface NotifyAssignmentParams {
   type: NotificationType
@@ -94,6 +95,14 @@ export async function notifyAssignment({
       count,
       data,
     })
+
+    await dispatchStudentNotification({
+      type,
+      studentId: student.id,
+      studentName: student.firstName,
+      count,
+      data: (data ?? {}) as Record<string, unknown>,
+    })
   } catch (error) {
     console.error('[notifications] No fue posible crear la notificación', type, studentId, error)
   }
@@ -131,6 +140,12 @@ export async function notifySchoolStaff({
       type,
       count,
       data,
+    })
+
+    await dispatchStaffNotification({
+      type,
+      studentName: student.firstName,
+      data: (data ?? {}) as Record<string, unknown>,
     })
   } catch (error) {
     console.error('[notifications] No fue posible crear la notificación al staff', type, studentId, error)

@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import { notifyPriceRequestByTelegram } from '@/lib/integrations/telegram'
+import { notifyPriceRequestByWhatsApp } from '@/lib/integrations/whatsapp'
 import { buildCotizacionText } from '@/lib/whatsapp'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -100,6 +101,13 @@ export async function POST(request: Request) {
     email,
     requested,
     summary,
+  })
+
+  await notifyPriceRequestByWhatsApp({
+    name: data.nombre,
+    phone: data.whatsapp || null,
+    email,
+    requested,
   })
 
   return NextResponse.json({ ok: true })

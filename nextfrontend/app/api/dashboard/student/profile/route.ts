@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasAnyRole } from '@/lib/auth/roles'
 import { resolveRequestStudent } from '@/lib/family/guardians'
+import { setWhatsAppOptIn } from '@/lib/integrations/whatsapp'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -19,6 +20,7 @@ const profileUpdateSchema = z.object({
   medicalInfo: z.string().trim().max(2_000).nullable(),
   giSize: z.string().trim().max(20).nullable(),
   beltSize: z.string().trim().max(20).nullable(),
+  whatsappOptIn: z.boolean().optional(),
 }).refine(({ dateOfBirth }) => {
   if (!dateOfBirth) return true
   return new Date(`${dateOfBirth}T00:00:00.000Z`).getTime() <= Date.now()
@@ -78,6 +80,15 @@ export async function PATCH(request: Request) {
       beltSize: true,
     },
   })
+
+  if (result.data.whatsappOptIn !== undefined) {
+    await setWhatsAppOptIn({
+      userId: session.user.id,
+      phone: result.data.contactPhone,
+      optIn: result.data.whatsappOptIn,
+      source: 'profile',
+    })
+  }
 
   return NextResponse.json({ profile })
 }

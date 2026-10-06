@@ -46,7 +46,7 @@ export async function getStudentDashboardSummary(
   const student = await db.student.findUnique({
     where: { id: studentId },
     include: {
-      user: { select: { email: true } },
+      user: { select: { email: true, whatsappContact: { select: { optIn: true } } } },
       guardian: { select: { name: true, phone: true } },
       techniques: {
         include: { technique: true, evaluation: { include: { evaluator: { select: { name: true } } } } },
@@ -150,6 +150,7 @@ export async function getStudentDashboardSummary(
       giSize: student.giSize,
       beltSize: student.beltSize,
       enrollmentDate: student.enrollmentDate.toISOString(),
+      whatsappOptIn: student.user?.whatsappContact?.optIn ?? false,
     },
     attendance: {
       attendedSessions,

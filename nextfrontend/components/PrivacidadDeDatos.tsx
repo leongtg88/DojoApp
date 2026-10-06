@@ -97,12 +97,13 @@ export default function PoliticaPrivacidad({ embedded = false }: { embedded?: bo
             <div className="space-y-2 text-sm sm:text-base pl-2">
               <p><strong>3.1.</strong> Gestionar tu registro, membresía y acceso a la Plataforma.</p>
               <p><strong>3.2.</strong> Administrar tu inscripción a clases, horarios, pagos y asistencia.</p>
-              <p><strong>3.3.</strong> Comunicarnos contigo sobre avisos, cambios de horarios, eventos y promociones (siempre con tu consentimiento previo).</p>
+              <p><strong>3.3.</strong> Comunicarnos contigo sobre avisos, cambios de horarios, eventos y promociones (siempre con tu consentimiento previo), incluso a través de <strong>WhatsApp</strong>.</p>
               <p><strong>3.4.</strong> Tramitar tu carnet federativo ante la Federación Dominicana de Karate.</p>
               <p><strong>3.5.</strong> Garantizar la seguridad durante la práctica, adaptando los entrenamientos según tus condiciones de salud.</p>
               <p><strong>3.6.</strong> Mejorar nuestros servicios mediante análisis de uso y preferencias.</p>
           {/*   <p><strong>3.7.</strong> Cumplir con obligaciones legales y regulatorias (ej. conservación de documentos, respuesta a autoridades).</p>*/}
               <p><strong>3.7.</strong> Realizar actividades promocionales, fotografías y vídeos (con tu autorización expresa) dentro del ámbito educativo y publicitario de la Escuela.</p>
+              <p><strong>3.8.</strong> Enviarte notificaciones automáticas por <strong>WhatsApp</strong> (nuevo grado, técnicas asignadas, horarios, asistencia y documentos) si otorgas tu consentimiento explícito al registrarte o desde tu perfil. Puedes retirarlo en cualquier momento respondiendo <strong>BAJA</strong> en WhatsApp o desmarcando la casilla en tu perfil.</p>
             </div>
           </section>
 

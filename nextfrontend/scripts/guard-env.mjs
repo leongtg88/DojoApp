@@ -22,6 +22,7 @@ const SECRET_PATTERNS = [
   ['AUTH_SECRET con valor', /AUTH_SECRET\s*=\s*["']?[^\s"'#]{8,}/],
   ['SUPABASE_SERVICE_ROLE_KEY con valor', /SUPABASE_SERVICE_ROLE_KEY\s*=\s*["']?[^\s"'#]{8,}/],
   ['API key de Google/Gemini', /AIza[0-9A-Za-z_-]{30,}/],
+  ['Token de WhatsApp/Meta (EAA...)', /EAA[A-Za-z0-9]{20,}/],
   ['AWS Access Key', /AKIA[0-9A-Z]{16}/],
   ['Password del seed en texto plano', /(Sensei123!|Admin123!|Instructor123!|Alumno123!)/],
 ]

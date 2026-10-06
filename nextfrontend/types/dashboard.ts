@@ -84,6 +84,7 @@ export interface StudentProfile {
 	giSize: string | null
 	beltSize: string | null
 	enrollmentDate: string
+	whatsappOptIn: boolean
 }
 
 export interface StudentDocumentSummary {

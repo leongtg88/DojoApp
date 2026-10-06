@@ -7,6 +7,11 @@ import { registerPracticeLogs } from '@/lib/dashboard/technique-reps'
 import { notifySchoolStaff } from '@/lib/notifications/create'
 import { sendPushToSchoolAdmins } from '@/lib/push/web-push'
 import { notifyAttendancePunchByTelegram } from '@/lib/integrations/telegram'
+import { notifyAttendancePunchByWhatsApp } from '@/lib/integrations/whatsapp'
+import { ATTENDANCE_LIMITS, getLocalDayBounds } from '@/lib/dashboard/attendance-limits'
+import { consumeRateLimit, getClientIp, rateLimitResponse } from '@/lib/security/rate-limit'
+import { recordAudit } from '@/lib/security/audit'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import type { PracticePlace } from '@/lib/generated/prisma'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -29,10 +34,25 @@ const punchInSchema = z.object({
 const SESSION_TYPES = ['class', 'private', 'autonomous', 'seminar', 'other'] as const
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) {
+    return sameOriginResponse()
+  }
+
   const session = await auth()
 
   if (!session?.user?.id || !hasAnyRole(session?.user, ['STUDENT', 'GUARDIAN'])) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+  }
+
+  const ipAttempt = await consumeRateLimit(`attendance-punch:ip:${getClientIp(request.headers)}`, {
+    limit: ATTENDANCE_LIMITS.maxPunchesPerHourIp,
+    windowMs: 60 * 60 * 1000,
+  })
+  if (!ipAttempt.allowed) {
+    return rateLimitResponse(
+      ipAttempt.retryAfterSeconds,
+      'Demasiados registros desde esta conexión. Inténtalo de nuevo más tarde.',
+    )
   }
 
   const body = await request.json().catch(() => null)
@@ -45,6 +65,17 @@ export async function POST(request: Request) {
   const view = await resolveRequestStudent(request, session.user.id)
   if (!view) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+  }
+
+  const studentAttempt = await consumeRateLimit(`attendance-punch:student:${view.studentId}`, {
+    limit: ATTENDANCE_LIMITS.maxPunchesPerHourStudent,
+    windowMs: 60 * 60 * 1000,
+  })
+  if (!studentAttempt.allowed) {
+    return rateLimitResponse(
+      studentAttempt.retryAfterSeconds,
+      'Has registrado varias prácticas en poco tiempo. Espera unos minutos e inténtalo de nuevo.',
+    )
   }
 
   const student = await db.student.findUnique({
@@ -120,12 +151,66 @@ export async function POST(request: Request) {
   )
   const referenceIds = new Set(student.classEnrollments.map((entry) => entry.classId))
 
+  const effectiveHours = result.data.hoursTrained ?? (resolvedClass ? classHours(resolvedClass) : 1)
+  const dailyReps = (result.data.practiceLogs ?? []).reduce((total, line) => total + line.repetitions, 0)
+
+  // Topes anti-abuso del auto-reporte (no aplican a pases de lista con sessionId).
+  const dayBounds = getLocalDayBounds(punchDate)
+  const [selfReportedToday, lastPunch, dailyRepsAggregate] = await Promise.all([
+    db.attendance.findMany({
+      where: { studentId: student.id, sessionId: null, date: { gte: dayBounds.start, lt: dayBounds.end } },
+      select: { hoursTrained: true },
+    }),
+    db.attendance.findFirst({
+      where: { studentId: student.id, sessionId: null, date: { lt: punchDate } },
+      orderBy: { date: 'desc' },
+      select: { date: true },
+    }),
+    db.techniquePracticeLog.aggregate({
+      where: { studentId: student.id, date: { gte: dayBounds.start, lt: dayBounds.end } },
+      _sum: { repetitions: true },
+    }),
+  ])
+
+  if (selfReportedToday.length >= ATTENDANCE_LIMITS.maxSelfReportedPerDay) {
+    return NextResponse.json(
+      { error: `Ya registraste el máximo de ${ATTENDANCE_LIMITS.maxSelfReportedPerDay} prácticas para este día. Tu Sensei revisará lo pendiente.` },
+      { status: 429 },
+    )
+  }
+
+  const hoursToday = selfReportedToday.reduce((total, record) => total + record.hoursTrained, 0)
+  if (hoursToday + effectiveHours > ATTENDANCE_LIMITS.maxHoursPerDay) {
+    return NextResponse.json(
+      { error: `No puedes registrar más de ${ATTENDANCE_LIMITS.maxHoursPerDay} horas de práctica al día.` },
+      { status: 429 },
+    )
+  }
+
+  if (lastPunch) {
+    const minutesSinceLast = (punchDate.getTime() - lastPunch.date.getTime()) / 60_000
+    if (minutesSinceLast >= 0 && minutesSinceLast < ATTENDANCE_LIMITS.minMinutesBetweenPunches) {
+      return NextResponse.json(
+        { error: `Espera al menos ${ATTENDANCE_LIMITS.minMinutesBetweenPunches} minutos entre registros de práctica.` },
+        { status: 429 },
+      )
+    }
+  }
+
+  const repsToday = dailyRepsAggregate._sum.repetitions ?? 0
+  if (repsToday + dailyReps > ATTENDANCE_LIMITS.maxDailySelfReportedReps) {
+    return NextResponse.json(
+      { error: `Superaste el máximo de ${ATTENDANCE_LIMITS.maxDailySelfReportedReps} repeticiones auto-reportadas por día.` },
+      { status: 429 },
+    )
+  }
+
   const attendance = await db.attendance.create({
     data: {
       studentId: student.id,
       date: punchDate,
       present: true,
-      hoursTrained: result.data.hoursTrained ?? (resolvedClass ? classHours(resolvedClass) : 1),
+      hoursTrained: effectiveHours,
       sessionType,
       status: 'PENDING',
       classId: resolvedClass?.id ?? null,
@@ -159,6 +244,22 @@ export async function POST(request: Request) {
     }
   }
 
+  await recordAudit({
+    actorId: session.user.id,
+    schoolId: student.schoolId,
+    action: 'attendance.punch',
+    targetType: 'Attendance',
+    targetId: attendance.id,
+    detail: {
+      studentId: student.id,
+      hoursTrained: attendance.hoursTrained,
+      sessionType: attendance.sessionType,
+      date: attendance.date.toISOString(),
+      isOutOfSchedule: attendance.isOutOfSchedule,
+      practiceLines: practiceLines.length,
+    },
+  })
+
   // Avisa a los administradores de la escuela para que revisen y confirmen el punch-in.
   await notifySchoolStaff({
     type: 'ATTENDANCE_PUNCHED',
@@ -174,6 +275,12 @@ export async function POST(request: Request) {
     sessionType,
     date: attendance.date,
     isOutOfSchedule: attendance.isOutOfSchedule,
+  })
+
+  await notifyAttendancePunchByWhatsApp({
+    studentName: `${student.firstName} ${student.lastName}`,
+    hoursTrained: attendance.hoursTrained,
+    className: resolvedClass?.name ?? null,
   })
 
   // Push al navegador/móvil de los administradores (el badge de no leídas ya

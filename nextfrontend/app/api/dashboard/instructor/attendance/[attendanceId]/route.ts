@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
 import { notifyAssignment } from '@/lib/notifications/create'
+import { recordAudit } from '@/lib/security/audit'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -41,6 +42,7 @@ export async function PATCH(request: Request, { params }: AttendanceRouteContext
           id: true,
           firstName: true,
           lastName: true,
+          schoolId: true,
           classEnrollments: {
             where: { status: 'ACTIVE' },
             select: { class: { select: { instructorId: true } } },
@@ -99,6 +101,22 @@ export async function PATCH(request: Request, { params }: AttendanceRouteContext
       type: 'ATTENDANCE_CONFIRMED',
       studentId: attendance.student.id,
       count: 1,
+    })
+  }
+
+  if (result.data.action === 'confirm' || result.data.action === 'reject') {
+    await recordAudit({
+      actorId: session.user.id,
+      schoolId: attendance.student.schoolId,
+      action: result.data.action === 'confirm' ? 'attendance.confirm' : 'attendance.reject',
+      targetType: 'Attendance',
+      targetId: attendance.id,
+      detail: {
+        studentId: attendance.student.id,
+        status: updated.status,
+        hoursTrained: updated.hoursTrained,
+        sessionType: updated.sessionType,
+      },
     })
   }
 

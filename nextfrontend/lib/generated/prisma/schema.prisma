@@ -111,6 +111,8 @@ model User {
   acceptedInvitations     StudentInvitationToken[]
   notifications           Notification[]
   pushSubscriptions       PushSubscription[]
+  whatsappContact         WhatsAppContact?
+  whatsappMessages        WhatsAppMessage[]
   auditLogs               AuditLog[]
   classes                 Class[]                  @relation("instructor")
   posts                   Post[]
@@ -745,6 +747,71 @@ model Notification {
   @@index([userId, readAt])
   @@index([userId, createdAt])
   @@index([studentId])
+}
+
+// ==================== WhatsApp ====================
+// Canal de notificaciones vía Meta WhatsApp Cloud API. El contacto guarda el
+// consentimiento (opt-in) y la marca `lastInboundAt`, que define si estamos
+// dentro de la ventana de 24h en la que se permite texto libre. Fuera de esa
+// ventana los envíos iniciados por el negocio usan plantillas aprobadas.
+enum WhatsAppDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum WhatsAppStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  READ
+  RECEIVED
+  FAILED
+}
+
+model WhatsAppContact {
+  id            String            @id @default(cuid())
+  phone         String            @unique // E.164, p. ej. +18296378733
+  userId        String?           @unique
+  user          User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  optIn         Boolean           @default(false)
+  optInAt       DateTime?
+  optInSource   String? // registration | profile | enrollment | staff | import
+  optOutAt      DateTime?
+  lastInboundAt DateTime? // abre la ventana de 24h de atención al cliente
+  locale        String            @default("es_DO")
+  messages      WhatsAppMessage[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([userId])
+}
+
+// Bitácora de mensajes salientes/entrantes. Sirve para trazabilidad, estados
+// de entrega del webhook y para procesar la cola (QUEUED + scheduledFor).
+model WhatsAppMessage {
+  id               String            @id @default(cuid())
+  direction        WhatsAppDirection
+  wamid            String?           @unique // id de Meta (wamid.*)
+  contactId        String?
+  contact          WhatsAppContact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  userId           String?
+  user             User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  toNumber         String?
+  fromNumber       String?
+  templateName     String?
+  params           Json?
+  body             String?
+  status           WhatsAppStatus    @default(QUEUED)
+  notificationType NotificationType?
+  errorCode        String?
+  scheduledFor     DateTime?
+  sentAt           DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([contactId, createdAt])
+  @@index([userId])
+  @@index([status, scheduledFor])
 }
 
 // ==================== Web Push ====================

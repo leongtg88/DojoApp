@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import { notifyReviewByTelegram } from '@/lib/integrations/telegram'
+import { notifyReviewByWhatsApp } from '@/lib/integrations/whatsapp'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { consumeRateLimit, getClientIp, rateLimitResponse } from '@/lib/security/rate-limit'
@@ -93,6 +94,12 @@ export async function POST(request: Request) {
   await notifyReviewByTelegram({
     authorName: data.authorName,
     relationship: data.relationship || null,
+    rating: data.rating,
+    message: data.message,
+  })
+
+  await notifyReviewByWhatsApp({
+    authorName: data.authorName,
     rating: data.rating,
     message: data.message,
   })

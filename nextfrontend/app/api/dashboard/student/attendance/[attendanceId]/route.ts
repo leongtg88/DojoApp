@@ -3,6 +3,10 @@ import { db } from '@/lib/db'
 import { hasAnyRole } from '@/lib/auth/roles'
 import { resolveRequestStudent } from '@/lib/family/guardians'
 import { clearAttendancePracticeLogs, replaceAttendancePracticeLogs } from '@/lib/dashboard/technique-reps'
+import { ATTENDANCE_LIMITS } from '@/lib/dashboard/attendance-limits'
+import { consumeRateLimit, rateLimitResponse } from '@/lib/security/rate-limit'
+import { recordAudit } from '@/lib/security/audit'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import type { PracticePlace } from '@/lib/generated/prisma'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -28,6 +32,10 @@ interface PunchRouteContext {
 }
 
 export async function PATCH(request: Request, { params }: PunchRouteContext) {
+  if (!isSameOrigin(request)) {
+    return sameOriginResponse()
+  }
+
   const session = await auth()
 
   if (!session?.user?.id || !hasAnyRole(session?.user, ['STUDENT', 'GUARDIAN'])) {
@@ -46,9 +54,20 @@ export async function PATCH(request: Request, { params }: PunchRouteContext) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
+  const editAttempt = await consumeRateLimit(`attendance-edit:student:${view.studentId}`, {
+    limit: ATTENDANCE_LIMITS.maxEditsPerHourStudent,
+    windowMs: 60 * 60 * 1000,
+  })
+  if (!editAttempt.allowed) {
+    return rateLimitResponse(
+      editAttempt.retryAfterSeconds,
+      'Has hecho muchos cambios en poco tiempo. Espera unos minutos e inténtalo de nuevo.',
+    )
+  }
+
   const student = await db.student.findUnique({
     where: { id: view.studentId },
-    select: { id: true, firstName: true, lastName: true },
+    select: { id: true, firstName: true, lastName: true, schoolId: true },
   })
 
   if (!student) {
@@ -107,6 +126,27 @@ export async function PATCH(request: Request, { params }: PunchRouteContext) {
     }
   }
 
+  await recordAudit({
+    actorId: session.user.id,
+    schoolId: student.schoolId,
+    action: 'attendance.edit',
+    targetType: 'Attendance',
+    targetId: attendance.id,
+    detail: {
+      studentId: student.id,
+      before: {
+        hoursTrained: attendance.hoursTrained,
+        sessionType: attendance.sessionType,
+        notes: attendance.notes,
+      },
+      after: {
+        hoursTrained: updated.hoursTrained,
+        sessionType: updated.sessionType,
+        notes: updated.notes,
+      },
+    },
+  })
+
   return NextResponse.json({
     record: {
       id: updated.id,
@@ -126,6 +166,10 @@ export async function PATCH(request: Request, { params }: PunchRouteContext) {
 }
 
 export async function DELETE(request: Request, { params }: PunchRouteContext) {
+  if (!isSameOrigin(request)) {
+    return sameOriginResponse()
+  }
+
   const session = await auth()
 
   if (!session?.user?.id || !hasAnyRole(session?.user, ['STUDENT', 'GUARDIAN'])) {
@@ -137,9 +181,20 @@ export async function DELETE(request: Request, { params }: PunchRouteContext) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
+  const deleteAttempt = await consumeRateLimit(`attendance-edit:student:${view.studentId}`, {
+    limit: ATTENDANCE_LIMITS.maxEditsPerHourStudent,
+    windowMs: 60 * 60 * 1000,
+  })
+  if (!deleteAttempt.allowed) {
+    return rateLimitResponse(
+      deleteAttempt.retryAfterSeconds,
+      'Has hecho muchos cambios en poco tiempo. Espera unos minutos e inténtalo de nuevo.',
+    )
+  }
+
   const student = await db.student.findUnique({
     where: { id: view.studentId },
-    select: { id: true },
+    select: { id: true, schoolId: true },
   })
 
   if (!student) {
@@ -164,6 +219,20 @@ export async function DELETE(request: Request, { params }: PunchRouteContext) {
   await db.$transaction(async (tx) => {
     await clearAttendancePracticeLogs(tx, attendance.id)
     await tx.attendance.delete({ where: { id: attendance.id } })
+  })
+
+  await recordAudit({
+    actorId: session.user.id,
+    schoolId: student.schoolId,
+    action: 'attendance.delete',
+    targetType: 'Attendance',
+    targetId: attendance.id,
+    detail: {
+      studentId: student.id,
+      date: attendance.date.toISOString(),
+      hoursTrained: attendance.hoursTrained,
+      sessionType: attendance.sessionType,
+    },
   })
 
   return NextResponse.json({ ok: true })

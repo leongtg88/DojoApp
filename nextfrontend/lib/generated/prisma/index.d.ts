@@ -154,6 +154,16 @@ export type FitnessReport = $Result.DefaultSelection<Prisma.$FitnessReportPayloa
  */
 export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
 /**
+ * Model WhatsAppContact
+ * 
+ */
+export type WhatsAppContact = $Result.DefaultSelection<Prisma.$WhatsAppContactPayload>
+/**
+ * Model WhatsAppMessage
+ * 
+ */
+export type WhatsAppMessage = $Result.DefaultSelection<Prisma.$WhatsAppMessagePayload>
+/**
  * Model PushSubscription
  * 
  */
@@ -401,6 +411,26 @@ export const NotificationPriority: {
 export type NotificationPriority = (typeof NotificationPriority)[keyof typeof NotificationPriority]
 
 
+export const WhatsAppDirection: {
+  INBOUND: 'INBOUND',
+  OUTBOUND: 'OUTBOUND'
+};
+
+export type WhatsAppDirection = (typeof WhatsAppDirection)[keyof typeof WhatsAppDirection]
+
+
+export const WhatsAppStatus: {
+  QUEUED: 'QUEUED',
+  SENT: 'SENT',
+  DELIVERED: 'DELIVERED',
+  READ: 'READ',
+  RECEIVED: 'RECEIVED',
+  FAILED: 'FAILED'
+};
+
+export type WhatsAppStatus = (typeof WhatsAppStatus)[keyof typeof WhatsAppStatus]
+
+
 export const PostCategory: {
   FILOSOFIA: 'FILOSOFIA',
   GUIA_PARA_PADRES: 'GUIA_PARA_PADRES',
@@ -491,6 +521,14 @@ export const NotificationType: typeof $Enums.NotificationType
 export type NotificationPriority = $Enums.NotificationPriority
 
 export const NotificationPriority: typeof $Enums.NotificationPriority
+
+export type WhatsAppDirection = $Enums.WhatsAppDirection
+
+export const WhatsAppDirection: typeof $Enums.WhatsAppDirection
+
+export type WhatsAppStatus = $Enums.WhatsAppStatus
+
+export const WhatsAppStatus: typeof $Enums.WhatsAppStatus
 
 export type PostCategory = $Enums.PostCategory
 
@@ -896,6 +934,26 @@ export class PrismaClient<
     * ```
     */
   get notification(): Prisma.NotificationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.whatsAppContact`: Exposes CRUD operations for the **WhatsAppContact** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WhatsAppContacts
+    * const whatsAppContacts = await prisma.whatsAppContact.findMany()
+    * ```
+    */
+  get whatsAppContact(): Prisma.WhatsAppContactDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.whatsAppMessage`: Exposes CRUD operations for the **WhatsAppMessage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WhatsAppMessages
+    * const whatsAppMessages = await prisma.whatsAppMessage.findMany()
+    * ```
+    */
+  get whatsAppMessage(): Prisma.WhatsAppMessageDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.pushSubscription`: Exposes CRUD operations for the **PushSubscription** model.
@@ -1441,6 +1499,8 @@ export namespace Prisma {
     StudentAchievement: 'StudentAchievement',
     FitnessReport: 'FitnessReport',
     Notification: 'Notification',
+    WhatsAppContact: 'WhatsAppContact',
+    WhatsAppMessage: 'WhatsAppMessage',
     PushSubscription: 'PushSubscription',
     Holiday: 'Holiday',
     ExamConvocation: 'ExamConvocation',
@@ -1463,7 +1523,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniquePracticeLog" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "pushSubscription" | "holiday" | "examConvocation" | "review" | "apiUsage" | "auditLog" | "post"
+      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniquePracticeLog" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "whatsAppContact" | "whatsAppMessage" | "pushSubscription" | "holiday" | "examConvocation" | "review" | "apiUsage" | "auditLog" | "post"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3539,6 +3599,154 @@ export namespace Prisma {
           }
         }
       }
+      WhatsAppContact: {
+        payload: Prisma.$WhatsAppContactPayload<ExtArgs>
+        fields: Prisma.WhatsAppContactFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WhatsAppContactFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppContactPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WhatsAppContactFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppContactPayload>
+          }
+          findFirst: {
+            args: Prisma.WhatsAppContactFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppContactPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WhatsAppContactFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppContactPayload>
+          }
+          findMany: {
+            args: Prisma.WhatsAppContactFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppContactPayload>[]
+          }
+          create: {
+            args: Prisma.WhatsAppContactCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppContactPayload>
+          }
+          createMany: {
+            args: Prisma.WhatsAppContactCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WhatsAppContactCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppContactPayload>[]
+          }
+          delete: {
+            args: Prisma.WhatsAppContactDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppContactPayload>
+          }
+          update: {
+            args: Prisma.WhatsAppContactUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppContactPayload>
+          }
+          deleteMany: {
+            args: Prisma.WhatsAppContactDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WhatsAppContactUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WhatsAppContactUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppContactPayload>[]
+          }
+          upsert: {
+            args: Prisma.WhatsAppContactUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppContactPayload>
+          }
+          aggregate: {
+            args: Prisma.WhatsAppContactAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWhatsAppContact>
+          }
+          groupBy: {
+            args: Prisma.WhatsAppContactGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WhatsAppContactGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WhatsAppContactCountArgs<ExtArgs>
+            result: $Utils.Optional<WhatsAppContactCountAggregateOutputType> | number
+          }
+        }
+      }
+      WhatsAppMessage: {
+        payload: Prisma.$WhatsAppMessagePayload<ExtArgs>
+        fields: Prisma.WhatsAppMessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WhatsAppMessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WhatsAppMessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>
+          }
+          findFirst: {
+            args: Prisma.WhatsAppMessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WhatsAppMessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>
+          }
+          findMany: {
+            args: Prisma.WhatsAppMessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>[]
+          }
+          create: {
+            args: Prisma.WhatsAppMessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>
+          }
+          createMany: {
+            args: Prisma.WhatsAppMessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WhatsAppMessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>[]
+          }
+          delete: {
+            args: Prisma.WhatsAppMessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>
+          }
+          update: {
+            args: Prisma.WhatsAppMessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.WhatsAppMessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WhatsAppMessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WhatsAppMessageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>[]
+          }
+          upsert: {
+            args: Prisma.WhatsAppMessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhatsAppMessagePayload>
+          }
+          aggregate: {
+            args: Prisma.WhatsAppMessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWhatsAppMessage>
+          }
+          groupBy: {
+            args: Prisma.WhatsAppMessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WhatsAppMessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WhatsAppMessageCountArgs<ExtArgs>
+            result: $Utils.Optional<WhatsAppMessageCountAggregateOutputType> | number
+          }
+        }
+      }
       PushSubscription: {
         payload: Prisma.$PushSubscriptionPayload<ExtArgs>
         fields: Prisma.PushSubscriptionFieldRefs
@@ -4208,6 +4416,8 @@ export namespace Prisma {
     studentAchievement?: StudentAchievementOmit
     fitnessReport?: FitnessReportOmit
     notification?: NotificationOmit
+    whatsAppContact?: WhatsAppContactOmit
+    whatsAppMessage?: WhatsAppMessageOmit
     pushSubscription?: PushSubscriptionOmit
     holiday?: HolidayOmit
     examConvocation?: ExamConvocationOmit
@@ -4496,6 +4706,7 @@ export namespace Prisma {
     acceptedInvitations: number
     notifications: number
     pushSubscriptions: number
+    whatsappMessages: number
     auditLogs: number
     classes: number
     posts: number
@@ -4515,6 +4726,7 @@ export namespace Prisma {
     acceptedInvitations?: boolean | UserCountOutputTypeCountAcceptedInvitationsArgs
     notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
     pushSubscriptions?: boolean | UserCountOutputTypeCountPushSubscriptionsArgs
+    whatsappMessages?: boolean | UserCountOutputTypeCountWhatsappMessagesArgs
     auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
     classes?: boolean | UserCountOutputTypeCountClassesArgs
     posts?: boolean | UserCountOutputTypeCountPostsArgs
@@ -4620,6 +4832,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountPushSubscriptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PushSubscriptionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountWhatsappMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WhatsAppMessageWhereInput
   }
 
   /**
@@ -5153,6 +5372,37 @@ export namespace Prisma {
    */
   export type AchievementTypeCountOutputTypeCountAchievementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StudentAchievementWhereInput
+  }
+
+
+  /**
+   * Count Type WhatsAppContactCountOutputType
+   */
+
+  export type WhatsAppContactCountOutputType = {
+    messages: number
+  }
+
+  export type WhatsAppContactCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    messages?: boolean | WhatsAppContactCountOutputTypeCountMessagesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * WhatsAppContactCountOutputType without action
+   */
+  export type WhatsAppContactCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContactCountOutputType
+     */
+    select?: WhatsAppContactCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * WhatsAppContactCountOutputType without action
+   */
+  export type WhatsAppContactCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WhatsAppMessageWhereInput
   }
 
 
@@ -7974,6 +8224,8 @@ export namespace Prisma {
     acceptedInvitations?: boolean | User$acceptedInvitationsArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     pushSubscriptions?: boolean | User$pushSubscriptionsArgs<ExtArgs>
+    whatsappContact?: boolean | User$whatsappContactArgs<ExtArgs>
+    whatsappMessages?: boolean | User$whatsappMessagesArgs<ExtArgs>
     auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
     classes?: boolean | User$classesArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
@@ -8048,6 +8300,8 @@ export namespace Prisma {
     acceptedInvitations?: boolean | User$acceptedInvitationsArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     pushSubscriptions?: boolean | User$pushSubscriptionsArgs<ExtArgs>
+    whatsappContact?: boolean | User$whatsappContactArgs<ExtArgs>
+    whatsappMessages?: boolean | User$whatsappMessagesArgs<ExtArgs>
     auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
     classes?: boolean | User$classesArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
@@ -8082,6 +8336,8 @@ export namespace Prisma {
       acceptedInvitations: Prisma.$StudentInvitationTokenPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       pushSubscriptions: Prisma.$PushSubscriptionPayload<ExtArgs>[]
+      whatsappContact: Prisma.$WhatsAppContactPayload<ExtArgs> | null
+      whatsappMessages: Prisma.$WhatsAppMessagePayload<ExtArgs>[]
       auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
       classes: Prisma.$ClassPayload<ExtArgs>[]
       posts: Prisma.$PostPayload<ExtArgs>[]
@@ -8510,6 +8766,8 @@ export namespace Prisma {
     acceptedInvitations<T extends User$acceptedInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$acceptedInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentInvitationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     pushSubscriptions<T extends User$pushSubscriptionsArgs<ExtArgs> = {}>(args?: Subset<T, User$pushSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PushSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    whatsappContact<T extends User$whatsappContactArgs<ExtArgs> = {}>(args?: Subset<T, User$whatsappContactArgs<ExtArgs>>): Prisma__WhatsAppContactClient<$Result.GetResult<Prisma.$WhatsAppContactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    whatsappMessages<T extends User$whatsappMessagesArgs<ExtArgs> = {}>(args?: Subset<T, User$whatsappMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     auditLogs<T extends User$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     classes<T extends User$classesArgs<ExtArgs> = {}>(args?: Subset<T, User$classesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClassPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     posts<T extends User$postsArgs<ExtArgs> = {}>(args?: Subset<T, User$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -9340,6 +9598,49 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PushSubscriptionScalarFieldEnum | PushSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * User.whatsappContact
+   */
+  export type User$whatsappContactArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContact
+     */
+    select?: WhatsAppContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppContact
+     */
+    omit?: WhatsAppContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppContactInclude<ExtArgs> | null
+    where?: WhatsAppContactWhereInput
+  }
+
+  /**
+   * User.whatsappMessages
+   */
+  export type User$whatsappMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    where?: WhatsAppMessageWhereInput
+    orderBy?: WhatsAppMessageOrderByWithRelationInput | WhatsAppMessageOrderByWithRelationInput[]
+    cursor?: WhatsAppMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WhatsAppMessageScalarFieldEnum | WhatsAppMessageScalarFieldEnum[]
   }
 
   /**
@@ -40026,6 +40327,2457 @@ export namespace Prisma {
 
 
   /**
+   * Model WhatsAppContact
+   */
+
+  export type AggregateWhatsAppContact = {
+    _count: WhatsAppContactCountAggregateOutputType | null
+    _min: WhatsAppContactMinAggregateOutputType | null
+    _max: WhatsAppContactMaxAggregateOutputType | null
+  }
+
+  export type WhatsAppContactMinAggregateOutputType = {
+    id: string | null
+    phone: string | null
+    userId: string | null
+    optIn: boolean | null
+    optInAt: Date | null
+    optInSource: string | null
+    optOutAt: Date | null
+    lastInboundAt: Date | null
+    locale: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WhatsAppContactMaxAggregateOutputType = {
+    id: string | null
+    phone: string | null
+    userId: string | null
+    optIn: boolean | null
+    optInAt: Date | null
+    optInSource: string | null
+    optOutAt: Date | null
+    lastInboundAt: Date | null
+    locale: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WhatsAppContactCountAggregateOutputType = {
+    id: number
+    phone: number
+    userId: number
+    optIn: number
+    optInAt: number
+    optInSource: number
+    optOutAt: number
+    lastInboundAt: number
+    locale: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WhatsAppContactMinAggregateInputType = {
+    id?: true
+    phone?: true
+    userId?: true
+    optIn?: true
+    optInAt?: true
+    optInSource?: true
+    optOutAt?: true
+    lastInboundAt?: true
+    locale?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WhatsAppContactMaxAggregateInputType = {
+    id?: true
+    phone?: true
+    userId?: true
+    optIn?: true
+    optInAt?: true
+    optInSource?: true
+    optOutAt?: true
+    lastInboundAt?: true
+    locale?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WhatsAppContactCountAggregateInputType = {
+    id?: true
+    phone?: true
+    userId?: true
+    optIn?: true
+    optInAt?: true
+    optInSource?: true
+    optOutAt?: true
+    lastInboundAt?: true
+    locale?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WhatsAppContactAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WhatsAppContact to aggregate.
+     */
+    where?: WhatsAppContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppContacts to fetch.
+     */
+    orderBy?: WhatsAppContactOrderByWithRelationInput | WhatsAppContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WhatsAppContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppContacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppContacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WhatsAppContacts
+    **/
+    _count?: true | WhatsAppContactCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WhatsAppContactMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WhatsAppContactMaxAggregateInputType
+  }
+
+  export type GetWhatsAppContactAggregateType<T extends WhatsAppContactAggregateArgs> = {
+        [P in keyof T & keyof AggregateWhatsAppContact]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWhatsAppContact[P]>
+      : GetScalarType<T[P], AggregateWhatsAppContact[P]>
+  }
+
+
+
+
+  export type WhatsAppContactGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WhatsAppContactWhereInput
+    orderBy?: WhatsAppContactOrderByWithAggregationInput | WhatsAppContactOrderByWithAggregationInput[]
+    by: WhatsAppContactScalarFieldEnum[] | WhatsAppContactScalarFieldEnum
+    having?: WhatsAppContactScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WhatsAppContactCountAggregateInputType | true
+    _min?: WhatsAppContactMinAggregateInputType
+    _max?: WhatsAppContactMaxAggregateInputType
+  }
+
+  export type WhatsAppContactGroupByOutputType = {
+    id: string
+    phone: string
+    userId: string | null
+    optIn: boolean
+    optInAt: Date | null
+    optInSource: string | null
+    optOutAt: Date | null
+    lastInboundAt: Date | null
+    locale: string
+    createdAt: Date
+    updatedAt: Date
+    _count: WhatsAppContactCountAggregateOutputType | null
+    _min: WhatsAppContactMinAggregateOutputType | null
+    _max: WhatsAppContactMaxAggregateOutputType | null
+  }
+
+  type GetWhatsAppContactGroupByPayload<T extends WhatsAppContactGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WhatsAppContactGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WhatsAppContactGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WhatsAppContactGroupByOutputType[P]>
+            : GetScalarType<T[P], WhatsAppContactGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WhatsAppContactSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    phone?: boolean
+    userId?: boolean
+    optIn?: boolean
+    optInAt?: boolean
+    optInSource?: boolean
+    optOutAt?: boolean
+    lastInboundAt?: boolean
+    locale?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | WhatsAppContact$userArgs<ExtArgs>
+    messages?: boolean | WhatsAppContact$messagesArgs<ExtArgs>
+    _count?: boolean | WhatsAppContactCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["whatsAppContact"]>
+
+  export type WhatsAppContactSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    phone?: boolean
+    userId?: boolean
+    optIn?: boolean
+    optInAt?: boolean
+    optInSource?: boolean
+    optOutAt?: boolean
+    lastInboundAt?: boolean
+    locale?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | WhatsAppContact$userArgs<ExtArgs>
+  }, ExtArgs["result"]["whatsAppContact"]>
+
+  export type WhatsAppContactSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    phone?: boolean
+    userId?: boolean
+    optIn?: boolean
+    optInAt?: boolean
+    optInSource?: boolean
+    optOutAt?: boolean
+    lastInboundAt?: boolean
+    locale?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | WhatsAppContact$userArgs<ExtArgs>
+  }, ExtArgs["result"]["whatsAppContact"]>
+
+  export type WhatsAppContactSelectScalar = {
+    id?: boolean
+    phone?: boolean
+    userId?: boolean
+    optIn?: boolean
+    optInAt?: boolean
+    optInSource?: boolean
+    optOutAt?: boolean
+    lastInboundAt?: boolean
+    locale?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WhatsAppContactOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "phone" | "userId" | "optIn" | "optInAt" | "optInSource" | "optOutAt" | "lastInboundAt" | "locale" | "createdAt" | "updatedAt", ExtArgs["result"]["whatsAppContact"]>
+  export type WhatsAppContactInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | WhatsAppContact$userArgs<ExtArgs>
+    messages?: boolean | WhatsAppContact$messagesArgs<ExtArgs>
+    _count?: boolean | WhatsAppContactCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type WhatsAppContactIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | WhatsAppContact$userArgs<ExtArgs>
+  }
+  export type WhatsAppContactIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | WhatsAppContact$userArgs<ExtArgs>
+  }
+
+  export type $WhatsAppContactPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WhatsAppContact"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
+      messages: Prisma.$WhatsAppMessagePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      phone: string
+      userId: string | null
+      optIn: boolean
+      optInAt: Date | null
+      optInSource: string | null
+      optOutAt: Date | null
+      lastInboundAt: Date | null
+      locale: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["whatsAppContact"]>
+    composites: {}
+  }
+
+  type WhatsAppContactGetPayload<S extends boolean | null | undefined | WhatsAppContactDefaultArgs> = $Result.GetResult<Prisma.$WhatsAppContactPayload, S>
+
+  type WhatsAppContactCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WhatsAppContactFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WhatsAppContactCountAggregateInputType | true
+    }
+
+  export interface WhatsAppContactDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WhatsAppContact'], meta: { name: 'WhatsAppContact' } }
+    /**
+     * Find zero or one WhatsAppContact that matches the filter.
+     * @param {WhatsAppContactFindUniqueArgs} args - Arguments to find a WhatsAppContact
+     * @example
+     * // Get one WhatsAppContact
+     * const whatsAppContact = await prisma.whatsAppContact.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WhatsAppContactFindUniqueArgs>(args: SelectSubset<T, WhatsAppContactFindUniqueArgs<ExtArgs>>): Prisma__WhatsAppContactClient<$Result.GetResult<Prisma.$WhatsAppContactPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WhatsAppContact that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WhatsAppContactFindUniqueOrThrowArgs} args - Arguments to find a WhatsAppContact
+     * @example
+     * // Get one WhatsAppContact
+     * const whatsAppContact = await prisma.whatsAppContact.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WhatsAppContactFindUniqueOrThrowArgs>(args: SelectSubset<T, WhatsAppContactFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WhatsAppContactClient<$Result.GetResult<Prisma.$WhatsAppContactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WhatsAppContact that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppContactFindFirstArgs} args - Arguments to find a WhatsAppContact
+     * @example
+     * // Get one WhatsAppContact
+     * const whatsAppContact = await prisma.whatsAppContact.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WhatsAppContactFindFirstArgs>(args?: SelectSubset<T, WhatsAppContactFindFirstArgs<ExtArgs>>): Prisma__WhatsAppContactClient<$Result.GetResult<Prisma.$WhatsAppContactPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WhatsAppContact that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppContactFindFirstOrThrowArgs} args - Arguments to find a WhatsAppContact
+     * @example
+     * // Get one WhatsAppContact
+     * const whatsAppContact = await prisma.whatsAppContact.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WhatsAppContactFindFirstOrThrowArgs>(args?: SelectSubset<T, WhatsAppContactFindFirstOrThrowArgs<ExtArgs>>): Prisma__WhatsAppContactClient<$Result.GetResult<Prisma.$WhatsAppContactPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WhatsAppContacts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppContactFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WhatsAppContacts
+     * const whatsAppContacts = await prisma.whatsAppContact.findMany()
+     * 
+     * // Get first 10 WhatsAppContacts
+     * const whatsAppContacts = await prisma.whatsAppContact.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const whatsAppContactWithIdOnly = await prisma.whatsAppContact.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WhatsAppContactFindManyArgs>(args?: SelectSubset<T, WhatsAppContactFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WhatsAppContact.
+     * @param {WhatsAppContactCreateArgs} args - Arguments to create a WhatsAppContact.
+     * @example
+     * // Create one WhatsAppContact
+     * const WhatsAppContact = await prisma.whatsAppContact.create({
+     *   data: {
+     *     // ... data to create a WhatsAppContact
+     *   }
+     * })
+     * 
+     */
+    create<T extends WhatsAppContactCreateArgs>(args: SelectSubset<T, WhatsAppContactCreateArgs<ExtArgs>>): Prisma__WhatsAppContactClient<$Result.GetResult<Prisma.$WhatsAppContactPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WhatsAppContacts.
+     * @param {WhatsAppContactCreateManyArgs} args - Arguments to create many WhatsAppContacts.
+     * @example
+     * // Create many WhatsAppContacts
+     * const whatsAppContact = await prisma.whatsAppContact.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WhatsAppContactCreateManyArgs>(args?: SelectSubset<T, WhatsAppContactCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WhatsAppContacts and returns the data saved in the database.
+     * @param {WhatsAppContactCreateManyAndReturnArgs} args - Arguments to create many WhatsAppContacts.
+     * @example
+     * // Create many WhatsAppContacts
+     * const whatsAppContact = await prisma.whatsAppContact.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WhatsAppContacts and only return the `id`
+     * const whatsAppContactWithIdOnly = await prisma.whatsAppContact.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WhatsAppContactCreateManyAndReturnArgs>(args?: SelectSubset<T, WhatsAppContactCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppContactPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WhatsAppContact.
+     * @param {WhatsAppContactDeleteArgs} args - Arguments to delete one WhatsAppContact.
+     * @example
+     * // Delete one WhatsAppContact
+     * const WhatsAppContact = await prisma.whatsAppContact.delete({
+     *   where: {
+     *     // ... filter to delete one WhatsAppContact
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WhatsAppContactDeleteArgs>(args: SelectSubset<T, WhatsAppContactDeleteArgs<ExtArgs>>): Prisma__WhatsAppContactClient<$Result.GetResult<Prisma.$WhatsAppContactPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WhatsAppContact.
+     * @param {WhatsAppContactUpdateArgs} args - Arguments to update one WhatsAppContact.
+     * @example
+     * // Update one WhatsAppContact
+     * const whatsAppContact = await prisma.whatsAppContact.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WhatsAppContactUpdateArgs>(args: SelectSubset<T, WhatsAppContactUpdateArgs<ExtArgs>>): Prisma__WhatsAppContactClient<$Result.GetResult<Prisma.$WhatsAppContactPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WhatsAppContacts.
+     * @param {WhatsAppContactDeleteManyArgs} args - Arguments to filter WhatsAppContacts to delete.
+     * @example
+     * // Delete a few WhatsAppContacts
+     * const { count } = await prisma.whatsAppContact.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WhatsAppContactDeleteManyArgs>(args?: SelectSubset<T, WhatsAppContactDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WhatsAppContacts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppContactUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WhatsAppContacts
+     * const whatsAppContact = await prisma.whatsAppContact.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WhatsAppContactUpdateManyArgs>(args: SelectSubset<T, WhatsAppContactUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WhatsAppContacts and returns the data updated in the database.
+     * @param {WhatsAppContactUpdateManyAndReturnArgs} args - Arguments to update many WhatsAppContacts.
+     * @example
+     * // Update many WhatsAppContacts
+     * const whatsAppContact = await prisma.whatsAppContact.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WhatsAppContacts and only return the `id`
+     * const whatsAppContactWithIdOnly = await prisma.whatsAppContact.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WhatsAppContactUpdateManyAndReturnArgs>(args: SelectSubset<T, WhatsAppContactUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppContactPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WhatsAppContact.
+     * @param {WhatsAppContactUpsertArgs} args - Arguments to update or create a WhatsAppContact.
+     * @example
+     * // Update or create a WhatsAppContact
+     * const whatsAppContact = await prisma.whatsAppContact.upsert({
+     *   create: {
+     *     // ... data to create a WhatsAppContact
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WhatsAppContact we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WhatsAppContactUpsertArgs>(args: SelectSubset<T, WhatsAppContactUpsertArgs<ExtArgs>>): Prisma__WhatsAppContactClient<$Result.GetResult<Prisma.$WhatsAppContactPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WhatsAppContacts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppContactCountArgs} args - Arguments to filter WhatsAppContacts to count.
+     * @example
+     * // Count the number of WhatsAppContacts
+     * const count = await prisma.whatsAppContact.count({
+     *   where: {
+     *     // ... the filter for the WhatsAppContacts we want to count
+     *   }
+     * })
+    **/
+    count<T extends WhatsAppContactCountArgs>(
+      args?: Subset<T, WhatsAppContactCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WhatsAppContactCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WhatsAppContact.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppContactAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WhatsAppContactAggregateArgs>(args: Subset<T, WhatsAppContactAggregateArgs>): Prisma.PrismaPromise<GetWhatsAppContactAggregateType<T>>
+
+    /**
+     * Group by WhatsAppContact.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppContactGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WhatsAppContactGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WhatsAppContactGroupByArgs['orderBy'] }
+        : { orderBy?: WhatsAppContactGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WhatsAppContactGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWhatsAppContactGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WhatsAppContact model
+   */
+  readonly fields: WhatsAppContactFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WhatsAppContact.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WhatsAppContactClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends WhatsAppContact$userArgs<ExtArgs> = {}>(args?: Subset<T, WhatsAppContact$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    messages<T extends WhatsAppContact$messagesArgs<ExtArgs> = {}>(args?: Subset<T, WhatsAppContact$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WhatsAppContact model
+   */
+  interface WhatsAppContactFieldRefs {
+    readonly id: FieldRef<"WhatsAppContact", 'String'>
+    readonly phone: FieldRef<"WhatsAppContact", 'String'>
+    readonly userId: FieldRef<"WhatsAppContact", 'String'>
+    readonly optIn: FieldRef<"WhatsAppContact", 'Boolean'>
+    readonly optInAt: FieldRef<"WhatsAppContact", 'DateTime'>
+    readonly optInSource: FieldRef<"WhatsAppContact", 'String'>
+    readonly optOutAt: FieldRef<"WhatsAppContact", 'DateTime'>
+    readonly lastInboundAt: FieldRef<"WhatsAppContact", 'DateTime'>
+    readonly locale: FieldRef<"WhatsAppContact", 'String'>
+    readonly createdAt: FieldRef<"WhatsAppContact", 'DateTime'>
+    readonly updatedAt: FieldRef<"WhatsAppContact", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WhatsAppContact findUnique
+   */
+  export type WhatsAppContactFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContact
+     */
+    select?: WhatsAppContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppContact
+     */
+    omit?: WhatsAppContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppContactInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppContact to fetch.
+     */
+    where: WhatsAppContactWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppContact findUniqueOrThrow
+   */
+  export type WhatsAppContactFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContact
+     */
+    select?: WhatsAppContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppContact
+     */
+    omit?: WhatsAppContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppContactInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppContact to fetch.
+     */
+    where: WhatsAppContactWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppContact findFirst
+   */
+  export type WhatsAppContactFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContact
+     */
+    select?: WhatsAppContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppContact
+     */
+    omit?: WhatsAppContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppContactInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppContact to fetch.
+     */
+    where?: WhatsAppContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppContacts to fetch.
+     */
+    orderBy?: WhatsAppContactOrderByWithRelationInput | WhatsAppContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WhatsAppContacts.
+     */
+    cursor?: WhatsAppContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppContacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppContacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WhatsAppContacts.
+     */
+    distinct?: WhatsAppContactScalarFieldEnum | WhatsAppContactScalarFieldEnum[]
+  }
+
+  /**
+   * WhatsAppContact findFirstOrThrow
+   */
+  export type WhatsAppContactFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContact
+     */
+    select?: WhatsAppContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppContact
+     */
+    omit?: WhatsAppContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppContactInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppContact to fetch.
+     */
+    where?: WhatsAppContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppContacts to fetch.
+     */
+    orderBy?: WhatsAppContactOrderByWithRelationInput | WhatsAppContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WhatsAppContacts.
+     */
+    cursor?: WhatsAppContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppContacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppContacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WhatsAppContacts.
+     */
+    distinct?: WhatsAppContactScalarFieldEnum | WhatsAppContactScalarFieldEnum[]
+  }
+
+  /**
+   * WhatsAppContact findMany
+   */
+  export type WhatsAppContactFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContact
+     */
+    select?: WhatsAppContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppContact
+     */
+    omit?: WhatsAppContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppContactInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppContacts to fetch.
+     */
+    where?: WhatsAppContactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppContacts to fetch.
+     */
+    orderBy?: WhatsAppContactOrderByWithRelationInput | WhatsAppContactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WhatsAppContacts.
+     */
+    cursor?: WhatsAppContactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppContacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppContacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WhatsAppContacts.
+     */
+    distinct?: WhatsAppContactScalarFieldEnum | WhatsAppContactScalarFieldEnum[]
+  }
+
+  /**
+   * WhatsAppContact create
+   */
+  export type WhatsAppContactCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContact
+     */
+    select?: WhatsAppContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppContact
+     */
+    omit?: WhatsAppContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppContactInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WhatsAppContact.
+     */
+    data: XOR<WhatsAppContactCreateInput, WhatsAppContactUncheckedCreateInput>
+  }
+
+  /**
+   * WhatsAppContact createMany
+   */
+  export type WhatsAppContactCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WhatsAppContacts.
+     */
+    data: WhatsAppContactCreateManyInput | WhatsAppContactCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WhatsAppContact createManyAndReturn
+   */
+  export type WhatsAppContactCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContact
+     */
+    select?: WhatsAppContactSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppContact
+     */
+    omit?: WhatsAppContactOmit<ExtArgs> | null
+    /**
+     * The data used to create many WhatsAppContacts.
+     */
+    data: WhatsAppContactCreateManyInput | WhatsAppContactCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppContactIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WhatsAppContact update
+   */
+  export type WhatsAppContactUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContact
+     */
+    select?: WhatsAppContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppContact
+     */
+    omit?: WhatsAppContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppContactInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WhatsAppContact.
+     */
+    data: XOR<WhatsAppContactUpdateInput, WhatsAppContactUncheckedUpdateInput>
+    /**
+     * Choose, which WhatsAppContact to update.
+     */
+    where: WhatsAppContactWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppContact updateMany
+   */
+  export type WhatsAppContactUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WhatsAppContacts.
+     */
+    data: XOR<WhatsAppContactUpdateManyMutationInput, WhatsAppContactUncheckedUpdateManyInput>
+    /**
+     * Filter which WhatsAppContacts to update
+     */
+    where?: WhatsAppContactWhereInput
+    /**
+     * Limit how many WhatsAppContacts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WhatsAppContact updateManyAndReturn
+   */
+  export type WhatsAppContactUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContact
+     */
+    select?: WhatsAppContactSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppContact
+     */
+    omit?: WhatsAppContactOmit<ExtArgs> | null
+    /**
+     * The data used to update WhatsAppContacts.
+     */
+    data: XOR<WhatsAppContactUpdateManyMutationInput, WhatsAppContactUncheckedUpdateManyInput>
+    /**
+     * Filter which WhatsAppContacts to update
+     */
+    where?: WhatsAppContactWhereInput
+    /**
+     * Limit how many WhatsAppContacts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppContactIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WhatsAppContact upsert
+   */
+  export type WhatsAppContactUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContact
+     */
+    select?: WhatsAppContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppContact
+     */
+    omit?: WhatsAppContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppContactInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WhatsAppContact to update in case it exists.
+     */
+    where: WhatsAppContactWhereUniqueInput
+    /**
+     * In case the WhatsAppContact found by the `where` argument doesn't exist, create a new WhatsAppContact with this data.
+     */
+    create: XOR<WhatsAppContactCreateInput, WhatsAppContactUncheckedCreateInput>
+    /**
+     * In case the WhatsAppContact was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WhatsAppContactUpdateInput, WhatsAppContactUncheckedUpdateInput>
+  }
+
+  /**
+   * WhatsAppContact delete
+   */
+  export type WhatsAppContactDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContact
+     */
+    select?: WhatsAppContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppContact
+     */
+    omit?: WhatsAppContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppContactInclude<ExtArgs> | null
+    /**
+     * Filter which WhatsAppContact to delete.
+     */
+    where: WhatsAppContactWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppContact deleteMany
+   */
+  export type WhatsAppContactDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WhatsAppContacts to delete
+     */
+    where?: WhatsAppContactWhereInput
+    /**
+     * Limit how many WhatsAppContacts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WhatsAppContact.user
+   */
+  export type WhatsAppContact$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * WhatsAppContact.messages
+   */
+  export type WhatsAppContact$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    where?: WhatsAppMessageWhereInput
+    orderBy?: WhatsAppMessageOrderByWithRelationInput | WhatsAppMessageOrderByWithRelationInput[]
+    cursor?: WhatsAppMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WhatsAppMessageScalarFieldEnum | WhatsAppMessageScalarFieldEnum[]
+  }
+
+  /**
+   * WhatsAppContact without action
+   */
+  export type WhatsAppContactDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContact
+     */
+    select?: WhatsAppContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppContact
+     */
+    omit?: WhatsAppContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppContactInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WhatsAppMessage
+   */
+
+  export type AggregateWhatsAppMessage = {
+    _count: WhatsAppMessageCountAggregateOutputType | null
+    _min: WhatsAppMessageMinAggregateOutputType | null
+    _max: WhatsAppMessageMaxAggregateOutputType | null
+  }
+
+  export type WhatsAppMessageMinAggregateOutputType = {
+    id: string | null
+    direction: $Enums.WhatsAppDirection | null
+    wamid: string | null
+    contactId: string | null
+    userId: string | null
+    toNumber: string | null
+    fromNumber: string | null
+    templateName: string | null
+    body: string | null
+    status: $Enums.WhatsAppStatus | null
+    notificationType: $Enums.NotificationType | null
+    errorCode: string | null
+    scheduledFor: Date | null
+    sentAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WhatsAppMessageMaxAggregateOutputType = {
+    id: string | null
+    direction: $Enums.WhatsAppDirection | null
+    wamid: string | null
+    contactId: string | null
+    userId: string | null
+    toNumber: string | null
+    fromNumber: string | null
+    templateName: string | null
+    body: string | null
+    status: $Enums.WhatsAppStatus | null
+    notificationType: $Enums.NotificationType | null
+    errorCode: string | null
+    scheduledFor: Date | null
+    sentAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WhatsAppMessageCountAggregateOutputType = {
+    id: number
+    direction: number
+    wamid: number
+    contactId: number
+    userId: number
+    toNumber: number
+    fromNumber: number
+    templateName: number
+    params: number
+    body: number
+    status: number
+    notificationType: number
+    errorCode: number
+    scheduledFor: number
+    sentAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WhatsAppMessageMinAggregateInputType = {
+    id?: true
+    direction?: true
+    wamid?: true
+    contactId?: true
+    userId?: true
+    toNumber?: true
+    fromNumber?: true
+    templateName?: true
+    body?: true
+    status?: true
+    notificationType?: true
+    errorCode?: true
+    scheduledFor?: true
+    sentAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WhatsAppMessageMaxAggregateInputType = {
+    id?: true
+    direction?: true
+    wamid?: true
+    contactId?: true
+    userId?: true
+    toNumber?: true
+    fromNumber?: true
+    templateName?: true
+    body?: true
+    status?: true
+    notificationType?: true
+    errorCode?: true
+    scheduledFor?: true
+    sentAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WhatsAppMessageCountAggregateInputType = {
+    id?: true
+    direction?: true
+    wamid?: true
+    contactId?: true
+    userId?: true
+    toNumber?: true
+    fromNumber?: true
+    templateName?: true
+    params?: true
+    body?: true
+    status?: true
+    notificationType?: true
+    errorCode?: true
+    scheduledFor?: true
+    sentAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WhatsAppMessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WhatsAppMessage to aggregate.
+     */
+    where?: WhatsAppMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppMessages to fetch.
+     */
+    orderBy?: WhatsAppMessageOrderByWithRelationInput | WhatsAppMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WhatsAppMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WhatsAppMessages
+    **/
+    _count?: true | WhatsAppMessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WhatsAppMessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WhatsAppMessageMaxAggregateInputType
+  }
+
+  export type GetWhatsAppMessageAggregateType<T extends WhatsAppMessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateWhatsAppMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWhatsAppMessage[P]>
+      : GetScalarType<T[P], AggregateWhatsAppMessage[P]>
+  }
+
+
+
+
+  export type WhatsAppMessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WhatsAppMessageWhereInput
+    orderBy?: WhatsAppMessageOrderByWithAggregationInput | WhatsAppMessageOrderByWithAggregationInput[]
+    by: WhatsAppMessageScalarFieldEnum[] | WhatsAppMessageScalarFieldEnum
+    having?: WhatsAppMessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WhatsAppMessageCountAggregateInputType | true
+    _min?: WhatsAppMessageMinAggregateInputType
+    _max?: WhatsAppMessageMaxAggregateInputType
+  }
+
+  export type WhatsAppMessageGroupByOutputType = {
+    id: string
+    direction: $Enums.WhatsAppDirection
+    wamid: string | null
+    contactId: string | null
+    userId: string | null
+    toNumber: string | null
+    fromNumber: string | null
+    templateName: string | null
+    params: JsonValue | null
+    body: string | null
+    status: $Enums.WhatsAppStatus
+    notificationType: $Enums.NotificationType | null
+    errorCode: string | null
+    scheduledFor: Date | null
+    sentAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: WhatsAppMessageCountAggregateOutputType | null
+    _min: WhatsAppMessageMinAggregateOutputType | null
+    _max: WhatsAppMessageMaxAggregateOutputType | null
+  }
+
+  type GetWhatsAppMessageGroupByPayload<T extends WhatsAppMessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WhatsAppMessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WhatsAppMessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WhatsAppMessageGroupByOutputType[P]>
+            : GetScalarType<T[P], WhatsAppMessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WhatsAppMessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    direction?: boolean
+    wamid?: boolean
+    contactId?: boolean
+    userId?: boolean
+    toNumber?: boolean
+    fromNumber?: boolean
+    templateName?: boolean
+    params?: boolean
+    body?: boolean
+    status?: boolean
+    notificationType?: boolean
+    errorCode?: boolean
+    scheduledFor?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    contact?: boolean | WhatsAppMessage$contactArgs<ExtArgs>
+    user?: boolean | WhatsAppMessage$userArgs<ExtArgs>
+  }, ExtArgs["result"]["whatsAppMessage"]>
+
+  export type WhatsAppMessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    direction?: boolean
+    wamid?: boolean
+    contactId?: boolean
+    userId?: boolean
+    toNumber?: boolean
+    fromNumber?: boolean
+    templateName?: boolean
+    params?: boolean
+    body?: boolean
+    status?: boolean
+    notificationType?: boolean
+    errorCode?: boolean
+    scheduledFor?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    contact?: boolean | WhatsAppMessage$contactArgs<ExtArgs>
+    user?: boolean | WhatsAppMessage$userArgs<ExtArgs>
+  }, ExtArgs["result"]["whatsAppMessage"]>
+
+  export type WhatsAppMessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    direction?: boolean
+    wamid?: boolean
+    contactId?: boolean
+    userId?: boolean
+    toNumber?: boolean
+    fromNumber?: boolean
+    templateName?: boolean
+    params?: boolean
+    body?: boolean
+    status?: boolean
+    notificationType?: boolean
+    errorCode?: boolean
+    scheduledFor?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    contact?: boolean | WhatsAppMessage$contactArgs<ExtArgs>
+    user?: boolean | WhatsAppMessage$userArgs<ExtArgs>
+  }, ExtArgs["result"]["whatsAppMessage"]>
+
+  export type WhatsAppMessageSelectScalar = {
+    id?: boolean
+    direction?: boolean
+    wamid?: boolean
+    contactId?: boolean
+    userId?: boolean
+    toNumber?: boolean
+    fromNumber?: boolean
+    templateName?: boolean
+    params?: boolean
+    body?: boolean
+    status?: boolean
+    notificationType?: boolean
+    errorCode?: boolean
+    scheduledFor?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WhatsAppMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "direction" | "wamid" | "contactId" | "userId" | "toNumber" | "fromNumber" | "templateName" | "params" | "body" | "status" | "notificationType" | "errorCode" | "scheduledFor" | "sentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["whatsAppMessage"]>
+  export type WhatsAppMessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contact?: boolean | WhatsAppMessage$contactArgs<ExtArgs>
+    user?: boolean | WhatsAppMessage$userArgs<ExtArgs>
+  }
+  export type WhatsAppMessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contact?: boolean | WhatsAppMessage$contactArgs<ExtArgs>
+    user?: boolean | WhatsAppMessage$userArgs<ExtArgs>
+  }
+  export type WhatsAppMessageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    contact?: boolean | WhatsAppMessage$contactArgs<ExtArgs>
+    user?: boolean | WhatsAppMessage$userArgs<ExtArgs>
+  }
+
+  export type $WhatsAppMessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WhatsAppMessage"
+    objects: {
+      contact: Prisma.$WhatsAppContactPayload<ExtArgs> | null
+      user: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      direction: $Enums.WhatsAppDirection
+      wamid: string | null
+      contactId: string | null
+      userId: string | null
+      toNumber: string | null
+      fromNumber: string | null
+      templateName: string | null
+      params: Prisma.JsonValue | null
+      body: string | null
+      status: $Enums.WhatsAppStatus
+      notificationType: $Enums.NotificationType | null
+      errorCode: string | null
+      scheduledFor: Date | null
+      sentAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["whatsAppMessage"]>
+    composites: {}
+  }
+
+  type WhatsAppMessageGetPayload<S extends boolean | null | undefined | WhatsAppMessageDefaultArgs> = $Result.GetResult<Prisma.$WhatsAppMessagePayload, S>
+
+  type WhatsAppMessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WhatsAppMessageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WhatsAppMessageCountAggregateInputType | true
+    }
+
+  export interface WhatsAppMessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WhatsAppMessage'], meta: { name: 'WhatsAppMessage' } }
+    /**
+     * Find zero or one WhatsAppMessage that matches the filter.
+     * @param {WhatsAppMessageFindUniqueArgs} args - Arguments to find a WhatsAppMessage
+     * @example
+     * // Get one WhatsAppMessage
+     * const whatsAppMessage = await prisma.whatsAppMessage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WhatsAppMessageFindUniqueArgs>(args: SelectSubset<T, WhatsAppMessageFindUniqueArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WhatsAppMessage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WhatsAppMessageFindUniqueOrThrowArgs} args - Arguments to find a WhatsAppMessage
+     * @example
+     * // Get one WhatsAppMessage
+     * const whatsAppMessage = await prisma.whatsAppMessage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WhatsAppMessageFindUniqueOrThrowArgs>(args: SelectSubset<T, WhatsAppMessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WhatsAppMessage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppMessageFindFirstArgs} args - Arguments to find a WhatsAppMessage
+     * @example
+     * // Get one WhatsAppMessage
+     * const whatsAppMessage = await prisma.whatsAppMessage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WhatsAppMessageFindFirstArgs>(args?: SelectSubset<T, WhatsAppMessageFindFirstArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WhatsAppMessage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppMessageFindFirstOrThrowArgs} args - Arguments to find a WhatsAppMessage
+     * @example
+     * // Get one WhatsAppMessage
+     * const whatsAppMessage = await prisma.whatsAppMessage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WhatsAppMessageFindFirstOrThrowArgs>(args?: SelectSubset<T, WhatsAppMessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WhatsAppMessages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppMessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WhatsAppMessages
+     * const whatsAppMessages = await prisma.whatsAppMessage.findMany()
+     * 
+     * // Get first 10 WhatsAppMessages
+     * const whatsAppMessages = await prisma.whatsAppMessage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const whatsAppMessageWithIdOnly = await prisma.whatsAppMessage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WhatsAppMessageFindManyArgs>(args?: SelectSubset<T, WhatsAppMessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WhatsAppMessage.
+     * @param {WhatsAppMessageCreateArgs} args - Arguments to create a WhatsAppMessage.
+     * @example
+     * // Create one WhatsAppMessage
+     * const WhatsAppMessage = await prisma.whatsAppMessage.create({
+     *   data: {
+     *     // ... data to create a WhatsAppMessage
+     *   }
+     * })
+     * 
+     */
+    create<T extends WhatsAppMessageCreateArgs>(args: SelectSubset<T, WhatsAppMessageCreateArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WhatsAppMessages.
+     * @param {WhatsAppMessageCreateManyArgs} args - Arguments to create many WhatsAppMessages.
+     * @example
+     * // Create many WhatsAppMessages
+     * const whatsAppMessage = await prisma.whatsAppMessage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WhatsAppMessageCreateManyArgs>(args?: SelectSubset<T, WhatsAppMessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WhatsAppMessages and returns the data saved in the database.
+     * @param {WhatsAppMessageCreateManyAndReturnArgs} args - Arguments to create many WhatsAppMessages.
+     * @example
+     * // Create many WhatsAppMessages
+     * const whatsAppMessage = await prisma.whatsAppMessage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WhatsAppMessages and only return the `id`
+     * const whatsAppMessageWithIdOnly = await prisma.whatsAppMessage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WhatsAppMessageCreateManyAndReturnArgs>(args?: SelectSubset<T, WhatsAppMessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WhatsAppMessage.
+     * @param {WhatsAppMessageDeleteArgs} args - Arguments to delete one WhatsAppMessage.
+     * @example
+     * // Delete one WhatsAppMessage
+     * const WhatsAppMessage = await prisma.whatsAppMessage.delete({
+     *   where: {
+     *     // ... filter to delete one WhatsAppMessage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WhatsAppMessageDeleteArgs>(args: SelectSubset<T, WhatsAppMessageDeleteArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WhatsAppMessage.
+     * @param {WhatsAppMessageUpdateArgs} args - Arguments to update one WhatsAppMessage.
+     * @example
+     * // Update one WhatsAppMessage
+     * const whatsAppMessage = await prisma.whatsAppMessage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WhatsAppMessageUpdateArgs>(args: SelectSubset<T, WhatsAppMessageUpdateArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WhatsAppMessages.
+     * @param {WhatsAppMessageDeleteManyArgs} args - Arguments to filter WhatsAppMessages to delete.
+     * @example
+     * // Delete a few WhatsAppMessages
+     * const { count } = await prisma.whatsAppMessage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WhatsAppMessageDeleteManyArgs>(args?: SelectSubset<T, WhatsAppMessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WhatsAppMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppMessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WhatsAppMessages
+     * const whatsAppMessage = await prisma.whatsAppMessage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WhatsAppMessageUpdateManyArgs>(args: SelectSubset<T, WhatsAppMessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WhatsAppMessages and returns the data updated in the database.
+     * @param {WhatsAppMessageUpdateManyAndReturnArgs} args - Arguments to update many WhatsAppMessages.
+     * @example
+     * // Update many WhatsAppMessages
+     * const whatsAppMessage = await prisma.whatsAppMessage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WhatsAppMessages and only return the `id`
+     * const whatsAppMessageWithIdOnly = await prisma.whatsAppMessage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WhatsAppMessageUpdateManyAndReturnArgs>(args: SelectSubset<T, WhatsAppMessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WhatsAppMessage.
+     * @param {WhatsAppMessageUpsertArgs} args - Arguments to update or create a WhatsAppMessage.
+     * @example
+     * // Update or create a WhatsAppMessage
+     * const whatsAppMessage = await prisma.whatsAppMessage.upsert({
+     *   create: {
+     *     // ... data to create a WhatsAppMessage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WhatsAppMessage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WhatsAppMessageUpsertArgs>(args: SelectSubset<T, WhatsAppMessageUpsertArgs<ExtArgs>>): Prisma__WhatsAppMessageClient<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WhatsAppMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppMessageCountArgs} args - Arguments to filter WhatsAppMessages to count.
+     * @example
+     * // Count the number of WhatsAppMessages
+     * const count = await prisma.whatsAppMessage.count({
+     *   where: {
+     *     // ... the filter for the WhatsAppMessages we want to count
+     *   }
+     * })
+    **/
+    count<T extends WhatsAppMessageCountArgs>(
+      args?: Subset<T, WhatsAppMessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WhatsAppMessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WhatsAppMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppMessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WhatsAppMessageAggregateArgs>(args: Subset<T, WhatsAppMessageAggregateArgs>): Prisma.PrismaPromise<GetWhatsAppMessageAggregateType<T>>
+
+    /**
+     * Group by WhatsAppMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhatsAppMessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WhatsAppMessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WhatsAppMessageGroupByArgs['orderBy'] }
+        : { orderBy?: WhatsAppMessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WhatsAppMessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWhatsAppMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WhatsAppMessage model
+   */
+  readonly fields: WhatsAppMessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WhatsAppMessage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WhatsAppMessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    contact<T extends WhatsAppMessage$contactArgs<ExtArgs> = {}>(args?: Subset<T, WhatsAppMessage$contactArgs<ExtArgs>>): Prisma__WhatsAppContactClient<$Result.GetResult<Prisma.$WhatsAppContactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    user<T extends WhatsAppMessage$userArgs<ExtArgs> = {}>(args?: Subset<T, WhatsAppMessage$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WhatsAppMessage model
+   */
+  interface WhatsAppMessageFieldRefs {
+    readonly id: FieldRef<"WhatsAppMessage", 'String'>
+    readonly direction: FieldRef<"WhatsAppMessage", 'WhatsAppDirection'>
+    readonly wamid: FieldRef<"WhatsAppMessage", 'String'>
+    readonly contactId: FieldRef<"WhatsAppMessage", 'String'>
+    readonly userId: FieldRef<"WhatsAppMessage", 'String'>
+    readonly toNumber: FieldRef<"WhatsAppMessage", 'String'>
+    readonly fromNumber: FieldRef<"WhatsAppMessage", 'String'>
+    readonly templateName: FieldRef<"WhatsAppMessage", 'String'>
+    readonly params: FieldRef<"WhatsAppMessage", 'Json'>
+    readonly body: FieldRef<"WhatsAppMessage", 'String'>
+    readonly status: FieldRef<"WhatsAppMessage", 'WhatsAppStatus'>
+    readonly notificationType: FieldRef<"WhatsAppMessage", 'NotificationType'>
+    readonly errorCode: FieldRef<"WhatsAppMessage", 'String'>
+    readonly scheduledFor: FieldRef<"WhatsAppMessage", 'DateTime'>
+    readonly sentAt: FieldRef<"WhatsAppMessage", 'DateTime'>
+    readonly createdAt: FieldRef<"WhatsAppMessage", 'DateTime'>
+    readonly updatedAt: FieldRef<"WhatsAppMessage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WhatsAppMessage findUnique
+   */
+  export type WhatsAppMessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppMessage to fetch.
+     */
+    where: WhatsAppMessageWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppMessage findUniqueOrThrow
+   */
+  export type WhatsAppMessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppMessage to fetch.
+     */
+    where: WhatsAppMessageWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppMessage findFirst
+   */
+  export type WhatsAppMessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppMessage to fetch.
+     */
+    where?: WhatsAppMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppMessages to fetch.
+     */
+    orderBy?: WhatsAppMessageOrderByWithRelationInput | WhatsAppMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WhatsAppMessages.
+     */
+    cursor?: WhatsAppMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WhatsAppMessages.
+     */
+    distinct?: WhatsAppMessageScalarFieldEnum | WhatsAppMessageScalarFieldEnum[]
+  }
+
+  /**
+   * WhatsAppMessage findFirstOrThrow
+   */
+  export type WhatsAppMessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppMessage to fetch.
+     */
+    where?: WhatsAppMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppMessages to fetch.
+     */
+    orderBy?: WhatsAppMessageOrderByWithRelationInput | WhatsAppMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WhatsAppMessages.
+     */
+    cursor?: WhatsAppMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WhatsAppMessages.
+     */
+    distinct?: WhatsAppMessageScalarFieldEnum | WhatsAppMessageScalarFieldEnum[]
+  }
+
+  /**
+   * WhatsAppMessage findMany
+   */
+  export type WhatsAppMessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which WhatsAppMessages to fetch.
+     */
+    where?: WhatsAppMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WhatsAppMessages to fetch.
+     */
+    orderBy?: WhatsAppMessageOrderByWithRelationInput | WhatsAppMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WhatsAppMessages.
+     */
+    cursor?: WhatsAppMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WhatsAppMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WhatsAppMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WhatsAppMessages.
+     */
+    distinct?: WhatsAppMessageScalarFieldEnum | WhatsAppMessageScalarFieldEnum[]
+  }
+
+  /**
+   * WhatsAppMessage create
+   */
+  export type WhatsAppMessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WhatsAppMessage.
+     */
+    data: XOR<WhatsAppMessageCreateInput, WhatsAppMessageUncheckedCreateInput>
+  }
+
+  /**
+   * WhatsAppMessage createMany
+   */
+  export type WhatsAppMessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WhatsAppMessages.
+     */
+    data: WhatsAppMessageCreateManyInput | WhatsAppMessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WhatsAppMessage createManyAndReturn
+   */
+  export type WhatsAppMessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * The data used to create many WhatsAppMessages.
+     */
+    data: WhatsAppMessageCreateManyInput | WhatsAppMessageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WhatsAppMessage update
+   */
+  export type WhatsAppMessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WhatsAppMessage.
+     */
+    data: XOR<WhatsAppMessageUpdateInput, WhatsAppMessageUncheckedUpdateInput>
+    /**
+     * Choose, which WhatsAppMessage to update.
+     */
+    where: WhatsAppMessageWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppMessage updateMany
+   */
+  export type WhatsAppMessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WhatsAppMessages.
+     */
+    data: XOR<WhatsAppMessageUpdateManyMutationInput, WhatsAppMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which WhatsAppMessages to update
+     */
+    where?: WhatsAppMessageWhereInput
+    /**
+     * Limit how many WhatsAppMessages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WhatsAppMessage updateManyAndReturn
+   */
+  export type WhatsAppMessageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * The data used to update WhatsAppMessages.
+     */
+    data: XOR<WhatsAppMessageUpdateManyMutationInput, WhatsAppMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which WhatsAppMessages to update
+     */
+    where?: WhatsAppMessageWhereInput
+    /**
+     * Limit how many WhatsAppMessages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WhatsAppMessage upsert
+   */
+  export type WhatsAppMessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WhatsAppMessage to update in case it exists.
+     */
+    where: WhatsAppMessageWhereUniqueInput
+    /**
+     * In case the WhatsAppMessage found by the `where` argument doesn't exist, create a new WhatsAppMessage with this data.
+     */
+    create: XOR<WhatsAppMessageCreateInput, WhatsAppMessageUncheckedCreateInput>
+    /**
+     * In case the WhatsAppMessage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WhatsAppMessageUpdateInput, WhatsAppMessageUncheckedUpdateInput>
+  }
+
+  /**
+   * WhatsAppMessage delete
+   */
+  export type WhatsAppMessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+    /**
+     * Filter which WhatsAppMessage to delete.
+     */
+    where: WhatsAppMessageWhereUniqueInput
+  }
+
+  /**
+   * WhatsAppMessage deleteMany
+   */
+  export type WhatsAppMessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WhatsAppMessages to delete
+     */
+    where?: WhatsAppMessageWhereInput
+    /**
+     * Limit how many WhatsAppMessages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WhatsAppMessage.contact
+   */
+  export type WhatsAppMessage$contactArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppContact
+     */
+    select?: WhatsAppContactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppContact
+     */
+    omit?: WhatsAppContactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppContactInclude<ExtArgs> | null
+    where?: WhatsAppContactWhereInput
+  }
+
+  /**
+   * WhatsAppMessage.user
+   */
+  export type WhatsAppMessage$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * WhatsAppMessage without action
+   */
+  export type WhatsAppMessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WhatsAppMessage
+     */
+    select?: WhatsAppMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WhatsAppMessage
+     */
+    omit?: WhatsAppMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhatsAppMessageInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model PushSubscription
    */
 
@@ -48330,6 +51082,46 @@ export namespace Prisma {
   export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
+  export const WhatsAppContactScalarFieldEnum: {
+    id: 'id',
+    phone: 'phone',
+    userId: 'userId',
+    optIn: 'optIn',
+    optInAt: 'optInAt',
+    optInSource: 'optInSource',
+    optOutAt: 'optOutAt',
+    lastInboundAt: 'lastInboundAt',
+    locale: 'locale',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WhatsAppContactScalarFieldEnum = (typeof WhatsAppContactScalarFieldEnum)[keyof typeof WhatsAppContactScalarFieldEnum]
+
+
+  export const WhatsAppMessageScalarFieldEnum: {
+    id: 'id',
+    direction: 'direction',
+    wamid: 'wamid',
+    contactId: 'contactId',
+    userId: 'userId',
+    toNumber: 'toNumber',
+    fromNumber: 'fromNumber',
+    templateName: 'templateName',
+    params: 'params',
+    body: 'body',
+    status: 'status',
+    notificationType: 'notificationType',
+    errorCode: 'errorCode',
+    scheduledFor: 'scheduledFor',
+    sentAt: 'sentAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WhatsAppMessageScalarFieldEnum = (typeof WhatsAppMessageScalarFieldEnum)[keyof typeof WhatsAppMessageScalarFieldEnum]
+
+
   export const PushSubscriptionScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -48857,6 +51649,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'WhatsAppDirection'
+   */
+  export type EnumWhatsAppDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WhatsAppDirection'>
+    
+
+
+  /**
+   * Reference to a field of type 'WhatsAppDirection[]'
+   */
+  export type ListEnumWhatsAppDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WhatsAppDirection[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'WhatsAppStatus'
+   */
+  export type EnumWhatsAppStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WhatsAppStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'WhatsAppStatus[]'
+   */
+  export type ListEnumWhatsAppStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WhatsAppStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'PostCategory'
    */
   export type EnumPostCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostCategory'>
@@ -49056,6 +51876,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenListRelationFilter
     notifications?: NotificationListRelationFilter
     pushSubscriptions?: PushSubscriptionListRelationFilter
+    whatsappContact?: XOR<WhatsAppContactNullableScalarRelationFilter, WhatsAppContactWhereInput> | null
+    whatsappMessages?: WhatsAppMessageListRelationFilter
     auditLogs?: AuditLogListRelationFilter
     classes?: ClassListRelationFilter
     posts?: PostListRelationFilter
@@ -49091,6 +51913,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
     pushSubscriptions?: PushSubscriptionOrderByRelationAggregateInput
+    whatsappContact?: WhatsAppContactOrderByWithRelationInput
+    whatsappMessages?: WhatsAppMessageOrderByRelationAggregateInput
     auditLogs?: AuditLogOrderByRelationAggregateInput
     classes?: ClassOrderByRelationAggregateInput
     posts?: PostOrderByRelationAggregateInput
@@ -49129,6 +51953,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenListRelationFilter
     notifications?: NotificationListRelationFilter
     pushSubscriptions?: PushSubscriptionListRelationFilter
+    whatsappContact?: XOR<WhatsAppContactNullableScalarRelationFilter, WhatsAppContactWhereInput> | null
+    whatsappMessages?: WhatsAppMessageListRelationFilter
     auditLogs?: AuditLogListRelationFilter
     classes?: ClassListRelationFilter
     posts?: PostListRelationFilter
@@ -51494,6 +54320,212 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
   }
 
+  export type WhatsAppContactWhereInput = {
+    AND?: WhatsAppContactWhereInput | WhatsAppContactWhereInput[]
+    OR?: WhatsAppContactWhereInput[]
+    NOT?: WhatsAppContactWhereInput | WhatsAppContactWhereInput[]
+    id?: StringFilter<"WhatsAppContact"> | string
+    phone?: StringFilter<"WhatsAppContact"> | string
+    userId?: StringNullableFilter<"WhatsAppContact"> | string | null
+    optIn?: BoolFilter<"WhatsAppContact"> | boolean
+    optInAt?: DateTimeNullableFilter<"WhatsAppContact"> | Date | string | null
+    optInSource?: StringNullableFilter<"WhatsAppContact"> | string | null
+    optOutAt?: DateTimeNullableFilter<"WhatsAppContact"> | Date | string | null
+    lastInboundAt?: DateTimeNullableFilter<"WhatsAppContact"> | Date | string | null
+    locale?: StringFilter<"WhatsAppContact"> | string
+    createdAt?: DateTimeFilter<"WhatsAppContact"> | Date | string
+    updatedAt?: DateTimeFilter<"WhatsAppContact"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    messages?: WhatsAppMessageListRelationFilter
+  }
+
+  export type WhatsAppContactOrderByWithRelationInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    optIn?: SortOrder
+    optInAt?: SortOrderInput | SortOrder
+    optInSource?: SortOrderInput | SortOrder
+    optOutAt?: SortOrderInput | SortOrder
+    lastInboundAt?: SortOrderInput | SortOrder
+    locale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    messages?: WhatsAppMessageOrderByRelationAggregateInput
+  }
+
+  export type WhatsAppContactWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    phone?: string
+    userId?: string
+    AND?: WhatsAppContactWhereInput | WhatsAppContactWhereInput[]
+    OR?: WhatsAppContactWhereInput[]
+    NOT?: WhatsAppContactWhereInput | WhatsAppContactWhereInput[]
+    optIn?: BoolFilter<"WhatsAppContact"> | boolean
+    optInAt?: DateTimeNullableFilter<"WhatsAppContact"> | Date | string | null
+    optInSource?: StringNullableFilter<"WhatsAppContact"> | string | null
+    optOutAt?: DateTimeNullableFilter<"WhatsAppContact"> | Date | string | null
+    lastInboundAt?: DateTimeNullableFilter<"WhatsAppContact"> | Date | string | null
+    locale?: StringFilter<"WhatsAppContact"> | string
+    createdAt?: DateTimeFilter<"WhatsAppContact"> | Date | string
+    updatedAt?: DateTimeFilter<"WhatsAppContact"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    messages?: WhatsAppMessageListRelationFilter
+  }, "id" | "phone" | "userId">
+
+  export type WhatsAppContactOrderByWithAggregationInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    optIn?: SortOrder
+    optInAt?: SortOrderInput | SortOrder
+    optInSource?: SortOrderInput | SortOrder
+    optOutAt?: SortOrderInput | SortOrder
+    lastInboundAt?: SortOrderInput | SortOrder
+    locale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WhatsAppContactCountOrderByAggregateInput
+    _max?: WhatsAppContactMaxOrderByAggregateInput
+    _min?: WhatsAppContactMinOrderByAggregateInput
+  }
+
+  export type WhatsAppContactScalarWhereWithAggregatesInput = {
+    AND?: WhatsAppContactScalarWhereWithAggregatesInput | WhatsAppContactScalarWhereWithAggregatesInput[]
+    OR?: WhatsAppContactScalarWhereWithAggregatesInput[]
+    NOT?: WhatsAppContactScalarWhereWithAggregatesInput | WhatsAppContactScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WhatsAppContact"> | string
+    phone?: StringWithAggregatesFilter<"WhatsAppContact"> | string
+    userId?: StringNullableWithAggregatesFilter<"WhatsAppContact"> | string | null
+    optIn?: BoolWithAggregatesFilter<"WhatsAppContact"> | boolean
+    optInAt?: DateTimeNullableWithAggregatesFilter<"WhatsAppContact"> | Date | string | null
+    optInSource?: StringNullableWithAggregatesFilter<"WhatsAppContact"> | string | null
+    optOutAt?: DateTimeNullableWithAggregatesFilter<"WhatsAppContact"> | Date | string | null
+    lastInboundAt?: DateTimeNullableWithAggregatesFilter<"WhatsAppContact"> | Date | string | null
+    locale?: StringWithAggregatesFilter<"WhatsAppContact"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"WhatsAppContact"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WhatsAppContact"> | Date | string
+  }
+
+  export type WhatsAppMessageWhereInput = {
+    AND?: WhatsAppMessageWhereInput | WhatsAppMessageWhereInput[]
+    OR?: WhatsAppMessageWhereInput[]
+    NOT?: WhatsAppMessageWhereInput | WhatsAppMessageWhereInput[]
+    id?: StringFilter<"WhatsAppMessage"> | string
+    direction?: EnumWhatsAppDirectionFilter<"WhatsAppMessage"> | $Enums.WhatsAppDirection
+    wamid?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    contactId?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    userId?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    toNumber?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    fromNumber?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    templateName?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    params?: JsonNullableFilter<"WhatsAppMessage">
+    body?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    status?: EnumWhatsAppStatusFilter<"WhatsAppMessage"> | $Enums.WhatsAppStatus
+    notificationType?: EnumNotificationTypeNullableFilter<"WhatsAppMessage"> | $Enums.NotificationType | null
+    errorCode?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    scheduledFor?: DateTimeNullableFilter<"WhatsAppMessage"> | Date | string | null
+    sentAt?: DateTimeNullableFilter<"WhatsAppMessage"> | Date | string | null
+    createdAt?: DateTimeFilter<"WhatsAppMessage"> | Date | string
+    updatedAt?: DateTimeFilter<"WhatsAppMessage"> | Date | string
+    contact?: XOR<WhatsAppContactNullableScalarRelationFilter, WhatsAppContactWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type WhatsAppMessageOrderByWithRelationInput = {
+    id?: SortOrder
+    direction?: SortOrder
+    wamid?: SortOrderInput | SortOrder
+    contactId?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
+    toNumber?: SortOrderInput | SortOrder
+    fromNumber?: SortOrderInput | SortOrder
+    templateName?: SortOrderInput | SortOrder
+    params?: SortOrderInput | SortOrder
+    body?: SortOrderInput | SortOrder
+    status?: SortOrder
+    notificationType?: SortOrderInput | SortOrder
+    errorCode?: SortOrderInput | SortOrder
+    scheduledFor?: SortOrderInput | SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    contact?: WhatsAppContactOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type WhatsAppMessageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    wamid?: string
+    AND?: WhatsAppMessageWhereInput | WhatsAppMessageWhereInput[]
+    OR?: WhatsAppMessageWhereInput[]
+    NOT?: WhatsAppMessageWhereInput | WhatsAppMessageWhereInput[]
+    direction?: EnumWhatsAppDirectionFilter<"WhatsAppMessage"> | $Enums.WhatsAppDirection
+    contactId?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    userId?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    toNumber?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    fromNumber?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    templateName?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    params?: JsonNullableFilter<"WhatsAppMessage">
+    body?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    status?: EnumWhatsAppStatusFilter<"WhatsAppMessage"> | $Enums.WhatsAppStatus
+    notificationType?: EnumNotificationTypeNullableFilter<"WhatsAppMessage"> | $Enums.NotificationType | null
+    errorCode?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    scheduledFor?: DateTimeNullableFilter<"WhatsAppMessage"> | Date | string | null
+    sentAt?: DateTimeNullableFilter<"WhatsAppMessage"> | Date | string | null
+    createdAt?: DateTimeFilter<"WhatsAppMessage"> | Date | string
+    updatedAt?: DateTimeFilter<"WhatsAppMessage"> | Date | string
+    contact?: XOR<WhatsAppContactNullableScalarRelationFilter, WhatsAppContactWhereInput> | null
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id" | "wamid">
+
+  export type WhatsAppMessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    direction?: SortOrder
+    wamid?: SortOrderInput | SortOrder
+    contactId?: SortOrderInput | SortOrder
+    userId?: SortOrderInput | SortOrder
+    toNumber?: SortOrderInput | SortOrder
+    fromNumber?: SortOrderInput | SortOrder
+    templateName?: SortOrderInput | SortOrder
+    params?: SortOrderInput | SortOrder
+    body?: SortOrderInput | SortOrder
+    status?: SortOrder
+    notificationType?: SortOrderInput | SortOrder
+    errorCode?: SortOrderInput | SortOrder
+    scheduledFor?: SortOrderInput | SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WhatsAppMessageCountOrderByAggregateInput
+    _max?: WhatsAppMessageMaxOrderByAggregateInput
+    _min?: WhatsAppMessageMinOrderByAggregateInput
+  }
+
+  export type WhatsAppMessageScalarWhereWithAggregatesInput = {
+    AND?: WhatsAppMessageScalarWhereWithAggregatesInput | WhatsAppMessageScalarWhereWithAggregatesInput[]
+    OR?: WhatsAppMessageScalarWhereWithAggregatesInput[]
+    NOT?: WhatsAppMessageScalarWhereWithAggregatesInput | WhatsAppMessageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WhatsAppMessage"> | string
+    direction?: EnumWhatsAppDirectionWithAggregatesFilter<"WhatsAppMessage"> | $Enums.WhatsAppDirection
+    wamid?: StringNullableWithAggregatesFilter<"WhatsAppMessage"> | string | null
+    contactId?: StringNullableWithAggregatesFilter<"WhatsAppMessage"> | string | null
+    userId?: StringNullableWithAggregatesFilter<"WhatsAppMessage"> | string | null
+    toNumber?: StringNullableWithAggregatesFilter<"WhatsAppMessage"> | string | null
+    fromNumber?: StringNullableWithAggregatesFilter<"WhatsAppMessage"> | string | null
+    templateName?: StringNullableWithAggregatesFilter<"WhatsAppMessage"> | string | null
+    params?: JsonNullableWithAggregatesFilter<"WhatsAppMessage">
+    body?: StringNullableWithAggregatesFilter<"WhatsAppMessage"> | string | null
+    status?: EnumWhatsAppStatusWithAggregatesFilter<"WhatsAppMessage"> | $Enums.WhatsAppStatus
+    notificationType?: EnumNotificationTypeNullableWithAggregatesFilter<"WhatsAppMessage"> | $Enums.NotificationType | null
+    errorCode?: StringNullableWithAggregatesFilter<"WhatsAppMessage"> | string | null
+    scheduledFor?: DateTimeNullableWithAggregatesFilter<"WhatsAppMessage"> | Date | string | null
+    sentAt?: DateTimeNullableWithAggregatesFilter<"WhatsAppMessage"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WhatsAppMessage"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WhatsAppMessage"> | Date | string
+  }
+
   export type PushSubscriptionWhereInput = {
     AND?: PushSubscriptionWhereInput | PushSubscriptionWhereInput[]
     OR?: PushSubscriptionWhereInput[]
@@ -52207,6 +55239,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -52240,6 +55274,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -52273,6 +55309,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -52306,6 +55344,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -54844,6 +57884,245 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type WhatsAppContactCreateInput = {
+    id?: string
+    phone: string
+    optIn?: boolean
+    optInAt?: Date | string | null
+    optInSource?: string | null
+    optOutAt?: Date | string | null
+    lastInboundAt?: Date | string | null
+    locale?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutWhatsappContactInput
+    messages?: WhatsAppMessageCreateNestedManyWithoutContactInput
+  }
+
+  export type WhatsAppContactUncheckedCreateInput = {
+    id?: string
+    phone: string
+    userId?: string | null
+    optIn?: boolean
+    optInAt?: Date | string | null
+    optInSource?: string | null
+    optOutAt?: Date | string | null
+    lastInboundAt?: Date | string | null
+    locale?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
+  }
+
+  export type WhatsAppContactUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    optIn?: BoolFieldUpdateOperationsInput | boolean
+    optInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    optInSource?: NullableStringFieldUpdateOperationsInput | string | null
+    optOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInboundAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    locale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutWhatsappContactNestedInput
+    messages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
+  }
+
+  export type WhatsAppContactUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    optIn?: BoolFieldUpdateOperationsInput | boolean
+    optInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    optInSource?: NullableStringFieldUpdateOperationsInput | string | null
+    optOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInboundAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    locale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
+  }
+
+  export type WhatsAppContactCreateManyInput = {
+    id?: string
+    phone: string
+    userId?: string | null
+    optIn?: boolean
+    optInAt?: Date | string | null
+    optInSource?: string | null
+    optOutAt?: Date | string | null
+    lastInboundAt?: Date | string | null
+    locale?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhatsAppContactUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    optIn?: BoolFieldUpdateOperationsInput | boolean
+    optInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    optInSource?: NullableStringFieldUpdateOperationsInput | string | null
+    optOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInboundAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    locale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppContactUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    optIn?: BoolFieldUpdateOperationsInput | boolean
+    optInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    optInSource?: NullableStringFieldUpdateOperationsInput | string | null
+    optOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInboundAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    locale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppMessageCreateInput = {
+    id?: string
+    direction: $Enums.WhatsAppDirection
+    wamid?: string | null
+    toNumber?: string | null
+    fromNumber?: string | null
+    templateName?: string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: string | null
+    status?: $Enums.WhatsAppStatus
+    notificationType?: $Enums.NotificationType | null
+    errorCode?: string | null
+    scheduledFor?: Date | string | null
+    sentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contact?: WhatsAppContactCreateNestedOneWithoutMessagesInput
+    user?: UserCreateNestedOneWithoutWhatsappMessagesInput
+  }
+
+  export type WhatsAppMessageUncheckedCreateInput = {
+    id?: string
+    direction: $Enums.WhatsAppDirection
+    wamid?: string | null
+    contactId?: string | null
+    userId?: string | null
+    toNumber?: string | null
+    fromNumber?: string | null
+    templateName?: string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: string | null
+    status?: $Enums.WhatsAppStatus
+    notificationType?: $Enums.NotificationType | null
+    errorCode?: string | null
+    scheduledFor?: Date | string | null
+    sentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhatsAppMessageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    direction?: EnumWhatsAppDirectionFieldUpdateOperationsInput | $Enums.WhatsAppDirection
+    wamid?: NullableStringFieldUpdateOperationsInput | string | null
+    toNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fromNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWhatsAppStatusFieldUpdateOperationsInput | $Enums.WhatsAppStatus
+    notificationType?: NullableEnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType | null
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contact?: WhatsAppContactUpdateOneWithoutMessagesNestedInput
+    user?: UserUpdateOneWithoutWhatsappMessagesNestedInput
+  }
+
+  export type WhatsAppMessageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    direction?: EnumWhatsAppDirectionFieldUpdateOperationsInput | $Enums.WhatsAppDirection
+    wamid?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    toNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fromNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWhatsAppStatusFieldUpdateOperationsInput | $Enums.WhatsAppStatus
+    notificationType?: NullableEnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType | null
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppMessageCreateManyInput = {
+    id?: string
+    direction: $Enums.WhatsAppDirection
+    wamid?: string | null
+    contactId?: string | null
+    userId?: string | null
+    toNumber?: string | null
+    fromNumber?: string | null
+    templateName?: string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: string | null
+    status?: $Enums.WhatsAppStatus
+    notificationType?: $Enums.NotificationType | null
+    errorCode?: string | null
+    scheduledFor?: Date | string | null
+    sentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhatsAppMessageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    direction?: EnumWhatsAppDirectionFieldUpdateOperationsInput | $Enums.WhatsAppDirection
+    wamid?: NullableStringFieldUpdateOperationsInput | string | null
+    toNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fromNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWhatsAppStatusFieldUpdateOperationsInput | $Enums.WhatsAppStatus
+    notificationType?: NullableEnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType | null
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppMessageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    direction?: EnumWhatsAppDirectionFieldUpdateOperationsInput | $Enums.WhatsAppDirection
+    wamid?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    toNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fromNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWhatsAppStatusFieldUpdateOperationsInput | $Enums.WhatsAppStatus
+    notificationType?: NullableEnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType | null
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type PushSubscriptionCreateInput = {
     id?: string
     endpoint: string
@@ -55779,6 +59058,17 @@ export namespace Prisma {
     none?: PushSubscriptionWhereInput
   }
 
+  export type WhatsAppContactNullableScalarRelationFilter = {
+    is?: WhatsAppContactWhereInput | null
+    isNot?: WhatsAppContactWhereInput | null
+  }
+
+  export type WhatsAppMessageListRelationFilter = {
+    every?: WhatsAppMessageWhereInput
+    some?: WhatsAppMessageWhereInput
+    none?: WhatsAppMessageWhereInput
+  }
+
   export type PostListRelationFilter = {
     every?: PostWhereInput
     some?: PostWhereInput
@@ -55835,6 +59125,10 @@ export namespace Prisma {
   }
 
   export type PushSubscriptionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WhatsAppMessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -57782,6 +61076,157 @@ export namespace Prisma {
     _max?: NestedEnumNotificationPriorityFilter<$PrismaModel>
   }
 
+  export type WhatsAppContactCountOrderByAggregateInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    userId?: SortOrder
+    optIn?: SortOrder
+    optInAt?: SortOrder
+    optInSource?: SortOrder
+    optOutAt?: SortOrder
+    lastInboundAt?: SortOrder
+    locale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WhatsAppContactMaxOrderByAggregateInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    userId?: SortOrder
+    optIn?: SortOrder
+    optInAt?: SortOrder
+    optInSource?: SortOrder
+    optOutAt?: SortOrder
+    lastInboundAt?: SortOrder
+    locale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WhatsAppContactMinOrderByAggregateInput = {
+    id?: SortOrder
+    phone?: SortOrder
+    userId?: SortOrder
+    optIn?: SortOrder
+    optInAt?: SortOrder
+    optInSource?: SortOrder
+    optOutAt?: SortOrder
+    lastInboundAt?: SortOrder
+    locale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumWhatsAppDirectionFilter<$PrismaModel = never> = {
+    equals?: $Enums.WhatsAppDirection | EnumWhatsAppDirectionFieldRefInput<$PrismaModel>
+    in?: $Enums.WhatsAppDirection[] | ListEnumWhatsAppDirectionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WhatsAppDirection[] | ListEnumWhatsAppDirectionFieldRefInput<$PrismaModel>
+    not?: NestedEnumWhatsAppDirectionFilter<$PrismaModel> | $Enums.WhatsAppDirection
+  }
+
+  export type EnumWhatsAppStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WhatsAppStatus | EnumWhatsAppStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WhatsAppStatus[] | ListEnumWhatsAppStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WhatsAppStatus[] | ListEnumWhatsAppStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWhatsAppStatusFilter<$PrismaModel> | $Enums.WhatsAppStatus
+  }
+
+  export type EnumNotificationTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumNotificationTypeNullableFilter<$PrismaModel> | $Enums.NotificationType | null
+  }
+
+  export type WhatsAppMessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    direction?: SortOrder
+    wamid?: SortOrder
+    contactId?: SortOrder
+    userId?: SortOrder
+    toNumber?: SortOrder
+    fromNumber?: SortOrder
+    templateName?: SortOrder
+    params?: SortOrder
+    body?: SortOrder
+    status?: SortOrder
+    notificationType?: SortOrder
+    errorCode?: SortOrder
+    scheduledFor?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WhatsAppMessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    direction?: SortOrder
+    wamid?: SortOrder
+    contactId?: SortOrder
+    userId?: SortOrder
+    toNumber?: SortOrder
+    fromNumber?: SortOrder
+    templateName?: SortOrder
+    body?: SortOrder
+    status?: SortOrder
+    notificationType?: SortOrder
+    errorCode?: SortOrder
+    scheduledFor?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WhatsAppMessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    direction?: SortOrder
+    wamid?: SortOrder
+    contactId?: SortOrder
+    userId?: SortOrder
+    toNumber?: SortOrder
+    fromNumber?: SortOrder
+    templateName?: SortOrder
+    body?: SortOrder
+    status?: SortOrder
+    notificationType?: SortOrder
+    errorCode?: SortOrder
+    scheduledFor?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumWhatsAppDirectionWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WhatsAppDirection | EnumWhatsAppDirectionFieldRefInput<$PrismaModel>
+    in?: $Enums.WhatsAppDirection[] | ListEnumWhatsAppDirectionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WhatsAppDirection[] | ListEnumWhatsAppDirectionFieldRefInput<$PrismaModel>
+    not?: NestedEnumWhatsAppDirectionWithAggregatesFilter<$PrismaModel> | $Enums.WhatsAppDirection
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWhatsAppDirectionFilter<$PrismaModel>
+    _max?: NestedEnumWhatsAppDirectionFilter<$PrismaModel>
+  }
+
+  export type EnumWhatsAppStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WhatsAppStatus | EnumWhatsAppStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WhatsAppStatus[] | ListEnumWhatsAppStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WhatsAppStatus[] | ListEnumWhatsAppStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWhatsAppStatusWithAggregatesFilter<$PrismaModel> | $Enums.WhatsAppStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWhatsAppStatusFilter<$PrismaModel>
+    _max?: NestedEnumWhatsAppStatusFilter<$PrismaModel>
+  }
+
+  export type EnumNotificationTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumNotificationTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.NotificationType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumNotificationTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumNotificationTypeNullableFilter<$PrismaModel>
+  }
+
   export type PushSubscriptionCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -58902,6 +62347,19 @@ export namespace Prisma {
     connect?: PushSubscriptionWhereUniqueInput | PushSubscriptionWhereUniqueInput[]
   }
 
+  export type WhatsAppContactCreateNestedOneWithoutUserInput = {
+    create?: XOR<WhatsAppContactCreateWithoutUserInput, WhatsAppContactUncheckedCreateWithoutUserInput>
+    connectOrCreate?: WhatsAppContactCreateOrConnectWithoutUserInput
+    connect?: WhatsAppContactWhereUniqueInput
+  }
+
+  export type WhatsAppMessageCreateNestedManyWithoutUserInput = {
+    create?: XOR<WhatsAppMessageCreateWithoutUserInput, WhatsAppMessageUncheckedCreateWithoutUserInput> | WhatsAppMessageCreateWithoutUserInput[] | WhatsAppMessageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WhatsAppMessageCreateOrConnectWithoutUserInput | WhatsAppMessageCreateOrConnectWithoutUserInput[]
+    createMany?: WhatsAppMessageCreateManyUserInputEnvelope
+    connect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+  }
+
   export type AuditLogCreateNestedManyWithoutActorInput = {
     create?: XOR<AuditLogCreateWithoutActorInput, AuditLogUncheckedCreateWithoutActorInput> | AuditLogCreateWithoutActorInput[] | AuditLogUncheckedCreateWithoutActorInput[]
     connectOrCreate?: AuditLogCreateOrConnectWithoutActorInput | AuditLogCreateOrConnectWithoutActorInput[]
@@ -59024,6 +62482,19 @@ export namespace Prisma {
     connectOrCreate?: PushSubscriptionCreateOrConnectWithoutUserInput | PushSubscriptionCreateOrConnectWithoutUserInput[]
     createMany?: PushSubscriptionCreateManyUserInputEnvelope
     connect?: PushSubscriptionWhereUniqueInput | PushSubscriptionWhereUniqueInput[]
+  }
+
+  export type WhatsAppContactUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<WhatsAppContactCreateWithoutUserInput, WhatsAppContactUncheckedCreateWithoutUserInput>
+    connectOrCreate?: WhatsAppContactCreateOrConnectWithoutUserInput
+    connect?: WhatsAppContactWhereUniqueInput
+  }
+
+  export type WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<WhatsAppMessageCreateWithoutUserInput, WhatsAppMessageUncheckedCreateWithoutUserInput> | WhatsAppMessageCreateWithoutUserInput[] | WhatsAppMessageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WhatsAppMessageCreateOrConnectWithoutUserInput | WhatsAppMessageCreateOrConnectWithoutUserInput[]
+    createMany?: WhatsAppMessageCreateManyUserInputEnvelope
+    connect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
   }
 
   export type AuditLogUncheckedCreateNestedManyWithoutActorInput = {
@@ -59290,6 +62761,30 @@ export namespace Prisma {
     deleteMany?: PushSubscriptionScalarWhereInput | PushSubscriptionScalarWhereInput[]
   }
 
+  export type WhatsAppContactUpdateOneWithoutUserNestedInput = {
+    create?: XOR<WhatsAppContactCreateWithoutUserInput, WhatsAppContactUncheckedCreateWithoutUserInput>
+    connectOrCreate?: WhatsAppContactCreateOrConnectWithoutUserInput
+    upsert?: WhatsAppContactUpsertWithoutUserInput
+    disconnect?: WhatsAppContactWhereInput | boolean
+    delete?: WhatsAppContactWhereInput | boolean
+    connect?: WhatsAppContactWhereUniqueInput
+    update?: XOR<XOR<WhatsAppContactUpdateToOneWithWhereWithoutUserInput, WhatsAppContactUpdateWithoutUserInput>, WhatsAppContactUncheckedUpdateWithoutUserInput>
+  }
+
+  export type WhatsAppMessageUpdateManyWithoutUserNestedInput = {
+    create?: XOR<WhatsAppMessageCreateWithoutUserInput, WhatsAppMessageUncheckedCreateWithoutUserInput> | WhatsAppMessageCreateWithoutUserInput[] | WhatsAppMessageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WhatsAppMessageCreateOrConnectWithoutUserInput | WhatsAppMessageCreateOrConnectWithoutUserInput[]
+    upsert?: WhatsAppMessageUpsertWithWhereUniqueWithoutUserInput | WhatsAppMessageUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: WhatsAppMessageCreateManyUserInputEnvelope
+    set?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    disconnect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    delete?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    connect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    update?: WhatsAppMessageUpdateWithWhereUniqueWithoutUserInput | WhatsAppMessageUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: WhatsAppMessageUpdateManyWithWhereWithoutUserInput | WhatsAppMessageUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: WhatsAppMessageScalarWhereInput | WhatsAppMessageScalarWhereInput[]
+  }
+
   export type AuditLogUpdateManyWithoutActorNestedInput = {
     create?: XOR<AuditLogCreateWithoutActorInput, AuditLogUncheckedCreateWithoutActorInput> | AuditLogCreateWithoutActorInput[] | AuditLogUncheckedCreateWithoutActorInput[]
     connectOrCreate?: AuditLogCreateOrConnectWithoutActorInput | AuditLogCreateOrConnectWithoutActorInput[]
@@ -59532,6 +63027,30 @@ export namespace Prisma {
     update?: PushSubscriptionUpdateWithWhereUniqueWithoutUserInput | PushSubscriptionUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: PushSubscriptionUpdateManyWithWhereWithoutUserInput | PushSubscriptionUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: PushSubscriptionScalarWhereInput | PushSubscriptionScalarWhereInput[]
+  }
+
+  export type WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<WhatsAppContactCreateWithoutUserInput, WhatsAppContactUncheckedCreateWithoutUserInput>
+    connectOrCreate?: WhatsAppContactCreateOrConnectWithoutUserInput
+    upsert?: WhatsAppContactUpsertWithoutUserInput
+    disconnect?: WhatsAppContactWhereInput | boolean
+    delete?: WhatsAppContactWhereInput | boolean
+    connect?: WhatsAppContactWhereUniqueInput
+    update?: XOR<XOR<WhatsAppContactUpdateToOneWithWhereWithoutUserInput, WhatsAppContactUpdateWithoutUserInput>, WhatsAppContactUncheckedUpdateWithoutUserInput>
+  }
+
+  export type WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<WhatsAppMessageCreateWithoutUserInput, WhatsAppMessageUncheckedCreateWithoutUserInput> | WhatsAppMessageCreateWithoutUserInput[] | WhatsAppMessageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WhatsAppMessageCreateOrConnectWithoutUserInput | WhatsAppMessageCreateOrConnectWithoutUserInput[]
+    upsert?: WhatsAppMessageUpsertWithWhereUniqueWithoutUserInput | WhatsAppMessageUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: WhatsAppMessageCreateManyUserInputEnvelope
+    set?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    disconnect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    delete?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    connect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    update?: WhatsAppMessageUpdateWithWhereUniqueWithoutUserInput | WhatsAppMessageUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: WhatsAppMessageUpdateManyWithWhereWithoutUserInput | WhatsAppMessageUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: WhatsAppMessageScalarWhereInput | WhatsAppMessageScalarWhereInput[]
   }
 
   export type AuditLogUncheckedUpdateManyWithoutActorNestedInput = {
@@ -61905,6 +65424,108 @@ export namespace Prisma {
     update?: XOR<XOR<StudentUpdateToOneWithWhereWithoutNotificationsInput, StudentUpdateWithoutNotificationsInput>, StudentUncheckedUpdateWithoutNotificationsInput>
   }
 
+  export type UserCreateNestedOneWithoutWhatsappContactInput = {
+    create?: XOR<UserCreateWithoutWhatsappContactInput, UserUncheckedCreateWithoutWhatsappContactInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWhatsappContactInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type WhatsAppMessageCreateNestedManyWithoutContactInput = {
+    create?: XOR<WhatsAppMessageCreateWithoutContactInput, WhatsAppMessageUncheckedCreateWithoutContactInput> | WhatsAppMessageCreateWithoutContactInput[] | WhatsAppMessageUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: WhatsAppMessageCreateOrConnectWithoutContactInput | WhatsAppMessageCreateOrConnectWithoutContactInput[]
+    createMany?: WhatsAppMessageCreateManyContactInputEnvelope
+    connect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+  }
+
+  export type WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput = {
+    create?: XOR<WhatsAppMessageCreateWithoutContactInput, WhatsAppMessageUncheckedCreateWithoutContactInput> | WhatsAppMessageCreateWithoutContactInput[] | WhatsAppMessageUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: WhatsAppMessageCreateOrConnectWithoutContactInput | WhatsAppMessageCreateOrConnectWithoutContactInput[]
+    createMany?: WhatsAppMessageCreateManyContactInputEnvelope
+    connect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneWithoutWhatsappContactNestedInput = {
+    create?: XOR<UserCreateWithoutWhatsappContactInput, UserUncheckedCreateWithoutWhatsappContactInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWhatsappContactInput
+    upsert?: UserUpsertWithoutWhatsappContactInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutWhatsappContactInput, UserUpdateWithoutWhatsappContactInput>, UserUncheckedUpdateWithoutWhatsappContactInput>
+  }
+
+  export type WhatsAppMessageUpdateManyWithoutContactNestedInput = {
+    create?: XOR<WhatsAppMessageCreateWithoutContactInput, WhatsAppMessageUncheckedCreateWithoutContactInput> | WhatsAppMessageCreateWithoutContactInput[] | WhatsAppMessageUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: WhatsAppMessageCreateOrConnectWithoutContactInput | WhatsAppMessageCreateOrConnectWithoutContactInput[]
+    upsert?: WhatsAppMessageUpsertWithWhereUniqueWithoutContactInput | WhatsAppMessageUpsertWithWhereUniqueWithoutContactInput[]
+    createMany?: WhatsAppMessageCreateManyContactInputEnvelope
+    set?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    disconnect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    delete?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    connect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    update?: WhatsAppMessageUpdateWithWhereUniqueWithoutContactInput | WhatsAppMessageUpdateWithWhereUniqueWithoutContactInput[]
+    updateMany?: WhatsAppMessageUpdateManyWithWhereWithoutContactInput | WhatsAppMessageUpdateManyWithWhereWithoutContactInput[]
+    deleteMany?: WhatsAppMessageScalarWhereInput | WhatsAppMessageScalarWhereInput[]
+  }
+
+  export type WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput = {
+    create?: XOR<WhatsAppMessageCreateWithoutContactInput, WhatsAppMessageUncheckedCreateWithoutContactInput> | WhatsAppMessageCreateWithoutContactInput[] | WhatsAppMessageUncheckedCreateWithoutContactInput[]
+    connectOrCreate?: WhatsAppMessageCreateOrConnectWithoutContactInput | WhatsAppMessageCreateOrConnectWithoutContactInput[]
+    upsert?: WhatsAppMessageUpsertWithWhereUniqueWithoutContactInput | WhatsAppMessageUpsertWithWhereUniqueWithoutContactInput[]
+    createMany?: WhatsAppMessageCreateManyContactInputEnvelope
+    set?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    disconnect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    delete?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    connect?: WhatsAppMessageWhereUniqueInput | WhatsAppMessageWhereUniqueInput[]
+    update?: WhatsAppMessageUpdateWithWhereUniqueWithoutContactInput | WhatsAppMessageUpdateWithWhereUniqueWithoutContactInput[]
+    updateMany?: WhatsAppMessageUpdateManyWithWhereWithoutContactInput | WhatsAppMessageUpdateManyWithWhereWithoutContactInput[]
+    deleteMany?: WhatsAppMessageScalarWhereInput | WhatsAppMessageScalarWhereInput[]
+  }
+
+  export type WhatsAppContactCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<WhatsAppContactCreateWithoutMessagesInput, WhatsAppContactUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: WhatsAppContactCreateOrConnectWithoutMessagesInput
+    connect?: WhatsAppContactWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutWhatsappMessagesInput = {
+    create?: XOR<UserCreateWithoutWhatsappMessagesInput, UserUncheckedCreateWithoutWhatsappMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWhatsappMessagesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumWhatsAppDirectionFieldUpdateOperationsInput = {
+    set?: $Enums.WhatsAppDirection
+  }
+
+  export type EnumWhatsAppStatusFieldUpdateOperationsInput = {
+    set?: $Enums.WhatsAppStatus
+  }
+
+  export type NullableEnumNotificationTypeFieldUpdateOperationsInput = {
+    set?: $Enums.NotificationType | null
+  }
+
+  export type WhatsAppContactUpdateOneWithoutMessagesNestedInput = {
+    create?: XOR<WhatsAppContactCreateWithoutMessagesInput, WhatsAppContactUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: WhatsAppContactCreateOrConnectWithoutMessagesInput
+    upsert?: WhatsAppContactUpsertWithoutMessagesInput
+    disconnect?: WhatsAppContactWhereInput | boolean
+    delete?: WhatsAppContactWhereInput | boolean
+    connect?: WhatsAppContactWhereUniqueInput
+    update?: XOR<XOR<WhatsAppContactUpdateToOneWithWhereWithoutMessagesInput, WhatsAppContactUpdateWithoutMessagesInput>, WhatsAppContactUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type UserUpdateOneWithoutWhatsappMessagesNestedInput = {
+    create?: XOR<UserCreateWithoutWhatsappMessagesInput, UserUncheckedCreateWithoutWhatsappMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWhatsappMessagesInput
+    upsert?: UserUpsertWithoutWhatsappMessagesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutWhatsappMessagesInput, UserUpdateWithoutWhatsappMessagesInput>, UserUncheckedUpdateWithoutWhatsappMessagesInput>
+  }
+
   export type UserCreateNestedOneWithoutPushSubscriptionsInput = {
     create?: XOR<UserCreateWithoutPushSubscriptionsInput, UserUncheckedCreateWithoutPushSubscriptionsInput>
     connectOrCreate?: UserCreateOrConnectWithoutPushSubscriptionsInput
@@ -62630,6 +66251,57 @@ export namespace Prisma {
     _max?: NestedEnumNotificationPriorityFilter<$PrismaModel>
   }
 
+  export type NestedEnumWhatsAppDirectionFilter<$PrismaModel = never> = {
+    equals?: $Enums.WhatsAppDirection | EnumWhatsAppDirectionFieldRefInput<$PrismaModel>
+    in?: $Enums.WhatsAppDirection[] | ListEnumWhatsAppDirectionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WhatsAppDirection[] | ListEnumWhatsAppDirectionFieldRefInput<$PrismaModel>
+    not?: NestedEnumWhatsAppDirectionFilter<$PrismaModel> | $Enums.WhatsAppDirection
+  }
+
+  export type NestedEnumWhatsAppStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WhatsAppStatus | EnumWhatsAppStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WhatsAppStatus[] | ListEnumWhatsAppStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WhatsAppStatus[] | ListEnumWhatsAppStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWhatsAppStatusFilter<$PrismaModel> | $Enums.WhatsAppStatus
+  }
+
+  export type NestedEnumNotificationTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumNotificationTypeNullableFilter<$PrismaModel> | $Enums.NotificationType | null
+  }
+
+  export type NestedEnumWhatsAppDirectionWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WhatsAppDirection | EnumWhatsAppDirectionFieldRefInput<$PrismaModel>
+    in?: $Enums.WhatsAppDirection[] | ListEnumWhatsAppDirectionFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WhatsAppDirection[] | ListEnumWhatsAppDirectionFieldRefInput<$PrismaModel>
+    not?: NestedEnumWhatsAppDirectionWithAggregatesFilter<$PrismaModel> | $Enums.WhatsAppDirection
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWhatsAppDirectionFilter<$PrismaModel>
+    _max?: NestedEnumWhatsAppDirectionFilter<$PrismaModel>
+  }
+
+  export type NestedEnumWhatsAppStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WhatsAppStatus | EnumWhatsAppStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WhatsAppStatus[] | ListEnumWhatsAppStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WhatsAppStatus[] | ListEnumWhatsAppStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWhatsAppStatusWithAggregatesFilter<$PrismaModel> | $Enums.WhatsAppStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWhatsAppStatusFilter<$PrismaModel>
+    _max?: NestedEnumWhatsAppStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumNotificationTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumNotificationTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.NotificationType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumNotificationTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumNotificationTypeNullableFilter<$PrismaModel>
+  }
+
   export type NestedEnumExamDayFilter<$PrismaModel = never> = {
     equals?: $Enums.ExamDay | EnumExamDayFieldRefInput<$PrismaModel>
     in?: $Enums.ExamDay[] | ListEnumExamDayFieldRefInput<$PrismaModel>
@@ -62723,6 +66395,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -62755,6 +66429,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -63727,6 +67403,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -63759,6 +67437,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -64759,6 +68439,87 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type WhatsAppContactCreateWithoutUserInput = {
+    id?: string
+    phone: string
+    optIn?: boolean
+    optInAt?: Date | string | null
+    optInSource?: string | null
+    optOutAt?: Date | string | null
+    lastInboundAt?: Date | string | null
+    locale?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: WhatsAppMessageCreateNestedManyWithoutContactInput
+  }
+
+  export type WhatsAppContactUncheckedCreateWithoutUserInput = {
+    id?: string
+    phone: string
+    optIn?: boolean
+    optInAt?: Date | string | null
+    optInSource?: string | null
+    optOutAt?: Date | string | null
+    lastInboundAt?: Date | string | null
+    locale?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: WhatsAppMessageUncheckedCreateNestedManyWithoutContactInput
+  }
+
+  export type WhatsAppContactCreateOrConnectWithoutUserInput = {
+    where: WhatsAppContactWhereUniqueInput
+    create: XOR<WhatsAppContactCreateWithoutUserInput, WhatsAppContactUncheckedCreateWithoutUserInput>
+  }
+
+  export type WhatsAppMessageCreateWithoutUserInput = {
+    id?: string
+    direction: $Enums.WhatsAppDirection
+    wamid?: string | null
+    toNumber?: string | null
+    fromNumber?: string | null
+    templateName?: string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: string | null
+    status?: $Enums.WhatsAppStatus
+    notificationType?: $Enums.NotificationType | null
+    errorCode?: string | null
+    scheduledFor?: Date | string | null
+    sentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    contact?: WhatsAppContactCreateNestedOneWithoutMessagesInput
+  }
+
+  export type WhatsAppMessageUncheckedCreateWithoutUserInput = {
+    id?: string
+    direction: $Enums.WhatsAppDirection
+    wamid?: string | null
+    contactId?: string | null
+    toNumber?: string | null
+    fromNumber?: string | null
+    templateName?: string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: string | null
+    status?: $Enums.WhatsAppStatus
+    notificationType?: $Enums.NotificationType | null
+    errorCode?: string | null
+    scheduledFor?: Date | string | null
+    sentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhatsAppMessageCreateOrConnectWithoutUserInput = {
+    where: WhatsAppMessageWhereUniqueInput
+    create: XOR<WhatsAppMessageCreateWithoutUserInput, WhatsAppMessageUncheckedCreateWithoutUserInput>
+  }
+
+  export type WhatsAppMessageCreateManyUserInputEnvelope = {
+    data: WhatsAppMessageCreateManyUserInput | WhatsAppMessageCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AuditLogCreateWithoutActorInput = {
     id?: string
     action: string
@@ -65465,6 +69226,84 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"PushSubscription"> | Date | string
   }
 
+  export type WhatsAppContactUpsertWithoutUserInput = {
+    update: XOR<WhatsAppContactUpdateWithoutUserInput, WhatsAppContactUncheckedUpdateWithoutUserInput>
+    create: XOR<WhatsAppContactCreateWithoutUserInput, WhatsAppContactUncheckedCreateWithoutUserInput>
+    where?: WhatsAppContactWhereInput
+  }
+
+  export type WhatsAppContactUpdateToOneWithWhereWithoutUserInput = {
+    where?: WhatsAppContactWhereInput
+    data: XOR<WhatsAppContactUpdateWithoutUserInput, WhatsAppContactUncheckedUpdateWithoutUserInput>
+  }
+
+  export type WhatsAppContactUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    optIn?: BoolFieldUpdateOperationsInput | boolean
+    optInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    optInSource?: NullableStringFieldUpdateOperationsInput | string | null
+    optOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInboundAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    locale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: WhatsAppMessageUpdateManyWithoutContactNestedInput
+  }
+
+  export type WhatsAppContactUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    optIn?: BoolFieldUpdateOperationsInput | boolean
+    optInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    optInSource?: NullableStringFieldUpdateOperationsInput | string | null
+    optOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInboundAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    locale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: WhatsAppMessageUncheckedUpdateManyWithoutContactNestedInput
+  }
+
+  export type WhatsAppMessageUpsertWithWhereUniqueWithoutUserInput = {
+    where: WhatsAppMessageWhereUniqueInput
+    update: XOR<WhatsAppMessageUpdateWithoutUserInput, WhatsAppMessageUncheckedUpdateWithoutUserInput>
+    create: XOR<WhatsAppMessageCreateWithoutUserInput, WhatsAppMessageUncheckedCreateWithoutUserInput>
+  }
+
+  export type WhatsAppMessageUpdateWithWhereUniqueWithoutUserInput = {
+    where: WhatsAppMessageWhereUniqueInput
+    data: XOR<WhatsAppMessageUpdateWithoutUserInput, WhatsAppMessageUncheckedUpdateWithoutUserInput>
+  }
+
+  export type WhatsAppMessageUpdateManyWithWhereWithoutUserInput = {
+    where: WhatsAppMessageScalarWhereInput
+    data: XOR<WhatsAppMessageUpdateManyMutationInput, WhatsAppMessageUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type WhatsAppMessageScalarWhereInput = {
+    AND?: WhatsAppMessageScalarWhereInput | WhatsAppMessageScalarWhereInput[]
+    OR?: WhatsAppMessageScalarWhereInput[]
+    NOT?: WhatsAppMessageScalarWhereInput | WhatsAppMessageScalarWhereInput[]
+    id?: StringFilter<"WhatsAppMessage"> | string
+    direction?: EnumWhatsAppDirectionFilter<"WhatsAppMessage"> | $Enums.WhatsAppDirection
+    wamid?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    contactId?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    userId?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    toNumber?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    fromNumber?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    templateName?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    params?: JsonNullableFilter<"WhatsAppMessage">
+    body?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    status?: EnumWhatsAppStatusFilter<"WhatsAppMessage"> | $Enums.WhatsAppStatus
+    notificationType?: EnumNotificationTypeNullableFilter<"WhatsAppMessage"> | $Enums.NotificationType | null
+    errorCode?: StringNullableFilter<"WhatsAppMessage"> | string | null
+    scheduledFor?: DateTimeNullableFilter<"WhatsAppMessage"> | Date | string | null
+    sentAt?: DateTimeNullableFilter<"WhatsAppMessage"> | Date | string | null
+    createdAt?: DateTimeFilter<"WhatsAppMessage"> | Date | string
+    updatedAt?: DateTimeFilter<"WhatsAppMessage"> | Date | string
+  }
+
   export type AuditLogUpsertWithWhereUniqueWithoutActorInput = {
     where: AuditLogWhereUniqueInput
     update: XOR<AuditLogUpdateWithoutActorInput, AuditLogUncheckedUpdateWithoutActorInput>
@@ -65559,6 +69398,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -65591,6 +69432,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -65639,6 +69482,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -65671,6 +69516,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -65703,6 +69550,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -65735,6 +69584,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -65783,6 +69634,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -65815,6 +69668,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -65940,6 +69795,8 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -65972,6 +69829,8 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -66119,6 +69978,8 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -66151,6 +70012,8 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -66183,6 +70046,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -66215,6 +70080,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -66263,6 +70130,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -66295,6 +70164,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -66483,6 +70354,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -66515,6 +70388,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -66552,6 +70427,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -66584,6 +70461,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -67271,6 +71150,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -67303,6 +71184,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -67346,6 +71229,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -67378,6 +71263,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -67686,6 +71573,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -67718,6 +71607,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -67859,6 +71750,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -67891,6 +71784,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -69866,6 +73761,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -69898,6 +73795,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -70104,6 +74003,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -70136,6 +74037,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -70782,6 +74685,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -70814,6 +74719,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -71091,6 +74998,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -71123,6 +75032,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -71747,6 +75658,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -71779,6 +75692,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -71870,6 +75785,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -71902,6 +75819,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -72164,6 +76083,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
   }
@@ -72196,6 +76117,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
   }
@@ -72387,6 +76310,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
   }
@@ -72419,6 +76344,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
   }
@@ -73184,6 +77111,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -73216,6 +77145,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -73575,6 +77506,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -73607,6 +77540,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -73905,6 +77840,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -73937,6 +77874,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -74111,6 +78050,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -74143,6 +78084,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -74268,6 +78211,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -74300,6 +78245,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -74447,6 +78394,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -74479,6 +78428,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -74511,6 +78462,8 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -74543,6 +78496,8 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -74684,6 +78639,8 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -74716,6 +78673,8 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -74820,6 +78779,446 @@ export namespace Prisma {
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
   }
 
+  export type UserCreateWithoutWhatsappContactInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutUsersInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    instructorProfile?: InstructorProfileCreateNestedOneWithoutUserInput
+    studentProfile?: StudentCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
+    classes?: ClassCreateNestedManyWithoutInstructorInput
+    posts?: PostCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserUncheckedCreateWithoutWhatsappContactInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    schoolId?: string | null
+    branchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    instructorProfile?: InstructorProfileUncheckedCreateNestedOneWithoutUserInput
+    studentProfile?: StudentUncheckedCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
+    classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserCreateOrConnectWithoutWhatsappContactInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutWhatsappContactInput, UserUncheckedCreateWithoutWhatsappContactInput>
+  }
+
+  export type WhatsAppMessageCreateWithoutContactInput = {
+    id?: string
+    direction: $Enums.WhatsAppDirection
+    wamid?: string | null
+    toNumber?: string | null
+    fromNumber?: string | null
+    templateName?: string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: string | null
+    status?: $Enums.WhatsAppStatus
+    notificationType?: $Enums.NotificationType | null
+    errorCode?: string | null
+    scheduledFor?: Date | string | null
+    sentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutWhatsappMessagesInput
+  }
+
+  export type WhatsAppMessageUncheckedCreateWithoutContactInput = {
+    id?: string
+    direction: $Enums.WhatsAppDirection
+    wamid?: string | null
+    userId?: string | null
+    toNumber?: string | null
+    fromNumber?: string | null
+    templateName?: string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: string | null
+    status?: $Enums.WhatsAppStatus
+    notificationType?: $Enums.NotificationType | null
+    errorCode?: string | null
+    scheduledFor?: Date | string | null
+    sentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhatsAppMessageCreateOrConnectWithoutContactInput = {
+    where: WhatsAppMessageWhereUniqueInput
+    create: XOR<WhatsAppMessageCreateWithoutContactInput, WhatsAppMessageUncheckedCreateWithoutContactInput>
+  }
+
+  export type WhatsAppMessageCreateManyContactInputEnvelope = {
+    data: WhatsAppMessageCreateManyContactInput | WhatsAppMessageCreateManyContactInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutWhatsappContactInput = {
+    update: XOR<UserUpdateWithoutWhatsappContactInput, UserUncheckedUpdateWithoutWhatsappContactInput>
+    create: XOR<UserCreateWithoutWhatsappContactInput, UserUncheckedCreateWithoutWhatsappContactInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutWhatsappContactInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutWhatsappContactInput, UserUncheckedUpdateWithoutWhatsappContactInput>
+  }
+
+  export type UserUpdateWithoutWhatsappContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutUsersNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    instructorProfile?: InstructorProfileUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
+    classes?: ClassUpdateManyWithoutInstructorNestedInput
+    posts?: PostUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutWhatsappContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    instructorProfile?: InstructorProfileUncheckedUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUncheckedUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type WhatsAppMessageUpsertWithWhereUniqueWithoutContactInput = {
+    where: WhatsAppMessageWhereUniqueInput
+    update: XOR<WhatsAppMessageUpdateWithoutContactInput, WhatsAppMessageUncheckedUpdateWithoutContactInput>
+    create: XOR<WhatsAppMessageCreateWithoutContactInput, WhatsAppMessageUncheckedCreateWithoutContactInput>
+  }
+
+  export type WhatsAppMessageUpdateWithWhereUniqueWithoutContactInput = {
+    where: WhatsAppMessageWhereUniqueInput
+    data: XOR<WhatsAppMessageUpdateWithoutContactInput, WhatsAppMessageUncheckedUpdateWithoutContactInput>
+  }
+
+  export type WhatsAppMessageUpdateManyWithWhereWithoutContactInput = {
+    where: WhatsAppMessageScalarWhereInput
+    data: XOR<WhatsAppMessageUpdateManyMutationInput, WhatsAppMessageUncheckedUpdateManyWithoutContactInput>
+  }
+
+  export type WhatsAppContactCreateWithoutMessagesInput = {
+    id?: string
+    phone: string
+    optIn?: boolean
+    optInAt?: Date | string | null
+    optInSource?: string | null
+    optOutAt?: Date | string | null
+    lastInboundAt?: Date | string | null
+    locale?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutWhatsappContactInput
+  }
+
+  export type WhatsAppContactUncheckedCreateWithoutMessagesInput = {
+    id?: string
+    phone: string
+    userId?: string | null
+    optIn?: boolean
+    optInAt?: Date | string | null
+    optInSource?: string | null
+    optOutAt?: Date | string | null
+    lastInboundAt?: Date | string | null
+    locale?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhatsAppContactCreateOrConnectWithoutMessagesInput = {
+    where: WhatsAppContactWhereUniqueInput
+    create: XOR<WhatsAppContactCreateWithoutMessagesInput, WhatsAppContactUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type UserCreateWithoutWhatsappMessagesInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutUsersInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    instructorProfile?: InstructorProfileCreateNestedOneWithoutUserInput
+    studentProfile?: StudentCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
+    classes?: ClassCreateNestedManyWithoutInstructorInput
+    posts?: PostCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserUncheckedCreateWithoutWhatsappMessagesInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    schoolId?: string | null
+    branchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    instructorProfile?: InstructorProfileUncheckedCreateNestedOneWithoutUserInput
+    studentProfile?: StudentUncheckedCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
+    classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserCreateOrConnectWithoutWhatsappMessagesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutWhatsappMessagesInput, UserUncheckedCreateWithoutWhatsappMessagesInput>
+  }
+
+  export type WhatsAppContactUpsertWithoutMessagesInput = {
+    update: XOR<WhatsAppContactUpdateWithoutMessagesInput, WhatsAppContactUncheckedUpdateWithoutMessagesInput>
+    create: XOR<WhatsAppContactCreateWithoutMessagesInput, WhatsAppContactUncheckedCreateWithoutMessagesInput>
+    where?: WhatsAppContactWhereInput
+  }
+
+  export type WhatsAppContactUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: WhatsAppContactWhereInput
+    data: XOR<WhatsAppContactUpdateWithoutMessagesInput, WhatsAppContactUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type WhatsAppContactUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    optIn?: BoolFieldUpdateOperationsInput | boolean
+    optInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    optInSource?: NullableStringFieldUpdateOperationsInput | string | null
+    optOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInboundAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    locale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutWhatsappContactNestedInput
+  }
+
+  export type WhatsAppContactUncheckedUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    optIn?: BoolFieldUpdateOperationsInput | boolean
+    optInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    optInSource?: NullableStringFieldUpdateOperationsInput | string | null
+    optOutAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastInboundAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    locale?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutWhatsappMessagesInput = {
+    update: XOR<UserUpdateWithoutWhatsappMessagesInput, UserUncheckedUpdateWithoutWhatsappMessagesInput>
+    create: XOR<UserCreateWithoutWhatsappMessagesInput, UserUncheckedCreateWithoutWhatsappMessagesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutWhatsappMessagesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutWhatsappMessagesInput, UserUncheckedUpdateWithoutWhatsappMessagesInput>
+  }
+
+  export type UserUpdateWithoutWhatsappMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutUsersNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    instructorProfile?: InstructorProfileUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
+    classes?: ClassUpdateManyWithoutInstructorNestedInput
+    posts?: PostUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutWhatsappMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    instructorProfile?: InstructorProfileUncheckedUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUncheckedUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+  }
+
   export type UserCreateWithoutPushSubscriptionsInput = {
     id?: string
     email: string
@@ -74847,6 +79246,8 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -74879,6 +79280,8 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -74927,6 +79330,8 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -74959,6 +79364,8 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -75297,6 +79704,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
   }
@@ -75329,6 +79738,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
   }
@@ -75424,6 +79835,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
   }
@@ -75456,6 +79869,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
   }
@@ -75488,6 +79903,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
   }
@@ -75520,6 +79937,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
   }
@@ -75568,6 +79987,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
   }
@@ -75600,6 +80021,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
   }
@@ -75841,6 +80264,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -75873,6 +80298,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -76524,6 +80951,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -76556,6 +80985,8 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -76957,6 +81388,25 @@ export namespace Prisma {
     auth: string
     userAgent?: string | null
     createdAt?: Date | string
+  }
+
+  export type WhatsAppMessageCreateManyUserInput = {
+    id?: string
+    direction: $Enums.WhatsAppDirection
+    wamid?: string | null
+    contactId?: string | null
+    toNumber?: string | null
+    fromNumber?: string | null
+    templateName?: string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: string | null
+    status?: $Enums.WhatsAppStatus
+    notificationType?: $Enums.NotificationType | null
+    errorCode?: string | null
+    scheduledFor?: Date | string | null
+    sentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AuditLogCreateManyActorInput = {
@@ -77508,6 +81958,63 @@ export namespace Prisma {
     auth?: StringFieldUpdateOperationsInput | string
     userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppMessageUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    direction?: EnumWhatsAppDirectionFieldUpdateOperationsInput | $Enums.WhatsAppDirection
+    wamid?: NullableStringFieldUpdateOperationsInput | string | null
+    toNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fromNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWhatsAppStatusFieldUpdateOperationsInput | $Enums.WhatsAppStatus
+    notificationType?: NullableEnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType | null
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    contact?: WhatsAppContactUpdateOneWithoutMessagesNestedInput
+  }
+
+  export type WhatsAppMessageUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    direction?: EnumWhatsAppDirectionFieldUpdateOperationsInput | $Enums.WhatsAppDirection
+    wamid?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    toNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fromNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWhatsAppStatusFieldUpdateOperationsInput | $Enums.WhatsAppStatus
+    notificationType?: NullableEnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType | null
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppMessageUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    direction?: EnumWhatsAppDirectionFieldUpdateOperationsInput | $Enums.WhatsAppDirection
+    wamid?: NullableStringFieldUpdateOperationsInput | string | null
+    contactId?: NullableStringFieldUpdateOperationsInput | string | null
+    toNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fromNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWhatsAppStatusFieldUpdateOperationsInput | $Enums.WhatsAppStatus
+    notificationType?: NullableEnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType | null
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AuditLogUpdateWithoutActorInput = {
@@ -79398,6 +83905,82 @@ export namespace Prisma {
     status?: EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
     achievedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppMessageCreateManyContactInput = {
+    id?: string
+    direction: $Enums.WhatsAppDirection
+    wamid?: string | null
+    userId?: string | null
+    toNumber?: string | null
+    fromNumber?: string | null
+    templateName?: string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: string | null
+    status?: $Enums.WhatsAppStatus
+    notificationType?: $Enums.NotificationType | null
+    errorCode?: string | null
+    scheduledFor?: Date | string | null
+    sentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhatsAppMessageUpdateWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    direction?: EnumWhatsAppDirectionFieldUpdateOperationsInput | $Enums.WhatsAppDirection
+    wamid?: NullableStringFieldUpdateOperationsInput | string | null
+    toNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fromNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWhatsAppStatusFieldUpdateOperationsInput | $Enums.WhatsAppStatus
+    notificationType?: NullableEnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType | null
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutWhatsappMessagesNestedInput
+  }
+
+  export type WhatsAppMessageUncheckedUpdateWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    direction?: EnumWhatsAppDirectionFieldUpdateOperationsInput | $Enums.WhatsAppDirection
+    wamid?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    toNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fromNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWhatsAppStatusFieldUpdateOperationsInput | $Enums.WhatsAppStatus
+    notificationType?: NullableEnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType | null
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhatsAppMessageUncheckedUpdateManyWithoutContactInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    direction?: EnumWhatsAppDirectionFieldUpdateOperationsInput | $Enums.WhatsAppDirection
+    wamid?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    toNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    fromNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    templateName?: NullableStringFieldUpdateOperationsInput | string | null
+    params?: NullableJsonNullValueInput | InputJsonValue
+    body?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWhatsAppStatusFieldUpdateOperationsInput | $Enums.WhatsAppStatus
+    notificationType?: NullableEnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType | null
+    errorCode?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduledFor?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

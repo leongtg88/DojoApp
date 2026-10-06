@@ -22,6 +22,7 @@ export function EditProfileModal({ onClose, profile, studentId, restricted = fal
     const [dateOfBirth, setDateOfBirth] = useState(profile.dateOfBirth.slice(0, 10))
     const [gender, setGender] = useState(profile.gender ?? '')
     const [contactPhone, setContactPhone] = useState(profile.contactPhone ?? '')
+    const [whatsappOptIn, setWhatsappOptIn] = useState(profile.whatsappOptIn)
     const [emergencyContact, setEmergencyContact] = useState(profile.emergencyContact ?? '')
     const [medicalInfo, setMedicalInfo] = useState(profile.medicalInfo ?? '')
     const [giSize, setGiSize] = useState(profile.giSize ?? '')
@@ -41,6 +42,7 @@ export function EditProfileModal({ onClose, profile, studentId, restricted = fal
                 medicalInfo: medicalInfo.trim() || null,
                 giSize: giSize.trim() || null,
                 beltSize: beltSize.trim() || null,
+                whatsappOptIn,
             }
             : {
                 firstName: firstName.trim(),
@@ -51,6 +53,7 @@ export function EditProfileModal({ onClose, profile, studentId, restricted = fal
                 medicalInfo: medicalInfo.trim() || null,
                 giSize: giSize.trim() || null,
                 beltSize: beltSize.trim() || null,
+                whatsappOptIn,
             }
         if (!restricted && dateOfBirth) {
             body.dateOfBirth = dateOfBirth
@@ -160,6 +163,21 @@ export function EditProfileModal({ onClose, profile, studentId, restricted = fal
                             type="tel"
                             value={contactPhone}
                         />
+                    </label>
+
+                    <label className="flex items-start gap-3 rounded-lg border border-edge bg-surface-1 p-3" htmlFor="edit-whatsapp-optin">
+                        <input
+                            checked={whatsappOptIn}
+                            className="mt-0.5 size-4 accent-cyan-500"
+                            disabled={!contactPhone.trim()}
+                            id="edit-whatsapp-optin"
+                            onChange={(event) => setWhatsappOptIn(event.target.checked)}
+                            type="checkbox"
+                        />
+                        <span className="text-sm text-ink-2">
+                            <span className="font-semibold text-ink">Recibir avisos por WhatsApp</span>
+                            <span className="mt-0.5 block text-xs text-ink-3">Solo notificaciones del dojo (grados, horarios, asistencia). Puedes desactivarlo cuando quieras.</span>
+                        </span>
                     </label>
 
                     <label className="block text-sm font-semibold text-ink" htmlFor="edit-emergency">

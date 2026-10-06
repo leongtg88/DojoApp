@@ -495,6 +495,40 @@ exports.Prisma.NotificationScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.WhatsAppContactScalarFieldEnum = {
+  id: 'id',
+  phone: 'phone',
+  userId: 'userId',
+  optIn: 'optIn',
+  optInAt: 'optInAt',
+  optInSource: 'optInSource',
+  optOutAt: 'optOutAt',
+  lastInboundAt: 'lastInboundAt',
+  locale: 'locale',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WhatsAppMessageScalarFieldEnum = {
+  id: 'id',
+  direction: 'direction',
+  wamid: 'wamid',
+  contactId: 'contactId',
+  userId: 'userId',
+  toNumber: 'toNumber',
+  fromNumber: 'fromNumber',
+  templateName: 'templateName',
+  params: 'params',
+  body: 'body',
+  status: 'status',
+  notificationType: 'notificationType',
+  errorCode: 'errorCode',
+  scheduledFor: 'scheduledFor',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.PushSubscriptionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -753,6 +787,20 @@ exports.NotificationPriority = exports.$Enums.NotificationPriority = {
   URGENT: 'URGENT'
 };
 
+exports.WhatsAppDirection = exports.$Enums.WhatsAppDirection = {
+  INBOUND: 'INBOUND',
+  OUTBOUND: 'OUTBOUND'
+};
+
+exports.WhatsAppStatus = exports.$Enums.WhatsAppStatus = {
+  QUEUED: 'QUEUED',
+  SENT: 'SENT',
+  DELIVERED: 'DELIVERED',
+  READ: 'READ',
+  RECEIVED: 'RECEIVED',
+  FAILED: 'FAILED'
+};
+
 exports.PostCategory = exports.$Enums.PostCategory = {
   FILOSOFIA: 'FILOSOFIA',
   GUIA_PARA_PADRES: 'GUIA_PARA_PADRES',
@@ -789,6 +837,8 @@ exports.Prisma.ModelName = {
   StudentAchievement: 'StudentAchievement',
   FitnessReport: 'FitnessReport',
   Notification: 'Notification',
+  WhatsAppContact: 'WhatsAppContact',
+  WhatsAppMessage: 'WhatsAppMessage',
   PushSubscription: 'PushSubscription',
   Holiday: 'Holiday',
   ExamConvocation: 'ExamConvocation',

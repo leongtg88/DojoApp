@@ -2,6 +2,7 @@ import { Prisma, type AttendanceStatus } from '@/lib/generated/prisma'
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
+import { recordAudit } from '@/lib/security/audit'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -206,6 +207,15 @@ export async function POST(request: Request) {
       },
     })),
   )
+
+  await recordAudit({
+    actorId: session.user.id,
+    schoolId: scope.schoolId,
+    action: `attendance.bulk_${action.toLowerCase()}`,
+    targetType: 'Attendance',
+    targetId: null,
+    detail: { ids: pending.map((record) => record.id), reason },
+  })
 
   return NextResponse.json({ ok: true, updated: pending.length })
 }

@@ -5,6 +5,7 @@ import { esCedulaValida, esTelefonoValido, validarArchivo, TALLAS_ROPA } from '@
 import { buildEnrollmentExportRecord } from '@/lib/dashboard/student-export'
 import { postToN8n } from '@/lib/integrations/n8n'
 import { notifyEnrollmentByTelegram } from '@/lib/integrations/telegram'
+import { notifyEnrollmentByWhatsApp } from '@/lib/integrations/whatsapp'
 import { sendPushToSchoolAdmins } from '@/lib/push/web-push'
 import { isValidKyuValue } from '@/lib/curriculum/kyu-options'
 import { NextResponse } from 'next/server'
@@ -324,6 +325,13 @@ export async function POST(request: Request) {
       })
 
       await notifyEnrollmentByTelegram({
+        applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`,
+        phone: input.phone,
+        email: input.email,
+        interest,
+      })
+
+      await notifyEnrollmentByWhatsApp({
         applicantName: input.applicants.length === 1 ? input.applicants[0].name : `Solicitud familiar (${input.applicants.length} aspirantes)`,
         phone: input.phone,
         email: input.email,

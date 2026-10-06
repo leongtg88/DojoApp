@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { db } from '@/lib/db'
 import { Role } from '@/lib/generated/prisma'
 import { linkGuardianToChildren, readGuardianMetadata } from '@/lib/family/guardians'
+import { setWhatsAppOptIn } from '@/lib/integrations/whatsapp'
 import { consumeRateLimit, getClientIp, rateLimitResponse } from '@/lib/security/rate-limit'
 
 export const runtime = 'nodejs'
@@ -13,6 +14,7 @@ const invitationSchema = z.object({
   token: z.string().trim().min(20).max(512),
   email: z.string().trim().toLowerCase().email(),
   password: z.string().min(8).max(128),
+  whatsappOptIn: z.boolean().optional().default(false),
 })
 
 /**
@@ -62,7 +64,7 @@ export async function POST(request: NextRequest) {
 
     const invitation = await db.studentInvitationToken.findUnique({
       where: { token: tokenHash },
-      select: { id: true, studentId: true, email: true, expiresAt: true, usedAt: true, student: { select: { userId: true, schoolId: true, branchId: true, firstName: true, lastName: true, registrationData: true } } },
+      select: { id: true, studentId: true, email: true, expiresAt: true, usedAt: true, student: { select: { userId: true, schoolId: true, branchId: true, firstName: true, lastName: true, contactPhone: true, registrationData: true } } },
     })
 
     if (!invitation) {
@@ -100,6 +102,15 @@ export async function POST(request: NextRequest) {
         data: { usedAt: new Date(), usedByUserId: existingUser.id },
       })
 
+      if (parsed.data.whatsappOptIn) {
+        await setWhatsAppOptIn({
+          userId: existingUser.id,
+          phone: invitation.student.contactPhone,
+          optIn: true,
+          source: 'registration',
+        })
+      }
+
       return NextResponse.json({
         success: true,
         message: 'Tu cuenta ya está activada. Ya puedes iniciar sesión.',
@@ -132,6 +143,15 @@ export async function POST(request: NextRequest) {
       })
 
       await ensureTutorGuardian(existingUser.id, invitation.student.registrationData, parsed.data.email, invitation.student.schoolId)
+
+      if (parsed.data.whatsappOptIn) {
+        await setWhatsAppOptIn({
+          userId: existingUser.id,
+          phone: invitation.student.contactPhone,
+          optIn: true,
+          source: 'registration',
+        })
+      }
 
       return NextResponse.json({
         success: true,
@@ -170,6 +190,15 @@ export async function POST(request: NextRequest) {
     })
 
     await ensureTutorGuardian(createdUserId, invitation.student.registrationData, parsed.data.email, invitation.student.schoolId)
+
+    if (parsed.data.whatsappOptIn) {
+      await setWhatsAppOptIn({
+        userId: createdUserId,
+        phone: invitation.student.contactPhone,
+        optIn: true,
+        source: 'registration',
+      })
+    }
 
     return NextResponse.json({
       success: true,

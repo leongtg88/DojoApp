@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   XCircle,
   ShieldCheck,
+  MessageCircle,
 } from 'lucide-react';
 
 export function InvitationSetupForm() {
@@ -26,6 +27,7 @@ export function InvitationSetupForm() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [whatsappOptIn, setWhatsappOptIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -74,6 +76,7 @@ export function InvitationSetupForm() {
           token,
           email: emailTrimmed,
           password,
+          whatsappOptIn,
         }),
         signal: controller.signal,
       });
@@ -280,6 +283,27 @@ export function InvitationSetupForm() {
             </div>
           )}
         </div>
+
+        <label
+          htmlFor="invitation-whatsapp-optin"
+          className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-4 cursor-pointer"
+        >
+          <input
+            id="invitation-whatsapp-optin"
+            name="whatsappOptIn"
+            type="checkbox"
+            checked={whatsappOptIn}
+            onChange={(e) => setWhatsappOptIn(e.target.checked)}
+            className="mt-0.5 w-4 h-4 accent-emerald-500"
+          />
+          <span className="flex items-start gap-2 text-xs leading-relaxed text-white/50">
+            <MessageCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+            <span>
+              <span className="block font-semibold text-white/80">Recibir avisos por WhatsApp</span>
+              Notificaciones del dojo (grados, horarios, asistencia) al número de tu expediente. Puedes desactivarlo cuando quieras.
+            </span>
+          </span>
+        </label>
 
         <div className="pt-3">
           <button
