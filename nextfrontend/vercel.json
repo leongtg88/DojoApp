@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/whatsapp",
       "schedule": "30 12 * * *"
+    },
+    {
+      "path": "/api/cron/purge-enrollments",
+      "schedule": "0 3 * * *"
     }
   ]
 }

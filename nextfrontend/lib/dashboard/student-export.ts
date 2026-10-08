@@ -1,4 +1,4 @@
-import { REGISTRATION_FIELD_SPECS, pickBestEnrollment, resolveRegistrationSources, buildRegistrationFlatValues } from '@/lib/dashboard/registration-data'
+import { REGISTRATION_FIELD_SPECS, pickBestEnrollment, resolveRegistrationSources, buildRegistrationFlatValues, pickFieldValue } from '@/lib/dashboard/registration-data'
 import type { EnrollmentFormSource } from '@/lib/dashboard/registration-data'
 
 export interface StudentExportSource {
@@ -151,6 +151,82 @@ export function buildEnrollmentExportRecord(source: EnrollmentExportSource): Rec
 		notes: source.notes ?? null,
 		createdAt: source.createdAt ? new Date(source.createdAt).toISOString() : new Date().toISOString(),
 		...buildRegistrationFlatValues(null, source.registrationData ?? null),
+		applicants,
+	}
+}
+
+// Claves que SÍ se comparten con integraciones externas (n8n). Datos sensibles
+// de salud/bienestar y de identidad quedan solo en la base de datos.
+export const N8N_ALLOWED_REGISTRATION_KEYS: readonly string[] = [
+	'tipoRegistro',
+	'esTutor',
+	'relacionTutor',
+	'nombreMadre',
+	'telefonoMadre',
+	'nombrePadre',
+	'telefonoPadre',
+	'direccionPadres',
+	'motivoInscripcion',
+	'expectativas6Meses',
+	'interesNino',
+	'horasPractica',
+	'espacioCasa',
+	'compromisoDiario',
+	'asistenciaPadre',
+	'metodoMotivacion',
+	'razonesKarate',
+	'compromisoObstaculos',
+	'aceptoPago',
+	'aceptoMultas',
+	'aceptoPagosParciales',
+	'aceptoPagoIninterrumpido',
+	'aceptoDerechoAdmision',
+	'aceptoPoliticas',
+]
+
+// Del perfil del aspirante solo se comparte lo operativo (clases, uniforme,
+// grado). Se excluyen condición médica, sueño, pantallas, apoyo psicológico,
+// medicamentos, estrés, composición del hogar, cédula y dirección.
+export const N8N_ALLOWED_APPLICANT_KEYS: readonly string[] = [
+	'sexo',
+	'height',
+	'pantSize',
+	'shirtSize',
+	'haPracticadoKarate',
+	'kyu',
+]
+
+function pickAllowed(record: Record<string, unknown> | null | undefined, keys: readonly string[]): Record<string, string | number | null> {
+	const out: Record<string, string | number | null> = {}
+	if (!record) return out
+	for (const key of keys) out[key] = pickFieldValue(record, key)
+	return out
+}
+
+/**
+ * Registro de inscripción apto para compartir con integraciones externas. Es la
+ * versión filtrada por allowlist de `buildEnrollmentExportRecord`: no incluye
+ * datos sensibles de salud/privacidad recogidos por el formulario.
+ */
+export function buildEnrollmentNotificationRecord(source: EnrollmentExportSource): Record<string, unknown> {
+	const applicants = (source.applicants ?? []).map((applicant) => ({
+		name: applicant.name,
+		dateOfBirth: toISODate(applicant.dateOfBirth),
+		...pickAllowed(applicant.profileData ?? null, N8N_ALLOWED_APPLICANT_KEYS),
+	}))
+
+	return {
+		id: source.id,
+		origin: ORIGIN_LABELS[source.origin] ?? source.origin,
+		applicantName: source.applicantName ?? null,
+		contactEmail: source.contactEmail,
+		contactPhone: source.contactPhone ?? null,
+		interest: source.interest ?? null,
+		schedule: source.schedule ?? null,
+		quote: source.quote ?? null,
+		notes: source.notes ?? null,
+		createdAt: source.createdAt ? new Date(source.createdAt).toISOString() : new Date().toISOString(),
+		...pickAllowed(source.registrationData ?? null, N8N_ALLOWED_REGISTRATION_KEYS),
 		applicants,
 	}
 }

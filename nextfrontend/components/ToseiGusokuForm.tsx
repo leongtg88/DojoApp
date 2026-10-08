@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useMetaPixel } from '@adkit/meta-pixel-next';
 import { MOCK_BENEFITS } from '@/lib/types';
 import { KYU_OPTIONS } from '@/lib/curriculum/kyu-options';
-import { TIPOS_SANGRE, TALLAS_ROPA, soloDigitos, esCedulaValida, esTelefonoValido, esEmailValido, validarArchivo, validarArchivoBasico } from '@/lib/enrollment-validation';
+import { TIPOS_SANGRE, TALLAS_ROPA, HORAS_SUENO, TIEMPO_PANTALLAS, RESPONSABILIDADES_CASA, ESTADO_CIVIL_HOGAR, INFLUENCIA_INSCRIPCION, OBJETIVO_PRINCIPAL, NIVEL_ESTRES, MANEJO_FRUSTRACION, REACCION_CRITICA, SI_NO_VE_RESULTADOS, TIEMPO_ARTE_MARCIAL, CUANDO_ARTE_MARCIAL, soloDigitos, esCedulaValida, esTelefonoValido, esEmailValido, validarArchivo, validarArchivoBasico } from '@/lib/enrollment-validation';
 import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake, FileText, ChevronDown } from 'lucide-react';
 import LegalConsentModal from '@/components/LegalConsentModal';
 
@@ -26,9 +26,20 @@ type Hijo = {
   kyu: string;
   email: string;
   foto: File | null;
-  identificacion: File[];
   fotoPreview: string;
-  identPreview: string[];
+  partidaNacimiento: File | null;
+  partidaPreview: string;
+  pasaporte: File | null;
+  pasaportePreview: string;
+  // Hábitos y bienestar (solo menores)
+  horasSueno: string;
+  tiempoPantallas: string;
+  practicaOtrosDeportes: string;
+  otrosDeportesDetalle: string;
+  apoyoPsicologico: string;
+  apoyoPsicologicoDetalle: string;
+  condicionMedica: string;
+  responsabilidadesCasa: string[];
 };
 
 type FormData = {
@@ -47,9 +58,11 @@ type FormData = {
   practicoKarateAdulto: 'no' | 'si' | '';
   kyuAdulto: string;
   fotoAdulto: File | null;
-  identAdulto: File[];
   fotoAdultoPreview: string;
-  identAdultoPreview: string[];
+  cedulaAdulto: File | null;
+  pasaporteAdulto: File | null;
+  cedulaAdultoPreview: string;
+  pasaporteAdultoPreview: string;
   telefonoContacto: string;
   email: string;
   // Menor
@@ -59,8 +72,10 @@ type FormData = {
   nombrePadre: string;
   telefonoPadre: string;
   direccionPadres: string;
-  // Comunes (paso 2)
-  condicionMedica: string;
+  // Comunes (paso 2 / hábitos)
+  motivoInscripcion: string;
+  expectativas6Meses: string;
+  interesNino: string;
   horasPractica: string;
   espacioCasa: string;
   compromisoDiario: string;
@@ -71,6 +86,35 @@ type FormData = {
   otraRazon: string;
   compromisoObstaculos: string;
   otroCompromiso: string;
+  // Adulto (hábitos y bienestar)
+  estadoCivilHogar: string[];
+  personasACargo: string;
+  personasACargoDetalle: string;
+  practicaDeporte: string;
+  practicaDeporteDetalle: string;
+  condicionMedicaAdulto: string;
+  medicamentos: string;
+  medicamentosDetalle: string;
+  apoyoPsicologicoAdulto: string;
+  apoyoPsicologicoAdultoDetalle: string;
+  horasSuenoAdulto: string;
+  tiempoPantallasAdulto: string;
+  nivelEstres: string;
+  manejoFrustracion: string;
+  reaccionCritica: string;
+  motivoPractica: string;
+  expectativasAdulto6Meses: string;
+  porQueAhora: string;
+  influenciaInscripcion: string[];
+  siNoVeResultados: string;
+  imagenKarate: string;
+  disposicionEtiqueta: string;
+  objetivoPrincipal: string[];
+  queEsperaInstructor: string;
+  otrasArtesMarciales: string;
+  otrasArtesMarcialesDetalle: string;
+  tiempoPracticaArteMarcial: string;
+  cuandoPracticoArteMarcial: string;
   // Políticas
   aceptoPago: boolean;
   aceptoMultas: boolean;
@@ -274,10 +318,9 @@ const WelcomeScreen = ({ onStart, onNavigateToHome }: { onStart: () => void; onN
             <span className="text-xl mr-2">📋</span> Antes de comenzar, ten en cuenta:
           </h4>
           <ul className="space-y-2 text-stone-300 text-sm">
-            <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>El formulario consta de 3 secciones y toma aproximadamente 10 minutos completarlo</li>
+            <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>El formulario consta de 4 secciones y toma aproximadamente 10-15 minutos completarlo</li>
             <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Necesitarás tener a mano los datos personales del alumno y contacto de padres/tutores</li>
-            <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Necesitarás cargar una foto de la cara del alumno con fondo blanco y su identificación (partida de nacimiento, cédula y pasaporte) en formato JPG, PNG o PDF.</li>
-            <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>En un mismo campo puedes subir la cédula y el pasaporte.</li>
+            <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Deberás cargar, en formato JPG, PNG o PDF y en campos separados: la foto del alumno con fondo blanco, y sus documentos de identidad. Adultos: cédula y pasaporte. Menores: partida de nacimiento y pasaporte. Todos son obligatorios.</li>
             <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Al finalizar, deberás aceptar las políticas y reglamentos del Dojo</li>
             <li className="flex items-start"><span className="text-amber-400 mr-2">•</span>Los campos marcados con <span className="text-red-400 mx-1">*</span> son obligatorios</li>
           </ul>
@@ -331,18 +374,22 @@ const ToseiGusokuForm = () => {
     practicoKarateAdulto: '',
     kyuAdulto: '',
     fotoAdulto: null,
-    identAdulto: [],
     fotoAdultoPreview: '',
-    identAdultoPreview: [],
+    cedulaAdulto: null,
+    pasaporteAdulto: null,
+    cedulaAdultoPreview: '',
+    pasaporteAdultoPreview: '',
     telefonoContacto: '',
     email: '',
-    hijos: [{ id: generarId(), nombre: '', fechaNacimiento: '', sexo: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', practicoKarate: '', kyu: '', email: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }],
+    hijos: [{ id: generarId(), nombre: '', fechaNacimiento: '', sexo: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', practicoKarate: '', kyu: '', email: '', foto: null, fotoPreview: '', partidaNacimiento: null, partidaPreview: '', pasaporte: null, pasaportePreview: '', horasSueno: '', tiempoPantallas: '', practicaOtrosDeportes: '', otrosDeportesDetalle: '', apoyoPsicologico: '', apoyoPsicologicoDetalle: '', condicionMedica: '', responsabilidadesCasa: [] }],
     nombreMadre: '',
     telefonoMadre: '',
     nombrePadre: '',
     telefonoPadre: '',
     direccionPadres: '',
-    condicionMedica: '',
+    motivoInscripcion: '',
+    expectativas6Meses: '',
+    interesNino: '',
     horasPractica: '',
     espacioCasa: '',
     compromisoDiario: '',
@@ -353,6 +400,34 @@ const ToseiGusokuForm = () => {
     otraRazon: '',
     compromisoObstaculos: '',
     otroCompromiso: '',
+    estadoCivilHogar: [],
+    personasACargo: '',
+    personasACargoDetalle: '',
+    practicaDeporte: '',
+    practicaDeporteDetalle: '',
+    condicionMedicaAdulto: '',
+    medicamentos: '',
+    medicamentosDetalle: '',
+    apoyoPsicologicoAdulto: '',
+    apoyoPsicologicoAdultoDetalle: '',
+    horasSuenoAdulto: '',
+    tiempoPantallasAdulto: '',
+    nivelEstres: '',
+    manejoFrustracion: '',
+    reaccionCritica: '',
+    motivoPractica: '',
+    expectativasAdulto6Meses: '',
+    porQueAhora: '',
+    influenciaInscripcion: [],
+    siNoVeResultados: '',
+    imagenKarate: '',
+    disposicionEtiqueta: '',
+    objetivoPrincipal: [],
+    queEsperaInstructor: '',
+    otrasArtesMarciales: '',
+    otrasArtesMarcialesDetalle: '',
+    tiempoPracticaArteMarcial: '',
+    cuandoPracticoArteMarcial: '',
     aceptoPago: false,
     aceptoMultas: false,
     aceptoPagosParciales: false,
@@ -415,9 +490,11 @@ const ToseiGusokuForm = () => {
         practicoKarateAdulto: '',
         kyuAdulto: '',
         fotoAdulto: null,
-        identAdulto: [],
         fotoAdultoPreview: '',
-        identAdultoPreview: [],
+        cedulaAdulto: null,
+        pasaporteAdulto: null,
+        cedulaAdultoPreview: '',
+        pasaporteAdultoPreview: '',
         telefonoContacto: '',
       })
     }));
@@ -428,7 +505,7 @@ const ToseiGusokuForm = () => {
   const agregarHijo = () => {
     setFormData(prev => ({
       ...prev,
-      hijos: [...prev.hijos, { id: generarId(), nombre: '', fechaNacimiento: '', sexo: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', practicoKarate: '', kyu: '', email: '', foto: null, identificacion: [], fotoPreview: '', identPreview: [] }]
+      hijos: [...prev.hijos, { id: generarId(), nombre: '', fechaNacimiento: '', sexo: '', tipoSangre: '', altura: '', tallaPantalon: '', tallaCamiseta: '', practicoKarate: '', kyu: '', email: '', foto: null, fotoPreview: '', partidaNacimiento: null, partidaPreview: '', pasaporte: null, pasaportePreview: '', horasSueno: '', tiempoPantallas: '', practicaOtrosDeportes: '', otrosDeportesDetalle: '', apoyoPsicologico: '', apoyoPsicologicoDetalle: '', condicionMedica: '', responsabilidadesCasa: [] }]
     }));
   };
 
@@ -498,58 +575,56 @@ const ToseiGusokuForm = () => {
     }
   };
 
-  const handleHijoIdentFiles = async (id: string, files: File[]) => {
-    if (!files.length) return;
+  const handleHijoDocumento = async (id: string, field: 'partidaNacimiento' | 'pasaporte', file: File | null) => {
+    if (!file) return;
     const index = formData.hijos.findIndex(h => h.id === id);
-    for (const f of files) {
-      const msg = await validarArchivo(f, true);
-      if (msg) {
-        if (index >= 0) {
-          setErrors(prev => {
-            const hijos = prev.hijos ? [...prev.hijos] : [];
-            hijos[index] = { ...(hijos[index] ?? {}), identificacion: msg };
-            return { ...prev, hijos };
-          });
-        }
-        return;
+    const msg = await validarArchivo(file, true);
+    if (msg) {
+      if (index >= 0) {
+        setErrors(prev => {
+          const hijos = prev.hijos ? [...prev.hijos] : [];
+          hijos[index] = { ...(hijos[index] ?? {}), [field]: msg };
+          return { ...prev, hijos };
+        });
       }
+      return;
     }
     if (index >= 0) {
       setErrors(prev => {
         const hijos = prev.hijos ? [...prev.hijos] : [];
-        hijos[index] = { ...(hijos[index] ?? {}), identificacion: '' };
+        hijos[index] = { ...(hijos[index] ?? {}), [field]: '' };
         return { ...prev, hijos };
       });
     }
+    const preview = file.type.startsWith('image/') ? URL.createObjectURL(file) : '';
     setFormData(prev => ({
       ...prev,
       hijos: prev.hijos.map(h => {
         if (h.id !== id) return h;
-        const previews = [...h.identPreview, ...files.map(f => f.type.startsWith('image/') ? URL.createObjectURL(f) : '')];
-        return { ...h, identificacion: [...h.identificacion, ...files], identPreview: previews };
+        return field === 'partidaNacimiento'
+          ? { ...h, partidaNacimiento: file, partidaPreview: preview }
+          : { ...h, pasaporte: file, pasaportePreview: preview };
       })
     }));
   };
 
-  const handleHijoIdentRemove = (id: string, index: number) => {
+  const handleHijoDocumentoRemove = (id: string, field: 'partidaNacimiento' | 'pasaporte') => {
     setFormData(prev => ({
       ...prev,
       hijos: prev.hijos.map(h => {
         if (h.id !== id) return h;
-        const removed = h.identPreview[index];
-        if (removed) URL.revokeObjectURL(removed);
-        return {
-          ...h,
-          identificacion: h.identificacion.filter((_, i) => i !== index),
-          identPreview: h.identPreview.filter((_, i) => i !== index),
-        };
+        const preview = field === 'partidaNacimiento' ? h.partidaPreview : h.pasaportePreview;
+        if (preview) URL.revokeObjectURL(preview);
+        return field === 'partidaNacimiento'
+          ? { ...h, partidaNacimiento: null, partidaPreview: '' }
+          : { ...h, pasaporte: null, pasaportePreview: '' };
       })
     }));
     const hijoIndex = formData.hijos.findIndex(h => h.id === id);
     if (hijoIndex >= 0) {
       setErrors(prev => {
         const hijos = prev.hijos ? [...prev.hijos] : [];
-        hijos[hijoIndex] = { ...(hijos[hijoIndex] ?? {}), identificacion: '' };
+        hijos[hijoIndex] = { ...(hijos[hijoIndex] ?? {}), [field]: '' };
         return { ...prev, hijos };
       });
     }
@@ -577,37 +652,32 @@ const ToseiGusokuForm = () => {
     setFormData(prev => ({ ...prev, fotoAdulto: null, fotoAdultoPreview: '' }));
   };
 
-  const handleAdultoIdentFiles = async (files: File[]) => {
-    if (!files.length) return;
-    for (const f of files) {
-      const msg = await validarArchivo(f, true);
-      if (msg) {
-        setErrors(prev => ({ ...prev, identAdulto: msg }));
-        return;
-      }
+  const handleAdultoDocumento = async (field: 'cedulaAdulto' | 'pasaporteAdulto', file: File | null) => {
+    if (!file) return;
+    const msg = await validarArchivo(file, true);
+    if (msg) {
+      setErrors(prev => ({ ...prev, [field]: msg }));
+      return;
     }
-    setErrors(prev => ({ ...prev, identAdulto: '' }));
-    setFormData(prev => ({
-      ...prev,
-      identAdulto: [...prev.identAdulto, ...files],
-      identAdultoPreview: [...prev.identAdultoPreview, ...files.map(f => f.type.startsWith('image/') ? URL.createObjectURL(f) : '')],
-    }));
+    setErrors(prev => ({ ...prev, [field]: '' }));
+    const preview = file.type.startsWith('image/') ? URL.createObjectURL(file) : '';
+    setFormData(prev => field === 'cedulaAdulto'
+      ? { ...prev, cedulaAdulto: file, cedulaAdultoPreview: preview }
+      : { ...prev, pasaporteAdulto: file, pasaporteAdultoPreview: preview });
   };
 
-  const handleAdultoIdentRemove = (index: number) => {
+  const handleAdultoDocumentoRemove = (field: 'cedulaAdulto' | 'pasaporteAdulto') => {
     setFormData(prev => {
-      const removed = prev.identAdultoPreview[index];
-      if (removed) URL.revokeObjectURL(removed);
-      return {
-        ...prev,
-        identAdulto: prev.identAdulto.filter((_, i) => i !== index),
-        identAdultoPreview: prev.identAdultoPreview.filter((_, i) => i !== index),
-      };
+      const preview = field === 'cedulaAdulto' ? prev.cedulaAdultoPreview : prev.pasaporteAdultoPreview;
+      if (preview) URL.revokeObjectURL(preview);
+      return field === 'cedulaAdulto'
+        ? { ...prev, cedulaAdulto: null, cedulaAdultoPreview: '' }
+        : { ...prev, pasaporteAdulto: null, pasaporteAdultoPreview: '' };
     });
-    setErrors(prev => ({ ...prev, identAdulto: '' }));
+    setErrors(prev => ({ ...prev, [field]: '' }));
   };
 
-  const handleMultiSelect = (name: 'metodoMotivacion' | 'razonesKarate', value: string) => {
+  const handleMultiSelect = (name: 'metodoMotivacion' | 'razonesKarate' | 'estadoCivilHogar' | 'influenciaInscripcion' | 'objetivoPrincipal', value: string) => {
     setFormData(prev => {
       const current = prev[name];
       if (current.includes(value)) {
@@ -616,6 +686,30 @@ const ToseiGusokuForm = () => {
         return { ...prev, [name]: [...current, value] };
       }
     });
+  };
+
+  const handleHijoResponsabilidad = (id: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      hijos: prev.hijos.map(h => {
+        if (h.id !== id) return h;
+        const current = h.responsabilidadesCasa;
+        return {
+          ...h,
+          responsabilidadesCasa: current.includes(value)
+            ? current.filter(item => item !== value)
+            : [...current, value],
+        };
+      })
+    }));
+    const index = formData.hijos.findIndex(h => h.id === id);
+    if (index >= 0) {
+      setErrors(prev => {
+        const hijos = prev.hijos ? [...prev.hijos] : [];
+        hijos[index] = { ...(hijos[index] ?? {}), responsabilidadesCasa: '' };
+        return { ...prev, hijos };
+      });
+    }
   };
 
   // ===== VALIDACIONES =====
@@ -636,13 +730,15 @@ const ToseiGusokuForm = () => {
       const msg = validarArchivoBasico(formData.fotoAdulto, false);
       if (msg) newErrors.fotoAdulto = msg;
     }
-    if (formData.identAdulto.length === 0) {
-      newErrors.identAdulto = 'Identificación requerida';
-    } else {
-      for (const file of formData.identAdulto) {
-        const msg = validarArchivoBasico(file, true);
-        if (msg) { newErrors.identAdulto = msg; break; }
-      }
+    if (!formData.cedulaAdulto) newErrors.cedulaAdulto = 'Cédula requerida';
+    else {
+      const msg = validarArchivoBasico(formData.cedulaAdulto, true);
+      if (msg) newErrors.cedulaAdulto = msg;
+    }
+    if (!formData.pasaporteAdulto) newErrors.pasaporteAdulto = 'Pasaporte requerido';
+    else {
+      const msg = validarArchivoBasico(formData.pasaporteAdulto, true);
+      if (msg) newErrors.pasaporteAdulto = msg;
     }
     if (!formData.email.trim()) {
       newErrors.email = 'Campo requerido';
@@ -656,34 +752,36 @@ const ToseiGusokuForm = () => {
 
   const validarHijos = (newErrors: FormErrors) => {
     const hijosErrores: { [key: string]: string }[] = [];
-    let hasError = false;
     formData.hijos.forEach((hijo, index) => {
       const err: { [key: string]: string } = {};
-      if (!hijo.nombre.trim()) { err.nombre = `Nombre del hijo ${index + 1} requerido`; hasError = true; }
-      if (hijo.email.trim() && !esEmailValido(hijo.email)) { err.email = `Correo del hijo ${index + 1} inválido`; hasError = true; }
-      if (!hijo.fechaNacimiento) { err.fechaNacimiento = `Fecha de nacimiento del hijo ${index + 1} requerida`; hasError = true; }
-      if (!hijo.tipoSangre) { err.tipoSangre = `Tipo de sangre del hijo ${index + 1} requerido`; hasError = true; }
-      if (!hijo.sexo) { err.sexo = `Sexo del hijo ${index + 1} requerido`; hasError = true; }
-      if (hijo.tallaPantalon && !TALLAS_ROPA.includes(hijo.tallaPantalon)) { err.tallaPantalon = `Selecciona una talla válida para el hijo ${index + 1}`; hasError = true; }
-      else if (!hijo.tallaPantalon) { err.tallaPantalon = `Selecciona una talla para el hijo ${index + 1}`; hasError = true; }
-      if (hijo.tallaCamiseta && !TALLAS_ROPA.includes(hijo.tallaCamiseta)) { err.tallaCamiseta = `Selecciona una talla válida para el hijo ${index + 1}`; hasError = true; }
-      else if (!hijo.tallaCamiseta) { err.tallaCamiseta = `Selecciona una talla para el hijo ${index + 1}`; hasError = true; }
-      if (!hijo.foto) { err.foto = `Foto del hijo ${index + 1} requerida`; hasError = true; }
+      if (!hijo.nombre.trim()) { err.nombre = `Nombre del hijo ${index + 1} requerido`; }
+      if (hijo.email.trim() && !esEmailValido(hijo.email)) { err.email = `Correo del hijo ${index + 1} inválido`; }
+      if (!hijo.fechaNacimiento) { err.fechaNacimiento = `Fecha de nacimiento del hijo ${index + 1} requerida`; }
+      if (!hijo.tipoSangre) { err.tipoSangre = `Tipo de sangre del hijo ${index + 1} requerido`; }
+      if (!hijo.sexo) { err.sexo = `Sexo del hijo ${index + 1} requerido`; }
+      if (hijo.tallaPantalon && !TALLAS_ROPA.includes(hijo.tallaPantalon)) { err.tallaPantalon = `Selecciona una talla válida para el hijo ${index + 1}`; }
+      else if (!hijo.tallaPantalon) { err.tallaPantalon = `Selecciona una talla para el hijo ${index + 1}`; }
+      if (hijo.tallaCamiseta && !TALLAS_ROPA.includes(hijo.tallaCamiseta)) { err.tallaCamiseta = `Selecciona una talla válida para el hijo ${index + 1}`; }
+      else if (!hijo.tallaCamiseta) { err.tallaCamiseta = `Selecciona una talla para el hijo ${index + 1}`; }
+      if (!hijo.foto) { err.foto = `Foto del hijo ${index + 1} requerida`; }
       else {
         const msg = validarArchivoBasico(hijo.foto, false);
-        if (msg) { err.foto = msg; hasError = true; }
+        if (msg) { err.foto = msg; }
       }
-      if (hijo.practicoKarate === 'si' && !hijo.kyu) { err.kyu = `Grado del hijo ${index + 1} requerido`; hasError = true; }
-      if (hijo.identificacion.length === 0) { err.identificacion = `Identificación del hijo ${index + 1} requerida`; hasError = true; }
+      if (hijo.practicoKarate === 'si' && !hijo.kyu) { err.kyu = `Grado del hijo ${index + 1} requerido`; }
+      if (!hijo.partidaNacimiento) { err.partidaNacimiento = `Partida de nacimiento del hijo ${index + 1} requerida`; }
       else {
-        for (const file of hijo.identificacion) {
-          const msg = validarArchivoBasico(file, true);
-          if (msg) { err.identificacion = msg; hasError = true; break; }
-        }
+        const msg = validarArchivoBasico(hijo.partidaNacimiento, true);
+        if (msg) { err.partidaNacimiento = msg; }
+      }
+      if (!hijo.pasaporte) { err.pasaporte = `Pasaporte del hijo ${index + 1} requerido`; }
+      else {
+        const msg = validarArchivoBasico(hijo.pasaporte, true);
+        if (msg) { err.pasaporte = msg; }
       }
       hijosErrores.push(err);
     });
-    if (hasError) newErrors.hijos = hijosErrores;
+    if (hijosErrores.some((err) => Object.keys(err).length > 0)) newErrors.hijos = hijosErrores;
   };
 
   const validarContactoPadres = (newErrors: FormErrors) => {
@@ -725,6 +823,69 @@ const ToseiGusokuForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const validateStepHabitos = () => {
+    const newErrors: FormErrors = {};
+    const esAdulto = formData.tipoRegistro === 'adulto';
+    const esFamiliar = formData.tipoRegistro === 'familiar';
+    const tieneHijos = formData.tipoRegistro === 'menor' || esFamiliar;
+
+    // Bloque adulto (aplica al adulto y también al tutor de una inscripción familiar)
+    if (esAdulto || esFamiliar) {
+      if (formData.estadoCivilHogar.length === 0) { newErrors.estadoCivilHogar = 'Selecciona al menos una opción'; }
+      if (!formData.personasACargo) { newErrors.personasACargo = 'Selecciona una opción'; }
+      else if (formData.personasACargo === 'Si' && !formData.personasACargoDetalle.trim()) { newErrors.personasACargoDetalle = 'Especifica quiénes'; }
+      if (!formData.otrasArtesMarciales) { newErrors.otrasArtesMarciales = 'Selecciona una opción'; }
+      else if (formData.otrasArtesMarciales === 'Si') {
+        if (!formData.otrasArtesMarcialesDetalle.trim()) { newErrors.otrasArtesMarcialesDetalle = 'Especifica cuál'; }
+        if (!formData.tiempoPracticaArteMarcial) { newErrors.tiempoPracticaArteMarcial = 'Selecciona una opción'; }
+        if (!formData.cuandoPracticoArteMarcial) { newErrors.cuandoPracticoArteMarcial = 'Selecciona una opción'; }
+      }
+      if (!formData.practicaDeporte) { newErrors.practicaDeporte = 'Selecciona una opción'; }
+      else if (formData.practicaDeporte === 'Si' && !formData.practicaDeporteDetalle.trim()) { newErrors.practicaDeporteDetalle = 'Especifica cuál'; }
+      if (!formData.condicionMedicaAdulto.trim()) { newErrors.condicionMedicaAdulto = 'Escribe "Ninguna" si no aplica'; }
+      if (!formData.medicamentos) { newErrors.medicamentos = 'Selecciona una opción'; }
+      else if (formData.medicamentos === 'Si' && !formData.medicamentosDetalle.trim()) { newErrors.medicamentosDetalle = 'Especifica cuáles'; }
+      if (!formData.apoyoPsicologicoAdulto) { newErrors.apoyoPsicologicoAdulto = 'Selecciona una opción'; }
+      if (!formData.horasSuenoAdulto) { newErrors.horasSuenoAdulto = 'Selecciona una opción'; }
+      if (!formData.tiempoPantallasAdulto) { newErrors.tiempoPantallasAdulto = 'Selecciona una opción'; }
+      if (!formData.nivelEstres) { newErrors.nivelEstres = 'Selecciona una opción'; }
+      if (!formData.manejoFrustracion) { newErrors.manejoFrustracion = 'Selecciona una opción'; }
+      if (!formData.reaccionCritica) { newErrors.reaccionCritica = 'Selecciona una opción'; }
+      if (!formData.motivoPractica.trim()) { newErrors.motivoPractica = 'Campo requerido'; }
+      if (!formData.expectativasAdulto6Meses.trim()) { newErrors.expectativasAdulto6Meses = 'Campo requerido'; }
+      if (!formData.porQueAhora.trim()) { newErrors.porQueAhora = 'Campo requerido'; }
+      if (formData.influenciaInscripcion.length === 0) { newErrors.influenciaInscripcion = 'Selecciona al menos una opción'; }
+      if (!formData.siNoVeResultados) { newErrors.siNoVeResultados = 'Selecciona una opción'; }
+      if (!formData.imagenKarate.trim()) { newErrors.imagenKarate = 'Campo requerido'; }
+      if (!formData.disposicionEtiqueta) { newErrors.disposicionEtiqueta = 'Selecciona una opción'; }
+      if (formData.objetivoPrincipal.length === 0) { newErrors.objetivoPrincipal = 'Selecciona al menos una opción'; }
+      if (!formData.queEsperaInstructor.trim()) { newErrors.queEsperaInstructor = 'Campo requerido'; }
+    }
+
+    // Bloque hijos
+    if (tieneHijos) {
+      const hijosErrores: Record<string, string>[] = [];
+      formData.hijos.forEach((hijo, index) => {
+        const err: Record<string, string> = {};
+        if (!hijo.horasSueno) { err.horasSueno = `Selecciona una opción para el hijo ${index + 1}`; }
+        if (!hijo.tiempoPantallas) { err.tiempoPantallas = `Selecciona una opción para el hijo ${index + 1}`; }
+        if (!hijo.practicaOtrosDeportes) { err.practicaOtrosDeportes = `Selecciona una opción para el hijo ${index + 1}`; }
+        if (!hijo.apoyoPsicologico) { err.apoyoPsicologico = `Selecciona una opción para el hijo ${index + 1}`; }
+        if (!hijo.condicionMedica.trim()) { err.condicionMedica = `Escribe "Ninguna" si no aplica (hijo ${index + 1})`; }
+        if (hijo.responsabilidadesCasa.length === 0) { err.responsabilidadesCasa = `Selecciona al menos una (hijo ${index + 1})`; }
+        hijosErrores.push(err);
+      });
+      if (hijosErrores.some((err) => Object.keys(err).length > 0)) newErrors.hijos = hijosErrores;
+
+      if (!formData.motivoInscripcion.trim()) { newErrors.motivoInscripcion = 'Campo requerido'; }
+      if (!formData.expectativas6Meses.trim()) { newErrors.expectativas6Meses = 'Campo requerido'; }
+      if (!formData.interesNino) { newErrors.interesNino = 'Selecciona una opción'; }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const validateStep2 = () => {
     const newErrors: FormErrors = {};
     if (!formData.horasPractica) newErrors.horasPractica = 'Selecciona una opción';
@@ -749,9 +910,32 @@ const ToseiGusokuForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  type StepKey = 'datos' | 'habitos' | 'compromiso' | 'politicas';
+
+  const activeSteps: { key: StepKey; label: string }[] = formData.tipoRegistro === 'ninguno'
+    ? [{ key: 'datos', label: 'Datos Personales' }]
+    : [
+        { key: 'datos', label: 'Datos Personales' },
+        { key: 'habitos', label: 'Hábitos y bienestar' },
+        { key: 'compromiso', label: 'Compromiso' },
+        { key: 'politicas', label: 'Políticas' },
+      ];
+  const safeStep = Math.min(step, activeSteps.length);
+  const currentStep = activeSteps[safeStep - 1];
+
+  const validateStepByKey = (key: StepKey) => {
+    switch (key) {
+      case 'datos': return validateStep1();
+      case 'habitos': return validateStepHabitos();
+      case 'compromiso': return validateStep2();
+      case 'politicas': return validateStep3();
+      default: return false;
+    }
+  };
+
   const handleNext = () => {
-    if (step === 1 && validateStep1()) setStep(2);
-    else if (step === 2 && validateStep2()) setStep(3);
+    if (!currentStep || currentStep.key === 'politicas') return;
+    if (validateStepByKey(currentStep.key)) setStep((prev) => Math.min(prev + 1, activeSteps.length));
   };
 
   const handleBack = () => {
@@ -771,13 +955,62 @@ const ToseiGusokuForm = () => {
         shirtSize: formData.tallaCamisetaAdulto,
         address: formData.direccionAdulto,
         nationalId: formData.cedula,
-        medicalInfo: formData.condicionMedica,
+        medicalInfo: formData.condicionMedicaAdulto,
         haPracticadoKarate: formData.practicoKarateAdulto === 'si',
         kyu: formData.practicoKarateAdulto === 'si' ? formData.kyuAdulto : '',
+        // Hábitos y bienestar (adulto / tutor)
+        estadoCivilHogar: formData.estadoCivilHogar,
+        personasACargo: formData.personasACargo,
+        personasACargoDetalle: formData.personasACargoDetalle,
+        practicaDeporte: formData.practicaDeporte,
+        practicaDeporteDetalle: formData.practicaDeporteDetalle,
+        medicamentos: formData.medicamentos,
+        medicamentosDetalle: formData.medicamentosDetalle,
+        apoyoPsicologico: formData.apoyoPsicologicoAdulto,
+        apoyoPsicologicoDetalle: formData.apoyoPsicologicoAdultoDetalle,
+        horasSueno: formData.horasSuenoAdulto,
+        tiempoPantallas: formData.tiempoPantallasAdulto,
+        nivelEstres: formData.nivelEstres,
+        manejoFrustracion: formData.manejoFrustracion,
+        reaccionCritica: formData.reaccionCritica,
+        motivoPractica: formData.motivoPractica,
+        expectativas6Meses: formData.expectativasAdulto6Meses,
+        porQueAhora: formData.porQueAhora,
+        influenciaInscripcion: formData.influenciaInscripcion,
+        siNoVeResultados: formData.siNoVeResultados,
+        imagenKarate: formData.imagenKarate,
+        disposicionEtiqueta: formData.disposicionEtiqueta,
+        objetivoPrincipal: formData.objetivoPrincipal,
+        queEsperaInstructor: formData.queEsperaInstructor,
+        otrasArtesMarciales: formData.otrasArtesMarciales,
+        otrasArtesMarcialesDetalle: formData.otrasArtesMarcialesDetalle,
+        tiempoPracticaArteMarcial: formData.tiempoPracticaArteMarcial,
+        cuandoPracticoArteMarcial: formData.cuandoPracticoArteMarcial,
         ...(esTutor ? { esTutor: true, relacionConHijos: formData.relacionTutor } : {}),
       },
     };
-    const hijoApplicants = formData.hijos.map((hijo) => ({ name: hijo.nombre, dateOfBirth: hijo.fechaNacimiento, email: hijo.email.trim() || undefined, profileData: { sexo: hijo.sexo, bloodType: hijo.tipoSangre, height: hijo.altura, pantSize: hijo.tallaPantalon, shirtSize: hijo.tallaCamiseta, medicalInfo: formData.condicionMedica, haPracticadoKarate: hijo.practicoKarate === 'si', kyu: hijo.practicoKarate === 'si' ? hijo.kyu : '' } }));
+    const hijoApplicants = formData.hijos.map((hijo) => ({
+      name: hijo.nombre,
+      dateOfBirth: hijo.fechaNacimiento,
+      email: hijo.email.trim() || undefined,
+      profileData: {
+        sexo: hijo.sexo,
+        bloodType: hijo.tipoSangre,
+        height: hijo.altura,
+        pantSize: hijo.tallaPantalon,
+        shirtSize: hijo.tallaCamiseta,
+        medicalInfo: hijo.condicionMedica,
+        haPracticadoKarate: hijo.practicoKarate === 'si',
+        kyu: hijo.practicoKarate === 'si' ? hijo.kyu : '',
+        horasSueno: hijo.horasSueno,
+        tiempoPantallas: hijo.tiempoPantallas,
+        practicaOtrosDeportes: hijo.practicaOtrosDeportes,
+        otrosDeportesDetalle: hijo.otrosDeportesDetalle,
+        apoyoPsicologico: hijo.apoyoPsicologico,
+        apoyoPsicologicoDetalle: hijo.apoyoPsicologicoDetalle,
+        responsabilidadesCasa: hijo.responsabilidadesCasa,
+      },
+    }));
     const applicants = formData.tipoRegistro === 'adulto'
       ? [tutorApplicant]
       : formData.tipoRegistro === 'familiar'
@@ -785,20 +1018,27 @@ const ToseiGusokuForm = () => {
         : hijoApplicants;
     const contactPhone = formData.tipoRegistro === 'menor' ? formData.telefonoMadre : formData.telefonoContacto;
     const uploadData = new FormData();
-    uploadData.append('payload', JSON.stringify({ email: formData.email, phone: contactPhone, applicants, registrationData: { tipoRegistro: formData.tipoRegistro, esTutor, relacionTutor: esTutor ? formData.relacionTutor : '', nombreMadre: formData.nombreMadre, telefonoMadre: formData.telefonoMadre, nombrePadre: formData.nombrePadre, telefonoPadre: formData.telefonoPadre, direccionPadres: formData.direccionPadres, condicionMedica: formData.condicionMedica, horasPractica: formData.horasPractica, espacioCasa: formData.espacioCasa, compromisoDiario: formData.compromisoDiario, asistenciaPadre: formData.asistenciaPadre, metodoMotivacion: formData.metodoMotivacion, razonesKarate: formData.razonesKarate, compromisoObstaculos: formData.compromisoObstaculos, aceptoPago: formData.aceptoPago, aceptoMultas: formData.aceptoMultas, aceptoPagosParciales: formData.aceptoPagosParciales, aceptoPagoIninterrumpido: formData.aceptoPagoIninterrumpido, aceptoDerechoAdmision: formData.aceptoDerechoAdmision, aceptoPoliticas: formData.aceptoPoliticas, aceptoTerminosLegales: true, terminosLegalesAceptadosEn: new Date().toISOString() } }));
+    uploadData.append('payload', JSON.stringify({ email: formData.email, phone: contactPhone, applicants, registrationData: { tipoRegistro: formData.tipoRegistro, esTutor, relacionTutor: esTutor ? formData.relacionTutor : '', nombreMadre: formData.nombreMadre, telefonoMadre: formData.telefonoMadre, nombrePadre: formData.nombrePadre, telefonoPadre: formData.telefonoPadre, direccionPadres: formData.direccionPadres, condicionMedica: formData.hijos.map(h => h.condicionMedica).filter(Boolean).join(' · '), motivoInscripcion: formData.motivoInscripcion, expectativas6Meses: formData.expectativas6Meses, interesNino: formData.interesNino, horasPractica: formData.horasPractica, espacioCasa: formData.espacioCasa, compromisoDiario: formData.compromisoDiario, asistenciaPadre: formData.asistenciaPadre, metodoMotivacion: formData.metodoMotivacion, razonesKarate: formData.razonesKarate, compromisoObstaculos: formData.compromisoObstaculos, aceptoPago: formData.aceptoPago, aceptoMultas: formData.aceptoMultas, aceptoPagosParciales: formData.aceptoPagosParciales, aceptoPagoIninterrumpido: formData.aceptoPagoIninterrumpido, aceptoDerechoAdmision: formData.aceptoDerechoAdmision, aceptoPoliticas: formData.aceptoPoliticas, aceptoTerminosLegales: true, terminosLegalesAceptadosEn: new Date().toISOString() } }));
     if (formData.tipoRegistro === 'adulto') {
       if (formData.fotoAdulto) uploadData.append('document-0-PROFILE_PHOTO', formData.fotoAdulto);
-      formData.identAdulto.forEach((file) => uploadData.append('document-0-IDENTITY', file));
+      if (formData.cedulaAdulto) uploadData.append('document-0-IDENTITY', formData.cedulaAdulto);
+      if (formData.pasaporteAdulto) uploadData.append('document-0-PASSPORT', formData.pasaporteAdulto);
     } else if (formData.tipoRegistro === 'familiar') {
       if (formData.fotoAdulto) uploadData.append('document-0-PROFILE_PHOTO', formData.fotoAdulto);
-      formData.identAdulto.forEach((file) => uploadData.append('document-0-IDENTITY', file));
+      if (formData.cedulaAdulto) uploadData.append('document-0-IDENTITY', formData.cedulaAdulto);
+      if (formData.pasaporteAdulto) uploadData.append('document-0-PASSPORT', formData.pasaporteAdulto);
       formData.hijos.forEach((hijo, index) => {
         const docIndex = index + 1;
         if (hijo.foto) uploadData.append(`document-${docIndex}-PROFILE_PHOTO`, hijo.foto);
-        hijo.identificacion.forEach((file) => uploadData.append(`document-${docIndex}-IDENTITY`, file));
+        if (hijo.partidaNacimiento) uploadData.append(`document-${docIndex}-BIRTH_CERTIFICATE`, hijo.partidaNacimiento);
+        if (hijo.pasaporte) uploadData.append(`document-${docIndex}-PASSPORT`, hijo.pasaporte);
       });
     } else {
-      formData.hijos.forEach((hijo, index) => { if (hijo.foto) uploadData.append(`document-${index}-PROFILE_PHOTO`, hijo.foto); hijo.identificacion.forEach((file) => uploadData.append(`document-${index}-IDENTITY`, file)); });
+      formData.hijos.forEach((hijo, index) => {
+        if (hijo.foto) uploadData.append(`document-${index}-PROFILE_PHOTO`, hijo.foto);
+        if (hijo.partidaNacimiento) uploadData.append(`document-${index}-BIRTH_CERTIFICATE`, hijo.partidaNacimiento);
+        if (hijo.pasaporte) uploadData.append(`document-${index}-PASSPORT`, hijo.pasaporte);
+      });
     }
     setIsSubmitting(true);
     setSubmitError('');
@@ -838,9 +1078,12 @@ const ToseiGusokuForm = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!validateStep1()) { setStep(1); return; }
-    if (!validateStep2()) { setStep(2); return; }
-    if (!validateStep3()) return;
+    for (let i = 0; i < activeSteps.length; i++) {
+      if (!validateStepByKey(activeSteps[i].key)) {
+        setStep(i + 1);
+        return;
+      }
+    }
     setSubmitError('');
     setIsLegalModalOpen(true);
   };
@@ -1027,7 +1270,7 @@ const ToseiGusokuForm = () => {
             </div>
 
             {/* Archivos adulto */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <FileDropZone
                 label="Foto (cara, fondo blanco) *"
                 files={formData.fotoAdulto ? [formData.fotoAdulto] : []}
@@ -1039,15 +1282,24 @@ const ToseiGusokuForm = () => {
                 onRemove={handleAdultoFotoRemove}
               />
               <FileDropZone
-                label="Identificación (Cédula y Pasaporte) *"
-                files={formData.identAdulto}
-                previews={formData.identAdultoPreview}
-                error={errors.identAdulto}
+                label="Cédula *"
+                files={formData.cedulaAdulto ? [formData.cedulaAdulto] : []}
+                previews={formData.cedulaAdultoPreview ? [formData.cedulaAdultoPreview] : []}
+                error={errors.cedulaAdulto}
                 accept="image/*,.pdf"
-                multiple
-                hint="Formatos: JPG, PNG, PDF. Puedes subir cédula y pasaporte."
-                onFiles={handleAdultoIdentFiles}
-                onRemove={handleAdultoIdentRemove}
+                hint="Formatos: JPG, PNG, PDF"
+                onFiles={(fs) => handleAdultoDocumento('cedulaAdulto', fs[0] ?? null)}
+                onRemove={() => handleAdultoDocumentoRemove('cedulaAdulto')}
+              />
+              <FileDropZone
+                label="Pasaporte *"
+                files={formData.pasaporteAdulto ? [formData.pasaporteAdulto] : []}
+                previews={formData.pasaporteAdultoPreview ? [formData.pasaporteAdultoPreview] : []}
+                error={errors.pasaporteAdulto}
+                accept="image/*,.pdf"
+                hint="Formatos: JPG, PNG, PDF"
+                onFiles={(fs) => handleAdultoDocumento('pasaporteAdulto', fs[0] ?? null)}
+                onRemove={() => handleAdultoDocumentoRemove('pasaporteAdulto')}
               />
             </div>
 
@@ -1148,7 +1400,7 @@ const ToseiGusokuForm = () => {
                         {errors.hijos?.[index]?.tallaCamiseta && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.tallaCamiseta}</p>}
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <FileDropZone
                         label="Foto (cara, fondo blanco) *"
                         files={hijo.foto ? [hijo.foto] : []}
@@ -1160,15 +1412,24 @@ const ToseiGusokuForm = () => {
                         onRemove={() => handleHijoFotoRemove(hijo.id)}
                       />
                       <FileDropZone
-                        label="Identificación (Partida de Nac. y/o Pasaporte) *"
-                        files={hijo.identificacion}
-                        previews={hijo.identPreview}
-                        error={errors.hijos?.[index]?.identificacion}
+                        label="Partida de Nacimiento *"
+                        files={hijo.partidaNacimiento ? [hijo.partidaNacimiento] : []}
+                        previews={hijo.partidaPreview ? [hijo.partidaPreview] : []}
+                        error={errors.hijos?.[index]?.partidaNacimiento}
                         accept="image/*,.pdf"
-                        multiple
-                        hint="Formatos: JPG, PNG, PDF."
-                        onFiles={(fs) => handleHijoIdentFiles(hijo.id, fs)}
-                        onRemove={(i) => handleHijoIdentRemove(hijo.id, i)}
+                        hint="Formatos: JPG, PNG, PDF"
+                        onFiles={(fs) => handleHijoDocumento(hijo.id, 'partidaNacimiento', fs[0] ?? null)}
+                        onRemove={() => handleHijoDocumentoRemove(hijo.id, 'partidaNacimiento')}
+                      />
+                      <FileDropZone
+                        label="Pasaporte *"
+                        files={hijo.pasaporte ? [hijo.pasaporte] : []}
+                        previews={hijo.pasaportePreview ? [hijo.pasaportePreview] : []}
+                        error={errors.hijos?.[index]?.pasaporte}
+                        accept="image/*,.pdf"
+                        hint="Formatos: JPG, PNG, PDF"
+                        onFiles={(fs) => handleHijoDocumento(hijo.id, 'pasaporte', fs[0] ?? null)}
+                        onRemove={() => handleHijoDocumentoRemove(hijo.id, 'pasaporte')}
                       />
                     </div>
                   </div>
@@ -1280,7 +1541,7 @@ const ToseiGusokuForm = () => {
                     {errors.hijos?.[index]?.tallaCamiseta && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.tallaCamiseta}</p>}
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <FileDropZone
                     label="Foto (cara, fondo blanco) *"
                     files={hijo.foto ? [hijo.foto] : []}
@@ -1292,15 +1553,24 @@ const ToseiGusokuForm = () => {
                     onRemove={() => handleHijoFotoRemove(hijo.id)}
                   />
                   <FileDropZone
-                    label="Identificación (Partida de Nac. y/o Pasaporte) *"
-                    files={hijo.identificacion}
-                    previews={hijo.identPreview}
-                    error={errors.hijos?.[index]?.identificacion}
+                    label="Partida de Nacimiento *"
+                    files={hijo.partidaNacimiento ? [hijo.partidaNacimiento] : []}
+                    previews={hijo.partidaPreview ? [hijo.partidaPreview] : []}
+                    error={errors.hijos?.[index]?.partidaNacimiento}
                     accept="image/*,.pdf"
-                    multiple
-                    hint="Formatos: JPG, PNG, PDF."
-                    onFiles={(fs) => handleHijoIdentFiles(hijo.id, fs)}
-                    onRemove={(i) => handleHijoIdentRemove(hijo.id, i)}
+                    hint="Formatos: JPG, PNG, PDF"
+                    onFiles={(fs) => handleHijoDocumento(hijo.id, 'partidaNacimiento', fs[0] ?? null)}
+                    onRemove={() => handleHijoDocumentoRemove(hijo.id, 'partidaNacimiento')}
+                  />
+                  <FileDropZone
+                    label="Pasaporte *"
+                    files={hijo.pasaporte ? [hijo.pasaporte] : []}
+                    previews={hijo.pasaportePreview ? [hijo.pasaportePreview] : []}
+                    error={errors.hijos?.[index]?.pasaporte}
+                    accept="image/*,.pdf"
+                    hint="Formatos: JPG, PNG, PDF"
+                    onFiles={(fs) => handleHijoDocumento(hijo.id, 'pasaporte', fs[0] ?? null)}
+                    onRemove={() => handleHijoDocumentoRemove(hijo.id, 'pasaporte')}
                   />
                 </div>
               </div>
@@ -1354,6 +1624,459 @@ const ToseiGusokuForm = () => {
               </div>
             </div>
           </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderStepHabitos = () => {
+    const esAdulto = formData.tipoRegistro === 'adulto';
+    const esFamiliar = formData.tipoRegistro === 'familiar';
+    const esAdultoBlock = esAdulto || esFamiliar;
+    const tieneHijos = formData.tipoRegistro === 'menor' || esFamiliar;
+
+    return (
+      <div className="space-y-6">
+        <h3 className="text-xl font-semibold text-stone-800 border-b pb-3">Hábitos y bienestar</h3>
+
+        {esAdultoBlock && (
+          <div className="border border-stone-200 rounded-lg p-4 space-y-6">
+            <h5 className="font-medium text-stone-700">{esFamiliar ? 'Datos del tutor (adulto)' : 'Sobre ti'}</h5>
+
+            {/* Hogar y salud */}
+            <div className="bg-stone-50 border border-brand-accent/30 rounded-lg p-4 space-y-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand-accent">Hogar y salud</p>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-2">Estado civil / composición del hogar <span className="text-red-500">*</span></label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {ESTADO_CIVIL_HOGAR.map(opcion => (
+                    <label key={opcion} className="flex items-center p-2.5 border border-stone-200 rounded-lg bg-white hover:bg-stone-50 cursor-pointer transition">
+                      <input type="checkbox" checked={formData.estadoCivilHogar.includes(opcion)} onChange={() => handleMultiSelect('estadoCivilHogar', opcion)} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500 rounded" />
+                      <span className="text-stone-500 text-sm">{opcion}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.estadoCivilHogar && <p className="text-red-500 text-xs mt-1">{errors.estadoCivilHogar}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-2">¿Tiene personas a su cargo? (hijos, padres mayores, etc.) <span className="text-red-500">*</span></label>
+                <div className="flex gap-4 flex-wrap">
+                  {['Si', 'No'].map(opcion => (
+                    <label key={opcion} className="flex items-center p-3 border border-stone-200 rounded-lg bg-white hover:bg-stone-50 cursor-pointer transition">
+                      <input type="radio" name="personasACargo" checked={formData.personasACargo === opcion} onChange={handleChange} value={opcion} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500" />
+                      <span className="text-stone-500">{opcion}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.personasACargo && <p className="text-red-500 text-xs mt-1">{errors.personasACargo}</p>}
+                {formData.personasACargo === 'Si' && (
+                  <input type="text" name="personasACargoDetalle" value={formData.personasACargoDetalle} onChange={handleChange} maxLength={300} placeholder="¿Quiénes?"
+                    className={`mt-2 w-full px-4 py-2 border rounded-lg bg-white text-stone-900 placeholder:text-stone-400 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.personasACargoDetalle ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                )}
+                {errors.personasACargoDetalle && <p className="text-red-500 text-xs mt-1">{errors.personasACargoDetalle}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-1">¿Tiene alguna lesión, condición médica o limitación física que debamos conocer? <span className="text-red-500">*</span></label>
+                <textarea name="condicionMedicaAdulto" value={formData.condicionMedicaAdulto} onChange={handleChange} maxLength={2000} rows={2}
+                  className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.condicionMedicaAdulto ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                <p className="text-xs text-stone-400 mt-1">Si no hay ninguna, escribe &quot;Ninguna&quot;.</p>
+                {errors.condicionMedicaAdulto && <p className="text-red-500 text-xs mt-1">{errors.condicionMedicaAdulto}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-2">¿Toma algún medicamento de forma regular? <span className="text-red-500">*</span></label>
+                <div className="flex gap-4 flex-wrap">
+                  {['Si', 'No'].map(opcion => (
+                    <label key={opcion} className="flex items-center p-3 border border-stone-200 rounded-lg bg-white hover:bg-stone-50 cursor-pointer transition">
+                      <input type="radio" name="medicamentos" checked={formData.medicamentos === opcion} onChange={handleChange} value={opcion} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500" />
+                      <span className="text-stone-500">{opcion}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.medicamentos && <p className="text-red-500 text-xs mt-1">{errors.medicamentos}</p>}
+                {formData.medicamentos === 'Si' && (
+                  <input type="text" name="medicamentosDetalle" value={formData.medicamentosDetalle} onChange={handleChange} maxLength={300} placeholder="¿Cuáles?"
+                    className={`mt-2 w-full px-4 py-2 border rounded-lg bg-white text-stone-900 placeholder:text-stone-400 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.medicamentosDetalle ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                )}
+                {errors.medicamentosDetalle && <p className="text-red-500 text-xs mt-1">{errors.medicamentosDetalle}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-2">¿Ha recibido o recibe apoyo psicológico actualmente? <span className="text-red-500">*</span></label>
+                <div className="flex gap-4 flex-wrap">
+                  {['Si', 'No'].map(opcion => (
+                    <label key={opcion} className="flex items-center p-3 border border-stone-200 rounded-lg bg-white hover:bg-stone-50 cursor-pointer transition">
+                      <input type="radio" name="apoyoPsicologicoAdulto" checked={formData.apoyoPsicologicoAdulto === opcion} onChange={handleChange} value={opcion} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500" />
+                      <span className="text-stone-500">{opcion}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.apoyoPsicologicoAdulto && <p className="text-red-500 text-xs mt-1">{errors.apoyoPsicologicoAdulto}</p>}
+                {formData.apoyoPsicologicoAdulto === 'Si' && (
+                  <input type="text" name="apoyoPsicologicoAdultoDetalle" value={formData.apoyoPsicologicoAdultoDetalle} onChange={handleChange} maxLength={300} placeholder="Detalle (opcional)"
+                    className="mt-2 w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 placeholder:text-stone-400 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" />
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-stone-500 mb-1">¿Cuántas horas duerme en promedio? <span className="text-red-500">*</span></label>
+                  <div className="relative">
+                    <select name="horasSuenoAdulto" value={formData.horasSuenoAdulto} onChange={handleChange}
+                      className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.horasSuenoAdulto ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                      <option value="">Selecciona...</option>
+                      {HORAS_SUENO.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                    <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                  {errors.horasSuenoAdulto && <p className="text-red-500 text-xs mt-1">{errors.horasSuenoAdulto}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-stone-500 mb-1">¿Cuánto tiempo pasa frente a pantallas fuera del trabajo? <span className="text-red-500">*</span></label>
+                  <div className="relative">
+                    <select name="tiempoPantallasAdulto" value={formData.tiempoPantallasAdulto} onChange={handleChange}
+                      className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.tiempoPantallasAdulto ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                      <option value="">Selecciona...</option>
+                      {TIEMPO_PANTALLAS.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                    <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                  {errors.tiempoPantallasAdulto && <p className="text-red-500 text-xs mt-1">{errors.tiempoPantallasAdulto}</p>}
+                </div>
+              </div>
+            </div>
+
+            {/* Actividad y experiencia previa */}
+            <div className="bg-stone-50 border border-brand-accent/30 rounded-lg p-4 space-y-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand-accent">Actividad y experiencia previa</p>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-2">¿Ha practicado karate u otro arte marcial antes? ¿Cuánto tiempo y cuándo? <span className="text-red-500">*</span></label>
+                <div className="flex gap-4 flex-wrap">
+                  {['Si', 'No'].map(opcion => (
+                    <label key={opcion} className="flex items-center p-3 border border-stone-200 rounded-lg bg-white hover:bg-stone-50 cursor-pointer transition">
+                      <input type="radio" name="otrasArtesMarciales" checked={formData.otrasArtesMarciales === opcion} onChange={handleChange} value={opcion} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500" />
+                      <span className="text-stone-500">{opcion}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.otrasArtesMarciales && <p className="text-red-500 text-xs mt-1">{errors.otrasArtesMarciales}</p>}
+                {formData.otrasArtesMarciales === 'Si' && (
+                  <div className="mt-2 space-y-2">
+                    <input type="text" name="otrasArtesMarcialesDetalle" value={formData.otrasArtesMarcialesDetalle} onChange={handleChange} maxLength={300} placeholder="¿Cuál(es) arte(s) marcial(es)?"
+                      className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 placeholder:text-stone-400 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.otrasArtesMarcialesDetalle ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      <div className="relative">
+                        <select name="tiempoPracticaArteMarcial" value={formData.tiempoPracticaArteMarcial} onChange={handleChange}
+                          className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.tiempoPracticaArteMarcial ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                          <option value="">¿Cuánto tiempo?</option>
+                          {TIEMPO_ARTE_MARCIAL.map(t => <option key={t} value={t}>{t}</option>)}
+                        </select>
+                        <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                      <div className="relative">
+                        <select name="cuandoPracticoArteMarcial" value={formData.cuandoPracticoArteMarcial} onChange={handleChange}
+                          className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.cuandoPracticoArteMarcial ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                          <option value="">¿Cuándo?</option>
+                          {CUANDO_ARTE_MARCIAL.map(t => <option key={t} value={t}>{t}</option>)}
+                        </select>
+                        <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {errors.otrasArtesMarcialesDetalle && <p className="text-red-500 text-xs mt-1">{errors.otrasArtesMarcialesDetalle}</p>}
+                {errors.tiempoPracticaArteMarcial && <p className="text-red-500 text-xs mt-1">{errors.tiempoPracticaArteMarcial}</p>}
+                {errors.cuandoPracticoArteMarcial && <p className="text-red-500 text-xs mt-1">{errors.cuandoPracticoArteMarcial}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-2">¿Practica actualmente algún deporte o actividad física? <span className="text-red-500">*</span></label>
+                <div className="flex gap-4 flex-wrap">
+                  {['Si', 'No'].map(opcion => (
+                    <label key={opcion} className="flex items-center p-3 border border-stone-200 rounded-lg bg-white hover:bg-stone-50 cursor-pointer transition">
+                      <input type="radio" name="practicaDeporte" checked={formData.practicaDeporte === opcion} onChange={handleChange} value={opcion} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500" />
+                      <span className="text-stone-500">{opcion}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.practicaDeporte && <p className="text-red-500 text-xs mt-1">{errors.practicaDeporte}</p>}
+                {formData.practicaDeporte === 'Si' && (
+                  <input type="text" name="practicaDeporteDetalle" value={formData.practicaDeporteDetalle} onChange={handleChange} maxLength={300} placeholder="¿Cuál(es)?"
+                    className={`mt-2 w-full px-4 py-2 border rounded-lg bg-white text-stone-900 placeholder:text-stone-400 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.practicaDeporteDetalle ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                )}
+                {errors.practicaDeporteDetalle && <p className="text-red-500 text-xs mt-1">{errors.practicaDeporteDetalle}</p>}
+              </div>
+            </div>
+
+            {/* Motivación y expectativas */}
+            <div className="bg-stone-50 border border-brand-accent/30 rounded-lg p-4 space-y-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand-accent">Motivación y expectativas</p>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-1">¿Por qué quiere practicar karate? <span className="text-red-500">*</span></label>
+                <textarea name="motivoPractica" value={formData.motivoPractica} onChange={handleChange} maxLength={2000} rows={3}
+                  className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.motivoPractica ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                {errors.motivoPractica && <p className="text-red-500 text-xs mt-1">{errors.motivoPractica}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-1">¿Qué espera lograr en 6 meses? <span className="text-red-500">*</span></label>
+                <textarea name="expectativasAdulto6Meses" value={formData.expectativasAdulto6Meses} onChange={handleChange} maxLength={2000} rows={3}
+                  className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.expectativasAdulto6Meses ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                {errors.expectativasAdulto6Meses && <p className="text-red-500 text-xs mt-1">{errors.expectativasAdulto6Meses}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-1">¿Por qué ahora y no antes? <span className="text-red-500">*</span></label>
+                <textarea name="porQueAhora" value={formData.porQueAhora} onChange={handleChange} maxLength={2000} rows={2}
+                  className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.porQueAhora ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                {errors.porQueAhora && <p className="text-red-500 text-xs mt-1">{errors.porQueAhora}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-2">¿Alguien lo influyó para inscribirse? (pareja, amigo, serie, médico) <span className="text-red-500">*</span></label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {INFLUENCIA_INSCRIPCION.map(opcion => (
+                    <label key={opcion} className="flex items-center p-2.5 border border-stone-200 rounded-lg bg-white hover:bg-stone-50 cursor-pointer transition">
+                      <input type="checkbox" checked={formData.influenciaInscripcion.includes(opcion)} onChange={() => handleMultiSelect('influenciaInscripcion', opcion)} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500 rounded" />
+                      <span className="text-stone-500 text-sm">{opcion}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.influenciaInscripcion && <p className="text-red-500 text-xs mt-1">{errors.influenciaInscripcion}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-1">¿Qué haría si en 3 meses no ve resultados? <span className="text-red-500">*</span></label>
+                <div className="relative">
+                  <select name="siNoVeResultados" value={formData.siNoVeResultados} onChange={handleChange}
+                    className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.siNoVeResultados ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                    <option value="">Selecciona...</option>
+                    {SI_NO_VE_RESULTADOS.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+                {errors.siNoVeResultados && <p className="text-red-500 text-xs mt-1">{errors.siNoVeResultados}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-2">¿Busca competir, defenderse, entrenar por salud, o desarrollarse personalmente? <span className="text-red-500">*</span></label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {OBJETIVO_PRINCIPAL.map(opcion => (
+                    <label key={opcion} className="flex items-center p-2.5 border border-stone-200 rounded-lg bg-white hover:bg-stone-50 cursor-pointer transition">
+                      <input type="checkbox" checked={formData.objetivoPrincipal.includes(opcion)} onChange={() => handleMultiSelect('objetivoPrincipal', opcion)} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500 rounded" />
+                      <span className="text-stone-500 text-sm">{opcion}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.objetivoPrincipal && <p className="text-red-500 text-xs mt-1">{errors.objetivoPrincipal}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-1">¿Qué espera del instructor? <span className="text-red-500">*</span></label>
+                <textarea name="queEsperaInstructor" value={formData.queEsperaInstructor} onChange={handleChange} maxLength={2000} rows={2}
+                  className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.queEsperaInstructor ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                {errors.queEsperaInstructor && <p className="text-red-500 text-xs mt-1">{errors.queEsperaInstructor}</p>}
+              </div>
+            </div>
+
+            {/* Actitud y dojo */}
+            <div className="bg-stone-50 border border-brand-accent/30 rounded-lg p-4 space-y-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand-accent">Actitud y dojo</p>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-2">¿Cómo describiría su nivel de estrés actual? <span className="text-red-500">*</span></label>
+                <div className="flex gap-4 flex-wrap">
+                  {NIVEL_ESTRES.map(opcion => (
+                    <label key={opcion} className="flex items-center p-3 border border-stone-200 rounded-lg bg-white hover:bg-stone-50 cursor-pointer transition">
+                      <input type="radio" name="nivelEstres" checked={formData.nivelEstres === opcion} onChange={handleChange} value={opcion} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500" />
+                      <span className="text-stone-500">{opcion}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.nivelEstres && <p className="text-red-500 text-xs mt-1">{errors.nivelEstres}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-2">¿Cómo maneja la frustración o el fracaso? <span className="text-red-500">*</span></label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {MANEJO_FRUSTRACION.map(opcion => (
+                    <label key={opcion} className="flex items-center p-3 border border-stone-200 rounded-lg bg-white hover:bg-stone-50 cursor-pointer transition">
+                      <input type="radio" name="manejoFrustracion" checked={formData.manejoFrustracion === opcion} onChange={handleChange} value={opcion} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500" />
+                      <span className="text-stone-500 text-sm">{opcion}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.manejoFrustracion && <p className="text-red-500 text-xs mt-1">{errors.manejoFrustracion}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-2">¿Cómo reacciona ante la corrección o la crítica? <span className="text-red-500">*</span></label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {REACCION_CRITICA.map(opcion => (
+                    <label key={opcion} className="flex items-center p-3 border border-stone-200 rounded-lg bg-white hover:bg-stone-50 cursor-pointer transition">
+                      <input type="radio" name="reaccionCritica" checked={formData.reaccionCritica === opcion} onChange={handleChange} value={opcion} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500" />
+                      <span className="text-stone-500 text-sm">{opcion}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.reaccionCritica && <p className="text-red-500 text-xs mt-1">{errors.reaccionCritica}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-1">¿Qué imagen tiene del karate tradicional? <span className="text-red-500">*</span></label>
+                <textarea name="imagenKarate" value={formData.imagenKarate} onChange={handleChange} maxLength={2000} rows={2}
+                  className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.imagenKarate ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                {errors.imagenKarate && <p className="text-red-500 text-xs mt-1">{errors.imagenKarate}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-2">¿Está dispuesto a respetar la etiqueta, jerarquía y rituales del dojo? <span className="text-red-500">*</span></label>
+                <div className="flex gap-4 flex-wrap">
+                  {['Si', 'No'].map(opcion => (
+                    <label key={opcion} className="flex items-center p-3 border border-stone-200 rounded-lg bg-white hover:bg-stone-50 cursor-pointer transition">
+                      <input type="radio" name="disposicionEtiqueta" checked={formData.disposicionEtiqueta === opcion} onChange={handleChange} value={opcion} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500" />
+                      <span className="text-stone-500">{opcion}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.disposicionEtiqueta && <p className="text-red-500 text-xs mt-1">{errors.disposicionEtiqueta}</p>}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tieneHijos && (
+          <>
+            <div className="bg-stone-50 border border-brand-accent/30 rounded-lg p-4 space-y-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand-accent">Sobre el niño(a)</p>
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-1">¿Por qué quieres inscribir a tu hijo(a) en karate? <span className="text-red-500">*</span></label>
+                <textarea name="motivoInscripcion" value={formData.motivoInscripcion} onChange={handleChange} maxLength={2000} rows={3}
+                  className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.motivoInscripcion ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                {errors.motivoInscripcion && <p className="text-red-500 text-xs mt-1">{errors.motivoInscripcion}</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-1">¿Qué esperas que tu hijo(a) logre en 6 meses? <span className="text-red-500">*</span></label>
+                <textarea name="expectativas6Meses" value={formData.expectativas6Meses} onChange={handleChange} maxLength={2000} rows={3}
+                  className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.expectativas6Meses ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                {errors.expectativas6Meses && <p className="text-red-500 text-xs mt-1">{errors.expectativas6Meses}</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-stone-500 mb-1">¿El niño(a) quiere practicar karate o es una decisión principalmente adulta? <span className="text-red-500">*</span></label>
+                <div className="relative">
+                  <select name="interesNino" value={formData.interesNino} onChange={handleChange}
+                    className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.interesNino ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                    <option value="">Selecciona...</option>
+                    <option value="Tiene interés propio">Tiene interés propio</option>
+                    <option value="Es una decisión compartida">Es una decisión compartida</option>
+                    <option value="Es una decisión principalmente adulta">Es una decisión principalmente adulta</option>
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+                {errors.interesNino && <p className="text-red-500 text-xs mt-1">{errors.interesNino}</p>}
+              </div>
+            </div>
+
+            {formData.hijos.map((hijo, index) => (
+              <div key={hijo.id} className="border border-stone-200 rounded-lg p-4 space-y-4">
+                <h5 className="font-medium text-stone-700">{hijo.nombre.trim() || `Hijo #${index + 1}`}</h5>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-stone-500 mb-1">¿Cuántas horas duerme en promedio? <span className="text-red-500">*</span></label>
+                    <div className="relative">
+                      <select value={hijo.horasSueno} onChange={(e) => handleHijoChange(hijo.id, 'horasSueno', e.target.value)}
+                        className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.hijos?.[index]?.horasSueno ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                        <option value="">Selecciona...</option>
+                        {HORAS_SUENO.map(t => <option key={t} value={t}>{t}</option>)}
+                      </select>
+                      <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                    {errors.hijos?.[index]?.horasSueno && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.horasSueno}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-stone-500 mb-1">¿Cuánto tiempo pasa frente a pantallas al día? <span className="text-red-500">*</span></label>
+                    <div className="relative">
+                      <select value={hijo.tiempoPantallas} onChange={(e) => handleHijoChange(hijo.id, 'tiempoPantallas', e.target.value)}
+                        className={`w-full px-4 py-2 pr-10 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition appearance-none ${errors.hijos?.[index]?.tiempoPantallas ? 'border-red-500' : 'border-brand-accent/60'}`}>
+                        <option value="">Selecciona...</option>
+                        {TIEMPO_PANTALLAS.map(t => <option key={t} value={t}>{t}</option>)}
+                      </select>
+                      <ChevronDown className="w-4 h-4 text-stone-500 absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                    {errors.hijos?.[index]?.tiempoPantallas && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.tiempoPantallas}</p>}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-stone-500 mb-2">¿Practica otros deportes o actividades extracurriculares? <span className="text-red-500">*</span></label>
+                  <div className="flex gap-4 flex-wrap">
+                    {['Si', 'No'].map(opcion => (
+                      <label key={opcion} className="flex items-center p-3 border border-stone-200 rounded-lg hover:bg-stone-50 cursor-pointer transition">
+                        <input type="radio" checked={hijo.practicaOtrosDeportes === opcion} onChange={() => handleHijoChange(hijo.id, 'practicaOtrosDeportes', opcion)} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500" />
+                        <span className="text-stone-500">{opcion}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {errors.hijos?.[index]?.practicaOtrosDeportes && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.practicaOtrosDeportes}</p>}
+                  {hijo.practicaOtrosDeportes === 'Si' && (
+                    <input type="text" value={hijo.otrosDeportesDetalle} onChange={(e) => handleHijoChange(hijo.id, 'otrosDeportesDetalle', e.target.value)} maxLength={300}
+                      placeholder="¿Cuáles?" className="mt-2 w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 placeholder:text-stone-400 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" />
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-stone-500 mb-2">¿Ha recibido apoyo psicológico o psicopedagógico? <span className="text-red-500">*</span></label>
+                  <div className="flex gap-4 flex-wrap">
+                    {['Si', 'No'].map(opcion => (
+                      <label key={opcion} className="flex items-center p-3 border border-stone-200 rounded-lg hover:bg-stone-50 cursor-pointer transition">
+                        <input type="radio" checked={hijo.apoyoPsicologico === opcion} onChange={() => handleHijoChange(hijo.id, 'apoyoPsicologico', opcion)} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500" />
+                        <span className="text-stone-500">{opcion}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {errors.hijos?.[index]?.apoyoPsicologico && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.apoyoPsicologico}</p>}
+                  {hijo.apoyoPsicologico === 'Si' && (
+                    <input type="text" value={hijo.apoyoPsicologicoDetalle} onChange={(e) => handleHijoChange(hijo.id, 'apoyoPsicologicoDetalle', e.target.value)} maxLength={300}
+                      placeholder="Detalle (opcional)" className="mt-2 w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 placeholder:text-stone-400 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" />
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-stone-500 mb-1">¿Hay algún diagnóstico o condición que debamos conocer? (TDAH, TEA, ansiedad, etc.) <span className="text-red-500">*</span></label>
+                  <textarea value={hijo.condicionMedica} onChange={(e) => handleHijoChange(hijo.id, 'condicionMedica', e.target.value)} maxLength={2000} rows={2}
+                    className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.hijos?.[index]?.condicionMedica ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                  <p className="text-xs text-stone-400 mt-1">Si no hay ninguna, escribe &quot;Ninguna&quot;.</p>
+                  {errors.hijos?.[index]?.condicionMedica && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.condicionMedica}</p>}
+                </div>
+
+                <div className="bg-stone-50 border border-brand-accent/30 rounded-lg p-4">
+                  <label className="block text-sm font-medium text-stone-500 mb-3">¿Qué responsabilidades tiene en casa? <span className="text-red-500">*</span></label>
+                  <div className="space-y-4">
+                    {RESPONSABILIDADES_CASA.map((nivel) => (
+                      <div key={nivel.grupo} className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-brand-accent">{nivel.grupo}</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {nivel.opciones.map((opcion) => (
+                            <label key={opcion} className="flex items-center p-2.5 border border-stone-200 rounded-lg bg-white hover:bg-stone-50 cursor-pointer transition">
+                              <input type="checkbox" checked={hijo.responsabilidadesCasa.includes(opcion)} onChange={() => handleHijoResponsabilidad(hijo.id, opcion)} className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500 rounded" />
+                              <span className="text-stone-500 text-xs">{opcion}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {errors.hijos?.[index]?.responsabilidadesCasa && <p className="text-red-500 text-xs mt-2">{errors.hijos?.[index]?.responsabilidadesCasa}</p>}
+                </div>
+              </div>
+            ))}
+          </>
         )}
       </div>
     );
@@ -1536,24 +2259,25 @@ const ToseiGusokuForm = () => {
               {/* Barra de progreso */}
               <div className="bg-white text-white p-6">
                 <div className="flex items-center mt-4">
-                  {['Datos Personales', 'Compromiso', 'Políticas'].map((label, index) => (
-                    <Fragment key={index}>
+                  {activeSteps.map((activeStep, index) => (
+                    <Fragment key={activeStep.key}>
                       <div className="flex items-center">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step > index + 1 ? 'bg-green-500 text-white' : step === index + 1 ? 'bg-brand-accent text-white' : 'bg-stone-600 text-stone-300'}`}>
-                          {step > index + 1 ? '✓' : index + 1}
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${safeStep > index + 1 ? 'bg-green-500 text-white' : safeStep === index + 1 ? 'bg-brand-accent text-white' : 'bg-stone-600 text-stone-300'}`}>
+                          {safeStep > index + 1 ? '✓' : index + 1}
                         </div>
-                        <span className={`ml-2 text-sm hidden sm:inline ${step === index + 1 ? 'text-brand-accent' : 'text-gray-700'}`}>{label}</span>
+                        <span className={`ml-2 text-sm hidden sm:inline ${safeStep === index + 1 ? 'text-brand-accent' : 'text-gray-700'}`}>{activeStep.label}</span>
                       </div>
-                      {index < 2 && <div className="flex-1 h-px mx-2 bg-brand-accent"></div>}
+                      {index < activeSteps.length - 1 && <div className="flex-1 h-px mx-2 bg-brand-accent"></div>}
                     </Fragment>
                   ))}
                 </div>
               </div>
 
               <form onSubmit={handleSubmit} className="p-6 md:px-8">
-                {step === 1 && renderStep1()}
-                {step === 2 && renderStep2()}
-                {step === 3 && renderStep3()}
+                {currentStep?.key === 'datos' && renderStep1()}
+                {currentStep?.key === 'habitos' && renderStepHabitos()}
+                {currentStep?.key === 'compromiso' && renderStep2()}
+                {currentStep?.key === 'politicas' && renderStep3()}
 
                 <div className="flex justify-between mt-8 pt-6 border-t">
                   {submitError && (
@@ -1561,12 +2285,12 @@ const ToseiGusokuForm = () => {
                   )}
                 </div>
                 <div className="flex justify-between mt-8 pt-6 border-t">
-                  {step > 1 ? (
+                  {safeStep > 1 ? (
                     <button type="button" onClick={handleBack} className="px-6 py-2 bg-stone-200 text-stone-700 rounded-lg hover:bg-stone-300 transition font-medium">← Anterior</button>
                   ) : (
                     <button type="button" onClick={() => setShowForm(false)} className="px-6 py-2 bg-stone-200 text-stone-700 rounded-lg hover:bg-stone-300 transition font-medium">← Volver</button>
                   )}
-                  {step < 3 ? (
+                  {currentStep?.key !== 'politicas' ? (
                     <button type="button" onClick={handleNext} className="px-2 py-2 text-white rounded-lg bg-brand-accent transition font-medium">Siguiente →</button>
                   ) : (
                     <button type="submit" disabled={isSubmitting} className="px-2 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium disabled:opacity-60 disabled:cursor-not-allowed">
