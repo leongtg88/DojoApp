@@ -5,6 +5,7 @@ import { Award, CheckCheck, CircleDashed, Info, Repeat, Search, Star } from 'luc
 import { KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
 import { KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
 import { buildTechniqueSections } from '@/lib/dashboard/technique-sections'
+import { KATA_RUBRIC } from '@/lib/dashboard/kata-rubric'
 import type { StudentTechnique, TechniqueCategory } from '@/types/dashboard'
 
 interface StudentSyllabusProps {
@@ -131,7 +132,35 @@ export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
                                                 <span className="inline-flex items-center gap-1"><Repeat aria-hidden="true" className="size-3.5 text-accent" />{technique.practiceRepetitions} rep.{technique.targetRepetitions ? ` / ${technique.targetRepetitions}` : ''}</span>
                                             </div>
                                             {technique.notes && <p className="mt-3 flex items-start gap-2 rounded-md border border-cyan-900/50 bg-cyan-950/20 p-2.5 text-xs leading-5 text-accent-text"><Info aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-accent" />{technique.notes}</p>}
-                                            {technique.evaluation && <div className="mt-3 flex items-start gap-2 rounded-md border border-emerald-900/50 bg-emerald-950/20 p-2.5 text-xs leading-5 text-ok-text"><Star aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-ok-text" /><div><p className="font-bold">Evaluación: {technique.evaluation.score} / 10</p>{technique.evaluation.feedback && <p className="mt-1">{technique.evaluation.feedback}</p>}<p className="mt-1 text-ok-text/80">{new Date(technique.evaluation.evaluatedAt).toLocaleString('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}{technique.evaluation.evaluatorName ? ` · ${technique.evaluation.evaluatorName}` : ''}</p></div></div>}
+                                            {technique.evaluation && (
+                                                <div className="mt-3 rounded-md border border-emerald-900/50 bg-emerald-950/20 p-2.5 text-xs leading-5 text-ok-text">
+                                                    <div className="flex items-start gap-2">
+                                                        <Star aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-ok-text" />
+                                                        <div>
+                                                            <p className="font-bold">Evaluación: {technique.evaluation.score} / 10</p>
+                                                            {technique.evaluation.feedback && <p className="mt-1">{technique.evaluation.feedback}</p>}
+                                                            <p className="mt-1 text-ok-text/80">{new Date(technique.evaluation.evaluatedAt).toLocaleString('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}{technique.evaluation.evaluatorName ? ` · ${technique.evaluation.evaluatorName}` : ''}</p>
+                                                        </div>
+                                                    </div>
+                                                    {technique.evaluation.criteria && (
+                                                        <details className="mt-2">
+                                                            <summary className="cursor-pointer text-[11px] font-semibold text-ok-text/90">Ver desglose por criterios</summary>
+                                                            <div className="mt-1.5 space-y-1.5">
+                                                                {KATA_RUBRIC.map((block) => (
+                                                                    <div key={block.key}>
+                                                                        <p className="text-[10px] font-bold uppercase tracking-wide text-ok-text/80">{block.label} · {Math.round(block.weight * 100)}%</p>
+                                                                        <p className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px]">
+                                                                            {block.criteria.map((criterion) => (
+                                                                                <span key={criterion.key}>{criterion.label}: <span className="font-semibold">{technique.evaluation?.criteria?.[criterion.key] ?? '—'}</span></span>
+                                                                            ))}
+                                                                        </p>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </details>
+                                                    )}
+                                                </div>
+                                            )}
                                         </li>
                                     )
                                 })}

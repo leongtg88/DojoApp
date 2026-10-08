@@ -9,7 +9,7 @@ import { z } from 'zod'
 const kataEvaluationSchema = z
   .object({
     approved: z.boolean().optional(),
-    score: z.number().int().min(0).max(10).nullable().optional(),
+    score: z.number().min(0).max(10).nullable().optional(),
     feedback: z.string().trim().max(2_000).nullable().optional(),
   })
   .refine((value) => value.approved !== undefined || value.score !== undefined || value.feedback !== undefined, {

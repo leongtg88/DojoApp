@@ -120,6 +120,8 @@ export interface StudentTechnique {
 
 export interface TechniqueEvaluation {
 	score: number
+	/** Notas por sub-criterio de kata (JSON). `null` para evaluaciones sin rúbrica. */
+	criteria: Record<string, number> | null
 	feedback: string | null
 	evaluatedAt: string
 	evaluatorName: string | null
@@ -479,6 +481,7 @@ export interface KataProgressItem {
 	practiceRepetitions: number
 	targetRepetitions: number | null
 	score: number | null
+	criteria: Record<string, number> | null
 	lastFeedback: string | null
 	lastPracticeDate: string | null
 	evaluatedBy: string | null

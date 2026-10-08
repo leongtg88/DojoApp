@@ -87,30 +87,23 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
                                     : 0
 
                                 return (
-                                    <li key={student.id}>
-                                        <Link className="group flex items-center justify-between gap-4 px-4 py-4 transition-colors hover:bg-surface-3 sm:px-5" href={`/dashboard/instructor/evaluaciones?studentId=${student.id}`}>
-                                            <div className="flex min-w-0 items-center gap-3">
-                                                <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-cyan-500/15 font-display text-sm font-extrabold text-accent-text">{initials}</span>
-                                                <div className="min-w-0">
-                                                    <p className="truncate text-sm font-bold text-ink">{student.firstName} {student.lastName}</p>
-                                                    <p className="mt-1 inline-flex items-center gap-2 text-xs text-ink-3">
-                                                        <span aria-hidden="true" className="inline-block h-3.5 w-9 rounded-sm border border-white/30" style={{ backgroundColor: student.beltColor ?? '#3f3f46' }} />
-                                                        <span>{student.currentRank ?? 'Sin grado asignado'}</span>
-                                                        {student.kyuDan && <span className="text-ink-4">· {student.kyuDan}</span>}
-                                                    </p>
-                                                    <p className="mt-2 truncate text-xs font-semibold text-accent">{student.classNames.join(' · ') || 'Sin clases activas'}</p>
+                                    <li key={student.id} className="transition-colors hover:bg-surface-3">
+                                        <div className="flex items-center justify-between gap-4 px-4 py-4 sm:px-5">
+                                            <Link className="group flex min-w-0 flex-1 items-center justify-between gap-4" href={`/dashboard/instructor/evaluaciones?studentId=${student.id}`}>
+                                                <div className="flex min-w-0 items-center gap-3">
+                                                    <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-cyan-500/15 font-display text-sm font-extrabold text-accent-text">{initials}</span>
+                                                    <div className="min-w-0">
+                                                        <p className="truncate text-sm font-bold text-ink">{student.firstName} {student.lastName}</p>
+                                                        <p className="mt-1 inline-flex items-center gap-2 text-xs text-ink-3">
+                                                            <span aria-hidden="true" className="inline-block h-3.5 w-9 rounded-sm border border-white/30" style={{ backgroundColor: student.beltColor ?? '#3f3f46' }} />
+                                                            <span>{student.currentRank ?? 'Sin grado asignado'}</span>
+                                                            {student.kyuDan && <span className="text-ink-4">· {student.kyuDan}</span>}
+                                                        </p>
+                                                        <p className="mt-2 truncate text-xs font-semibold text-accent">{student.classNames.join(' · ') || 'Sin clases activas'}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="flex shrink-0 items-center gap-4">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setKatasFor(student)}
-                                                    className="flex items-center gap-1.5 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-3 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-cyan-900/50"
-                                                    title="Asignar katas por grado al expediente"
-                                                >
-                                                    <BookOpenCheck className="size-3.5" aria-hidden="true" />Katas
-                                                </button>
-                                                <div className="hidden sm:block" title={`Katas revisadas: ${student.masteredCount} de ${student.requiredCount}`}>
+                                                <div className="flex shrink-0 items-center gap-4">
+                                                    <div className="hidden sm:block" title={`Katas revisadas: ${student.masteredCount} de ${student.requiredCount}`}>
                                                     <p className="text-right text-[11px] font-semibold uppercase tracking-wide text-ink-3">Katas</p>
                                                     <div className="mt-1.5 flex items-center gap-2">
                                                         <div className="h-1.5 w-20 overflow-hidden rounded-full bg-surface-3">
@@ -128,9 +121,18 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
                                                         <span className="font-mono text-xs font-bold text-ok-text">{student.attendancePercent}%</span>
                                                     </div>
                                                 </div>
-                                                <ArrowRight aria-hidden="true" className="size-5 shrink-0 text-ink-4 transition-transform group-hover:translate-x-1 group-hover:text-accent" />
-                                            </div>
-                                        </Link>
+                                                    <ArrowRight aria-hidden="true" className="size-5 shrink-0 text-ink-4 transition-transform group-hover:translate-x-1 group-hover:text-accent" />
+                                                </div>
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                onClick={() => setKatasFor(student)}
+                                                className="flex shrink-0 items-center gap-1.5 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-3 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-cyan-900/50"
+                                                title="Asignar katas por grado al expediente"
+                                            >
+                                                <BookOpenCheck className="size-3.5" aria-hidden="true" />Katas
+                                            </button>
+                                        </div>
                                     </li>
                                 )
                             })}

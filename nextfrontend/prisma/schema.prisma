@@ -521,7 +521,8 @@ model TechniquePracticeLog {
 model TechniqueEvaluation {
   id                 String           @id @default(cuid())
   studentTechniqueId String           @unique
-  score              Int
+  score              Float
+  criteria           Json?
   feedback           String?
   evaluatedBy        String
   evaluatedAt        DateTime         @default(now())

@@ -4,6 +4,7 @@ import { ClassEnrollmentStatus } from '@/lib/generated/prisma'
 import { ageFromDob, programForAge, resolveDefaultRank } from '@/lib/dashboard/program'
 import { computeBalance, formatTime, monthRange } from '@/lib/dashboard/balance'
 import { introLevelFromBeltRankKatas } from '@/lib/dashboard/kata-level'
+import { parseKataCriteria } from '@/lib/dashboard/kata-rubric'
 import { buildHolidaySet } from '@/lib/dashboard/holidays'
 import { monthsForGrade } from '@/lib/dashboard/rank-months'
 import { targetRepetitionsFor } from '@/lib/dashboard/technique-reps'
@@ -195,6 +196,7 @@ export async function getStudentDashboardSummary(
       targetRepetitions: targetRepetitionsFor(technique),
       evaluation: evaluation ? {
         score: evaluation.score,
+        criteria: parseKataCriteria(evaluation.criteria),
         feedback: evaluation.feedback,
         evaluatedAt: evaluation.evaluatedAt.toISOString(),
         evaluatorName: evaluation.evaluator.name,
@@ -690,6 +692,7 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
         practiceRepetitions,
         targetRepetitions: targetRepetitionsFor(technique),
         score: evaluation?.score ?? null,
+        criteria: parseKataCriteria(evaluation?.criteria ?? null),
         lastFeedback: notes,
         lastPracticeDate: lastPracticeDate?.toISOString() ?? approvedAt?.toISOString() ?? null,
         evaluatedBy: evaluation?.evaluator.name ?? null,

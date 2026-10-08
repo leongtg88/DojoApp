@@ -4,6 +4,7 @@ import { formatTime } from '@/lib/dashboard/balance'
 import { computeBirthdays } from '@/lib/dashboard/birthdays'
 import { ageFromDob, programForAge } from '@/lib/dashboard/program'
 import { introLevelFromBeltRankKatas } from '@/lib/dashboard/kata-level'
+import { parseKataCriteria } from '@/lib/dashboard/kata-rubric'
 import { targetRepetitionsFor } from '@/lib/dashboard/technique-reps'
 import { getCurriculumForSchool } from '@/lib/dashboard/curriculum-queries'
 import type {
@@ -497,6 +498,7 @@ export async function getInstructorTechniqueReview(
         targetRepetitions: targetRepetitionsFor(technique),
         evaluation: evaluation ? {
           score: evaluation.score,
+          criteria: parseKataCriteria(evaluation.criteria),
           feedback: evaluation.feedback,
           evaluatedAt: evaluation.evaluatedAt.toISOString(),
           evaluatorName: evaluation.evaluator.name,

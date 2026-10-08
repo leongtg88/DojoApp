@@ -28497,6 +28497,7 @@ export namespace Prisma {
     id: number
     studentTechniqueId: number
     score: number
+    criteria: number
     feedback: number
     evaluatedBy: number
     evaluatedAt: number
@@ -28540,6 +28541,7 @@ export namespace Prisma {
     id?: true
     studentTechniqueId?: true
     score?: true
+    criteria?: true
     feedback?: true
     evaluatedBy?: true
     evaluatedAt?: true
@@ -28638,6 +28640,7 @@ export namespace Prisma {
     id: string
     studentTechniqueId: string
     score: number
+    criteria: JsonValue | null
     feedback: string | null
     evaluatedBy: string
     evaluatedAt: Date
@@ -28668,6 +28671,7 @@ export namespace Prisma {
     id?: boolean
     studentTechniqueId?: boolean
     score?: boolean
+    criteria?: boolean
     feedback?: boolean
     evaluatedBy?: boolean
     evaluatedAt?: boolean
@@ -28681,6 +28685,7 @@ export namespace Prisma {
     id?: boolean
     studentTechniqueId?: boolean
     score?: boolean
+    criteria?: boolean
     feedback?: boolean
     evaluatedBy?: boolean
     evaluatedAt?: boolean
@@ -28694,6 +28699,7 @@ export namespace Prisma {
     id?: boolean
     studentTechniqueId?: boolean
     score?: boolean
+    criteria?: boolean
     feedback?: boolean
     evaluatedBy?: boolean
     evaluatedAt?: boolean
@@ -28707,6 +28713,7 @@ export namespace Prisma {
     id?: boolean
     studentTechniqueId?: boolean
     score?: boolean
+    criteria?: boolean
     feedback?: boolean
     evaluatedBy?: boolean
     evaluatedAt?: boolean
@@ -28714,7 +28721,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type TechniqueEvaluationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "studentTechniqueId" | "score" | "feedback" | "evaluatedBy" | "evaluatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["techniqueEvaluation"]>
+  export type TechniqueEvaluationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "studentTechniqueId" | "score" | "criteria" | "feedback" | "evaluatedBy" | "evaluatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["techniqueEvaluation"]>
   export type TechniqueEvaluationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     studentTechnique?: boolean | StudentTechniqueDefaultArgs<ExtArgs>
     evaluator?: boolean | UserDefaultArgs<ExtArgs>
@@ -28738,6 +28745,7 @@ export namespace Prisma {
       id: string
       studentTechniqueId: string
       score: number
+      criteria: Prisma.JsonValue | null
       feedback: string | null
       evaluatedBy: string
       evaluatedAt: Date
@@ -29170,7 +29178,8 @@ export namespace Prisma {
   interface TechniqueEvaluationFieldRefs {
     readonly id: FieldRef<"TechniqueEvaluation", 'String'>
     readonly studentTechniqueId: FieldRef<"TechniqueEvaluation", 'String'>
-    readonly score: FieldRef<"TechniqueEvaluation", 'Int'>
+    readonly score: FieldRef<"TechniqueEvaluation", 'Float'>
+    readonly criteria: FieldRef<"TechniqueEvaluation", 'Json'>
     readonly feedback: FieldRef<"TechniqueEvaluation", 'String'>
     readonly evaluatedBy: FieldRef<"TechniqueEvaluation", 'String'>
     readonly evaluatedAt: FieldRef<"TechniqueEvaluation", 'DateTime'>
@@ -50930,6 +50939,7 @@ export namespace Prisma {
     id: 'id',
     studentTechniqueId: 'studentTechniqueId',
     score: 'score',
+    criteria: 'criteria',
     feedback: 'feedback',
     evaluatedBy: 'evaluatedBy',
     evaluatedAt: 'evaluatedAt',
@@ -53478,7 +53488,8 @@ export namespace Prisma {
     NOT?: TechniqueEvaluationWhereInput | TechniqueEvaluationWhereInput[]
     id?: StringFilter<"TechniqueEvaluation"> | string
     studentTechniqueId?: StringFilter<"TechniqueEvaluation"> | string
-    score?: IntFilter<"TechniqueEvaluation"> | number
+    score?: FloatFilter<"TechniqueEvaluation"> | number
+    criteria?: JsonNullableFilter<"TechniqueEvaluation">
     feedback?: StringNullableFilter<"TechniqueEvaluation"> | string | null
     evaluatedBy?: StringFilter<"TechniqueEvaluation"> | string
     evaluatedAt?: DateTimeFilter<"TechniqueEvaluation"> | Date | string
@@ -53492,6 +53503,7 @@ export namespace Prisma {
     id?: SortOrder
     studentTechniqueId?: SortOrder
     score?: SortOrder
+    criteria?: SortOrderInput | SortOrder
     feedback?: SortOrderInput | SortOrder
     evaluatedBy?: SortOrder
     evaluatedAt?: SortOrder
@@ -53507,7 +53519,8 @@ export namespace Prisma {
     AND?: TechniqueEvaluationWhereInput | TechniqueEvaluationWhereInput[]
     OR?: TechniqueEvaluationWhereInput[]
     NOT?: TechniqueEvaluationWhereInput | TechniqueEvaluationWhereInput[]
-    score?: IntFilter<"TechniqueEvaluation"> | number
+    score?: FloatFilter<"TechniqueEvaluation"> | number
+    criteria?: JsonNullableFilter<"TechniqueEvaluation">
     feedback?: StringNullableFilter<"TechniqueEvaluation"> | string | null
     evaluatedBy?: StringFilter<"TechniqueEvaluation"> | string
     evaluatedAt?: DateTimeFilter<"TechniqueEvaluation"> | Date | string
@@ -53521,6 +53534,7 @@ export namespace Prisma {
     id?: SortOrder
     studentTechniqueId?: SortOrder
     score?: SortOrder
+    criteria?: SortOrderInput | SortOrder
     feedback?: SortOrderInput | SortOrder
     evaluatedBy?: SortOrder
     evaluatedAt?: SortOrder
@@ -53539,7 +53553,8 @@ export namespace Prisma {
     NOT?: TechniqueEvaluationScalarWhereWithAggregatesInput | TechniqueEvaluationScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"TechniqueEvaluation"> | string
     studentTechniqueId?: StringWithAggregatesFilter<"TechniqueEvaluation"> | string
-    score?: IntWithAggregatesFilter<"TechniqueEvaluation"> | number
+    score?: FloatWithAggregatesFilter<"TechniqueEvaluation"> | number
+    criteria?: JsonNullableWithAggregatesFilter<"TechniqueEvaluation">
     feedback?: StringNullableWithAggregatesFilter<"TechniqueEvaluation"> | string | null
     evaluatedBy?: StringWithAggregatesFilter<"TechniqueEvaluation"> | string
     evaluatedAt?: DateTimeWithAggregatesFilter<"TechniqueEvaluation"> | Date | string
@@ -56994,6 +57009,7 @@ export namespace Prisma {
   export type TechniqueEvaluationCreateInput = {
     id?: string
     score: number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: string | null
     evaluatedAt?: Date | string
     createdAt?: Date | string
@@ -57006,6 +57022,7 @@ export namespace Prisma {
     id?: string
     studentTechniqueId: string
     score: number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: string | null
     evaluatedBy: string
     evaluatedAt?: Date | string
@@ -57015,7 +57032,8 @@ export namespace Prisma {
 
   export type TechniqueEvaluationUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    score?: IntFieldUpdateOperationsInput | number
+    score?: FloatFieldUpdateOperationsInput | number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: NullableStringFieldUpdateOperationsInput | string | null
     evaluatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57027,7 +57045,8 @@ export namespace Prisma {
   export type TechniqueEvaluationUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     studentTechniqueId?: StringFieldUpdateOperationsInput | string
-    score?: IntFieldUpdateOperationsInput | number
+    score?: FloatFieldUpdateOperationsInput | number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: NullableStringFieldUpdateOperationsInput | string | null
     evaluatedBy?: StringFieldUpdateOperationsInput | string
     evaluatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57039,6 +57058,7 @@ export namespace Prisma {
     id?: string
     studentTechniqueId: string
     score: number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: string | null
     evaluatedBy: string
     evaluatedAt?: Date | string
@@ -57048,7 +57068,8 @@ export namespace Prisma {
 
   export type TechniqueEvaluationUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    score?: IntFieldUpdateOperationsInput | number
+    score?: FloatFieldUpdateOperationsInput | number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: NullableStringFieldUpdateOperationsInput | string | null
     evaluatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57058,7 +57079,8 @@ export namespace Prisma {
   export type TechniqueEvaluationUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     studentTechniqueId?: StringFieldUpdateOperationsInput | string
-    score?: IntFieldUpdateOperationsInput | number
+    score?: FloatFieldUpdateOperationsInput | number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: NullableStringFieldUpdateOperationsInput | string | null
     evaluatedBy?: StringFieldUpdateOperationsInput | string
     evaluatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60494,6 +60516,7 @@ export namespace Prisma {
     id?: SortOrder
     studentTechniqueId?: SortOrder
     score?: SortOrder
+    criteria?: SortOrder
     feedback?: SortOrder
     evaluatedBy?: SortOrder
     evaluatedAt?: SortOrder
@@ -68110,6 +68133,7 @@ export namespace Prisma {
   export type TechniqueEvaluationCreateWithoutEvaluatorInput = {
     id?: string
     score: number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: string | null
     evaluatedAt?: Date | string
     createdAt?: Date | string
@@ -68121,6 +68145,7 @@ export namespace Prisma {
     id?: string
     studentTechniqueId: string
     score: number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: string | null
     evaluatedAt?: Date | string
     createdAt?: Date | string
@@ -68936,7 +68961,8 @@ export namespace Prisma {
     NOT?: TechniqueEvaluationScalarWhereInput | TechniqueEvaluationScalarWhereInput[]
     id?: StringFilter<"TechniqueEvaluation"> | string
     studentTechniqueId?: StringFilter<"TechniqueEvaluation"> | string
-    score?: IntFilter<"TechniqueEvaluation"> | number
+    score?: FloatFilter<"TechniqueEvaluation"> | number
+    criteria?: JsonNullableFilter<"TechniqueEvaluation">
     feedback?: StringNullableFilter<"TechniqueEvaluation"> | string | null
     evaluatedBy?: StringFilter<"TechniqueEvaluation"> | string
     evaluatedAt?: DateTimeFilter<"TechniqueEvaluation"> | Date | string
@@ -74734,6 +74760,7 @@ export namespace Prisma {
   export type TechniqueEvaluationCreateWithoutStudentTechniqueInput = {
     id?: string
     score: number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: string | null
     evaluatedAt?: Date | string
     createdAt?: Date | string
@@ -74744,6 +74771,7 @@ export namespace Prisma {
   export type TechniqueEvaluationUncheckedCreateWithoutStudentTechniqueInput = {
     id?: string
     score: number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: string | null
     evaluatedBy: string
     evaluatedAt?: Date | string
@@ -75052,7 +75080,8 @@ export namespace Prisma {
 
   export type TechniqueEvaluationUpdateWithoutStudentTechniqueInput = {
     id?: StringFieldUpdateOperationsInput | string
-    score?: IntFieldUpdateOperationsInput | number
+    score?: FloatFieldUpdateOperationsInput | number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: NullableStringFieldUpdateOperationsInput | string | null
     evaluatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -75062,7 +75091,8 @@ export namespace Prisma {
 
   export type TechniqueEvaluationUncheckedUpdateWithoutStudentTechniqueInput = {
     id?: StringFieldUpdateOperationsInput | string
-    score?: IntFieldUpdateOperationsInput | number
+    score?: FloatFieldUpdateOperationsInput | number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: NullableStringFieldUpdateOperationsInput | string | null
     evaluatedBy?: StringFieldUpdateOperationsInput | string
     evaluatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -81282,6 +81312,7 @@ export namespace Prisma {
     id?: string
     studentTechniqueId: string
     score: number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: string | null
     evaluatedAt?: Date | string
     createdAt?: Date | string
@@ -81618,7 +81649,8 @@ export namespace Prisma {
 
   export type TechniqueEvaluationUpdateWithoutEvaluatorInput = {
     id?: StringFieldUpdateOperationsInput | string
-    score?: IntFieldUpdateOperationsInput | number
+    score?: FloatFieldUpdateOperationsInput | number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: NullableStringFieldUpdateOperationsInput | string | null
     evaluatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -81629,7 +81661,8 @@ export namespace Prisma {
   export type TechniqueEvaluationUncheckedUpdateWithoutEvaluatorInput = {
     id?: StringFieldUpdateOperationsInput | string
     studentTechniqueId?: StringFieldUpdateOperationsInput | string
-    score?: IntFieldUpdateOperationsInput | number
+    score?: FloatFieldUpdateOperationsInput | number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: NullableStringFieldUpdateOperationsInput | string | null
     evaluatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -81639,7 +81672,8 @@ export namespace Prisma {
   export type TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorInput = {
     id?: StringFieldUpdateOperationsInput | string
     studentTechniqueId?: StringFieldUpdateOperationsInput | string
-    score?: IntFieldUpdateOperationsInput | number
+    score?: FloatFieldUpdateOperationsInput | number
+    criteria?: NullableJsonNullValueInput | InputJsonValue
     feedback?: NullableStringFieldUpdateOperationsInput | string | null
     evaluatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -26,9 +26,9 @@ export default async function InstructorEvaluationsPage({ searchParams }: Instru
             <p className="text-xs font-semibold uppercase tracking-wide text-accent">Panel de instructor</p>
             <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Técnicas y katas</h1>
             <section className="mt-7 rounded-lg border border-edge bg-surface-2 p-5">
-                <StudentSearchSelect students={students} studentId={studentId} />
+                <StudentSearchSelect key={studentId} students={students} studentId={studentId} />
             </section>
-            {review ? <InstructorTechniqueReview review={review} /> : <p className="mt-6 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-8 text-xs text-ink-3">No tienes alumnos activos para evaluar.</p>}
+            {review ? <InstructorTechniqueReview key={review.student.id} review={review} /> : <p className="mt-6 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-8 text-xs text-ink-3">No tienes alumnos activos para evaluar.</p>}
         </main>
     )
 }

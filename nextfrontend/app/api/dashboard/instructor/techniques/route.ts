@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
 import { getInstructorSchoolId } from '@/lib/dashboard/instructor-queries'
+import { averageKataCriteria, isCompleteKataCriteria, KATA_CRITERION_KEYS } from '@/lib/dashboard/kata-rubric'
 import { notifyAssignment } from '@/lib/notifications/create'
 import { NextResponse } from 'next/server'
 import { Prisma } from '@/lib/generated/prisma'
@@ -10,13 +11,14 @@ import { z } from 'zod'
 const techniqueAssignmentSchema = z.object({
   studentId: z.string().trim().min(1),
   techniqueId: z.string().trim().min(1),
-  notes: z.string().trim().max(1_000).nullable(),
+  notes: z.string().trim().max(1_000).nullable().optional(),
 })
 
 const techniqueUpdateSchema = techniqueAssignmentSchema.extend({
   approved: z.boolean().optional(),
   inPractice: z.boolean().optional(),
-  score: z.number().int().min(0).max(10).nullable().optional(),
+  score: z.number().min(0).max(10).nullable().optional(),
+  criteria: z.record(z.enum(KATA_CRITERION_KEYS), z.number().min(0).max(10)).nullable().optional(),
   feedback: z.string().trim().max(2_000).nullable().optional(),
 })
 
@@ -117,6 +119,14 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: 'La técnica no está asignada al alumno' }, { status: 404 })
   }
 
+  const criteria = result.data.criteria ?? null
+
+  if (criteria !== null && !isCompleteKataCriteria(criteria)) {
+    return NextResponse.json({ error: 'Debes puntuar los 10 criterios de la kata (0-10)' }, { status: 400 })
+  }
+
+  const evaluationScore = criteria ? averageKataCriteria(criteria) : result.data.score
+
   const data: Prisma.StudentTechniqueUncheckedUpdateInput = { notes: result.data.notes }
 
   if (result.data.approved !== undefined) {
@@ -135,20 +145,23 @@ export async function PATCH(request: Request) {
       data,
     })
 
-    if (result.data.score !== undefined && result.data.score !== null) {
+    if (evaluationScore !== undefined && evaluationScore !== null) {
+      const feedback = result.data.feedback ?? result.data.notes
       await transaction.techniqueEvaluation.upsert({
         where: { studentTechniqueId: currentTechnique.id },
         update: {
-          score: result.data.score,
-          feedback: result.data.feedback ?? result.data.notes,
+          score: evaluationScore,
+          feedback,
           evaluatedBy: session.user.id,
           evaluatedAt: new Date(),
+          ...(criteria ? { criteria } : {}),
         },
         create: {
           studentTechniqueId: currentTechnique.id,
-          score: result.data.score,
-          feedback: result.data.feedback ?? result.data.notes,
+          score: evaluationScore,
+          feedback,
           evaluatedBy: session.user.id,
+          ...(criteria ? { criteria } : {}),
         },
       })
     }
@@ -166,11 +179,11 @@ export async function PATCH(request: Request) {
       studentId: student.id,
       data: { techniqueName },
     })
-  } else if (result.data.score !== undefined && result.data.score !== null) {
+  } else if (evaluationScore !== undefined && evaluationScore !== null) {
     await notifyAssignment({
       type: 'TECHNIQUE_EVALUATED',
       studentId: student.id,
-      data: { techniqueName, score: result.data.score },
+      data: { techniqueName, score: evaluationScore },
     })
   }
 

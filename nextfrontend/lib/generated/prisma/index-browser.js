@@ -373,6 +373,7 @@ exports.Prisma.TechniqueEvaluationScalarFieldEnum = {
   id: 'id',
   studentTechniqueId: 'studentTechniqueId',
   score: 'score',
+  criteria: 'criteria',
   feedback: 'feedback',
   evaluatedBy: 'evaluatedBy',
   evaluatedAt: 'evaluatedAt',

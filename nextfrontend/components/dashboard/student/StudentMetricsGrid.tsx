@@ -1,17 +1,21 @@
 import Link from 'next/link'
 import { CalendarCheck2, ClipboardCheck, Star } from 'lucide-react'
-import type { AttendanceSummary, GradoProgressData, StudentTechnique } from '@/types/dashboard'
+import type { AttendanceSummary, GradoProgressData, KataProgressItem, StudentTechnique } from '@/types/dashboard'
 
 interface StudentMetricsGridProps {
     attendance: AttendanceSummary
     techniques: StudentTechnique[]
+    /** Katas del alumno con su nota; el promedio usa solo las requeridas del grado. */
+    katas?: KataProgressItem[]
     grado?: GradoProgressData | null
 }
 
-export function StudentMetricsGrid({ attendance, techniques, grado = null }: StudentMetricsGridProps) {
+export function StudentMetricsGrid({ attendance, techniques, katas = [], grado = null }: StudentMetricsGridProps) {
     const approvedTechniques = techniques.filter(({ status }) => status === 'APPROVED').length
-    const evaluatedScores = techniques.flatMap(({ evaluation }) => (evaluation ? [evaluation.score] : []))
-    const averageScore = evaluatedScores.length === 0 ? null : Math.round((evaluatedScores.reduce((total, score) => total + score, 0) / evaluatedScores.length) * 10) / 10
+    const scoredKatas = katas.filter(({ requiredForGrade, score }) => requiredForGrade && score !== null)
+    const averageScore = scoredKatas.length === 0
+        ? null
+        : Math.round((scoredKatas.reduce((total, kata) => total + (kata.score ?? 0), 0) / scoredKatas.length) * 10) / 10
 
     const attendanceSummary = grado?.attendance ?? attendance
 
@@ -21,7 +25,7 @@ export function StudentMetricsGrid({ attendance, techniques, grado = null }: Stu
     const cards = [
         { href: '/dashboard/estudiante/asistencia', icon: CalendarCheck2, label: 'Asistencia', value: attendanceValue, detail: attendanceDetail },
         { href: '/dashboard/estudiante/progreso', icon: ClipboardCheck, label: 'Técnicas listas', value: `${approvedTechniques} / ${techniques.length}`, detail: 'Progreso del programa' },
-        { href: '/dashboard/estudiante/progreso', icon: Star, label: 'Nota promedio', value: averageScore === null ? '—' : `${averageScore} / 10`, detail: 'Evaluaciones del sensei' },
+        { href: '/dashboard/estudiante/progreso', icon: Star, label: 'Promedio de katas', value: averageScore === null ? '—' : `${averageScore} / 10`, detail: 'Katas requeridas evaluadas' },
     ]
 
     return (
