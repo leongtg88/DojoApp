@@ -1,6 +1,7 @@
 import { db } from '@/lib/db'
 import { notifyReviewByTelegram } from '@/lib/integrations/telegram'
 import { notifyReviewByWhatsApp } from '@/lib/integrations/whatsapp'
+import { notifyReviewSubmitted } from '@/lib/notifications/create'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { consumeRateLimit, getClientIp, rateLimitResponse } from '@/lib/security/rate-limit'
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
     select: { id: true },
   })
 
-  await db.review.create({
+  const review = await db.review.create({
     data: {
       authorName: data.authorName,
       relationship: data.relationship || null,
@@ -89,6 +90,14 @@ export async function POST(request: Request) {
       schoolId: school?.id ?? null,
       status: 'PENDING',
     },
+    select: { id: true },
+  })
+
+  await notifyReviewSubmitted({
+    schoolId: school?.id ?? null,
+    reviewId: review.id,
+    authorName: data.authorName,
+    rating: data.rating,
   })
 
   await notifyReviewByTelegram({

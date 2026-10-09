@@ -39,14 +39,24 @@ export async function saveClassAttendance({
   await db.$transaction(async (transaction) => {
     const classSession = await transaction.classSession.upsert({
       where: { classId_date: { classId, date: sessionDate } },
-      update: {},
-      create: { classId, date: sessionDate },
+      update: { takenById: confirmedById, takenAt: new Date() },
+      create: { classId, date: sessionDate, takenById: confirmedById, takenAt: new Date() },
       select: { id: true },
     })
 
-    await Promise.all(records.map(async (record) => {
+    // Motivos de inasistencia aprobados previamente: al guardar el pase de lista
+    // se conservan como falta justificada y su texto no se pisa.
+    const approvedJustifications = await transaction.absenceJustification.findMany({
+      where: { classId, date: sessionDate, status: 'APPROVED' },
+      select: { studentId: true, reason: true },
+    })
+    const approvedByStudent = new Map(approvedJustifications.map((row) => [row.studentId, row.reason]))
+
+    const savedAttendances = await Promise.all(records.map(async (record) => {
       const isConfirmed = record.present
-      const status: AttendanceStatus = isConfirmed ? 'CONFIRMED' : (record.justified ? 'JUSTIFIED' : 'ABSENT')
+      const approvedReason = approvedByStudent.get(record.studentId) ?? null
+      const status: AttendanceStatus = isConfirmed ? 'CONFIRMED' : (record.justified || approvedReason ? 'JUSTIFIED' : 'ABSENT')
+      const notes = record.notes ?? approvedReason
 
       // Si el pase de lista ya existe para este alumno en esta sesión, se actualiza.
       // Se conservan las horas del punch-in fusionado si ya venían de una marcación previa.
@@ -57,7 +67,7 @@ export async function saveClassAttendance({
 
       const updateData = {
         present: record.present,
-        notes: record.notes,
+        notes,
         status,
         hoursTrained: isConfirmed ? (existing && existing.hoursTrained > 0 ? existing.hoursTrained : defaultHours) : 0,
         sessionType: 'class',
@@ -92,7 +102,7 @@ export async function saveClassAttendance({
           data: {
             ...updateData,
             sessionId: classSession.id,
-            notes: record.notes ?? punch.notes,
+            notes: notes ?? punch.notes,
             hoursTrained: isConfirmed ? (punch.hoursTrained ?? defaultHours) : 0,
             classId: punch.classId ?? classId,
             isOutOfSchedule: punch.isOutOfSchedule ?? !enrolledStudentIds.has(record.studentId),
@@ -109,5 +119,31 @@ export async function saveClassAttendance({
         },
       })
     }))
+
+    // Reposición automática: una asistencia fuera de horario (presente) repone la
+    // falta justificada más antigua sin recuperar del alumno. Solo aplica si existe
+    // una justificación aprobada; sin justificación no hay nada que reponer.
+    const makeUps = savedAttendances.filter((attendance) => attendance.present && attendance.isOutOfSchedule)
+    for (const makeUp of makeUps) {
+      const pendingAbsence = await transaction.attendance.findFirst({
+        where: {
+          studentId: makeUp.studentId,
+          status: 'JUSTIFIED',
+          present: false,
+          recoveredById: null,
+          date: { lte: makeUp.date },
+          id: { not: makeUp.id },
+        },
+        orderBy: { date: 'asc' },
+        select: { id: true },
+      })
+
+      if (pendingAbsence) {
+        await transaction.attendance.update({
+          where: { id: pendingAbsence.id },
+          data: { recoveredById: makeUp.id },
+        })
+      }
+    }
   })
 }

@@ -129,6 +129,12 @@ export type ClassEnrollment = $Result.DefaultSelection<Prisma.$ClassEnrollmentPa
  */
 export type ClassSession = $Result.DefaultSelection<Prisma.$ClassSessionPayload>
 /**
+ * Model AbsenceJustification
+ * Motivo de inasistencia reportado por el alumno. Queda pendiente de revisión
+ * por el instructor o el administrador; al aprobarse la sesión queda JUSTIFIED.
+ */
+export type AbsenceJustification = $Result.DefaultSelection<Prisma.$AbsenceJustificationPayload>
+/**
  * Model Attendance
  * 
  */
@@ -360,6 +366,15 @@ export const ClassAudience: {
 export type ClassAudience = (typeof ClassAudience)[keyof typeof ClassAudience]
 
 
+export const AbsenceJustificationStatus: {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+export type AbsenceJustificationStatus = (typeof AbsenceJustificationStatus)[keyof typeof AbsenceJustificationStatus]
+
+
 export const AttendanceStatus: {
   PENDING: 'PENDING',
   CONFIRMED: 'CONFIRMED',
@@ -395,8 +410,11 @@ export const NotificationType: {
   DOCUMENT_UPLOADED: 'DOCUMENT_UPLOADED',
   ATTENDANCE_CONFIRMED: 'ATTENDANCE_CONFIRMED',
   ATTENDANCE_PUNCHED: 'ATTENDANCE_PUNCHED',
+  ATTENDANCE_ABSENCE_REPORTED: 'ATTENDANCE_ABSENCE_REPORTED',
+  ATTENDANCE_JUSTIFICATION_REVIEWED: 'ATTENDANCE_JUSTIFICATION_REVIEWED',
   TECHNIQUE_APPROVED: 'TECHNIQUE_APPROVED',
-  TECHNIQUE_EVALUATED: 'TECHNIQUE_EVALUATED'
+  TECHNIQUE_EVALUATED: 'TECHNIQUE_EVALUATED',
+  REVIEW_SUBMITTED: 'REVIEW_SUBMITTED'
 };
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
@@ -505,6 +523,10 @@ export const PracticePlace: typeof $Enums.PracticePlace
 export type ClassAudience = $Enums.ClassAudience
 
 export const ClassAudience: typeof $Enums.ClassAudience
+
+export type AbsenceJustificationStatus = $Enums.AbsenceJustificationStatus
+
+export const AbsenceJustificationStatus: typeof $Enums.AbsenceJustificationStatus
 
 export type AttendanceStatus = $Enums.AttendanceStatus
 
@@ -884,6 +906,16 @@ export class PrismaClient<
     * ```
     */
   get classSession(): Prisma.ClassSessionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.absenceJustification`: Exposes CRUD operations for the **AbsenceJustification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AbsenceJustifications
+    * const absenceJustifications = await prisma.absenceJustification.findMany()
+    * ```
+    */
+  get absenceJustification(): Prisma.AbsenceJustificationDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.attendance`: Exposes CRUD operations for the **Attendance** model.
@@ -1494,6 +1526,7 @@ export namespace Prisma {
     Class: 'Class',
     ClassEnrollment: 'ClassEnrollment',
     ClassSession: 'ClassSession',
+    AbsenceJustification: 'AbsenceJustification',
     Attendance: 'Attendance',
     AchievementType: 'AchievementType',
     StudentAchievement: 'StudentAchievement',
@@ -1523,7 +1556,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniquePracticeLog" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "whatsAppContact" | "whatsAppMessage" | "pushSubscription" | "holiday" | "examConvocation" | "review" | "apiUsage" | "auditLog" | "post"
+      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniquePracticeLog" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "absenceJustification" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "whatsAppContact" | "whatsAppMessage" | "pushSubscription" | "holiday" | "examConvocation" | "review" | "apiUsage" | "auditLog" | "post"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3229,6 +3262,80 @@ export namespace Prisma {
           }
         }
       }
+      AbsenceJustification: {
+        payload: Prisma.$AbsenceJustificationPayload<ExtArgs>
+        fields: Prisma.AbsenceJustificationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AbsenceJustificationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AbsenceJustificationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AbsenceJustificationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AbsenceJustificationPayload>
+          }
+          findFirst: {
+            args: Prisma.AbsenceJustificationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AbsenceJustificationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AbsenceJustificationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AbsenceJustificationPayload>
+          }
+          findMany: {
+            args: Prisma.AbsenceJustificationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AbsenceJustificationPayload>[]
+          }
+          create: {
+            args: Prisma.AbsenceJustificationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AbsenceJustificationPayload>
+          }
+          createMany: {
+            args: Prisma.AbsenceJustificationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AbsenceJustificationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AbsenceJustificationPayload>[]
+          }
+          delete: {
+            args: Prisma.AbsenceJustificationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AbsenceJustificationPayload>
+          }
+          update: {
+            args: Prisma.AbsenceJustificationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AbsenceJustificationPayload>
+          }
+          deleteMany: {
+            args: Prisma.AbsenceJustificationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AbsenceJustificationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AbsenceJustificationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AbsenceJustificationPayload>[]
+          }
+          upsert: {
+            args: Prisma.AbsenceJustificationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AbsenceJustificationPayload>
+          }
+          aggregate: {
+            args: Prisma.AbsenceJustificationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAbsenceJustification>
+          }
+          groupBy: {
+            args: Prisma.AbsenceJustificationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AbsenceJustificationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AbsenceJustificationCountArgs<ExtArgs>
+            result: $Utils.Optional<AbsenceJustificationCountAggregateOutputType> | number
+          }
+        }
+      }
       Attendance: {
         payload: Prisma.$AttendancePayload<ExtArgs>
         fields: Prisma.AttendanceFieldRefs
@@ -4411,6 +4518,7 @@ export namespace Prisma {
     class?: ClassOmit
     classEnrollment?: ClassEnrollmentOmit
     classSession?: ClassSessionOmit
+    absenceJustification?: AbsenceJustificationOmit
     attendance?: AttendanceOmit
     achievementType?: AchievementTypeOmit
     studentAchievement?: StudentAchievementOmit
@@ -4701,6 +4809,8 @@ export namespace Prisma {
     achievementsApproved: number
     fitnessReportsApproved: number
     attendanceConfirmations: number
+    absenceReviews: number
+    classSessionsTaken: number
     emailVerificationTokens: number
     passwordResetTokens: number
     acceptedInvitations: number
@@ -4721,6 +4831,8 @@ export namespace Prisma {
     achievementsApproved?: boolean | UserCountOutputTypeCountAchievementsApprovedArgs
     fitnessReportsApproved?: boolean | UserCountOutputTypeCountFitnessReportsApprovedArgs
     attendanceConfirmations?: boolean | UserCountOutputTypeCountAttendanceConfirmationsArgs
+    absenceReviews?: boolean | UserCountOutputTypeCountAbsenceReviewsArgs
+    classSessionsTaken?: boolean | UserCountOutputTypeCountClassSessionsTakenArgs
     emailVerificationTokens?: boolean | UserCountOutputTypeCountEmailVerificationTokensArgs
     passwordResetTokens?: boolean | UserCountOutputTypeCountPasswordResetTokensArgs
     acceptedInvitations?: boolean | UserCountOutputTypeCountAcceptedInvitationsArgs
@@ -4802,6 +4914,20 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountAbsenceReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AbsenceJustificationWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountClassSessionsTakenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClassSessionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountEmailVerificationTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EmailVerificationTokenWhereInput
   }
@@ -4871,6 +4997,7 @@ export namespace Prisma {
     guardians: number
     enrollments: number
     attendances: number
+    absenceJustifications: number
     achievements: number
     techniques: number
     techniquePracticeLogs: number
@@ -4886,6 +5013,7 @@ export namespace Prisma {
     guardians?: boolean | StudentCountOutputTypeCountGuardiansArgs
     enrollments?: boolean | StudentCountOutputTypeCountEnrollmentsArgs
     attendances?: boolean | StudentCountOutputTypeCountAttendancesArgs
+    absenceJustifications?: boolean | StudentCountOutputTypeCountAbsenceJustificationsArgs
     achievements?: boolean | StudentCountOutputTypeCountAchievementsArgs
     techniques?: boolean | StudentCountOutputTypeCountTechniquesArgs
     techniquePracticeLogs?: boolean | StudentCountOutputTypeCountTechniquePracticeLogsArgs
@@ -4927,6 +5055,13 @@ export namespace Prisma {
    */
   export type StudentCountOutputTypeCountAttendancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AttendanceWhereInput
+  }
+
+  /**
+   * StudentCountOutputType without action
+   */
+  export type StudentCountOutputTypeCountAbsenceJustificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AbsenceJustificationWhereInput
   }
 
   /**
@@ -5241,12 +5376,14 @@ export namespace Prisma {
     sessions: number
     enrollments: number
     attendances: number
+    absenceJustifications: number
   }
 
   export type ClassCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | ClassCountOutputTypeCountSessionsArgs
     enrollments?: boolean | ClassCountOutputTypeCountEnrollmentsArgs
     attendances?: boolean | ClassCountOutputTypeCountAttendancesArgs
+    absenceJustifications?: boolean | ClassCountOutputTypeCountAbsenceJustificationsArgs
   }
 
   // Custom InputTypes
@@ -5279,6 +5416,13 @@ export namespace Prisma {
    */
   export type ClassCountOutputTypeCountAttendancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AttendanceWhereInput
+  }
+
+  /**
+   * ClassCountOutputType without action
+   */
+  export type ClassCountOutputTypeCountAbsenceJustificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AbsenceJustificationWhereInput
   }
 
 
@@ -8219,6 +8363,8 @@ export namespace Prisma {
     achievementsApproved?: boolean | User$achievementsApprovedArgs<ExtArgs>
     fitnessReportsApproved?: boolean | User$fitnessReportsApprovedArgs<ExtArgs>
     attendanceConfirmations?: boolean | User$attendanceConfirmationsArgs<ExtArgs>
+    absenceReviews?: boolean | User$absenceReviewsArgs<ExtArgs>
+    classSessionsTaken?: boolean | User$classSessionsTakenArgs<ExtArgs>
     emailVerificationTokens?: boolean | User$emailVerificationTokensArgs<ExtArgs>
     passwordResetTokens?: boolean | User$passwordResetTokensArgs<ExtArgs>
     acceptedInvitations?: boolean | User$acceptedInvitationsArgs<ExtArgs>
@@ -8295,6 +8441,8 @@ export namespace Prisma {
     achievementsApproved?: boolean | User$achievementsApprovedArgs<ExtArgs>
     fitnessReportsApproved?: boolean | User$fitnessReportsApprovedArgs<ExtArgs>
     attendanceConfirmations?: boolean | User$attendanceConfirmationsArgs<ExtArgs>
+    absenceReviews?: boolean | User$absenceReviewsArgs<ExtArgs>
+    classSessionsTaken?: boolean | User$classSessionsTakenArgs<ExtArgs>
     emailVerificationTokens?: boolean | User$emailVerificationTokensArgs<ExtArgs>
     passwordResetTokens?: boolean | User$passwordResetTokensArgs<ExtArgs>
     acceptedInvitations?: boolean | User$acceptedInvitationsArgs<ExtArgs>
@@ -8331,6 +8479,8 @@ export namespace Prisma {
       achievementsApproved: Prisma.$StudentAchievementPayload<ExtArgs>[]
       fitnessReportsApproved: Prisma.$FitnessReportPayload<ExtArgs>[]
       attendanceConfirmations: Prisma.$AttendancePayload<ExtArgs>[]
+      absenceReviews: Prisma.$AbsenceJustificationPayload<ExtArgs>[]
+      classSessionsTaken: Prisma.$ClassSessionPayload<ExtArgs>[]
       emailVerificationTokens: Prisma.$EmailVerificationTokenPayload<ExtArgs>[]
       passwordResetTokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
       acceptedInvitations: Prisma.$StudentInvitationTokenPayload<ExtArgs>[]
@@ -8761,6 +8911,8 @@ export namespace Prisma {
     achievementsApproved<T extends User$achievementsApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$achievementsApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentAchievementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     fitnessReportsApproved<T extends User$fitnessReportsApprovedArgs<ExtArgs> = {}>(args?: Subset<T, User$fitnessReportsApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FitnessReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     attendanceConfirmations<T extends User$attendanceConfirmationsArgs<ExtArgs> = {}>(args?: Subset<T, User$attendanceConfirmationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    absenceReviews<T extends User$absenceReviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$absenceReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AbsenceJustificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    classSessionsTaken<T extends User$classSessionsTakenArgs<ExtArgs> = {}>(args?: Subset<T, User$classSessionsTakenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClassSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     emailVerificationTokens<T extends User$emailVerificationTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$emailVerificationTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailVerificationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     passwordResetTokens<T extends User$passwordResetTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$passwordResetTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     acceptedInvitations<T extends User$acceptedInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$acceptedInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentInvitationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -9478,6 +9630,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AttendanceScalarFieldEnum | AttendanceScalarFieldEnum[]
+  }
+
+  /**
+   * User.absenceReviews
+   */
+  export type User$absenceReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationInclude<ExtArgs> | null
+    where?: AbsenceJustificationWhereInput
+    orderBy?: AbsenceJustificationOrderByWithRelationInput | AbsenceJustificationOrderByWithRelationInput[]
+    cursor?: AbsenceJustificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AbsenceJustificationScalarFieldEnum | AbsenceJustificationScalarFieldEnum[]
+  }
+
+  /**
+   * User.classSessionsTaken
+   */
+  export type User$classSessionsTakenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClassSession
+     */
+    select?: ClassSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClassSession
+     */
+    omit?: ClassSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClassSessionInclude<ExtArgs> | null
+    where?: ClassSessionWhereInput
+    orderBy?: ClassSessionOrderByWithRelationInput | ClassSessionOrderByWithRelationInput[]
+    cursor?: ClassSessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClassSessionScalarFieldEnum | ClassSessionScalarFieldEnum[]
   }
 
   /**
@@ -14448,6 +14648,7 @@ export namespace Prisma {
     guardians?: boolean | Student$guardiansArgs<ExtArgs>
     enrollments?: boolean | Student$enrollmentsArgs<ExtArgs>
     attendances?: boolean | Student$attendancesArgs<ExtArgs>
+    absenceJustifications?: boolean | Student$absenceJustificationsArgs<ExtArgs>
     achievements?: boolean | Student$achievementsArgs<ExtArgs>
     techniques?: boolean | Student$techniquesArgs<ExtArgs>
     techniquePracticeLogs?: boolean | Student$techniquePracticeLogsArgs<ExtArgs>
@@ -14580,6 +14781,7 @@ export namespace Prisma {
     guardians?: boolean | Student$guardiansArgs<ExtArgs>
     enrollments?: boolean | Student$enrollmentsArgs<ExtArgs>
     attendances?: boolean | Student$attendancesArgs<ExtArgs>
+    absenceJustifications?: boolean | Student$absenceJustificationsArgs<ExtArgs>
     achievements?: boolean | Student$achievementsArgs<ExtArgs>
     techniques?: boolean | Student$techniquesArgs<ExtArgs>
     techniquePracticeLogs?: boolean | Student$techniquePracticeLogsArgs<ExtArgs>
@@ -14621,6 +14823,7 @@ export namespace Prisma {
       guardians: Prisma.$GuardianStudentPayload<ExtArgs>[]
       enrollments: Prisma.$EnrollmentPayload<ExtArgs>[]
       attendances: Prisma.$AttendancePayload<ExtArgs>[]
+      absenceJustifications: Prisma.$AbsenceJustificationPayload<ExtArgs>[]
       achievements: Prisma.$StudentAchievementPayload<ExtArgs>[]
       techniques: Prisma.$StudentTechniquePayload<ExtArgs>[]
       techniquePracticeLogs: Prisma.$TechniquePracticeLogPayload<ExtArgs>[]
@@ -15065,6 +15268,7 @@ export namespace Prisma {
     guardians<T extends Student$guardiansArgs<ExtArgs> = {}>(args?: Subset<T, Student$guardiansArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GuardianStudentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     enrollments<T extends Student$enrollmentsArgs<ExtArgs> = {}>(args?: Subset<T, Student$enrollmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EnrollmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     attendances<T extends Student$attendancesArgs<ExtArgs> = {}>(args?: Subset<T, Student$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    absenceJustifications<T extends Student$absenceJustificationsArgs<ExtArgs> = {}>(args?: Subset<T, Student$absenceJustificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AbsenceJustificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     achievements<T extends Student$achievementsArgs<ExtArgs> = {}>(args?: Subset<T, Student$achievementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentAchievementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     techniques<T extends Student$techniquesArgs<ExtArgs> = {}>(args?: Subset<T, Student$techniquesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentTechniquePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     techniquePracticeLogs<T extends Student$techniquePracticeLogsArgs<ExtArgs> = {}>(args?: Subset<T, Student$techniquePracticeLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -15679,6 +15883,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AttendanceScalarFieldEnum | AttendanceScalarFieldEnum[]
+  }
+
+  /**
+   * Student.absenceJustifications
+   */
+  export type Student$absenceJustificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationInclude<ExtArgs> | null
+    where?: AbsenceJustificationWhereInput
+    orderBy?: AbsenceJustificationOrderByWithRelationInput | AbsenceJustificationOrderByWithRelationInput[]
+    cursor?: AbsenceJustificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AbsenceJustificationScalarFieldEnum | AbsenceJustificationScalarFieldEnum[]
   }
 
   /**
@@ -31108,6 +31336,7 @@ export namespace Prisma {
     sessions?: boolean | Class$sessionsArgs<ExtArgs>
     enrollments?: boolean | Class$enrollmentsArgs<ExtArgs>
     attendances?: boolean | Class$attendancesArgs<ExtArgs>
+    absenceJustifications?: boolean | Class$absenceJustificationsArgs<ExtArgs>
     _count?: boolean | ClassCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["class"]>
 
@@ -31167,6 +31396,7 @@ export namespace Prisma {
     sessions?: boolean | Class$sessionsArgs<ExtArgs>
     enrollments?: boolean | Class$enrollmentsArgs<ExtArgs>
     attendances?: boolean | Class$attendancesArgs<ExtArgs>
+    absenceJustifications?: boolean | Class$absenceJustificationsArgs<ExtArgs>
     _count?: boolean | ClassCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ClassIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -31186,6 +31416,7 @@ export namespace Prisma {
       sessions: Prisma.$ClassSessionPayload<ExtArgs>[]
       enrollments: Prisma.$ClassEnrollmentPayload<ExtArgs>[]
       attendances: Prisma.$AttendancePayload<ExtArgs>[]
+      absenceJustifications: Prisma.$AbsenceJustificationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -31599,6 +31830,7 @@ export namespace Prisma {
     sessions<T extends Class$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, Class$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClassSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     enrollments<T extends Class$enrollmentsArgs<ExtArgs> = {}>(args?: Subset<T, Class$enrollmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClassEnrollmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     attendances<T extends Class$attendancesArgs<ExtArgs> = {}>(args?: Subset<T, Class$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    absenceJustifications<T extends Class$absenceJustificationsArgs<ExtArgs> = {}>(args?: Subset<T, Class$absenceJustificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AbsenceJustificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -32129,6 +32361,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AttendanceScalarFieldEnum | AttendanceScalarFieldEnum[]
+  }
+
+  /**
+   * Class.absenceJustifications
+   */
+  export type Class$absenceJustificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationInclude<ExtArgs> | null
+    where?: AbsenceJustificationWhereInput
+    orderBy?: AbsenceJustificationOrderByWithRelationInput | AbsenceJustificationOrderByWithRelationInput[]
+    cursor?: AbsenceJustificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AbsenceJustificationScalarFieldEnum | AbsenceJustificationScalarFieldEnum[]
   }
 
   /**
@@ -33288,6 +33544,8 @@ export namespace Prisma {
     classId: string | null
     date: Date | null
     notes: string | null
+    takenById: string | null
+    takenAt: Date | null
     createdAt: Date | null
   }
 
@@ -33296,6 +33554,8 @@ export namespace Prisma {
     classId: string | null
     date: Date | null
     notes: string | null
+    takenById: string | null
+    takenAt: Date | null
     createdAt: Date | null
   }
 
@@ -33304,6 +33564,8 @@ export namespace Prisma {
     classId: number
     date: number
     notes: number
+    takenById: number
+    takenAt: number
     createdAt: number
     _all: number
   }
@@ -33314,6 +33576,8 @@ export namespace Prisma {
     classId?: true
     date?: true
     notes?: true
+    takenById?: true
+    takenAt?: true
     createdAt?: true
   }
 
@@ -33322,6 +33586,8 @@ export namespace Prisma {
     classId?: true
     date?: true
     notes?: true
+    takenById?: true
+    takenAt?: true
     createdAt?: true
   }
 
@@ -33330,6 +33596,8 @@ export namespace Prisma {
     classId?: true
     date?: true
     notes?: true
+    takenById?: true
+    takenAt?: true
     createdAt?: true
     _all?: true
   }
@@ -33411,6 +33679,8 @@ export namespace Prisma {
     classId: string
     date: Date
     notes: string | null
+    takenById: string | null
+    takenAt: Date | null
     createdAt: Date
     _count: ClassSessionCountAggregateOutputType | null
     _min: ClassSessionMinAggregateOutputType | null
@@ -33436,8 +33706,11 @@ export namespace Prisma {
     classId?: boolean
     date?: boolean
     notes?: boolean
+    takenById?: boolean
+    takenAt?: boolean
     createdAt?: boolean
     class?: boolean | ClassDefaultArgs<ExtArgs>
+    takenBy?: boolean | ClassSession$takenByArgs<ExtArgs>
     attendances?: boolean | ClassSession$attendancesArgs<ExtArgs>
     _count?: boolean | ClassSessionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["classSession"]>
@@ -33447,8 +33720,11 @@ export namespace Prisma {
     classId?: boolean
     date?: boolean
     notes?: boolean
+    takenById?: boolean
+    takenAt?: boolean
     createdAt?: boolean
     class?: boolean | ClassDefaultArgs<ExtArgs>
+    takenBy?: boolean | ClassSession$takenByArgs<ExtArgs>
   }, ExtArgs["result"]["classSession"]>
 
   export type ClassSessionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -33456,8 +33732,11 @@ export namespace Prisma {
     classId?: boolean
     date?: boolean
     notes?: boolean
+    takenById?: boolean
+    takenAt?: boolean
     createdAt?: boolean
     class?: boolean | ClassDefaultArgs<ExtArgs>
+    takenBy?: boolean | ClassSession$takenByArgs<ExtArgs>
   }, ExtArgs["result"]["classSession"]>
 
   export type ClassSessionSelectScalar = {
@@ -33465,26 +33744,32 @@ export namespace Prisma {
     classId?: boolean
     date?: boolean
     notes?: boolean
+    takenById?: boolean
+    takenAt?: boolean
     createdAt?: boolean
   }
 
-  export type ClassSessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "classId" | "date" | "notes" | "createdAt", ExtArgs["result"]["classSession"]>
+  export type ClassSessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "classId" | "date" | "notes" | "takenById" | "takenAt" | "createdAt", ExtArgs["result"]["classSession"]>
   export type ClassSessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     class?: boolean | ClassDefaultArgs<ExtArgs>
+    takenBy?: boolean | ClassSession$takenByArgs<ExtArgs>
     attendances?: boolean | ClassSession$attendancesArgs<ExtArgs>
     _count?: boolean | ClassSessionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ClassSessionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     class?: boolean | ClassDefaultArgs<ExtArgs>
+    takenBy?: boolean | ClassSession$takenByArgs<ExtArgs>
   }
   export type ClassSessionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     class?: boolean | ClassDefaultArgs<ExtArgs>
+    takenBy?: boolean | ClassSession$takenByArgs<ExtArgs>
   }
 
   export type $ClassSessionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ClassSession"
     objects: {
       class: Prisma.$ClassPayload<ExtArgs>
+      takenBy: Prisma.$UserPayload<ExtArgs> | null
       attendances: Prisma.$AttendancePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -33492,6 +33777,8 @@ export namespace Prisma {
       classId: string
       date: Date
       notes: string | null
+      takenById: string | null
+      takenAt: Date | null
       createdAt: Date
     }, ExtArgs["result"]["classSession"]>
     composites: {}
@@ -33888,6 +34175,7 @@ export namespace Prisma {
   export interface Prisma__ClassSessionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     class<T extends ClassDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClassDefaultArgs<ExtArgs>>): Prisma__ClassClient<$Result.GetResult<Prisma.$ClassPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    takenBy<T extends ClassSession$takenByArgs<ExtArgs> = {}>(args?: Subset<T, ClassSession$takenByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     attendances<T extends ClassSession$attendancesArgs<ExtArgs> = {}>(args?: Subset<T, ClassSession$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -33922,6 +34210,8 @@ export namespace Prisma {
     readonly classId: FieldRef<"ClassSession", 'String'>
     readonly date: FieldRef<"ClassSession", 'DateTime'>
     readonly notes: FieldRef<"ClassSession", 'String'>
+    readonly takenById: FieldRef<"ClassSession", 'String'>
+    readonly takenAt: FieldRef<"ClassSession", 'DateTime'>
     readonly createdAt: FieldRef<"ClassSession", 'DateTime'>
   }
     
@@ -34324,6 +34614,25 @@ export namespace Prisma {
   }
 
   /**
+   * ClassSession.takenBy
+   */
+  export type ClassSession$takenByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * ClassSession.attendances
    */
   export type ClassSession$attendancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -34363,6 +34672,1169 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ClassSessionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AbsenceJustification
+   */
+
+  export type AggregateAbsenceJustification = {
+    _count: AbsenceJustificationCountAggregateOutputType | null
+    _min: AbsenceJustificationMinAggregateOutputType | null
+    _max: AbsenceJustificationMaxAggregateOutputType | null
+  }
+
+  export type AbsenceJustificationMinAggregateOutputType = {
+    id: string | null
+    studentId: string | null
+    classId: string | null
+    date: Date | null
+    reason: string | null
+    status: $Enums.AbsenceJustificationStatus | null
+    reviewedById: string | null
+    reviewedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AbsenceJustificationMaxAggregateOutputType = {
+    id: string | null
+    studentId: string | null
+    classId: string | null
+    date: Date | null
+    reason: string | null
+    status: $Enums.AbsenceJustificationStatus | null
+    reviewedById: string | null
+    reviewedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AbsenceJustificationCountAggregateOutputType = {
+    id: number
+    studentId: number
+    classId: number
+    date: number
+    reason: number
+    status: number
+    reviewedById: number
+    reviewedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AbsenceJustificationMinAggregateInputType = {
+    id?: true
+    studentId?: true
+    classId?: true
+    date?: true
+    reason?: true
+    status?: true
+    reviewedById?: true
+    reviewedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AbsenceJustificationMaxAggregateInputType = {
+    id?: true
+    studentId?: true
+    classId?: true
+    date?: true
+    reason?: true
+    status?: true
+    reviewedById?: true
+    reviewedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AbsenceJustificationCountAggregateInputType = {
+    id?: true
+    studentId?: true
+    classId?: true
+    date?: true
+    reason?: true
+    status?: true
+    reviewedById?: true
+    reviewedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AbsenceJustificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AbsenceJustification to aggregate.
+     */
+    where?: AbsenceJustificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AbsenceJustifications to fetch.
+     */
+    orderBy?: AbsenceJustificationOrderByWithRelationInput | AbsenceJustificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AbsenceJustificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AbsenceJustifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AbsenceJustifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AbsenceJustifications
+    **/
+    _count?: true | AbsenceJustificationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AbsenceJustificationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AbsenceJustificationMaxAggregateInputType
+  }
+
+  export type GetAbsenceJustificationAggregateType<T extends AbsenceJustificationAggregateArgs> = {
+        [P in keyof T & keyof AggregateAbsenceJustification]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAbsenceJustification[P]>
+      : GetScalarType<T[P], AggregateAbsenceJustification[P]>
+  }
+
+
+
+
+  export type AbsenceJustificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AbsenceJustificationWhereInput
+    orderBy?: AbsenceJustificationOrderByWithAggregationInput | AbsenceJustificationOrderByWithAggregationInput[]
+    by: AbsenceJustificationScalarFieldEnum[] | AbsenceJustificationScalarFieldEnum
+    having?: AbsenceJustificationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AbsenceJustificationCountAggregateInputType | true
+    _min?: AbsenceJustificationMinAggregateInputType
+    _max?: AbsenceJustificationMaxAggregateInputType
+  }
+
+  export type AbsenceJustificationGroupByOutputType = {
+    id: string
+    studentId: string
+    classId: string
+    date: Date
+    reason: string
+    status: $Enums.AbsenceJustificationStatus
+    reviewedById: string | null
+    reviewedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: AbsenceJustificationCountAggregateOutputType | null
+    _min: AbsenceJustificationMinAggregateOutputType | null
+    _max: AbsenceJustificationMaxAggregateOutputType | null
+  }
+
+  type GetAbsenceJustificationGroupByPayload<T extends AbsenceJustificationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AbsenceJustificationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AbsenceJustificationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AbsenceJustificationGroupByOutputType[P]>
+            : GetScalarType<T[P], AbsenceJustificationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AbsenceJustificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentId?: boolean
+    classId?: boolean
+    date?: boolean
+    reason?: boolean
+    status?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    student?: boolean | StudentDefaultArgs<ExtArgs>
+    class?: boolean | ClassDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | AbsenceJustification$reviewedByArgs<ExtArgs>
+  }, ExtArgs["result"]["absenceJustification"]>
+
+  export type AbsenceJustificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentId?: boolean
+    classId?: boolean
+    date?: boolean
+    reason?: boolean
+    status?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    student?: boolean | StudentDefaultArgs<ExtArgs>
+    class?: boolean | ClassDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | AbsenceJustification$reviewedByArgs<ExtArgs>
+  }, ExtArgs["result"]["absenceJustification"]>
+
+  export type AbsenceJustificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentId?: boolean
+    classId?: boolean
+    date?: boolean
+    reason?: boolean
+    status?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    student?: boolean | StudentDefaultArgs<ExtArgs>
+    class?: boolean | ClassDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | AbsenceJustification$reviewedByArgs<ExtArgs>
+  }, ExtArgs["result"]["absenceJustification"]>
+
+  export type AbsenceJustificationSelectScalar = {
+    id?: boolean
+    studentId?: boolean
+    classId?: boolean
+    date?: boolean
+    reason?: boolean
+    status?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AbsenceJustificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "studentId" | "classId" | "date" | "reason" | "status" | "reviewedById" | "reviewedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["absenceJustification"]>
+  export type AbsenceJustificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    student?: boolean | StudentDefaultArgs<ExtArgs>
+    class?: boolean | ClassDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | AbsenceJustification$reviewedByArgs<ExtArgs>
+  }
+  export type AbsenceJustificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    student?: boolean | StudentDefaultArgs<ExtArgs>
+    class?: boolean | ClassDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | AbsenceJustification$reviewedByArgs<ExtArgs>
+  }
+  export type AbsenceJustificationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    student?: boolean | StudentDefaultArgs<ExtArgs>
+    class?: boolean | ClassDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | AbsenceJustification$reviewedByArgs<ExtArgs>
+  }
+
+  export type $AbsenceJustificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AbsenceJustification"
+    objects: {
+      student: Prisma.$StudentPayload<ExtArgs>
+      class: Prisma.$ClassPayload<ExtArgs>
+      reviewedBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      studentId: string
+      classId: string
+      date: Date
+      reason: string
+      status: $Enums.AbsenceJustificationStatus
+      reviewedById: string | null
+      reviewedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["absenceJustification"]>
+    composites: {}
+  }
+
+  type AbsenceJustificationGetPayload<S extends boolean | null | undefined | AbsenceJustificationDefaultArgs> = $Result.GetResult<Prisma.$AbsenceJustificationPayload, S>
+
+  type AbsenceJustificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AbsenceJustificationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AbsenceJustificationCountAggregateInputType | true
+    }
+
+  export interface AbsenceJustificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AbsenceJustification'], meta: { name: 'AbsenceJustification' } }
+    /**
+     * Find zero or one AbsenceJustification that matches the filter.
+     * @param {AbsenceJustificationFindUniqueArgs} args - Arguments to find a AbsenceJustification
+     * @example
+     * // Get one AbsenceJustification
+     * const absenceJustification = await prisma.absenceJustification.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AbsenceJustificationFindUniqueArgs>(args: SelectSubset<T, AbsenceJustificationFindUniqueArgs<ExtArgs>>): Prisma__AbsenceJustificationClient<$Result.GetResult<Prisma.$AbsenceJustificationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AbsenceJustification that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AbsenceJustificationFindUniqueOrThrowArgs} args - Arguments to find a AbsenceJustification
+     * @example
+     * // Get one AbsenceJustification
+     * const absenceJustification = await prisma.absenceJustification.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AbsenceJustificationFindUniqueOrThrowArgs>(args: SelectSubset<T, AbsenceJustificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AbsenceJustificationClient<$Result.GetResult<Prisma.$AbsenceJustificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AbsenceJustification that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AbsenceJustificationFindFirstArgs} args - Arguments to find a AbsenceJustification
+     * @example
+     * // Get one AbsenceJustification
+     * const absenceJustification = await prisma.absenceJustification.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AbsenceJustificationFindFirstArgs>(args?: SelectSubset<T, AbsenceJustificationFindFirstArgs<ExtArgs>>): Prisma__AbsenceJustificationClient<$Result.GetResult<Prisma.$AbsenceJustificationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AbsenceJustification that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AbsenceJustificationFindFirstOrThrowArgs} args - Arguments to find a AbsenceJustification
+     * @example
+     * // Get one AbsenceJustification
+     * const absenceJustification = await prisma.absenceJustification.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AbsenceJustificationFindFirstOrThrowArgs>(args?: SelectSubset<T, AbsenceJustificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__AbsenceJustificationClient<$Result.GetResult<Prisma.$AbsenceJustificationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AbsenceJustifications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AbsenceJustificationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AbsenceJustifications
+     * const absenceJustifications = await prisma.absenceJustification.findMany()
+     * 
+     * // Get first 10 AbsenceJustifications
+     * const absenceJustifications = await prisma.absenceJustification.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const absenceJustificationWithIdOnly = await prisma.absenceJustification.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AbsenceJustificationFindManyArgs>(args?: SelectSubset<T, AbsenceJustificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AbsenceJustificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AbsenceJustification.
+     * @param {AbsenceJustificationCreateArgs} args - Arguments to create a AbsenceJustification.
+     * @example
+     * // Create one AbsenceJustification
+     * const AbsenceJustification = await prisma.absenceJustification.create({
+     *   data: {
+     *     // ... data to create a AbsenceJustification
+     *   }
+     * })
+     * 
+     */
+    create<T extends AbsenceJustificationCreateArgs>(args: SelectSubset<T, AbsenceJustificationCreateArgs<ExtArgs>>): Prisma__AbsenceJustificationClient<$Result.GetResult<Prisma.$AbsenceJustificationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AbsenceJustifications.
+     * @param {AbsenceJustificationCreateManyArgs} args - Arguments to create many AbsenceJustifications.
+     * @example
+     * // Create many AbsenceJustifications
+     * const absenceJustification = await prisma.absenceJustification.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AbsenceJustificationCreateManyArgs>(args?: SelectSubset<T, AbsenceJustificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AbsenceJustifications and returns the data saved in the database.
+     * @param {AbsenceJustificationCreateManyAndReturnArgs} args - Arguments to create many AbsenceJustifications.
+     * @example
+     * // Create many AbsenceJustifications
+     * const absenceJustification = await prisma.absenceJustification.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AbsenceJustifications and only return the `id`
+     * const absenceJustificationWithIdOnly = await prisma.absenceJustification.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AbsenceJustificationCreateManyAndReturnArgs>(args?: SelectSubset<T, AbsenceJustificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AbsenceJustificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AbsenceJustification.
+     * @param {AbsenceJustificationDeleteArgs} args - Arguments to delete one AbsenceJustification.
+     * @example
+     * // Delete one AbsenceJustification
+     * const AbsenceJustification = await prisma.absenceJustification.delete({
+     *   where: {
+     *     // ... filter to delete one AbsenceJustification
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AbsenceJustificationDeleteArgs>(args: SelectSubset<T, AbsenceJustificationDeleteArgs<ExtArgs>>): Prisma__AbsenceJustificationClient<$Result.GetResult<Prisma.$AbsenceJustificationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AbsenceJustification.
+     * @param {AbsenceJustificationUpdateArgs} args - Arguments to update one AbsenceJustification.
+     * @example
+     * // Update one AbsenceJustification
+     * const absenceJustification = await prisma.absenceJustification.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AbsenceJustificationUpdateArgs>(args: SelectSubset<T, AbsenceJustificationUpdateArgs<ExtArgs>>): Prisma__AbsenceJustificationClient<$Result.GetResult<Prisma.$AbsenceJustificationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AbsenceJustifications.
+     * @param {AbsenceJustificationDeleteManyArgs} args - Arguments to filter AbsenceJustifications to delete.
+     * @example
+     * // Delete a few AbsenceJustifications
+     * const { count } = await prisma.absenceJustification.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AbsenceJustificationDeleteManyArgs>(args?: SelectSubset<T, AbsenceJustificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AbsenceJustifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AbsenceJustificationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AbsenceJustifications
+     * const absenceJustification = await prisma.absenceJustification.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AbsenceJustificationUpdateManyArgs>(args: SelectSubset<T, AbsenceJustificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AbsenceJustifications and returns the data updated in the database.
+     * @param {AbsenceJustificationUpdateManyAndReturnArgs} args - Arguments to update many AbsenceJustifications.
+     * @example
+     * // Update many AbsenceJustifications
+     * const absenceJustification = await prisma.absenceJustification.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AbsenceJustifications and only return the `id`
+     * const absenceJustificationWithIdOnly = await prisma.absenceJustification.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AbsenceJustificationUpdateManyAndReturnArgs>(args: SelectSubset<T, AbsenceJustificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AbsenceJustificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AbsenceJustification.
+     * @param {AbsenceJustificationUpsertArgs} args - Arguments to update or create a AbsenceJustification.
+     * @example
+     * // Update or create a AbsenceJustification
+     * const absenceJustification = await prisma.absenceJustification.upsert({
+     *   create: {
+     *     // ... data to create a AbsenceJustification
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AbsenceJustification we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AbsenceJustificationUpsertArgs>(args: SelectSubset<T, AbsenceJustificationUpsertArgs<ExtArgs>>): Prisma__AbsenceJustificationClient<$Result.GetResult<Prisma.$AbsenceJustificationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AbsenceJustifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AbsenceJustificationCountArgs} args - Arguments to filter AbsenceJustifications to count.
+     * @example
+     * // Count the number of AbsenceJustifications
+     * const count = await prisma.absenceJustification.count({
+     *   where: {
+     *     // ... the filter for the AbsenceJustifications we want to count
+     *   }
+     * })
+    **/
+    count<T extends AbsenceJustificationCountArgs>(
+      args?: Subset<T, AbsenceJustificationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AbsenceJustificationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AbsenceJustification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AbsenceJustificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AbsenceJustificationAggregateArgs>(args: Subset<T, AbsenceJustificationAggregateArgs>): Prisma.PrismaPromise<GetAbsenceJustificationAggregateType<T>>
+
+    /**
+     * Group by AbsenceJustification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AbsenceJustificationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AbsenceJustificationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AbsenceJustificationGroupByArgs['orderBy'] }
+        : { orderBy?: AbsenceJustificationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AbsenceJustificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAbsenceJustificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AbsenceJustification model
+   */
+  readonly fields: AbsenceJustificationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AbsenceJustification.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AbsenceJustificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    student<T extends StudentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudentDefaultArgs<ExtArgs>>): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    class<T extends ClassDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClassDefaultArgs<ExtArgs>>): Prisma__ClassClient<$Result.GetResult<Prisma.$ClassPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    reviewedBy<T extends AbsenceJustification$reviewedByArgs<ExtArgs> = {}>(args?: Subset<T, AbsenceJustification$reviewedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AbsenceJustification model
+   */
+  interface AbsenceJustificationFieldRefs {
+    readonly id: FieldRef<"AbsenceJustification", 'String'>
+    readonly studentId: FieldRef<"AbsenceJustification", 'String'>
+    readonly classId: FieldRef<"AbsenceJustification", 'String'>
+    readonly date: FieldRef<"AbsenceJustification", 'DateTime'>
+    readonly reason: FieldRef<"AbsenceJustification", 'String'>
+    readonly status: FieldRef<"AbsenceJustification", 'AbsenceJustificationStatus'>
+    readonly reviewedById: FieldRef<"AbsenceJustification", 'String'>
+    readonly reviewedAt: FieldRef<"AbsenceJustification", 'DateTime'>
+    readonly createdAt: FieldRef<"AbsenceJustification", 'DateTime'>
+    readonly updatedAt: FieldRef<"AbsenceJustification", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AbsenceJustification findUnique
+   */
+  export type AbsenceJustificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationInclude<ExtArgs> | null
+    /**
+     * Filter, which AbsenceJustification to fetch.
+     */
+    where: AbsenceJustificationWhereUniqueInput
+  }
+
+  /**
+   * AbsenceJustification findUniqueOrThrow
+   */
+  export type AbsenceJustificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationInclude<ExtArgs> | null
+    /**
+     * Filter, which AbsenceJustification to fetch.
+     */
+    where: AbsenceJustificationWhereUniqueInput
+  }
+
+  /**
+   * AbsenceJustification findFirst
+   */
+  export type AbsenceJustificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationInclude<ExtArgs> | null
+    /**
+     * Filter, which AbsenceJustification to fetch.
+     */
+    where?: AbsenceJustificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AbsenceJustifications to fetch.
+     */
+    orderBy?: AbsenceJustificationOrderByWithRelationInput | AbsenceJustificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AbsenceJustifications.
+     */
+    cursor?: AbsenceJustificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AbsenceJustifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AbsenceJustifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AbsenceJustifications.
+     */
+    distinct?: AbsenceJustificationScalarFieldEnum | AbsenceJustificationScalarFieldEnum[]
+  }
+
+  /**
+   * AbsenceJustification findFirstOrThrow
+   */
+  export type AbsenceJustificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationInclude<ExtArgs> | null
+    /**
+     * Filter, which AbsenceJustification to fetch.
+     */
+    where?: AbsenceJustificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AbsenceJustifications to fetch.
+     */
+    orderBy?: AbsenceJustificationOrderByWithRelationInput | AbsenceJustificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AbsenceJustifications.
+     */
+    cursor?: AbsenceJustificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AbsenceJustifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AbsenceJustifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AbsenceJustifications.
+     */
+    distinct?: AbsenceJustificationScalarFieldEnum | AbsenceJustificationScalarFieldEnum[]
+  }
+
+  /**
+   * AbsenceJustification findMany
+   */
+  export type AbsenceJustificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationInclude<ExtArgs> | null
+    /**
+     * Filter, which AbsenceJustifications to fetch.
+     */
+    where?: AbsenceJustificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AbsenceJustifications to fetch.
+     */
+    orderBy?: AbsenceJustificationOrderByWithRelationInput | AbsenceJustificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AbsenceJustifications.
+     */
+    cursor?: AbsenceJustificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AbsenceJustifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AbsenceJustifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AbsenceJustifications.
+     */
+    distinct?: AbsenceJustificationScalarFieldEnum | AbsenceJustificationScalarFieldEnum[]
+  }
+
+  /**
+   * AbsenceJustification create
+   */
+  export type AbsenceJustificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AbsenceJustification.
+     */
+    data: XOR<AbsenceJustificationCreateInput, AbsenceJustificationUncheckedCreateInput>
+  }
+
+  /**
+   * AbsenceJustification createMany
+   */
+  export type AbsenceJustificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AbsenceJustifications.
+     */
+    data: AbsenceJustificationCreateManyInput | AbsenceJustificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AbsenceJustification createManyAndReturn
+   */
+  export type AbsenceJustificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * The data used to create many AbsenceJustifications.
+     */
+    data: AbsenceJustificationCreateManyInput | AbsenceJustificationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AbsenceJustification update
+   */
+  export type AbsenceJustificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AbsenceJustification.
+     */
+    data: XOR<AbsenceJustificationUpdateInput, AbsenceJustificationUncheckedUpdateInput>
+    /**
+     * Choose, which AbsenceJustification to update.
+     */
+    where: AbsenceJustificationWhereUniqueInput
+  }
+
+  /**
+   * AbsenceJustification updateMany
+   */
+  export type AbsenceJustificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AbsenceJustifications.
+     */
+    data: XOR<AbsenceJustificationUpdateManyMutationInput, AbsenceJustificationUncheckedUpdateManyInput>
+    /**
+     * Filter which AbsenceJustifications to update
+     */
+    where?: AbsenceJustificationWhereInput
+    /**
+     * Limit how many AbsenceJustifications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AbsenceJustification updateManyAndReturn
+   */
+  export type AbsenceJustificationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * The data used to update AbsenceJustifications.
+     */
+    data: XOR<AbsenceJustificationUpdateManyMutationInput, AbsenceJustificationUncheckedUpdateManyInput>
+    /**
+     * Filter which AbsenceJustifications to update
+     */
+    where?: AbsenceJustificationWhereInput
+    /**
+     * Limit how many AbsenceJustifications to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AbsenceJustification upsert
+   */
+  export type AbsenceJustificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AbsenceJustification to update in case it exists.
+     */
+    where: AbsenceJustificationWhereUniqueInput
+    /**
+     * In case the AbsenceJustification found by the `where` argument doesn't exist, create a new AbsenceJustification with this data.
+     */
+    create: XOR<AbsenceJustificationCreateInput, AbsenceJustificationUncheckedCreateInput>
+    /**
+     * In case the AbsenceJustification was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AbsenceJustificationUpdateInput, AbsenceJustificationUncheckedUpdateInput>
+  }
+
+  /**
+   * AbsenceJustification delete
+   */
+  export type AbsenceJustificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationInclude<ExtArgs> | null
+    /**
+     * Filter which AbsenceJustification to delete.
+     */
+    where: AbsenceJustificationWhereUniqueInput
+  }
+
+  /**
+   * AbsenceJustification deleteMany
+   */
+  export type AbsenceJustificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AbsenceJustifications to delete
+     */
+    where?: AbsenceJustificationWhereInput
+    /**
+     * Limit how many AbsenceJustifications to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AbsenceJustification.reviewedBy
+   */
+  export type AbsenceJustification$reviewedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * AbsenceJustification without action
+   */
+  export type AbsenceJustificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AbsenceJustification
+     */
+    select?: AbsenceJustificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AbsenceJustification
+     */
+    omit?: AbsenceJustificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AbsenceJustificationInclude<ExtArgs> | null
   }
 
 
@@ -51006,10 +52478,28 @@ export namespace Prisma {
     classId: 'classId',
     date: 'date',
     notes: 'notes',
+    takenById: 'takenById',
+    takenAt: 'takenAt',
     createdAt: 'createdAt'
   };
 
   export type ClassSessionScalarFieldEnum = (typeof ClassSessionScalarFieldEnum)[keyof typeof ClassSessionScalarFieldEnum]
+
+
+  export const AbsenceJustificationScalarFieldEnum: {
+    id: 'id',
+    studentId: 'studentId',
+    classId: 'classId',
+    date: 'date',
+    reason: 'reason',
+    status: 'status',
+    reviewedById: 'reviewedById',
+    reviewedAt: 'reviewedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AbsenceJustificationScalarFieldEnum = (typeof AbsenceJustificationScalarFieldEnum)[keyof typeof AbsenceJustificationScalarFieldEnum]
 
 
   export const AttendanceScalarFieldEnum: {
@@ -51603,6 +53093,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'AbsenceJustificationStatus'
+   */
+  export type EnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AbsenceJustificationStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'AbsenceJustificationStatus[]'
+   */
+  export type ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AbsenceJustificationStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'AttendanceStatus'
    */
   export type EnumAttendanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttendanceStatus'>
@@ -51881,6 +53385,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementListRelationFilter
     fitnessReportsApproved?: FitnessReportListRelationFilter
     attendanceConfirmations?: AttendanceListRelationFilter
+    absenceReviews?: AbsenceJustificationListRelationFilter
+    classSessionsTaken?: ClassSessionListRelationFilter
     emailVerificationTokens?: EmailVerificationTokenListRelationFilter
     passwordResetTokens?: PasswordResetTokenListRelationFilter
     acceptedInvitations?: StudentInvitationTokenListRelationFilter
@@ -51918,6 +53424,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementOrderByRelationAggregateInput
     fitnessReportsApproved?: FitnessReportOrderByRelationAggregateInput
     attendanceConfirmations?: AttendanceOrderByRelationAggregateInput
+    absenceReviews?: AbsenceJustificationOrderByRelationAggregateInput
+    classSessionsTaken?: ClassSessionOrderByRelationAggregateInput
     emailVerificationTokens?: EmailVerificationTokenOrderByRelationAggregateInput
     passwordResetTokens?: PasswordResetTokenOrderByRelationAggregateInput
     acceptedInvitations?: StudentInvitationTokenOrderByRelationAggregateInput
@@ -51958,6 +53466,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementListRelationFilter
     fitnessReportsApproved?: FitnessReportListRelationFilter
     attendanceConfirmations?: AttendanceListRelationFilter
+    absenceReviews?: AbsenceJustificationListRelationFilter
+    classSessionsTaken?: ClassSessionListRelationFilter
     emailVerificationTokens?: EmailVerificationTokenListRelationFilter
     passwordResetTokens?: PasswordResetTokenListRelationFilter
     acceptedInvitations?: StudentInvitationTokenListRelationFilter
@@ -52303,6 +53813,7 @@ export namespace Prisma {
     guardians?: GuardianStudentListRelationFilter
     enrollments?: EnrollmentListRelationFilter
     attendances?: AttendanceListRelationFilter
+    absenceJustifications?: AbsenceJustificationListRelationFilter
     achievements?: StudentAchievementListRelationFilter
     techniques?: StudentTechniqueListRelationFilter
     techniquePracticeLogs?: TechniquePracticeLogListRelationFilter
@@ -52354,6 +53865,7 @@ export namespace Prisma {
     guardians?: GuardianStudentOrderByRelationAggregateInput
     enrollments?: EnrollmentOrderByRelationAggregateInput
     attendances?: AttendanceOrderByRelationAggregateInput
+    absenceJustifications?: AbsenceJustificationOrderByRelationAggregateInput
     achievements?: StudentAchievementOrderByRelationAggregateInput
     techniques?: StudentTechniqueOrderByRelationAggregateInput
     techniquePracticeLogs?: TechniquePracticeLogOrderByRelationAggregateInput
@@ -52408,6 +53920,7 @@ export namespace Prisma {
     guardians?: GuardianStudentListRelationFilter
     enrollments?: EnrollmentListRelationFilter
     attendances?: AttendanceListRelationFilter
+    absenceJustifications?: AbsenceJustificationListRelationFilter
     achievements?: StudentAchievementListRelationFilter
     techniques?: StudentTechniqueListRelationFilter
     techniquePracticeLogs?: TechniquePracticeLogListRelationFilter
@@ -53678,6 +55191,7 @@ export namespace Prisma {
     sessions?: ClassSessionListRelationFilter
     enrollments?: ClassEnrollmentListRelationFilter
     attendances?: AttendanceListRelationFilter
+    absenceJustifications?: AbsenceJustificationListRelationFilter
   }
 
   export type ClassOrderByWithRelationInput = {
@@ -53698,6 +55212,7 @@ export namespace Prisma {
     sessions?: ClassSessionOrderByRelationAggregateInput
     enrollments?: ClassEnrollmentOrderByRelationAggregateInput
     attendances?: AttendanceOrderByRelationAggregateInput
+    absenceJustifications?: AbsenceJustificationOrderByRelationAggregateInput
   }
 
   export type ClassWhereUniqueInput = Prisma.AtLeast<{
@@ -53721,6 +55236,7 @@ export namespace Prisma {
     sessions?: ClassSessionListRelationFilter
     enrollments?: ClassEnrollmentListRelationFilter
     attendances?: AttendanceListRelationFilter
+    absenceJustifications?: AbsenceJustificationListRelationFilter
   }, "id">
 
   export type ClassOrderByWithAggregationInput = {
@@ -53848,8 +55364,11 @@ export namespace Prisma {
     classId?: StringFilter<"ClassSession"> | string
     date?: DateTimeFilter<"ClassSession"> | Date | string
     notes?: StringNullableFilter<"ClassSession"> | string | null
+    takenById?: StringNullableFilter<"ClassSession"> | string | null
+    takenAt?: DateTimeNullableFilter<"ClassSession"> | Date | string | null
     createdAt?: DateTimeFilter<"ClassSession"> | Date | string
     class?: XOR<ClassScalarRelationFilter, ClassWhereInput>
+    takenBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     attendances?: AttendanceListRelationFilter
   }
 
@@ -53858,8 +55377,11 @@ export namespace Prisma {
     classId?: SortOrder
     date?: SortOrder
     notes?: SortOrderInput | SortOrder
+    takenById?: SortOrderInput | SortOrder
+    takenAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     class?: ClassOrderByWithRelationInput
+    takenBy?: UserOrderByWithRelationInput
     attendances?: AttendanceOrderByRelationAggregateInput
   }
 
@@ -53872,8 +55394,11 @@ export namespace Prisma {
     classId?: StringFilter<"ClassSession"> | string
     date?: DateTimeFilter<"ClassSession"> | Date | string
     notes?: StringNullableFilter<"ClassSession"> | string | null
+    takenById?: StringNullableFilter<"ClassSession"> | string | null
+    takenAt?: DateTimeNullableFilter<"ClassSession"> | Date | string | null
     createdAt?: DateTimeFilter<"ClassSession"> | Date | string
     class?: XOR<ClassScalarRelationFilter, ClassWhereInput>
+    takenBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     attendances?: AttendanceListRelationFilter
   }, "id" | "classId_date">
 
@@ -53882,6 +55407,8 @@ export namespace Prisma {
     classId?: SortOrder
     date?: SortOrder
     notes?: SortOrderInput | SortOrder
+    takenById?: SortOrderInput | SortOrder
+    takenAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: ClassSessionCountOrderByAggregateInput
     _max?: ClassSessionMaxOrderByAggregateInput
@@ -53896,7 +55423,96 @@ export namespace Prisma {
     classId?: StringWithAggregatesFilter<"ClassSession"> | string
     date?: DateTimeWithAggregatesFilter<"ClassSession"> | Date | string
     notes?: StringNullableWithAggregatesFilter<"ClassSession"> | string | null
+    takenById?: StringNullableWithAggregatesFilter<"ClassSession"> | string | null
+    takenAt?: DateTimeNullableWithAggregatesFilter<"ClassSession"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ClassSession"> | Date | string
+  }
+
+  export type AbsenceJustificationWhereInput = {
+    AND?: AbsenceJustificationWhereInput | AbsenceJustificationWhereInput[]
+    OR?: AbsenceJustificationWhereInput[]
+    NOT?: AbsenceJustificationWhereInput | AbsenceJustificationWhereInput[]
+    id?: StringFilter<"AbsenceJustification"> | string
+    studentId?: StringFilter<"AbsenceJustification"> | string
+    classId?: StringFilter<"AbsenceJustification"> | string
+    date?: DateTimeFilter<"AbsenceJustification"> | Date | string
+    reason?: StringFilter<"AbsenceJustification"> | string
+    status?: EnumAbsenceJustificationStatusFilter<"AbsenceJustification"> | $Enums.AbsenceJustificationStatus
+    reviewedById?: StringNullableFilter<"AbsenceJustification"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"AbsenceJustification"> | Date | string | null
+    createdAt?: DateTimeFilter<"AbsenceJustification"> | Date | string
+    updatedAt?: DateTimeFilter<"AbsenceJustification"> | Date | string
+    student?: XOR<StudentScalarRelationFilter, StudentWhereInput>
+    class?: XOR<ClassScalarRelationFilter, ClassWhereInput>
+    reviewedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type AbsenceJustificationOrderByWithRelationInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    classId?: SortOrder
+    date?: SortOrder
+    reason?: SortOrder
+    status?: SortOrder
+    reviewedById?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    student?: StudentOrderByWithRelationInput
+    class?: ClassOrderByWithRelationInput
+    reviewedBy?: UserOrderByWithRelationInput
+  }
+
+  export type AbsenceJustificationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    studentId_classId_date?: AbsenceJustificationStudentIdClassIdDateCompoundUniqueInput
+    AND?: AbsenceJustificationWhereInput | AbsenceJustificationWhereInput[]
+    OR?: AbsenceJustificationWhereInput[]
+    NOT?: AbsenceJustificationWhereInput | AbsenceJustificationWhereInput[]
+    studentId?: StringFilter<"AbsenceJustification"> | string
+    classId?: StringFilter<"AbsenceJustification"> | string
+    date?: DateTimeFilter<"AbsenceJustification"> | Date | string
+    reason?: StringFilter<"AbsenceJustification"> | string
+    status?: EnumAbsenceJustificationStatusFilter<"AbsenceJustification"> | $Enums.AbsenceJustificationStatus
+    reviewedById?: StringNullableFilter<"AbsenceJustification"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"AbsenceJustification"> | Date | string | null
+    createdAt?: DateTimeFilter<"AbsenceJustification"> | Date | string
+    updatedAt?: DateTimeFilter<"AbsenceJustification"> | Date | string
+    student?: XOR<StudentScalarRelationFilter, StudentWhereInput>
+    class?: XOR<ClassScalarRelationFilter, ClassWhereInput>
+    reviewedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id" | "studentId_classId_date">
+
+  export type AbsenceJustificationOrderByWithAggregationInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    classId?: SortOrder
+    date?: SortOrder
+    reason?: SortOrder
+    status?: SortOrder
+    reviewedById?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AbsenceJustificationCountOrderByAggregateInput
+    _max?: AbsenceJustificationMaxOrderByAggregateInput
+    _min?: AbsenceJustificationMinOrderByAggregateInput
+  }
+
+  export type AbsenceJustificationScalarWhereWithAggregatesInput = {
+    AND?: AbsenceJustificationScalarWhereWithAggregatesInput | AbsenceJustificationScalarWhereWithAggregatesInput[]
+    OR?: AbsenceJustificationScalarWhereWithAggregatesInput[]
+    NOT?: AbsenceJustificationScalarWhereWithAggregatesInput | AbsenceJustificationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AbsenceJustification"> | string
+    studentId?: StringWithAggregatesFilter<"AbsenceJustification"> | string
+    classId?: StringWithAggregatesFilter<"AbsenceJustification"> | string
+    date?: DateTimeWithAggregatesFilter<"AbsenceJustification"> | Date | string
+    reason?: StringWithAggregatesFilter<"AbsenceJustification"> | string
+    status?: EnumAbsenceJustificationStatusWithAggregatesFilter<"AbsenceJustification"> | $Enums.AbsenceJustificationStatus
+    reviewedById?: StringNullableWithAggregatesFilter<"AbsenceJustification"> | string | null
+    reviewedAt?: DateTimeNullableWithAggregatesFilter<"AbsenceJustification"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AbsenceJustification"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"AbsenceJustification"> | Date | string
   }
 
   export type AttendanceWhereInput = {
@@ -55249,6 +56865,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -55284,6 +56902,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -55319,6 +56939,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -55354,6 +56976,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -55703,6 +57327,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -55748,6 +57373,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -55793,6 +57419,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -55838,6 +57465,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -57212,6 +58840,7 @@ export namespace Prisma {
     sessions?: ClassSessionCreateNestedManyWithoutClassInput
     enrollments?: ClassEnrollmentCreateNestedManyWithoutClassInput
     attendances?: AttendanceCreateNestedManyWithoutClassInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutClassInput
   }
 
   export type ClassUncheckedCreateInput = {
@@ -57230,6 +58859,7 @@ export namespace Prisma {
     sessions?: ClassSessionUncheckedCreateNestedManyWithoutClassInput
     enrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutClassInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutClassInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutClassInput
   }
 
   export type ClassUpdateInput = {
@@ -57248,6 +58878,7 @@ export namespace Prisma {
     sessions?: ClassSessionUpdateManyWithoutClassNestedInput
     enrollments?: ClassEnrollmentUpdateManyWithoutClassNestedInput
     attendances?: AttendanceUpdateManyWithoutClassNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutClassNestedInput
   }
 
   export type ClassUncheckedUpdateInput = {
@@ -57266,6 +58897,7 @@ export namespace Prisma {
     sessions?: ClassSessionUncheckedUpdateManyWithoutClassNestedInput
     enrollments?: ClassEnrollmentUncheckedUpdateManyWithoutClassNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutClassNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutClassNestedInput
   }
 
   export type ClassCreateManyInput = {
@@ -57397,8 +59029,10 @@ export namespace Prisma {
     id?: string
     date: Date | string
     notes?: string | null
+    takenAt?: Date | string | null
     createdAt?: Date | string
     class: ClassCreateNestedOneWithoutSessionsInput
+    takenBy?: UserCreateNestedOneWithoutClassSessionsTakenInput
     attendances?: AttendanceCreateNestedManyWithoutSessionInput
   }
 
@@ -57407,6 +59041,8 @@ export namespace Prisma {
     classId: string
     date: Date | string
     notes?: string | null
+    takenById?: string | null
+    takenAt?: Date | string | null
     createdAt?: Date | string
     attendances?: AttendanceUncheckedCreateNestedManyWithoutSessionInput
   }
@@ -57415,8 +59051,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     class?: ClassUpdateOneRequiredWithoutSessionsNestedInput
+    takenBy?: UserUpdateOneWithoutClassSessionsTakenNestedInput
     attendances?: AttendanceUpdateManyWithoutSessionNestedInput
   }
 
@@ -57425,6 +59063,8 @@ export namespace Prisma {
     classId?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    takenById?: NullableStringFieldUpdateOperationsInput | string | null
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendances?: AttendanceUncheckedUpdateManyWithoutSessionNestedInput
   }
@@ -57434,6 +59074,8 @@ export namespace Prisma {
     classId: string
     date: Date | string
     notes?: string | null
+    takenById?: string | null
+    takenAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -57441,6 +59083,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -57449,7 +59092,97 @@ export namespace Prisma {
     classId?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    takenById?: NullableStringFieldUpdateOperationsInput | string | null
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AbsenceJustificationCreateInput = {
+    id?: string
+    date: Date | string
+    reason: string
+    status?: $Enums.AbsenceJustificationStatus
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student: StudentCreateNestedOneWithoutAbsenceJustificationsInput
+    class: ClassCreateNestedOneWithoutAbsenceJustificationsInput
+    reviewedBy?: UserCreateNestedOneWithoutAbsenceReviewsInput
+  }
+
+  export type AbsenceJustificationUncheckedCreateInput = {
+    id?: string
+    studentId: string
+    classId: string
+    date: Date | string
+    reason: string
+    status?: $Enums.AbsenceJustificationStatus
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AbsenceJustificationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentUpdateOneRequiredWithoutAbsenceJustificationsNestedInput
+    class?: ClassUpdateOneRequiredWithoutAbsenceJustificationsNestedInput
+    reviewedBy?: UserUpdateOneWithoutAbsenceReviewsNestedInput
+  }
+
+  export type AbsenceJustificationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    classId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AbsenceJustificationCreateManyInput = {
+    id?: string
+    studentId: string
+    classId: string
+    date: Date | string
+    reason: string
+    status?: $Enums.AbsenceJustificationStatus
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AbsenceJustificationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AbsenceJustificationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    classId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AttendanceCreateInput = {
@@ -59050,6 +60783,18 @@ export namespace Prisma {
     none?: AttendanceWhereInput
   }
 
+  export type AbsenceJustificationListRelationFilter = {
+    every?: AbsenceJustificationWhereInput
+    some?: AbsenceJustificationWhereInput
+    none?: AbsenceJustificationWhereInput
+  }
+
+  export type ClassSessionListRelationFilter = {
+    every?: ClassSessionWhereInput
+    some?: ClassSessionWhereInput
+    none?: ClassSessionWhereInput
+  }
+
   export type EmailVerificationTokenListRelationFilter = {
     every?: EmailVerificationTokenWhereInput
     some?: EmailVerificationTokenWhereInput
@@ -59127,6 +60872,14 @@ export namespace Prisma {
   }
 
   export type AttendanceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AbsenceJustificationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ClassSessionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -60645,16 +62398,6 @@ export namespace Prisma {
     not?: NestedEnumClassAudienceFilter<$PrismaModel> | $Enums.ClassAudience
   }
 
-  export type ClassSessionListRelationFilter = {
-    every?: ClassSessionWhereInput
-    some?: ClassSessionWhereInput
-    none?: ClassSessionWhereInput
-  }
-
-  export type ClassSessionOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type ClassCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -60791,6 +62534,8 @@ export namespace Prisma {
     classId?: SortOrder
     date?: SortOrder
     notes?: SortOrder
+    takenById?: SortOrder
+    takenAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -60799,6 +62544,8 @@ export namespace Prisma {
     classId?: SortOrder
     date?: SortOrder
     notes?: SortOrder
+    takenById?: SortOrder
+    takenAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -60807,7 +62554,71 @@ export namespace Prisma {
     classId?: SortOrder
     date?: SortOrder
     notes?: SortOrder
+    takenById?: SortOrder
+    takenAt?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type EnumAbsenceJustificationStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AbsenceJustificationStatus | EnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAbsenceJustificationStatusFilter<$PrismaModel> | $Enums.AbsenceJustificationStatus
+  }
+
+  export type AbsenceJustificationStudentIdClassIdDateCompoundUniqueInput = {
+    studentId: string
+    classId: string
+    date: Date | string
+  }
+
+  export type AbsenceJustificationCountOrderByAggregateInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    classId?: SortOrder
+    date?: SortOrder
+    reason?: SortOrder
+    status?: SortOrder
+    reviewedById?: SortOrder
+    reviewedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AbsenceJustificationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    classId?: SortOrder
+    date?: SortOrder
+    reason?: SortOrder
+    status?: SortOrder
+    reviewedById?: SortOrder
+    reviewedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AbsenceJustificationMinOrderByAggregateInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    classId?: SortOrder
+    date?: SortOrder
+    reason?: SortOrder
+    status?: SortOrder
+    reviewedById?: SortOrder
+    reviewedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumAbsenceJustificationStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AbsenceJustificationStatus | EnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAbsenceJustificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.AbsenceJustificationStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAbsenceJustificationStatusFilter<$PrismaModel>
+    _max?: NestedEnumAbsenceJustificationStatusFilter<$PrismaModel>
   }
 
   export type EnumAttendanceStatusFilter<$PrismaModel = never> = {
@@ -62335,6 +64146,20 @@ export namespace Prisma {
     connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
   }
 
+  export type AbsenceJustificationCreateNestedManyWithoutReviewedByInput = {
+    create?: XOR<AbsenceJustificationCreateWithoutReviewedByInput, AbsenceJustificationUncheckedCreateWithoutReviewedByInput> | AbsenceJustificationCreateWithoutReviewedByInput[] | AbsenceJustificationUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: AbsenceJustificationCreateOrConnectWithoutReviewedByInput | AbsenceJustificationCreateOrConnectWithoutReviewedByInput[]
+    createMany?: AbsenceJustificationCreateManyReviewedByInputEnvelope
+    connect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+  }
+
+  export type ClassSessionCreateNestedManyWithoutTakenByInput = {
+    create?: XOR<ClassSessionCreateWithoutTakenByInput, ClassSessionUncheckedCreateWithoutTakenByInput> | ClassSessionCreateWithoutTakenByInput[] | ClassSessionUncheckedCreateWithoutTakenByInput[]
+    connectOrCreate?: ClassSessionCreateOrConnectWithoutTakenByInput | ClassSessionCreateOrConnectWithoutTakenByInput[]
+    createMany?: ClassSessionCreateManyTakenByInputEnvelope
+    connect?: ClassSessionWhereUniqueInput | ClassSessionWhereUniqueInput[]
+  }
+
   export type EmailVerificationTokenCreateNestedManyWithoutUserInput = {
     create?: XOR<EmailVerificationTokenCreateWithoutUserInput, EmailVerificationTokenUncheckedCreateWithoutUserInput> | EmailVerificationTokenCreateWithoutUserInput[] | EmailVerificationTokenUncheckedCreateWithoutUserInput[]
     connectOrCreate?: EmailVerificationTokenCreateOrConnectWithoutUserInput | EmailVerificationTokenCreateOrConnectWithoutUserInput[]
@@ -62470,6 +64295,20 @@ export namespace Prisma {
     connectOrCreate?: AttendanceCreateOrConnectWithoutConfirmedByInput | AttendanceCreateOrConnectWithoutConfirmedByInput[]
     createMany?: AttendanceCreateManyConfirmedByInputEnvelope
     connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+  }
+
+  export type AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput = {
+    create?: XOR<AbsenceJustificationCreateWithoutReviewedByInput, AbsenceJustificationUncheckedCreateWithoutReviewedByInput> | AbsenceJustificationCreateWithoutReviewedByInput[] | AbsenceJustificationUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: AbsenceJustificationCreateOrConnectWithoutReviewedByInput | AbsenceJustificationCreateOrConnectWithoutReviewedByInput[]
+    createMany?: AbsenceJustificationCreateManyReviewedByInputEnvelope
+    connect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+  }
+
+  export type ClassSessionUncheckedCreateNestedManyWithoutTakenByInput = {
+    create?: XOR<ClassSessionCreateWithoutTakenByInput, ClassSessionUncheckedCreateWithoutTakenByInput> | ClassSessionCreateWithoutTakenByInput[] | ClassSessionUncheckedCreateWithoutTakenByInput[]
+    connectOrCreate?: ClassSessionCreateOrConnectWithoutTakenByInput | ClassSessionCreateOrConnectWithoutTakenByInput[]
+    createMany?: ClassSessionCreateManyTakenByInputEnvelope
+    connect?: ClassSessionWhereUniqueInput | ClassSessionWhereUniqueInput[]
   }
 
   export type EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput = {
@@ -62712,6 +64551,34 @@ export namespace Prisma {
     update?: AttendanceUpdateWithWhereUniqueWithoutConfirmedByInput | AttendanceUpdateWithWhereUniqueWithoutConfirmedByInput[]
     updateMany?: AttendanceUpdateManyWithWhereWithoutConfirmedByInput | AttendanceUpdateManyWithWhereWithoutConfirmedByInput[]
     deleteMany?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
+  }
+
+  export type AbsenceJustificationUpdateManyWithoutReviewedByNestedInput = {
+    create?: XOR<AbsenceJustificationCreateWithoutReviewedByInput, AbsenceJustificationUncheckedCreateWithoutReviewedByInput> | AbsenceJustificationCreateWithoutReviewedByInput[] | AbsenceJustificationUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: AbsenceJustificationCreateOrConnectWithoutReviewedByInput | AbsenceJustificationCreateOrConnectWithoutReviewedByInput[]
+    upsert?: AbsenceJustificationUpsertWithWhereUniqueWithoutReviewedByInput | AbsenceJustificationUpsertWithWhereUniqueWithoutReviewedByInput[]
+    createMany?: AbsenceJustificationCreateManyReviewedByInputEnvelope
+    set?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    disconnect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    delete?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    connect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    update?: AbsenceJustificationUpdateWithWhereUniqueWithoutReviewedByInput | AbsenceJustificationUpdateWithWhereUniqueWithoutReviewedByInput[]
+    updateMany?: AbsenceJustificationUpdateManyWithWhereWithoutReviewedByInput | AbsenceJustificationUpdateManyWithWhereWithoutReviewedByInput[]
+    deleteMany?: AbsenceJustificationScalarWhereInput | AbsenceJustificationScalarWhereInput[]
+  }
+
+  export type ClassSessionUpdateManyWithoutTakenByNestedInput = {
+    create?: XOR<ClassSessionCreateWithoutTakenByInput, ClassSessionUncheckedCreateWithoutTakenByInput> | ClassSessionCreateWithoutTakenByInput[] | ClassSessionUncheckedCreateWithoutTakenByInput[]
+    connectOrCreate?: ClassSessionCreateOrConnectWithoutTakenByInput | ClassSessionCreateOrConnectWithoutTakenByInput[]
+    upsert?: ClassSessionUpsertWithWhereUniqueWithoutTakenByInput | ClassSessionUpsertWithWhereUniqueWithoutTakenByInput[]
+    createMany?: ClassSessionCreateManyTakenByInputEnvelope
+    set?: ClassSessionWhereUniqueInput | ClassSessionWhereUniqueInput[]
+    disconnect?: ClassSessionWhereUniqueInput | ClassSessionWhereUniqueInput[]
+    delete?: ClassSessionWhereUniqueInput | ClassSessionWhereUniqueInput[]
+    connect?: ClassSessionWhereUniqueInput | ClassSessionWhereUniqueInput[]
+    update?: ClassSessionUpdateWithWhereUniqueWithoutTakenByInput | ClassSessionUpdateWithWhereUniqueWithoutTakenByInput[]
+    updateMany?: ClassSessionUpdateManyWithWhereWithoutTakenByInput | ClassSessionUpdateManyWithWhereWithoutTakenByInput[]
+    deleteMany?: ClassSessionScalarWhereInput | ClassSessionScalarWhereInput[]
   }
 
   export type EmailVerificationTokenUpdateManyWithoutUserNestedInput = {
@@ -62980,6 +64847,34 @@ export namespace Prisma {
     update?: AttendanceUpdateWithWhereUniqueWithoutConfirmedByInput | AttendanceUpdateWithWhereUniqueWithoutConfirmedByInput[]
     updateMany?: AttendanceUpdateManyWithWhereWithoutConfirmedByInput | AttendanceUpdateManyWithWhereWithoutConfirmedByInput[]
     deleteMany?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
+  }
+
+  export type AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput = {
+    create?: XOR<AbsenceJustificationCreateWithoutReviewedByInput, AbsenceJustificationUncheckedCreateWithoutReviewedByInput> | AbsenceJustificationCreateWithoutReviewedByInput[] | AbsenceJustificationUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: AbsenceJustificationCreateOrConnectWithoutReviewedByInput | AbsenceJustificationCreateOrConnectWithoutReviewedByInput[]
+    upsert?: AbsenceJustificationUpsertWithWhereUniqueWithoutReviewedByInput | AbsenceJustificationUpsertWithWhereUniqueWithoutReviewedByInput[]
+    createMany?: AbsenceJustificationCreateManyReviewedByInputEnvelope
+    set?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    disconnect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    delete?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    connect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    update?: AbsenceJustificationUpdateWithWhereUniqueWithoutReviewedByInput | AbsenceJustificationUpdateWithWhereUniqueWithoutReviewedByInput[]
+    updateMany?: AbsenceJustificationUpdateManyWithWhereWithoutReviewedByInput | AbsenceJustificationUpdateManyWithWhereWithoutReviewedByInput[]
+    deleteMany?: AbsenceJustificationScalarWhereInput | AbsenceJustificationScalarWhereInput[]
+  }
+
+  export type ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput = {
+    create?: XOR<ClassSessionCreateWithoutTakenByInput, ClassSessionUncheckedCreateWithoutTakenByInput> | ClassSessionCreateWithoutTakenByInput[] | ClassSessionUncheckedCreateWithoutTakenByInput[]
+    connectOrCreate?: ClassSessionCreateOrConnectWithoutTakenByInput | ClassSessionCreateOrConnectWithoutTakenByInput[]
+    upsert?: ClassSessionUpsertWithWhereUniqueWithoutTakenByInput | ClassSessionUpsertWithWhereUniqueWithoutTakenByInput[]
+    createMany?: ClassSessionCreateManyTakenByInputEnvelope
+    set?: ClassSessionWhereUniqueInput | ClassSessionWhereUniqueInput[]
+    disconnect?: ClassSessionWhereUniqueInput | ClassSessionWhereUniqueInput[]
+    delete?: ClassSessionWhereUniqueInput | ClassSessionWhereUniqueInput[]
+    connect?: ClassSessionWhereUniqueInput | ClassSessionWhereUniqueInput[]
+    update?: ClassSessionUpdateWithWhereUniqueWithoutTakenByInput | ClassSessionUpdateWithWhereUniqueWithoutTakenByInput[]
+    updateMany?: ClassSessionUpdateManyWithWhereWithoutTakenByInput | ClassSessionUpdateManyWithWhereWithoutTakenByInput[]
+    deleteMany?: ClassSessionScalarWhereInput | ClassSessionScalarWhereInput[]
   }
 
   export type EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput = {
@@ -63256,6 +65151,13 @@ export namespace Prisma {
     connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
   }
 
+  export type AbsenceJustificationCreateNestedManyWithoutStudentInput = {
+    create?: XOR<AbsenceJustificationCreateWithoutStudentInput, AbsenceJustificationUncheckedCreateWithoutStudentInput> | AbsenceJustificationCreateWithoutStudentInput[] | AbsenceJustificationUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: AbsenceJustificationCreateOrConnectWithoutStudentInput | AbsenceJustificationCreateOrConnectWithoutStudentInput[]
+    createMany?: AbsenceJustificationCreateManyStudentInputEnvelope
+    connect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+  }
+
   export type StudentAchievementCreateNestedManyWithoutStudentInput = {
     create?: XOR<StudentAchievementCreateWithoutStudentInput, StudentAchievementUncheckedCreateWithoutStudentInput> | StudentAchievementCreateWithoutStudentInput[] | StudentAchievementUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: StudentAchievementCreateOrConnectWithoutStudentInput | StudentAchievementCreateOrConnectWithoutStudentInput[]
@@ -63344,6 +65246,13 @@ export namespace Prisma {
     connectOrCreate?: AttendanceCreateOrConnectWithoutStudentInput | AttendanceCreateOrConnectWithoutStudentInput[]
     createMany?: AttendanceCreateManyStudentInputEnvelope
     connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+  }
+
+  export type AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput = {
+    create?: XOR<AbsenceJustificationCreateWithoutStudentInput, AbsenceJustificationUncheckedCreateWithoutStudentInput> | AbsenceJustificationCreateWithoutStudentInput[] | AbsenceJustificationUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: AbsenceJustificationCreateOrConnectWithoutStudentInput | AbsenceJustificationCreateOrConnectWithoutStudentInput[]
+    createMany?: AbsenceJustificationCreateManyStudentInputEnvelope
+    connect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
   }
 
   export type StudentAchievementUncheckedCreateNestedManyWithoutStudentInput = {
@@ -63529,6 +65438,20 @@ export namespace Prisma {
     deleteMany?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
   }
 
+  export type AbsenceJustificationUpdateManyWithoutStudentNestedInput = {
+    create?: XOR<AbsenceJustificationCreateWithoutStudentInput, AbsenceJustificationUncheckedCreateWithoutStudentInput> | AbsenceJustificationCreateWithoutStudentInput[] | AbsenceJustificationUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: AbsenceJustificationCreateOrConnectWithoutStudentInput | AbsenceJustificationCreateOrConnectWithoutStudentInput[]
+    upsert?: AbsenceJustificationUpsertWithWhereUniqueWithoutStudentInput | AbsenceJustificationUpsertWithWhereUniqueWithoutStudentInput[]
+    createMany?: AbsenceJustificationCreateManyStudentInputEnvelope
+    set?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    disconnect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    delete?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    connect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    update?: AbsenceJustificationUpdateWithWhereUniqueWithoutStudentInput | AbsenceJustificationUpdateWithWhereUniqueWithoutStudentInput[]
+    updateMany?: AbsenceJustificationUpdateManyWithWhereWithoutStudentInput | AbsenceJustificationUpdateManyWithWhereWithoutStudentInput[]
+    deleteMany?: AbsenceJustificationScalarWhereInput | AbsenceJustificationScalarWhereInput[]
+  }
+
   export type StudentAchievementUpdateManyWithoutStudentNestedInput = {
     create?: XOR<StudentAchievementCreateWithoutStudentInput, StudentAchievementUncheckedCreateWithoutStudentInput> | StudentAchievementCreateWithoutStudentInput[] | StudentAchievementUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: StudentAchievementCreateOrConnectWithoutStudentInput | StudentAchievementCreateOrConnectWithoutStudentInput[]
@@ -63705,6 +65628,20 @@ export namespace Prisma {
     update?: AttendanceUpdateWithWhereUniqueWithoutStudentInput | AttendanceUpdateWithWhereUniqueWithoutStudentInput[]
     updateMany?: AttendanceUpdateManyWithWhereWithoutStudentInput | AttendanceUpdateManyWithWhereWithoutStudentInput[]
     deleteMany?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
+  }
+
+  export type AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput = {
+    create?: XOR<AbsenceJustificationCreateWithoutStudentInput, AbsenceJustificationUncheckedCreateWithoutStudentInput> | AbsenceJustificationCreateWithoutStudentInput[] | AbsenceJustificationUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: AbsenceJustificationCreateOrConnectWithoutStudentInput | AbsenceJustificationCreateOrConnectWithoutStudentInput[]
+    upsert?: AbsenceJustificationUpsertWithWhereUniqueWithoutStudentInput | AbsenceJustificationUpsertWithWhereUniqueWithoutStudentInput[]
+    createMany?: AbsenceJustificationCreateManyStudentInputEnvelope
+    set?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    disconnect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    delete?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    connect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    update?: AbsenceJustificationUpdateWithWhereUniqueWithoutStudentInput | AbsenceJustificationUpdateWithWhereUniqueWithoutStudentInput[]
+    updateMany?: AbsenceJustificationUpdateManyWithWhereWithoutStudentInput | AbsenceJustificationUpdateManyWithWhereWithoutStudentInput[]
+    deleteMany?: AbsenceJustificationScalarWhereInput | AbsenceJustificationScalarWhereInput[]
   }
 
   export type StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput = {
@@ -64902,6 +66839,13 @@ export namespace Prisma {
     connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
   }
 
+  export type AbsenceJustificationCreateNestedManyWithoutClassInput = {
+    create?: XOR<AbsenceJustificationCreateWithoutClassInput, AbsenceJustificationUncheckedCreateWithoutClassInput> | AbsenceJustificationCreateWithoutClassInput[] | AbsenceJustificationUncheckedCreateWithoutClassInput[]
+    connectOrCreate?: AbsenceJustificationCreateOrConnectWithoutClassInput | AbsenceJustificationCreateOrConnectWithoutClassInput[]
+    createMany?: AbsenceJustificationCreateManyClassInputEnvelope
+    connect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+  }
+
   export type ClassSessionUncheckedCreateNestedManyWithoutClassInput = {
     create?: XOR<ClassSessionCreateWithoutClassInput, ClassSessionUncheckedCreateWithoutClassInput> | ClassSessionCreateWithoutClassInput[] | ClassSessionUncheckedCreateWithoutClassInput[]
     connectOrCreate?: ClassSessionCreateOrConnectWithoutClassInput | ClassSessionCreateOrConnectWithoutClassInput[]
@@ -64921,6 +66865,13 @@ export namespace Prisma {
     connectOrCreate?: AttendanceCreateOrConnectWithoutClassInput | AttendanceCreateOrConnectWithoutClassInput[]
     createMany?: AttendanceCreateManyClassInputEnvelope
     connect?: AttendanceWhereUniqueInput | AttendanceWhereUniqueInput[]
+  }
+
+  export type AbsenceJustificationUncheckedCreateNestedManyWithoutClassInput = {
+    create?: XOR<AbsenceJustificationCreateWithoutClassInput, AbsenceJustificationUncheckedCreateWithoutClassInput> | AbsenceJustificationCreateWithoutClassInput[] | AbsenceJustificationUncheckedCreateWithoutClassInput[]
+    connectOrCreate?: AbsenceJustificationCreateOrConnectWithoutClassInput | AbsenceJustificationCreateOrConnectWithoutClassInput[]
+    createMany?: AbsenceJustificationCreateManyClassInputEnvelope
+    connect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
   }
 
   export type EnumClassAudienceFieldUpdateOperationsInput = {
@@ -64987,6 +66938,20 @@ export namespace Prisma {
     deleteMany?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
   }
 
+  export type AbsenceJustificationUpdateManyWithoutClassNestedInput = {
+    create?: XOR<AbsenceJustificationCreateWithoutClassInput, AbsenceJustificationUncheckedCreateWithoutClassInput> | AbsenceJustificationCreateWithoutClassInput[] | AbsenceJustificationUncheckedCreateWithoutClassInput[]
+    connectOrCreate?: AbsenceJustificationCreateOrConnectWithoutClassInput | AbsenceJustificationCreateOrConnectWithoutClassInput[]
+    upsert?: AbsenceJustificationUpsertWithWhereUniqueWithoutClassInput | AbsenceJustificationUpsertWithWhereUniqueWithoutClassInput[]
+    createMany?: AbsenceJustificationCreateManyClassInputEnvelope
+    set?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    disconnect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    delete?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    connect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    update?: AbsenceJustificationUpdateWithWhereUniqueWithoutClassInput | AbsenceJustificationUpdateWithWhereUniqueWithoutClassInput[]
+    updateMany?: AbsenceJustificationUpdateManyWithWhereWithoutClassInput | AbsenceJustificationUpdateManyWithWhereWithoutClassInput[]
+    deleteMany?: AbsenceJustificationScalarWhereInput | AbsenceJustificationScalarWhereInput[]
+  }
+
   export type ClassSessionUncheckedUpdateManyWithoutClassNestedInput = {
     create?: XOR<ClassSessionCreateWithoutClassInput, ClassSessionUncheckedCreateWithoutClassInput> | ClassSessionCreateWithoutClassInput[] | ClassSessionUncheckedCreateWithoutClassInput[]
     connectOrCreate?: ClassSessionCreateOrConnectWithoutClassInput | ClassSessionCreateOrConnectWithoutClassInput[]
@@ -65029,6 +66994,20 @@ export namespace Prisma {
     deleteMany?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
   }
 
+  export type AbsenceJustificationUncheckedUpdateManyWithoutClassNestedInput = {
+    create?: XOR<AbsenceJustificationCreateWithoutClassInput, AbsenceJustificationUncheckedCreateWithoutClassInput> | AbsenceJustificationCreateWithoutClassInput[] | AbsenceJustificationUncheckedCreateWithoutClassInput[]
+    connectOrCreate?: AbsenceJustificationCreateOrConnectWithoutClassInput | AbsenceJustificationCreateOrConnectWithoutClassInput[]
+    upsert?: AbsenceJustificationUpsertWithWhereUniqueWithoutClassInput | AbsenceJustificationUpsertWithWhereUniqueWithoutClassInput[]
+    createMany?: AbsenceJustificationCreateManyClassInputEnvelope
+    set?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    disconnect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    delete?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    connect?: AbsenceJustificationWhereUniqueInput | AbsenceJustificationWhereUniqueInput[]
+    update?: AbsenceJustificationUpdateWithWhereUniqueWithoutClassInput | AbsenceJustificationUpdateWithWhereUniqueWithoutClassInput[]
+    updateMany?: AbsenceJustificationUpdateManyWithWhereWithoutClassInput | AbsenceJustificationUpdateManyWithWhereWithoutClassInput[]
+    deleteMany?: AbsenceJustificationScalarWhereInput | AbsenceJustificationScalarWhereInput[]
+  }
+
   export type ClassCreateNestedOneWithoutEnrollmentsInput = {
     create?: XOR<ClassCreateWithoutEnrollmentsInput, ClassUncheckedCreateWithoutEnrollmentsInput>
     connectOrCreate?: ClassCreateOrConnectWithoutEnrollmentsInput
@@ -65067,6 +67046,12 @@ export namespace Prisma {
     connect?: ClassWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutClassSessionsTakenInput = {
+    create?: XOR<UserCreateWithoutClassSessionsTakenInput, UserUncheckedCreateWithoutClassSessionsTakenInput>
+    connectOrCreate?: UserCreateOrConnectWithoutClassSessionsTakenInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type AttendanceCreateNestedManyWithoutSessionInput = {
     create?: XOR<AttendanceCreateWithoutSessionInput, AttendanceUncheckedCreateWithoutSessionInput> | AttendanceCreateWithoutSessionInput[] | AttendanceUncheckedCreateWithoutSessionInput[]
     connectOrCreate?: AttendanceCreateOrConnectWithoutSessionInput | AttendanceCreateOrConnectWithoutSessionInput[]
@@ -65087,6 +67072,16 @@ export namespace Prisma {
     upsert?: ClassUpsertWithoutSessionsInput
     connect?: ClassWhereUniqueInput
     update?: XOR<XOR<ClassUpdateToOneWithWhereWithoutSessionsInput, ClassUpdateWithoutSessionsInput>, ClassUncheckedUpdateWithoutSessionsInput>
+  }
+
+  export type UserUpdateOneWithoutClassSessionsTakenNestedInput = {
+    create?: XOR<UserCreateWithoutClassSessionsTakenInput, UserUncheckedCreateWithoutClassSessionsTakenInput>
+    connectOrCreate?: UserCreateOrConnectWithoutClassSessionsTakenInput
+    upsert?: UserUpsertWithoutClassSessionsTakenInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutClassSessionsTakenInput, UserUpdateWithoutClassSessionsTakenInput>, UserUncheckedUpdateWithoutClassSessionsTakenInput>
   }
 
   export type AttendanceUpdateManyWithoutSessionNestedInput = {
@@ -65115,6 +67110,54 @@ export namespace Prisma {
     update?: AttendanceUpdateWithWhereUniqueWithoutSessionInput | AttendanceUpdateWithWhereUniqueWithoutSessionInput[]
     updateMany?: AttendanceUpdateManyWithWhereWithoutSessionInput | AttendanceUpdateManyWithWhereWithoutSessionInput[]
     deleteMany?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
+  }
+
+  export type StudentCreateNestedOneWithoutAbsenceJustificationsInput = {
+    create?: XOR<StudentCreateWithoutAbsenceJustificationsInput, StudentUncheckedCreateWithoutAbsenceJustificationsInput>
+    connectOrCreate?: StudentCreateOrConnectWithoutAbsenceJustificationsInput
+    connect?: StudentWhereUniqueInput
+  }
+
+  export type ClassCreateNestedOneWithoutAbsenceJustificationsInput = {
+    create?: XOR<ClassCreateWithoutAbsenceJustificationsInput, ClassUncheckedCreateWithoutAbsenceJustificationsInput>
+    connectOrCreate?: ClassCreateOrConnectWithoutAbsenceJustificationsInput
+    connect?: ClassWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutAbsenceReviewsInput = {
+    create?: XOR<UserCreateWithoutAbsenceReviewsInput, UserUncheckedCreateWithoutAbsenceReviewsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAbsenceReviewsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumAbsenceJustificationStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AbsenceJustificationStatus
+  }
+
+  export type StudentUpdateOneRequiredWithoutAbsenceJustificationsNestedInput = {
+    create?: XOR<StudentCreateWithoutAbsenceJustificationsInput, StudentUncheckedCreateWithoutAbsenceJustificationsInput>
+    connectOrCreate?: StudentCreateOrConnectWithoutAbsenceJustificationsInput
+    upsert?: StudentUpsertWithoutAbsenceJustificationsInput
+    connect?: StudentWhereUniqueInput
+    update?: XOR<XOR<StudentUpdateToOneWithWhereWithoutAbsenceJustificationsInput, StudentUpdateWithoutAbsenceJustificationsInput>, StudentUncheckedUpdateWithoutAbsenceJustificationsInput>
+  }
+
+  export type ClassUpdateOneRequiredWithoutAbsenceJustificationsNestedInput = {
+    create?: XOR<ClassCreateWithoutAbsenceJustificationsInput, ClassUncheckedCreateWithoutAbsenceJustificationsInput>
+    connectOrCreate?: ClassCreateOrConnectWithoutAbsenceJustificationsInput
+    upsert?: ClassUpsertWithoutAbsenceJustificationsInput
+    connect?: ClassWhereUniqueInput
+    update?: XOR<XOR<ClassUpdateToOneWithWhereWithoutAbsenceJustificationsInput, ClassUpdateWithoutAbsenceJustificationsInput>, ClassUncheckedUpdateWithoutAbsenceJustificationsInput>
+  }
+
+  export type UserUpdateOneWithoutAbsenceReviewsNestedInput = {
+    create?: XOR<UserCreateWithoutAbsenceReviewsInput, UserUncheckedCreateWithoutAbsenceReviewsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAbsenceReviewsInput
+    upsert?: UserUpsertWithoutAbsenceReviewsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAbsenceReviewsInput, UserUpdateWithoutAbsenceReviewsInput>, UserUncheckedUpdateWithoutAbsenceReviewsInput>
   }
 
   export type ClassSessionCreateNestedOneWithoutAttendancesInput = {
@@ -66206,6 +68249,23 @@ export namespace Prisma {
     _max?: NestedEnumClassEnrollmentStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumAbsenceJustificationStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AbsenceJustificationStatus | EnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAbsenceJustificationStatusFilter<$PrismaModel> | $Enums.AbsenceJustificationStatus
+  }
+
+  export type NestedEnumAbsenceJustificationStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AbsenceJustificationStatus | EnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAbsenceJustificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.AbsenceJustificationStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAbsenceJustificationStatusFilter<$PrismaModel>
+    _max?: NestedEnumAbsenceJustificationStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumAttendanceStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.AttendanceStatus | EnumAttendanceStatusFieldRefInput<$PrismaModel>
     in?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
@@ -66413,6 +68473,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -66447,6 +68509,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -66501,6 +68565,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -66545,6 +68610,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -67421,6 +69487,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -67455,6 +69523,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -67509,6 +69579,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -67553,6 +69624,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -67640,6 +69712,7 @@ export namespace Prisma {
     sessions?: ClassSessionCreateNestedManyWithoutClassInput
     enrollments?: ClassEnrollmentCreateNestedManyWithoutClassInput
     attendances?: AttendanceCreateNestedManyWithoutClassInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutClassInput
   }
 
   export type ClassUncheckedCreateWithoutBranchInput = {
@@ -67657,6 +69730,7 @@ export namespace Prisma {
     sessions?: ClassSessionUncheckedCreateNestedManyWithoutClassInput
     enrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutClassInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutClassInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutClassInput
   }
 
   export type ClassCreateOrConnectWithoutBranchInput = {
@@ -67919,6 +69993,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -67963,6 +70038,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -68034,6 +70110,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -68078,6 +70155,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -68315,6 +70393,70 @@ export namespace Prisma {
 
   export type AttendanceCreateManyConfirmedByInputEnvelope = {
     data: AttendanceCreateManyConfirmedByInput | AttendanceCreateManyConfirmedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AbsenceJustificationCreateWithoutReviewedByInput = {
+    id?: string
+    date: Date | string
+    reason: string
+    status?: $Enums.AbsenceJustificationStatus
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student: StudentCreateNestedOneWithoutAbsenceJustificationsInput
+    class: ClassCreateNestedOneWithoutAbsenceJustificationsInput
+  }
+
+  export type AbsenceJustificationUncheckedCreateWithoutReviewedByInput = {
+    id?: string
+    studentId: string
+    classId: string
+    date: Date | string
+    reason: string
+    status?: $Enums.AbsenceJustificationStatus
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AbsenceJustificationCreateOrConnectWithoutReviewedByInput = {
+    where: AbsenceJustificationWhereUniqueInput
+    create: XOR<AbsenceJustificationCreateWithoutReviewedByInput, AbsenceJustificationUncheckedCreateWithoutReviewedByInput>
+  }
+
+  export type AbsenceJustificationCreateManyReviewedByInputEnvelope = {
+    data: AbsenceJustificationCreateManyReviewedByInput | AbsenceJustificationCreateManyReviewedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClassSessionCreateWithoutTakenByInput = {
+    id?: string
+    date: Date | string
+    notes?: string | null
+    takenAt?: Date | string | null
+    createdAt?: Date | string
+    class: ClassCreateNestedOneWithoutSessionsInput
+    attendances?: AttendanceCreateNestedManyWithoutSessionInput
+  }
+
+  export type ClassSessionUncheckedCreateWithoutTakenByInput = {
+    id?: string
+    classId: string
+    date: Date | string
+    notes?: string | null
+    takenAt?: Date | string | null
+    createdAt?: Date | string
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type ClassSessionCreateOrConnectWithoutTakenByInput = {
+    where: ClassSessionWhereUniqueInput
+    create: XOR<ClassSessionCreateWithoutTakenByInput, ClassSessionUncheckedCreateWithoutTakenByInput>
+  }
+
+  export type ClassSessionCreateManyTakenByInputEnvelope = {
+    data: ClassSessionCreateManyTakenByInput | ClassSessionCreateManyTakenByInput[]
     skipDuplicates?: boolean
   }
 
@@ -68592,6 +70734,7 @@ export namespace Prisma {
     sessions?: ClassSessionCreateNestedManyWithoutClassInput
     enrollments?: ClassEnrollmentCreateNestedManyWithoutClassInput
     attendances?: AttendanceCreateNestedManyWithoutClassInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutClassInput
   }
 
   export type ClassUncheckedCreateWithoutInstructorInput = {
@@ -68609,6 +70752,7 @@ export namespace Prisma {
     sessions?: ClassSessionUncheckedCreateNestedManyWithoutClassInput
     enrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutClassInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutClassInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutClassInput
   }
 
   export type ClassCreateOrConnectWithoutInstructorInput = {
@@ -68811,6 +70955,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -68855,6 +71000,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -69102,6 +71248,67 @@ export namespace Prisma {
     notes?: StringNullableFilter<"Attendance"> | string | null
     createdAt?: DateTimeFilter<"Attendance"> | Date | string
     updatedAt?: DateTimeFilter<"Attendance"> | Date | string
+  }
+
+  export type AbsenceJustificationUpsertWithWhereUniqueWithoutReviewedByInput = {
+    where: AbsenceJustificationWhereUniqueInput
+    update: XOR<AbsenceJustificationUpdateWithoutReviewedByInput, AbsenceJustificationUncheckedUpdateWithoutReviewedByInput>
+    create: XOR<AbsenceJustificationCreateWithoutReviewedByInput, AbsenceJustificationUncheckedCreateWithoutReviewedByInput>
+  }
+
+  export type AbsenceJustificationUpdateWithWhereUniqueWithoutReviewedByInput = {
+    where: AbsenceJustificationWhereUniqueInput
+    data: XOR<AbsenceJustificationUpdateWithoutReviewedByInput, AbsenceJustificationUncheckedUpdateWithoutReviewedByInput>
+  }
+
+  export type AbsenceJustificationUpdateManyWithWhereWithoutReviewedByInput = {
+    where: AbsenceJustificationScalarWhereInput
+    data: XOR<AbsenceJustificationUpdateManyMutationInput, AbsenceJustificationUncheckedUpdateManyWithoutReviewedByInput>
+  }
+
+  export type AbsenceJustificationScalarWhereInput = {
+    AND?: AbsenceJustificationScalarWhereInput | AbsenceJustificationScalarWhereInput[]
+    OR?: AbsenceJustificationScalarWhereInput[]
+    NOT?: AbsenceJustificationScalarWhereInput | AbsenceJustificationScalarWhereInput[]
+    id?: StringFilter<"AbsenceJustification"> | string
+    studentId?: StringFilter<"AbsenceJustification"> | string
+    classId?: StringFilter<"AbsenceJustification"> | string
+    date?: DateTimeFilter<"AbsenceJustification"> | Date | string
+    reason?: StringFilter<"AbsenceJustification"> | string
+    status?: EnumAbsenceJustificationStatusFilter<"AbsenceJustification"> | $Enums.AbsenceJustificationStatus
+    reviewedById?: StringNullableFilter<"AbsenceJustification"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"AbsenceJustification"> | Date | string | null
+    createdAt?: DateTimeFilter<"AbsenceJustification"> | Date | string
+    updatedAt?: DateTimeFilter<"AbsenceJustification"> | Date | string
+  }
+
+  export type ClassSessionUpsertWithWhereUniqueWithoutTakenByInput = {
+    where: ClassSessionWhereUniqueInput
+    update: XOR<ClassSessionUpdateWithoutTakenByInput, ClassSessionUncheckedUpdateWithoutTakenByInput>
+    create: XOR<ClassSessionCreateWithoutTakenByInput, ClassSessionUncheckedCreateWithoutTakenByInput>
+  }
+
+  export type ClassSessionUpdateWithWhereUniqueWithoutTakenByInput = {
+    where: ClassSessionWhereUniqueInput
+    data: XOR<ClassSessionUpdateWithoutTakenByInput, ClassSessionUncheckedUpdateWithoutTakenByInput>
+  }
+
+  export type ClassSessionUpdateManyWithWhereWithoutTakenByInput = {
+    where: ClassSessionScalarWhereInput
+    data: XOR<ClassSessionUpdateManyMutationInput, ClassSessionUncheckedUpdateManyWithoutTakenByInput>
+  }
+
+  export type ClassSessionScalarWhereInput = {
+    AND?: ClassSessionScalarWhereInput | ClassSessionScalarWhereInput[]
+    OR?: ClassSessionScalarWhereInput[]
+    NOT?: ClassSessionScalarWhereInput | ClassSessionScalarWhereInput[]
+    id?: StringFilter<"ClassSession"> | string
+    classId?: StringFilter<"ClassSession"> | string
+    date?: DateTimeFilter<"ClassSession"> | Date | string
+    notes?: StringNullableFilter<"ClassSession"> | string | null
+    takenById?: StringNullableFilter<"ClassSession"> | string | null
+    takenAt?: DateTimeNullableFilter<"ClassSession"> | Date | string | null
+    createdAt?: DateTimeFilter<"ClassSession"> | Date | string
   }
 
   export type EmailVerificationTokenUpsertWithWhereUniqueWithoutUserInput = {
@@ -69420,6 +71627,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -69454,6 +71663,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -69504,6 +71715,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -69538,6 +71751,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -69572,6 +71787,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -69606,6 +71823,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -69656,6 +71875,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -69690,6 +71911,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -69734,6 +71957,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -69778,6 +72002,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -69817,6 +72042,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -69851,6 +72078,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -69911,6 +72140,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -69955,6 +72185,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -70000,6 +72231,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -70034,6 +72267,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -70067,6 +72302,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -70101,6 +72338,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -70151,6 +72390,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -70185,6 +72426,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -70375,6 +72618,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -70409,6 +72654,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -70448,6 +72695,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -70482,6 +72731,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -70620,6 +72871,40 @@ export namespace Prisma {
 
   export type AttendanceCreateManyStudentInputEnvelope = {
     data: AttendanceCreateManyStudentInput | AttendanceCreateManyStudentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AbsenceJustificationCreateWithoutStudentInput = {
+    id?: string
+    date: Date | string
+    reason: string
+    status?: $Enums.AbsenceJustificationStatus
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    class: ClassCreateNestedOneWithoutAbsenceJustificationsInput
+    reviewedBy?: UserCreateNestedOneWithoutAbsenceReviewsInput
+  }
+
+  export type AbsenceJustificationUncheckedCreateWithoutStudentInput = {
+    id?: string
+    classId: string
+    date: Date | string
+    reason: string
+    status?: $Enums.AbsenceJustificationStatus
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AbsenceJustificationCreateOrConnectWithoutStudentInput = {
+    where: AbsenceJustificationWhereUniqueInput
+    create: XOR<AbsenceJustificationCreateWithoutStudentInput, AbsenceJustificationUncheckedCreateWithoutStudentInput>
+  }
+
+  export type AbsenceJustificationCreateManyStudentInputEnvelope = {
+    data: AbsenceJustificationCreateManyStudentInput | AbsenceJustificationCreateManyStudentInput[]
     skipDuplicates?: boolean
   }
 
@@ -71171,6 +73456,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -71205,6 +73492,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -71250,6 +73539,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -71284,6 +73575,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -71342,6 +73635,22 @@ export namespace Prisma {
   export type AttendanceUpdateManyWithWhereWithoutStudentInput = {
     where: AttendanceScalarWhereInput
     data: XOR<AttendanceUpdateManyMutationInput, AttendanceUncheckedUpdateManyWithoutStudentInput>
+  }
+
+  export type AbsenceJustificationUpsertWithWhereUniqueWithoutStudentInput = {
+    where: AbsenceJustificationWhereUniqueInput
+    update: XOR<AbsenceJustificationUpdateWithoutStudentInput, AbsenceJustificationUncheckedUpdateWithoutStudentInput>
+    create: XOR<AbsenceJustificationCreateWithoutStudentInput, AbsenceJustificationUncheckedCreateWithoutStudentInput>
+  }
+
+  export type AbsenceJustificationUpdateWithWhereUniqueWithoutStudentInput = {
+    where: AbsenceJustificationWhereUniqueInput
+    data: XOR<AbsenceJustificationUpdateWithoutStudentInput, AbsenceJustificationUncheckedUpdateWithoutStudentInput>
+  }
+
+  export type AbsenceJustificationUpdateManyWithWhereWithoutStudentInput = {
+    where: AbsenceJustificationScalarWhereInput
+    data: XOR<AbsenceJustificationUpdateManyMutationInput, AbsenceJustificationUncheckedUpdateManyWithoutStudentInput>
   }
 
   export type StudentAchievementUpsertWithWhereUniqueWithoutStudentInput = {
@@ -71594,6 +73903,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -71628,6 +73939,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -71677,6 +73990,7 @@ export namespace Prisma {
     guardian?: UserCreateNestedOneWithoutGuardianOfStudentsInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -71721,6 +74035,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -71771,6 +74086,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -71805,6 +74122,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -71860,6 +74179,7 @@ export namespace Prisma {
     guardian?: UserUpdateOneWithoutGuardianOfStudentsNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -71904,6 +74224,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -72016,6 +74337,7 @@ export namespace Prisma {
     guardian?: UserCreateNestedOneWithoutGuardianOfStudentsInput
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -72060,6 +74382,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -72274,6 +74597,7 @@ export namespace Prisma {
     guardian?: UserUpdateOneWithoutGuardianOfStudentsNestedInput
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -72318,6 +74642,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -72454,6 +74779,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -72498,6 +74824,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -72651,6 +74978,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -72695,6 +75023,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -72827,6 +75156,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -72871,6 +75201,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -73015,6 +75346,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -73059,6 +75391,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -73195,6 +75528,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -73239,6 +75573,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -73647,6 +75982,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -73691,6 +76027,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -73782,6 +76119,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -73816,6 +76155,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -73877,6 +76218,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -73921,6 +76263,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -74024,6 +76367,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -74058,6 +76403,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -74559,6 +76906,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
@@ -74603,6 +76951,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
@@ -74706,6 +77055,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -74740,6 +77091,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -74862,6 +77215,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
@@ -74906,6 +77260,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
@@ -75021,6 +77376,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -75055,6 +77412,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -75186,6 +77545,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
@@ -75230,6 +77590,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
@@ -75445,6 +77806,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
@@ -75489,6 +77851,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
@@ -75683,6 +78046,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -75717,6 +78082,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -75810,6 +78177,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -75844,6 +78213,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -75929,6 +78300,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -75973,6 +78345,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -76108,6 +78481,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -76142,6 +78517,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -76162,7 +78539,9 @@ export namespace Prisma {
     id?: string
     date: Date | string
     notes?: string | null
+    takenAt?: Date | string | null
     createdAt?: Date | string
+    takenBy?: UserCreateNestedOneWithoutClassSessionsTakenInput
     attendances?: AttendanceCreateNestedManyWithoutSessionInput
   }
 
@@ -76170,6 +78549,8 @@ export namespace Prisma {
     id?: string
     date: Date | string
     notes?: string | null
+    takenById?: string | null
+    takenAt?: Date | string | null
     createdAt?: Date | string
     attendances?: AttendanceUncheckedCreateNestedManyWithoutSessionInput
   }
@@ -76268,6 +78649,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AbsenceJustificationCreateWithoutClassInput = {
+    id?: string
+    date: Date | string
+    reason: string
+    status?: $Enums.AbsenceJustificationStatus
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student: StudentCreateNestedOneWithoutAbsenceJustificationsInput
+    reviewedBy?: UserCreateNestedOneWithoutAbsenceReviewsInput
+  }
+
+  export type AbsenceJustificationUncheckedCreateWithoutClassInput = {
+    id?: string
+    studentId: string
+    date: Date | string
+    reason: string
+    status?: $Enums.AbsenceJustificationStatus
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AbsenceJustificationCreateOrConnectWithoutClassInput = {
+    where: AbsenceJustificationWhereUniqueInput
+    create: XOR<AbsenceJustificationCreateWithoutClassInput, AbsenceJustificationUncheckedCreateWithoutClassInput>
+  }
+
+  export type AbsenceJustificationCreateManyClassInputEnvelope = {
+    data: AbsenceJustificationCreateManyClassInput | AbsenceJustificationCreateManyClassInput[]
+    skipDuplicates?: boolean
+  }
+
   export type BranchUpsertWithoutClassesInput = {
     update: XOR<BranchUpdateWithoutClassesInput, BranchUncheckedUpdateWithoutClassesInput>
     create: XOR<BranchCreateWithoutClassesInput, BranchUncheckedCreateWithoutClassesInput>
@@ -76335,6 +78750,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -76369,6 +78786,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -76394,17 +78813,6 @@ export namespace Prisma {
   export type ClassSessionUpdateManyWithWhereWithoutClassInput = {
     where: ClassSessionScalarWhereInput
     data: XOR<ClassSessionUpdateManyMutationInput, ClassSessionUncheckedUpdateManyWithoutClassInput>
-  }
-
-  export type ClassSessionScalarWhereInput = {
-    AND?: ClassSessionScalarWhereInput | ClassSessionScalarWhereInput[]
-    OR?: ClassSessionScalarWhereInput[]
-    NOT?: ClassSessionScalarWhereInput | ClassSessionScalarWhereInput[]
-    id?: StringFilter<"ClassSession"> | string
-    classId?: StringFilter<"ClassSession"> | string
-    date?: DateTimeFilter<"ClassSession"> | Date | string
-    notes?: StringNullableFilter<"ClassSession"> | string | null
-    createdAt?: DateTimeFilter<"ClassSession"> | Date | string
   }
 
   export type ClassEnrollmentUpsertWithWhereUniqueWithoutClassInput = {
@@ -76439,6 +78847,22 @@ export namespace Prisma {
     data: XOR<AttendanceUpdateManyMutationInput, AttendanceUncheckedUpdateManyWithoutClassInput>
   }
 
+  export type AbsenceJustificationUpsertWithWhereUniqueWithoutClassInput = {
+    where: AbsenceJustificationWhereUniqueInput
+    update: XOR<AbsenceJustificationUpdateWithoutClassInput, AbsenceJustificationUncheckedUpdateWithoutClassInput>
+    create: XOR<AbsenceJustificationCreateWithoutClassInput, AbsenceJustificationUncheckedCreateWithoutClassInput>
+  }
+
+  export type AbsenceJustificationUpdateWithWhereUniqueWithoutClassInput = {
+    where: AbsenceJustificationWhereUniqueInput
+    data: XOR<AbsenceJustificationUpdateWithoutClassInput, AbsenceJustificationUncheckedUpdateWithoutClassInput>
+  }
+
+  export type AbsenceJustificationUpdateManyWithWhereWithoutClassInput = {
+    where: AbsenceJustificationScalarWhereInput
+    data: XOR<AbsenceJustificationUpdateManyMutationInput, AbsenceJustificationUncheckedUpdateManyWithoutClassInput>
+  }
+
   export type ClassCreateWithoutEnrollmentsInput = {
     id?: string
     name: string
@@ -76454,6 +78878,7 @@ export namespace Prisma {
     instructor?: UserCreateNestedOneWithoutClassesInput
     sessions?: ClassSessionCreateNestedManyWithoutClassInput
     attendances?: AttendanceCreateNestedManyWithoutClassInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutClassInput
   }
 
   export type ClassUncheckedCreateWithoutEnrollmentsInput = {
@@ -76471,6 +78896,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     sessions?: ClassSessionUncheckedCreateNestedManyWithoutClassInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutClassInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutClassInput
   }
 
   export type ClassCreateOrConnectWithoutEnrollmentsInput = {
@@ -76511,6 +78937,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -76555,6 +78982,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -76597,6 +79025,7 @@ export namespace Prisma {
     instructor?: UserUpdateOneWithoutClassesNestedInput
     sessions?: ClassSessionUpdateManyWithoutClassNestedInput
     attendances?: AttendanceUpdateManyWithoutClassNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutClassNestedInput
   }
 
   export type ClassUncheckedUpdateWithoutEnrollmentsInput = {
@@ -76614,6 +79043,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: ClassSessionUncheckedUpdateManyWithoutClassNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutClassNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutClassNestedInput
   }
 
   export type StudentUpsertWithoutClassEnrollmentsInput = {
@@ -76660,6 +79090,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -76704,6 +79135,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -76730,6 +79162,7 @@ export namespace Prisma {
     instructor?: UserCreateNestedOneWithoutClassesInput
     enrollments?: ClassEnrollmentCreateNestedManyWithoutClassInput
     attendances?: AttendanceCreateNestedManyWithoutClassInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutClassInput
   }
 
   export type ClassUncheckedCreateWithoutSessionsInput = {
@@ -76747,11 +79180,89 @@ export namespace Prisma {
     updatedAt?: Date | string
     enrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutClassInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutClassInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutClassInput
   }
 
   export type ClassCreateOrConnectWithoutSessionsInput = {
     where: ClassWhereUniqueInput
     create: XOR<ClassCreateWithoutSessionsInput, ClassUncheckedCreateWithoutSessionsInput>
+  }
+
+  export type UserCreateWithoutClassSessionsTakenInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutUsersInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    instructorProfile?: InstructorProfileCreateNestedOneWithoutUserInput
+    studentProfile?: StudentCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
+    classes?: ClassCreateNestedManyWithoutInstructorInput
+    posts?: PostCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserUncheckedCreateWithoutClassSessionsTakenInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    schoolId?: string | null
+    branchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    instructorProfile?: InstructorProfileUncheckedCreateNestedOneWithoutUserInput
+    studentProfile?: StudentUncheckedCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
+    classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserCreateOrConnectWithoutClassSessionsTakenInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutClassSessionsTakenInput, UserUncheckedCreateWithoutClassSessionsTakenInput>
   }
 
   export type AttendanceCreateWithoutSessionInput = {
@@ -76832,6 +79343,7 @@ export namespace Prisma {
     instructor?: UserUpdateOneWithoutClassesNestedInput
     enrollments?: ClassEnrollmentUpdateManyWithoutClassNestedInput
     attendances?: AttendanceUpdateManyWithoutClassNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutClassNestedInput
   }
 
   export type ClassUncheckedUpdateWithoutSessionsInput = {
@@ -76849,6 +79361,90 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     enrollments?: ClassEnrollmentUncheckedUpdateManyWithoutClassNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutClassNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutClassNestedInput
+  }
+
+  export type UserUpsertWithoutClassSessionsTakenInput = {
+    update: XOR<UserUpdateWithoutClassSessionsTakenInput, UserUncheckedUpdateWithoutClassSessionsTakenInput>
+    create: XOR<UserCreateWithoutClassSessionsTakenInput, UserUncheckedCreateWithoutClassSessionsTakenInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutClassSessionsTakenInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutClassSessionsTakenInput, UserUncheckedUpdateWithoutClassSessionsTakenInput>
+  }
+
+  export type UserUpdateWithoutClassSessionsTakenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutUsersNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    instructorProfile?: InstructorProfileUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
+    classes?: ClassUpdateManyWithoutInstructorNestedInput
+    posts?: PostUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutClassSessionsTakenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    instructorProfile?: InstructorProfileUncheckedUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUncheckedUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type AttendanceUpsertWithWhereUniqueWithoutSessionInput = {
@@ -76867,12 +79463,458 @@ export namespace Prisma {
     data: XOR<AttendanceUpdateManyMutationInput, AttendanceUncheckedUpdateManyWithoutSessionInput>
   }
 
+  export type StudentCreateWithoutAbsenceJustificationsInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    gender?: $Enums.Gender | null
+    email?: string | null
+    contactPhone?: string | null
+    medicalInfo?: string | null
+    emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
+    enrollmentDate?: Date | string
+    memberNumber?: string | null
+    status?: $Enums.StudentStatus
+    currentRank?: string | null
+    photoKey?: string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planStartDate?: Date | string | null
+    scholarshipType?: $Enums.ScholarshipType
+    scholarshipNote?: string | null
+    isCompetitor?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
+    plan?: PlanCreateNestedOneWithoutStudentsInput
+    school: SchoolCreateNestedOneWithoutStudentsInput
+    branch: BranchCreateNestedOneWithoutStudentsInput
+    user?: UserCreateNestedOneWithoutStudentProfileInput
+    guardian?: UserCreateNestedOneWithoutGuardianOfStudentsInput
+    guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
+    enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
+    attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
+    techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
+    fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
+    classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
+    rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
+    enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
+    invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
+    documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentUncheckedCreateWithoutAbsenceJustificationsInput = {
+    id?: string
+    userId?: string | null
+    guardianId?: string | null
+    schoolId: string
+    branchId: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    gender?: $Enums.Gender | null
+    email?: string | null
+    contactPhone?: string | null
+    medicalInfo?: string | null
+    emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
+    enrollmentDate?: Date | string
+    memberNumber?: string | null
+    status?: $Enums.StudentStatus
+    currentRank?: string | null
+    currentRankId?: string | null
+    photoKey?: string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planId?: string | null
+    planStartDate?: Date | string | null
+    scholarshipType?: $Enums.ScholarshipType
+    scholarshipNote?: string | null
+    isCompetitor?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
+    techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
+    fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
+    classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
+    rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
+    enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
+    invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
+    documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentCreateOrConnectWithoutAbsenceJustificationsInput = {
+    where: StudentWhereUniqueInput
+    create: XOR<StudentCreateWithoutAbsenceJustificationsInput, StudentUncheckedCreateWithoutAbsenceJustificationsInput>
+  }
+
+  export type ClassCreateWithoutAbsenceJustificationsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    audience?: $Enums.ClassAudience
+    active?: boolean
+    dayOfWeek: number
+    startTime: Date | string
+    endTime: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branch: BranchCreateNestedOneWithoutClassesInput
+    instructor?: UserCreateNestedOneWithoutClassesInput
+    sessions?: ClassSessionCreateNestedManyWithoutClassInput
+    enrollments?: ClassEnrollmentCreateNestedManyWithoutClassInput
+    attendances?: AttendanceCreateNestedManyWithoutClassInput
+  }
+
+  export type ClassUncheckedCreateWithoutAbsenceJustificationsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    audience?: $Enums.ClassAudience
+    active?: boolean
+    branchId: string
+    instructorId?: string | null
+    dayOfWeek: number
+    startTime: Date | string
+    endTime: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: ClassSessionUncheckedCreateNestedManyWithoutClassInput
+    enrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutClassInput
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutClassInput
+  }
+
+  export type ClassCreateOrConnectWithoutAbsenceJustificationsInput = {
+    where: ClassWhereUniqueInput
+    create: XOR<ClassCreateWithoutAbsenceJustificationsInput, ClassUncheckedCreateWithoutAbsenceJustificationsInput>
+  }
+
+  export type UserCreateWithoutAbsenceReviewsInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutUsersInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    instructorProfile?: InstructorProfileCreateNestedOneWithoutUserInput
+    studentProfile?: StudentCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
+    classes?: ClassCreateNestedManyWithoutInstructorInput
+    posts?: PostCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserUncheckedCreateWithoutAbsenceReviewsInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    schoolId?: string | null
+    branchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    instructorProfile?: InstructorProfileUncheckedCreateNestedOneWithoutUserInput
+    studentProfile?: StudentUncheckedCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
+    classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserCreateOrConnectWithoutAbsenceReviewsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAbsenceReviewsInput, UserUncheckedCreateWithoutAbsenceReviewsInput>
+  }
+
+  export type StudentUpsertWithoutAbsenceJustificationsInput = {
+    update: XOR<StudentUpdateWithoutAbsenceJustificationsInput, StudentUncheckedUpdateWithoutAbsenceJustificationsInput>
+    create: XOR<StudentCreateWithoutAbsenceJustificationsInput, StudentUncheckedCreateWithoutAbsenceJustificationsInput>
+    where?: StudentWhereInput
+  }
+
+  export type StudentUpdateToOneWithWhereWithoutAbsenceJustificationsInput = {
+    where?: StudentWhereInput
+    data: XOR<StudentUpdateWithoutAbsenceJustificationsInput, StudentUncheckedUpdateWithoutAbsenceJustificationsInput>
+  }
+
+  export type StudentUpdateWithoutAbsenceJustificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
+    currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    photoKey?: NullableStringFieldUpdateOperationsInput | string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
+    scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
+    isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
+    plan?: PlanUpdateOneWithoutStudentsNestedInput
+    school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
+    branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
+    user?: UserUpdateOneWithoutStudentProfileNestedInput
+    guardian?: UserUpdateOneWithoutGuardianOfStudentsNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
+    attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
+    techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
+    fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
+    classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
+    rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
+    enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
+    invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
+    documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
+  }
+
+  export type StudentUncheckedUpdateWithoutAbsenceJustificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    guardianId?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolId?: StringFieldUpdateOperationsInput | string
+    branchId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
+    currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
+    photoKey?: NullableStringFieldUpdateOperationsInput | string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planId?: NullableStringFieldUpdateOperationsInput | string | null
+    planStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
+    scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
+    isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+    attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
+    techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
+    fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
+    classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+    rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
+    enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
+    invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
+    documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+  }
+
+  export type ClassUpsertWithoutAbsenceJustificationsInput = {
+    update: XOR<ClassUpdateWithoutAbsenceJustificationsInput, ClassUncheckedUpdateWithoutAbsenceJustificationsInput>
+    create: XOR<ClassCreateWithoutAbsenceJustificationsInput, ClassUncheckedCreateWithoutAbsenceJustificationsInput>
+    where?: ClassWhereInput
+  }
+
+  export type ClassUpdateToOneWithWhereWithoutAbsenceJustificationsInput = {
+    where?: ClassWhereInput
+    data: XOR<ClassUpdateWithoutAbsenceJustificationsInput, ClassUncheckedUpdateWithoutAbsenceJustificationsInput>
+  }
+
+  export type ClassUpdateWithoutAbsenceJustificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    audience?: EnumClassAudienceFieldUpdateOperationsInput | $Enums.ClassAudience
+    active?: BoolFieldUpdateOperationsInput | boolean
+    dayOfWeek?: IntFieldUpdateOperationsInput | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneRequiredWithoutClassesNestedInput
+    instructor?: UserUpdateOneWithoutClassesNestedInput
+    sessions?: ClassSessionUpdateManyWithoutClassNestedInput
+    enrollments?: ClassEnrollmentUpdateManyWithoutClassNestedInput
+    attendances?: AttendanceUpdateManyWithoutClassNestedInput
+  }
+
+  export type ClassUncheckedUpdateWithoutAbsenceJustificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    audience?: EnumClassAudienceFieldUpdateOperationsInput | $Enums.ClassAudience
+    active?: BoolFieldUpdateOperationsInput | boolean
+    branchId?: StringFieldUpdateOperationsInput | string
+    instructorId?: NullableStringFieldUpdateOperationsInput | string | null
+    dayOfWeek?: IntFieldUpdateOperationsInput | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: ClassSessionUncheckedUpdateManyWithoutClassNestedInput
+    enrollments?: ClassEnrollmentUncheckedUpdateManyWithoutClassNestedInput
+    attendances?: AttendanceUncheckedUpdateManyWithoutClassNestedInput
+  }
+
+  export type UserUpsertWithoutAbsenceReviewsInput = {
+    update: XOR<UserUpdateWithoutAbsenceReviewsInput, UserUncheckedUpdateWithoutAbsenceReviewsInput>
+    create: XOR<UserCreateWithoutAbsenceReviewsInput, UserUncheckedCreateWithoutAbsenceReviewsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAbsenceReviewsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAbsenceReviewsInput, UserUncheckedUpdateWithoutAbsenceReviewsInput>
+  }
+
+  export type UserUpdateWithoutAbsenceReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutUsersNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    instructorProfile?: InstructorProfileUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
+    classes?: ClassUpdateManyWithoutInstructorNestedInput
+    posts?: PostUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAbsenceReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    instructorProfile?: InstructorProfileUncheckedUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUncheckedUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+  }
+
   export type ClassSessionCreateWithoutAttendancesInput = {
     id?: string
     date: Date | string
     notes?: string | null
+    takenAt?: Date | string | null
     createdAt?: Date | string
     class: ClassCreateNestedOneWithoutSessionsInput
+    takenBy?: UserCreateNestedOneWithoutClassSessionsTakenInput
   }
 
   export type ClassSessionUncheckedCreateWithoutAttendancesInput = {
@@ -76880,6 +79922,8 @@ export namespace Prisma {
     classId: string
     date: Date | string
     notes?: string | null
+    takenById?: string | null
+    takenAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -76920,6 +79964,7 @@ export namespace Prisma {
     guardian?: UserCreateNestedOneWithoutGuardianOfStudentsInput
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -76964,6 +80009,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -76996,6 +80042,7 @@ export namespace Prisma {
     instructor?: UserCreateNestedOneWithoutClassesInput
     sessions?: ClassSessionCreateNestedManyWithoutClassInput
     enrollments?: ClassEnrollmentCreateNestedManyWithoutClassInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutClassInput
   }
 
   export type ClassUncheckedCreateWithoutAttendancesInput = {
@@ -77013,6 +80060,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     sessions?: ClassSessionUncheckedCreateNestedManyWithoutClassInput
     enrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutClassInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutClassInput
   }
 
   export type ClassCreateOrConnectWithoutAttendancesInput = {
@@ -77136,6 +80184,8 @@ export namespace Prisma {
     techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -77170,6 +80220,8 @@ export namespace Prisma {
     techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -77236,8 +80288,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     class?: ClassUpdateOneRequiredWithoutSessionsNestedInput
+    takenBy?: UserUpdateOneWithoutClassSessionsTakenNestedInput
   }
 
   export type ClassSessionUncheckedUpdateWithoutAttendancesInput = {
@@ -77245,6 +80299,8 @@ export namespace Prisma {
     classId?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    takenById?: NullableStringFieldUpdateOperationsInput | string | null
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -77291,6 +80347,7 @@ export namespace Prisma {
     guardian?: UserUpdateOneWithoutGuardianOfStudentsNestedInput
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -77335,6 +80392,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -77373,6 +80431,7 @@ export namespace Prisma {
     instructor?: UserUpdateOneWithoutClassesNestedInput
     sessions?: ClassSessionUpdateManyWithoutClassNestedInput
     enrollments?: ClassEnrollmentUpdateManyWithoutClassNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutClassNestedInput
   }
 
   export type ClassUncheckedUpdateWithoutAttendancesInput = {
@@ -77390,6 +80449,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: ClassSessionUncheckedUpdateManyWithoutClassNestedInput
     enrollments?: ClassEnrollmentUncheckedUpdateManyWithoutClassNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutClassNestedInput
   }
 
   export type AttendanceUpsertWithoutRecoveryInput = {
@@ -77531,6 +80591,8 @@ export namespace Prisma {
     techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -77565,6 +80627,8 @@ export namespace Prisma {
     techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -77762,6 +80826,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
@@ -77806,6 +80871,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
     fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
@@ -77865,6 +80931,8 @@ export namespace Prisma {
     techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -77899,6 +80967,8 @@ export namespace Prisma {
     techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -77960,6 +81030,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
@@ -78004,6 +81075,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
     fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
@@ -78075,6 +81147,8 @@ export namespace Prisma {
     techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -78109,6 +81183,8 @@ export namespace Prisma {
     techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -78154,6 +81230,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -78198,6 +81275,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -78236,6 +81314,8 @@ export namespace Prisma {
     techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -78270,6 +81350,8 @@ export namespace Prisma {
     techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -78331,6 +81413,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -78375,6 +81458,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -78419,6 +81503,8 @@ export namespace Prisma {
     techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -78453,6 +81539,8 @@ export namespace Prisma {
     techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -78488,6 +81576,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -78522,6 +81612,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -78571,6 +81663,7 @@ export namespace Prisma {
     guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
@@ -78615,6 +81708,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
     achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
     techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
@@ -78665,6 +81759,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -78699,6 +81795,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -78754,6 +81852,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -78798,6 +81897,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -78832,6 +81932,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -78866,6 +81968,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -78964,6 +82068,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -78998,6 +82104,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -79081,6 +82189,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -79115,6 +82225,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -79204,6 +82316,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -79238,6 +82352,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -79272,6 +82388,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -79306,6 +82424,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -79356,6 +82476,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -79390,6 +82512,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -79729,6 +82853,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -79763,6 +82889,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -79860,6 +82988,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -79894,6 +83024,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -79928,6 +83060,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
@@ -79962,6 +83096,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
     fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
     attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
@@ -80012,6 +83148,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -80046,6 +83184,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -80289,6 +83429,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -80323,6 +83465,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -80381,6 +83525,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -80425,6 +83570,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -80976,6 +84122,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
@@ -81010,6 +84158,8 @@ export namespace Prisma {
     achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
     fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
     attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
     emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
@@ -81068,6 +84218,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -81112,6 +84263,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -81228,6 +84380,7 @@ export namespace Prisma {
     sessions?: ClassSessionUpdateManyWithoutClassNestedInput
     enrollments?: ClassEnrollmentUpdateManyWithoutClassNestedInput
     attendances?: AttendanceUpdateManyWithoutClassNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutClassNestedInput
   }
 
   export type ClassUncheckedUpdateWithoutBranchInput = {
@@ -81245,6 +84398,7 @@ export namespace Prisma {
     sessions?: ClassSessionUncheckedUpdateManyWithoutClassNestedInput
     enrollments?: ClassEnrollmentUncheckedUpdateManyWithoutClassNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutClassNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutClassNestedInput
   }
 
   export type ClassUncheckedUpdateManyWithoutBranchInput = {
@@ -81371,6 +84525,27 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type AbsenceJustificationCreateManyReviewedByInput = {
+    id?: string
+    studentId: string
+    classId: string
+    date: Date | string
+    reason: string
+    status?: $Enums.AbsenceJustificationStatus
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClassSessionCreateManyTakenByInput = {
+    id?: string
+    classId: string
+    date: Date | string
+    notes?: string | null
+    takenAt?: Date | string | null
+    createdAt?: Date | string
   }
 
   export type EmailVerificationTokenCreateManyUserInput = {
@@ -81530,6 +84705,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -81574,6 +84750,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -81850,6 +85027,71 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AbsenceJustificationUpdateWithoutReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentUpdateOneRequiredWithoutAbsenceJustificationsNestedInput
+    class?: ClassUpdateOneRequiredWithoutAbsenceJustificationsNestedInput
+  }
+
+  export type AbsenceJustificationUncheckedUpdateWithoutReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    classId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AbsenceJustificationUncheckedUpdateManyWithoutReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    classId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClassSessionUpdateWithoutTakenByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    class?: ClassUpdateOneRequiredWithoutSessionsNestedInput
+    attendances?: AttendanceUpdateManyWithoutSessionNestedInput
+  }
+
+  export type ClassSessionUncheckedUpdateWithoutTakenByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    classId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendances?: AttendanceUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type ClassSessionUncheckedUpdateManyWithoutTakenByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    classId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type EmailVerificationTokenUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
@@ -82099,6 +85341,7 @@ export namespace Prisma {
     sessions?: ClassSessionUpdateManyWithoutClassNestedInput
     enrollments?: ClassEnrollmentUpdateManyWithoutClassNestedInput
     attendances?: AttendanceUpdateManyWithoutClassNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutClassNestedInput
   }
 
   export type ClassUncheckedUpdateWithoutInstructorInput = {
@@ -82116,6 +85359,7 @@ export namespace Prisma {
     sessions?: ClassSessionUncheckedUpdateManyWithoutClassNestedInput
     enrollments?: ClassEnrollmentUncheckedUpdateManyWithoutClassNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutClassNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutClassNestedInput
   }
 
   export type ClassUncheckedUpdateManyWithoutInstructorInput = {
@@ -82216,6 +85460,18 @@ export namespace Prisma {
     confirmedAt?: Date | string | null
     confirmedById?: string | null
     notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AbsenceJustificationCreateManyStudentInput = {
+    id?: string
+    classId: string
+    date: Date | string
+    reason: string
+    status?: $Enums.AbsenceJustificationStatus
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -82460,6 +85716,42 @@ export namespace Prisma {
     confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AbsenceJustificationUpdateWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    class?: ClassUpdateOneRequiredWithoutAbsenceJustificationsNestedInput
+    reviewedBy?: UserUpdateOneWithoutAbsenceReviewsNestedInput
+  }
+
+  export type AbsenceJustificationUncheckedUpdateWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    classId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AbsenceJustificationUncheckedUpdateManyWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    classId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -83086,6 +86378,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -83130,6 +86423,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -83528,6 +86822,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
@@ -83572,6 +86867,7 @@ export namespace Prisma {
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
     achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
     techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
     techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
@@ -83619,6 +86915,8 @@ export namespace Prisma {
     id?: string
     date: Date | string
     notes?: string | null
+    takenById?: string | null
+    takenAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -83652,11 +86950,25 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type AbsenceJustificationCreateManyClassInput = {
+    id?: string
+    studentId: string
+    date: Date | string
+    reason: string
+    status?: $Enums.AbsenceJustificationStatus
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ClassSessionUpdateWithoutClassInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    takenBy?: UserUpdateOneWithoutClassSessionsTakenNestedInput
     attendances?: AttendanceUpdateManyWithoutSessionNestedInput
   }
 
@@ -83664,6 +86976,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    takenById?: NullableStringFieldUpdateOperationsInput | string | null
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendances?: AttendanceUncheckedUpdateManyWithoutSessionNestedInput
   }
@@ -83672,6 +86986,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    takenById?: NullableStringFieldUpdateOperationsInput | string | null
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -83765,6 +87081,42 @@ export namespace Prisma {
     confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AbsenceJustificationUpdateWithoutClassInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentUpdateOneRequiredWithoutAbsenceJustificationsNestedInput
+    reviewedBy?: UserUpdateOneWithoutAbsenceReviewsNestedInput
+  }
+
+  export type AbsenceJustificationUncheckedUpdateWithoutClassInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AbsenceJustificationUncheckedUpdateManyWithoutClassInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: EnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

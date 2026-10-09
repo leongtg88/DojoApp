@@ -428,7 +428,22 @@ exports.Prisma.ClassSessionScalarFieldEnum = {
   classId: 'classId',
   date: 'date',
   notes: 'notes',
+  takenById: 'takenById',
+  takenAt: 'takenAt',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.AbsenceJustificationScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  classId: 'classId',
+  date: 'date',
+  reason: 'reason',
+  status: 'status',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.AttendanceScalarFieldEnum = {
@@ -750,6 +765,12 @@ exports.ClassEnrollmentStatus = exports.$Enums.ClassEnrollmentStatus = {
   COMPLETED: 'COMPLETED'
 };
 
+exports.AbsenceJustificationStatus = exports.$Enums.AbsenceJustificationStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
 exports.AttendanceStatus = exports.$Enums.AttendanceStatus = {
   PENDING: 'PENDING',
   CONFIRMED: 'CONFIRMED',
@@ -778,8 +799,11 @@ exports.NotificationType = exports.$Enums.NotificationType = {
   DOCUMENT_UPLOADED: 'DOCUMENT_UPLOADED',
   ATTENDANCE_CONFIRMED: 'ATTENDANCE_CONFIRMED',
   ATTENDANCE_PUNCHED: 'ATTENDANCE_PUNCHED',
+  ATTENDANCE_ABSENCE_REPORTED: 'ATTENDANCE_ABSENCE_REPORTED',
+  ATTENDANCE_JUSTIFICATION_REVIEWED: 'ATTENDANCE_JUSTIFICATION_REVIEWED',
   TECHNIQUE_APPROVED: 'TECHNIQUE_APPROVED',
-  TECHNIQUE_EVALUATED: 'TECHNIQUE_EVALUATED'
+  TECHNIQUE_EVALUATED: 'TECHNIQUE_EVALUATED',
+  REVIEW_SUBMITTED: 'REVIEW_SUBMITTED'
 };
 
 exports.NotificationPriority = exports.$Enums.NotificationPriority = {
@@ -833,6 +857,7 @@ exports.Prisma.ModelName = {
   Class: 'Class',
   ClassEnrollment: 'ClassEnrollment',
   ClassSession: 'ClassSession',
+  AbsenceJustification: 'AbsenceJustification',
   Attendance: 'Attendance',
   AchievementType: 'AchievementType',
   StudentAchievement: 'StudentAchievement',

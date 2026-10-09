@@ -1,5 +1,6 @@
 import { CalendarCheck2, CalendarX2, Clock3, UserCheck, UserX, Users } from 'lucide-react'
 import type { AdminExpectedAttendanceRoster, AdminExpectedAttendanceState, AttendanceStatus } from '@/types/dashboard'
+import { AdminJustificationActions } from './AdminJustificationActions'
 
 interface AdminExpectedTableProps {
     roster: AdminExpectedAttendanceRoster
@@ -23,6 +24,10 @@ const STATUS_LABELS: Record<AttendanceStatus, string> = {
 export function AdminExpectedTable({ roster }: AdminExpectedTableProps) {
     return (
         <section className="rounded-lg border border-edge bg-surface-2 shadow-sm">
+            <div className="border-b border-edge px-5 py-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-accent">Resumen del listado</p>
+                <h2 className="mt-1 font-display text-lg font-bold text-ink">Asistencia de los alumnos</h2>
+            </div>
             {roster.students.length === 0 ? (
                 <p className="flex flex-col items-center gap-2 px-5 py-12 text-center text-ink-4">
                     <Users className="size-6" aria-hidden="true" />
@@ -62,6 +67,22 @@ export function AdminExpectedTable({ roster }: AdminExpectedTableProps) {
                                                 {student.outOfSchedule && <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] text-warn-text">Fuera de horario</span>}
                                                 {student.notes && <span className="text-[11px] text-ink-3">{student.notes}</span>}
                                             </div>
+                                            {student.justification && (
+                                                <div className="mt-2 rounded-md border border-edge bg-surface-1 px-2.5 py-2">
+                                                    <p className="text-[11px] text-ink-2">
+                                                        <span className="font-semibold text-ink-3">Motivo: </span>
+                                                        {student.justification.reason}
+                                                    </p>
+                                                    <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2">
+                                                        <span className={`rounded border px-1.5 py-0.5 text-[10px] font-bold ${student.justification.status === 'APPROVED' ? 'border-sky-500/30 bg-sky-500/10 text-info-text' : student.justification.status === 'PENDING' ? 'border-amber-500/30 bg-amber-500/10 text-warn-text' : 'border-rose-500/30 bg-rose-500/10 text-danger-text'}`}>
+                                                            {student.justification.status === 'APPROVED' ? 'Justificada' : student.justification.status === 'PENDING' ? 'Pendiente' : 'Rechazada'}
+                                                        </span>
+                                                        {student.justification.status === 'PENDING' && (
+                                                            <AdminJustificationActions justificationId={student.justification.id} />
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </td>
                                     </tr>
                                 )

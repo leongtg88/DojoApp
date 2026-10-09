@@ -12,7 +12,7 @@ interface NotifyAssignmentParams {
 
 interface CreateForRecipientsParams {
   userIds: (string | null | undefined)[]
-  studentId: string
+  studentId: string | null
   studentName: string
   type: NotificationType
   count: number
@@ -36,7 +36,7 @@ async function createForRecipients({
   const jsonData = (data ?? {}) as Prisma.InputJsonValue
   const content = buildNotificationContent(type, {
     studentName,
-    studentId,
+    studentId: studentId ?? '',
     count,
     data: (jsonData ?? {}) as Record<string, unknown>,
   })
@@ -149,5 +149,46 @@ export async function notifySchoolStaff({
     })
   } catch (error) {
     console.error('[notifications] No fue posible crear la notificación al staff', type, studentId, error)
+  }
+}
+
+/**
+ * Crea notificaciones in-app para el staff cuando se recibe una reseña pública:
+ * los administradores de la escuela dueña de la reseña y todos los superadmins.
+ * Es "best-effort": nunca lanza error para no romper el flujo público.
+ */
+export async function notifyReviewSubmitted({
+  schoolId,
+  reviewId,
+  authorName,
+  rating,
+}: {
+  schoolId: string | null
+  reviewId: string
+  authorName: string
+  rating: number
+}): Promise<void> {
+  try {
+    const orClauses: Prisma.UserWhereInput[] = [{ roles: { has: 'SUPERADMIN' } }]
+
+    if (schoolId) {
+      orClauses.push({ roles: { has: 'SCHOOL_ADMIN' }, schoolId })
+    }
+
+    const staff = await db.user.findMany({
+      where: { OR: orClauses },
+      select: { id: true },
+    })
+
+    await createForRecipients({
+      userIds: staff.map((member) => member.id),
+      studentId: null,
+      studentName: authorName,
+      type: 'REVIEW_SUBMITTED',
+      count: 1,
+      data: { reviewId, authorName, rating },
+    })
+  } catch (error) {
+    console.error('[notifications] No fue posible crear la notificación de reseña', reviewId, error)
   }
 }

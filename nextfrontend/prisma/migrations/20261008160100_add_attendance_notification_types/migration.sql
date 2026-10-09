@@ -1,0 +1,3 @@
+-- Notificaciones del nuevo flujo de inasistencias.
+ALTER TYPE "NotificationType" ADD VALUE IF NOT EXISTS 'ATTENDANCE_ABSENCE_REPORTED';
+ALTER TYPE "NotificationType" ADD VALUE IF NOT EXISTS 'ATTENDANCE_JUSTIFICATION_REVIEWED';

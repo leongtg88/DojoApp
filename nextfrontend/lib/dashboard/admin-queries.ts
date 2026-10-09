@@ -784,10 +784,12 @@ export async function getAdminAttendanceRoster(
 
   const enrolledStudentIds = scheduledClass.enrollments.map(({ student }) => student.id)
 
-  const [classSession, punches] = await Promise.all([
+  const [classSession, punches, justifications] = await Promise.all([
     db.classSession.findUnique({
       where: { classId_date: { classId, date: sessionDate } },
       select: {
+        takenAt: true,
+        takenBy: { select: { name: true } },
         attendances: {
           select: { studentId: true, present: true, status: true, hoursTrained: true, notes: true, isOutOfSchedule: true },
         },
@@ -801,10 +803,34 @@ export async function getAdminAttendanceRoster(
       },
       select: { studentId: true, present: true, status: true, hoursTrained: true, notes: true, isOutOfSchedule: true },
     }),
+    db.absenceJustification.findMany({
+      where: { classId, date: sessionDate },
+      select: {
+        id: true,
+        studentId: true,
+        reason: true,
+        status: true,
+        reviewedAt: true,
+        reviewedBy: { select: { name: true } },
+      },
+    }),
   ])
 
   const rosterByStudent = new Map((classSession?.attendances ?? []).map((attendance) => [attendance.studentId, attendance]))
   const punchByStudent = new Map(punches.map((attendance) => [attendance.studentId, attendance]))
+  const justificationByStudent = new Map(justifications.map((justification) => [justification.studentId, justification]))
+
+  function justificationFor(studentId: string) {
+    const justification = justificationByStudent.get(studentId)
+    if (!justification) return null
+    return {
+      id: justification.id,
+      reason: justification.reason,
+      status: justification.status,
+      reviewedByName: justification.reviewedBy?.name ?? null,
+      reviewedAt: justification.reviewedAt?.toISOString() ?? null,
+    }
+  }
 
   const students: AdminExpectedAttendanceStudent[] = scheduledClass.enrollments.map(({ student }) => {
     const roster = rosterByStudent.get(student.id)
@@ -816,6 +842,7 @@ export async function getAdminAttendanceRoster(
         hoursTrained: roster.hoursTrained,
         notes: roster.notes,
         outOfSchedule: roster.isOutOfSchedule,
+        justification: justificationFor(student.id),
       }
     }
 
@@ -828,6 +855,7 @@ export async function getAdminAttendanceRoster(
         hoursTrained: punch.hoursTrained,
         notes: punch.notes,
         outOfSchedule: punch.isOutOfSchedule,
+        justification: justificationFor(student.id),
       }
     }
 
@@ -838,6 +866,7 @@ export async function getAdminAttendanceRoster(
       hoursTrained: 0,
       notes: null,
       outOfSchedule: false,
+      justification: justificationFor(student.id),
     }
   })
 
@@ -853,6 +882,10 @@ export async function getAdminAttendanceRoster(
     branchName: scheduledClass.branch.name,
     date,
     dayMatches: scheduledClass.dayOfWeek === sessionDate.getUTCDay(),
+    classDayOfWeek: scheduledClass.dayOfWeek,
+    passTaken: Boolean(classSession?.takenAt),
+    passTakenAt: classSession?.takenAt?.toISOString() ?? null,
+    passTakenByName: classSession?.takenBy?.name ?? null,
     students,
     summary: {
       audited,
@@ -861,6 +894,7 @@ export async function getAdminAttendanceRoster(
       present,
       absent,
       noRecord: students.length - registered,
+      justificationsPending: justifications.filter((justification) => justification.status === 'PENDING').length,
     },
   }
 }

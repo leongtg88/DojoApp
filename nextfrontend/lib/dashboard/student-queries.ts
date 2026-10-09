@@ -8,6 +8,7 @@ import { parseKataCriteria } from '@/lib/dashboard/kata-rubric'
 import { buildHolidaySet } from '@/lib/dashboard/holidays'
 import { monthsForGrade } from '@/lib/dashboard/rank-months'
 import { targetRepetitionsFor } from '@/lib/dashboard/technique-reps'
+import { listStudentAbsenceJustifications } from '@/lib/dashboard/absence-justifications'
 import { cuatrimestreForDate, nextCuatrimestre, tentativeExamDate, type Cuatrimestre, type ExamDayValue } from '@/lib/dashboard/cuatrimestre'
 import { availableTrainingHours, type TrainingAudience, type TrainingScheduleClass } from '@/lib/dashboard/training-hours'
 import type {
@@ -29,6 +30,7 @@ import type {
   AttendanceRecord,
   ClassSchedule,
   MonthlyProgressInfo,
+  AttendanceMonthProgress,
   StudentPracticeKataLevel,
   StudentPracticeTechniqueOption,
 } from '@/types/dashboard'
@@ -404,6 +406,8 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
     instructorName: scheduledClass.instructor?.name ?? null,
   }))
 
+  const justifications = await listStudentAbsenceJustifications(student.id)
+
   return {
     summary: {
       confirmedCount,
@@ -413,6 +417,7 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
       attendancePercent,
     },
     records,
+    justifications,
     practiceTechniques,
     program: programForAge(ageFromDob(student.dateOfBirth)),
     schedule,
@@ -654,8 +659,11 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
   const scopedAttendances = student.attendances.filter((attendance) => attendance.date.getTime() >= gradeStart.getTime())
   const attendedRecords = scopedAttendances.filter((attendance) => attendance.present)
   const pendingRecords = attendedRecords.filter((attendance) => attendance.status === 'PENDING')
+  // Las faltas JUSTIFIED (con justificación aprobada) no cuentan como inasistencia
+  // del mes; si el alumno no repone, simplemente no suma asistencia (el registro
+  // sigue present=false). Sin justificación (ABSENT) sí cuentan como falta.
   const absenceRecords = scopedAttendances.filter(
-    (attendance) => !attendance.present && (attendance.status === 'ABSENT' || attendance.status === 'CONFIRMED' || attendance.status === 'JUSTIFIED') && !attendance.recoveredById,
+    (attendance) => !attendance.present && (attendance.status === 'ABSENT' || attendance.status === 'CONFIRMED') && !attendance.recoveredById,
   )
 
   // Horas de entrenamiento: TATAMI vs LIBRE, según el tipo de sesión que el
@@ -913,6 +921,41 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     })
   }
 
+  // Asistencia mínima mensual: se exige el mínimo del grado en CADA mes transcurrido
+  // del tramo del examen. Un mes sin clases programadas no cuenta.
+  const attendanceMonths: AttendanceMonthProgress[] = []
+  const attendanceEvalEnd = new Date(Math.min(examBoundary.getTime(), today.getTime()))
+  const MAX_ATTENDANCE_MONTHS = 24
+  let cursorMonth = new Date(gradeStart.getFullYear(), gradeStart.getMonth(), 1)
+  while (cursorMonth.getTime() <= attendanceEvalEnd.getTime() && attendanceMonths.length < MAX_ATTENDANCE_MONTHS) {
+    const monthStart = new Date(cursorMonth)
+    const monthEnd = new Date(cursorMonth.getFullYear(), cursorMonth.getMonth() + 1, 1)
+    const capacitySessions = availableTrainingHours(scheduleClasses, { audience, start: monthStart, end: monthEnd, holidays }).sessions
+    cursorMonth = monthEnd
+    if (capacitySessions <= 0) continue
+
+    const attendedSessions = attendedRecords.filter(
+      (attendance) => attendance.date >= monthStart && attendance.date < monthEnd && !isLibreTraining(attendance),
+    ).length
+    const percentAttendance = Math.min(100, Math.round((attendedSessions / capacitySessions) * 100))
+    attendanceMonths.push({
+      label: monthStart.toLocaleDateString('es-DO', { month: 'long', year: 'numeric' }),
+      attendedSessions,
+      capacitySessions,
+      percent: percentAttendance,
+      required: minAttendancePercent,
+      met: percentAttendance >= minAttendancePercent,
+    })
+  }
+
+  if (attendanceMonths.length > 0) {
+    const worstMonth = attendanceMonths.reduce((min, month) => Math.min(min, month.percent), 100)
+    const percent = minAttendancePercent > 0
+      ? Math.min(100, Math.round((worstMonth / minAttendancePercent) * 100))
+      : 100
+    applicableMetrics.push({ key: 'ASISTENCIA', percent })
+  }
+
   const overallPercent =
     applicableMetrics.length === 0
       ? 100
@@ -973,6 +1016,7 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     maxAbsencesPerMonth: MAX_ABSENCES_PER_MONTH,
     examRightLost,
     bottleneck,
+    attendanceMonths,
     monthly,
   }
 

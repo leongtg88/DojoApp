@@ -106,6 +106,8 @@ model User {
   achievementsApproved    StudentAchievement[]     @relation("achievementApprovedBy")
   fitnessReportsApproved  FitnessReport[]          @relation("fitnessApprovedBy")
   attendanceConfirmations Attendance[]             @relation("attendanceConfirmer")
+  absenceReviews          AbsenceJustification[]   @relation("absenceReviewer")
+  classSessionsTaken      ClassSession[]           @relation("sessionTaker")
   emailVerificationTokens EmailVerificationToken[]
   passwordResetTokens     PasswordResetToken[]
   acceptedInvitations     StudentInvitationToken[]
@@ -210,6 +212,7 @@ model Student {
   guardians             GuardianStudent[]        @relation("student")
   enrollments           Enrollment[]
   attendances           Attendance[]
+  absenceJustifications AbsenceJustification[]
   achievements          StudentAchievement[]
   techniques            StudentTechnique[]
   techniquePracticeLogs TechniquePracticeLog[]
@@ -561,23 +564,24 @@ model Plan {
 }
 
 model Class {
-  id           String            @id @default(cuid())
-  name         String
-  description  String?
-  audience     ClassAudience     @default(MIXED)
-  active       Boolean           @default(true)
-  branchId     String
-  branch       Branch            @relation(fields: [branchId], references: [id])
-  instructorId String?
-  instructor   User?             @relation("instructor", fields: [instructorId], references: [id])
-  dayOfWeek    Int // 0=domingo, 1=lunes...
-  startTime    DateTime          @db.Time // hora de inicio
-  endTime      DateTime          @db.Time // hora de fin
-  sessions     ClassSession[]
-  enrollments  ClassEnrollment[]
-  attendances  Attendance[]
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+  id                    String                 @id @default(cuid())
+  name                  String
+  description           String?
+  audience              ClassAudience          @default(MIXED)
+  active                Boolean                @default(true)
+  branchId              String
+  branch                Branch                 @relation(fields: [branchId], references: [id])
+  instructorId          String?
+  instructor            User?                  @relation("instructor", fields: [instructorId], references: [id])
+  dayOfWeek             Int // 0=domingo, 1=lunes...
+  startTime             DateTime               @db.Time // hora de inicio
+  endTime               DateTime               @db.Time // hora de fin
+  sessions              ClassSession[]
+  enrollments           ClassEnrollment[]
+  attendances           Attendance[]
+  absenceJustifications AbsenceJustification[]
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
 
   @@index([branchId, active])
 }
@@ -606,10 +610,43 @@ model ClassSession {
   class       Class        @relation(fields: [classId], references: [id])
   date        DateTime
   notes       String?
+  takenById   String? // instructor/admin que cerró el pase de lista
+  takenBy     User?        @relation("sessionTaker", fields: [takenById], references: [id])
+  takenAt     DateTime? // marca que el pase de lista fue completado
   attendances Attendance[]
   createdAt   DateTime     @default(now())
 
   @@unique([classId, date])
+  @@index([takenAt])
+}
+
+enum AbsenceJustificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+/// Motivo de inasistencia reportado por el alumno. Queda pendiente de revisión
+/// por el instructor o el administrador; al aprobarse la sesión queda JUSTIFIED.
+model AbsenceJustification {
+  id           String                     @id @default(cuid())
+  studentId    String
+  student      Student                    @relation(fields: [studentId], references: [id])
+  classId      String
+  class        Class                      @relation(fields: [classId], references: [id])
+  date         DateTime // fecha de la clase a la que faltó
+  reason       String
+  status       AbsenceJustificationStatus @default(PENDING)
+  reviewedById String?
+  reviewedBy   User?                      @relation("absenceReviewer", fields: [reviewedById], references: [id])
+  reviewedAt   DateTime?
+  createdAt    DateTime                   @default(now())
+  updatedAt    DateTime                   @updatedAt
+
+  @@unique([studentId, classId, date])
+  @@index([classId, date])
+  @@index([status, date])
+  @@index([studentId, date])
 }
 
 enum AttendanceStatus {
@@ -720,8 +757,11 @@ enum NotificationType {
   DOCUMENT_UPLOADED
   ATTENDANCE_CONFIRMED
   ATTENDANCE_PUNCHED
+  ATTENDANCE_ABSENCE_REPORTED
+  ATTENDANCE_JUSTIFICATION_REVIEWED
   TECHNIQUE_APPROVED
   TECHNIQUE_EVALUATED
+  REVIEW_SUBMITTED
 }
 
 enum NotificationPriority {

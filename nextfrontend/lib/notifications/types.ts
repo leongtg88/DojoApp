@@ -22,6 +22,7 @@ const ATTENDANCE_LINK = '/dashboard/estudiante/asistencia'
 const PROFILE_LINK = '/dashboard/estudiante/perfil'
 const ADMIN_STUDENTS_LINK = '/dashboard/admin/alumnos'
 const ADMIN_ATTENDANCE_LINK = '/dashboard/admin/asistencia'
+const ADMIN_REVIEWS_LINK = '/dashboard/admin/reviews'
 
 function readString(data: Record<string, unknown>, key: string): string | null {
   const value = data[key]
@@ -153,6 +154,29 @@ const builders: Record<NotificationType, NotificationBuilder> = {
       priority: 'ACTION',
     }
   },
+  ATTENDANCE_ABSENCE_REPORTED: ({ studentName, data }) => {
+    const className = readString(data, 'className')
+    const suffix = className ? ` en ${className}` : ''
+    return {
+      title: 'Inasistencia reportada',
+      body: `${studentName} reportó una inasistencia${suffix}. Revisa el motivo para aprobarlo o rechazarlo.`,
+      link: ADMIN_ATTENDANCE_LINK,
+      priority: 'ACTION',
+    }
+  },
+  ATTENDANCE_JUSTIFICATION_REVIEWED: ({ studentName, data }) => {
+    const className = readString(data, 'className')
+    const suffix = className ? ` en ${className}` : ''
+    const approved = data.status === 'APPROVED'
+    return {
+      title: approved ? 'Inasistencia justificada' : 'Inasistencia rechazada',
+      body: approved
+        ? `${studentName}, tu inasistencia${suffix} fue aprobada como justificada.`
+        : `${studentName}, tu inasistencia${suffix} fue rechazada y cuenta como falta.`,
+      link: ATTENDANCE_LINK,
+      priority: 'INFO',
+    }
+  },
   TECHNIQUE_APPROVED: ({ studentName, data }) => {
     const techniqueName = readString(data, 'techniqueName') ?? 'Una técnica'
     return {
@@ -173,6 +197,19 @@ const builders: Record<NotificationType, NotificationBuilder> = {
           : `${studentName}, evaluaron ${techniqueName}.`,
       link: PROGRESS_LINK,
       priority: 'INFO',
+    }
+  },
+  REVIEW_SUBMITTED: ({ data }) => {
+    const authorName = readString(data, 'authorName') ?? 'Un tutor'
+    const rating = readNumber(data, 'rating')
+    return {
+      title: 'Nueva reseña',
+      body:
+        rating !== null
+          ? `${authorName} dejó una reseña con ${rating}/5 estrellas. Revísala para aprobarla.`
+          : `${authorName} dejó una reseña. Revísala para aprobarla.`,
+      link: ADMIN_REVIEWS_LINK,
+      priority: 'ACTION',
     }
   },
 }

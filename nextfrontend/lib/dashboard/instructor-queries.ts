@@ -370,6 +370,7 @@ export async function getInstructorAttendanceRoster(
       id: true,
       name: true,
       instructorId: true,
+      dayOfWeek: true,
       enrollments: {
         where: { status: 'ACTIVE', student: { status: StudentStatus.ACTIVE } },
         orderBy: { student: { lastName: 'asc' } },
@@ -391,29 +392,59 @@ export async function getInstructorAttendanceRoster(
     return null
   }
 
-  const session = await db.classSession.findUnique({
-    where: { classId_date: { classId, date: sessionDate } },
-    select: {
-      attendances: {
-        select: { studentId: true, present: true, status: true, notes: true },
+  const [session, justifications] = await Promise.all([
+    db.classSession.findUnique({
+      where: { classId_date: { classId, date: sessionDate } },
+      select: {
+        takenAt: true,
+        takenBy: { select: { name: true } },
+        attendances: {
+          select: { studentId: true, present: true, status: true, notes: true },
+        },
       },
-    },
-  })
+    }),
+    db.absenceJustification.findMany({
+      where: { classId, date: sessionDate, status: { in: ['PENDING', 'APPROVED'] } },
+      select: {
+        id: true,
+        studentId: true,
+        reason: true,
+        status: true,
+        reviewedAt: true,
+        reviewedBy: { select: { name: true } },
+      },
+    }),
+  ])
   const attendanceByStudent = new Map(session?.attendances.map((attendance) => [attendance.studentId, attendance]))
+  const justificationByStudent = new Map(justifications.map((justification) => [justification.studentId, justification]))
 
   return {
     classId: assignedClass.id,
     className: assignedClass.name,
     date,
     isOwnClass: assignedClass.instructorId === userId,
+    isPassTaken: Boolean(session?.takenAt),
+    passTakenAt: session?.takenAt?.toISOString() ?? null,
+    passTakenByName: session?.takenBy?.name ?? null,
+    dayMatches: assignedClass.dayOfWeek === sessionDate.getUTCDay(),
     students: assignedClass.enrollments.map(({ student }) => {
       const attendance = attendanceByStudent.get(student.id)
+      const justification = justificationByStudent.get(student.id)
       return {
         ...student,
         present: attendance?.present ?? true,
         notes: attendance?.notes ?? null,
         status: attendance?.status ?? null,
-        justified: attendance?.status === 'JUSTIFIED',
+        justified: attendance?.status === 'JUSTIFIED' || justification?.status === 'APPROVED',
+        justification: justification
+          ? {
+              id: justification.id,
+              reason: justification.reason,
+              status: justification.status,
+              reviewedByName: justification.reviewedBy?.name ?? null,
+              reviewedAt: justification.reviewedAt?.toISOString() ?? null,
+            }
+          : null,
       }
     }),
   }

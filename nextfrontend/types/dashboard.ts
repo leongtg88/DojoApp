@@ -161,6 +161,14 @@ export interface InstructorStudentSummary {
 	attendancePercent: number
 }
 
+export interface AttendanceJustificationSummary {
+	id: string
+	reason: string
+	status: 'PENDING' | 'APPROVED' | 'REJECTED'
+	reviewedByName: string | null
+	reviewedAt: string | null
+}
+
 export interface InstructorAttendanceStudent {
 	id: string
 	firstName: string
@@ -170,6 +178,7 @@ export interface InstructorAttendanceStudent {
 	notes: string | null
 	status?: string | null
 	justified?: boolean
+	justification?: AttendanceJustificationSummary | null
 }
 
 export interface InstructorAttendanceRoster {
@@ -178,7 +187,24 @@ export interface InstructorAttendanceRoster {
 	date: string
 	/** El horario consultado pertenece al instructor (puede guardar el pase de lista). */
 	isOwnClass: boolean
+	/** El pase de lista de esta clase/fecha ya fue guardado. */
+	isPassTaken: boolean
+	passTakenAt: string | null
+	passTakenByName: string | null
+	/** La fecha consultada coincide con el día de la semana de la clase. */
+	dayMatches: boolean
 	students: InstructorAttendanceStudent[]
+}
+
+export interface InstructorPendingJustification {
+	id: string
+	studentId: string
+	studentName: string
+	classId: string
+	className: string
+	date: string
+	reason: string
+	createdAt: string
 }
 
 export interface InstructorTechniqueReview {
@@ -418,6 +444,7 @@ export interface AdminExpectedAttendanceStudent {
 	hoursTrained: number
 	notes: string | null
 	outOfSchedule: boolean
+	justification: AttendanceJustificationSummary | null
 }
 
 export interface AdminExpectedAttendanceSummary {
@@ -427,6 +454,7 @@ export interface AdminExpectedAttendanceSummary {
 	present: number
 	absent: number
 	noRecord: number
+	justificationsPending: number
 }
 
 export interface AdminExpectedAttendanceRoster {
@@ -435,6 +463,12 @@ export interface AdminExpectedAttendanceRoster {
 	branchName: string
 	date: string
 	dayMatches: boolean
+	/** Día de la semana configurado para la clase (0=domingo). */
+	classDayOfWeek: number
+	/** El instructor ya cerró el pase de lista de esta clase/fecha. */
+	passTaken: boolean
+	passTakenAt: string | null
+	passTakenByName: string | null
 	students: AdminExpectedAttendanceStudent[]
 	summary: AdminExpectedAttendanceSummary
 }
@@ -494,7 +528,20 @@ export interface KataProgressItem {
 
 export type ExamDay = 'SATURDAY' | 'SUNDAY'
 
-export type GradoMetric = 'KATAS' | 'PERMANENCIA' | 'HORAS'
+export type GradoMetric = 'KATAS' | 'PERMANENCIA' | 'HORAS' | 'ASISTENCIA'
+
+export interface AttendanceMonthProgress {
+	label: string
+	/** Asistencias presentadas (tatami) en el mes. */
+	attendedSessions: number
+	/** Sesiones máximas que el horario permite en el mes (sin feriados). */
+	capacitySessions: number
+	/** Asistencia del mes en porcentaje. */
+	percent: number
+	/** Mínimo exigido por el grado. */
+	required: number
+	met: boolean
+}
 
 export interface CuatrimestreProgress {
 	year: number
@@ -604,6 +651,8 @@ export interface GradoProgressData {
 	maxAbsencesPerMonth: number
 	examRightLost: boolean
 	bottleneck: GradoMetric | null
+	/** Asistencia por mes del tramo del examen (la elegibilidad exige el mínimo en cada uno). */
+	attendanceMonths: AttendanceMonthProgress[]
 	/** Progreso del mes en curso. Informativo: no cuenta para `overallPercent` ni elegibilidad. */
 	monthly: MonthlyProgressInfo | null
 }
@@ -698,6 +747,22 @@ export interface StudentPracticeTechniqueOption {
 	kataLevels: StudentPracticeKataLevel[]
 }
 
+export interface StudentAbsenceJustification {
+	id: string
+	classId: string
+	className: string
+	date: string
+	reason: string
+	status: 'PENDING' | 'APPROVED' | 'REJECTED'
+	reviewedByName: string | null
+	reviewedAt: string | null
+	createdAt: string
+	/** La falta justificada ya fue repuesta por el alumno. */
+	recovered: boolean
+	/** Fecha de la asistencia de reposición (fuera de horario). */
+	recoveryDate: string | null
+}
+
 export interface StudentAttendancePunchData {
 	summary: {
 		confirmedCount: number
@@ -707,6 +772,7 @@ export interface StudentAttendancePunchData {
 		attendancePercent: number
 	}
 	records: AttendanceRecord[]
+	justifications: StudentAbsenceJustification[]
 	practiceTechniques: StudentPracticeTechniqueOption[]
 	/** Programa del alumno según su edad; define el filtro por defecto. */
 	program: 'ADULT' | 'YOUTH'

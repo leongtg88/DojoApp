@@ -45,6 +45,7 @@ const BOTTLENECK_LABEL: Record<GradoMetric, string> = {
     KATAS: 'Faltan katas por aprobar',
     PERMANENCIA: 'Falta permanencia en el grado',
     HORAS: 'Faltan horas de tatami por reponer',
+    ASISTENCIA: 'Asistencia mensual por debajo del mínimo',
 }
 
 function formatDate(value: string | null): string {
@@ -158,6 +159,13 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
             : `${formatHoursHM(totalHours)} total (tatami ${formatHoursHM(tatamiHours)} + libre ${formatHoursHM(libreHours)}) de ${formatHoursHM(hoursGoal ?? 0)} meta${hoursReq.creditHours > 0 ? ` · crédito ${formatHoursHM(hoursReq.creditHours)}` : ''}`
         : ''
 
+    const attendanceMonths = grado.attendanceMonths
+    const failedAttendanceMonths = attendanceMonths.filter((month) => !month.met)
+    const worstAttendanceMonth = attendanceMonths.reduce<typeof attendanceMonths[number] | null>(
+        (worst, month) => (worst === null || month.percent < worst.percent ? month : worst),
+        null,
+    )
+
     const metrics: MetricItem[] = [
         {
             label: 'Katas oficiales',
@@ -166,7 +174,7 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
         },
         {
             label: 'Asistencia',
-            detail: `${attendance.attendedSessions} de ${attendance.totalSessions} clases${grado.pendingSessions > 0 ? ` · ${grado.pendingSessions} por confirmar` : ''}`,
+            detail: `${attendance.attendedSessions} de ${attendance.totalSessions} clases${grado.pendingSessions > 0 ? ` · ${grado.pendingSessions} por confirmar` : ''}${worstAttendanceMonth ? ` · mes más bajo ${worstAttendanceMonth.percent}% (mín. ${worstAttendanceMonth.required}%)` : ''}`,
             value: attendancePercent,
         },
         ...(hoursReq
@@ -254,6 +262,20 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
                     </div>
                 ))}
             </div>
+
+            {failedAttendanceMonths.length > 0 && (
+                <div className="mt-5 rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-2.5 text-xs text-ink-2">
+                    <p className="font-semibold text-warn-text">Asistencia mensual por debajo del mínimo ({grado.minAttendancePercent}%)</p>
+                    <ul className="mt-1.5 space-y-0.5">
+                        {failedAttendanceMonths.map((month) => (
+                            <li className="flex justify-between gap-3" key={month.label}>
+                                <span className="capitalize">{month.label}</span>
+                                <span className="font-mono">{month.attendedSessions}/{month.capacitySessions} · {month.percent}%</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             {grado.pendingSessions > 0 && (
                 <div className="mt-5 flex items-center gap-3 rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-2.5 text-xs text-ink-2">
