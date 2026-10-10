@@ -4,7 +4,7 @@ export const SITE = {
     description: 'Escuela de Karate Shito Ryu Inoue Ha en Santo Domingo. Clases para niños, jóvenes y adultos. Disciplina, defensa personal, condición física y confianza. Clase gratis de prueba.',
     url: 'https://toseigusoku.com',
     ogImage: '/assets/LogoSolo.svg',
-    phone: '+18296378733',
+    phone: '+18094597757',
     email: 'toseigusoku@gmail.com',
     address: {
         street: 'Plaza Lulie 3era Planta, esquina Av. 27 de Febrero con Carmen Mendoza',

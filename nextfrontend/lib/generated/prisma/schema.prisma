@@ -811,7 +811,7 @@ enum WhatsAppStatus {
 
 model WhatsAppContact {
   id            String            @id @default(cuid())
-  phone         String            @unique // E.164, p. ej. +18296378733
+  phone         String            @unique // E.164, p. ej. +18094597757
   userId        String?           @unique
   user          User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
   optIn         Boolean           @default(false)

@@ -150,7 +150,7 @@ export default function TerminosLegales({ embedded = false }: { embedded?: boole
             </h2>
             <div className="space-y-2 text-sm sm:text-base pl-2">
               <p><strong>7.1.</strong> Para formalizar la inscripción se debe realizar el pago del monto correspondiente a la cuenta suministrada por la escuela.</p>
-              <p><strong>7.2.</strong> Enviar el comprobante de pago al WhatsApp <a href="https://wa.me/18296378733" className="text-red-600 hover:underline">829-637-8733</a>.</p>
+              <p><strong>7.2.</strong> Enviar el comprobante de pago al WhatsApp <a href="https://wa.me/18094597757" className="text-red-600 hover:underline">809-459-7757</a>.</p>
               <p><strong>7.3.</strong> Al inscribirte puedes autorizar el envío de <strong>notificaciones automáticas por WhatsApp</strong> (grados, horarios, asistencia y documentos). Puedes retirar esta autorización en cualquier momento respondiendo <strong>BAJA</strong> por WhatsApp o desde tu perfil; ello no afecta tu membresía.</p>
               <p><strong>7.4.</strong> Contacto: <a href="mailto:toseigusoku@gmail.com" className="text-red-600 hover:underline">toseigusoku@gmail.com</a> · <a href="https://www.toseigusoku.com" className="text-red-600 hover:underline">www.toseigusoku.com</a></p>
             </div>

@@ -77,7 +77,7 @@ type Action =
 
 const ERROR_MESSAGES: Record<ValidationKind, string> = {
   name: 'Por favor ingresa un nombre válido (mínimo 2 caracteres).',
-  whatsapp: 'Ingresa un número válido con prefijo internacional, ej. +18296378733.',
+  whatsapp: 'Ingresa un número válido con prefijo internacional, ej. +18094597757.',
   email: 'Ingresa un email válido (puedes omitirlo si prefieres).',
   age: 'Ingresa una edad válida entre 3 y 100 años.',
 };

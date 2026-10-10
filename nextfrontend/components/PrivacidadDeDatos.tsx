@@ -45,7 +45,7 @@ export default function PoliticaPrivacidad({ embedded = false }: { embedded?: bo
               <strong>TOSEI GUSOKU DOJO CLUB</strong>, con domicilio en República Dominicana, 
               es el responsable del tratamiento de los datos personales que se recogen a través de 
               la Plataforma. Puedes contactarnos en <a href="mailto:toseigusoku@gmail.com" className="text-blue-600 hover:underline">toseigusoku@gmail.com</a> 
-              o al teléfono <a href="https://wa.me/18296378733" className="text-blue-600 hover:underline">829-637-8733</a> 
+              o al teléfono <a href="https://wa.me/18094597757" className="text-blue-600 hover:underline">809-459-7757</a> 
               para cualquier consulta relacionada con esta política.
             </p>
           </section>
@@ -243,7 +243,7 @@ export default function PoliticaPrivacidad({ embedded = false }: { embedded?: bo
               <p>Para cualquier consulta, solicitud de ejercicio de derechos o reporte de incidentes de seguridad, puedes contactarnos a través de:</p>
               <ul className="list-disc list-inside ml-4 space-y-1">
                 <li><strong>Correo electrónico:</strong> <a href="mailto:toseigusoku@gmail.com" className="text-blue-600 hover:underline">toseigusoku@gmail.com</a></li>
-                <li><strong>WhatsApp:</strong> <a href="https://wa.me/18296378733" className="text-blue-600 hover:underline">829-637-8733</a></li>
+                <li><strong>WhatsApp:</strong> <a href="https://wa.me/18094597757" className="text-blue-600 hover:underline">809-459-7757</a></li>
                 <li><strong>Dirección física:</strong> (consulta en nuestra web o en la escuela).</li>
               </ul>
               <p>Te responderemos en el menor tiempo posible y siempre dentro del plazo legal.</p>
