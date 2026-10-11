@@ -14,6 +14,19 @@ const STATUS_MAP: Record<string, 'SENT' | 'DELIVERED' | 'READ' | 'FAILED'> = {
 
 const STOP_KEYWORDS = new Set(['STOP', 'BAJA', 'CANCELAR', 'UNSUBSCRIBE', 'ALTO'])
 
+// Log de entrantes para diagnóstico. Activado en desarrollo o con WHATSAPP_DEBUG=1.
+const DEBUG = process.env.WHATSAPP_DEBUG === '1' || process.env.NODE_ENV !== 'production'
+
+function debugInbound(message: InboundMessage, phone: string, body: string | null): void {
+  if (!DEBUG) return
+  console.log('[whatsapp] Mensaje entrante', {
+    from: phone,
+    type: message.type ?? 'text',
+    wamid: message.id ?? null,
+    body,
+  })
+}
+
 interface InboundMessage {
   from?: string
   id?: string
@@ -91,11 +104,23 @@ async function handleInbound(message: InboundMessage): Promise<void> {
 
   const body = extractBody(message)
 
+  debugInbound(message, phone, body)
+
   const contact = await db.whatsAppContact.upsert({
     where: { phone },
     create: { phone, lastInboundAt: new Date() },
     update: { lastInboundAt: new Date() },
   })
+
+  // Idempotencia: Meta reintenta entregas y reenvía el mismo wamid. Si ya lo
+  // registramos, no lo procesamos de nuevo (esto también evita re-responder).
+  if (message.id) {
+    const existing = await db.whatsAppMessage.findUnique({
+      where: { wamid: message.id },
+      select: { id: true },
+    })
+    if (existing) return
+  }
 
   await db.whatsAppMessage
     .create({
@@ -109,7 +134,11 @@ async function handleInbound(message: InboundMessage): Promise<void> {
         status: 'RECEIVED',
       },
     })
-    .catch((error) => console.error('[whatsapp] No fue posible registrar el entrante', error))
+    .catch((error) => {
+      // P2002 = condición de carrera (entrega duplicada simultánea): se ignora.
+      if ((error as { code?: string })?.code === 'P2002') return
+      console.error('[whatsapp] No fue posible registrar el entrante', error)
+    })
 
   const keyword = body?.trim().toUpperCase()
   if (keyword && STOP_KEYWORDS.has(keyword)) {

@@ -100,9 +100,10 @@ interface OutboundPayload {
   templateName?: string
   params?: string[]
   body?: string
+  locale?: string
 }
 
-interface SendOutcome {
+export interface SendOutcome {
   ok: boolean
   wamid?: string
   errorCode?: string
@@ -122,7 +123,7 @@ async function callApi(payload: OutboundPayload): Promise<SendOutcome> {
     message.type = 'template'
     message.template = {
       name: payload.templateName,
-      language: { code: TEMPLATE_LOCALE },
+      language: { code: payload.locale ?? TEMPLATE_LOCALE },
       components: payload.params?.length
         ? [{ type: 'body', parameters: payload.params.map((text) => ({ type: 'text', text })) }]
         : undefined,
@@ -174,7 +175,7 @@ interface DispatchInput extends OutboundPayload {
   respectQuietHours?: boolean
 }
 
-async function sendAndLog(input: DispatchInput): Promise<void> {
+async function sendAndLog(input: DispatchInput): Promise<SendOutcome> {
   const outcome = await callApi(input)
 
   try {
@@ -197,6 +198,8 @@ async function sendAndLog(input: DispatchInput): Promise<void> {
   } catch (error) {
     console.error('[whatsapp] No fue posible registrar el mensaje', error)
   }
+
+  return outcome
 }
 
 async function enqueue(input: DispatchInput, scheduledFor: Date): Promise<void> {
@@ -248,6 +251,44 @@ export async function sendWhatsAppText(input: {
   userId?: string | null
 }): Promise<void> {
   await dispatch({ ...input, respectQuietHours: false })
+}
+
+/**
+ * Envío inmediato de texto (sin cola ni horario silencioso) devolviendo el
+ * resultado crudo de la API de Meta. Pensado para pruebas y diagnóstico.
+ */
+export async function sendWhatsAppTextNow(input: {
+  to: string
+  body: string
+  contactId?: string | null
+  userId?: string | null
+}): Promise<SendOutcome> {
+  if (!isWhatsAppConfigured()) return { ok: false, errorCode: 'not_configured' }
+  return sendAndLog({ to: input.to, body: input.body, contactId: input.contactId, userId: input.userId })
+}
+
+/**
+ * Envío inmediato de una plantilla (obligatoria para iniciar conversaciones)
+ * devolviendo el resultado crudo de la API de Meta. Los parámetros se mapean a
+ * las variables del cuerpo `{{1}}`, `{{2}}`, ... en orden.
+ */
+export async function sendWhatsAppTemplate(input: {
+  to: string
+  name: string
+  params?: string[]
+  locale?: string
+  contactId?: string | null
+  userId?: string | null
+}): Promise<SendOutcome> {
+  if (!isWhatsAppConfigured()) return { ok: false, errorCode: 'not_configured' }
+  return sendAndLog({
+    to: input.to,
+    templateName: input.name,
+    params: input.params,
+    locale: input.locale,
+    contactId: input.contactId,
+    userId: input.userId,
+  })
 }
 
 /**
