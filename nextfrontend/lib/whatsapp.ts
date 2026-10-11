@@ -1,4 +1,4 @@
-const WHATSAPP_NUMBER = '18094597757';
+const WHATSAPP_NUMBER = '18296378733';
 
 type WhatsAppPayload = {
   nombre: string;
