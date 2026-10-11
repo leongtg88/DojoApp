@@ -10,7 +10,6 @@ import {
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
-const DEFAULT_TO = '+18296378733'
 const DEFAULT_TEMPLATE = 'hello_world'
 const DEFAULT_LOCALE = 'en_US'
 
@@ -46,9 +45,9 @@ export async function POST(request: NextRequest) {
 
   const body = (await request.json().catch(() => ({}))) as TestBody
 
-  const to = normalizePhone(body.to ?? DEFAULT_TO)
+  const to = normalizePhone(body.to)
   if (!to) {
-    return NextResponse.json({ error: 'Número de destino inválido.', code: 'BAD_NUMBER' }, { status: 400 })
+    return NextResponse.json({ error: 'Debes indicar un número de destino válido en el campo "to".', code: 'BAD_NUMBER' }, { status: 400 })
   }
 
   const tipo = body.tipo ?? 'template'
