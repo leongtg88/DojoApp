@@ -100,12 +100,9 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
           <div className="flex items-center justify-between gap-3">
             <h3 className="flex min-w-0 items-center gap-2 text-base font-bold text-ink">
               <CalendarX2 className="size-5 shrink-0 text-danger-text" aria-hidden="true" />
-              <span className="truncate">Reportar una inasistencia</span>
+              <span>Reportar una inasistencia</span>
             </h3>
-            <span className="inline-flex shrink-0 items-center gap-1 rounded-md border border-edge-strong bg-surface-1 px-2.5 py-1.5 text-xs font-semibold text-ink-2">
-              {schedule.length === 0 ? 'Sin horarios' : 'Reportar'}
-              <ChevronDown className="size-3.5 transition-transform group-open:rotate-180" aria-hidden="true" />
-            </span>
+            <ChevronDown className="size-4 shrink-0 text-ink-3 transition-transform group-open:rotate-180" aria-hidden="true" />
           </div>
           <p className="truncate text-xs text-ink-3">Si no pudiste asistir, registra el motivo.</p>
         </summary>

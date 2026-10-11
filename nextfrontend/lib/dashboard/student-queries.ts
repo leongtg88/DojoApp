@@ -925,12 +925,15 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     })
   }
 
-  // Asistencia mínima mensual: se exige el mínimo del grado en CADA mes transcurrido
-  // del tramo del examen. Un mes sin clases programadas no cuenta.
+  // Asistencia mínima mensual: se exige el mínimo del grado en CADA mes del
+  // cuatrimestre del examen (no en todo el historial del grado). Un mes sin
+  // clases programadas no cuenta.
   const attendanceMonths: AttendanceMonthProgress[] = []
-  const attendanceEvalEnd = new Date(Math.min(examBoundary.getTime(), today.getTime()))
+  const attendanceWindowStart = examBlock ? new Date(examBlock.start) : gradeStart
+  const attendanceWindowEnd = examBlock ? new Date(examBlock.end) : today
+  const attendanceEvalEnd = new Date(Math.min(attendanceWindowEnd.getTime(), today.getTime()))
   const MAX_ATTENDANCE_MONTHS = 24
-  let cursorMonth = new Date(gradeStart.getFullYear(), gradeStart.getMonth(), 1)
+  let cursorMonth = new Date(attendanceWindowStart.getFullYear(), attendanceWindowStart.getMonth(), 1)
   while (cursorMonth.getTime() <= attendanceEvalEnd.getTime() && attendanceMonths.length < MAX_ATTENDANCE_MONTHS) {
     const monthStart = new Date(cursorMonth)
     const monthEnd = new Date(cursorMonth.getFullYear(), cursorMonth.getMonth() + 1, 1)

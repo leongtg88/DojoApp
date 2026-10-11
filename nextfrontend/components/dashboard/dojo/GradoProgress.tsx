@@ -121,6 +121,7 @@ function CuatrimestreCard({ cuatrimestre, maxAbsencesPerMonth }: { cuatrimestre:
 
 export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
     const [showAllCuatrimestres, setShowAllCuatrimestres] = useState(false)
+    const [showAllAttendanceMonths, setShowAllAttendanceMonths] = useState(false)
     const currentCuatrimestre =
         grado.cuatrimestres.find((cuatrimestre) => cuatrimestre.isCurrent) ??
         [...grado.cuatrimestres].reverse().find((cuatrimestre) => !cuatrimestre.isFuture) ??
@@ -161,6 +162,10 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
 
     const attendanceMonths = grado.attendanceMonths
     const failedAttendanceMonths = attendanceMonths.filter((month) => !month.met)
+    const FAILED_MONTHS_PREVIEW = 6
+    const visibleFailedMonths = showAllAttendanceMonths
+        ? failedAttendanceMonths
+        : failedAttendanceMonths.slice(-FAILED_MONTHS_PREVIEW)
     const worstAttendanceMonth = attendanceMonths.reduce<typeof attendanceMonths[number] | null>(
         (worst, month) => (worst === null || month.percent < worst.percent ? month : worst),
         null,
@@ -267,13 +272,25 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
                 <div className="mt-5 rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-2.5 text-xs text-ink-2">
                     <p className="font-semibold text-warn-text">Asistencia mensual por debajo del mínimo ({grado.minAttendancePercent}%)</p>
                     <ul className="mt-1.5 space-y-0.5">
-                        {failedAttendanceMonths.map((month) => (
+                        {visibleFailedMonths.map((month) => (
                             <li className="flex justify-between gap-3" key={month.label}>
                                 <span className="capitalize">{month.label}</span>
                                 <span className="font-mono">{month.attendedSessions}/{month.capacitySessions} · {month.percent}%</span>
                             </li>
                         ))}
                     </ul>
+                    {failedAttendanceMonths.length > FAILED_MONTHS_PREVIEW && (
+                        <button
+                            className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-semibold text-warn-text hover:underline"
+                            onClick={() => setShowAllAttendanceMonths((value) => !value)}
+                            type="button"
+                        >
+                            {showAllAttendanceMonths
+                                ? 'Ver menos'
+                                : `Ver todos los meses (${failedAttendanceMonths.length})`}
+                            <ChevronDown aria-hidden="true" className={`size-3.5 transition-transform ${showAllAttendanceMonths ? 'rotate-180' : ''}`} />
+                        </button>
+                    )}
                 </div>
             )}
 

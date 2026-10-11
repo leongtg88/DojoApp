@@ -337,14 +337,52 @@ h1, h2, h3, h4, h5, h6 {
   to { -webkit-mask-position: 16px 0; mask-position: 16px 0; }
 }
 
+/* ============ Navegación pública: enlace pendiente + loader katakana ============ */
+.nav-link-pending {
+  animation: nav-color-cycle 1.1s linear infinite;
+}
+
+.katakana-loader-arc {
+  color: var(--sand);
+  animation: nav-color-cycle 1.1s linear infinite;
+}
+
+.katakana-loader-number {
+  animation: nav-color-cycle 1.1s linear infinite;
+}
+
+.katakana-loader-swap {
+  animation:
+    nav-color-cycle 1.1s linear infinite,
+    katakana-number-swap 0.35s ease-out;
+}
+
+@keyframes katakana-number-swap {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mobile-nav-text-pending,
-  .mobile-nav-underline-pending {
+  .mobile-nav-underline-pending,
+  .nav-link-pending,
+  .katakana-loader-arc,
+  .katakana-loader-number,
+  .katakana-loader-swap {
     animation: none;
   }
 
   .mobile-nav-underline-pending {
     background-color: var(--ocean-blue);
+  }
+
+  .katakana-loader-arc {
+    color: var(--ocean-blue);
+  }
+
+  .katakana-loader-number,
+  .katakana-loader-swap {
+    color: var(--sand);
   }
 }
 

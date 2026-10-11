@@ -9,6 +9,7 @@ import {
   Play, Home, ClipboardList, UserRound, Smartphone, Newspaper
 } from 'lucide-react';
 import DojoEnrollmentModal from './DojoEnrollmentModal';
+import { NavLink } from '@/components/navigation/NavLink';
 import { requestAppInstall, useIsInstalledPwa } from '@/lib/pwa';
 
 export default function Navbar() {
@@ -48,24 +49,24 @@ export default function Navbar() {
         </div>
 
         <div className="hidden min-[1200px]:flex items-center gap-8 text-sm font-semibold">
-          <Link href="/" className={`cursor-pointer transition-colors hover:text-brand-accent ${pathname === '/' ? 'text-brand-accent font-bold' : 'text-gray-700'}`}>
+          <NavLink href="/" className={`cursor-pointer transition-colors hover:text-brand-accent ${pathname === '/' ? 'text-brand-accent font-bold' : 'text-gray-700'}`}>
             Inicio
-          </Link>
-          <Link href="/nosotros" className={`cursor-pointer transition-colors hover:text-brand-accent ${pathname === '/nosotros' ? 'text-brand-accent font-bold' : 'text-gray-700'}`}>
+          </NavLink>
+          <NavLink href="/nosotros" className={`cursor-pointer transition-colors hover:text-brand-accent ${pathname === '/nosotros' ? 'text-brand-accent font-bold' : 'text-gray-700'}`}>
             Sobre Nosotros
-          </Link>
-          <Link href="/blog" className={`cursor-pointer transition-colors hover:text-brand-accent ${pathname.startsWith('/blog') ? 'text-brand-accent font-bold' : 'text-gray-700'}`}>
+          </NavLink>
+          <NavLink href="/blog" className={`cursor-pointer transition-colors hover:text-brand-accent ${pathname.startsWith('/blog') ? 'text-brand-accent font-bold' : 'text-gray-700'}`}>
             Blog
-          </Link>
-          <Link href="/#horarios" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 hover:text-brand-accent transition-colors cursor-pointer">
+          </NavLink>
+          <NavLink href="/#horarios" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 hover:text-brand-accent transition-colors cursor-pointer">
             Horarios
-          </Link>
-          <Link href="/#contacto" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 hover:text-brand-accent transition-colors cursor-pointer">
+          </NavLink>
+          <NavLink href="/#contacto" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 hover:text-brand-accent transition-colors cursor-pointer">
             Sucursal y Contacto
-          </Link>
-          <Link href="/inscripcion" className={`cursor-pointer transition-colors hover:text-brand-accent ${pathname === '/inscripcion' ? 'text-brand-accent font-bold' : 'text-gray-700'}`}>
+          </NavLink>
+          <NavLink href="/inscripcion" className={`cursor-pointer transition-colors hover:text-brand-accent ${pathname === '/inscripcion' ? 'text-brand-accent font-bold' : 'text-gray-700'}`}>
             Inscripción
-          </Link>
+          </NavLink>
         </div>
 
         <div className="flex-1 flex justify-end items-center gap-1 sm:gap-3">
@@ -80,14 +81,14 @@ export default function Navbar() {
               <Smartphone aria-hidden="true" className="size-5" />
             </button>
           )}
-          <Link
+          <NavLink
             aria-label="Iniciar sesión"
             className={`flex size-8 items-center justify-center  ${pathname === '/login' ? ' text-black' : 'text-gray-600  hover:text-brand-accent'}`}
             href="/login"
             title="Iniciar sesión"
           >
             <UserRound aria-hidden="true" className="size-5" />
-          </Link>
+          </NavLink>
           <button
             onClick={() => handleOpenEnrollment('adult')}
             className="hidden min-[1200px]:flex bg-brand-accent/10 border border-brand-accent/20 hover:bg-brand-accent hover:text-black text-brand-accent font-bold px-2.5 sm:px-4 py-2 rounded-xl text-[10px] sm:text-xs transition-all cursor-pointer active:scale-95 uppercase tracking-wide whitespace-nowrap"
@@ -107,26 +108,26 @@ export default function Navbar() {
 
       {/* Mobile bottom tab bar */}
       <nav className="fixed bottom-0 left-0 w-full md:hidden h-14 bg-brand-bg/95 backdrop-blur-xl border-t border-white/10 z-40 flex items-center justify-around px-4 ">
-        <Link href="/" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${isHomeActive ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
+        <NavLink href="/" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${isHomeActive ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
           <Home className="w-5 h-5 mb-1" />
           <span className="font-display text-[9px] uppercase tracking-wider">Dojo Home</span>
-        </Link>
-        <Link href="/nosotros" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${pathname === '/nosotros' ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
+        </NavLink>
+        <NavLink href="/nosotros" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${pathname === '/nosotros' ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
           <BookOpen className="w-5 h-5 mb-1" />
           <span className="font-display text-[9px] uppercase tracking-wider">Nosotros</span>
-        </Link>
-        <Link href="/#horarios" onClick={() => setIsMobileMenuOpen(false)} className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${isHorariosActive ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
+        </NavLink>
+        <NavLink href="/#horarios" onClick={() => setIsMobileMenuOpen(false)} className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${isHorariosActive ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
           <Calendar className="w-5 h-5 mb-1" />
           <span className={`font-display text-[9px] uppercase tracking-wider ${isHorariosActive ? 'font-bold' : ''}`}>Horarios</span>
-        </Link>
-        <Link href="/inscripcion" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${pathname === '/inscripcion' ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
+        </NavLink>
+        <NavLink href="/inscripcion" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${pathname === '/inscripcion' ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
           <ClipboardList className="w-5 h-5 mb-1" />
           <span className="font-display text-[9px] uppercase tracking-wider">Inscripción</span>
-        </Link>
-        <Link href="/login" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${pathname === '/login' ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
+        </NavLink>
+        <NavLink href="/login" className={`flex flex-col items-center justify-center p-2 text-xs cursor-pointer ${pathname === '/login' ? 'text-brand-accent font-bold' : 'text-gray-700/60'}`}>
           <UserRound className="w-5 h-5 mb-1" />
           <span className="font-display text-[9px] uppercase tracking-wider">Acceder</span>
-        </Link>
+        </NavLink>
       </nav>
 
       {/* Mobile slide-out drawer */}
@@ -146,27 +147,27 @@ export default function Navbar() {
               <div className="space-y-6 text-left">
                 <p className="text-xs font-bold tracking-widest text-brand-accent uppercase font-display">SECCIONES DE TOSEI GUSOKU</p>
                 <div className="flex flex-col gap-4 text-base font-regular">
-                  <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname === '/' ? 'text-brand-accent' : 'text-gray-700/80'}`}>
+                  <NavLink href="/" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname === '/' ? 'text-brand-accent' : 'text-gray-700/80'}`}>
                     <Home className="w-4 h-4 shrink-0" /><span>Inicio (Dojo Home)</span>
-                  </Link>
-                  <Link href="/nosotros" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname === '/nosotros' ? 'text-brand-accent' : 'text-gray-700/80'}`}>
+                  </NavLink>
+                  <NavLink href="/nosotros" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname === '/nosotros' ? 'text-brand-accent' : 'text-gray-700/80'}`}>
                     <BookOpen className="w-4 h-4 shrink-0" /><span>Sobre Nosotros</span>
-                  </Link>
-                  <Link href="/blog" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname.startsWith('/blog') ? 'text-brand-accent' : 'text-gray-700/80'}`}>
+                  </NavLink>
+                  <NavLink href="/blog" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname.startsWith('/blog') ? 'text-brand-accent' : 'text-gray-700/80'}`}>
                     <Newspaper className="w-4 h-4 shrink-0" /><span>Blog del Dojo</span>
-                  </Link>
-                  <Link href="/#horarios" onClick={() => setIsMobileMenuOpen(false)} className="text-left text-gray-700/80 hover:text-brand-accent transition-colors flex items-center gap-3 py-1">
+                  </NavLink>
+                  <NavLink href="/#horarios" onClick={() => setIsMobileMenuOpen(false)} className="text-left text-gray-700/80 hover:text-brand-accent transition-colors flex items-center gap-3 py-1">
                     <Calendar className="w-4 h-4 shrink-0" /><span>Horarios Semanales</span>
-                  </Link>
-                  <Link href="/#contacto" onClick={() => setIsMobileMenuOpen(false)} className="text-left text-gray-700/80 hover:text-brand-accent transition-colors flex items-center gap-3 py-1">
+                  </NavLink>
+                  <NavLink href="/#contacto" onClick={() => setIsMobileMenuOpen(false)} className="text-left text-gray-700/80 hover:text-brand-accent transition-colors flex items-center gap-3 py-1">
                     <MapPin className="w-4 h-4 shrink-0" /><span>Sucursal y Contacto</span>
-                  </Link>
-                  <Link href="/inscripcion" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname === '/inscripcion' ? 'text-brand-accent' : 'text-gray-700/80'}`}>
+                  </NavLink>
+                  <NavLink href="/inscripcion" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname === '/inscripcion' ? 'text-brand-accent' : 'text-gray-700/80'}`}>
                     <ClipboardList className="w-4 h-4 shrink-0" /><span>Formulario de Inscripción</span>
-                  </Link>
-                  <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname === '/login' ? 'text-brand-accent' : 'text-gray-700/80'}`}>
+                  </NavLink>
+                  <NavLink href="/login" onClick={() => setIsMobileMenuOpen(false)} className={`text-left transition-colors flex items-center gap-3 py-1 cursor-pointer ${pathname === '/login' ? 'text-brand-accent' : 'text-gray-700/80'}`}>
                     <UserRound className="w-4 h-4 shrink-0" /><span>Iniciar sesión</span>
-                  </Link>
+                  </NavLink>
                   {!isInstalled && (
                     <button
                       type="button"

@@ -293,7 +293,7 @@ export function StudentPracticeLog({ techniques, program, studentId }: StudentPr
             </div>
           </div>
 
-          <div className="rounded-lg border border-edge bg-surface-1 p-3.5">
+          <div className="bg-surface-2">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-ink-2">
                 <Repeat className="size-4 text-accent" aria-hidden="true" />Técnicas practicadas
@@ -312,7 +312,7 @@ export function StudentPracticeLog({ techniques, program, studentId }: StudentPr
 
             {isPickerOpen && (
               <>
-                <div className="mt-3 flex flex-col gap-2 rounded-md border border-edge-strong bg-surface-1 p-2">
+                <div className="mt-3 flex flex-col gap-2  bg-surface-2 p-2">
                   <div className="flex w-full flex-wrap items-center gap-2">
                     <span className="w-full text-[11px] font-bold uppercase tracking-wider text-ink-3 sm:w-20">Mostrar</span>
                     <div className="flex w-full flex-1 items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
