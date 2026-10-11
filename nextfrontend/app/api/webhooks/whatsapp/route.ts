@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { normalizePhone, sendWhatsAppText } from '@/lib/integrations/whatsapp'
 
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 const STATUS_MAP: Record<string, 'SENT' | 'DELIVERED' | 'READ' | 'FAILED'> = {
   sent: 'SENT',
@@ -58,7 +59,12 @@ interface WhatsAppWebhookPayload {
 function verifySignature(rawBody: string, header: string | null): boolean {
   const secret = process.env.WHATSAPP_APP_SECRET
   if (!secret) {
-    console.warn('[whatsapp] WHATSAPP_APP_SECRET no configurado; se omite la validación de firma.')
+    // En producción, sin App Secret NO se acepta el webhook (fail-closed).
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[whatsapp] WHATSAPP_APP_SECRET no configurado; se rechaza el webhook en producción.')
+      return false
+    }
+    console.warn('[whatsapp] WHATSAPP_APP_SECRET no configurado; se omite la validación de firma (desarrollo).')
     return true
   }
   if (!header?.startsWith('sha256=')) return false
@@ -186,7 +192,7 @@ export async function POST(request: NextRequest) {
   const rawBody = await request.text()
 
   if (!verifySignature(rawBody, request.headers.get('x-hub-signature-256'))) {
-    return new NextResponse('Invalid signature', { status: 401 })
+    return new NextResponse('Invalid signature', { status: 403 })
   }
 
   let payload: WhatsAppWebhookPayload

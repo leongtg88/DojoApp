@@ -8,6 +8,7 @@ import {
 } from '@/lib/integrations/whatsapp'
 
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 const DEFAULT_TO = '+18296378733'
 const DEFAULT_TEMPLATE = 'hello_world'

@@ -109,6 +109,25 @@ export interface SendOutcome {
   errorCode?: string
 }
 
+// Mensajes accionables para los códigos de error más comunes de Meta.
+const META_ERROR_HINTS: Record<number, string> = {
+  190: 'Token de acceso inválido o expirado (revisa WHATSAPP_ACCESS_TOKEN).',
+  470: 'Fuera de la ventana de 24h: para iniciar la conversación usa una plantilla.',
+  131047: 'Fuera de la ventana de 24h: para iniciar la conversación usa una plantilla.',
+  131026: 'El número no es válido o no puede recibir mensajes de WhatsApp.',
+  131030: 'Destinatario no permitido (solo números autorizados en modo prueba).',
+  132000: 'La plantilla no existe o no está aprobada.',
+  132001: 'Plantilla/idioma no encontrados: revisa el nombre y WHATSAPP_TEMPLATE_LOCALE.',
+  133016: 'Límite de plantillas alcanzado; espera antes de reenviar.',
+  80007: 'Límite de tasa de la API alcanzado; reintenta más tarde.',
+}
+
+function describeMetaError(code: number | undefined, message: string | undefined): string {
+  const hint = code !== undefined ? META_ERROR_HINTS[code] : undefined
+  const base = `code ${code ?? 'desconocido'}`
+  return hint ? `${base}: ${hint}` : `${base}: ${message ?? 'error de la API de Meta'}`
+}
+
 async function callApi(payload: OutboundPayload): Promise<SendOutcome> {
   const config = getConfig()
   if (!config) return { ok: false, errorCode: 'not_configured' }
@@ -133,10 +152,12 @@ async function callApi(payload: OutboundPayload): Promise<SendOutcome> {
     message.text = { preview_url: false, body: payload.body ?? '' }
   }
 
-  try {
-    const response = await fetch(
-      `https://graph.facebook.com/${config.apiVersion}/${config.phoneNumberId}/messages`,
-      {
+  const url = `https://graph.facebook.com/${config.apiVersion}/${config.phoneNumberId}/messages`
+  const MAX_ATTEMPTS = 2
+
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
+    try {
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${config.token}`,
@@ -144,26 +165,38 @@ async function callApi(payload: OutboundPayload): Promise<SendOutcome> {
         },
         body: JSON.stringify(message),
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-      },
-    )
+      })
 
-    const json = (await response.json().catch(() => null)) as
-      | {
-          messages?: { id?: string }[]
-          error?: { code?: number; message?: string }
-        }
-      | null
+      const json = (await response.json().catch(() => null)) as
+        | {
+            messages?: { id?: string }[]
+            error?: { code?: number; message?: string }
+          }
+        | null
 
-    if (!response.ok) {
-      console.error('[whatsapp] La API rechazó el mensaje', response.status, json?.error?.message)
-      return { ok: false, errorCode: json?.error?.code ? String(json.error.code) : String(response.status) }
+      if (!response.ok) {
+        // Reintenta solo en errores transitorios del servidor (5xx).
+        if (response.status >= 500 && attempt < MAX_ATTEMPTS) continue
+
+        console.error(
+          '[whatsapp] La API rechazó el mensaje',
+          response.status,
+          describeMetaError(json?.error?.code, json?.error?.message),
+        )
+        return { ok: false, errorCode: json?.error?.code ? String(json.error.code) : String(response.status) }
+      }
+
+      return { ok: true, wamid: json?.messages?.[0]?.id }
+    } catch (error) {
+      // Reintenta una vez ante fallos de red/timeout.
+      if (attempt < MAX_ATTEMPTS) continue
+
+      console.error('[whatsapp] No fue posible enviar el mensaje', error)
+      return { ok: false, errorCode: 'network_error' }
     }
-
-    return { ok: true, wamid: json?.messages?.[0]?.id }
-  } catch (error) {
-    console.error('[whatsapp] No fue posible enviar el mensaje', error)
-    return { ok: false, errorCode: 'network_error' }
   }
+
+  return { ok: false, errorCode: 'network_error' }
 }
 
 // ==================== Envío directo / encolado ====================
