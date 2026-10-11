@@ -1,5 +1,7 @@
 import { db } from '@/lib/db'
 import type { AttendanceStatus } from '@/lib/generated/prisma'
+import { getLocalDayBounds } from '@/lib/dashboard/attendance-limits'
+import { santoDomingoNoon } from '@/lib/dashboard/schedule-utils'
 
 export interface AttendanceRosterRecord {
   studentId: string
@@ -33,21 +35,24 @@ export async function saveClassAttendance({
   defaultHours,
   enrolledStudentIds,
 }: SaveClassAttendanceParams): Promise<void> {
-  const sessionDate = new Date(`${date}T00:00:00.000Z`)
-  const dayAfter = new Date(sessionDate.getTime() + 86_400_000)
+  // Clave de calendario (UTC medianoche) para ClassSession/AbsenceJustification,
+  // y mediodía local para Attendance (evita el corrimiento de día al formatear).
+  const sessionKeyDate = new Date(`${date}T00:00:00.000Z`)
+  const sessionLocalDate = santoDomingoNoon(date)
+  const { start: dayStart, end: dayEnd } = getLocalDayBounds(sessionLocalDate)
 
   await db.$transaction(async (transaction) => {
     const classSession = await transaction.classSession.upsert({
-      where: { classId_date: { classId, date: sessionDate } },
+      where: { classId_date: { classId, date: sessionKeyDate } },
       update: { takenById: confirmedById, takenAt: new Date() },
-      create: { classId, date: sessionDate, takenById: confirmedById, takenAt: new Date() },
+      create: { classId, date: sessionKeyDate, takenById: confirmedById, takenAt: new Date() },
       select: { id: true },
     })
 
     // Motivos de inasistencia aprobados previamente: al guardar el pase de lista
     // se conservan como falta justificada y su texto no se pisa.
     const approvedJustifications = await transaction.absenceJustification.findMany({
-      where: { classId, date: sessionDate, status: 'APPROVED' },
+      where: { classId, date: sessionKeyDate, status: 'APPROVED' },
       select: { studentId: true, reason: true },
     })
     const approvedByStudent = new Map(approvedJustifications.map((row) => [row.studentId, row.reason]))
@@ -81,14 +86,16 @@ export async function saveClassAttendance({
         return transaction.attendance.update({ where: { id: existing.id }, data: updateData })
       }
 
-      // Si el alumno hizo punch-in el mismo día (sessionId null), fusiona el registro
-      // en el pase de lista para evitar el doble conteo (punch + clase). Si hay varios
-      // (clase + entrenamiento libre), se prefiere el que corresponde a esta clase.
+      // Si el alumno hizo punch-in el mismo día local (sessionId null), fusiona el
+      // registro en el pase de lista para evitar el doble conteo (punch + clase). Si
+      // hay varios (clase + entrenamiento libre), se prefiere el que corresponde a
+      // esta clase. La ventana usa el día local de Santo Domingo (no UTC) para no
+      // perder los punch de la noche.
       const sameDayPunches = await transaction.attendance.findMany({
         where: {
           studentId: record.studentId,
           sessionId: null,
-          date: { gte: sessionDate, lt: dayAfter },
+          date: { gte: dayStart, lt: dayEnd },
         },
         orderBy: { date: 'asc' },
         select: { id: true, hoursTrained: true, notes: true, classId: true, isOutOfSchedule: true },
@@ -115,7 +122,7 @@ export async function saveClassAttendance({
           ...updateData,
           sessionId: classSession.id,
           studentId: record.studentId,
-          date: sessionDate,
+          date: sessionLocalDate,
         },
       })
     }))

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { CalendarX2, CheckCircle2, Clock, Hourglass, Trash2, XCircle } from 'lucide-react'
+import { CalendarX2, CheckCircle2, ChevronDown, Clock, Hourglass, Trash2, XCircle } from 'lucide-react'
 import type { ClassSchedule, StudentAbsenceJustification } from '@/types/dashboard'
 import { WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
 
@@ -43,11 +43,11 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
     event.preventDefault()
     if (isSubmitting) return
     if (!classId) {
-      setError('Selecciona el horario al que faltaste.')
+      setError('Selecciona el horario al que no asististe.')
       return
     }
     if (reason.trim().length < 5) {
-      setError('Escribe el motivo de tu falta (mínimo 5 caracteres).')
+      setError('Escribe el motivo de tu inasistencia (mínimo 5 caracteres).')
       return
     }
 
@@ -64,7 +64,7 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
 
     if (!response.ok) {
       const data = await response.json().catch(() => null)
-      setError(data?.error ?? 'No fue posible registrar tu falta.')
+      setError(data?.error ?? 'No fue posible registrar tu inasistencia.')
       return
     }
 
@@ -95,15 +95,23 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
 
   return (
     <section className="rounded-xl border border-edge bg-surface-2 p-5 shadow-sm">
-      <div className="mb-4 border-b border-edge pb-3">
-        <h3 className="flex items-center gap-2 text-base font-bold text-ink">
-          <CalendarX2 className="size-5 text-danger-text" aria-hidden="true" />
-          <span>Reportar una falta</span>
-        </h3>
-        <p className="mt-0.5 text-xs text-ink-3">Si no pudiste asistir a una clase, registra el motivo. Tu instructor o la administración lo revisará.</p>
-      </div>
+      <details className="group">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
+          <div>
+            <h3 className="flex items-center gap-2 text-base font-bold text-ink">
+              <CalendarX2 className="size-5 text-danger-text" aria-hidden="true" />
+              <span>Reportar una inasistencia</span>
+            </h3>
+            <p className="mt-0.5 text-xs text-ink-3">Si no pudiste asistir a una clase, registra el motivo. Tu instructor o la administración lo revisará.</p>
+          </div>
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-md border border-edge-strong bg-surface-1 px-2.5 py-1.5 text-xs font-semibold text-ink-2">
+            {schedule.length === 0 ? 'Sin horarios' : 'Reportar'}
+            <ChevronDown className="size-3.5 transition-transform group-open:rotate-180" aria-hidden="true" />
+          </span>
+        </summary>
 
-      {schedule.length === 0 ? (
+        <div className="mt-4 border-t border-edge pt-4">
+          {schedule.length === 0 ? (
         <p className="rounded-md border border-dashed border-edge-strong px-3 py-4 text-center text-xs text-ink-4">No tienes horarios asignados. Contacta a la administración de tu dojo.</p>
       ) : (
         <form className="space-y-4" onSubmit={handleSubmit}>
@@ -127,7 +135,7 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-2" htmlFor="absence-date">
-                Fecha en que faltaste
+                Fecha de la inasistencia
               </label>
               <input
                 className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink focus:border-cyan-500 focus:outline-none"
@@ -170,11 +178,13 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
               type="submit"
             >
               <CalendarX2 className="size-4" aria-hidden="true" />
-              <span>{isSubmitting ? 'Enviando...' : 'Reportar falta'}</span>
+              <span>{isSubmitting ? 'Enviando...' : 'Reportar inasistencia'}</span>
             </button>
           </div>
         </form>
-      )}
+          )}
+        </div>
+      </details>
 
       {justifications.length > 0 && (
         <div className="mt-5 border-t border-edge pt-4">
@@ -203,7 +213,7 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
                         )
                     )}
                     {justification.status === 'REJECTED' && (
-                        <p className="mt-1 flex items-center gap-1 text-[11px] text-danger-text"><XCircle className="size-3" aria-hidden="true" />Rechazada — cuenta como falta.</p>
+                        <p className="mt-1 flex items-center gap-1 text-[11px] text-danger-text"><XCircle className="size-3" aria-hidden="true" />Rechazada — cuenta como inasistencia.</p>
                     )}
                     {justification.status === 'PENDING' && (
                       <p className="mt-1 flex items-center gap-1 text-[11px] text-warn-text"><Hourglass className="size-3" aria-hidden="true" />Pendiente de revisión.</p>

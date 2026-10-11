@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import { ClassEnrollmentStatus, StudentStatus, type AbsenceJustificationStatus, type AttendanceStatus } from '@/lib/generated/prisma'
+import { santoDomingoNoon } from '@/lib/dashboard/schedule-utils'
 
 /** Días hacia atrás que un alumno puede reportar una inasistencia. */
 const REPORT_WINDOW_DAYS = 30
@@ -203,6 +204,7 @@ export async function reviewAbsenceJustification(params: {
     })
 
     const attendanceStatus: AttendanceStatus = action === 'approve' ? 'JUSTIFIED' : 'ABSENT'
+    const attendanceDate = santoDomingoNoon(justification.date.toISOString().slice(0, 10))
 
     const existing = await transaction.attendance.findFirst({
       where: { sessionId: classSession.id, studentId: justification.studentId },
@@ -219,6 +221,7 @@ export async function reviewAbsenceJustification(params: {
       isOutOfSchedule: false,
       confirmedById: reviewerId,
       confirmedAt: now,
+      date: attendanceDate,
     }
 
     if (existing) {
@@ -231,7 +234,6 @@ export async function reviewAbsenceJustification(params: {
         ...data,
         sessionId: classSession.id,
         studentId: justification.studentId,
-        date: justification.date,
       },
     })
   })

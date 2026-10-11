@@ -53,6 +53,30 @@ export function toDateKey(date: Date): string {
   return `${year}-${month}-${day}`
 }
 
+// República Dominicana no observa horario de verano: offset fijo -04:00.
+const SANTO_DOMINGO_OFFSET = '-04:00'
+
+/**
+ * Convierte una fecha de clase "YYYY-MM-DD" al mediodía local de Santo Domingo.
+ * Guardar a mediodía evita que la marca cruce al día anterior/siguiente al
+ * formatear en zona local (UTC-4).
+ */
+export function santoDomingoNoon(dateKey: string): Date {
+  return new Date(`${dateKey}T12:00:00${SANTO_DOMINGO_OFFSET}`)
+}
+
+const dayKeyFormatter = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'America/Santo_Domingo',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+})
+
+/** Clave "YYYY-MM-DD" del día local de Santo Domingo que contiene el instante dado. */
+export function santoDomingoDayKey(date: Date): string {
+  return dayKeyFormatter.format(date)
+}
+
 /**
  * Fecha de la sesión más reciente (hoy o pasada) de un horario semanal.
  * Si hoy es el día de la clase devuelve hoy; si no, la ocurrencia pasada más cercana.

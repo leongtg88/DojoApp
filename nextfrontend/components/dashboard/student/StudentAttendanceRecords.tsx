@@ -1,6 +1,6 @@
 import { AlertCircle, Calendar, CheckCircle2, Hourglass, Repeat, ShieldCheck } from 'lucide-react'
 import type { AttendanceRecord, AttendanceStatus } from '@/types/dashboard'
-import { formatDateTime } from '@/lib/format/datetime'
+import { formatDate, formatDateTime } from '@/lib/format/datetime'
 import { formatHoursHM } from '@/lib/dashboard/balance'
 
 interface StudentAttendanceRecordsProps {
@@ -12,7 +12,7 @@ const STATUS_LABELS: Record<AttendanceStatus, string> = {
     PENDING: 'Pendiente',
     REJECTED: 'Rechazada',
     JUSTIFIED: 'Justificada',
-    ABSENT: 'Falta',
+    ABSENT: 'Inasistencia',
 }
 
 const STATUS_CLASSES: Record<AttendanceStatus, string> = {
@@ -50,6 +50,9 @@ export function StudentAttendanceRecords({ records }: StudentAttendanceRecordsPr
                 <ul className="divide-y divide-edge/80">
                     {records.map((record) => {
                         const meta = STATUS_CLASSES[record.status]
+                        // Las asistencias de sesión (pase de lista) se muestran como fecha
+                        // sin hora; los punch libres conservan su hora local.
+                        const dateLabel = record.sessionId ? formatDate(record.date) : formatDateTime(record.date)
                         return (
                             <li className="flex flex-col justify-between gap-3 p-4 transition-colors hover:bg-surface-3/30 sm:flex-row sm:items-center" key={record.id}>
                                 <div className="flex items-start gap-3 sm:items-center">
@@ -66,7 +69,7 @@ export function StudentAttendanceRecords({ records }: StudentAttendanceRecordsPr
                                     </div>
                                     <div>
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <span className="font-mono text-sm font-bold text-ink">{formatDateTime(record.date)}</span>
+                                            <span className="font-mono text-sm font-bold text-ink">{dateLabel}</span>
                                             {record.present && record.hoursTrained > 0 && (
                                                 <span className="rounded bg-surface-3 px-2 py-0.5 font-mono text-xs text-ink-2">{formatHoursHM(record.hoursTrained)}</span>
                                             )}

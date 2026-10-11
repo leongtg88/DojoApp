@@ -263,6 +263,8 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
         orderBy: { date: 'desc' },
         include: {
           confirmedBy: { select: { name: true } },
+          class: { select: { name: true } },
+          session: { select: { class: { select: { name: true } } } },
           practiceLogs: {
             select: {
               id: true,
@@ -328,6 +330,8 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
     confirmedByName: attendance.confirmedBy?.name ?? null,
     notes: attendance.notes,
     punchedAt: attendance.punchedAt.toISOString(),
+    sessionId: attendance.sessionId,
+    className: attendance.class?.name ?? attendance.session?.class.name ?? null,
     practiceLogs: attendance.practiceLogs.map((log) => ({
       id: log.id,
       techniqueId: log.studentTechnique?.technique.id ?? log.technique?.id ?? log.techniqueId ?? null,

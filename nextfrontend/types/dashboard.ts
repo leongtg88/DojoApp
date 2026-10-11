@@ -850,6 +850,41 @@ export interface ReviewSummary {
 	approvedAt: string | null
 }
 
+export type WhatsAppMessageDirection = 'INBOUND' | 'OUTBOUND'
+
+export type WhatsAppMessageStatus = 'QUEUED' | 'SENT' | 'DELIVERED' | 'READ' | 'RECEIVED' | 'FAILED'
+
+export interface AdminWhatsAppMessage {
+	id: string
+	direction: WhatsAppMessageDirection
+	fromNumber: string | null
+	toNumber: string | null
+	body: string | null
+	templateName: string | null
+	status: WhatsAppMessageStatus
+	errorCode: string | null
+	createdAt: string
+	sentAt: string | null
+}
+
+export interface AdminWhatsAppConversation {
+	id: string
+	phone: string
+	userId: string | null
+	userName: string | null
+	optIn: boolean
+	lastInboundAt: string | null
+	updatedAt: string
+	lastMessage: string | null
+	lastMessageAt: string | null
+	lastDirection: WhatsAppMessageDirection | null
+	withinServiceWindow: boolean
+}
+
+export interface AdminWhatsAppThread extends AdminWhatsAppConversation {
+	messages: AdminWhatsAppMessage[]
+}
+
 export type ScheduleAudience = 'ADULTS' | 'CHILDREN' | 'MIXED'
 
 export interface ScheduleOption {

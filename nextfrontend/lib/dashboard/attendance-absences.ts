@@ -1,6 +1,8 @@
 import { db } from '@/lib/db'
 import { ClassEnrollmentStatus, StudentStatus } from '@/lib/generated/prisma'
 import { getAdminScope } from '@/lib/dashboard/scope'
+import { getLocalDayBounds } from '@/lib/dashboard/attendance-limits'
+import { santoDomingoNoon } from '@/lib/dashboard/schedule-utils'
 
 /** Días que un alumno tiene para punchar una clase antes de que cuente como inasistencia. */
 const PUNCH_WINDOW_DAYS = 7
@@ -48,7 +50,7 @@ export async function ensureClassAbsences(userId: string, classId: string, date:
   }
 
   const enrolledStudentIds = scheduledClass.enrollments.map((enrollment) => enrollment.studentId)
-  const dayAfter = new Date(sessionDate.getTime() + 86_400_000)
+  const { start: dayStart, end: dayEnd } = getLocalDayBounds(santoDomingoNoon(date))
 
   const [classSession, punches] = await Promise.all([
     db.classSession.findUnique({
@@ -59,7 +61,7 @@ export async function ensureClassAbsences(userId: string, classId: string, date:
       where: {
         studentId: { in: enrolledStudentIds },
         sessionId: null,
-        date: { gte: sessionDate, lt: dayAfter },
+        date: { gte: dayStart, lt: dayEnd },
       },
       select: { studentId: true },
     }),
@@ -92,7 +94,7 @@ export async function ensureClassAbsences(userId: string, classId: string, date:
     data: missing.map((studentId) => ({
       sessionId: session.id,
       studentId,
-      date: sessionDate,
+      date: santoDomingoNoon(date),
       present: false,
       status: 'ABSENT',
       sessionType: 'class',
