@@ -42,7 +42,8 @@ export function InstallPrompt() {
     useEffect(() => {
         if (!isTargetRoute) return
 
-        if (isAppInstalled() || isInstallPromptDismissed()) return
+        // Si la app ya está instalada no hay nada que ofrecer.
+        if (isAppInstalled()) return
 
         let seenInSession = false
         try {
@@ -50,18 +51,31 @@ export function InstallPrompt() {
         } catch {
             // storage no disponible
         }
-        if (seenInSession) return
 
         let currentDeferred: BeforeInstallPromptEvent | null = null
 
-        const show = () => {
-            if (seenInSession) return
+        const markSeen = () => {
             try {
                 sessionStorage.setItem(PROMPT_SEEN_SESSION_KEY, '1')
             } catch {
                 // storage no disponible
             }
             seenInSession = true
+        }
+
+        // Aviso automático: una sola vez por sesión y solo si el usuario no lo
+        // descartó antes. No afecta a la petición manual.
+        const autoShow = () => {
+            if (seenInSession || isInstallPromptDismissed()) return
+            markSeen()
+            setVisible(true)
+        }
+
+        // Petición manual (ícono del navbar o del drawer): responde siempre que
+        // haya un prompt disponible o sea iOS, aunque el aviso automático ya se
+        // haya mostrado en esta sesión o se haya descartado.
+        const manualShow = () => {
+            markSeen()
             setVisible(true)
         }
 
@@ -69,11 +83,11 @@ export function InstallPrompt() {
             event.preventDefault()
             currentDeferred = event as BeforeInstallPromptEvent
             setDeferred(currentDeferred)
-            show()
+            autoShow()
         }
 
         const onRequestInstall = () => {
-            if (currentDeferred || isIos()) show()
+            if (currentDeferred || isIos()) manualShow()
         }
 
         const onAppInstalled = () => {
