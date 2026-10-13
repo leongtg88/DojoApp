@@ -75,6 +75,8 @@ export const REGISTRATION_FIELD_SPECS: RegistrationFieldSpec[] = [
 	{ group: 'aceptaciones', groupLabel: 'Aceptaciones', key: 'aceptoPagoIninterrumpido', label: 'Pago mensual e ininterrumpido', from: 'formulario' },
 	{ group: 'aceptaciones', groupLabel: 'Aceptaciones', key: 'aceptoDerechoAdmision', label: 'Derecho de admisión de la escuela', from: 'formulario' },
 	{ group: 'aceptaciones', groupLabel: 'Aceptaciones', key: 'aceptoPoliticas', label: 'Descargo de responsabilidad y uso de imagen', from: 'formulario' },
+	{ group: 'aceptaciones', groupLabel: 'Aceptaciones', key: 'aceptoTerminos', label: 'Términos y Condiciones Generales', from: 'formulario' },
+	{ group: 'aceptaciones', groupLabel: 'Aceptaciones', key: 'aceptoPrivacidad', label: 'Política de Privacidad y Protección de Datos', from: 'formulario' },
 ]
 
 const PERFIL_KEYS = REGISTRATION_FIELD_SPECS.filter(({ from }) => from === 'perfil').map(({ key }) => key)

@@ -263,6 +263,18 @@
 .scrollbar-thin-x::-webkit-scrollbar { height: 3px; }
 .scrollbar-thin-x::-webkit-scrollbar-thumb { border-radius: 4px; }
 
+/* Barra de scroll clara para los documentos legales del formulario público.
+   El tema raíz usa variables oscuras, así que aquí forzamos un track claro
+   para que no se vea un fondo negro sobre el documento blanco. */
+.legal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+.legal-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.legal-scroll::-webkit-scrollbar-track { background: #f3f4f6; }
+.legal-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 9999px; }
+.legal-scroll::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
 html {
   scroll-behavior: smooth;
   font-family: var(--font-sans);

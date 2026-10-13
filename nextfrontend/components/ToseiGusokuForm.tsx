@@ -6,11 +6,15 @@ import { useMetaPixel } from '@adkit/meta-pixel-next';
 import { MOCK_BENEFITS } from '@/lib/types';
 import { KYU_OPTIONS } from '@/lib/curriculum/kyu-options';
 import { TIPOS_SANGRE, TALLAS_ROPA, HORAS_SUENO, TIEMPO_PANTALLAS, RESPONSABILIDADES_CASA, ESTADO_CIVIL_HOGAR, INFLUENCIA_INSCRIPCION, OBJETIVO_PRINCIPAL, NIVEL_ESTRES, MANEJO_FRUSTRACION, REACCION_CRITICA, SI_NO_VE_RESULTADOS, TIEMPO_ARTE_MARCIAL, CUANDO_ARTE_MARCIAL, soloDigitos, esCedulaValida, esTelefonoValido, esEmailValido, validarArchivo, validarArchivoBasico } from '@/lib/enrollment-validation';
-import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake, FileText, ChevronDown } from 'lucide-react';
-import LegalConsentModal from '@/components/LegalConsentModal';
+import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake, FileText, ChevronDown, CheckCircle2 } from 'lucide-react';
+import TerminosLegales from '@/components/TerminosLegales';
+import PrivacidadDeDatos from '@/components/PrivacidadDeDatos';
 
 const heroImageDesktop = '/assets/BannerbgHero19080x1080.webp';
 const LogoCuadradoBlanco = '/assets/LogoCuadradoBlanco.svg';
+
+// Margen de tolerancia (px) para considerar que se llegó al final de un documento.
+const READ_THRESHOLD = 24;
 
 // ========== TIPOS ==========
 type Hijo = {
@@ -122,6 +126,8 @@ type FormData = {
   aceptoPagoIninterrumpido: boolean;
   aceptoDerechoAdmision: boolean;
   aceptoPoliticas: boolean;
+  aceptoTerminos: boolean;
+  aceptoPrivacidad: boolean;
 };
 
 type FormErrors = Partial<{ [K in Exclude<keyof FormData, 'hijos'>]: string }> & {
@@ -339,6 +345,63 @@ const WelcomeScreen = ({ onStart, onNavigateToHome }: { onStart: () => void; onN
   </div>
 );
 
+// ========== BLOQUE DE DOCUMENTO LEGAL ==========
+// Renderiza un documento con scroll propio. La casilla de aceptación permanece
+// deshabilitada hasta que el usuario llega al final del documento (gate de scroll).
+const LegalDocumentBlock = ({
+  indexLabel,
+  read,
+  error,
+  scrollRef,
+  onScroll,
+  name,
+  checked,
+  label,
+  onChange,
+  children,
+}: {
+  indexLabel: string;
+  read: boolean;
+  error?: string;
+  scrollRef: React.RefObject<HTMLDivElement | null>;
+  onScroll: (e: React.UIEvent<HTMLDivElement>) => void;
+  name: string;
+  checked: boolean;
+  label: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  children: React.ReactNode;
+}) => (
+  <section className={`overflow-hidden rounded-xl border transition-colors ${checked ? 'border-green-300' : error ? 'border-red-300' : 'border-stone-200'}`}>
+    <div className="flex items-center justify-between gap-3 border-b border-stone-200 bg-stone-50 px-4 py-2">
+      <span className="text-[11px] font-semibold uppercase tracking-wider text-stone-500">{indexLabel}</span>
+      <span className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${read ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+        {read ? <CheckCircle2 className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5 animate-bounce" />}
+        {read ? 'Leído' : 'Pendiente'}
+      </span>
+    </div>
+    <div ref={scrollRef} onScroll={onScroll} className="legal-scroll max-h-[55vh] overflow-y-auto bg-white">
+      {children}
+    </div>
+    <div className={`space-y-1 border-t border-stone-200 p-4 ${error ? 'bg-red-50' : 'bg-stone-50'}`}>
+      <label className={`flex items-start gap-3 ${read ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'}`}>
+        <input
+          type="checkbox"
+          name={name}
+          checked={checked}
+          disabled={!read}
+          onChange={onChange}
+          className="mt-0.5 h-5 w-5 shrink-0 rounded border-stone-300 text-red-600 focus:ring-red-500 disabled:cursor-not-allowed"
+        />
+        <span className="text-sm font-medium text-stone-600">{label}</span>
+      </label>
+      {!read && (
+        <p className="pl-8 text-[11px] text-stone-400">Desplázate hasta el final del documento para habilitar esta aceptación.</p>
+      )}
+      {error && <p className="pl-8 text-xs text-red-500">{error}</p>}
+    </div>
+  </section>
+);
+
 // ========== COMPONENTE PRINCIPAL ==========
 const ToseiGusokuForm = () => {
   const router = useRouter();
@@ -434,13 +497,21 @@ const ToseiGusokuForm = () => {
     aceptoPagoIninterrumpido: false,
     aceptoDerechoAdmision: false,
     aceptoPoliticas: false,
+    aceptoTerminos: false,
+    aceptoPrivacidad: false,
   });
 
   const [formData, setFormData] = useState<FormData>(createInitialFormData);
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const [isLegalModalOpen, setIsLegalModalOpen] = useState(false);
+  const [termsRead, setTermsRead] = useState(false);
+  const [privacyRead, setPrivacyRead] = useState(false);
+  const termsScrollRef = useRef<HTMLDivElement>(null);
+  const privacyScrollRef = useRef<HTMLDivElement>(null);
+  const schoolPoliciesRef = useRef<HTMLDivElement>(null);
+  const termsBlockRef = useRef<HTMLDivElement>(null);
+  const privacyBlockRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isSuccess) window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -906,6 +977,16 @@ const ToseiGusokuForm = () => {
     camposAceptacion.forEach(campo => {
       if (!formData[campo]) newErrors[campo] = 'Debes aceptar para continuar';
     });
+    if (!formData.aceptoTerminos) {
+      newErrors.aceptoTerminos = termsRead
+        ? 'Debes aceptar los Términos y Condiciones para continuar'
+        : 'Lee los Términos y Condiciones hasta el final para poder aceptarlos';
+    }
+    if (!formData.aceptoPrivacidad) {
+      newErrors.aceptoPrivacidad = privacyRead
+        ? 'Debes aceptar la Política de Privacidad para continuar'
+        : 'Lee la Política de Privacidad hasta el final para poder aceptarla';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -922,6 +1003,24 @@ const ToseiGusokuForm = () => {
       ];
   const safeStep = Math.min(step, activeSteps.length);
   const currentStep = activeSteps[safeStep - 1];
+
+  // Marca como leídos los documentos que no requieren scroll (contenido corto)
+  // en cuanto el usuario entra al paso de Políticas.
+  useEffect(() => {
+    if (currentStep?.key !== 'politicas') return;
+    const raf = requestAnimationFrame(() => {
+      const termsEl = termsScrollRef.current;
+      const privacyEl = privacyScrollRef.current;
+      if (termsEl && termsEl.scrollHeight <= termsEl.clientHeight + READ_THRESHOLD) setTermsRead(true);
+      if (privacyEl && privacyEl.scrollHeight <= privacyEl.clientHeight + READ_THRESHOLD) setPrivacyRead(true);
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [currentStep]);
+
+  const handleDocumentScroll = (setter: React.Dispatch<React.SetStateAction<boolean>>) => (event: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+    if (scrollTop + clientHeight >= scrollHeight - READ_THRESHOLD) setter(true);
+  };
 
   const validateStepByKey = (key: StepKey) => {
     switch (key) {
@@ -1018,7 +1117,7 @@ const ToseiGusokuForm = () => {
         : hijoApplicants;
     const contactPhone = formData.tipoRegistro === 'menor' ? formData.telefonoMadre : formData.telefonoContacto;
     const uploadData = new FormData();
-    uploadData.append('payload', JSON.stringify({ email: formData.email, phone: contactPhone, applicants, registrationData: { tipoRegistro: formData.tipoRegistro, esTutor, relacionTutor: esTutor ? formData.relacionTutor : '', nombreMadre: formData.nombreMadre, telefonoMadre: formData.telefonoMadre, nombrePadre: formData.nombrePadre, telefonoPadre: formData.telefonoPadre, direccionPadres: formData.direccionPadres, condicionMedica: formData.hijos.map(h => h.condicionMedica).filter(Boolean).join(' · '), motivoInscripcion: formData.motivoInscripcion, expectativas6Meses: formData.expectativas6Meses, interesNino: formData.interesNino, horasPractica: formData.horasPractica, espacioCasa: formData.espacioCasa, compromisoDiario: formData.compromisoDiario, asistenciaPadre: formData.asistenciaPadre, metodoMotivacion: formData.metodoMotivacion, razonesKarate: formData.razonesKarate, compromisoObstaculos: formData.compromisoObstaculos, aceptoPago: formData.aceptoPago, aceptoMultas: formData.aceptoMultas, aceptoPagosParciales: formData.aceptoPagosParciales, aceptoPagoIninterrumpido: formData.aceptoPagoIninterrumpido, aceptoDerechoAdmision: formData.aceptoDerechoAdmision, aceptoPoliticas: formData.aceptoPoliticas, aceptoTerminosLegales: true, terminosLegalesAceptadosEn: new Date().toISOString() } }));
+    uploadData.append('payload', JSON.stringify({ email: formData.email, phone: contactPhone, applicants, registrationData: { tipoRegistro: formData.tipoRegistro, esTutor, relacionTutor: esTutor ? formData.relacionTutor : '', nombreMadre: formData.nombreMadre, telefonoMadre: formData.telefonoMadre, nombrePadre: formData.nombrePadre, telefonoPadre: formData.telefonoPadre, direccionPadres: formData.direccionPadres, condicionMedica: formData.hijos.map(h => h.condicionMedica).filter(Boolean).join(' · '), motivoInscripcion: formData.motivoInscripcion, expectativas6Meses: formData.expectativas6Meses, interesNino: formData.interesNino, horasPractica: formData.horasPractica, espacioCasa: formData.espacioCasa, compromisoDiario: formData.compromisoDiario, asistenciaPadre: formData.asistenciaPadre, metodoMotivacion: formData.metodoMotivacion, razonesKarate: formData.razonesKarate, compromisoObstaculos: formData.compromisoObstaculos, aceptoPago: formData.aceptoPago, aceptoMultas: formData.aceptoMultas, aceptoPagosParciales: formData.aceptoPagosParciales, aceptoPagoIninterrumpido: formData.aceptoPagoIninterrumpido, aceptoDerechoAdmision: formData.aceptoDerechoAdmision, aceptoPoliticas: formData.aceptoPoliticas, aceptoTerminos: formData.aceptoTerminos, aceptoPrivacidad: formData.aceptoPrivacidad, aceptoTerminosLegales: formData.aceptoTerminos && formData.aceptoPrivacidad, terminosLegalesAceptadosEn: new Date().toISOString() } }));
     if (formData.tipoRegistro === 'adulto') {
       if (formData.fotoAdulto) uploadData.append('document-0-PROFILE_PHOTO', formData.fotoAdulto);
       if (formData.cedulaAdulto) uploadData.append('document-0-IDENTITY', formData.cedulaAdulto);
@@ -1081,15 +1180,23 @@ const ToseiGusokuForm = () => {
     for (let i = 0; i < activeSteps.length; i++) {
       if (!validateStepByKey(activeSteps[i].key)) {
         setStep(i + 1);
+        if (activeSteps[i].key === 'politicas') {
+          // Lleva al usuario al primer bloque pendiente para que sepa qué falta.
+          const schoolMissing = [
+            'aceptoPago', 'aceptoMultas', 'aceptoPagosParciales',
+            'aceptoPagoIninterrumpido', 'aceptoDerechoAdmision', 'aceptoPoliticas',
+          ].some((key) => !formData[key as keyof FormData]);
+          const target = schoolMissing
+            ? schoolPoliciesRef.current
+            : (!termsRead || !formData.aceptoTerminos)
+              ? termsBlockRef.current
+              : privacyBlockRef.current;
+          requestAnimationFrame(() => target?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+        }
         return;
       }
     }
     setSubmitError('');
-    setIsLegalModalOpen(true);
-  };
-
-  const handleLegalAccept = () => {
-    setIsLegalModalOpen(false);
     void submitEnrollment();
   };
 
@@ -1098,7 +1205,8 @@ const ToseiGusokuForm = () => {
     setStep(1);
     setErrors({});
     setSubmitError('');
-    setIsLegalModalOpen(false);
+    setTermsRead(false);
+    setPrivacyRead(false);
     setFormData(createInitialFormData());
   };
 
@@ -2213,32 +2321,94 @@ const ToseiGusokuForm = () => {
     );
   };
 
-  const renderStep3 = () => (
-    <div className="space-y-6">
-      <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-lg">
-        <p className="text-stone-500 text-sm">A continuación le presentaremos un resumen de algunas de las reglas relevantes contenidas en las políticas de la escuela suministradas vía WhatsApp. En el caso de no aceptar alguna de ellas, ponerse en contacto con el Sensei Encargado para aclarar cualquier inquietud, de lo contrario no podrá ser admitido en la escuela.</p>
-        <p className="text-stone-500 text-sm mt-2 italic">El karate Do es un estudio de por vida, por lo que entendemos que debe existir buena comunicación entre los alumnos y los maestros.</p>
-      </div>
-      <div className="space-y-4">
-        {[
-          { name: 'aceptoPago', label: 'ACEPTO pagar los primeros 5 días de cada mes.' },
-          { name: 'aceptoMultas', label: 'ACEPTO la política sobre multas por retraso en las cuotas.' },
-          { name: 'aceptoPagosParciales', label: 'ACEPTO que no hay pagos parciales exceptuando los casos establecidos en las políticas sobre emergencias y verano.' },
-          { name: 'aceptoPagoIninterrumpido', label: 'ACEPTO realizar el pago mensual e ininterrumpido durante todo el año.' },
-          { name: 'aceptoDerechoAdmision', label: 'ACEPTO que la escuela se reserva el derecho de admisión.' },
-          { name: 'aceptoPoliticas', label: 'ACEPTO las políticas de Descargo de Responsabilidad y Uso de imagen.' }
-        ].map(({ name, label }) => (
-          <div key={name} className={`p-4 border rounded-lg transition ${formData[name as keyof FormData] ? 'border-green-300 bg-green-50' : errors[name as keyof FormData] ? 'border-red-300 bg-red-50' : 'border-stone-200'}`}>
-            <label className="flex items-start cursor-pointer">
-              <input type="checkbox" name={name} checked={!!formData[name as keyof FormData]} onChange={handleChange} className="mt-1 mr-3 h-5 w-5 text-red-600 focus:ring-red-500 rounded" />
-              <span className="text-stone-500 font-medium">{label}</span>
-            </label>
-            {errors[name as Exclude<keyof FormData, 'hijos'>] && <p className="text-red-500 text-xs mt-2 ml-8">{errors[name as Exclude<keyof FormData, 'hijos'>]}</p>}
+  const renderStep3 = () => {
+    const schoolPolicies = [
+      { name: 'aceptoPago', label: 'ACEPTO pagar los primeros 5 días de cada mes.' },
+      { name: 'aceptoMultas', label: 'ACEPTO la política sobre multas por retraso en las cuotas.' },
+      { name: 'aceptoPagosParciales', label: 'ACEPTO que no hay pagos parciales exceptuando los casos establecidos en las políticas sobre emergencias y verano.' },
+      { name: 'aceptoPagoIninterrumpido', label: 'ACEPTO realizar el pago mensual e ininterrumpido durante todo el año.' },
+      { name: 'aceptoDerechoAdmision', label: 'ACEPTO que la escuela se reserva el derecho de admisión.' },
+      { name: 'aceptoPoliticas', label: 'ACEPTO las políticas de Descargo de Responsabilidad y Uso de imagen.' },
+    ];
+    const docsRead = Number(termsRead) + Number(privacyRead);
+    return (
+      <div className="space-y-6">
+        <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-lg">
+          <p className="text-stone-500 text-sm">A continuación le presentaremos un resumen de algunas de las reglas relevantes contenidas en las políticas de la escuela suministradas vía WhatsApp. En el caso de no aceptar alguna de ellas, ponerse en contacto con el Sensei Encargado para aclarar cualquier inquietud, de lo contrario no podrá ser admitido en la escuela.</p>
+          <p className="text-stone-500 text-sm mt-2 italic">El karate Do es un estudio de por vida, por lo que entendemos que debe existir buena comunicación entre los alumnos y los maestros.</p>
+        </div>
+
+        {/* 1. Reglas y políticas de la escuela */}
+        <div ref={schoolPoliciesRef} className="space-y-4">
+          <h3 className="text-base font-semibold text-brand-accent border-b pb-2">1. Reglas y políticas de la escuela</h3>
+          {schoolPolicies.map(({ name, label }) => (
+            <div key={name} className={`p-4 border rounded-lg transition ${formData[name as keyof FormData] ? 'border-green-300 bg-green-50' : errors[name as keyof FormData] ? 'border-red-300 bg-red-50' : 'border-stone-200'}`}>
+              <label className="flex items-start cursor-pointer">
+                <input type="checkbox" name={name} checked={!!formData[name as keyof FormData]} onChange={handleChange} className="mt-1 mr-3 h-5 w-5 shrink-0 text-red-600 focus:ring-red-500 rounded" />
+                <span className="text-stone-500 font-medium">{label}</span>
+              </label>
+              {errors[name as Exclude<keyof FormData, 'hijos'>] && <p className="text-red-500 text-xs mt-2 ml-8">{errors[name as Exclude<keyof FormData, 'hijos'>]}</p>}
+            </div>
+          ))}
+        </div>
+
+        {/* Estado de lectura de documentos */}
+        <div className="rounded-xl border border-stone-200 bg-stone-50 p-4" aria-live="polite">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-sm font-semibold text-stone-600">Lectura de documentos</p>
+            <span className={`text-xs font-bold uppercase tracking-wider ${docsRead === 2 ? 'text-green-600' : 'text-amber-600'}`}>{docsRead} de 2 leídos</span>
           </div>
-        ))}
+          <div className="mt-3 flex flex-wrap gap-2">
+            {[
+              { label: 'Términos y Condiciones', done: termsRead },
+              { label: 'Política de Privacidad', done: privacyRead },
+            ].map(({ label, done }) => (
+              <span key={label} className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium ${done ? 'border-green-200 bg-green-50 text-green-700' : 'border-amber-200 bg-amber-50 text-amber-700'}`}>
+                {done ? <CheckCircle2 className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5 animate-bounce" />}
+                {label}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* 2. Términos y Condiciones */}
+        <div ref={termsBlockRef} className="space-y-2">
+          <h3 className="text-base font-semibold text-brand-accent border-b pb-2">2. Términos y Condiciones</h3>
+          <LegalDocumentBlock
+            indexLabel="Documento 1 de 2"
+            read={termsRead}
+            error={errors.aceptoTerminos}
+            scrollRef={termsScrollRef}
+            onScroll={handleDocumentScroll(setTermsRead)}
+            name="aceptoTerminos"
+            checked={formData.aceptoTerminos}
+            label="He leído, entendido y ACEPTO los Términos y Condiciones Generales de la escuela."
+            onChange={handleChange}
+          >
+            <TerminosLegales embedded />
+          </LegalDocumentBlock>
+        </div>
+
+        {/* 3. Política de Privacidad y Protección de Datos */}
+        <div ref={privacyBlockRef} className="space-y-2">
+          <h3 className="text-base font-semibold text-brand-accent border-b pb-2">3. Política de Privacidad y Protección de Datos</h3>
+          <LegalDocumentBlock
+            indexLabel="Documento 2 de 2"
+            read={privacyRead}
+            error={errors.aceptoPrivacidad}
+            scrollRef={privacyScrollRef}
+            onScroll={handleDocumentScroll(setPrivacyRead)}
+            name="aceptoPrivacidad"
+            checked={formData.aceptoPrivacidad}
+            label="He leído, entendido y ACEPTO la Política de Privacidad y Protección de Datos."
+            onChange={handleChange}
+          >
+            <PrivacidadDeDatos embedded />
+          </LegalDocumentBlock>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   // ===== RENDER PRINCIPAL =====
   return (
@@ -2327,12 +2497,6 @@ const ToseiGusokuForm = () => {
           </div>
         </div>
       )}
-
-      <LegalConsentModal
-        isOpen={isLegalModalOpen}
-        onClose={() => setIsLegalModalOpen(false)}
-        onAccept={handleLegalAccept}
-      />
     </>
   );
 };

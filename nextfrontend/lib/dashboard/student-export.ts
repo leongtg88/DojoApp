@@ -182,6 +182,8 @@ export const N8N_ALLOWED_REGISTRATION_KEYS: readonly string[] = [
 	'aceptoPagoIninterrumpido',
 	'aceptoDerechoAdmision',
 	'aceptoPoliticas',
+	'aceptoTerminos',
+	'aceptoPrivacidad',
 ]
 
 // Del perfil del aspirante solo se comparte lo operativo (clases, uniforme,

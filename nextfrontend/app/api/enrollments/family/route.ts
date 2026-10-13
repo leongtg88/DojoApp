@@ -107,7 +107,7 @@ const ALLOWED_REGISTRATION_KEYS: readonly string[] = [
   'metodoMotivacion', 'otroMetodoMotivacion', 'razonesKarate', 'otraRazon',
   'compromisoObstaculos', 'otroCompromiso',
   'aceptoPago', 'aceptoMultas', 'aceptoPagosParciales', 'aceptoPagoIninterrumpido',
-  'aceptoDerechoAdmision', 'aceptoPoliticas', 'aceptoTerminosLegales', 'terminosLegalesAceptadosEn',
+  'aceptoDerechoAdmision', 'aceptoPoliticas', 'aceptoTerminos', 'aceptoPrivacidad', 'aceptoTerminosLegales', 'terminosLegalesAceptadosEn',
 ]
 
 // Filtra por allowlist, recorta espacios y deduplica arrays de strings, de modo
