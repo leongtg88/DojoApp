@@ -1,4 +1,4 @@
-import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE, mimeForExtension, sniffMimeType } from '@/lib/file-validation'
+import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE, MAX_FILE_SIZE_MB, mimeForExtension, sniffMimeType } from '@/lib/file-validation'
 
 export const TALLAS_ROPA: readonly string[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
 
@@ -89,7 +89,38 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export const esEmailValido = (value: string) => EMAIL_REGEX.test(value.trim())
 
-const MENSAJE_TAMANO = 'El archivo supera los 5 MB. Comprime la imagen o usa otro archivo.'
+// Edad mínima aceptada (no se admiten menores de 4 años).
+export const EDAD_MINIMA_ANIOS = 4
+
+// Altura en centímetros: entero razonable entre 50 y 250.
+export const esAlturaValida = (value: string) => {
+  const numero = Number(value.trim())
+  return Number.isInteger(numero) && numero >= 50 && numero <= 250
+}
+
+// Fecha de nacimiento máxima permitida (hoy menos la edad mínima), en formato
+// "YYYY-MM-DD". Se compara como texto porque el formato ISO de ancho fijo ordena
+// igual que la fecha, evitando líos de zona horaria.
+export function fechaMaximaNacimiento(reference: Date = new Date()): string {
+  const year = reference.getUTCFullYear() - EDAD_MINIMA_ANIOS
+  const month = String(reference.getUTCMonth() + 1).padStart(2, '0')
+  const day = String(reference.getUTCDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+// Valida que la fecha sea real (no "2026-02-31") y que el aspirante tenga al
+// menos la edad mínima.
+export function esFechaNacimientoValida(value: string, reference: Date = new Date()): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
+  const [year, month, day] = value.split('-').map(Number)
+  const date = new Date(Date.UTC(year, month - 1, day))
+  const esFechaReal =
+    date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day
+  if (!esFechaReal) return false
+  return value <= fechaMaximaNacimiento(reference)
+}
+
+const MENSAJE_TAMANO = `El archivo supera los ${MAX_FILE_SIZE_MB} MB. Comprime la imagen o usa otro archivo.`
 
 function mensajeFormato(permitirPdf: boolean) {
   return `Formato no permitido. Usa ${permitirPdf ? 'JPG, PNG, WEBP o PDF' : 'JPG, PNG o WEBP'}.`
@@ -131,4 +162,16 @@ export async function validarArchivo(file: File, permitirPdf: boolean): Promise<
     return mensajeFormato(false)
   }
   return null
+}
+
+// Devuelve el MIME real del archivo (por contenido, con respaldo en declarado o
+// extensión). Se usa para registrar en la base el tipo verificado, no el que
+// declara el navegador.
+export async function detectarMimeArchivo(file: File): Promise<string> {
+  const declared = file.type && file.type !== 'application/octet-stream' ? file.type : ''
+  const header = new Uint8Array(await file.slice(0, 16).arrayBuffer())
+  const detected = sniffMimeType(header)
+  if (detected && ALLOWED_MIME_TYPES.has(detected)) return detected
+  if (declared && ALLOWED_MIME_TYPES.has(declared)) return declared
+  return mimeForExtension(file.name)
 }

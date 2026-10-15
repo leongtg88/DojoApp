@@ -1,5 +1,6 @@
 import 'server-only'
 import { createClient } from '@supabase/supabase-js'
+import { MAX_FILE_SIZE_MB } from '@/lib/file-validation'
 
 const bucketName = process.env.SUPABASE_DOCUMENTS_BUCKET ?? 'dojo-documents'
 
@@ -59,7 +60,7 @@ export function describeStorageError(error: unknown): string {
   }
 
   if (haystack.includes('entitytoolarge') || haystack.includes('maxsizeexceeded') || haystack.includes('too large') || haystack.includes('exceeds the maximum') || haystack.includes('supera el tama')) {
-    return 'El archivo supera el tamaño máximo permitido de 5 MB. Comprime la imagen o usa otro archivo.'
+    return `El archivo supera el tamaño máximo permitido de ${MAX_FILE_SIZE_MB} MB. Comprime la imagen o usa otro archivo.`
   }
 
   if (haystack.includes('invalidkey') || haystack.includes('invalid key')) {
@@ -121,6 +122,25 @@ export async function downloadPrivateDocument(storageKey: string): Promise<{ buf
 
   const buffer = Buffer.from(await data.arrayBuffer())
   return { buffer, contentType: data.type || 'application/octet-stream' }
+}
+
+export interface PrivateDocumentEntry {
+  name: string
+  createdAt: string | null
+}
+
+// Lista los objetos bajo un prefijo del bucket (una sola "carpeta"). Se usa para
+// barrer subidas pendientes que quedaron huérfanas (formularios abandonados).
+export async function listPrivateDocuments(prefix: string, limit = 100): Promise<PrivateDocumentEntry[]> {
+  const { data, error } = await getStorageClient().storage.from(bucketName).list(prefix, { limit })
+  if (error) throw new Error(describeStorageError(error))
+
+  return (data ?? [])
+    .filter((entry) => Boolean(entry?.name) && entry?.id != null)
+    .map((entry) => {
+      const created = (entry as { created_at?: string }).created_at ?? (entry as { updated_at?: string }).updated_at ?? null
+      return { name: entry.name as string, createdAt: created }
+    })
 }
 
 export async function deletePrivateDocuments(storageKeys: string[]) {

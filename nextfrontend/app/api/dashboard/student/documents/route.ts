@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasAnyRole } from '@/lib/auth/roles'
+import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE, MAX_FILE_SIZE_MB } from '@/lib/file-validation'
 import { resolveRequestStudent } from '@/lib/family/guardians'
 import { createPrivateDocumentUrl, uploadPrivateDocument, deletePrivateDocuments, sanitizeStorageName } from '@/lib/document-storage'
 import { notifySchoolStaff } from '@/lib/notifications/create'
@@ -15,8 +16,8 @@ const DOCUMENT_TYPE_LABELS: Record<typeof documentTypes[number], string> = {
   MEDICAL_CERTIFICATE: 'el certificado médico',
   OTHER: 'un documento',
 }
-const allowedMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
-const maxFileSize = 5 * 1024 * 1024
+const allowedMimeTypes = ALLOWED_MIME_TYPES
+const maxFileSize = MAX_FILE_SIZE
 
 async function getStudentId(request: Request) {
   const session = await auth()
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
   const type = formData?.get('type')
   const file = formData?.get('file')
   if (!documentTypes.includes(type as typeof documentTypes[number]) || !(file instanceof File) || file.size === 0 || file.size > maxFileSize || !allowedMimeTypes.has(file.type)) {
-    return NextResponse.json({ error: 'Selecciona un archivo JPG, PNG, WEBP o PDF de hasta 5 MB' }, { status: 400 })
+    return NextResponse.json({ error: `Selecciona un archivo JPG, PNG, WEBP o PDF de hasta ${MAX_FILE_SIZE_MB} MB` }, { status: 400 })
   }
 
   const storageKey = `students/${student.id}/${crypto.randomUUID()}-${sanitizeStorageName(file.name)}`

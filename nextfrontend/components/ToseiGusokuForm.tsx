@@ -5,7 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useMetaPixel } from '@adkit/meta-pixel-next';
 import { MOCK_BENEFITS } from '@/lib/types';
 import { KYU_OPTIONS } from '@/lib/curriculum/kyu-options';
-import { TIPOS_SANGRE, TALLAS_ROPA, HORAS_SUENO, TIEMPO_PANTALLAS, RESPONSABILIDADES_CASA, ESTADO_CIVIL_HOGAR, INFLUENCIA_INSCRIPCION, OBJETIVO_PRINCIPAL, NIVEL_ESTRES, MANEJO_FRUSTRACION, REACCION_CRITICA, SI_NO_VE_RESULTADOS, TIEMPO_ARTE_MARCIAL, CUANDO_ARTE_MARCIAL, soloDigitos, esCedulaValida, esTelefonoValido, esEmailValido, validarArchivo, validarArchivoBasico } from '@/lib/enrollment-validation';
+import { TIPOS_SANGRE, TALLAS_ROPA, HORAS_SUENO, TIEMPO_PANTALLAS, RESPONSABILIDADES_CASA, ESTADO_CIVIL_HOGAR, INFLUENCIA_INSCRIPCION, OBJETIVO_PRINCIPAL, NIVEL_ESTRES, MANEJO_FRUSTRACION, REACCION_CRITICA, SI_NO_VE_RESULTADOS, TIEMPO_ARTE_MARCIAL, CUANDO_ARTE_MARCIAL, soloDigitos, esCedulaValida, esEmailValido, validarArchivo, validarArchivoBasico, esAlturaValida, esFechaNacimientoValida, fechaMaximaNacimiento, EDAD_MINIMA_ANIOS } from '@/lib/enrollment-validation';
+import { comprimirImagen } from '@/lib/image-compression';
+import { MAX_FILE_SIZE_MB } from '@/lib/file-validation';
+import type { DocumentKey } from '@/lib/enrollment-documents';
 import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake, FileText, ChevronDown, CheckCircle2 } from 'lucide-react';
 import TerminosLegales from '@/components/TerminosLegales';
 import PrivacidadDeDatos from '@/components/PrivacidadDeDatos';
@@ -16,6 +19,61 @@ const LogoCuadradoBlanco = '/assets/LogoCuadradoBlanco.svg';
 
 // Margen de tolerancia (px) para considerar que se llegó al final de un documento.
 const READ_THRESHOLD = 24;
+
+// Convierte la respuesta de error del servidor en un mensaje legible. El caso
+// 413 (cuerpo demasiado grande) se trata aparte porque la plataforma responde
+// con texto plano en vez del JSON habitual.
+async function describirErrorRespuesta(response: Response, prefijo: string): Promise<string> {
+  if (response.status === 413) {
+    return `${prefijo}: los archivos son demasiado grandes. Sube fotos más livianas o archivos más pequeños e inténtalo nuevamente.`;
+  }
+  let detail = '';
+  let code = '';
+  try {
+    const raw = (await response.text()).trim();
+    if (raw) {
+      try {
+        const data = JSON.parse(raw) as { error?: string; message?: string; code?: string };
+        detail = (typeof data?.error === 'string' && data.error.trim())
+          || (typeof data?.message === 'string' && data.message.trim())
+          || '';
+        if (typeof data?.code === 'string') code = data.code;
+      } catch {
+        if (!raw.startsWith('<')) detail = raw.slice(0, 180);
+      }
+    }
+  } catch { /* ignore */ }
+  const label = code ? `${prefijo} [${code}]` : prefijo;
+  return `${label}: ${detail || `el servidor respondió con un error ${response.status}`}. Inténtalo nuevamente.`;
+}
+
+// ===== Mensajes de validación "en vivo" (se muestran junto al campo) =====
+const mensajeEmail = (value: string) =>
+  !value.trim() ? 'Campo requerido' : esEmailValido(value) ? '' : 'Ingresa un correo válido (ej: nombre@correo.com)';
+
+const mensajeTelefono = (value: string) => {
+  const digitos = soloDigitos(value).length;
+  if (digitos === 0) return 'Campo requerido';
+  if (digitos < 10 || digitos > 15) return `El teléfono debe tener entre 10 y 15 dígitos (tiene ${digitos}).`;
+  return '';
+};
+
+const mensajeAltura = (value: string) =>
+  !value.trim() ? 'Campo requerido' : esAlturaValida(value) ? '' : 'Ingresa una altura válida entre 50 y 250 cm.';
+
+const mensajeCedula = (value: string) => {
+  const digitos = soloDigitos(value).length;
+  if (digitos === 0) return 'Campo requerido';
+  if (digitos !== 11) return `La cédula debe tener 11 dígitos (tiene ${digitos}).`;
+  return '';
+};
+
+const mensajeFechaNacimiento = (value: string) =>
+  !value ? 'Campo requerido' : esFechaNacimientoValida(value) ? '' : `Debe tener al menos ${EDAD_MINIMA_ANIOS} años.`;
+
+// El correo del hijo es opcional: vacío se acepta, pero si se escribe debe ser válido.
+const mensajeEmailOpcional = (value: string) =>
+  !value.trim() ? '' : esEmailValido(value) ? '' : 'Ingresa un correo válido (ej: nombre@correo.com)';
 
 // ========== TIPOS ==========
 type Hijo = {
@@ -504,6 +562,7 @@ const ToseiGusokuForm = () => {
 
   const [formData, setFormData] = useState<FormData>(createInitialFormData);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [termsRead, setTermsRead] = useState(false);
@@ -519,16 +578,63 @@ const ToseiGusokuForm = () => {
   }, [isSuccess]);
 
   // ===== MANEJADORES =====
+  // Campos con aviso inmediato junto al input. Devuelve null para los campos sin
+  // validación en vivo (esos conservan el comportamiento anterior).
+  const validarCampoEnVivo = (name: string, value: string): string | null => {
+    switch (name) {
+      case 'email': return mensajeEmail(value);
+      case 'telefonoContacto':
+      case 'telefonoMadre':
+      case 'telefonoPadre': return mensajeTelefono(value);
+      case 'alturaAdulto': return mensajeAltura(value);
+      case 'cedula': return mensajeCedula(value);
+      case 'fechaNacimientoAdulto': return mensajeFechaNacimiento(value);
+      default: return null;
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
+    const nextValue: string | boolean = type === 'checkbox' ? checked : value;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: nextValue,
     }));
-    if (errors[name as keyof FormData]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+
+    const liveMessage = validarCampoEnVivo(name, String(nextValue));
+    if (liveMessage === null) {
+      // Campo sin validación en vivo: al editarlo se limpia su error previo.
+      if (errors[name as keyof FormData]) {
+        setErrors(prev => ({ ...prev, [name]: '' }));
+      }
+      return;
     }
+    // Se revalida mientras se escribe solo si el campo ya estaba marcado; así no
+    // se avisa a medio escribir.
+    if (errors[name as keyof FormData] || touched[name]) {
+      setErrors(prev => ({ ...prev, [name]: liveMessage }));
+    }
+  };
+
+  // Al salir del campo se valida y se avisa en el propio input.
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    const liveMessage = validarCampoEnVivo(name, value);
+    if (liveMessage === null) return;
+    setTouched(prev => (prev[name] ? prev : { ...prev, [name]: true }));
+    setErrors(prev => ({ ...prev, [name]: liveMessage }));
+  };
+
+  // Escribe el error de un campo de un hijo concreto (fecha, altura, etc.).
+  const setHijoError = (id: string, field: string, message: string) => {
+    const index = formData.hijos.findIndex(h => h.id === id);
+    if (index < 0) return;
+    setErrors(prev => {
+      const hijos = prev.hijos ? [...prev.hijos] : [];
+      hijos[index] = { ...(hijos[index] ?? {}), [field]: message };
+      return { ...prev, hijos };
+    });
   };
 
   const handleTipoRegistro = (tipo: 'adulto' | 'menor' | 'familiar') => {
@@ -606,9 +712,10 @@ const ToseiGusokuForm = () => {
 
   const handleHijoFoto = async (id: string, file: File | null) => {
     if (!file) return;
+    const processed = await comprimirImagen(file);
     const index = formData.hijos.findIndex(h => h.id === id);
     if (index >= 0) {
-      const msg = await validarArchivo(file, false);
+      const msg = await validarArchivo(processed, false);
       if (msg) {
         setErrors(prev => {
           const hijos = prev.hijos ? [...prev.hijos] : [];
@@ -623,11 +730,11 @@ const ToseiGusokuForm = () => {
         return { ...prev, hijos };
       });
     }
-    const preview = URL.createObjectURL(file);
+    const preview = URL.createObjectURL(processed);
     setFormData(prev => ({
       ...prev,
       hijos: prev.hijos.map(h =>
-        h.id === id ? { ...h, foto: file, fotoPreview: preview } : h
+        h.id === id ? { ...h, foto: processed, fotoPreview: preview } : h
       )
     }));
   };
@@ -649,8 +756,9 @@ const ToseiGusokuForm = () => {
 
   const handleHijoDocumento = async (id: string, field: 'partidaNacimiento' | 'pasaporte', file: File | null) => {
     if (!file) return;
+    const processed = await comprimirImagen(file);
     const index = formData.hijos.findIndex(h => h.id === id);
-    const msg = await validarArchivo(file, true);
+    const msg = await validarArchivo(processed, true);
     if (msg) {
       if (index >= 0) {
         setErrors(prev => {
@@ -668,14 +776,14 @@ const ToseiGusokuForm = () => {
         return { ...prev, hijos };
       });
     }
-    const preview = file.type.startsWith('image/') ? URL.createObjectURL(file) : '';
+    const preview = processed.type.startsWith('image/') ? URL.createObjectURL(processed) : '';
     setFormData(prev => ({
       ...prev,
       hijos: prev.hijos.map(h => {
         if (h.id !== id) return h;
         return field === 'partidaNacimiento'
-          ? { ...h, partidaNacimiento: file, partidaPreview: preview }
-          : { ...h, pasaporte: file, pasaportePreview: preview };
+          ? { ...h, partidaNacimiento: processed, partidaPreview: preview }
+          : { ...h, pasaporte: processed, pasaportePreview: preview };
       })
     }));
   };
@@ -705,16 +813,17 @@ const ToseiGusokuForm = () => {
   // Archivos para adulto
   const handleAdultoFoto = async (file: File | null) => {
     if (!file) return;
-    const msg = await validarArchivo(file, false);
+    const processed = await comprimirImagen(file);
+    const msg = await validarArchivo(processed, false);
     if (msg) {
       setErrors(prev => ({ ...prev, fotoAdulto: msg }));
       return;
     }
     setErrors(prev => ({ ...prev, fotoAdulto: '' }));
-    const preview = URL.createObjectURL(file);
+    const preview = URL.createObjectURL(processed);
     setFormData(prev => ({
       ...prev,
-      fotoAdulto: file,
+      fotoAdulto: processed,
       fotoAdultoPreview: preview,
     }));
   };
@@ -726,16 +835,17 @@ const ToseiGusokuForm = () => {
 
   const handleAdultoDocumento = async (field: 'cedulaAdulto' | 'pasaporteAdulto', file: File | null) => {
     if (!file) return;
-    const msg = await validarArchivo(file, true);
+    const processed = await comprimirImagen(file);
+    const msg = await validarArchivo(processed, true);
     if (msg) {
       setErrors(prev => ({ ...prev, [field]: msg }));
       return;
     }
     setErrors(prev => ({ ...prev, [field]: '' }));
-    const preview = file.type.startsWith('image/') ? URL.createObjectURL(file) : '';
+    const preview = processed.type.startsWith('image/') ? URL.createObjectURL(processed) : '';
     setFormData(prev => field === 'cedulaAdulto'
-      ? { ...prev, cedulaAdulto: file, cedulaAdultoPreview: preview }
-      : { ...prev, pasaporteAdulto: file, pasaporteAdultoPreview: preview });
+      ? { ...prev, cedulaAdulto: processed, cedulaAdultoPreview: preview }
+      : { ...prev, pasaporteAdulto: processed, pasaporteAdultoPreview: preview });
   };
 
   const handleAdultoDocumentoRemove = (field: 'cedulaAdulto' | 'pasaporteAdulto') => {
@@ -787,7 +897,8 @@ const ToseiGusokuForm = () => {
   // ===== VALIDACIONES =====
   const validarAdulto = (newErrors: FormErrors) => {
     if (!formData.nombreAdulto.trim()) newErrors.nombreAdulto = 'Campo requerido';
-    if (!formData.fechaNacimientoAdulto) newErrors.fechaNacimientoAdulto = 'Campo requerido';
+    const fechaMsg = mensajeFechaNacimiento(formData.fechaNacimientoAdulto);
+    if (fechaMsg) newErrors.fechaNacimientoAdulto = fechaMsg;
     if (!formData.sexoAdulto) newErrors.sexoAdulto = 'Selecciona una opción';
     if (!formData.tipoSangreAdulto) newErrors.tipoSangreAdulto = 'Selecciona una opción';
     if (!formData.direccionAdulto.trim()) newErrors.direccionAdulto = 'Campo requerido';
@@ -797,6 +908,8 @@ const ToseiGusokuForm = () => {
     else if (!formData.tallaCamisetaAdulto) newErrors.tallaCamisetaAdulto = 'Selecciona una talla';
     if (!formData.cedula.trim()) newErrors.cedula = 'Campo requerido';
     else if (!esCedulaValida(formData.cedula)) newErrors.cedula = 'La cédula debe tener exactamente 11 dígitos (ej: 00123456789)';
+    const alturaMsg = mensajeAltura(formData.alturaAdulto);
+    if (alturaMsg) newErrors.alturaAdulto = alturaMsg;
     if (!formData.fotoAdulto) newErrors.fotoAdulto = 'Foto requerida';
     else {
       const msg = validarArchivoBasico(formData.fotoAdulto, false);
@@ -812,13 +925,10 @@ const ToseiGusokuForm = () => {
       const msg = validarArchivoBasico(formData.pasaporteAdulto, true);
       if (msg) newErrors.pasaporteAdulto = msg;
     }
-    if (!formData.email.trim()) {
-      newErrors.email = 'Campo requerido';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Email inválido';
-    }
-    if (!formData.telefonoContacto.trim()) newErrors.telefonoContacto = 'Campo requerido';
-    else if (!esTelefonoValido(formData.telefonoContacto)) newErrors.telefonoContacto = 'Ingresa un teléfono válido (ej: 809-123-4567)';
+    const emailMsg = mensajeEmail(formData.email);
+    if (emailMsg) newErrors.email = emailMsg;
+    const telContactoMsg = mensajeTelefono(formData.telefonoContacto);
+    if (telContactoMsg) newErrors.telefonoContacto = telContactoMsg;
     if (formData.practicoKarateAdulto === 'si' && !formData.kyuAdulto) newErrors.kyuAdulto = 'Selecciona el grado alcanzado';
   };
 
@@ -829,6 +939,9 @@ const ToseiGusokuForm = () => {
       if (!hijo.nombre.trim()) { err.nombre = `Nombre del hijo ${index + 1} requerido`; }
       if (hijo.email.trim() && !esEmailValido(hijo.email)) { err.email = `Correo del hijo ${index + 1} inválido`; }
       if (!hijo.fechaNacimiento) { err.fechaNacimiento = `Fecha de nacimiento del hijo ${index + 1} requerida`; }
+      else if (!esFechaNacimientoValida(hijo.fechaNacimiento)) { err.fechaNacimiento = `El hijo ${index + 1} debe tener al menos ${EDAD_MINIMA_ANIOS} años`; }
+      if (!hijo.altura.trim()) { err.altura = `Altura del hijo ${index + 1} requerida`; }
+      else if (!esAlturaValida(hijo.altura)) { err.altura = `Altura del hijo ${index + 1} inválida (entre 50 y 250 cm)`; }
       if (!hijo.tipoSangre) { err.tipoSangre = `Tipo de sangre del hijo ${index + 1} requerido`; }
       if (!hijo.sexo) { err.sexo = `Sexo del hijo ${index + 1} requerido`; }
       if (hijo.tallaPantalon && !TALLAS_ROPA.includes(hijo.tallaPantalon)) { err.tallaPantalon = `Selecciona una talla válida para el hijo ${index + 1}`; }
@@ -858,17 +971,14 @@ const ToseiGusokuForm = () => {
 
   const validarContactoPadres = (newErrors: FormErrors) => {
     if (!formData.nombreMadre.trim()) newErrors.nombreMadre = 'Campo requerido';
-    if (!formData.telefonoMadre.trim()) newErrors.telefonoMadre = 'Campo requerido';
-    else if (!esTelefonoValido(formData.telefonoMadre)) newErrors.telefonoMadre = 'Ingresa un teléfono válido (ej: 809-123-4567)';
+    const telMadreMsg = mensajeTelefono(formData.telefonoMadre);
+    if (telMadreMsg) newErrors.telefonoMadre = telMadreMsg;
     if (!formData.nombrePadre.trim()) newErrors.nombrePadre = 'Campo requerido';
-    if (!formData.telefonoPadre.trim()) newErrors.telefonoPadre = 'Campo requerido';
-    else if (!esTelefonoValido(formData.telefonoPadre)) newErrors.telefonoPadre = 'Ingresa un teléfono válido (ej: 809-123-4567)';
+    const telPadreMsg = mensajeTelefono(formData.telefonoPadre);
+    if (telPadreMsg) newErrors.telefonoPadre = telPadreMsg;
     if (!formData.direccionPadres.trim()) newErrors.direccionPadres = 'Campo requerido';
-    if (!formData.email.trim()) {
-      newErrors.email = 'Campo requerido';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Email inválido';
-    }
+    const emailMsg = mensajeEmail(formData.email);
+    if (emailMsg) newErrors.email = emailMsg;
   };
 
   const validateStep1 = () => {
@@ -1117,34 +1227,66 @@ const ToseiGusokuForm = () => {
         ? [tutorApplicant, ...hijoApplicants]
         : hijoApplicants;
     const contactPhone = formData.tipoRegistro === 'menor' ? formData.telefonoMadre : formData.telefonoContacto;
-    const uploadData = new FormData();
-    uploadData.append('payload', JSON.stringify({ email: formData.email, phone: contactPhone, applicants, registrationData: { tipoRegistro: formData.tipoRegistro, esTutor, relacionTutor: esTutor ? formData.relacionTutor : '', nombreMadre: formData.nombreMadre, telefonoMadre: formData.telefonoMadre, nombrePadre: formData.nombrePadre, telefonoPadre: formData.telefonoPadre, direccionPadres: formData.direccionPadres, condicionMedica: formData.hijos.map(h => h.condicionMedica).filter(Boolean).join(' · '), motivoInscripcion: formData.motivoInscripcion, expectativas6Meses: formData.expectativas6Meses, interesNino: formData.interesNino, horasPractica: formData.horasPractica, espacioCasa: formData.espacioCasa, compromisoDiario: formData.compromisoDiario, asistenciaPadre: formData.asistenciaPadre, metodoMotivacion: formData.metodoMotivacion, razonesKarate: formData.razonesKarate, compromisoObstaculos: formData.compromisoObstaculos, aceptoPago: formData.aceptoPago, aceptoMultas: formData.aceptoMultas, aceptoPagosParciales: formData.aceptoPagosParciales, aceptoPagoIninterrumpido: formData.aceptoPagoIninterrumpido, aceptoDerechoAdmision: formData.aceptoDerechoAdmision, aceptoPoliticas: formData.aceptoPoliticas, aceptoTerminos: formData.aceptoTerminos, aceptoPrivacidad: formData.aceptoPrivacidad, aceptoTerminosLegales: formData.aceptoTerminos && formData.aceptoPrivacidad, terminosLegalesAceptadosEn: new Date().toISOString() } }));
-    if (formData.tipoRegistro === 'adulto') {
-      if (formData.fotoAdulto) uploadData.append('document-0-PROFILE_PHOTO', formData.fotoAdulto);
-      if (formData.cedulaAdulto) uploadData.append('document-0-IDENTITY', formData.cedulaAdulto);
-      if (formData.pasaporteAdulto) uploadData.append('document-0-PASSPORT', formData.pasaporteAdulto);
-    } else if (formData.tipoRegistro === 'familiar') {
-      if (formData.fotoAdulto) uploadData.append('document-0-PROFILE_PHOTO', formData.fotoAdulto);
-      if (formData.cedulaAdulto) uploadData.append('document-0-IDENTITY', formData.cedulaAdulto);
-      if (formData.pasaporteAdulto) uploadData.append('document-0-PASSPORT', formData.pasaporteAdulto);
-      formData.hijos.forEach((hijo, index) => {
-        const docIndex = index + 1;
-        if (hijo.foto) uploadData.append(`document-${docIndex}-PROFILE_PHOTO`, hijo.foto);
-        if (hijo.partidaNacimiento) uploadData.append(`document-${docIndex}-BIRTH_CERTIFICATE`, hijo.partidaNacimiento);
-        if (hijo.pasaporte) uploadData.append(`document-${docIndex}-PASSPORT`, hijo.pasaporte);
-      });
-    } else {
-      formData.hijos.forEach((hijo, index) => {
-        if (hijo.foto) uploadData.append(`document-${index}-PROFILE_PHOTO`, hijo.foto);
-        if (hijo.partidaNacimiento) uploadData.append(`document-${index}-BIRTH_CERTIFICATE`, hijo.partidaNacimiento);
-        if (hijo.pasaporte) uploadData.append(`document-${index}-PASSPORT`, hijo.pasaporte);
-      });
+    const registrationData = { tipoRegistro: formData.tipoRegistro, esTutor, relacionTutor: esTutor ? formData.relacionTutor : '', nombreMadre: formData.nombreMadre, telefonoMadre: formData.telefonoMadre, nombrePadre: formData.nombrePadre, telefonoPadre: formData.telefonoPadre, direccionPadres: formData.direccionPadres, condicionMedica: formData.hijos.map(h => h.condicionMedica).filter(Boolean).join(' · '), motivoInscripcion: formData.motivoInscripcion, expectativas6Meses: formData.expectativas6Meses, interesNino: formData.interesNino, horasPractica: formData.horasPractica, espacioCasa: formData.espacioCasa, compromisoDiario: formData.compromisoDiario, asistenciaPadre: formData.asistenciaPadre, metodoMotivacion: formData.metodoMotivacion, razonesKarate: formData.razonesKarate, compromisoObstaculos: formData.compromisoObstaculos, aceptoPago: formData.aceptoPago, aceptoMultas: formData.aceptoMultas, aceptoPagosParciales: formData.aceptoPagosParciales, aceptoPagoIninterrumpido: formData.aceptoPagoIninterrumpido, aceptoDerechoAdmision: formData.aceptoDerechoAdmision, aceptoPoliticas: formData.aceptoPoliticas, aceptoTerminos: formData.aceptoTerminos, aceptoPrivacidad: formData.aceptoPrivacidad, aceptoTerminosLegales: formData.aceptoTerminos && formData.aceptoPrivacidad, terminosLegalesAceptadosEn: new Date().toISOString() };
+
+    // Cada archivo se sube en su propia petición, indicando a qué aspirante y a
+    // qué tipo de documento corresponde. Antes iban todos juntos y, si el total
+    // superaba 4.5 MB, Vercel rechazaba la petición con el error 413.
+    const uploads: { applicantIndex: number; docType: DocumentKey; file: File }[] = [];
+    if (formData.tipoRegistro === 'adulto' || formData.tipoRegistro === 'familiar') {
+      if (formData.fotoAdulto) uploads.push({ applicantIndex: 0, docType: 'PROFILE_PHOTO', file: formData.fotoAdulto });
+      if (formData.cedulaAdulto) uploads.push({ applicantIndex: 0, docType: 'IDENTITY', file: formData.cedulaAdulto });
+      if (formData.pasaporteAdulto) uploads.push({ applicantIndex: 0, docType: 'PASSPORT', file: formData.pasaporteAdulto });
     }
+    const hijoOffset = formData.tipoRegistro === 'familiar' ? 1 : 0;
+    formData.hijos.forEach((hijo, index) => {
+      const applicantIndex = index + hijoOffset;
+      if (hijo.foto) uploads.push({ applicantIndex, docType: 'PROFILE_PHOTO', file: hijo.foto });
+      if (hijo.partidaNacimiento) uploads.push({ applicantIndex, docType: 'BIRTH_CERTIFICATE', file: hijo.partidaNacimiento });
+      if (hijo.pasaporte) uploads.push({ applicantIndex, docType: 'PASSPORT', file: hijo.pasaporte });
+    });
+
     setIsSubmitting(true);
     setSubmitError('');
+
+    const submissionId = crypto.randomUUID();
+    const tokens: string[] = [];
+    for (const item of uploads) {
+      const cuerpo = new FormData();
+      cuerpo.append('submissionId', submissionId);
+      cuerpo.append('applicantIndex', String(item.applicantIndex));
+      cuerpo.append('docType', item.docType);
+      cuerpo.append('file', item.file);
+      let uploadResponse: Response;
+      try {
+        uploadResponse = await fetch('/api/enrollments/family/document', { method: 'POST', body: cuerpo });
+      } catch (error) {
+        setIsSubmitting(false);
+        const extra = error instanceof Error && error.message ? ` (${error.message})` : '';
+        setSubmitError(`No fue posible subir los documentos: falló la conexión con el servidor${extra}. Verifica tu conexión e inténtalo nuevamente.`);
+        return;
+      }
+      if (!uploadResponse.ok) {
+        setIsSubmitting(false);
+        setSubmitError(await describirErrorRespuesta(uploadResponse, 'No fue posible subir los documentos'));
+        return;
+      }
+      const uploadResult = await uploadResponse.json().catch(() => null) as { token?: string } | null;
+      if (!uploadResult?.token) {
+        setIsSubmitting(false);
+        setSubmitError('No fue posible subir los documentos. Inténtalo nuevamente.');
+        return;
+      }
+      tokens.push(uploadResult.token);
+    }
+
     let response: Response;
     try {
-      response = await fetch('/api/enrollments/family', { method: 'POST', body: uploadData });
+      response = await fetch('/api/enrollments/family', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payload: { email: formData.email, phone: contactPhone, applicants, registrationData }, documents: tokens }),
+      });
     } catch (error) {
       setIsSubmitting(false);
       const extra = error instanceof Error && error.message ? ` (${error.message})` : '';
@@ -1153,23 +1295,7 @@ const ToseiGusokuForm = () => {
     }
     setIsSubmitting(false);
     if (!response.ok) {
-      const status = response.status;
-      let detail = '';
-      let code = '';
-      try {
-        const data = await response.json() as { error?: string; message?: string; code?: string };
-        detail = (typeof data?.error === 'string' && data.error.trim())
-          || (typeof data?.message === 'string' && data.message.trim())
-          || '';
-        if (typeof data?.code === 'string') code = data.code;
-      } catch {
-        try {
-          const text = (await response.text()).trim();
-          if (text && !text.startsWith('<')) detail = text.slice(0, 180);
-        } catch { /* ignore */ }
-      }
-      const prefix = code ? `No fue posible enviar la inscripción [${code}]` : 'No fue posible enviar la inscripción';
-      setSubmitError(`${prefix}: ${detail || `el servidor respondió con un error ${status}`}. Inténtalo nuevamente.`);
+      setSubmitError(await describirErrorRespuesta(response, 'No fue posible enviar la inscripción'));
       return;
     }
     setIsSuccess(true);
@@ -1205,6 +1331,7 @@ const ToseiGusokuForm = () => {
     setShowForm(true);
     setStep(1);
     setErrors({});
+    setTouched({});
     setSubmitError('');
     setTermsRead(false);
     setPrivacyRead(false);
@@ -1286,13 +1413,15 @@ const ToseiGusokuForm = () => {
                 captionLayout="dropdown"
                 id="fechaNacimientoAdulto"
                 value={formData.fechaNacimientoAdulto}
+                max={fechaMaximaNacimiento()}
                 className={errors.fechaNacimientoAdulto ? 'border-red-500' : undefined}
                 onChange={(value) => {
                   setFormData(prev => ({ ...prev, fechaNacimientoAdulto: value }));
-                  if (errors.fechaNacimientoAdulto) setErrors(prev => ({ ...prev, fechaNacimientoAdulto: '' }));
+                  setErrors(prev => ({ ...prev, fechaNacimientoAdulto: mensajeFechaNacimiento(value) }));
                 }}
               />
               {errors.fechaNacimientoAdulto && <p className="text-red-500 text-xs mt-1">{errors.fechaNacimientoAdulto}</p>}
+              <p className="text-xs text-stone-400 mt-1">No se admiten menores de {EDAD_MINIMA_ANIOS} años.</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-stone-500 mb-1">Sexo <span className="text-red-500">*</span></label>
@@ -1310,19 +1439,24 @@ const ToseiGusokuForm = () => {
             <div>
               <label className="block text-sm font-medium text-stone-500 mb-1">Número de Cédula <span className="text-red-500">*</span></label>
               <input type="text" inputMode="numeric" maxLength={11} name="cedula" value={formData.cedula}
-                onChange={(e) => setFormData(prev => ({ ...prev, cedula: soloDigitos(e.target.value).slice(0, 11) }))}
+                onChange={(e) => {
+                  const value = soloDigitos(e.target.value).slice(0, 11);
+                  setFormData(prev => ({ ...prev, cedula: value }));
+                  if (errors.cedula) setErrors(prev => ({ ...prev, cedula: mensajeCedula(value) }));
+                }}
+                onBlur={(e) => setErrors(prev => ({ ...prev, cedula: mensajeCedula(soloDigitos(e.target.value).slice(0, 11)) }))}
                 className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.cedula ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="Ej: 00123456789" />
               {errors.cedula && <p className="text-red-500 text-xs mt-1">{errors.cedula}</p>}
             </div>
             <div>
               <label className="block text-sm font-medium text-stone-500 mb-1">Email <span className="text-red-500">*</span></label>
-              <input type="email" name="email" value={formData.email} onChange={handleChange}
+              <input type="email" name="email" value={formData.email} onChange={handleChange} onBlur={handleBlur}
                 className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.email ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="correo@ejemplo.com" />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
             <div>
               <label className="block text-sm font-medium text-stone-500 mb-1">Teléfono de Contacto <span className="text-red-500">*</span></label>
-              <input type="tel" inputMode="tel" maxLength={20} name="telefonoContacto" value={formData.telefonoContacto} onChange={handleChange}
+              <input type="tel" inputMode="tel" maxLength={20} name="telefonoContacto" value={formData.telefonoContacto} onChange={handleChange} onBlur={handleBlur}
                 className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.telefonoContacto ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="0412-1234567" />
               {errors.telefonoContacto && <p className="text-red-500 text-xs mt-1">{errors.telefonoContacto}</p>}
             </div>
@@ -1351,9 +1485,10 @@ const ToseiGusokuForm = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-stone-500 mb-1">Altura (cm)</label>
-                <input type="number" min="50" max="250" name="alturaAdulto" value={formData.alturaAdulto} onChange={handleChange}
-                  className="w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" placeholder="Ej: 170" />
+                <label className="block text-sm font-medium text-stone-500 mb-1">Altura (cm) <span className="text-red-500">*</span></label>
+                <input type="number" min="50" max="250" name="alturaAdulto" value={formData.alturaAdulto} onChange={handleChange} onBlur={handleBlur}
+                  className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.alturaAdulto ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="Ej: 170" />
+                {errors.alturaAdulto && <p className="text-red-500 text-xs mt-1">{errors.alturaAdulto}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-stone-500 mb-1">Talla de Pantalón <span className="text-red-500">*</span></label>
@@ -1395,7 +1530,7 @@ const ToseiGusokuForm = () => {
                 previews={formData.fotoAdultoPreview ? [formData.fotoAdultoPreview] : []}
                 error={errors.fotoAdulto}
                 accept="image/*"
-                hint="Formatos: JPG, PNG"
+                hint={`Formatos: JPG, PNG · Máx. ${MAX_FILE_SIZE_MB} MB`}
                 onFiles={(fs) => handleAdultoFoto(fs[0] ?? null)}
                 onRemove={handleAdultoFotoRemove}
               />
@@ -1405,7 +1540,7 @@ const ToseiGusokuForm = () => {
                 previews={formData.cedulaAdultoPreview ? [formData.cedulaAdultoPreview] : []}
                 error={errors.cedulaAdulto}
                 accept="image/*,.pdf"
-                hint="Formatos: JPG, PNG, PDF"
+                hint={`Formatos: JPG, PNG, PDF · Máx. ${MAX_FILE_SIZE_MB} MB`}
                 onFiles={(fs) => handleAdultoDocumento('cedulaAdulto', fs[0] ?? null)}
                 onRemove={() => handleAdultoDocumentoRemove('cedulaAdulto')}
               />
@@ -1415,7 +1550,7 @@ const ToseiGusokuForm = () => {
                 previews={formData.pasaporteAdultoPreview ? [formData.pasaporteAdultoPreview] : []}
                 error={errors.pasaporteAdulto}
                 accept="image/*,.pdf"
-                hint="Formatos: JPG, PNG, PDF"
+                hint={`Formatos: JPG, PNG, PDF · Máx. ${MAX_FILE_SIZE_MB} MB`}
                 onFiles={(fs) => handleAdultoDocumento('pasaporteAdulto', fs[0] ?? null)}
                 onRemove={() => handleAdultoDocumentoRemove('pasaporteAdulto')}
               />
@@ -1443,7 +1578,13 @@ const ToseiGusokuForm = () => {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-stone-500 mb-1">Correo del hijo (opcional)</label>
-                      <input type="email" value={hijo.email} onChange={(e) => handleHijoChange(hijo.id, 'email', e.target.value)}
+                      <input type="email" value={hijo.email}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          handleHijoChange(hijo.id, 'email', value);
+                          if (errors.hijos?.[index]?.email) setHijoError(hijo.id, 'email', mensajeEmailOpcional(value));
+                        }}
+                        onBlur={(e) => setHijoError(hijo.id, 'email', mensajeEmailOpcional(e.target.value))}
                         className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.hijos?.[index]?.email ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="correo@ejemplo.com" />
                       {errors.hijos?.[index]?.email && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.email}</p>}
                       <p className="text-xs text-stone-400 mt-1">Si tiene correo propio podrá tener su propia cuenta; si no, el padre lo verá desde su cuenta.</p>
@@ -1454,10 +1595,15 @@ const ToseiGusokuForm = () => {
                         variant="light"
                         captionLayout="dropdown"
                         value={hijo.fechaNacimiento}
+                        max={fechaMaximaNacimiento()}
                         className={errors.hijos?.[index]?.fechaNacimiento ? 'border-red-500' : undefined}
-                        onChange={(value) => handleHijoChange(hijo.id, 'fechaNacimiento', value)}
+                        onChange={(value) => {
+                          handleHijoChange(hijo.id, 'fechaNacimiento', value);
+                          setHijoError(hijo.id, 'fechaNacimiento', mensajeFechaNacimiento(value));
+                        }}
                       />
                       {errors.hijos?.[index]?.fechaNacimiento && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.fechaNacimiento}</p>}
+                      <p className="text-xs text-stone-400 mt-1">No se admiten menores de {EDAD_MINIMA_ANIOS} años.</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-stone-500 mb-1">Sexo <span className="text-red-500">*</span></label>
@@ -1494,9 +1640,16 @@ const ToseiGusokuForm = () => {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div>
-                        <label className="block text-sm font-medium text-stone-500 mb-1">Altura (cm)</label>
-                        <input type="number" min="50" max="250" value={hijo.altura} onChange={(e) => handleHijoChange(hijo.id, 'altura', e.target.value)}
-                          className="w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" placeholder="Ej: 130" />
+                        <label className="block text-sm font-medium text-stone-500 mb-1">Altura (cm) <span className="text-red-500">*</span></label>
+                        <input type="number" min="50" max="250" value={hijo.altura}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            handleHijoChange(hijo.id, 'altura', value);
+                            if (errors.hijos?.[index]?.altura) setHijoError(hijo.id, 'altura', mensajeAltura(value));
+                          }}
+                          onBlur={(e) => setHijoError(hijo.id, 'altura', mensajeAltura(e.target.value))}
+                          className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.hijos?.[index]?.altura ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="Ej: 130" />
+                        {errors.hijos?.[index]?.altura && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.altura}</p>}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-stone-500 mb-1">Talla de Pantalón <span className="text-red-500">*</span></label>
@@ -1530,7 +1683,7 @@ const ToseiGusokuForm = () => {
                         previews={hijo.fotoPreview ? [hijo.fotoPreview] : []}
                         error={errors.hijos?.[index]?.foto}
                         accept="image/*"
-                        hint="Formatos: JPG, PNG"
+                        hint={`Formatos: JPG, PNG · Máx. ${MAX_FILE_SIZE_MB} MB`}
                         onFiles={(fs) => handleHijoFoto(hijo.id, fs[0] ?? null)}
                         onRemove={() => handleHijoFotoRemove(hijo.id)}
                       />
@@ -1540,7 +1693,7 @@ const ToseiGusokuForm = () => {
                         previews={hijo.partidaPreview ? [hijo.partidaPreview] : []}
                         error={errors.hijos?.[index]?.partidaNacimiento}
                         accept="image/*,.pdf"
-                        hint="Formatos: JPG, PNG, PDF"
+                        hint={`Formatos: JPG, PNG, PDF · Máx. ${MAX_FILE_SIZE_MB} MB`}
                         onFiles={(fs) => handleHijoDocumento(hijo.id, 'partidaNacimiento', fs[0] ?? null)}
                         onRemove={() => handleHijoDocumentoRemove(hijo.id, 'partidaNacimiento')}
                       />
@@ -1550,7 +1703,7 @@ const ToseiGusokuForm = () => {
                         previews={hijo.pasaportePreview ? [hijo.pasaportePreview] : []}
                         error={errors.hijos?.[index]?.pasaporte}
                         accept="image/*,.pdf"
-                        hint="Formatos: JPG, PNG, PDF"
+                        hint={`Formatos: JPG, PNG, PDF · Máx. ${MAX_FILE_SIZE_MB} MB`}
                         onFiles={(fs) => handleHijoDocumento(hijo.id, 'pasaporte', fs[0] ?? null)}
                         onRemove={() => handleHijoDocumentoRemove(hijo.id, 'pasaporte')}
                       />
@@ -1589,7 +1742,13 @@ const ToseiGusokuForm = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-stone-500 mb-1">Correo del hijo (opcional)</label>
-                  <input type="email" value={hijo.email} onChange={(e) => handleHijoChange(hijo.id, 'email', e.target.value)}
+                  <input type="email" value={hijo.email}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      handleHijoChange(hijo.id, 'email', value);
+                      if (errors.hijos?.[index]?.email) setHijoError(hijo.id, 'email', mensajeEmailOpcional(value));
+                    }}
+                    onBlur={(e) => setHijoError(hijo.id, 'email', mensajeEmailOpcional(e.target.value))}
                     className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.hijos?.[index]?.email ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="correo@ejemplo.com" />
                   {errors.hijos?.[index]?.email && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.email}</p>}
                   <p className="text-xs text-stone-400 mt-1">Si tiene correo propio podrá tener su propia cuenta; si no, el padre lo verá desde su cuenta.</p>
@@ -1600,10 +1759,15 @@ const ToseiGusokuForm = () => {
                     variant="light"
                     captionLayout="dropdown"
                     value={hijo.fechaNacimiento}
+                    max={fechaMaximaNacimiento()}
                     className={errors.hijos?.[index]?.fechaNacimiento ? 'border-red-500' : undefined}
-                    onChange={(value) => handleHijoChange(hijo.id, 'fechaNacimiento', value)}
+                    onChange={(value) => {
+                      handleHijoChange(hijo.id, 'fechaNacimiento', value);
+                      setHijoError(hijo.id, 'fechaNacimiento', mensajeFechaNacimiento(value));
+                    }}
                   />
                   {errors.hijos?.[index]?.fechaNacimiento && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.fechaNacimiento}</p>}
+                  <p className="text-xs text-stone-400 mt-1">No se admiten menores de {EDAD_MINIMA_ANIOS} años.</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-stone-500 mb-1">Sexo <span className="text-red-500">*</span></label>
@@ -1640,9 +1804,16 @@ const ToseiGusokuForm = () => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-stone-500 mb-1">Altura (cm)</label>
-                    <input type="number" min="50" max="250" value={hijo.altura} onChange={(e) => handleHijoChange(hijo.id, 'altura', e.target.value)}
-                      className="w-full px-4 py-2 border border-brand-accent/60 rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition" placeholder="Ej: 130" />
+                    <label className="block text-sm font-medium text-stone-500 mb-1">Altura (cm) <span className="text-red-500">*</span></label>
+                    <input type="number" min="50" max="250" value={hijo.altura}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        handleHijoChange(hijo.id, 'altura', value);
+                        if (errors.hijos?.[index]?.altura) setHijoError(hijo.id, 'altura', mensajeAltura(value));
+                      }}
+                      onBlur={(e) => setHijoError(hijo.id, 'altura', mensajeAltura(e.target.value))}
+                      className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.hijos?.[index]?.altura ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="Ej: 130" />
+                    {errors.hijos?.[index]?.altura && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.altura}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-stone-500 mb-1">Talla de Pantalón <span className="text-red-500">*</span></label>
@@ -1676,7 +1847,7 @@ const ToseiGusokuForm = () => {
                     previews={hijo.fotoPreview ? [hijo.fotoPreview] : []}
                     error={errors.hijos?.[index]?.foto}
                     accept="image/*"
-                    hint="Formatos: JPG, PNG"
+                    hint={`Formatos: JPG, PNG · Máx. ${MAX_FILE_SIZE_MB} MB`}
                     onFiles={(fs) => handleHijoFoto(hijo.id, fs[0] ?? null)}
                     onRemove={() => handleHijoFotoRemove(hijo.id)}
                   />
@@ -1686,7 +1857,7 @@ const ToseiGusokuForm = () => {
                     previews={hijo.partidaPreview ? [hijo.partidaPreview] : []}
                     error={errors.hijos?.[index]?.partidaNacimiento}
                     accept="image/*,.pdf"
-                    hint="Formatos: JPG, PNG, PDF"
+                    hint={`Formatos: JPG, PNG, PDF · Máx. ${MAX_FILE_SIZE_MB} MB`}
                     onFiles={(fs) => handleHijoDocumento(hijo.id, 'partidaNacimiento', fs[0] ?? null)}
                     onRemove={() => handleHijoDocumentoRemove(hijo.id, 'partidaNacimiento')}
                   />
@@ -1696,7 +1867,7 @@ const ToseiGusokuForm = () => {
                     previews={hijo.pasaportePreview ? [hijo.pasaportePreview] : []}
                     error={errors.hijos?.[index]?.pasaporte}
                     accept="image/*,.pdf"
-                    hint="Formatos: JPG, PNG, PDF"
+                    hint={`Formatos: JPG, PNG, PDF · Máx. ${MAX_FILE_SIZE_MB} MB`}
                     onFiles={(fs) => handleHijoDocumento(hijo.id, 'pasaporte', fs[0] ?? null)}
                     onRemove={() => handleHijoDocumentoRemove(hijo.id, 'pasaporte')}
                   />
@@ -1721,7 +1892,7 @@ const ToseiGusokuForm = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-stone-500 mb-1">Teléfono de la Madre</label>
-                  <input type="tel" inputMode="tel" maxLength={20} name="telefonoMadre" value={formData.telefonoMadre} onChange={handleChange}
+                  <input type="tel" inputMode="tel" maxLength={20} name="telefonoMadre" value={formData.telefonoMadre} onChange={handleChange} onBlur={handleBlur}
                     className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.telefonoMadre ? 'border-red-500' : 'border-brand-accent/60'}`} />
                   {errors.telefonoMadre && <p className="text-red-500 text-xs mt-1">{errors.telefonoMadre}</p>}
                 </div>
@@ -1733,7 +1904,7 @@ const ToseiGusokuForm = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-stone-500 mb-1">Teléfono del Padre</label>
-                  <input type="tel" inputMode="tel" maxLength={20} name="telefonoPadre" value={formData.telefonoPadre} onChange={handleChange}
+                  <input type="tel" inputMode="tel" maxLength={20} name="telefonoPadre" value={formData.telefonoPadre} onChange={handleChange} onBlur={handleBlur}
                     className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.telefonoPadre ? 'border-red-500' : 'border-brand-accent/60'}`} />
                   {errors.telefonoPadre && <p className="text-red-500 text-xs mt-1">{errors.telefonoPadre}</p>}
                 </div>
@@ -1745,7 +1916,7 @@ const ToseiGusokuForm = () => {
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-stone-500 mb-1">Email <span className="text-red-500">*</span></label>
-                  <input type="email" name="email" value={formData.email} onChange={handleChange}
+                  <input type="email" name="email" value={formData.email} onChange={handleChange} onBlur={handleBlur}
                     className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.email ? 'border-red-500' : 'border-brand-accent/60'}`} placeholder="correo@ejemplo.com" />
                   {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                 </div>

@@ -1,10 +1,12 @@
 import { Prisma } from '@/lib/generated/prisma'
 import { db } from '@/lib/db'
-import { uploadPrivateDocument, sanitizeStorageName } from '@/lib/document-storage'
+import { deletePrivateDocuments } from '@/lib/document-storage'
 import {
   esCedulaValida,
   esTelefonoValido,
-  validarArchivo,
+  esAlturaValida,
+  esFechaNacimientoValida,
+  EDAD_MINIMA_ANIOS,
   TALLAS_ROPA,
   RESPONSABILIDADES_OPCIONES,
   ESTADO_CIVIL_HOGAR,
@@ -19,6 +21,15 @@ import {
   TIEMPO_ARTE_MARCIAL,
   CUANDO_ARTE_MARCIAL,
 } from '@/lib/enrollment-validation'
+import {
+  DOCUMENT_LABELS,
+  MAX_DOCUMENTS_PER_APPLICANT,
+  MAX_DOCUMENTS_PER_SUBMISSION,
+  applicantRole,
+  requiredDocumentsFor,
+  type DocumentKey,
+} from '@/lib/enrollment-documents'
+import { verifyUploadRef, type UploadRef } from '@/lib/security/upload-token'
 import { buildEnrollmentNotificationRecord } from '@/lib/dashboard/student-export'
 import { postToN8n } from '@/lib/integrations/n8n'
 import { notifyEnrollmentByTelegram } from '@/lib/integrations/telegram'
@@ -60,26 +71,10 @@ const OPCIONES_INTERES_NINO: readonly string[] = [
   'Es una decisión principalmente adulta',
 ]
 
-// Límites de subida: además del tope de 5 MB por archivo (validarArchivo), se
-// acota el total del multipart y el número de documentos por aspirante.
-const MAX_REQUEST_BYTES = 30 * 1024 * 1024
-const MAX_TOTAL_UPLOAD_BYTES = 25 * 1024 * 1024
-const MAX_DOCUMENTS_PER_APPLICANT = 5
-
-// Tipos de documento aceptados en las claves `document-{aspirante}-{TIPO}`.
-type DocumentKey = 'PROFILE_PHOTO' | 'IDENTITY' | 'BIRTH_CERTIFICATE' | 'PASSPORT'
-const DOCUMENT_TYPE_MAP: Record<string, DocumentKey> = {
-  PROFILE_PHOTO: 'PROFILE_PHOTO',
-  IDENTITY: 'IDENTITY',
-  BIRTH_CERTIFICATE: 'BIRTH_CERTIFICATE',
-  PASSPORT: 'PASSPORT',
-}
-const DOCUMENT_LABELS: Record<DocumentKey, string> = {
-  PROFILE_PHOTO: 'la foto de perfil',
-  IDENTITY: 'la cédula',
-  BIRTH_CERTIFICATE: 'la partida de nacimiento',
-  PASSPORT: 'el pasaporte',
-}
+// El cuerpo de la confirmación es solo JSON con metadatos: los archivos ya se
+// subieron por el endpoint /api/enrollments/family/document. Se acota igualmente
+// para rechazar payloads abusivos.
+const MAX_JSON_BODY_BYTES = 1024 * 1024
 
 // Allowlists de claves persistibles en los JSON del formulario. Descartar lo
 // desconocido evita "over-posting" (claves basura) en la base de datos.
@@ -179,14 +174,28 @@ const profileDataSchema = z
     if (relacion && !['Padre', 'Madre', 'Tutor legal'].includes(relacion)) {
       ctx.addIssue({ code: 'custom', path: ['relacionConHijos'], message: 'La relación del tutor no es válida.' })
     }
+
+    // Altura obligatoria: se usa para tallas y control de crecimiento.
+    const altura = typeof profile.height === 'string' ? profile.height.trim() : ''
+    if (!altura) {
+      ctx.addIssue({ code: 'custom', path: ['height'], message: 'Debes indicar la altura.' })
+    } else if (!esAlturaValida(altura)) {
+      ctx.addIssue({ code: 'custom', path: ['height'], message: 'La altura debe estar entre 50 y 250 cm.' })
+    }
   })
 
-const applicantSchema = z.object({
-  name: z.string().trim().min(2).max(200),
-  dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'La fecha de nacimiento no es válida.'),
-  email: z.string().trim().toLowerCase().email('El correo del aspirante no es válido.').max(320).optional().nullable(),
-  profileData: profileDataSchema,
-})
+const applicantSchema = z
+  .object({
+    name: z.string().trim().min(2).max(200),
+    dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'La fecha de nacimiento no es válida.'),
+    email: z.string().trim().toLowerCase().email('El correo del aspirante no es válido.').max(320).optional().nullable(),
+    profileData: profileDataSchema,
+  })
+  // No se admiten menores de EDAD_MINIMA_ANIOS.
+  .refine((applicant) => esFechaNacimientoValida(applicant.dateOfBirth), {
+    path: ['dateOfBirth'],
+    message: `El aspirante debe tener al menos ${EDAD_MINIMA_ANIOS} años.`,
+  })
 
 const payloadSchema = z
   .object({
@@ -363,8 +372,10 @@ const payloadSchema = z
 const FIELD_LABELS: Record<string, string> = {
   email: 'Email',
   phone: 'Teléfono de contacto',
+  documents: 'Documentos adjuntos',
   'applicants.name': 'Nombre y Apellido',
   'applicants.dateOfBirth': 'Fecha de Nacimiento',
+  'applicants.profileData.height': 'Altura',
   'applicants.profileData.nationalId': 'Número de Cédula',
   'applicants.profileData.sexo': 'Sexo',
   'applicants.profileData.pantSize': 'Talla de Pantalón',
@@ -400,7 +411,10 @@ const FIELD_LABELS: Record<string, string> = {
 }
 
 function fieldLabel(path: string) {
-  return FIELD_LABELS[path] ?? FIELD_LABELS[path.replace(/^applicants\.\d+\./, 'applicants.')] ?? path
+  // Las rutas llegan con el prefijo `payload.` porque el cuerpo de la
+  // confirmación es { payload, documents }.
+  const normalized = path.replace(/^payload\./, '')
+  return FIELD_LABELS[normalized] ?? FIELD_LABELS[normalized.replace(/^applicants\.\d+\./, 'applicants.')] ?? path
 }
 
 function readableValidationMessage(issues: z.ZodIssue[]) {
@@ -410,6 +424,51 @@ function readableValidationMessage(issues: z.ZodIssue[]) {
     return `${label}: ${issue.message}`
   })
   return `Revisa la inscripción: ${details.join(' · ')}`
+}
+
+// Cuerpo de la confirmación: los datos del formulario y la lista de tokens
+// firmados que devolvió el endpoint de subida por archivo.
+const confirmSchema = z.object({
+  payload: payloadSchema,
+  documents: z.array(z.string().min(1)).min(1).max(MAX_DOCUMENTS_PER_SUBMISSION),
+})
+
+// Agrupa los documentos verificados por aspirante para poder comprobar
+// repetidos, tope por aspirante y documentos obligatorios.
+function indexDocuments(refs: UploadRef[]) {
+  const byApplicant = new Map<number, Map<DocumentKey, UploadRef>>()
+  for (const ref of refs) {
+    const forApplicant = byApplicant.get(ref.applicantIndex) ?? new Map<DocumentKey, UploadRef>()
+    forApplicant.set(ref.docType, ref)
+    byApplicant.set(ref.applicantIndex, forApplicant)
+  }
+  return byApplicant
+}
+
+// Devuelve el primer problema encontrado con los documentos (o null si todo
+// está correcto). No lanza: el llamador decide qué hacer con el error.
+function validarDocumentos(refs: UploadRef[], applicantsCount: number, tipoRegistro: string): string | null {
+  for (const ref of refs) {
+    if (ref.applicantIndex >= applicantsCount) {
+      return 'Documento asociado a un aspirante no válido.'
+    }
+  }
+  if (refs.length !== new Set(refs.map((ref) => `${ref.applicantIndex}:${ref.docType}`)).size) {
+    return 'Hay documentos repetidos para el mismo aspirante.'
+  }
+  const docsByApplicant = indexDocuments(refs)
+  for (let applicantIndex = 0; applicantIndex < applicantsCount; applicantIndex++) {
+    const forApplicant = docsByApplicant.get(applicantIndex) ?? new Map<DocumentKey, UploadRef>()
+    if (forApplicant.size > MAX_DOCUMENTS_PER_APPLICANT) {
+      return `No se permiten más de ${MAX_DOCUMENTS_PER_APPLICANT} documentos por aspirante.`
+    }
+    for (const requiredDocument of requiredDocumentsFor(applicantRole(tipoRegistro, applicantIndex))) {
+      if (!forApplicant.has(requiredDocument)) {
+        return `Falta ${DOCUMENT_LABELS[requiredDocument]} del aspirante ${applicantIndex + 1}.`
+      }
+    }
+  }
+  return null
 }
 
 // ==================== Ruta ====================
@@ -437,32 +496,19 @@ export async function POST(request: Request) {
       return rateLimitResponse(globalAttempt.retryAfterSeconds, 'El servicio de inscripción está recibiendo muchas solicitudes. Inténtalo de nuevo más tarde.', 'RATE_LIMIT_GLOBAL')
     }
 
-    // Rechaza cuerpos demasiado grandes antes de parsear el multipart.
+    // El cuerpo es JSON con metadatos: los archivos ya se subieron por el
+    // endpoint de subida por archivo. Solo se acota el tamaño del JSON.
     const declaredLength = Number(request.headers.get('content-length') ?? '0')
-    if (declaredLength > MAX_REQUEST_BYTES) {
-      return errorResponse('PAYLOAD_TOO_LARGE', 'La inscripción supera el tamaño máximo permitido.', 413)
+    if (declaredLength > MAX_JSON_BODY_BYTES) {
+      return errorResponse('PAYLOAD_TOO_LARGE', 'La solicitud supera el tamaño permitido.', 413)
     }
 
-    const formData = await request.formData().catch(() => null)
-    const payload = formData?.get('payload')
-    let parsedPayload: string | null = null
-    if (typeof payload === 'string') {
-      try {
-        parsedPayload = JSON.parse(payload)
-      } catch {
-        parsedPayload = null
-      }
-    }
-    const parsed = parsedPayload ? payloadSchema.safeParse(parsedPayload) : null
-
-    if (!parsed?.success) {
-      const message = parsed && parsed.error
-        ? readableValidationMessage(parsed.error.issues)
-        : 'Datos de inscripción no válidos.'
-      return errorResponse('VALIDATION', message, 400)
+    const parsed = confirmSchema.safeParse(await request.json().catch(() => null))
+    if (!parsed.success) {
+      return errorResponse('VALIDATION', readableValidationMessage(parsed.error.issues), 400)
     }
 
-    const email = String(parsed.data.email ?? '').toLowerCase()
+    const email = String(parsed.data.payload.email ?? '').toLowerCase()
     const emailAttempt = await consumeRateLimit(`enroll-family:${email}`, {
       limit: 3,
       windowMs: 60 * 60 * 1000,
@@ -471,8 +517,19 @@ export async function POST(request: Request) {
       return rateLimitResponse(emailAttempt.retryAfterSeconds, 'Ya existe una solicitud reciente para este correo. Inténtalo de nuevo más tarde.', 'RATE_LIMIT')
     }
 
-    if (!formData) {
-      return errorResponse('NO_FILES', 'Solicitud sin archivos adjuntos', 400)
+    // Verifica los tokens firmados que devolvió el endpoint de subida: así el
+    // cliente no puede inventar rutas ni referenciar documentos de otra
+    // inscripción.
+    const refs: UploadRef[] = []
+    for (const token of parsed.data.documents) {
+      const ref = verifyUploadRef(token)
+      if (!ref) {
+        return errorResponse('VALIDATION', 'Alguno de los documentos adjuntos no es válido o expiró. Vuelve a cargarlos e inténtalo de nuevo.', 400)
+      }
+      refs.push(ref)
+    }
+    if (new Set(refs.map((ref) => ref.submissionId)).size !== 1) {
+      return errorResponse('VALIDATION', 'Los documentos adjuntos no pertenecen a la misma inscripción.', 400)
     }
 
     let branch: { id: string; schoolId: string } | null
@@ -486,58 +543,22 @@ export async function POST(request: Request) {
       return errorResponse('BRANCH', 'No hay una sede disponible para la inscripción en este momento. Contacta al dojo.', 503)
     }
 
-    // Validación de archivos: la foto de perfil debe ser imagen; el resto de
-    // documentos también admiten PDF. Se acota el total subido, el número de
-    // documentos por aspirante y se exigen los documentos obligatorios.
-    const docsByApplicant = new Map<number, DocumentKey[]>()
-    let totalUploadBytes = 0
-    for (const [key, value] of formData.entries()) {
-      if (!key.startsWith('document-') || !(value instanceof File)) continue
-      const [, applicantIndexRaw, type] = key.split('-')
-      const applicantIndex = Number(applicantIndexRaw)
-      if (!Number.isInteger(applicantIndex) || applicantIndex < 0) {
-        return errorResponse('VALIDATION', 'Documento asociado a un aspirante no válido.', 400)
-      }
-      const documentType = DOCUMENT_TYPE_MAP[type]
-      if (!documentType) {
-        return errorResponse('VALIDATION', 'Tipo de documento no válido.', 400)
-      }
-      totalUploadBytes += value.size
-      if (totalUploadBytes > MAX_TOTAL_UPLOAD_BYTES) {
-        return errorResponse('PAYLOAD_TOO_LARGE', 'La inscripción supera el tamaño máximo permitido.', 413)
-      }
-      const documentList = docsByApplicant.get(applicantIndex) ?? []
-      if (documentList.length + 1 > MAX_DOCUMENTS_PER_APPLICANT) {
-        return errorResponse('VALIDATION', `No se permiten más de ${MAX_DOCUMENTS_PER_APPLICANT} documentos por aspirante.`, 400)
-      }
-      documentList.push(documentType)
-      docsByApplicant.set(applicantIndex, documentList)
-      const message = await validarArchivo(value, documentType !== 'PROFILE_PHOTO')
-      if (message) {
-        return errorResponse('VALIDATION', message, 400)
-      }
-    }
-
-    // Documentos obligatorios por aspirante: la foto siempre; cédula + pasaporte
-    // para adultos y tutor de familiar; partida de nacimiento + pasaporte para
-    // menores.
-    const tipoRegistro = typeof parsed.data.registrationData.tipoRegistro === 'string'
-      ? parsed.data.registrationData.tipoRegistro
+    const input = parsed.data.payload
+    const tipoRegistro = typeof input.registrationData.tipoRegistro === 'string'
+      ? input.registrationData.tipoRegistro
       : ''
-    for (let applicantIndex = 0; applicantIndex < parsed.data.applicants.length; applicantIndex++) {
-      const esTutorOAdulto = tipoRegistro === 'adulto' || (tipoRegistro === 'familiar' && applicantIndex === 0)
-      const requiredDocuments: DocumentKey[] = esTutorOAdulto
-        ? ['PROFILE_PHOTO', 'IDENTITY', 'PASSPORT']
-        : ['PROFILE_PHOTO', 'BIRTH_CERTIFICATE', 'PASSPORT']
-      const present = docsByApplicant.get(applicantIndex) ?? []
-      for (const requiredDocument of requiredDocuments) {
-        if (!present.includes(requiredDocument)) {
-          return errorResponse('VALIDATION', `Falta ${DOCUMENT_LABELS[requiredDocument]} del aspirante ${applicantIndex + 1}.`, 400)
-        }
-      }
+
+    // Verifica que cada documento corresponda a un aspirante existente y que
+    // cada aspirante tenga los documentos obligatorios según su rol.
+    const documentsError = validarDocumentos(refs, input.applicants.length, tipoRegistro)
+    if (documentsError) {
+      // La inscripción no es válida: se borran los archivos ya subidos para no
+      // dejar huérfanos en el almacenamiento (el cliente los reenvía con un
+      // envío nuevo al reintentar).
+      await deletePrivateDocuments(refs.map((ref) => ref.storageKey)).catch(() => {})
+      return errorResponse('VALIDATION', documentsError, 400)
     }
 
-    const input = parsed.data
     // Normaliza antes de guardar/enviar: recorta, deduplica arrays y descarta
     // claves fuera de la allowlist (anti over-posting).
     input.registrationData = normalizeSubmission(input.registrationData, ALLOWED_REGISTRATION_KEYS)
@@ -547,6 +568,7 @@ export async function POST(request: Request) {
     const reg = input.registrationData
     const interest = reg.tipoRegistro === 'menor' ? 'Pequeños Guerreros' : reg.tipoRegistro === 'familiar' ? 'Familia (adulto + menores)' : 'Jóvenes y Adultos'
     let enrollment: { id: string }
+    let applicants: { id: string; reused: boolean }[]
     try {
       enrollment = await db.enrollment.upsert({
         where: { contactEmail_status: { contactEmail: input.email.toLowerCase(), status: 'PENDING' } },
@@ -563,7 +585,7 @@ export async function POST(request: Request) {
         select: { id: true, name: true, dateOfBirth: true },
       })
 
-      const applicants: { id: string; reused: boolean }[] = await Promise.all(
+      applicants = await Promise.all(
         input.applicants.map(async (applicant) => {
           const dateOfBirth = new Date(`${applicant.dateOfBirth}T00:00:00.000Z`)
           const match = existingConverted.find(
@@ -588,35 +610,47 @@ export async function POST(request: Request) {
         }),
       )
 
-      let failedDocument = 'los documentos de la inscripción'
-      try {
-        for (const [key, value] of formData.entries()) {
-          if (!key.startsWith('document-') || !(value instanceof File)) continue
-          const [, applicantIndex, type] = key.split('-')
-          const applicant = applicants[Number(applicantIndex)]
-          if (!applicant || applicant.reused) continue
-          const documentType = DOCUMENT_TYPE_MAP[type] ?? 'IDENTITY'
-          const documentLabel = DOCUMENT_LABELS[documentType]
-          failedDocument = `${documentLabel} del aspirante ${Number(applicantIndex) + 1}`
-          let storageKey = ''
-          try {
-            storageKey = `enrollments/${enrollment.id}/${applicant.id}/${crypto.randomUUID()}-${sanitizeStorageName(value.name)}`
-            await uploadPrivateDocument(storageKey, value)
-            await db.studentDocument.create({ data: { enrollmentId: enrollment.id, applicantId: applicant.id, type: documentType, fileName: value.name, storageKey, mimeType: value.type, fileSize: value.size } })
-          } catch (fileError) {
-            console.error('Error guardando documento de inscripción:', fileError, { storageKey, fileName: value.name, fileType: value.type, fileSize: value.size })
-            const cause = (fileError as { cause?: unknown }).cause
-            if (cause) console.error('Causa raíz de Supabase:', cause)
-            throw fileError
-          }
-        }
-      } catch (uploadError) {
-        console.error('Error guardando documentos de inscripción:', uploadError)
-        return errorResponse('STORAGE', `No fue posible guardar ${failedDocument}. Inténtalo nuevamente en unos momentos.`, 503)
-      }
     } catch (dbError) {
+      // La inscripción no se guardó: se borran los archivos ya subidos para no
+      // dejar huérfanos en el almacenamiento.
+      await deletePrivateDocuments(refs.map((ref) => ref.storageKey)).catch(() => {})
       console.error('Error guardando la inscripción:', dbError)
       return errorResponse('DB', describeDbError(dbError), 503)
+    }
+
+    // Asocia cada documento verificado al aspirante que le corresponde. Los
+    // aspirantes ya convertidos en alumnos conservan sus documentos, por lo que
+    // las subidas nuevas para ellos se descartan más abajo.
+    const usedKeys = new Set<string>()
+    try {
+      for (const ref of refs) {
+        const applicant = applicants[ref.applicantIndex]
+        if (!applicant || applicant.reused) continue
+        await db.studentDocument.create({
+          data: {
+            enrollmentId: enrollment.id,
+            applicantId: applicant.id,
+            type: ref.docType,
+            fileName: ref.fileName,
+            storageKey: ref.storageKey,
+            mimeType: ref.mimeType,
+            fileSize: ref.fileSize,
+          },
+        })
+        usedKeys.add(ref.storageKey)
+      }
+    } catch (documentError) {
+      console.error('Error guardando documentos de inscripción:', documentError)
+      return errorResponse('DB', 'No fue posible guardar los documentos de la inscripción. Inténtalo nuevamente en unos momentos.', 503)
+    }
+
+    // Subidas que no quedaron asociadas (aspirantes ya convertidos): se borran
+    // para no acumular archivos huérfanos.
+    const orphanKeys = refs.map((ref) => ref.storageKey).filter((key) => !usedKeys.has(key))
+    if (orphanKeys.length > 0) {
+      await deletePrivateDocuments(orphanKeys).catch((cleanupError) => {
+        console.error('Error limpiando documentos huérfanos de inscripción:', cleanupError)
+      })
     }
 
     // Notificaciones posteriores al guardado: nunca deben convertir un alta

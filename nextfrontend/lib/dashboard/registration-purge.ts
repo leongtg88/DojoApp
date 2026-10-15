@@ -1,6 +1,10 @@
 import { Prisma } from '@/lib/generated/prisma'
 import { db } from '@/lib/db'
-import { deletePrivateDocuments } from '@/lib/document-storage'
+import { deletePrivateDocuments, listPrivateDocuments } from '@/lib/document-storage'
+
+// Prefijo (una sola "carpeta") donde viven los documentos subidos antes de
+// confirmar la inscripción.
+export const PENDING_UPLOADS_PREFIX = 'enrollments/pending'
 
 /**
  * Elimina la información capturada por el formulario de inscripción de un alumno:
@@ -78,4 +82,30 @@ export async function purgeStalePendingEnrollments(olderThanDays = 30, limit = 5
 	])
 
 	return ids.length
+}
+
+/**
+ * Barre los documentos que se subieron pero nunca se asociaron a una inscripción
+ * (por ejemplo, formularios abandonados a mitad de camino). Solo borra objetos
+ * con más antigüedad que `olderThanHours`, para no tocar subidas en curso: los
+ * tokens de subida caducan en 1 hora.
+ *
+ * Es best-effort: los errores se registran y no se propagan.
+ */
+export async function purgeStalePendingUploads(olderThanHours = 24, limit = 100): Promise<number> {
+	const cutoff = Date.now() - olderThanHours * 60 * 60 * 1000
+
+	try {
+		const objects = await listPrivateDocuments(PENDING_UPLOADS_PREFIX, limit)
+		const staleKeys = objects
+			.filter((object) => Boolean(object.createdAt) && new Date(object.createdAt as string).getTime() < cutoff)
+			.map((object) => `${PENDING_UPLOADS_PREFIX}/${object.name}`)
+
+		if (staleKeys.length === 0) return 0
+		await deletePrivateDocuments(staleKeys)
+		return staleKeys.length
+	} catch (reason) {
+		console.error('[purge-inscripciones] no fue posible barrer subidas pendientes:', reason)
+		return 0
+	}
 }

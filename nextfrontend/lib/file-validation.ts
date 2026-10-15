@@ -1,4 +1,8 @@
-export const MAX_FILE_SIZE = 5 * 1024 * 1024
+// Tope por archivo. No se puede subir a 5 MB: las funciones de Vercel rechazan
+// cualquier petición de más de 4.5 MB (error 413), así que se deja un margen
+// para las cabeceras del multipart.
+export const MAX_FILE_SIZE_MB = 4
+export const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024
 
 export const ALLOWED_FILE_TYPES: Record<string, readonly string[]> = {
   'image/jpeg': ['jpg', 'jpeg'],
