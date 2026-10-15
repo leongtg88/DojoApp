@@ -14,6 +14,9 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Cliente de Prisma generado (no se edita a mano).
     "lib/generated/**",
+    // Prototipos/maquetas externas (también excluidas en tsconfig.json).
+    "components/dashboard/tosei-gusoku-dojo---portal-del-estudiante-1/**",
+    "components/dashboard/tosei-gusoku-dojo---sistema-de-seguimiento-marcial-/**",
   ]),
 ]);
 
