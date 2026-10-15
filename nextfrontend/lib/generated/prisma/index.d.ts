@@ -175,6 +175,11 @@ export type WhatsAppMessage = $Result.DefaultSelection<Prisma.$WhatsAppMessagePa
  */
 export type PushSubscription = $Result.DefaultSelection<Prisma.$PushSubscriptionPayload>
 /**
+ * Model WebAuthnCredential
+ * 
+ */
+export type WebAuthnCredential = $Result.DefaultSelection<Prisma.$WebAuthnCredentialPayload>
+/**
  * Model Holiday
  * 
  */
@@ -998,6 +1003,16 @@ export class PrismaClient<
   get pushSubscription(): Prisma.PushSubscriptionDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.webAuthnCredential`: Exposes CRUD operations for the **WebAuthnCredential** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WebAuthnCredentials
+    * const webAuthnCredentials = await prisma.webAuthnCredential.findMany()
+    * ```
+    */
+  get webAuthnCredential(): Prisma.WebAuthnCredentialDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.holiday`: Exposes CRUD operations for the **Holiday** model.
     * Example usage:
     * ```ts
@@ -1535,6 +1550,7 @@ export namespace Prisma {
     WhatsAppContact: 'WhatsAppContact',
     WhatsAppMessage: 'WhatsAppMessage',
     PushSubscription: 'PushSubscription',
+    WebAuthnCredential: 'WebAuthnCredential',
     Holiday: 'Holiday',
     ExamConvocation: 'ExamConvocation',
     Review: 'Review',
@@ -1556,7 +1572,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniquePracticeLog" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "absenceJustification" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "whatsAppContact" | "whatsAppMessage" | "pushSubscription" | "holiday" | "examConvocation" | "review" | "apiUsage" | "auditLog" | "post"
+      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniquePracticeLog" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "absenceJustification" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "whatsAppContact" | "whatsAppMessage" | "pushSubscription" | "webAuthnCredential" | "holiday" | "examConvocation" | "review" | "apiUsage" | "auditLog" | "post"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3928,6 +3944,80 @@ export namespace Prisma {
           }
         }
       }
+      WebAuthnCredential: {
+        payload: Prisma.$WebAuthnCredentialPayload<ExtArgs>
+        fields: Prisma.WebAuthnCredentialFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WebAuthnCredentialFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebAuthnCredentialPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WebAuthnCredentialFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebAuthnCredentialPayload>
+          }
+          findFirst: {
+            args: Prisma.WebAuthnCredentialFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebAuthnCredentialPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WebAuthnCredentialFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebAuthnCredentialPayload>
+          }
+          findMany: {
+            args: Prisma.WebAuthnCredentialFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebAuthnCredentialPayload>[]
+          }
+          create: {
+            args: Prisma.WebAuthnCredentialCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebAuthnCredentialPayload>
+          }
+          createMany: {
+            args: Prisma.WebAuthnCredentialCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WebAuthnCredentialCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebAuthnCredentialPayload>[]
+          }
+          delete: {
+            args: Prisma.WebAuthnCredentialDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebAuthnCredentialPayload>
+          }
+          update: {
+            args: Prisma.WebAuthnCredentialUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebAuthnCredentialPayload>
+          }
+          deleteMany: {
+            args: Prisma.WebAuthnCredentialDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WebAuthnCredentialUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WebAuthnCredentialUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebAuthnCredentialPayload>[]
+          }
+          upsert: {
+            args: Prisma.WebAuthnCredentialUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebAuthnCredentialPayload>
+          }
+          aggregate: {
+            args: Prisma.WebAuthnCredentialAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWebAuthnCredential>
+          }
+          groupBy: {
+            args: Prisma.WebAuthnCredentialGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WebAuthnCredentialGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WebAuthnCredentialCountArgs<ExtArgs>
+            result: $Utils.Optional<WebAuthnCredentialCountAggregateOutputType> | number
+          }
+        }
+      }
       Holiday: {
         payload: Prisma.$HolidayPayload<ExtArgs>
         fields: Prisma.HolidayFieldRefs
@@ -4527,6 +4617,7 @@ export namespace Prisma {
     whatsAppContact?: WhatsAppContactOmit
     whatsAppMessage?: WhatsAppMessageOmit
     pushSubscription?: PushSubscriptionOmit
+    webAuthnCredential?: WebAuthnCredentialOmit
     holiday?: HolidayOmit
     examConvocation?: ExamConvocationOmit
     review?: ReviewOmit
@@ -4816,6 +4907,7 @@ export namespace Prisma {
     acceptedInvitations: number
     notifications: number
     pushSubscriptions: number
+    webauthnCredentials: number
     whatsappMessages: number
     auditLogs: number
     classes: number
@@ -4838,6 +4930,7 @@ export namespace Prisma {
     acceptedInvitations?: boolean | UserCountOutputTypeCountAcceptedInvitationsArgs
     notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
     pushSubscriptions?: boolean | UserCountOutputTypeCountPushSubscriptionsArgs
+    webauthnCredentials?: boolean | UserCountOutputTypeCountWebauthnCredentialsArgs
     whatsappMessages?: boolean | UserCountOutputTypeCountWhatsappMessagesArgs
     auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
     classes?: boolean | UserCountOutputTypeCountClassesArgs
@@ -4958,6 +5051,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountPushSubscriptionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PushSubscriptionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountWebauthnCredentialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WebAuthnCredentialWhereInput
   }
 
   /**
@@ -8370,6 +8470,7 @@ export namespace Prisma {
     acceptedInvitations?: boolean | User$acceptedInvitationsArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     pushSubscriptions?: boolean | User$pushSubscriptionsArgs<ExtArgs>
+    webauthnCredentials?: boolean | User$webauthnCredentialsArgs<ExtArgs>
     whatsappContact?: boolean | User$whatsappContactArgs<ExtArgs>
     whatsappMessages?: boolean | User$whatsappMessagesArgs<ExtArgs>
     auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
@@ -8448,6 +8549,7 @@ export namespace Prisma {
     acceptedInvitations?: boolean | User$acceptedInvitationsArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     pushSubscriptions?: boolean | User$pushSubscriptionsArgs<ExtArgs>
+    webauthnCredentials?: boolean | User$webauthnCredentialsArgs<ExtArgs>
     whatsappContact?: boolean | User$whatsappContactArgs<ExtArgs>
     whatsappMessages?: boolean | User$whatsappMessagesArgs<ExtArgs>
     auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
@@ -8486,6 +8588,7 @@ export namespace Prisma {
       acceptedInvitations: Prisma.$StudentInvitationTokenPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       pushSubscriptions: Prisma.$PushSubscriptionPayload<ExtArgs>[]
+      webauthnCredentials: Prisma.$WebAuthnCredentialPayload<ExtArgs>[]
       whatsappContact: Prisma.$WhatsAppContactPayload<ExtArgs> | null
       whatsappMessages: Prisma.$WhatsAppMessagePayload<ExtArgs>[]
       auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
@@ -8918,6 +9021,7 @@ export namespace Prisma {
     acceptedInvitations<T extends User$acceptedInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$acceptedInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentInvitationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     pushSubscriptions<T extends User$pushSubscriptionsArgs<ExtArgs> = {}>(args?: Subset<T, User$pushSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PushSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    webauthnCredentials<T extends User$webauthnCredentialsArgs<ExtArgs> = {}>(args?: Subset<T, User$webauthnCredentialsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebAuthnCredentialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     whatsappContact<T extends User$whatsappContactArgs<ExtArgs> = {}>(args?: Subset<T, User$whatsappContactArgs<ExtArgs>>): Prisma__WhatsAppContactClient<$Result.GetResult<Prisma.$WhatsAppContactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     whatsappMessages<T extends User$whatsappMessagesArgs<ExtArgs> = {}>(args?: Subset<T, User$whatsappMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhatsAppMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     auditLogs<T extends User$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -9798,6 +9902,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PushSubscriptionScalarFieldEnum | PushSubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * User.webauthnCredentials
+   */
+  export type User$webauthnCredentialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebAuthnCredential
+     */
+    select?: WebAuthnCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebAuthnCredential
+     */
+    omit?: WebAuthnCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebAuthnCredentialInclude<ExtArgs> | null
+    where?: WebAuthnCredentialWhereInput
+    orderBy?: WebAuthnCredentialOrderByWithRelationInput | WebAuthnCredentialOrderByWithRelationInput[]
+    cursor?: WebAuthnCredentialWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WebAuthnCredentialScalarFieldEnum | WebAuthnCredentialScalarFieldEnum[]
   }
 
   /**
@@ -45348,6 +45476,1177 @@ export namespace Prisma {
 
 
   /**
+   * Model WebAuthnCredential
+   */
+
+  export type AggregateWebAuthnCredential = {
+    _count: WebAuthnCredentialCountAggregateOutputType | null
+    _avg: WebAuthnCredentialAvgAggregateOutputType | null
+    _sum: WebAuthnCredentialSumAggregateOutputType | null
+    _min: WebAuthnCredentialMinAggregateOutputType | null
+    _max: WebAuthnCredentialMaxAggregateOutputType | null
+  }
+
+  export type WebAuthnCredentialAvgAggregateOutputType = {
+    counter: number | null
+  }
+
+  export type WebAuthnCredentialSumAggregateOutputType = {
+    counter: number | null
+  }
+
+  export type WebAuthnCredentialMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    credentialId: string | null
+    publicKey: string | null
+    counter: number | null
+    deviceName: string | null
+    deviceType: string | null
+    backedUp: boolean | null
+    lastUsedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type WebAuthnCredentialMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    credentialId: string | null
+    publicKey: string | null
+    counter: number | null
+    deviceName: string | null
+    deviceType: string | null
+    backedUp: boolean | null
+    lastUsedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type WebAuthnCredentialCountAggregateOutputType = {
+    id: number
+    userId: number
+    credentialId: number
+    publicKey: number
+    counter: number
+    transports: number
+    deviceName: number
+    deviceType: number
+    backedUp: number
+    lastUsedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type WebAuthnCredentialAvgAggregateInputType = {
+    counter?: true
+  }
+
+  export type WebAuthnCredentialSumAggregateInputType = {
+    counter?: true
+  }
+
+  export type WebAuthnCredentialMinAggregateInputType = {
+    id?: true
+    userId?: true
+    credentialId?: true
+    publicKey?: true
+    counter?: true
+    deviceName?: true
+    deviceType?: true
+    backedUp?: true
+    lastUsedAt?: true
+    createdAt?: true
+  }
+
+  export type WebAuthnCredentialMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    credentialId?: true
+    publicKey?: true
+    counter?: true
+    deviceName?: true
+    deviceType?: true
+    backedUp?: true
+    lastUsedAt?: true
+    createdAt?: true
+  }
+
+  export type WebAuthnCredentialCountAggregateInputType = {
+    id?: true
+    userId?: true
+    credentialId?: true
+    publicKey?: true
+    counter?: true
+    transports?: true
+    deviceName?: true
+    deviceType?: true
+    backedUp?: true
+    lastUsedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type WebAuthnCredentialAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WebAuthnCredential to aggregate.
+     */
+    where?: WebAuthnCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebAuthnCredentials to fetch.
+     */
+    orderBy?: WebAuthnCredentialOrderByWithRelationInput | WebAuthnCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WebAuthnCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebAuthnCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebAuthnCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WebAuthnCredentials
+    **/
+    _count?: true | WebAuthnCredentialCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WebAuthnCredentialAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WebAuthnCredentialSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WebAuthnCredentialMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WebAuthnCredentialMaxAggregateInputType
+  }
+
+  export type GetWebAuthnCredentialAggregateType<T extends WebAuthnCredentialAggregateArgs> = {
+        [P in keyof T & keyof AggregateWebAuthnCredential]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWebAuthnCredential[P]>
+      : GetScalarType<T[P], AggregateWebAuthnCredential[P]>
+  }
+
+
+
+
+  export type WebAuthnCredentialGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WebAuthnCredentialWhereInput
+    orderBy?: WebAuthnCredentialOrderByWithAggregationInput | WebAuthnCredentialOrderByWithAggregationInput[]
+    by: WebAuthnCredentialScalarFieldEnum[] | WebAuthnCredentialScalarFieldEnum
+    having?: WebAuthnCredentialScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WebAuthnCredentialCountAggregateInputType | true
+    _avg?: WebAuthnCredentialAvgAggregateInputType
+    _sum?: WebAuthnCredentialSumAggregateInputType
+    _min?: WebAuthnCredentialMinAggregateInputType
+    _max?: WebAuthnCredentialMaxAggregateInputType
+  }
+
+  export type WebAuthnCredentialGroupByOutputType = {
+    id: string
+    userId: string
+    credentialId: string
+    publicKey: string
+    counter: number
+    transports: string[]
+    deviceName: string | null
+    deviceType: string | null
+    backedUp: boolean
+    lastUsedAt: Date | null
+    createdAt: Date
+    _count: WebAuthnCredentialCountAggregateOutputType | null
+    _avg: WebAuthnCredentialAvgAggregateOutputType | null
+    _sum: WebAuthnCredentialSumAggregateOutputType | null
+    _min: WebAuthnCredentialMinAggregateOutputType | null
+    _max: WebAuthnCredentialMaxAggregateOutputType | null
+  }
+
+  type GetWebAuthnCredentialGroupByPayload<T extends WebAuthnCredentialGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WebAuthnCredentialGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WebAuthnCredentialGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WebAuthnCredentialGroupByOutputType[P]>
+            : GetScalarType<T[P], WebAuthnCredentialGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WebAuthnCredentialSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    credentialId?: boolean
+    publicKey?: boolean
+    counter?: boolean
+    transports?: boolean
+    deviceName?: boolean
+    deviceType?: boolean
+    backedUp?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["webAuthnCredential"]>
+
+  export type WebAuthnCredentialSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    credentialId?: boolean
+    publicKey?: boolean
+    counter?: boolean
+    transports?: boolean
+    deviceName?: boolean
+    deviceType?: boolean
+    backedUp?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["webAuthnCredential"]>
+
+  export type WebAuthnCredentialSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    credentialId?: boolean
+    publicKey?: boolean
+    counter?: boolean
+    transports?: boolean
+    deviceName?: boolean
+    deviceType?: boolean
+    backedUp?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["webAuthnCredential"]>
+
+  export type WebAuthnCredentialSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    credentialId?: boolean
+    publicKey?: boolean
+    counter?: boolean
+    transports?: boolean
+    deviceName?: boolean
+    deviceType?: boolean
+    backedUp?: boolean
+    lastUsedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type WebAuthnCredentialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "credentialId" | "publicKey" | "counter" | "transports" | "deviceName" | "deviceType" | "backedUp" | "lastUsedAt" | "createdAt", ExtArgs["result"]["webAuthnCredential"]>
+  export type WebAuthnCredentialInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type WebAuthnCredentialIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type WebAuthnCredentialIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $WebAuthnCredentialPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WebAuthnCredential"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      credentialId: string
+      publicKey: string
+      counter: number
+      transports: string[]
+      deviceName: string | null
+      deviceType: string | null
+      backedUp: boolean
+      lastUsedAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["webAuthnCredential"]>
+    composites: {}
+  }
+
+  type WebAuthnCredentialGetPayload<S extends boolean | null | undefined | WebAuthnCredentialDefaultArgs> = $Result.GetResult<Prisma.$WebAuthnCredentialPayload, S>
+
+  type WebAuthnCredentialCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WebAuthnCredentialFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WebAuthnCredentialCountAggregateInputType | true
+    }
+
+  export interface WebAuthnCredentialDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WebAuthnCredential'], meta: { name: 'WebAuthnCredential' } }
+    /**
+     * Find zero or one WebAuthnCredential that matches the filter.
+     * @param {WebAuthnCredentialFindUniqueArgs} args - Arguments to find a WebAuthnCredential
+     * @example
+     * // Get one WebAuthnCredential
+     * const webAuthnCredential = await prisma.webAuthnCredential.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WebAuthnCredentialFindUniqueArgs>(args: SelectSubset<T, WebAuthnCredentialFindUniqueArgs<ExtArgs>>): Prisma__WebAuthnCredentialClient<$Result.GetResult<Prisma.$WebAuthnCredentialPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WebAuthnCredential that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WebAuthnCredentialFindUniqueOrThrowArgs} args - Arguments to find a WebAuthnCredential
+     * @example
+     * // Get one WebAuthnCredential
+     * const webAuthnCredential = await prisma.webAuthnCredential.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WebAuthnCredentialFindUniqueOrThrowArgs>(args: SelectSubset<T, WebAuthnCredentialFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WebAuthnCredentialClient<$Result.GetResult<Prisma.$WebAuthnCredentialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WebAuthnCredential that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebAuthnCredentialFindFirstArgs} args - Arguments to find a WebAuthnCredential
+     * @example
+     * // Get one WebAuthnCredential
+     * const webAuthnCredential = await prisma.webAuthnCredential.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WebAuthnCredentialFindFirstArgs>(args?: SelectSubset<T, WebAuthnCredentialFindFirstArgs<ExtArgs>>): Prisma__WebAuthnCredentialClient<$Result.GetResult<Prisma.$WebAuthnCredentialPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WebAuthnCredential that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebAuthnCredentialFindFirstOrThrowArgs} args - Arguments to find a WebAuthnCredential
+     * @example
+     * // Get one WebAuthnCredential
+     * const webAuthnCredential = await prisma.webAuthnCredential.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WebAuthnCredentialFindFirstOrThrowArgs>(args?: SelectSubset<T, WebAuthnCredentialFindFirstOrThrowArgs<ExtArgs>>): Prisma__WebAuthnCredentialClient<$Result.GetResult<Prisma.$WebAuthnCredentialPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WebAuthnCredentials that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebAuthnCredentialFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WebAuthnCredentials
+     * const webAuthnCredentials = await prisma.webAuthnCredential.findMany()
+     * 
+     * // Get first 10 WebAuthnCredentials
+     * const webAuthnCredentials = await prisma.webAuthnCredential.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const webAuthnCredentialWithIdOnly = await prisma.webAuthnCredential.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WebAuthnCredentialFindManyArgs>(args?: SelectSubset<T, WebAuthnCredentialFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebAuthnCredentialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WebAuthnCredential.
+     * @param {WebAuthnCredentialCreateArgs} args - Arguments to create a WebAuthnCredential.
+     * @example
+     * // Create one WebAuthnCredential
+     * const WebAuthnCredential = await prisma.webAuthnCredential.create({
+     *   data: {
+     *     // ... data to create a WebAuthnCredential
+     *   }
+     * })
+     * 
+     */
+    create<T extends WebAuthnCredentialCreateArgs>(args: SelectSubset<T, WebAuthnCredentialCreateArgs<ExtArgs>>): Prisma__WebAuthnCredentialClient<$Result.GetResult<Prisma.$WebAuthnCredentialPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WebAuthnCredentials.
+     * @param {WebAuthnCredentialCreateManyArgs} args - Arguments to create many WebAuthnCredentials.
+     * @example
+     * // Create many WebAuthnCredentials
+     * const webAuthnCredential = await prisma.webAuthnCredential.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WebAuthnCredentialCreateManyArgs>(args?: SelectSubset<T, WebAuthnCredentialCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WebAuthnCredentials and returns the data saved in the database.
+     * @param {WebAuthnCredentialCreateManyAndReturnArgs} args - Arguments to create many WebAuthnCredentials.
+     * @example
+     * // Create many WebAuthnCredentials
+     * const webAuthnCredential = await prisma.webAuthnCredential.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WebAuthnCredentials and only return the `id`
+     * const webAuthnCredentialWithIdOnly = await prisma.webAuthnCredential.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WebAuthnCredentialCreateManyAndReturnArgs>(args?: SelectSubset<T, WebAuthnCredentialCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebAuthnCredentialPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WebAuthnCredential.
+     * @param {WebAuthnCredentialDeleteArgs} args - Arguments to delete one WebAuthnCredential.
+     * @example
+     * // Delete one WebAuthnCredential
+     * const WebAuthnCredential = await prisma.webAuthnCredential.delete({
+     *   where: {
+     *     // ... filter to delete one WebAuthnCredential
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WebAuthnCredentialDeleteArgs>(args: SelectSubset<T, WebAuthnCredentialDeleteArgs<ExtArgs>>): Prisma__WebAuthnCredentialClient<$Result.GetResult<Prisma.$WebAuthnCredentialPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WebAuthnCredential.
+     * @param {WebAuthnCredentialUpdateArgs} args - Arguments to update one WebAuthnCredential.
+     * @example
+     * // Update one WebAuthnCredential
+     * const webAuthnCredential = await prisma.webAuthnCredential.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WebAuthnCredentialUpdateArgs>(args: SelectSubset<T, WebAuthnCredentialUpdateArgs<ExtArgs>>): Prisma__WebAuthnCredentialClient<$Result.GetResult<Prisma.$WebAuthnCredentialPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WebAuthnCredentials.
+     * @param {WebAuthnCredentialDeleteManyArgs} args - Arguments to filter WebAuthnCredentials to delete.
+     * @example
+     * // Delete a few WebAuthnCredentials
+     * const { count } = await prisma.webAuthnCredential.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WebAuthnCredentialDeleteManyArgs>(args?: SelectSubset<T, WebAuthnCredentialDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WebAuthnCredentials.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebAuthnCredentialUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WebAuthnCredentials
+     * const webAuthnCredential = await prisma.webAuthnCredential.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WebAuthnCredentialUpdateManyArgs>(args: SelectSubset<T, WebAuthnCredentialUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WebAuthnCredentials and returns the data updated in the database.
+     * @param {WebAuthnCredentialUpdateManyAndReturnArgs} args - Arguments to update many WebAuthnCredentials.
+     * @example
+     * // Update many WebAuthnCredentials
+     * const webAuthnCredential = await prisma.webAuthnCredential.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WebAuthnCredentials and only return the `id`
+     * const webAuthnCredentialWithIdOnly = await prisma.webAuthnCredential.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WebAuthnCredentialUpdateManyAndReturnArgs>(args: SelectSubset<T, WebAuthnCredentialUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebAuthnCredentialPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WebAuthnCredential.
+     * @param {WebAuthnCredentialUpsertArgs} args - Arguments to update or create a WebAuthnCredential.
+     * @example
+     * // Update or create a WebAuthnCredential
+     * const webAuthnCredential = await prisma.webAuthnCredential.upsert({
+     *   create: {
+     *     // ... data to create a WebAuthnCredential
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WebAuthnCredential we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WebAuthnCredentialUpsertArgs>(args: SelectSubset<T, WebAuthnCredentialUpsertArgs<ExtArgs>>): Prisma__WebAuthnCredentialClient<$Result.GetResult<Prisma.$WebAuthnCredentialPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WebAuthnCredentials.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebAuthnCredentialCountArgs} args - Arguments to filter WebAuthnCredentials to count.
+     * @example
+     * // Count the number of WebAuthnCredentials
+     * const count = await prisma.webAuthnCredential.count({
+     *   where: {
+     *     // ... the filter for the WebAuthnCredentials we want to count
+     *   }
+     * })
+    **/
+    count<T extends WebAuthnCredentialCountArgs>(
+      args?: Subset<T, WebAuthnCredentialCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WebAuthnCredentialCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WebAuthnCredential.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebAuthnCredentialAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WebAuthnCredentialAggregateArgs>(args: Subset<T, WebAuthnCredentialAggregateArgs>): Prisma.PrismaPromise<GetWebAuthnCredentialAggregateType<T>>
+
+    /**
+     * Group by WebAuthnCredential.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebAuthnCredentialGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WebAuthnCredentialGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WebAuthnCredentialGroupByArgs['orderBy'] }
+        : { orderBy?: WebAuthnCredentialGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WebAuthnCredentialGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWebAuthnCredentialGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WebAuthnCredential model
+   */
+  readonly fields: WebAuthnCredentialFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WebAuthnCredential.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WebAuthnCredentialClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WebAuthnCredential model
+   */
+  interface WebAuthnCredentialFieldRefs {
+    readonly id: FieldRef<"WebAuthnCredential", 'String'>
+    readonly userId: FieldRef<"WebAuthnCredential", 'String'>
+    readonly credentialId: FieldRef<"WebAuthnCredential", 'String'>
+    readonly publicKey: FieldRef<"WebAuthnCredential", 'String'>
+    readonly counter: FieldRef<"WebAuthnCredential", 'Int'>
+    readonly transports: FieldRef<"WebAuthnCredential", 'String[]'>
+    readonly deviceName: FieldRef<"WebAuthnCredential", 'String'>
+    readonly deviceType: FieldRef<"WebAuthnCredential", 'String'>
+    readonly backedUp: FieldRef<"WebAuthnCredential", 'Boolean'>
+    readonly lastUsedAt: FieldRef<"WebAuthnCredential", 'DateTime'>
+    readonly createdAt: FieldRef<"WebAuthnCredential", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WebAuthnCredential findUnique
+   */
+  export type WebAuthnCredentialFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebAuthnCredential
+     */
+    select?: WebAuthnCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebAuthnCredential
+     */
+    omit?: WebAuthnCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebAuthnCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WebAuthnCredential to fetch.
+     */
+    where: WebAuthnCredentialWhereUniqueInput
+  }
+
+  /**
+   * WebAuthnCredential findUniqueOrThrow
+   */
+  export type WebAuthnCredentialFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebAuthnCredential
+     */
+    select?: WebAuthnCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebAuthnCredential
+     */
+    omit?: WebAuthnCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebAuthnCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WebAuthnCredential to fetch.
+     */
+    where: WebAuthnCredentialWhereUniqueInput
+  }
+
+  /**
+   * WebAuthnCredential findFirst
+   */
+  export type WebAuthnCredentialFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebAuthnCredential
+     */
+    select?: WebAuthnCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebAuthnCredential
+     */
+    omit?: WebAuthnCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebAuthnCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WebAuthnCredential to fetch.
+     */
+    where?: WebAuthnCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebAuthnCredentials to fetch.
+     */
+    orderBy?: WebAuthnCredentialOrderByWithRelationInput | WebAuthnCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WebAuthnCredentials.
+     */
+    cursor?: WebAuthnCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebAuthnCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebAuthnCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WebAuthnCredentials.
+     */
+    distinct?: WebAuthnCredentialScalarFieldEnum | WebAuthnCredentialScalarFieldEnum[]
+  }
+
+  /**
+   * WebAuthnCredential findFirstOrThrow
+   */
+  export type WebAuthnCredentialFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebAuthnCredential
+     */
+    select?: WebAuthnCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebAuthnCredential
+     */
+    omit?: WebAuthnCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebAuthnCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WebAuthnCredential to fetch.
+     */
+    where?: WebAuthnCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebAuthnCredentials to fetch.
+     */
+    orderBy?: WebAuthnCredentialOrderByWithRelationInput | WebAuthnCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WebAuthnCredentials.
+     */
+    cursor?: WebAuthnCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebAuthnCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebAuthnCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WebAuthnCredentials.
+     */
+    distinct?: WebAuthnCredentialScalarFieldEnum | WebAuthnCredentialScalarFieldEnum[]
+  }
+
+  /**
+   * WebAuthnCredential findMany
+   */
+  export type WebAuthnCredentialFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebAuthnCredential
+     */
+    select?: WebAuthnCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebAuthnCredential
+     */
+    omit?: WebAuthnCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebAuthnCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WebAuthnCredentials to fetch.
+     */
+    where?: WebAuthnCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebAuthnCredentials to fetch.
+     */
+    orderBy?: WebAuthnCredentialOrderByWithRelationInput | WebAuthnCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WebAuthnCredentials.
+     */
+    cursor?: WebAuthnCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebAuthnCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebAuthnCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WebAuthnCredentials.
+     */
+    distinct?: WebAuthnCredentialScalarFieldEnum | WebAuthnCredentialScalarFieldEnum[]
+  }
+
+  /**
+   * WebAuthnCredential create
+   */
+  export type WebAuthnCredentialCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebAuthnCredential
+     */
+    select?: WebAuthnCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebAuthnCredential
+     */
+    omit?: WebAuthnCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebAuthnCredentialInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WebAuthnCredential.
+     */
+    data: XOR<WebAuthnCredentialCreateInput, WebAuthnCredentialUncheckedCreateInput>
+  }
+
+  /**
+   * WebAuthnCredential createMany
+   */
+  export type WebAuthnCredentialCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WebAuthnCredentials.
+     */
+    data: WebAuthnCredentialCreateManyInput | WebAuthnCredentialCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WebAuthnCredential createManyAndReturn
+   */
+  export type WebAuthnCredentialCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebAuthnCredential
+     */
+    select?: WebAuthnCredentialSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebAuthnCredential
+     */
+    omit?: WebAuthnCredentialOmit<ExtArgs> | null
+    /**
+     * The data used to create many WebAuthnCredentials.
+     */
+    data: WebAuthnCredentialCreateManyInput | WebAuthnCredentialCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebAuthnCredentialIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WebAuthnCredential update
+   */
+  export type WebAuthnCredentialUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebAuthnCredential
+     */
+    select?: WebAuthnCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebAuthnCredential
+     */
+    omit?: WebAuthnCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebAuthnCredentialInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WebAuthnCredential.
+     */
+    data: XOR<WebAuthnCredentialUpdateInput, WebAuthnCredentialUncheckedUpdateInput>
+    /**
+     * Choose, which WebAuthnCredential to update.
+     */
+    where: WebAuthnCredentialWhereUniqueInput
+  }
+
+  /**
+   * WebAuthnCredential updateMany
+   */
+  export type WebAuthnCredentialUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WebAuthnCredentials.
+     */
+    data: XOR<WebAuthnCredentialUpdateManyMutationInput, WebAuthnCredentialUncheckedUpdateManyInput>
+    /**
+     * Filter which WebAuthnCredentials to update
+     */
+    where?: WebAuthnCredentialWhereInput
+    /**
+     * Limit how many WebAuthnCredentials to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WebAuthnCredential updateManyAndReturn
+   */
+  export type WebAuthnCredentialUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebAuthnCredential
+     */
+    select?: WebAuthnCredentialSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebAuthnCredential
+     */
+    omit?: WebAuthnCredentialOmit<ExtArgs> | null
+    /**
+     * The data used to update WebAuthnCredentials.
+     */
+    data: XOR<WebAuthnCredentialUpdateManyMutationInput, WebAuthnCredentialUncheckedUpdateManyInput>
+    /**
+     * Filter which WebAuthnCredentials to update
+     */
+    where?: WebAuthnCredentialWhereInput
+    /**
+     * Limit how many WebAuthnCredentials to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebAuthnCredentialIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WebAuthnCredential upsert
+   */
+  export type WebAuthnCredentialUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebAuthnCredential
+     */
+    select?: WebAuthnCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebAuthnCredential
+     */
+    omit?: WebAuthnCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebAuthnCredentialInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WebAuthnCredential to update in case it exists.
+     */
+    where: WebAuthnCredentialWhereUniqueInput
+    /**
+     * In case the WebAuthnCredential found by the `where` argument doesn't exist, create a new WebAuthnCredential with this data.
+     */
+    create: XOR<WebAuthnCredentialCreateInput, WebAuthnCredentialUncheckedCreateInput>
+    /**
+     * In case the WebAuthnCredential was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WebAuthnCredentialUpdateInput, WebAuthnCredentialUncheckedUpdateInput>
+  }
+
+  /**
+   * WebAuthnCredential delete
+   */
+  export type WebAuthnCredentialDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebAuthnCredential
+     */
+    select?: WebAuthnCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebAuthnCredential
+     */
+    omit?: WebAuthnCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebAuthnCredentialInclude<ExtArgs> | null
+    /**
+     * Filter which WebAuthnCredential to delete.
+     */
+    where: WebAuthnCredentialWhereUniqueInput
+  }
+
+  /**
+   * WebAuthnCredential deleteMany
+   */
+  export type WebAuthnCredentialDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WebAuthnCredentials to delete
+     */
+    where?: WebAuthnCredentialWhereInput
+    /**
+     * Limit how many WebAuthnCredentials to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WebAuthnCredential without action
+   */
+  export type WebAuthnCredentialDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebAuthnCredential
+     */
+    select?: WebAuthnCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebAuthnCredential
+     */
+    omit?: WebAuthnCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WebAuthnCredentialInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Holiday
    */
 
@@ -52635,6 +53934,23 @@ export namespace Prisma {
   export type PushSubscriptionScalarFieldEnum = (typeof PushSubscriptionScalarFieldEnum)[keyof typeof PushSubscriptionScalarFieldEnum]
 
 
+  export const WebAuthnCredentialScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    credentialId: 'credentialId',
+    publicKey: 'publicKey',
+    counter: 'counter',
+    transports: 'transports',
+    deviceName: 'deviceName',
+    deviceType: 'deviceType',
+    backedUp: 'backedUp',
+    lastUsedAt: 'lastUsedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type WebAuthnCredentialScalarFieldEnum = (typeof WebAuthnCredentialScalarFieldEnum)[keyof typeof WebAuthnCredentialScalarFieldEnum]
+
+
   export const HolidayScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -53392,6 +54708,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenListRelationFilter
     notifications?: NotificationListRelationFilter
     pushSubscriptions?: PushSubscriptionListRelationFilter
+    webauthnCredentials?: WebAuthnCredentialListRelationFilter
     whatsappContact?: XOR<WhatsAppContactNullableScalarRelationFilter, WhatsAppContactWhereInput> | null
     whatsappMessages?: WhatsAppMessageListRelationFilter
     auditLogs?: AuditLogListRelationFilter
@@ -53431,6 +54748,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
     pushSubscriptions?: PushSubscriptionOrderByRelationAggregateInput
+    webauthnCredentials?: WebAuthnCredentialOrderByRelationAggregateInput
     whatsappContact?: WhatsAppContactOrderByWithRelationInput
     whatsappMessages?: WhatsAppMessageOrderByRelationAggregateInput
     auditLogs?: AuditLogOrderByRelationAggregateInput
@@ -53473,6 +54791,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenListRelationFilter
     notifications?: NotificationListRelationFilter
     pushSubscriptions?: PushSubscriptionListRelationFilter
+    webauthnCredentials?: WebAuthnCredentialListRelationFilter
     whatsappContact?: XOR<WhatsAppContactNullableScalarRelationFilter, WhatsAppContactWhereInput> | null
     whatsappMessages?: WhatsAppMessageListRelationFilter
     auditLogs?: AuditLogListRelationFilter
@@ -56222,6 +57541,93 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"PushSubscription"> | Date | string
   }
 
+  export type WebAuthnCredentialWhereInput = {
+    AND?: WebAuthnCredentialWhereInput | WebAuthnCredentialWhereInput[]
+    OR?: WebAuthnCredentialWhereInput[]
+    NOT?: WebAuthnCredentialWhereInput | WebAuthnCredentialWhereInput[]
+    id?: StringFilter<"WebAuthnCredential"> | string
+    userId?: StringFilter<"WebAuthnCredential"> | string
+    credentialId?: StringFilter<"WebAuthnCredential"> | string
+    publicKey?: StringFilter<"WebAuthnCredential"> | string
+    counter?: IntFilter<"WebAuthnCredential"> | number
+    transports?: StringNullableListFilter<"WebAuthnCredential">
+    deviceName?: StringNullableFilter<"WebAuthnCredential"> | string | null
+    deviceType?: StringNullableFilter<"WebAuthnCredential"> | string | null
+    backedUp?: BoolFilter<"WebAuthnCredential"> | boolean
+    lastUsedAt?: DateTimeNullableFilter<"WebAuthnCredential"> | Date | string | null
+    createdAt?: DateTimeFilter<"WebAuthnCredential"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type WebAuthnCredentialOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    credentialId?: SortOrder
+    publicKey?: SortOrder
+    counter?: SortOrder
+    transports?: SortOrder
+    deviceName?: SortOrderInput | SortOrder
+    deviceType?: SortOrderInput | SortOrder
+    backedUp?: SortOrder
+    lastUsedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type WebAuthnCredentialWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    credentialId?: string
+    AND?: WebAuthnCredentialWhereInput | WebAuthnCredentialWhereInput[]
+    OR?: WebAuthnCredentialWhereInput[]
+    NOT?: WebAuthnCredentialWhereInput | WebAuthnCredentialWhereInput[]
+    userId?: StringFilter<"WebAuthnCredential"> | string
+    publicKey?: StringFilter<"WebAuthnCredential"> | string
+    counter?: IntFilter<"WebAuthnCredential"> | number
+    transports?: StringNullableListFilter<"WebAuthnCredential">
+    deviceName?: StringNullableFilter<"WebAuthnCredential"> | string | null
+    deviceType?: StringNullableFilter<"WebAuthnCredential"> | string | null
+    backedUp?: BoolFilter<"WebAuthnCredential"> | boolean
+    lastUsedAt?: DateTimeNullableFilter<"WebAuthnCredential"> | Date | string | null
+    createdAt?: DateTimeFilter<"WebAuthnCredential"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "credentialId">
+
+  export type WebAuthnCredentialOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    credentialId?: SortOrder
+    publicKey?: SortOrder
+    counter?: SortOrder
+    transports?: SortOrder
+    deviceName?: SortOrderInput | SortOrder
+    deviceType?: SortOrderInput | SortOrder
+    backedUp?: SortOrder
+    lastUsedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: WebAuthnCredentialCountOrderByAggregateInput
+    _avg?: WebAuthnCredentialAvgOrderByAggregateInput
+    _max?: WebAuthnCredentialMaxOrderByAggregateInput
+    _min?: WebAuthnCredentialMinOrderByAggregateInput
+    _sum?: WebAuthnCredentialSumOrderByAggregateInput
+  }
+
+  export type WebAuthnCredentialScalarWhereWithAggregatesInput = {
+    AND?: WebAuthnCredentialScalarWhereWithAggregatesInput | WebAuthnCredentialScalarWhereWithAggregatesInput[]
+    OR?: WebAuthnCredentialScalarWhereWithAggregatesInput[]
+    NOT?: WebAuthnCredentialScalarWhereWithAggregatesInput | WebAuthnCredentialScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WebAuthnCredential"> | string
+    userId?: StringWithAggregatesFilter<"WebAuthnCredential"> | string
+    credentialId?: StringWithAggregatesFilter<"WebAuthnCredential"> | string
+    publicKey?: StringWithAggregatesFilter<"WebAuthnCredential"> | string
+    counter?: IntWithAggregatesFilter<"WebAuthnCredential"> | number
+    transports?: StringNullableListFilter<"WebAuthnCredential">
+    deviceName?: StringNullableWithAggregatesFilter<"WebAuthnCredential"> | string | null
+    deviceType?: StringNullableWithAggregatesFilter<"WebAuthnCredential"> | string | null
+    backedUp?: BoolWithAggregatesFilter<"WebAuthnCredential"> | boolean
+    lastUsedAt?: DateTimeNullableWithAggregatesFilter<"WebAuthnCredential"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WebAuthnCredential"> | Date | string
+  }
+
   export type HolidayWhereInput = {
     AND?: HolidayWhereInput | HolidayWhereInput[]
     OR?: HolidayWhereInput[]
@@ -56872,6 +58278,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -56909,6 +58316,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -56946,6 +58354,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -56983,6 +58392,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -59947,6 +61357,103 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type WebAuthnCredentialCreateInput = {
+    id?: string
+    credentialId: string
+    publicKey: string
+    counter?: number
+    transports?: WebAuthnCredentialCreatetransportsInput | string[]
+    deviceName?: string | null
+    deviceType?: string | null
+    backedUp?: boolean
+    lastUsedAt?: Date | string | null
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutWebauthnCredentialsInput
+  }
+
+  export type WebAuthnCredentialUncheckedCreateInput = {
+    id?: string
+    userId: string
+    credentialId: string
+    publicKey: string
+    counter?: number
+    transports?: WebAuthnCredentialCreatetransportsInput | string[]
+    deviceName?: string | null
+    deviceType?: string | null
+    backedUp?: boolean
+    lastUsedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type WebAuthnCredentialUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    credentialId?: StringFieldUpdateOperationsInput | string
+    publicKey?: StringFieldUpdateOperationsInput | string
+    counter?: IntFieldUpdateOperationsInput | number
+    transports?: WebAuthnCredentialUpdatetransportsInput | string[]
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    backedUp?: BoolFieldUpdateOperationsInput | boolean
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutWebauthnCredentialsNestedInput
+  }
+
+  export type WebAuthnCredentialUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    credentialId?: StringFieldUpdateOperationsInput | string
+    publicKey?: StringFieldUpdateOperationsInput | string
+    counter?: IntFieldUpdateOperationsInput | number
+    transports?: WebAuthnCredentialUpdatetransportsInput | string[]
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    backedUp?: BoolFieldUpdateOperationsInput | boolean
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebAuthnCredentialCreateManyInput = {
+    id?: string
+    userId: string
+    credentialId: string
+    publicKey: string
+    counter?: number
+    transports?: WebAuthnCredentialCreatetransportsInput | string[]
+    deviceName?: string | null
+    deviceType?: string | null
+    backedUp?: boolean
+    lastUsedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type WebAuthnCredentialUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    credentialId?: StringFieldUpdateOperationsInput | string
+    publicKey?: StringFieldUpdateOperationsInput | string
+    counter?: IntFieldUpdateOperationsInput | number
+    transports?: WebAuthnCredentialUpdatetransportsInput | string[]
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    backedUp?: BoolFieldUpdateOperationsInput | boolean
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebAuthnCredentialUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    credentialId?: StringFieldUpdateOperationsInput | string
+    publicKey?: StringFieldUpdateOperationsInput | string
+    counter?: IntFieldUpdateOperationsInput | number
+    transports?: WebAuthnCredentialUpdatetransportsInput | string[]
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    backedUp?: BoolFieldUpdateOperationsInput | boolean
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type HolidayCreateInput = {
     id?: string
     name: string
@@ -60825,6 +62332,12 @@ export namespace Prisma {
     none?: PushSubscriptionWhereInput
   }
 
+  export type WebAuthnCredentialListRelationFilter = {
+    every?: WebAuthnCredentialWhereInput
+    some?: WebAuthnCredentialWhereInput
+    none?: WebAuthnCredentialWhereInput
+  }
+
   export type WhatsAppContactNullableScalarRelationFilter = {
     is?: WhatsAppContactWhereInput | null
     isNot?: WhatsAppContactWhereInput | null
@@ -60900,6 +62413,10 @@ export namespace Prisma {
   }
 
   export type PushSubscriptionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WebAuthnCredentialOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -63091,6 +64608,54 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type WebAuthnCredentialCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    credentialId?: SortOrder
+    publicKey?: SortOrder
+    counter?: SortOrder
+    transports?: SortOrder
+    deviceName?: SortOrder
+    deviceType?: SortOrder
+    backedUp?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WebAuthnCredentialAvgOrderByAggregateInput = {
+    counter?: SortOrder
+  }
+
+  export type WebAuthnCredentialMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    credentialId?: SortOrder
+    publicKey?: SortOrder
+    counter?: SortOrder
+    deviceName?: SortOrder
+    deviceType?: SortOrder
+    backedUp?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WebAuthnCredentialMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    credentialId?: SortOrder
+    publicKey?: SortOrder
+    counter?: SortOrder
+    deviceName?: SortOrder
+    deviceType?: SortOrder
+    backedUp?: SortOrder
+    lastUsedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WebAuthnCredentialSumOrderByAggregateInput = {
+    counter?: SortOrder
+  }
+
   export type HolidayDateSchoolIdCompoundUniqueInput = {
     date: Date | string
     schoolId: string
@@ -64195,6 +65760,13 @@ export namespace Prisma {
     connect?: PushSubscriptionWhereUniqueInput | PushSubscriptionWhereUniqueInput[]
   }
 
+  export type WebAuthnCredentialCreateNestedManyWithoutUserInput = {
+    create?: XOR<WebAuthnCredentialCreateWithoutUserInput, WebAuthnCredentialUncheckedCreateWithoutUserInput> | WebAuthnCredentialCreateWithoutUserInput[] | WebAuthnCredentialUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WebAuthnCredentialCreateOrConnectWithoutUserInput | WebAuthnCredentialCreateOrConnectWithoutUserInput[]
+    createMany?: WebAuthnCredentialCreateManyUserInputEnvelope
+    connect?: WebAuthnCredentialWhereUniqueInput | WebAuthnCredentialWhereUniqueInput[]
+  }
+
   export type WhatsAppContactCreateNestedOneWithoutUserInput = {
     create?: XOR<WhatsAppContactCreateWithoutUserInput, WhatsAppContactUncheckedCreateWithoutUserInput>
     connectOrCreate?: WhatsAppContactCreateOrConnectWithoutUserInput
@@ -64344,6 +65916,13 @@ export namespace Prisma {
     connectOrCreate?: PushSubscriptionCreateOrConnectWithoutUserInput | PushSubscriptionCreateOrConnectWithoutUserInput[]
     createMany?: PushSubscriptionCreateManyUserInputEnvelope
     connect?: PushSubscriptionWhereUniqueInput | PushSubscriptionWhereUniqueInput[]
+  }
+
+  export type WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<WebAuthnCredentialCreateWithoutUserInput, WebAuthnCredentialUncheckedCreateWithoutUserInput> | WebAuthnCredentialCreateWithoutUserInput[] | WebAuthnCredentialUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WebAuthnCredentialCreateOrConnectWithoutUserInput | WebAuthnCredentialCreateOrConnectWithoutUserInput[]
+    createMany?: WebAuthnCredentialCreateManyUserInputEnvelope
+    connect?: WebAuthnCredentialWhereUniqueInput | WebAuthnCredentialWhereUniqueInput[]
   }
 
   export type WhatsAppContactUncheckedCreateNestedOneWithoutUserInput = {
@@ -64651,6 +66230,20 @@ export namespace Prisma {
     deleteMany?: PushSubscriptionScalarWhereInput | PushSubscriptionScalarWhereInput[]
   }
 
+  export type WebAuthnCredentialUpdateManyWithoutUserNestedInput = {
+    create?: XOR<WebAuthnCredentialCreateWithoutUserInput, WebAuthnCredentialUncheckedCreateWithoutUserInput> | WebAuthnCredentialCreateWithoutUserInput[] | WebAuthnCredentialUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WebAuthnCredentialCreateOrConnectWithoutUserInput | WebAuthnCredentialCreateOrConnectWithoutUserInput[]
+    upsert?: WebAuthnCredentialUpsertWithWhereUniqueWithoutUserInput | WebAuthnCredentialUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: WebAuthnCredentialCreateManyUserInputEnvelope
+    set?: WebAuthnCredentialWhereUniqueInput | WebAuthnCredentialWhereUniqueInput[]
+    disconnect?: WebAuthnCredentialWhereUniqueInput | WebAuthnCredentialWhereUniqueInput[]
+    delete?: WebAuthnCredentialWhereUniqueInput | WebAuthnCredentialWhereUniqueInput[]
+    connect?: WebAuthnCredentialWhereUniqueInput | WebAuthnCredentialWhereUniqueInput[]
+    update?: WebAuthnCredentialUpdateWithWhereUniqueWithoutUserInput | WebAuthnCredentialUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: WebAuthnCredentialUpdateManyWithWhereWithoutUserInput | WebAuthnCredentialUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: WebAuthnCredentialScalarWhereInput | WebAuthnCredentialScalarWhereInput[]
+  }
+
   export type WhatsAppContactUpdateOneWithoutUserNestedInput = {
     create?: XOR<WhatsAppContactCreateWithoutUserInput, WhatsAppContactUncheckedCreateWithoutUserInput>
     connectOrCreate?: WhatsAppContactCreateOrConnectWithoutUserInput
@@ -64945,6 +66538,20 @@ export namespace Prisma {
     update?: PushSubscriptionUpdateWithWhereUniqueWithoutUserInput | PushSubscriptionUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: PushSubscriptionUpdateManyWithWhereWithoutUserInput | PushSubscriptionUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: PushSubscriptionScalarWhereInput | PushSubscriptionScalarWhereInput[]
+  }
+
+  export type WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<WebAuthnCredentialCreateWithoutUserInput, WebAuthnCredentialUncheckedCreateWithoutUserInput> | WebAuthnCredentialCreateWithoutUserInput[] | WebAuthnCredentialUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WebAuthnCredentialCreateOrConnectWithoutUserInput | WebAuthnCredentialCreateOrConnectWithoutUserInput[]
+    upsert?: WebAuthnCredentialUpsertWithWhereUniqueWithoutUserInput | WebAuthnCredentialUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: WebAuthnCredentialCreateManyUserInputEnvelope
+    set?: WebAuthnCredentialWhereUniqueInput | WebAuthnCredentialWhereUniqueInput[]
+    disconnect?: WebAuthnCredentialWhereUniqueInput | WebAuthnCredentialWhereUniqueInput[]
+    delete?: WebAuthnCredentialWhereUniqueInput | WebAuthnCredentialWhereUniqueInput[]
+    connect?: WebAuthnCredentialWhereUniqueInput | WebAuthnCredentialWhereUniqueInput[]
+    update?: WebAuthnCredentialUpdateWithWhereUniqueWithoutUserInput | WebAuthnCredentialUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: WebAuthnCredentialUpdateManyWithWhereWithoutUserInput | WebAuthnCredentialUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: WebAuthnCredentialScalarWhereInput | WebAuthnCredentialScalarWhereInput[]
   }
 
   export type WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput = {
@@ -67606,6 +69213,29 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPushSubscriptionsInput, UserUpdateWithoutPushSubscriptionsInput>, UserUncheckedUpdateWithoutPushSubscriptionsInput>
   }
 
+  export type WebAuthnCredentialCreatetransportsInput = {
+    set: string[]
+  }
+
+  export type UserCreateNestedOneWithoutWebauthnCredentialsInput = {
+    create?: XOR<UserCreateWithoutWebauthnCredentialsInput, UserUncheckedCreateWithoutWebauthnCredentialsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWebauthnCredentialsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type WebAuthnCredentialUpdatetransportsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type UserUpdateOneRequiredWithoutWebauthnCredentialsNestedInput = {
+    create?: XOR<UserCreateWithoutWebauthnCredentialsInput, UserUncheckedCreateWithoutWebauthnCredentialsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWebauthnCredentialsInput
+    upsert?: UserUpsertWithoutWebauthnCredentialsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutWebauthnCredentialsInput, UserUpdateWithoutWebauthnCredentialsInput>, UserUncheckedUpdateWithoutWebauthnCredentialsInput>
+  }
+
   export type SchoolCreateNestedOneWithoutHolidaysInput = {
     create?: XOR<SchoolCreateWithoutHolidaysInput, SchoolUncheckedCreateWithoutHolidaysInput>
     connectOrCreate?: SchoolCreateOrConnectWithoutHolidaysInput
@@ -68480,6 +70110,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -68516,6 +70147,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -69494,6 +71126,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -69530,6 +71163,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -70606,6 +72240,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type WebAuthnCredentialCreateWithoutUserInput = {
+    id?: string
+    credentialId: string
+    publicKey: string
+    counter?: number
+    transports?: WebAuthnCredentialCreatetransportsInput | string[]
+    deviceName?: string | null
+    deviceType?: string | null
+    backedUp?: boolean
+    lastUsedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type WebAuthnCredentialUncheckedCreateWithoutUserInput = {
+    id?: string
+    credentialId: string
+    publicKey: string
+    counter?: number
+    transports?: WebAuthnCredentialCreatetransportsInput | string[]
+    deviceName?: string | null
+    deviceType?: string | null
+    backedUp?: boolean
+    lastUsedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type WebAuthnCredentialCreateOrConnectWithoutUserInput = {
+    where: WebAuthnCredentialWhereUniqueInput
+    create: XOR<WebAuthnCredentialCreateWithoutUserInput, WebAuthnCredentialUncheckedCreateWithoutUserInput>
+  }
+
+  export type WebAuthnCredentialCreateManyUserInputEnvelope = {
+    data: WebAuthnCredentialCreateManyUserInput | WebAuthnCredentialCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type WhatsAppContactCreateWithoutUserInput = {
     id?: string
     phone: string
@@ -71459,6 +73129,39 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"PushSubscription"> | Date | string
   }
 
+  export type WebAuthnCredentialUpsertWithWhereUniqueWithoutUserInput = {
+    where: WebAuthnCredentialWhereUniqueInput
+    update: XOR<WebAuthnCredentialUpdateWithoutUserInput, WebAuthnCredentialUncheckedUpdateWithoutUserInput>
+    create: XOR<WebAuthnCredentialCreateWithoutUserInput, WebAuthnCredentialUncheckedCreateWithoutUserInput>
+  }
+
+  export type WebAuthnCredentialUpdateWithWhereUniqueWithoutUserInput = {
+    where: WebAuthnCredentialWhereUniqueInput
+    data: XOR<WebAuthnCredentialUpdateWithoutUserInput, WebAuthnCredentialUncheckedUpdateWithoutUserInput>
+  }
+
+  export type WebAuthnCredentialUpdateManyWithWhereWithoutUserInput = {
+    where: WebAuthnCredentialScalarWhereInput
+    data: XOR<WebAuthnCredentialUpdateManyMutationInput, WebAuthnCredentialUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type WebAuthnCredentialScalarWhereInput = {
+    AND?: WebAuthnCredentialScalarWhereInput | WebAuthnCredentialScalarWhereInput[]
+    OR?: WebAuthnCredentialScalarWhereInput[]
+    NOT?: WebAuthnCredentialScalarWhereInput | WebAuthnCredentialScalarWhereInput[]
+    id?: StringFilter<"WebAuthnCredential"> | string
+    userId?: StringFilter<"WebAuthnCredential"> | string
+    credentialId?: StringFilter<"WebAuthnCredential"> | string
+    publicKey?: StringFilter<"WebAuthnCredential"> | string
+    counter?: IntFilter<"WebAuthnCredential"> | number
+    transports?: StringNullableListFilter<"WebAuthnCredential">
+    deviceName?: StringNullableFilter<"WebAuthnCredential"> | string | null
+    deviceType?: StringNullableFilter<"WebAuthnCredential"> | string | null
+    backedUp?: BoolFilter<"WebAuthnCredential"> | boolean
+    lastUsedAt?: DateTimeNullableFilter<"WebAuthnCredential"> | Date | string | null
+    createdAt?: DateTimeFilter<"WebAuthnCredential"> | Date | string
+  }
+
   export type WhatsAppContactUpsertWithoutUserInput = {
     update: XOR<WhatsAppContactUpdateWithoutUserInput, WhatsAppContactUncheckedUpdateWithoutUserInput>
     create: XOR<WhatsAppContactCreateWithoutUserInput, WhatsAppContactUncheckedCreateWithoutUserInput>
@@ -71633,6 +73336,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -71669,6 +73373,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -71721,6 +73426,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -71757,6 +73463,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -71793,6 +73500,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -71829,6 +73537,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -71881,6 +73590,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -71917,6 +73627,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -72048,6 +73759,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -72084,6 +73796,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -72237,6 +73950,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -72273,6 +73987,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -72309,6 +74024,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -72345,6 +74061,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -72397,6 +74114,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -72433,6 +74151,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -72625,6 +74344,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -72661,6 +74381,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -72702,6 +74423,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -72738,6 +74460,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -73463,6 +75186,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -73499,6 +75223,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -73546,6 +75271,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -73582,6 +75308,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -73910,6 +75637,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -73946,6 +75674,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -74093,6 +75822,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -74129,6 +75859,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -76126,6 +77857,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -76162,6 +77894,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -76374,6 +78107,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -76410,6 +78144,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -77062,6 +78797,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -77098,6 +78834,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -77383,6 +79120,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -77419,6 +79157,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -78053,6 +79792,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -78089,6 +79829,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -78184,6 +79925,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -78220,6 +79962,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -78488,6 +80231,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -78524,6 +80268,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -78757,6 +80502,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -78793,6 +80539,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -79217,6 +80964,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -79253,6 +81001,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -79404,6 +81153,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -79440,6 +81190,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -79628,6 +81379,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -79664,6 +81416,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -79864,6 +81617,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -79900,6 +81654,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -80191,6 +81946,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -80227,6 +81983,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -80598,6 +82355,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -80634,6 +82392,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -80938,6 +82697,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -80974,6 +82734,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -81154,6 +82915,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -81190,6 +82952,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -81321,6 +83084,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -81357,6 +83121,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -81510,6 +83275,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -81546,6 +83312,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -81582,6 +83349,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -81618,6 +83386,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -81765,6 +83534,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -81801,6 +83571,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -81939,6 +83710,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
@@ -81975,6 +83747,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
@@ -82075,6 +83848,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
@@ -82111,6 +83885,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
@@ -82196,6 +83971,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
@@ -82232,6 +84008,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
@@ -82323,6 +84100,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
@@ -82359,6 +84137,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
@@ -82394,6 +84173,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -82430,6 +84210,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -82482,6 +84263,7 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -82518,6 +84300,171 @@ export namespace Prisma {
     passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type UserCreateWithoutWebauthnCredentialsInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutUsersInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    instructorProfile?: InstructorProfileCreateNestedOneWithoutUserInput
+    studentProfile?: StudentCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
+    classes?: ClassCreateNestedManyWithoutInstructorInput
+    posts?: PostCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserUncheckedCreateWithoutWebauthnCredentialsInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    schoolId?: string | null
+    branchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    instructorProfile?: InstructorProfileUncheckedCreateNestedOneWithoutUserInput
+    studentProfile?: StudentUncheckedCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
+    classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserCreateOrConnectWithoutWebauthnCredentialsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutWebauthnCredentialsInput, UserUncheckedCreateWithoutWebauthnCredentialsInput>
+  }
+
+  export type UserUpsertWithoutWebauthnCredentialsInput = {
+    update: XOR<UserUpdateWithoutWebauthnCredentialsInput, UserUncheckedUpdateWithoutWebauthnCredentialsInput>
+    create: XOR<UserCreateWithoutWebauthnCredentialsInput, UserUncheckedCreateWithoutWebauthnCredentialsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutWebauthnCredentialsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutWebauthnCredentialsInput, UserUncheckedUpdateWithoutWebauthnCredentialsInput>
+  }
+
+  export type UserUpdateWithoutWebauthnCredentialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutUsersNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    instructorProfile?: InstructorProfileUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
+    classes?: ClassUpdateManyWithoutInstructorNestedInput
+    posts?: PostUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutWebauthnCredentialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    instructorProfile?: InstructorProfileUncheckedUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUncheckedUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -82860,6 +84807,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
@@ -82896,6 +84844,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
@@ -82995,6 +84944,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
@@ -83031,6 +84981,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
@@ -83067,6 +85018,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
@@ -83103,6 +85055,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
     whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
@@ -83155,6 +85108,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -83191,6 +85145,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -83436,6 +85391,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -83472,6 +85428,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -84129,6 +86086,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
@@ -84165,6 +86123,7 @@ export namespace Prisma {
     acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
     whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
@@ -84593,6 +86552,19 @@ export namespace Prisma {
     p256dh: string
     auth: string
     userAgent?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WebAuthnCredentialCreateManyUserInput = {
+    id?: string
+    credentialId: string
+    publicKey: string
+    counter?: number
+    transports?: WebAuthnCredentialCreatetransportsInput | string[]
+    deviceName?: string | null
+    deviceType?: string | null
+    backedUp?: boolean
+    lastUsedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -85233,6 +87205,45 @@ export namespace Prisma {
     p256dh?: StringFieldUpdateOperationsInput | string
     auth?: StringFieldUpdateOperationsInput | string
     userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebAuthnCredentialUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    credentialId?: StringFieldUpdateOperationsInput | string
+    publicKey?: StringFieldUpdateOperationsInput | string
+    counter?: IntFieldUpdateOperationsInput | number
+    transports?: WebAuthnCredentialUpdatetransportsInput | string[]
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    backedUp?: BoolFieldUpdateOperationsInput | boolean
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebAuthnCredentialUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    credentialId?: StringFieldUpdateOperationsInput | string
+    publicKey?: StringFieldUpdateOperationsInput | string
+    counter?: IntFieldUpdateOperationsInput | number
+    transports?: WebAuthnCredentialUpdatetransportsInput | string[]
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    backedUp?: BoolFieldUpdateOperationsInput | boolean
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebAuthnCredentialUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    credentialId?: StringFieldUpdateOperationsInput | string
+    publicKey?: StringFieldUpdateOperationsInput | string
+    counter?: IntFieldUpdateOperationsInput | number
+    transports?: WebAuthnCredentialUpdatetransportsInput | string[]
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    backedUp?: BoolFieldUpdateOperationsInput | boolean
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

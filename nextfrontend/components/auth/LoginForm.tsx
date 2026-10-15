@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { motion } from 'motion/react';
-import { Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, AlertCircle } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, AlertCircle, Fingerprint } from 'lucide-react';
 import { ForgotPasswordModal } from './ForgotPasswordModal';
 
 interface LoginFormProps {
@@ -31,6 +31,29 @@ export function LoginForm({
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
+  const [waSupported, setWaSupported] = useState(false);
+
+  // El botón de huella solo se muestra si el navegador soporta WebAuthn y el
+  // dispositivo tiene un autenticador de plataforma (huella/rostro/PIN). Se
+  // resuelve en el cliente para no romper la hidratación.
+  useEffect(() => {
+    let active = true;
+
+    void (async () => {
+      try {
+        const { browserSupportsWebAuthn, platformAuthenticatorIsAvailable } = await import('@simplewebauthn/browser');
+        if (!browserSupportsWebAuthn()) return;
+        const available = await platformAuthenticatorIsAvailable();
+        if (active && available) setWaSupported(true);
+      } catch {
+        // Sin soporte: se oculta el botón.
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // Synchronize when presets change (e.g., from dev toolbar autofill)
   if (prevPresets.email !== presetEmail || prevPresets.password !== presetPassword) {
@@ -86,6 +109,53 @@ export function LoginForm({
       }
     } catch (err: unknown) {
       setErrorMessage((err as Error)?.message || 'Ocurrió un error inesperado al iniciar sesión.');
+      setIsLoading(false);
+    }
+  };
+
+  const handleWebAuthnLogin = async () => {
+    setErrorMessage(null);
+    setIsLoading(true);
+
+    try {
+      const { startAuthentication } = await import('@simplewebauthn/browser');
+
+      const optionsRes = await fetch('/api/auth/webauthn/login/options', { method: 'POST' });
+      const optionsJSON = await optionsRes.json().catch(() => null);
+      if (!optionsRes.ok) {
+        throw new Error((optionsJSON as { error?: string } | null)?.error || 'No se pudo iniciar el acceso con huella.');
+      }
+
+      const assertion = await startAuthentication({ optionsJSON });
+
+      const verifyRes = await fetch('/api/auth/webauthn/login/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ response: assertion }),
+      });
+      const data = (await verifyRes.json().catch(() => null)) as { error?: string } | null;
+      if (!verifyRes.ok) {
+        throw new Error(data?.error || 'No se pudo verificar la huella.');
+      }
+
+      const res = await signIn('webauthn', { redirect: false });
+      if (!res || res.error) {
+        throw new Error('No se pudo iniciar sesión con huella.');
+      }
+
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        const callbackUrl = searchParams.get('callbackUrl');
+        router.push(callbackUrl?.startsWith('/dashboard') ? callbackUrl : '/dashboard');
+        router.refresh();
+      }
+    } catch (err: unknown) {
+      if ((err as Error)?.name === 'NotAllowedError') {
+        setErrorMessage('No se reconoció la huella o cancelaste la operación.');
+      } else {
+        setErrorMessage((err as Error)?.message || 'No se pudo iniciar sesión con huella.');
+      }
       setIsLoading(false);
     }
   };
@@ -226,6 +296,31 @@ export function LoginForm({
           </button>
         </div>
       </form>
+
+      {/* Ingreso con huella / Face ID (WebAuthn) */}
+      {waSupported && (
+        <div className="mt-6">
+          <div className="mb-6 flex items-center gap-3" aria-hidden="true">
+            <span className="h-px flex-1 bg-white/10" />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">o</span>
+            <span className="h-px flex-1 bg-white/10" />
+          </div>
+          <button
+            id="btn-webauthn-login"
+            type="button"
+            disabled={isLoading}
+            onClick={handleWebAuthnLogin}
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10 disabled:opacity-60"
+          >
+            {isLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Fingerprint className="w-4 h-4" />
+            )}
+            <span>Entrar con huella / Face ID</span>
+          </button>
+        </div>
+      )}
 
       {/* Switch to Register link */}
       <div className="mt-8 pt-6 border-t border-white/5 text-center">

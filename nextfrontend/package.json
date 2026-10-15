@@ -14,6 +14,9 @@
     "sync:kumite": "tsx prisma/sync-kumite.ts",
     "fix:attendance": "tsx scripts/fix-attendance-dates.ts",
     "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "guard:env": "node scripts/guard-env.mjs",
     "db:deploy": "prisma migrate deploy",
     "precommit": "node scripts/guard-env.mjs",
@@ -25,6 +28,8 @@
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "@prisma/client-runtime-utils": "^7.10.0",
+    "@simplewebauthn/browser": "^14.0.0",
+    "@simplewebauthn/server": "^14.0.3",
     "@supabase/supabase-js": "^2.115.0",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
@@ -47,6 +52,7 @@
   },
   "devDependencies": {
     "@napi-rs/canvas": "^1.0.9",
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/pg": "^8.23.1",
@@ -61,6 +67,7 @@
     "sharp": "^0.35.4",
     "tailwindcss": "^4",
     "tsx": "^4.23.13",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^5.0.4"
   }
 }

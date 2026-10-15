@@ -113,6 +113,7 @@ model User {
   acceptedInvitations     StudentInvitationToken[]
   notifications           Notification[]
   pushSubscriptions       PushSubscription[]
+  webauthnCredentials     WebAuthnCredential[]
   whatsappContact         WhatsAppContact?
   whatsappMessages        WhatsAppMessage[]
   auditLogs               AuditLog[]
@@ -865,6 +866,28 @@ model PushSubscription {
   auth      String
   userAgent String?
   createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ==================== WebAuthn (ingreso con huella / Face ID) ====================
+// Clave pública de un "passkey" registrado por el usuario (huella, rostro o PIN
+// del dispositivo). Solo se guarda la clave pública y un contador de uso; la
+// biometría nunca sale del dispositivo ni llega al servidor. `credentialId` y
+// `publicKey` se almacenan en base64url.
+model WebAuthnCredential {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credentialId String    @unique
+  publicKey    String
+  counter      Int       @default(0)
+  transports   String[]  @default([])
+  deviceName   String?
+  deviceType   String? // singleDevice | multiDevice
+  backedUp     Boolean   @default(false)
+  lastUsedAt   DateTime?
+  createdAt    DateTime  @default(now())
 
   @@index([userId])
 }

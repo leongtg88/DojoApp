@@ -4,6 +4,8 @@ import bcrypt from 'bcryptjs'
 import { headers } from 'next/headers'
 import { db } from '@/lib/db'
 import { consumeRateLimit, getClientIp, peekRateLimit, resetRateLimit } from '@/lib/security/rate-limit'
+import { userHasDashboardAccess } from '@/lib/auth/login-gate'
+import { clearLoginTicketCookie, readLoginTicketCookie } from '@/lib/auth/webauthn'
 import type { DashboardRole } from '@/types/dashboard'
 
 const SESSION_VERIFY_INTERVAL_MS = 60 * 60 * 1000 // 1 hora entre chequeos de validez de sesión
@@ -140,37 +142,62 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null
         }
 
-        // Un alumno solo puede entrar si su expediente proviene de una
-        // inscripción. Las cuentas sin expediente (auto-registradas u
-        // huérfanas) quedan bloqueadas: el acceso es exclusivo por invitación
-        // de la escuela. Un expediente puede venir de la conversión de una
-        // inscripción (relación `enrollments` en el enrollment principal) o de
-        // un aspirante familiar (relación `enrollmentApplicant`), por lo que se
-        // aceptan ambas.
-        // El gate aplica SOLO a cuentas cuyo único rol es STUDENT (sin rol de
-        // tutor): un tutor (GUARDIAN) puede tener su propio expediente o no
-        // (solo da seguimiento a sus hijos), y el staff multirol nunca queda
-        // bloqueado por este chequeo.
-        const hasStaffOrGuardianRole = user.roles.some((role) => role !== 'STUDENT')
-        if (!hasStaffOrGuardianRole) {
-          const studentWithEnrollment = await db.student.findFirst({
-            where: {
-              userId: user.id,
-              OR: [
-                { enrollments: { some: {} } },
-                { enrollmentApplicant: { isNot: null } },
-              ],
-            },
-            select: { id: true },
-          })
-
-          if (!studentWithEnrollment) {
-            return null
-          }
+        // Gate de acceso compartido con el login por huella (ver
+        // `lib/auth/login-gate.ts`): un alumno solo entra si su expediente
+        // proviene de una inscripción; el staff y los tutores siempre pasan.
+        if (!(await userHasDashboardAccess({ id: user.id, roles: user.roles }))) {
+          return null
         }
 
         // Login exitoso: se reinicia el contador de fallos de este email.
         await resetRateLimit(`login-fail:${email}`)
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          roles: user.roles as DashboardRole[],
+          sessionVersion: user.sessionVersion,
+        }
+      },
+    }),
+
+    // Login con huella / Face ID (WebAuthn). El endpoint
+    // `/api/auth/webauthn/login/verify` ya validó la aserción del autenticador
+    // y dejó un ticket firmado en una cookie httpOnly; aquí solo se valida ese
+    // ticket y se reaplica el gate de acceso. Así la sesión se emite por el
+    // flujo normal de NextAuth (mismos callbacks, cookies y versionado).
+    Credentials({
+      id: 'webauthn',
+      name: 'Huella / Face ID',
+      credentials: {},
+
+      async authorize() {
+        const ticket = await readLoginTicketCookie()
+
+        if (!ticket) {
+          return null
+        }
+
+        const user = await db.user.findUnique({
+          where: { id: ticket.uid },
+        })
+
+        if (!user || !user.emailVerified || user.sessionVersion !== ticket.sv) {
+          return null
+        }
+
+        if (!(await userHasDashboardAccess({ id: user.id, roles: user.roles }))) {
+          return null
+        }
+
+        // Consumo de un solo uso best-effort: si el contexto no permite borrar
+        // la cookie aquí, el TTL corto (2 min) limita su reutilización.
+        try {
+          await clearLoginTicketCookie()
+        } catch {
+          // La sesión sigue siendo válida; solo se omite el borrado anticipado.
+        }
 
         return {
           id: user.id,

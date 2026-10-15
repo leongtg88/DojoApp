@@ -555,6 +555,20 @@ exports.Prisma.PushSubscriptionScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.WebAuthnCredentialScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  credentialId: 'credentialId',
+  publicKey: 'publicKey',
+  counter: 'counter',
+  transports: 'transports',
+  deviceName: 'deviceName',
+  deviceType: 'deviceType',
+  backedUp: 'backedUp',
+  lastUsedAt: 'lastUsedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.HolidayScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -866,6 +880,7 @@ exports.Prisma.ModelName = {
   WhatsAppContact: 'WhatsAppContact',
   WhatsAppMessage: 'WhatsAppMessage',
   PushSubscription: 'PushSubscription',
+  WebAuthnCredential: 'WebAuthnCredential',
   Holiday: 'Holiday',
   ExamConvocation: 'ExamConvocation',
   Review: 'Review',

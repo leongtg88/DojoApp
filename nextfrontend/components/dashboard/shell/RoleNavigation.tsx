@@ -7,6 +7,7 @@ import {
     ClipboardCheck,
     Clock3,
     FileSearch,
+    Fingerprint,
     GraduationCap,
     LayoutDashboard,
     ListChecks,
@@ -32,6 +33,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/estudiante/progreso', label: 'Mi progreso', icon: GraduationCap },
         { href: '/dashboard/estudiante/horario', label: 'Horario', icon: CalendarDays },
         { href: '/dashboard/estudiante/asistencia', label: 'Asistencia', icon: ClipboardCheck },
+        { href: '/dashboard/ajustes', label: 'Seguridad', icon: Fingerprint },
     ],
     // Un tutor accede al mismo portal del estudiante y usa el selector familiar
     // para alternar entre su cuenta y la de sus hijos.
@@ -41,6 +43,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/estudiante/progreso', label: 'Mi progreso', icon: GraduationCap },
         { href: '/dashboard/estudiante/horario', label: 'Horario', icon: CalendarDays },
         { href: '/dashboard/estudiante/asistencia', label: 'Asistencia', icon: ClipboardCheck },
+        { href: '/dashboard/ajustes', label: 'Seguridad', icon: Fingerprint },
     ],
     INSTRUCTOR: [
         { href: '/dashboard/instructor', label: 'Resumen', icon: LayoutDashboard },
@@ -49,6 +52,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/instructor/asistencia', label: 'Asistencia', icon: ClipboardCheck },
         { href: '/dashboard/instructor/evaluaciones', label: 'Evaluaciones', icon: BookOpenCheck },
         { href: '/dashboard/instructor/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
+        { href: '/dashboard/ajustes', label: 'Seguridad', icon: Fingerprint },
     ],
     SCHOOL_ADMIN: [
         { href: '/dashboard/admin', label: 'Resumen', icon: LayoutDashboard },
@@ -64,6 +68,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/admin/mensajes', label: 'Mensajes', icon: MessageCircle },
         { href: '/dashboard/admin/reviews', label: 'Reseñas', icon: Star },
         { href: '/dashboard/admin/blog', label: 'Blog', icon: Newspaper },
+        { href: '/dashboard/ajustes', label: 'Seguridad', icon: Fingerprint },
     ],
     SUPERADMIN: [
         { href: '/dashboard/admin', label: 'Resumen', icon: LayoutDashboard },
@@ -79,6 +84,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/admin/mensajes', label: 'Mensajes', icon: MessageCircle },
         { href: '/dashboard/admin/reviews', label: 'Reseñas', icon: Star },
         { href: '/dashboard/admin/blog', label: 'Blog', icon: Newspaper },
+        { href: '/dashboard/ajustes', label: 'Seguridad', icon: Fingerprint },
     ],
 }
 
