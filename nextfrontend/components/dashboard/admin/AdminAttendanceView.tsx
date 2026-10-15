@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { CalendarCheck2, CircleX, Clock3, Loader2, Repeat, Search, ShieldCheck, Users, X } from 'lucide-react'
+import { DatePicker } from '@/components/ui/date-picker'
 import type { AdminAttendanceBranch, AdminAttendanceItem, AttendanceStatus } from '@/types/dashboard'
 
 const STATUS_META: Record<AttendanceStatus, { label: string; className: string }> = {
@@ -161,7 +162,7 @@ export function AdminAttendanceView() {
                         </label>
                         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                             <label className="text-xs font-semibold text-ink-2" htmlFor="attendance-date">Fecha
-                                <input className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500" id="attendance-date" onChange={(event) => setDate(event.target.value)} type="date" value={date} />
+                                <DatePicker className="mt-1" id="attendance-date" onChange={setDate} value={date} />
                             </label>
                             <label className="text-xs font-semibold text-ink-2" htmlFor="attendance-presence">Presencia
                                 <select className="mt-1 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500" id="attendance-presence" onChange={(event) => setPresent(event.target.value as typeof present)} value={present}>

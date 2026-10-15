@@ -9,6 +9,7 @@ import { KIHON_CATEGORIES, KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/k
 import { KUMITE_CATEGORIES, KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
 import { buildTechniqueSections } from '@/lib/dashboard/technique-sections'
 import { KATA_BANDS, bandForOrder } from '@/lib/dashboard/kata-bands'
+import { DatePicker } from '@/components/ui/date-picker'
 
 interface StudentPracticeLogProps {
   techniques: StudentPracticeTechniqueOption[]
@@ -273,13 +274,11 @@ export function StudentPracticeLog({ techniques, program, studentId }: StudentPr
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-2" htmlFor="practice-date">
                 Fecha de la práctica
               </label>
-              <input
-                className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink focus:border-cyan-500 focus:outline-none"
+              <DatePicker
                 id="practice-date"
                 max={todayValue}
                 min={minDateValue}
-                onChange={(event) => setPracticeDate(event.target.value)}
-                type="date"
+                onChange={setPracticeDate}
                 value={practiceDate}
               />
             </div>

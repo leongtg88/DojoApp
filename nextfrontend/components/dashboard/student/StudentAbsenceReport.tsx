@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { CalendarX2, CheckCircle2, ChevronDown, Clock, Hourglass, Trash2, XCircle } from 'lucide-react'
 import type { ClassSchedule, StudentAbsenceJustification } from '@/types/dashboard'
 import { WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
+import { formatCalendarDate } from '@/lib/format/datetime'
+import { DatePicker } from '@/components/ui/date-picker'
 
 interface StudentAbsenceReportProps {
   schedule: ClassSchedule[]
@@ -134,13 +136,11 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink-2" htmlFor="absence-date">
                 Fecha de la inasistencia
               </label>
-              <input
-                className="w-full rounded-lg border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink focus:border-cyan-500 focus:outline-none"
+              <DatePicker
                 id="absence-date"
                 max={todayValue}
                 min={minDateValue}
-                onChange={(event) => setDate(event.target.value)}
-                type="date"
+                onChange={setDate}
                 value={date}
               />
             </div>
@@ -194,14 +194,14 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-sm font-semibold text-ink">{justification.className}</span>
-                      <span className="inline-flex items-center gap-1 text-xs text-ink-3"><Clock className="size-3.5" aria-hidden="true" />{justification.date}</span>
+                      <span className="inline-flex items-center gap-1 text-xs text-ink-3"><Clock className="size-3.5" aria-hidden="true" />{formatCalendarDate(justification.date)}</span>
                       <span className={`rounded-md border px-2 py-0.5 text-[11px] font-bold ${meta.className}`}>{meta.label}</span>
                     </div>
                     <p className="mt-1 text-xs text-ink-2">{justification.reason}</p>
                     {justification.status === 'APPROVED' && (
                         justification.recovered ? (
                             <p className="mt-1 flex items-center gap-1 text-[11px] text-ok-text">
-                                <CheckCircle2 className="size-3" aria-hidden="true" />Repuesta el {justification.recoveryDate}
+                                <CheckCircle2 className="size-3" aria-hidden="true" />Repuesta el {formatCalendarDate(justification.recoveryDate)}
                             </p>
                         ) : (
                             <p className="mt-1 flex items-center gap-1 text-[11px] text-info-text">

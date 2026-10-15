@@ -16,8 +16,19 @@ const dateOptions: Intl.DateTimeFormatOptions = {
     timeZone: SANTO_DOMINGO_TIME_ZONE,
 }
 
+// Las fechas de calendario (claves "YYYY-MM-DD", sin hora) se formatean en UTC.
+// Interpretarlas en zona de RD las desplazaría un día (quedan guardadas a
+// medianoche UTC), así que fijamos UTC para mostrar el día correcto.
+const calendarDateOptions: Intl.DateTimeFormatOptions = {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+}
+
 const dateTimeFormatter = new Intl.DateTimeFormat('es-DO', dateTimeOptions)
 const dateFormatter = new Intl.DateTimeFormat('es-DO', dateOptions)
+const calendarDateFormatter = new Intl.DateTimeFormat('es-DO', calendarDateOptions)
 
 // El motor ICU del servidor y el del navegador usan caracteres de espacio
 // distintos (U+00A0 vs U+202F) en "a. m."/"p. m.". Normalizarlos garantiza un
@@ -44,4 +55,16 @@ export function formatDate(value: string | Date | null | undefined): string {
     const date = toDate(value)
     if (!date) return ''
     return normalizeSpaces(dateFormatter.format(date))
+}
+
+/**
+ * Fecha de calendario (solo día) a partir de una clave "YYYY-MM-DD".
+ * Se interpreta y formatea en UTC para no desplazar la fecha un día
+ * (p. ej. "22 de septiembre de 2026").
+ */
+export function formatCalendarDate(value: string | null | undefined): string {
+    if (value === null || value === undefined || value === '') return ''
+    const date = new Date(`${value.slice(0, 10)}T00:00:00.000Z`)
+    if (Number.isNaN(date.getTime())) return ''
+    return normalizeSpaces(calendarDateFormatter.format(date))
 }

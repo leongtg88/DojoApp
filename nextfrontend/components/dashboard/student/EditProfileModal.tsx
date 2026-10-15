@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { LoaderCircle, Save, X } from 'lucide-react'
+import { DatePicker } from '@/components/ui/date-picker'
 import type { StudentProfile } from '@/types/dashboard'
 
 interface EditProfileModalProps {
@@ -128,12 +129,12 @@ export function EditProfileModal({ onClose, profile, studentId, restricted = fal
 
                     <label className="block text-sm font-semibold text-ink" htmlFor="edit-dob">
                         Fecha de nacimiento
-                        <input
-                            className={fieldClass}
+                        <DatePicker
+                            className="mt-1.5 text-sm"
+                            captionLayout="dropdown"
                             id="edit-dob"
                             max={new Date().toISOString().slice(0, 10)}
-                            onChange={(event) => setDateOfBirth(event.target.value)}
-                            type="date"
+                            onChange={setDateOfBirth}
                             value={dateOfBirth}
                         />
                     </label>

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AlertTriangle, CalendarDays, ChevronDown } from 'lucide-react'
+import { DatePicker } from '@/components/ui/date-picker'
 
 export interface AttendanceScheduleGroup {
     label: string | null
@@ -94,11 +95,9 @@ export function AttendanceScheduleFilter({
                 <div className="mt-3 flex flex-wrap items-end gap-3">
                     <label className="flex flex-col gap-1.5 text-xs font-semibold text-ink-2" htmlFor="attendance-custom-date">
                         Fecha específica
-                        <input
-                            className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500"
+                        <DatePicker
                             id="attendance-custom-date"
-                            onChange={(event) => setCustomDate(event.target.value)}
-                            type="date"
+                            onChange={setCustomDate}
                             value={customDate}
                         />
                     </label>

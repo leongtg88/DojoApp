@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowDownUp, Award, Check, Info, Loader2, X } from 'lucide-react'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
+import { DatePicker } from '@/components/ui/date-picker'
 import type { AdminBeltRankSummary } from '@/types/dashboard'
 
 interface AssignRankStudent {
@@ -128,7 +129,7 @@ export function AssignRankDialog({ student, currentRankOrder, ranks, isOpen, onC
 					<div className="grid gap-3 sm:grid-cols-2">
 						<label className="block text-sm font-semibold text-ink" htmlFor="assign-rank-date">
 							Fecha de examen
-							<input id="assign-rank-date" type="date" value={promotedAt} onChange={(event) => setPromotedAt(event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" />
+							<DatePicker id="assign-rank-date" onChange={setPromotedAt} value={promotedAt} className="mt-1.5" />
 						</label>
 						<label className="block text-sm font-semibold text-ink" htmlFor="assign-rank-examiner">
 							Sensei examinador

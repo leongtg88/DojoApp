@@ -4,12 +4,11 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CheckCircle2, Inbox, Loader2, XCircle } from 'lucide-react'
 import type { InstructorPendingJustification } from '@/types/dashboard'
+import { formatCalendarDate } from '@/lib/format/datetime'
 
 interface InstructorJustificationBoardProps {
     justifications: InstructorPendingJustification[]
 }
-
-const dateFormatter = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
 
 export function InstructorJustificationBoard({ justifications }: InstructorJustificationBoardProps) {
     const router = useRouter()
@@ -60,7 +59,7 @@ export function InstructorJustificationBoard({ justifications }: InstructorJusti
                         <li className="flex flex-col justify-between gap-3 px-5 py-4 sm:flex-row sm:items-start" key={justification.id}>
                             <div className="min-w-0">
                                 <p className="text-sm font-bold text-ink">{justification.studentName}</p>
-                                <p className="mt-1 text-xs text-ink-3">{justification.className} · {dateFormatter.format(new Date(`${justification.date}T00:00:00.000Z`))}</p>
+                                <p className="mt-1 text-xs text-ink-3">{justification.className} · {formatCalendarDate(justification.date)}</p>
                                 <p className="mt-2 rounded-md border border-edge bg-surface-1 px-3 py-2 text-sm text-ink-2">{justification.reason}</p>
                             </div>
                             <div className="flex shrink-0 gap-2 self-end sm:self-center">

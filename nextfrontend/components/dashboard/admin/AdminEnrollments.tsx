@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { FilePlus2, Trash2 } from 'lucide-react'
+import { DatePicker } from '@/components/ui/date-picker'
 import type { AdminEnrollmentSummary } from '@/types/dashboard'
 import { kyuLabel } from '@/lib/curriculum/kyu-options'
 
@@ -79,6 +80,11 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
         event.preventDefault()
 
         if (!selectedEnrollment) {
+            return
+        }
+
+        if (!dateOfBirth) {
+            setError('Selecciona la fecha de nacimiento del alumno.')
             return
         }
 
@@ -179,7 +185,7 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                                 <input className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" id="lastName" onChange={(event) => setLastName(event.target.value)} required value={lastName} />
                             </label>
                             <label className="text-sm font-semibold text-ink" htmlFor="dateOfBirth">Fecha de nacimiento
-                                <input className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" id="dateOfBirth" onChange={(event) => setDateOfBirth(event.target.value)} required type="date" value={dateOfBirth} />
+                                <DatePicker className="mt-1.5" captionLayout="dropdown" id="dateOfBirth" onChange={setDateOfBirth} value={dateOfBirth} />
                             </label>
 <label className="text-sm font-semibold text-ink" htmlFor="gender">Sexo
 <select className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" id="gender" onChange={(event) => setGender(event.target.value as 'FEMALE' | 'MALE' | '')} value={gender}>

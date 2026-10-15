@@ -9,6 +9,7 @@ import { TIPOS_SANGRE, TALLAS_ROPA, HORAS_SUENO, TIEMPO_PANTALLAS, RESPONSABILID
 import { Award, BrainCircuit, Flame, ShieldAlert, HeartHandshake, FileText, ChevronDown, CheckCircle2 } from 'lucide-react';
 import TerminosLegales from '@/components/TerminosLegales';
 import PrivacidadDeDatos from '@/components/PrivacidadDeDatos';
+import { DatePicker } from '@/components/ui/date-picker';
 
 const heroImageDesktop = '/assets/BannerbgHero19080x1080.webp';
 const LogoCuadradoBlanco = '/assets/LogoCuadradoBlanco.svg';
@@ -1280,8 +1281,17 @@ const ToseiGusokuForm = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-stone-500 mb-1">Fecha de Nacimiento <span className="text-red-500">*</span></label>
-              <input type="date" name="fechaNacimientoAdulto" value={formData.fechaNacimientoAdulto} onChange={handleChange}
-                className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.fechaNacimientoAdulto ? 'border-red-500' : 'border-brand-accent/60'}`} />
+              <DatePicker
+                variant="light"
+                captionLayout="dropdown"
+                id="fechaNacimientoAdulto"
+                value={formData.fechaNacimientoAdulto}
+                className={errors.fechaNacimientoAdulto ? 'border-red-500' : undefined}
+                onChange={(value) => {
+                  setFormData(prev => ({ ...prev, fechaNacimientoAdulto: value }));
+                  if (errors.fechaNacimientoAdulto) setErrors(prev => ({ ...prev, fechaNacimientoAdulto: '' }));
+                }}
+              />
               {errors.fechaNacimientoAdulto && <p className="text-red-500 text-xs mt-1">{errors.fechaNacimientoAdulto}</p>}
             </div>
             <div>
@@ -1440,8 +1450,13 @@ const ToseiGusokuForm = () => {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-stone-500 mb-1">Fecha de Nacimiento <span className="text-red-500">*</span></label>
-                      <input type="date" value={hijo.fechaNacimiento} onChange={(e) => handleHijoChange(hijo.id, 'fechaNacimiento', e.target.value)}
-                        className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.hijos?.[index]?.fechaNacimiento ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                      <DatePicker
+                        variant="light"
+                        captionLayout="dropdown"
+                        value={hijo.fechaNacimiento}
+                        className={errors.hijos?.[index]?.fechaNacimiento ? 'border-red-500' : undefined}
+                        onChange={(value) => handleHijoChange(hijo.id, 'fechaNacimiento', value)}
+                      />
                       {errors.hijos?.[index]?.fechaNacimiento && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.fechaNacimiento}</p>}
                     </div>
                     <div>
@@ -1581,8 +1596,13 @@ const ToseiGusokuForm = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-stone-500 mb-1">Fecha de Nacimiento <span className="text-red-500">*</span></label>
-                  <input type="date" value={hijo.fechaNacimiento} onChange={(e) => handleHijoChange(hijo.id, 'fechaNacimiento', e.target.value)}
-                    className={`w-full px-4 py-2 border rounded-lg bg-white text-stone-900 text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition ${errors.hijos?.[index]?.fechaNacimiento ? 'border-red-500' : 'border-brand-accent/60'}`} />
+                  <DatePicker
+                    variant="light"
+                    captionLayout="dropdown"
+                    value={hijo.fechaNacimiento}
+                    className={errors.hijos?.[index]?.fechaNacimiento ? 'border-red-500' : undefined}
+                    onChange={(value) => handleHijoChange(hijo.id, 'fechaNacimiento', value)}
+                  />
                   {errors.hijos?.[index]?.fechaNacimiento && <p className="text-red-500 text-xs mt-1">{errors.hijos?.[index]?.fechaNacimiento}</p>}
                 </div>
                 <div>

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { CalendarDays, CheckCircle2, Loader2, Plus, RefreshCw, Trash2 } from 'lucide-react'
+import { DatePicker } from '@/components/ui/date-picker'
 import type { ExamConvocationSummary, HolidaySummary } from '@/types/dashboard'
 
 interface AdminCalendarProps {
@@ -48,6 +49,10 @@ export function AdminCalendar({ holidays, convocations }: AdminCalendarProps) {
 
   async function createHoliday(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (!holidayDate) {
+      setError('Selecciona la fecha del feriado.')
+      return
+    }
     const ok = await request('/api/dashboard/admin/holidays', 'POST', {
       name: holidayName.trim(),
       date: holidayDate,
@@ -62,6 +67,10 @@ export function AdminCalendar({ holidays, convocations }: AdminCalendarProps) {
 
   async function createConvocation(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (!examDate) {
+      setError('Selecciona la fecha de la convocatoria.')
+      return
+    }
     const ok = await request('/api/dashboard/admin/exam-convocations', 'POST', {
       date: examDate,
       examDay,
@@ -95,7 +104,7 @@ export function AdminCalendar({ holidays, convocations }: AdminCalendarProps) {
 
         <form className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto_auto_auto]" onSubmit={createHoliday}>
           <input className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" onChange={(event) => setHolidayName(event.target.value)} placeholder="Nombre del feriado" required value={holidayName} />
-          <input className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500" onChange={(event) => setHolidayDate(event.target.value)} required type="date" value={holidayDate} />
+          <DatePicker id="holiday-date" onChange={setHolidayDate} value={holidayDate} />
           <label className="flex items-center gap-2 px-1 text-xs font-semibold text-ink-2"><input checked={holidayRecurring} className="size-4 accent-cyan-500" onChange={(event) => setHolidayRecurring(event.target.checked)} type="checkbox" />Anual</label>
           <button className="inline-flex items-center justify-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400 disabled:opacity-60" disabled={saving} type="submit">{saving ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <Plus aria-hidden="true" className="size-4" />}Añadir</button>
         </form>
@@ -125,7 +134,7 @@ export function AdminCalendar({ holidays, convocations }: AdminCalendarProps) {
         <p className="mt-1 text-xs text-ink-3">Fija la fecha real de examen. Mientras no exista, el portal muestra la fecha tentativa por cuatrimestre.</p>
 
         <form className="mt-4 grid gap-3 sm:grid-cols-[auto_auto_1fr_auto]" onSubmit={createConvocation}>
-          <input className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500" onChange={(event) => setExamDate(event.target.value)} required type="date" value={examDate} />
+          <DatePicker id="exam-date" onChange={setExamDate} value={examDate} />
           <select className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500" onChange={(event) => setExamDay(event.target.value as 'SATURDAY' | 'SUNDAY')} value={examDay}>
             <option value="SATURDAY">Sábado (principiantes)</option>
             <option value="SUNDAY">Domingo (avanzados)</option>

@@ -8,6 +8,7 @@ import { BeltRankIndicator } from '../shared/BeltRankIndicator'
 import { ConfirmModal } from '../shared/ConfirmModal'
 import { InvitationLinkModal } from './InvitationLinkModal'
 import { AdminBulkKataAssignment } from './AdminBulkKataAssignment'
+import { DatePicker } from '@/components/ui/date-picker'
 import { DAY_LABELS } from '@/lib/dashboard/balance'
 import type { AdminBeltRankSummary, AdminStudentSummary, PlanSummary, ScholarshipType, ScheduleOption } from '@/types/dashboard'
 
@@ -313,7 +314,7 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 						</label>
 						<label className="text-sm font-semibold text-ink" htmlFor="student-dob">
 							Fecha de nacimiento *
-							<input id="student-dob" type="date" value={form.dateOfBirth} onChange={(event) => updateField('dateOfBirth', event.target.value)} className="mt-1.5 block w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink" />
+							<DatePicker className="mt-1.5" captionLayout="dropdown" id="student-dob" onChange={(value) => updateField('dateOfBirth', value)} value={form.dateOfBirth} />
 						</label>
 						<label className="text-sm font-semibold text-ink" htmlFor="student-gender">
 							Sexo

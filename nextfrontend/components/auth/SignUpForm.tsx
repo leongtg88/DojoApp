@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { TermsModal } from './TermsModal';
 import { PrivacyModal } from './PrivacyModal';
+import { DatePicker } from '@/components/ui/date-picker';
 
 interface SignUpFormProps {
   onSuccess?: () => void;
@@ -231,18 +232,15 @@ export function SignUpForm({ onSuccess, onNavigateToLogin }: SignUpFormProps) {
           >
             Fecha de nacimiento
           </label>
-          <input
+          <DatePicker
             id="signup-date-of-birth-input"
-            name="dateOfBirth"
-            type="date"
-            autoComplete="bday"
-            required
+            variant="glass"
+            captionLayout="dropdown"
             value={dateOfBirth}
-            onChange={(e) => {
-              setDateOfBirth(e.target.value);
+            onChange={(value) => {
+              setDateOfBirth(value);
               if (errorMessage) setErrorMessage(null);
             }}
-            className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/10 transition-all shadow-inner"
           />
         </div>
 
