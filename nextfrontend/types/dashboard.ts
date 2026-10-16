@@ -457,6 +457,22 @@ export interface AdminExpectedAttendanceSummary {
 	justificationsPending: number
 }
 
+export interface AdminExpectedAttendanceInstructor {
+	id: string
+	name: string
+	/** El instructor a cargo también tiene expediente de alumno e inscripción activa en la clase. */
+	isEnrolled: boolean
+	/** Grado actual del instructor cuando tiene expediente de alumno. */
+	currentRank: string | null
+}
+
+/** Alumno inscrito que además es personal/instructor (rol INSTRUCTOR en su cuenta). */
+export interface AdminExpectedAttendanceStaff {
+	id: string
+	name: string
+	currentRank: string | null
+}
+
 export interface AdminExpectedAttendanceRoster {
 	classId: string
 	className: string
@@ -469,6 +485,10 @@ export interface AdminExpectedAttendanceRoster {
 	passTaken: boolean
 	passTakenAt: string | null
 	passTakenByName: string | null
+	/** Instructor a cargo de la clase. Se muestra aparte y no entra en la lista de alumnos. */
+	instructor: AdminExpectedAttendanceInstructor | null
+	/** Inscritos que son instructores/personal. Se muestran aparte y no cuentan como alumnos. */
+	staff: AdminExpectedAttendanceStaff[]
 	students: AdminExpectedAttendanceStudent[]
 	summary: AdminExpectedAttendanceSummary
 }
@@ -737,6 +757,8 @@ export interface StudentPracticeTechniqueOption {
 	name: string
 	japaneseName: string | null
 	category: TechniqueCategory
+	/** Orden pedagógico dentro del grado (para listar por grado, no alfabético). */
+	order: number
 	kihonCategory: KihonCategory | null
 	kumiteCategory: KumiteCategory | null
 	targetRepetitions: number | null
@@ -959,6 +981,11 @@ export interface InstructorKataAssignmentData {
 	studentName: string
 	currentRank: string | null
 	grades: InstructorKataGrade[]
+	/**
+	 * Ids de todas las técnicas asignadas al alumno, incluidas las que no están
+	 * enlazadas a ningún grado. Se preservan al guardar el modal para no borrarlas.
+	 */
+	assignedTechniqueIds: string[]
 }
 
 export interface InstructorStudentSearchResult {

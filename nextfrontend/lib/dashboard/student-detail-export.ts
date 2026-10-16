@@ -1,4 +1,5 @@
 import * as XLSX from 'xlsx'
+import { formatCalendarDate, formatDate, formatDateTime } from '@/lib/format/datetime'
 import type { AdminStudentDetail } from '@/types/dashboard'
 
 const GENDER_LABELS: Record<string, string> = { MALE: 'Masculino', FEMALE: 'Femenino' }
@@ -40,17 +41,16 @@ const TECHNIQUE_STATUS_LABELS: Record<string, string> = {
 }
 
 function toDateLabel(value: string | null): string | null {
-  if (!value) return null
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return null
-  return new Intl.DateTimeFormat('es-DO', { dateStyle: 'medium' }).format(date)
+  return value ? formatDate(value) || null : null
 }
 
 function toDateTimeLabel(value: string | null): string | null {
-  if (!value) return null
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return null
-  return new Intl.DateTimeFormat('es-DO', { dateStyle: 'medium', timeStyle: 'short' }).format(date)
+  return value ? formatDateTime(value) || null : null
+}
+
+// Fecha de calendario (sin hora de reloj): se formatea en UTC para no restar un día.
+function toCalendarLabel(value: string | null): string | null {
+  return value ? formatCalendarDate(value) || null : null
 }
 
 function ageFrom(dob: string | null): number | null {
@@ -74,7 +74,7 @@ function buildPersonalSheet(detail: AdminStudentDetail): (string | number | null
     ['Campo', 'Valor'],
     ['Matrícula', detail.memberNumber],
     ['Nombre completo', fullName],
-    ['Fecha de nacimiento', toDateLabel(detail.dateOfBirth)],
+    ['Fecha de nacimiento', toCalendarLabel(detail.dateOfBirth)],
     ['Edad', ageFrom(detail.dateOfBirth)],
     ['Género', detail.gender ? GENDER_LABELS[detail.gender] ?? detail.gender : null],
     ['Email', detail.email],
@@ -87,7 +87,7 @@ function buildPersonalSheet(detail: AdminStudentDetail): (string | number | null
     ['Grado otorgado', toDateTimeLabel(detail.rankAwardedAt)],
     ['Plan', detail.planName],
     ['Horas del plan', detail.isUnlimitedPlan ? 'Ilimitadas' : detail.planMonthlyHours],
-    ['Inicio del plan', toDateLabel(detail.planStartDate)],
+    ['Inicio del plan', toCalendarLabel(detail.planStartDate)],
     ['Beca', SCHOLARSHIP_LABELS[detail.scholarshipType] ?? detail.scholarshipType],
     ['Nota de beca', detail.scholarshipNote],
     ['Competidor', detail.isCompetitor ? 'Sí' : 'No'],
@@ -115,7 +115,7 @@ function buildRegistrationSheet(detail: AdminStudentDetail): (string | number | 
   }
 
   for (const applicant of detail.registration.applicants) {
-    rows.push(['Aspirantes de la solicitud', applicant.name, toDateLabel(applicant.dateOfBirth)])
+    rows.push(['Aspirantes de la solicitud', applicant.name, toCalendarLabel(applicant.dateOfBirth)])
   }
 
   return rows

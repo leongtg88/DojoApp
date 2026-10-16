@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { ArrowLeft, Award, BookOpen, CalendarDays, ClipboardList, FileSpreadsheet, FileText, FolderArchive, GraduationCap, History, Loader2, Mail, MapPin, Phone, ShieldCheck, Stethoscope, Trash2, Users } from 'lucide-react'
+import { ArrowLeft, Award, BookOpen, CalendarDays, ClipboardList, FileSpreadsheet, FileText, FolderArchive, GraduationCap, History, Loader2, Mail, MapPin, Phone, RefreshCw, ShieldCheck, Stethoscope, Trash2, Users } from 'lucide-react'
 import { AdminPlacementModal } from './AdminPlacementModal'
 import { AdminStudentDocuments } from './AdminStudentDocuments'
 import { AdminStudentMedia } from './AdminStudentMedia'
@@ -12,6 +12,7 @@ import { KataAssignmentDialog } from '../dojo/KataAssignmentDialog'
 import { KataBadge } from '../dojo/KataBadge'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
 import { InvitationLinkModal } from './InvitationLinkModal'
+import { formatCalendarDate, formatDate as formatDateRD, formatDateTime as formatDateTimeRD } from '@/lib/format/datetime'
 import type { AdminStudentDetail as StudentDetail } from '@/types/dashboard'
 
 interface AdminStudentDetailProps {
@@ -24,13 +25,18 @@ type ExportKind = 'excel' | 'zip' | 'pdf'
 type DetailTab = 'katas' | 'attendance' | 'inscripcion' | 'medical'
 
 function formatDate(value: string | null) {
-	if (!value) return '—'
-	return new Intl.DateTimeFormat('es-DO', { dateStyle: 'medium' }).format(new Date(value))
+	return value ? formatDateRD(value) : '—'
 }
 
 function formatDateTime(value: string | null) {
-	if (!value) return '—'
-	return new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(value))
+	return value ? formatDateTimeRD(value) : '—'
+}
+
+// Fecha de calendario (sin hora de reloj): se formatea en UTC para no restar un
+// día. Es el caso de la fecha de nacimiento y del inicio de plan, que quedan
+// guardadas a medianoche UTC.
+function formatCalendar(value: string | null) {
+	return value ? formatCalendarDate(value) : '—'
 }
 
 const ORIGIN_LABELS: Record<string, string> = {
@@ -67,6 +73,8 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 	const [isPurgeOpen, setIsPurgeOpen] = useState(false)
 	const [isPurging, setIsPurging] = useState(false)
 	const [pendingKataId, setPendingKataId] = useState<string | null>(null)
+	const [isApplyingGrade, setIsApplyingGrade] = useState(false)
+	const [gradeAppliedNotice, setGradeAppliedNotice] = useState<string | null>(null)
 	const [actionError, setActionError] = useState<string | null>(null)
 	const [invitationLink, setInvitationLink] = useState<{ url: string; name: string; email: string | null } | null>(null)
 	const [documents, setDocuments] = useState(student.documents)
@@ -137,6 +145,30 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 			setActionError(reason instanceof Error ? reason.message : 'No fue posible actualizar la kata.')
 		} finally {
 			setPendingKataId(null)
+		}
+	}
+
+	async function handleApplyGradeKatas() {
+		setIsApplyingGrade(true)
+		setActionError(null)
+		setGradeAppliedNotice(null)
+		try {
+			const response = await fetch(`/api/dashboard/admin/students/${student.id}/techniques/apply-grade`, { method: 'POST' })
+			const payload = await response.json().catch(() => ({})) as { error?: string; added?: number; rankName?: string }
+			if (!response.ok) {
+				throw new Error(payload.error ?? 'No fue posible aplicar las katas del grado.')
+			}
+			const rankLabel = payload.rankName ? ` del grado ${payload.rankName}` : ''
+			setGradeAppliedNotice(
+				(payload.added ?? 0) > 0
+					? `Se agregaron ${payload.added} kata(s)${rankLabel}.`
+					: `El expediente ya tenía las katas${rankLabel}.`,
+			)
+			router.refresh()
+		} catch (reason: unknown) {
+			setActionError(reason instanceof Error ? reason.message : 'No fue posible aplicar las katas del grado.')
+		} finally {
+			setIsApplyingGrade(false)
 		}
 	}
 
@@ -319,7 +351,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 						<p className="mt-1 text-[11px] text-ink-3">
 							{student.planId ? (student.isUnlimitedPlan ? 'Horas ilimitadas' : `${student.planMonthlyHours} h/mes`) : 'Requiere asignación'}
 						</p>
-						{student.planStartDate && <p className="mt-1 text-[11px] text-ink-4">Desde: {formatDate(student.planStartDate)}</p>}
+						{student.planStartDate && <p className="mt-1 text-[11px] text-ink-4">Desde: {formatCalendar(student.planStartDate)}</p>}
 					</div>
 
 					<div className="rounded-lg border border-edge bg-surface-1 p-4">
@@ -360,8 +392,23 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 								<h2 className="font-display text-base font-bold text-ink">Técnicas requeridas hacia {student.nextRankName ?? 'el grado máximo'}</h2>
 								<p className="mt-1 text-xs text-ink-3">Técnicas del plan del grado siguiente. Las que no están en el expediente aparecen como &ldquo;sin asignar&rdquo;; usa &ldquo;Asignar técnicas&rdquo; para incorporarlas.</p>
 							</div>
-							<span className="text-xs font-semibold text-accent">{masteredTowardNext} de {requiredKatas.length} revisadas</span>
+							<div className="flex shrink-0 flex-col items-end gap-2">
+								<span className="text-xs font-semibold text-accent">{masteredTowardNext} de {requiredKatas.length} revisadas</span>
+								<button
+									className="inline-flex items-center gap-1.5 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-3 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-cyan-900/50 disabled:cursor-not-allowed disabled:opacity-50"
+									disabled={isApplyingGrade}
+									onClick={handleApplyGradeKatas}
+									title="Agrega al expediente las katas del grado actual y el siguiente, sin quitar ninguna"
+									type="button"
+								>
+									{isApplyingGrade ? <Loader2 aria-hidden="true" className="size-3.5 animate-spin" /> : <RefreshCw aria-hidden="true" className="size-3.5" />}
+									Aplicar katas del grado
+								</button>
+							</div>
 						</div>
+						{gradeAppliedNotice && (
+							<p className="mt-3 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-ok-text">{gradeAppliedNotice}</p>
+						)}
 						{requiredKatas.length === 0 ? (
 							<div className="mt-4 rounded-md border border-dashed border-edge-strong bg-surface-1 px-4 py-8 text-center text-sm text-ink-3">
 								El grado {student.nextRankName ?? 'siguiente'} no tiene técnicas en el plan. Configúralas en{' '}
@@ -604,7 +651,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 								{student.registration.applicants.map((applicant) => (
 									<li key={applicant.id} className="flex items-center justify-between gap-3 py-2.5 text-sm">
 										<span className="font-semibold text-ink">{applicant.name}</span>
-										<span className="text-xs text-ink-3" suppressHydrationWarning>{formatDate(applicant.dateOfBirth)}</span>
+										<span className="text-xs text-ink-3" suppressHydrationWarning>{formatCalendar(applicant.dateOfBirth)}</span>
 									</li>
 								))}
 							</ul>
@@ -620,7 +667,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 							<Stethoscope aria-hidden="true" className="size-4 text-accent" />
 							<h2 className="font-display text-base font-bold text-ink">Ficha médica</h2>
 						</div>
-						<p className="mt-3 text-sm text-ink-2"><span className="font-semibold text-ink">Fecha de nacimiento:</span> <span suppressHydrationWarning>{formatDate(student.dateOfBirth)}</span></p>
+						<p className="mt-3 text-sm text-ink-2"><span className="font-semibold text-ink">Fecha de nacimiento:</span> <span suppressHydrationWarning>{formatCalendar(student.dateOfBirth)}</span></p>
 						<p className="mt-2 text-sm text-ink-2"><span className="font-semibold text-ink">Información médica:</span> {student.medicalInfo || 'Sin información registrada.'}</p>
 					</div>
 					<div className="rounded-lg border border-edge bg-surface-2 p-5 shadow-sm">

@@ -86,3 +86,9 @@ export async function markAllNotificationsRead(userId: string): Promise<number> 
 
   return result.count
 }
+
+/** Elimina todas las notificaciones del usuario. Devuelve cuántas se borraron. */
+export async function clearNotifications(userId: string): Promise<number> {
+  const result = await db.notification.deleteMany({ where: { userId } })
+  return result.count
+}

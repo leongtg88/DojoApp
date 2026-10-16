@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
 import { notifyAssignment } from '@/lib/notifications/create'
+import { recordAudit } from '@/lib/security/audit'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -97,6 +98,17 @@ export async function PUT(request: Request) {
 
   if (removed > 0) {
     await notifyAssignment({ type: 'TECHNIQUES_REMOVED', studentId: student.id, count: removed })
+  }
+
+  if (added > 0 || removed > 0) {
+    await recordAudit({
+      actorId: session.user.id,
+      schoolId: instructor.schoolId,
+      action: 'techniques.assign',
+      targetType: 'Student',
+      targetId: student.id,
+      detail: { added, removed, skipped },
+    })
   }
 
   return NextResponse.json({ ok: true, added, removed, skipped })

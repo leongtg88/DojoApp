@@ -94,17 +94,22 @@ async function main() {
     })
   }
 
-  // Limpieza de datos demo/legado (la DB es de desarrollo). El catálogo anterior
-  // de grados (belt-white...belt-black) y técnicas (technique-kata-*) se reemplaza
-  // por el curriculum oficial de 21 katas y 30 grados (12 adultos + 18 niños).
-  console.log('Limpieza de catálogo legado (demo/dev)...')
-  await db.$transaction([
-    db.beltRankKata.deleteMany(),
-    db.studentRankHistory.deleteMany(),
-    db.studentTechnique.deleteMany(),
-    db.technique.deleteMany(),
-    db.beltRank.deleteMany(),
-  ])
+  // Limpieza del catálogo legado. Es DESTRUCTIVA: borra el historial de grados y
+  // las katas asignadas de TODOS los alumnos, por lo que sólo se ejecuta con
+  // SEED_RESET=1 (pensada para una base de desarrollo). En re-seeds normales se
+  // omite para no perder datos reales.
+  if (process.env.SEED_RESET === '1') {
+    console.log('SEED_RESET=1 → limpieza del catálogo legado (borra historial de grados y técnicas de alumnos)…')
+    await db.$transaction([
+      db.beltRankKata.deleteMany(),
+      db.studentRankHistory.deleteMany(),
+      db.studentTechnique.deleteMany(),
+      db.technique.deleteMany(),
+      db.beltRank.deleteMany(),
+    ])
+  } else {
+    console.log('Limpieza de catálogo omitida (usa SEED_RESET=1 para forzarla).')
+  }
 
   // ============ GRADOS por programa (primero, para que las katas puedan referenciarlos) ============
   for (const [program, ranks] of [['ADULT', ADULT_RANKS], ['YOUTH', YOUTH_RANKS]] as const) {
@@ -322,7 +327,8 @@ async function main() {
 
   await db.student.upsert({
     where: { userId: ownerUser.id },
-    update: { currentRank: 'Shodan', currentRankId: 'belt-adult-12-negro' },
+    // No se fuerza el grado en re-seeds: respeta el grado real del expediente.
+    update: {},
     create: {
       userId: ownerUser.id,
       schoolId: school.id,
@@ -332,8 +338,8 @@ async function main() {
       dateOfBirth: new Date('1990-01-01'),
       medicalInfo: null,
       emergencyContact: null,
-      currentRank: 'Shodan',
-      currentRankId: 'belt-adult-12-negro',
+      currentRank: 'Nidan',
+      currentRankId: 'belt-adult-13-nidan',
       status: 'ACTIVE',
     },
   })

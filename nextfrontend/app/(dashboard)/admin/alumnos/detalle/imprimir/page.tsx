@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { createPrivateDocumentUrl } from '@/lib/document-storage'
 import { getAdminStudentDetail } from '@/lib/dashboard/admin-queries'
 import { PrintStudentButton } from '@/components/dashboard/admin/PrintStudentButton'
+import { formatCalendarDate, formatDate as formatDateRD, formatDateTime as formatDateTimeRD } from '@/lib/format/datetime'
 import { redirect } from 'next/navigation'
 import { hasAnyRole } from '@/lib/auth/roles'
 
@@ -20,13 +21,16 @@ const DOCUMENT_TYPE_LABELS: Record<string, string> = {
 }
 
 function formatDate(value: string | null) {
-    if (!value) return '—'
-    return new Intl.DateTimeFormat('es-DO', { dateStyle: 'medium' }).format(new Date(value))
+    return value ? formatDateRD(value) : '—'
 }
 
 function formatDateTime(value: string | null) {
-    if (!value) return '—'
-    return new Intl.DateTimeFormat('es-DO', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value))
+    return value ? formatDateTimeRD(value) : '—'
+}
+
+// Fecha de calendario (sin hora de reloj): se formatea en UTC para no restar un día.
+function formatCalendar(value: string | null) {
+    return value ? formatCalendarDate(value) : '—'
 }
 
 export default async function PrintStudentPage({ searchParams }: PrintStudentPageProps) {
@@ -88,7 +92,7 @@ export default async function PrintStudentPage({ searchParams }: PrintStudentPag
                             ['Nombre completo', `${student.firstName} ${student.lastName}`],
                             ['Matrícula', student.memberNumber],
                             ['Género', student.gender === 'MALE' ? 'Masculino' : student.gender === 'FEMALE' ? 'Femenino' : null],
-                            ['Fecha de nacimiento', formatDate(student.dateOfBirth)],
+                            ['Fecha de nacimiento', formatCalendar(student.dateOfBirth)],
                             ['Email', student.email],
                             ['Teléfono', student.contactPhone],
                             ['Sucursal', student.branchName],
@@ -139,7 +143,7 @@ export default async function PrintStudentPage({ searchParams }: PrintStudentPag
                                     {student.registration.applicants.map((applicant) => (
                                         <li key={applicant.id} className="flex justify-between border-b border-neutral-100 pb-1.5">
                                             <span>{applicant.name}</span>
-                                            <span className="text-neutral-500">{formatDate(applicant.dateOfBirth)}</span>
+                                            <span className="text-neutral-500">{formatCalendar(applicant.dateOfBirth)}</span>
                                         </li>
                                     ))}
                                 </ul>

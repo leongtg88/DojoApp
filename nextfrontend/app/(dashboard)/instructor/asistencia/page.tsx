@@ -5,7 +5,7 @@ import { InstructorJustificationBoard } from '@/components/dashboard/instructor/
 import { AttendanceScheduleFilter, type AttendanceScheduleGroup } from '@/components/dashboard/shared/AttendanceScheduleFilter'
 import { getInstructorAttendanceRoster, getInstructorScheduleOptions } from '@/lib/dashboard/instructor-queries'
 import { getInstructorPendingJustifications } from '@/lib/dashboard/absence-justifications'
-import { latestSessionDate, resolveDefaultSessionClass, toDateKey, WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
+import { latestSessionDate, resolveDefaultSessionClass, santoDomingoDayKey, WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
 import { redirect } from 'next/navigation'
 import { hasRole } from '@/lib/auth/roles'
 
@@ -31,7 +31,7 @@ export default async function InstructorAttendancePage({ searchParams }: Instruc
     const selectedClass = classes.find((scheduledClass) => scheduledClass.id === selectedClassId) ?? null
 
     // La fecha se deriva del horario de la clase; `date` en la URL es un override manual.
-    const sessionDate = selectedClass ? toDateKey(latestSessionDate(selectedClass.dayOfWeek, now)) : toDateKey(now)
+    const sessionDate = selectedClass ? santoDomingoDayKey(latestSessionDate(selectedClass.dayOfWeek, now)) : santoDomingoDayKey(now)
     const date = parameters.date && /^\d{4}-\d{2}-\d{2}$/.test(parameters.date) ? parameters.date : sessionDate
     const dayMatches = selectedClass
         ? new Date(`${date}T00:00:00`).getDay() === selectedClass.dayOfWeek
@@ -65,6 +65,20 @@ export default async function InstructorAttendancePage({ searchParams }: Instruc
             <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Asistencia</h1>
             <p className="mt-2 text-xs text-ink-3">Pase de lista por clase y revisión de las faltas reportadas por tus alumnos.</p>
 
+            <div className="mt-7">
+                <AttendanceScheduleFilter
+                    basePath="/dashboard/instructor/asistencia"
+                    classDayLabel={classDayLabel}
+                    dateLabel={dateFormatter.format(new Date(`${date}T00:00:00`))}
+                    dayMatches={dayMatches}
+                    defaultDate={sessionDate}
+                    groups={groups}
+                    inSessionClassId={defaultClass?.id ?? null}
+                    overrideDate={parameters.date ?? null}
+                    selectedClassId={selectedClassId ?? null}
+                />
+            </div>
+
             {roster ? (
                 <InstructorAttendanceRoster roster={roster} />
             ) : (
@@ -74,19 +88,6 @@ export default async function InstructorAttendancePage({ searchParams }: Instruc
             <section className="mt-8">
                 <InstructorJustificationBoard justifications={pendingJustifications} />
             </section>
-
-            <div className="mt-7">
-                <AttendanceScheduleFilter
-                    basePath="/dashboard/instructor/asistencia"
-                    classDayLabel={classDayLabel}
-                    dateLabel={dateFormatter.format(new Date(`${date}T00:00:00`))}
-                    dayMatches={dayMatches}
-                    defaultDate={sessionDate}
-                    groups={groups}
-                    overrideDate={parameters.date ?? null}
-                    selectedClassId={selectedClassId ?? null}
-                />
-            </div>
         </main>
     )
 }

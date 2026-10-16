@@ -346,12 +346,13 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
   // experiencia; las demás quedan como registro libre (no tocan el expediente).
   const schoolTechniques = await db.technique.findMany({
     where: { OR: [{ schoolId: student.schoolId }, { schoolId: null }] },
-    orderBy: [{ category: 'asc' }, { name: 'asc' }],
+    orderBy: [{ category: 'asc' }, { order: 'asc' }, { name: 'asc' }],
     select: {
       id: true,
       name: true,
       japaneseName: true,
       category: true,
+      order: true,
       kihonCategory: true,
       kumiteCategory: true,
       repetitionsCount: true,
@@ -376,6 +377,7 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
     name: technique.name,
     japaneseName: technique.japaneseName,
     category: technique.category,
+    order: technique.order,
     kihonCategory: technique.kihonCategory,
     kumiteCategory: technique.kumiteCategory,
     targetRepetitions: targetRepetitionsFor(technique),

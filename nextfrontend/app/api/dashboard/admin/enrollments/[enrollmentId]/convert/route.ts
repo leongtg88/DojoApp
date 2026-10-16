@@ -148,19 +148,35 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
       })
     : []
 
-  const student = await db.$transaction(async (transaction) => {
-    // Evita duplicar expedientes si la solicitud se reenvió y se convirtió otra vez:
-    // reutiliza un alumno existente de la misma escuela con igual nombre y fecha de nacimiento.
-    const existingStudent = await transaction.student.findFirst({
-      where: {
-        schoolId: enrollment.schoolId!,
-        firstName: { equals: input.firstName, mode: 'insensitive' },
-        lastName: { equals: input.lastName, mode: 'insensitive' },
-        dateOfBirth,
-      },
-      select: { id: true, email: true, contactPhone: true, medicalInfo: true, emergencyContact: true, gender: true, registrationData: true },
-    })
+  // Evita duplicar expedientes si la solicitud se reenvió y se convirtió otra vez:
+  // reutiliza un alumno existente de la misma escuela con igual nombre y fecha de nacimiento.
+  const existingStudent = await db.student.findFirst({
+    where: {
+      schoolId: enrollment.schoolId!,
+      firstName: { equals: input.firstName, mode: 'insensitive' },
+      lastName: { equals: input.lastName, mode: 'insensitive' },
+      dateOfBirth,
+    },
+    select: { id: true, email: true, contactPhone: true, medicalInfo: true, emergencyContact: true, gender: true, registrationData: true, currentRank: true, currentRankId: true, _count: { select: { techniques: true } } },
+  })
 
+  // Un expediente reutilizado que quedó SIN ninguna kata se inicializa con las de
+  // su grado actual (o con el grado por defecto si aún no tiene). Se calcula fuera
+  // de la transacción a propósito: Prisma corre con una sola conexión en el pool.
+  const existingHasNoKatas = existingStudent ? existingStudent._count.techniques === 0 : false
+  const existingRankProgram = existingStudent?.currentRankId
+    ? await db.beltRank.findUnique({ where: { id: existingStudent.currentRankId }, select: { program: true, order: true } })
+    : null
+  const existingTechniqueIds = existingHasNoKatas
+    ? existingRankProgram
+      ? await resolveProgressionKataIds({ schoolId: enrollment.schoolId!, program: existingRankProgram.program as Program, order: existingRankProgram.order })
+      : techniqueIds
+    : []
+  const existingNeedsGradeInit = Boolean(
+    existingHasNoKatas && defaultRank && !existingStudent?.currentRankId && !existingStudent?.currentRank,
+  )
+
+  const student = await db.$transaction(async (transaction) => {
     const createdStudent = existingStudent
       ? await transaction.student.update({
           where: { id: existingStudent.id },
@@ -199,8 +215,9 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
           select: { id: true },
         })
 
-    // Solo se inicia el grado/plan de katas para expedientes nuevos; un alumno
-    // reutilizado conserva su historial de grados y técnicas.
+    // Expediente nuevo: se inicia con su grado por defecto y el plan de katas.
+    // Un expediente reutilizado conserva su historial, pero si quedó sin ninguna
+    // kata se completa con las de su grado (ver `existingHasNoKatas`).
     if (!existingStudent && defaultRank) {
       await transaction.studentRankHistory.create({
         data: {
@@ -213,6 +230,23 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
       if (techniqueIds.length > 0) {
         await transaction.studentTechnique.createMany({
           data: techniqueIds.map((techniqueId) => ({ studentId: createdStudent.id, techniqueId })),
+          skipDuplicates: true,
+        })
+      }
+    } else if (existingHasNoKatas) {
+      if (existingNeedsGradeInit && defaultRank) {
+        await transaction.student.update({
+          where: { id: createdStudent.id },
+          data: { currentRank: defaultRank.name, currentRankId: defaultRank.id },
+        })
+        await transaction.studentRankHistory.create({
+          data: { studentId: createdStudent.id, beltRankId: defaultRank.id, promotedBy: session.user.id },
+        })
+      }
+
+      if (existingTechniqueIds.length > 0) {
+        await transaction.studentTechnique.createMany({
+          data: existingTechniqueIds.map((techniqueId) => ({ studentId: createdStudent.id, techniqueId })),
           skipDuplicates: true,
         })
       }

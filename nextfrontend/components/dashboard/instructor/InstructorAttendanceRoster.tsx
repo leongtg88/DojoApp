@@ -23,10 +23,15 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
     const [error, setError] = useState<string | null>(null)
     const [isSaving, setIsSaving] = useState(false)
     const [busyJustification, setBusyJustification] = useState<string | null>(null)
+    // Si el pase de lista ya fue guardado, se muestra el resumen y el botón
+    // "Corregir"; al pulsarlo se reabre el editor.
+    const [isEditing, setIsEditing] = useState(!roster.isPassTaken)
     const presentCount = records.filter(({ present }) => present).length
     const absentCount = records.length - presentCount
     const pendingJustifications = records.filter(({ justification }) => justification?.status === 'PENDING').length
     const readOnly = !roster.isOwnClass
+    const showSummary = !readOnly && roster.isPassTaken && !isEditing
+    const presentRecords = records.filter(({ present }) => present)
 
     function updateRecord(studentId: string, update: Partial<(typeof records)[number]>) {
         setRecords((currentRecords) => currentRecords.map((record) => (
@@ -97,6 +102,7 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
             return
         }
 
+        setIsEditing(false)
         router.refresh()
     }
 
@@ -131,6 +137,41 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                     Esta clase no tiene sesión el día seleccionado. Puedes registrar la asistencia igualmente.
                 </p>
             )}
+            {showSummary ? (
+                <div>
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-edge bg-surface-1 px-5 py-3">
+                        <p className="inline-flex items-center gap-2 text-xs font-semibold text-ink-3">
+                            <ShieldCheck aria-hidden="true" className="size-4 text-ok-text" />
+                            {roster.passTakenByName ? `Pase guardado por ${roster.passTakenByName}.` : 'Pase de lista guardado.'}
+                        </p>
+                        <button
+                            className="inline-flex items-center gap-1.5 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-1.5 text-xs font-bold text-warn-text transition-colors hover:bg-amber-500/20"
+                            onClick={() => setIsEditing(true)}
+                            type="button"
+                        >
+                            <Save aria-hidden="true" className="size-3.5" />Corregir
+                        </button>
+                    </div>
+                    <div className="border-b border-edge px-5 py-3">
+                        <p className="text-xs font-bold uppercase tracking-wide text-ink-3">Alumnos confirmados ({presentRecords.length})</p>
+                    </div>
+                    {presentRecords.length === 0 ? (
+                        <p className="px-5 py-8 text-xs text-ink-3">No se confirmó ningún alumno en este pase de lista.</p>
+                    ) : (
+                        <ul className="divide-y divide-edge">
+                            {presentRecords.map((record) => (
+                                <li className="flex items-center justify-between gap-3 px-5 py-3" key={record.id}>
+                                    <div className="min-w-0">
+                                        <p className="truncate text-sm font-semibold text-ink">{record.firstName} {record.lastName}</p>
+                                        <p className="mt-0.5 text-xs text-ink-3">{record.currentRank ?? 'Sin grado asignado'}</p>
+                                    </div>
+                                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-ok-text"><UserCheck aria-hidden="true" className="size-3.5" />Presente</span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            ) : (
             <form onSubmit={handleSubmit}>
                 {records.length === 0 ? (
                     <p className="px-5 py-8 text-xs text-ink-3">No hay alumnos activos en esta clase.</p>
@@ -232,6 +273,7 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                     </div>
                 )}
             </form>
+            )}
 
             {!readOnly && (
                 <InstructorAddStudentModal

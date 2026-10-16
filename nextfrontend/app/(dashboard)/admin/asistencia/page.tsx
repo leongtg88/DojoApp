@@ -6,7 +6,7 @@ import { AdminExpectedTable } from '@/components/dashboard/admin/AdminExpectedTa
 import { AdminPassListPanel } from '@/components/dashboard/admin/AdminPassListPanel'
 import type { AttendanceScheduleGroup } from '@/components/dashboard/shared/AttendanceScheduleFilter'
 import { getAdminAttendanceRoster, getAdminSchedules } from '@/lib/dashboard/admin-queries'
-import { latestSessionDate, resolveDefaultSessionClass, toDateKey, WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
+import { latestSessionDate, resolveDefaultSessionClass, santoDomingoDayKey, WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
 import { redirect } from 'next/navigation'
 import { hasAnyRole } from '@/lib/auth/roles'
 
@@ -32,7 +32,7 @@ export default async function AdminAttendancePage({ searchParams }: AdminAttenda
     const selectedClassId = parameters.classId || defaultClass?.id || activeClasses[0]?.id || null
     const selectedClass = activeClasses.find((scheduledClass) => scheduledClass.id === selectedClassId) ?? null
 
-    const sessionDate = selectedClass ? toDateKey(latestSessionDate(selectedClass.dayOfWeek, now)) : toDateKey(now)
+    const sessionDate = selectedClass ? santoDomingoDayKey(latestSessionDate(selectedClass.dayOfWeek, now)) : santoDomingoDayKey(now)
     const date = parameters.date && /^\d{4}-\d{2}-\d{2}$/.test(parameters.date) ? parameters.date : sessionDate
     const dayMatches = selectedClass
         ? new Date(`${date}T00:00:00`).getDay() === selectedClass.dayOfWeek
@@ -58,6 +58,7 @@ export default async function AdminAttendancePage({ searchParams }: AdminAttenda
                     defaultDate={sessionDate}
                     groups={groups}
                     hasRoster={Boolean(roster)}
+                    inSessionClassId={defaultClass?.id ?? null}
                     overrideDate={parameters.date ?? null}
                     selectedClassId={selectedClassId}
                 />

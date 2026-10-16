@@ -2,8 +2,9 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { BookOpen, CheckSquare, Clock, GraduationCap, ListChecks, Loader2, MoveDown, MoveUp, Pencil, Plus, Rows3, ShieldCheck, Square, Trash2, Users, X } from 'lucide-react'
+import { BookOpen, CheckSquare, Clock, GraduationCap, ListChecks, Loader2, MoveDown, MoveUp, Pencil, Plus, Rows3, ShieldCheck, Square, Trash2, UserPlus, Users, X } from 'lucide-react'
 import { RankCatalog } from '../shared/RankCatalog'
+import { AssignGradeDialog } from '../shared/AssignGradeDialog'
 import { ADULT_RANKS, BELT_COLORS, YOUTH_RANKS } from '@/lib/curriculum/programs'
 import { techniqueMetaLine } from '@/lib/dashboard/technique-format'
 import { KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
@@ -80,6 +81,7 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [notice, setNotice] = useState<string | null>(null)
+    const [isAssignGradeOpen, setIsAssignGradeOpen] = useState(false)
 
     const selectedRank = ranks.find(({ id }) => id === selectedRankId) ?? ranks[0]
     const totalTechniques = ranks.reduce((total, rank) => total + rank.techniqueCount, 0)
@@ -310,6 +312,7 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
                                 </div>
                                 <div className="flex flex-wrap items-center gap-2">
                                     <span className="inline-flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-sm font-bold text-accent-text"><ListChecks aria-hidden="true" className="size-4 text-accent" />{selectedRank.techniqueCount} técnicas</span>
+                                    <button className="inline-flex items-center gap-1.5 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-3 py-2 text-xs font-semibold text-accent transition-colors hover:bg-cyan-900/50 disabled:cursor-not-allowed disabled:opacity-50" disabled={selectedRank.techniques.length === 0} onClick={() => { setNotice(null); setIsAssignGradeOpen(true) }} title={selectedRank.techniques.length === 0 ? 'Este grado aún no tiene técnicas' : 'Asignar las técnicas de este grado a un alumno o grupo'} type="button"><UserPlus aria-hidden="true" className="size-3.5" />Asignar a alumno/grupo</button>
                                     <button className="inline-flex items-center gap-1.5 rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs font-semibold text-ink-2 transition-colors hover:border-edge-strong hover:text-ink disabled:opacity-60" disabled={saving} onClick={() => openEditRank(selectedRank)} type="button"><Pencil aria-hidden="true" className="size-3.5" />Editar</button>
                                     <button className="inline-flex items-center gap-1.5 rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs font-semibold text-danger-text transition-colors hover:bg-red-500/20 disabled:opacity-60" disabled={saving} onClick={() => deleteRank(selectedRank)} type="button"><Trash2 aria-hidden="true" className="size-3.5" />Eliminar</button>
                                 </div>
@@ -384,6 +387,23 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
                     saving={saving}
                     studentCount={selectedRank.studentCount}
                     unassignedTechniques={unassignedTechniques}
+                />
+            )}
+
+            {isAssignGradeOpen && selectedRank && (
+                <AssignGradeDialog
+                    assignUrl="/api/dashboard/admin/students/assign-techniques-bulk"
+                    gradeId={selectedRank.id}
+                    gradeName={selectedRank.name}
+                    onAssigned={(summary) => {
+                        setNotice(summary.studentsAssigned > 0
+                            ? `Katas del grado asignadas a ${summary.studentsAssigned} ${summary.studentsAssigned === 1 ? 'alumno' : 'alumnos'} (${summary.linksAdded} ${summary.linksAdded === 1 ? 'kata' : 'katas'}).`
+                            : 'Los alumnos seleccionados ya tenían todas las katas del grado.')
+                        router.refresh()
+                    }}
+                    onClose={() => setIsAssignGradeOpen(false)}
+                    studentsEndpoint="/api/dashboard/admin/students"
+                    techniqueIds={selectedRank.techniques.map(({ id }) => id)}
                 />
             )}
         </main>

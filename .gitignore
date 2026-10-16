@@ -2,3 +2,7 @@
 .env
 .env.*
 !.env.example
+
+# Artefactos generados (no versionar; se regeneran)
+graphify-out/
+

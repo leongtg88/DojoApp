@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { CheckCircle2, ChevronDown, ChevronUp, Minus, Plus, Repeat, Search } from 'lucide-react'
+import { CheckCircle2, ChevronDown, ChevronUp, Minus, Pencil, Plus, Repeat, Search } from 'lucide-react'
 import type { KihonCategory, KumiteCategory, PracticePlace, StudentPracticeTechniqueOption, TechniqueCategory } from '@/types/dashboard'
 import { TECHNIQUE_CATEGORY_LABELS } from '@/lib/dashboard/technique-format'
 import { KIHON_CATEGORIES, KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
@@ -60,7 +60,12 @@ function buildKataBandGroups(katas: StudentPracticeTechniqueOption[], program: '
         kata.kataLevels.some((level) => level.program === prog && bandForOrder(prog, level.order) === band.band),
       )
       if (items.length > 0) {
-        groups.push({ key: `${prog}:${band.band}`, program: prog, programLabel: PROGRAM_LABELS[prog], label: band.label, items })
+        const levelOrderFor = (kata: StudentPracticeTechniqueOption) =>
+          kata.kataLevels.find((level) => level.program === prog)?.order ?? Number.MAX_SAFE_INTEGER
+        const sortedItems = [...items].sort((a, b) =>
+          levelOrderFor(a) - levelOrderFor(b) || a.order - b.order || a.name.localeCompare(b.name, 'es'),
+        )
+        groups.push({ key: `${prog}:${band.band}`, program: prog, programLabel: PROGRAM_LABELS[prog], label: band.label, items: sortedItems })
       }
     }
   }
@@ -161,7 +166,9 @@ export function StudentPracticeLog({ techniques, program, studentId }: StudentPr
   const [practicePlace, setPracticePlace] = useState<PracticePlace>('DOJO')
   const [isPickerOpen, setIsPickerOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isCorrecting, setIsCorrecting] = useState(false)
   const [warning, setWarning] = useState<string | null>(null)
+  const [lastSaved, setLastSaved] = useState<{ logs: { logId: string; techniqueId: string; repetitions: number }[]; date: string } | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<'ALL' | TechniqueCategory>('ALL')
   const [kihonFilter, setKihonFilter] = useState<'ALL' | KihonCategory>('ALL')
@@ -173,6 +180,8 @@ export function StudentPracticeLog({ techniques, program, studentId }: StudentPr
   const practiceLogs = Object.entries(practiceReps)
     .map(([techniqueId, repetitions]) => ({ techniqueId, repetitions: Number.parseInt(repetitions, 10), place: practicePlace }))
     .filter((line) => line.techniqueId && Number.isFinite(line.repetitions) && line.repetitions > 0)
+
+  const techniqueNameById = new Map(techniques.map((technique) => [technique.id, technique.name]))
 
   const selectedCount = practiceLogs.length
   const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
@@ -241,8 +250,9 @@ export function StudentPracticeLog({ techniques, program, studentId }: StudentPr
     setIsSubmitting(false)
 
     if (response.ok) {
-      const payload = await response.json().catch(() => null) as { practiceWarning?: string } | null
+      const payload = await response.json().catch(() => null) as { practiceWarning?: string; logs?: { logId: string; techniqueId: string; repetitions: number }[] } | null
       setWarning(payload?.practiceWarning ?? 'Repeticiones registradas correctamente.')
+      setLastSaved(payload?.logs && payload.logs.length > 0 ? { logs: payload.logs, date: practiceDate } : null)
       setPracticeReps({})
       setPracticePlace('DOJO')
       router.refresh()
@@ -251,6 +261,36 @@ export function StudentPracticeLog({ techniques, program, studentId }: StudentPr
 
     const { error } = await response.json().catch(() => ({ error: 'Error al registrar tus repeticiones' }))
     alert(error ?? 'Error al registrar tus repeticiones')
+  }
+
+  // Corregir lo recién registrado: elimina los registros guardados y reabre el
+  // selector con la selección previa para editar y volver a guardar.
+  async function handleCorrect() {
+    if (!lastSaved || isCorrecting) return
+    setIsCorrecting(true)
+
+    try {
+      const results = await Promise.all(lastSaved.logs.map((log) =>
+        fetch(`/api/dashboard/student/techniques/${log.techniqueId}/practice?logId=${encodeURIComponent(log.logId)}`, {
+          method: 'DELETE',
+          headers: { ...studentHeader },
+        }),
+      ))
+
+      if (results.some((result) => !result.ok)) {
+        alert('No se pudieron deshacer todas las repeticiones. Inténtalo de nuevo.')
+        return
+      }
+
+      setPracticeReps(Object.fromEntries(lastSaved.logs.map((log) => [log.techniqueId, String(log.repetitions)])))
+      setPracticeDate(lastSaved.date)
+      setLastSaved(null)
+      setWarning(null)
+      setIsPickerOpen(true)
+      router.refresh()
+    } finally {
+      setIsCorrecting(false)
+    }
   }
 
   return (
@@ -419,6 +459,26 @@ export function StudentPracticeLog({ techniques, program, studentId }: StudentPr
               <CheckCircle2 className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
               {warning}
             </p>
+          )}
+
+          {lastSaved && (
+            <div className="flex flex-col gap-2 rounded-md border border-edge-strong bg-surface-1 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-ink-2">Repeticiones de esta sesión</p>
+                <p className="mt-0.5 truncate text-[11px] text-ink-3">
+                  {lastSaved.logs.map((log) => `${techniqueNameById.get(log.techniqueId) ?? 'Técnica'} ×${log.repetitions}`).join(' · ')}
+                </p>
+              </div>
+              <button
+                className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-1.5 text-xs font-bold text-warn-text transition-colors hover:bg-amber-500/20 disabled:opacity-50"
+                disabled={isCorrecting}
+                onClick={handleCorrect}
+                type="button"
+              >
+                <Pencil className="size-3.5" aria-hidden="true" />
+                {isCorrecting ? 'Corrigiendo...' : 'Corregir'}
+              </button>
+            </div>
           )}
 
           <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:items-center sm:justify-between">

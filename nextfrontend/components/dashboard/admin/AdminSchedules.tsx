@@ -215,13 +215,23 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                 </button>
             </div>
 
-            {error && (
-                <p className="mt-4 rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-danger-text">{error}</p>
-            )}
-
             {(creating || editing) && (
-                <section className="mt-6 rounded-lg border border-edge bg-surface-2 p-5">
-                    <h2 className="font-display text-lg font-bold text-ink">{editing ? 'Editar franja' : 'Nueva franja'}</h2>
+                <div
+                    aria-modal="true"
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+                    onClick={() => { setCreating(false); setEditing(null); setError(null) }}
+                    role="dialog"
+                >
+                    <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-edge bg-surface-2 p-5 shadow-xl" onClick={(event) => event.stopPropagation()}>
+                    <div className="flex items-start justify-between gap-3">
+                        <h2 className="font-display text-lg font-bold text-ink">{editing ? 'Editar franja' : 'Nueva franja'}</h2>
+                        <button type="button" onClick={() => { setCreating(false); setEditing(null); setError(null) }} className="rounded-md p-1 text-ink-3 hover:text-ink">
+                            <X className="size-5" aria-hidden="true" />
+                        </button>
+                    </div>
+                    {error && (
+                        <p className="mt-4 rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-danger-text">{error}</p>
+                    )}
                     <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         <label className="text-sm text-ink-2 lg:col-span-3">
                             Nombre del módulo
@@ -317,7 +327,8 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                             Cancelar
                         </button>
                     </div>
-                </section>
+                    </div>
+                </div>
             )}
 
             <section className="mt-7 grid gap-4 lg:grid-cols-2">

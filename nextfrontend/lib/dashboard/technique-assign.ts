@@ -8,10 +8,143 @@ export interface AssignGroup {
   value?: string
 }
 
+export type AssignTarget =
+  | { kind: 'STUDENT'; studentIds: string[] }
+  | { kind: 'GROUP'; group: AssignGroup }
+
+export interface AssignResult {
+  /** Alumnos que recibieron al menos una técnica nueva. */
+  studentsAssigned: number
+  /** Total de técnicas nuevas enlazadas a expedientes. */
+  linksAdded: number
+}
+
+function groupFilter(group: AssignGroup) {
+  return group.type === 'GRADE'
+    ? { currentRank: group.value }
+    : group.type === 'BRANCH'
+      ? { branch: { name: group.value } }
+      : group.type === 'CLASS'
+        ? { classEnrollments: { some: { status: ClassEnrollmentStatus.ACTIVE, class: { name: group.value } } } }
+        : {}
+}
+
 /**
- * Asigna una técnica al expediente de un conjunto de alumnos concretos.
- * Es idempotente (`skipDuplicates`) y notifica a cada alumno que recibe una
- * asignación nueva. Devuelve el número de alumnos efectivamente asignados.
+ * Aplica un conjunto de técnicas al expediente de una lista de alumnos.
+ * Idempotente (`skipDuplicates`): sólo notifica a los alumnos que reciben algo
+ * nuevo y acumula el conteo real de enlaces creados.
+ */
+async function applyTechniquesToStudents(studentIds: string[], techniqueIds: string[]): Promise<AssignResult> {
+  let studentsAssigned = 0
+  let linksAdded = 0
+
+  for (const studentId of studentIds) {
+    const creation = await db.studentTechnique.createMany({
+      data: techniqueIds.map((techniqueId) => ({ studentId, techniqueId })),
+      skipDuplicates: true,
+    })
+
+    if (creation.count > 0) {
+      studentsAssigned += 1
+      linksAdded += creation.count
+      await notifyAssignment({ type: 'TECHNIQUES_ASSIGNED', studentId, count: creation.count })
+    }
+  }
+
+  return { studentsAssigned, linksAdded }
+}
+
+/**
+ * Asigna un conjunto de técnicas al expediente de un conjunto de alumnos concretos
+ * (por id) dentro del alcance.
+ */
+export async function assignTechniquesToStudentsByIds({
+  scope,
+  techniqueIds,
+  studentIds,
+}: {
+  scope: AdminScope
+  techniqueIds: string[]
+  studentIds: string[]
+}): Promise<AssignResult> {
+  const uniqueTechniqueIds = [...new Set(techniqueIds)]
+  const uniqueStudentIds = [...new Set(studentIds)]
+
+  if (uniqueTechniqueIds.length === 0 || uniqueStudentIds.length === 0) {
+    return { studentsAssigned: 0, linksAdded: 0 }
+  }
+
+  const students = await db.student.findMany({
+    where: { id: { in: uniqueStudentIds }, ...scopeSchoolFilter(scope), status: StudentStatus.ACTIVE },
+    select: { id: true },
+  })
+
+  return applyTechniquesToStudents(students.map((student) => student.id), uniqueTechniqueIds)
+}
+
+/**
+ * Asigna un conjunto de técnicas al expediente de todos los alumnos activos que
+ * cumplen el grupo indicado (todos, por grado, por sucursal o por clase).
+ */
+export async function assignTechniquesToStudentGroup({
+  scope,
+  techniqueIds,
+  group,
+}: {
+  scope: AdminScope
+  techniqueIds: string[]
+  group: AssignGroup
+}): Promise<AssignResult> {
+  const uniqueTechniqueIds = [...new Set(techniqueIds)]
+
+  if (uniqueTechniqueIds.length === 0) {
+    return { studentsAssigned: 0, linksAdded: 0 }
+  }
+
+  if (group.type !== 'ALL' && !group.value) {
+    return { studentsAssigned: 0, linksAdded: 0 }
+  }
+
+  const students = await db.student.findMany({
+    where: { ...scopeSchoolFilter(scope), status: StudentStatus.ACTIVE, ...groupFilter(group) },
+    select: { id: true },
+  })
+
+  return applyTechniquesToStudents(students.map((student) => student.id), uniqueTechniqueIds)
+}
+
+/**
+ * Aplica un conjunto de técnicas a uno o varios destinos (alumnos concretos y/o
+ * grupos) y devuelve los totales combinados. Usado por los endpoints de asignación
+ * masiva del instructor y del administrador.
+ */
+export async function assignTechniquesToTargets({
+  scope,
+  techniqueIds,
+  targets,
+}: {
+  scope: AdminScope
+  techniqueIds: string[]
+  targets: AssignTarget[]
+}): Promise<AssignResult> {
+  let studentsAssigned = 0
+  let linksAdded = 0
+
+  for (const target of targets) {
+    const summary = target.kind === 'STUDENT'
+      ? await assignTechniquesToStudentsByIds({ scope, techniqueIds, studentIds: target.studentIds })
+      : await assignTechniquesToStudentGroup({ scope, techniqueIds, group: target.group })
+
+    studentsAssigned += summary.studentsAssigned
+    linksAdded += summary.linksAdded
+  }
+
+  return { studentsAssigned, linksAdded }
+}
+
+/**
+ * Asigna UNA técnica al expediente de un conjunto de alumnos concretos.
+ * Devuelve el número de alumnos efectivamente asignados.
  */
 export async function assignTechniqueToStudentsByIds({
   scope,
@@ -22,37 +155,13 @@ export async function assignTechniqueToStudentsByIds({
   techniqueId: string
   studentIds: string[]
 }): Promise<number> {
-  const uniqueIds = [...new Set(studentIds)]
-
-  if (uniqueIds.length === 0) {
-    return 0
-  }
-
-  const students = await db.student.findMany({
-    where: { id: { in: uniqueIds }, ...scopeSchoolFilter(scope), status: StudentStatus.ACTIVE },
-    select: { id: true },
-  })
-
-  let studentsAssigned = 0
-
-  for (const student of students) {
-    const creation = await db.studentTechnique.createMany({
-      data: [{ studentId: student.id, techniqueId }],
-      skipDuplicates: true,
-    })
-
-    if (creation.count > 0) {
-      studentsAssigned += 1
-      await notifyAssignment({ type: 'TECHNIQUES_ASSIGNED', studentId: student.id, count: 1 })
-    }
-  }
-
+  const { studentsAssigned } = await assignTechniquesToStudentsByIds({ scope, techniqueIds: [techniqueId], studentIds })
   return studentsAssigned
 }
 
 /**
- * Asigna una técnica al expediente de todos los alumnos activos que cumplen el
- * grupo indicado (todos, por grado, por sucursal o por clase) dentro del alcance.
+ * Asigna UNA técnica al expediente de los alumnos activos de un grupo.
+ * Devuelve el número de alumnos efectivamente asignados.
  */
 export async function assignTechniqueToStudentGroup({
   scope,
@@ -63,37 +172,6 @@ export async function assignTechniqueToStudentGroup({
   techniqueId: string
   group: AssignGroup
 }): Promise<number> {
-  if (group.type !== 'ALL' && !group.value) {
-    return 0
-  }
-
-  const targetFilter =
-    group.type === 'GRADE'
-      ? { currentRank: group.value }
-      : group.type === 'BRANCH'
-        ? { branch: { name: group.value } }
-        : group.type === 'CLASS'
-          ? { classEnrollments: { some: { status: ClassEnrollmentStatus.ACTIVE, class: { name: group.value } } } }
-          : {}
-
-  const students = await db.student.findMany({
-    where: { ...scopeSchoolFilter(scope), status: StudentStatus.ACTIVE, ...targetFilter },
-    select: { id: true },
-  })
-
-  let studentsAssigned = 0
-
-  for (const student of students) {
-    const creation = await db.studentTechnique.createMany({
-      data: [{ studentId: student.id, techniqueId }],
-      skipDuplicates: true,
-    })
-
-    if (creation.count > 0) {
-      studentsAssigned += 1
-      await notifyAssignment({ type: 'TECHNIQUES_ASSIGNED', studentId: student.id, count: 1 })
-    }
-  }
-
+  const { studentsAssigned } = await assignTechniquesToStudentGroup({ scope, techniqueIds: [techniqueId], group })
   return studentsAssigned
 }

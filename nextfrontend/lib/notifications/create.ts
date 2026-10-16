@@ -3,6 +3,14 @@ import type { NotificationType, Prisma } from '@/lib/generated/prisma'
 import { buildNotificationContent } from './types'
 import { dispatchStaffNotification, dispatchStudentNotification } from '@/lib/integrations/whatsapp'
 
+/** Tipos de asistencia que no deben acumularse: se refresca el aviso sin leer. */
+const DEDUPE_NOTIFICATION_TYPES = new Set<NotificationType>([
+  'ATTENDANCE_CONFIRMED',
+  'ATTENDANCE_PUNCHED',
+  'ATTENDANCE_ABSENCE_REPORTED',
+  'ATTENDANCE_JUSTIFICATION_REVIEWED',
+])
+
 interface NotifyAssignmentParams {
   type: NotificationType
   studentId: string
@@ -40,6 +48,48 @@ async function createForRecipients({
     count,
     data: (jsonData ?? {}) as Record<string, unknown>,
   })
+
+  // Para avisos de asistencia evitamos duplicados del mismo alumno/día: si el
+  // destinatario ya tiene uno sin leer del mismo tipo, se actualiza en su lugar
+  // (evita que cada corrección del pase de lista sume una notificación nueva).
+  if (studentId && DEDUPE_NOTIFICATION_TYPES.has(type)) {
+    const existing = await db.notification.findMany({
+      where: { userId: { in: recipients }, studentId, type, readAt: null },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true, userId: true },
+    })
+    const existingByUser = new Map<string, string>()
+    for (const row of existing) {
+      if (!existingByUser.has(row.userId)) existingByUser.set(row.userId, row.id)
+    }
+
+    for (const notificationId of existingByUser.values()) {
+      await db.notification.update({
+        where: { id: notificationId },
+        data: { title: content.title, body: content.body, link: content.link, priority: content.priority, data: jsonData, createdAt: new Date() },
+      })
+    }
+
+    const pendingRecipients = recipients.filter((userId) => !existingByUser.has(userId))
+
+    if (pendingRecipients.length === 0) {
+      return
+    }
+
+    await db.notification.createMany({
+      data: pendingRecipients.map((userId) => ({
+        userId,
+        studentId,
+        type,
+        title: content.title,
+        body: content.body,
+        link: content.link,
+        priority: content.priority,
+        data: jsonData,
+      })),
+    })
+    return
+  }
 
   await db.notification.createMany({
     data: recipients.map((userId) => ({

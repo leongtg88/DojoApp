@@ -2,7 +2,7 @@ import { auth } from '@/auth'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { hasAnyRole } from '@/lib/auth/roles'
-import { listNotifications, markAllNotificationsRead } from '@/lib/notifications/queries'
+import { clearNotifications, listNotifications, markAllNotificationsRead } from '@/lib/notifications/queries'
 import type { DashboardRole } from '@/types/dashboard'
 
 const ALL_ROLES: DashboardRole[] = ['STUDENT', 'INSTRUCTOR', 'SCHOOL_ADMIN', 'SUPERADMIN']
@@ -41,4 +41,16 @@ export async function PATCH() {
   const updated = await markAllNotificationsRead(session.user.id)
 
   return NextResponse.json({ ok: true, updated })
+}
+
+export async function DELETE() {
+  const session = await auth()
+
+  if (!session?.user?.id || !hasAnyRole(session.user, ALL_ROLES)) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+  }
+
+  const deleted = await clearNotifications(session.user.id)
+
+  return NextResponse.json({ ok: true, deleted })
 }

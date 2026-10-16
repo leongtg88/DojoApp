@@ -78,7 +78,17 @@ export function InstructorKatasModal({ open, studentId, studentName, onClose }: 
         setError(null)
         setNotice(null)
         try {
-            const techniqueIds = data.grades.flatMap((grade) => grade.katas.filter(({ assigned }) => assigned).map(({ id }) => id))
+            const gradeKataIds = new Set(data.grades.flatMap((grade) => grade.katas.map(({ id }) => id)))
+            // Preserva las técnicas asignadas que no están enlazadas a ningún grado
+            // (p. ej. técnicas del catálogo asignadas directamente), para que este
+            // guardado no las borre por no aparecer en el listado por grados.
+            const preservedIds = data.assignedTechniqueIds.filter((id) => !gradeKataIds.has(id))
+            const techniqueIds = [
+                ...new Set([
+                    ...data.grades.flatMap((grade) => grade.katas.filter(({ assigned }) => assigned).map(({ id }) => id)),
+                    ...preservedIds,
+                ]),
+            ]
             const response = await fetch('/api/dashboard/instructor/techniques/assign', {
                 method: 'PUT',
                 headers: { 'content-type': 'application/json' },

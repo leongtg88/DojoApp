@@ -15,3 +15,25 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - No añadir secretos a componentes cliente ni variables `NEXT_PUBLIC_*`.
 - Hay un guard que bloquea commits con secretos: `pnpm guard:env` (activo vía hook `.githooks/pre-commit`).
 
+## Dominio e invariantes (leer antes de tocar código)
+
+Reglas que SIEMPRE deben cumplirse, en todos los paneles (admin, instructor, alumno).
+La fuente única vive en `lib/`; no la reimplementes por pantalla.
+
+- **Fechas**: distingue **fecha de calendario** (sin hora; llega como `…T00:00:00.000Z` o `"YYYY-MM-DD"`) de **instante**.
+  - Calendario → `formatCalendarDate()` (UTC). Nunca `new Intl.DateTimeFormat(...).format(new Date(iso))`.
+  - Instante → `formatDate()` / `formatDateTime()` (fijan `America/Santo_Domingo`).
+  - Fuente única: `lib/format/datetime.ts`.
+- **Grado/programa**: resuelve el grado por `currentRankId` o por nombre **con el programa del alumno** (ADULT/YOUTH).
+  Fuente única: `lib/dashboard/rank-resolution.ts`.
+- **Katas del expediente**: solo vía `StudentTechnique`. Progresión con `resolveProgressionKataIds()`
+  (`lib/dashboard/kata-curriculum.ts`); asignación con `lib/dashboard/technique-assign.ts`.
+  No crees `studentTechnique` sueltos en rutas/componentes.
+- **Alcance/roles**: usa `getAdminScope()` / `getInstructorSchoolId()` + `scopeSchoolFilter()`.
+  No filtres por escuela a mano.
+- **Seeds/scripts**: no borrar datos de alumnos (`StudentTechnique`, `StudentRankHistory`);
+  los resets van detrás de un flag explícito (`SEED_RESET=1`).
+- **Estilos**: las reglas globales de `app/globals.css` van dentro de `@layer` para no pisar utilities.
+
+Detalle y verificación de cada regla: `docs/domain/` (invariante → módulo → test).
+

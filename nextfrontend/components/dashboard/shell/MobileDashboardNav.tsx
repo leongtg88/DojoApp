@@ -65,7 +65,7 @@ export function MobileDashboardNav({ activeRole, pendingEnrollmentCount = 0, new
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const activeStudentId = searchParams.get('estudiante')
-    const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount, newStudentCount)
+    const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount, newStudentCount).filter((item) => !item.hideInBottomNav)
     const [pendingHref, setPendingHref] = useState<string | null>(null)
     const currentHref = navigation
         .filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))

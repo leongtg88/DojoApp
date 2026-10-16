@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { BookUser, CalendarPlus, GraduationCap, HeartPulse, Mail, Phone, Ruler, ShieldAlert, UserRound } from 'lucide-react'
 import type { StudentProfile } from '@/types/dashboard'
+import { formatCalendarDate, formatDate } from '@/lib/format/datetime'
 
 interface StudentProfileDetailsProps {
     profile: StudentProfile
@@ -20,7 +21,7 @@ interface ProfileSectionProps {
 }
 
 function formatLongDate(iso: string) {
-    return new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(iso))
+    return formatDate(iso)
 }
 
 export function StudentProfileDetails({ profile, isChildView = false }: StudentProfileDetailsProps) {
@@ -33,7 +34,7 @@ export function StudentProfileDetails({ profile, isChildView = false }: StudentP
             icon: BookUser,
             fields: [
                 { icon: Mail, label: 'Correo electrónico', value: profile.email ?? 'No registrado' },
-                { icon: CalendarPlus, label: 'Fecha de nacimiento', value: formatLongDate(profile.dateOfBirth) },
+                { icon: CalendarPlus, label: 'Fecha de nacimiento', value: formatCalendarDate(profile.dateOfBirth) },
                 { icon: GraduationCap, label: 'Grado actual', value: profile.currentRank?.name ?? 'Sin grado asignado' },
                 { icon: CalendarPlus, label: 'Ingreso al dojo', value: formatLongDate(profile.enrollmentDate) },
             ],

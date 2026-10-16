@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { Bell, BellOff, BellRing, CheckCheck } from 'lucide-react'
+import { Bell, BellOff, BellRing, CheckCheck, Trash2 } from 'lucide-react'
 import type { NotificationView } from '@/lib/notifications/queries'
 import { NOTIFICATION_PRIORITY_STYLES, formatNotificationRelative } from '@/lib/notifications/format'
 import { setUnreadBadge } from '@/lib/badge'
@@ -124,6 +124,18 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
         }
     }
 
+    async function handleClear() {
+        if (!window.confirm('¿Limpiar todas tus notificaciones? Esta acción no se puede deshacer.')) return
+        try {
+            const response = await fetch('/api/dashboard/notifications', { method: 'DELETE' })
+            if (!response.ok) throw new Error('No fue posible limpiar las notificaciones')
+            setItems([])
+            setUnreadCount(0)
+        } catch (error) {
+            console.error('[notifications] No fue posible limpiar las notificaciones', error)
+        }
+    }
+
     async function handleOpenNotification(notification: NotificationView) {
         setOpen(false)
 
@@ -237,16 +249,28 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
                 <div className="fixed inset-x-3 top-[4.5rem] z-50 overflow-hidden rounded-xl border border-edge bg-surface-2 shadow-[0_10px_30px_rgba(0,0,0,0.5)] md:absolute md:inset-x-auto md:right-0 md:top-auto md:mt-2 md:w-80 md:max-w-[calc(100vw-2rem)]">
                     <div className="flex items-center justify-between border-b border-edge px-3 py-2">
                         <p className="text-xs font-bold uppercase tracking-wide text-ink-3">Notificaciones</p>
-                        {unreadCount > 0 && (
-                            <button
-                                className="flex items-center gap-1 text-[11px] font-semibold text-accent transition-colors hover:text-accent"
-                                onClick={handleMarkAllRead}
-                                type="button"
-                            >
-                                <CheckCheck aria-hidden="true" className="size-3.5" />
-                                Marcar leídas
-                            </button>
-                        )}
+                        <div className="flex items-center gap-3">
+                            {unreadCount > 0 && (
+                                <button
+                                    className="flex items-center gap-1 text-[11px] font-semibold text-accent transition-colors hover:text-accent"
+                                    onClick={handleMarkAllRead}
+                                    type="button"
+                                >
+                                    <CheckCheck aria-hidden="true" className="size-3.5" />
+                                    Marcar leídas
+                                </button>
+                            )}
+                            {items.length > 0 && (
+                                <button
+                                    className="flex items-center gap-1 text-[11px] font-semibold text-ink-3 transition-colors hover:text-danger-text"
+                                    onClick={handleClear}
+                                    type="button"
+                                >
+                                    <Trash2 aria-hidden="true" className="size-3.5" />
+                                    Limpiar
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     <div className="max-h-80 overflow-y-auto">

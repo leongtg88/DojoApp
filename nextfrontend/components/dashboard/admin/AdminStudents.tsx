@@ -79,6 +79,45 @@ function accountBadgeClass(accountStatus: 'SIN_CUENTA' | 'INVITADO' | 'ACTIVO') 
 	return 'border-edge-strong bg-surface-1 text-ink-2'
 }
 
+interface StudentRowActionsProps {
+	student: AdminStudentSummary
+	onInvite: (student: AdminStudentSummary) => void
+	onToggleStatus: (student: AdminStudentSummary) => void
+	onEdit: (student: AdminStudentSummary) => void
+	onDelete: (student: AdminStudentSummary) => void
+}
+
+function StudentRowActions({ student, onInvite, onToggleStatus, onEdit, onDelete }: StudentRowActionsProps) {
+	return (
+		<div className="flex flex-wrap items-center justify-end gap-1">
+			{(student.accountStatus !== 'ACTIVO' && student.email && !student.guardianManaged) && (
+				<button type="button" title={student.accountStatus === 'INVITADO' ? 'Reenviar invitación' : 'Enviar invitación al correo'} onClick={() => onInvite(student)} className="flex items-center gap-1 rounded px-2 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-cyan-950/40 hover:text-accent">
+					<Mail className="size-4" />{student.accountStatus === 'INVITADO' ? 'Reenviar' : 'Invitar'}
+				</button>
+			)}
+			{student.status !== 'ACTIVE' && (
+				<button type="button" title="Dar de alta" onClick={() => onToggleStatus(student)} className="rounded p-1.5 text-ok-text transition-colors hover:bg-emerald-950/40">
+					<UserCheck className="size-4" />
+				</button>
+			)}
+			{student.status === 'ACTIVE' && (
+				<button type="button" title="Dar de baja" onClick={() => onToggleStatus(student)} className="rounded p-1.5 text-warn-text transition-colors hover:bg-amber-950/40">
+					<UserMinus className="size-4" />
+				</button>
+			)}
+			<button type="button" title="Editar alumno" onClick={() => onEdit(student)} className="rounded p-1.5 text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink">
+				<Pencil className="size-4" />
+			</button>
+			<Link href={`/dashboard/admin/alumnos/${student.id}`} title="Ver ficha y promover" className="flex items-center gap-1 rounded px-2 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-cyan-950/40 hover:text-accent">
+				<Award className="size-4" />Promover
+			</Link>
+			<button type="button" title="Eliminar alumno" onClick={() => onDelete(student)} className="rounded p-1.5 text-danger-text transition-colors hover:bg-red-950/40">
+				<Trash2 className="size-4" />
+			</button>
+		</div>
+	)
+}
+
 interface StudentFormModalProps {
 	open: boolean
 	mode: 'create' | 'edit'
@@ -492,6 +531,7 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 	const [actionError, setActionError] = useState<string | null>(null)
 	const [expandedAction, setExpandedAction] = useState<'export' | 'katas' | 'create' | null>(null)
 	const [filtersOpen, setFiltersOpen] = useState(false)
+	const [expandedStudentId, setExpandedStudentId] = useState<string | null>(null)
 
 	function handleActionClick(action: 'export' | 'katas' | 'create', run: () => void) {
 		if (typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches) {
@@ -647,12 +687,15 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 			) : (
 				<section className="mt-7 rounded-lg border border-edge bg-surface-2 shadow-sm">
 					<div className="space-y-3 border-b border-edge p-4 sm:grid sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:gap-3 sm:space-y-0 sm:p-5">
-						<div className="flex items-center gap-2 sm:contents">
-						<label className="relative block flex-1" htmlFor="admin-student-search">
-							<Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-accent" />
-							<input className="w-full rounded-md border border-edge-strong bg-surface-1 py-2.5 pl-10 pr-3 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="admin-student-search" onChange={(event) => setSearchTerm(event.target.value)} placeholder="Buscar por alumno, matrícula, grado o clase" type="search" value={searchTerm} />
+						<div className="flex items-end gap-2 sm:contents">
+						<label className="block flex-1 text-xs font-semibold text-ink-2" htmlFor="admin-student-search">
+							Buscar
+							<div className="relative mt-1">
+								<Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-accent" />
+								<input className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-10 pr-3 text-xs! text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="admin-student-search" onChange={(event) => setSearchTerm(event.target.value)} placeholder="Buscar por alumno, matrícula, grado o clase" type="search" value={searchTerm} />
+							</div>
 						</label>
-							<button type="button" aria-controls="admin-student-filters" aria-expanded={filtersOpen} aria-label={filtersOpen ? 'Ocultar filtros' : 'Mostrar filtros'} onClick={() => setFiltersOpen((open) => !open)} className={`inline-flex size-[42px] shrink-0 items-center justify-center rounded-md border sm:hidden ${filtersOpen || statusFilter !== 'ALL' || beltFilter !== 'ALL' || branchFilter !== 'ALL' ? 'border-cyan-500/50 bg-cyan-500/10 text-accent' : 'border-edge-strong bg-surface-1 text-ink-3'}`}>
+							<button type="button" aria-controls="admin-student-filters" aria-expanded={filtersOpen} aria-label={filtersOpen ? 'Ocultar filtros' : 'Mostrar filtros'} onClick={() => setFiltersOpen((open) => !open)} className={`inline-flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-md border sm:hidden ${filtersOpen || statusFilter !== 'ALL' || beltFilter !== 'ALL' || branchFilter !== 'ALL' ? 'border-cyan-500/50 bg-cyan-500/10 text-accent' : 'border-edge-strong bg-surface-1 text-ink-3'}`}>
 								<ChevronDown aria-hidden="true" className={`size-4 transition-transform ${filtersOpen ? 'rotate-180' : ''}`} />
 							</button>
 						</div>
@@ -704,7 +747,92 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 							<p className="mt-1 text-xs text-ink-3">Ajusta los filtros para ver otros expedientes.</p>
 						</div>
 					) : (
-						<div className="overflow-x-auto">
+						<>
+							<ul className="divide-y divide-edge sm:hidden">
+								{filteredStudents.map((student) => {
+									const initials = `${student.firstName[0] ?? ''}${student.lastName[0] ?? ''}`.toUpperCase()
+									const kataPercent = student.kataTotalCount > 0 ? Math.round((student.kataMasteredCount / student.kataTotalCount) * 100) : 0
+									const expanded = expandedStudentId === student.id
+									return (
+										<li key={student.id}>
+											<button type="button" aria-expanded={expanded} onClick={() => setExpandedStudentId(expanded ? null : student.id)} className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-3/50">
+												<span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-cyan-500/15 font-display text-sm font-extrabold text-accent-text">{initials}</span>
+												<div className="min-w-0 flex-1">
+													<div className="flex flex-wrap items-center gap-2">
+														<p className="truncate text-sm font-semibold text-ink">{student.firstName} {student.lastName}</p>
+														{student.pendingDocumentCount > 0 && (
+															<span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-warn-text">
+																<FileText aria-hidden="true" className="size-3" />{student.pendingDocumentCount}
+															</span>
+														)}
+													</div>
+													<div className="mt-1 flex items-center gap-2">
+														<BeltRankIndicator className="shrink-0" rank={{ beltColor: student.beltColor, beltSecondaryColor: student.beltSecondaryColor }} size="sm" />
+														<span className="text-[11px] font-semibold text-ink-2">{student.kyuDan ?? student.currentRank ?? 'Sin grado'}</span>
+													</div>
+												</div>
+												<ChevronDown aria-hidden="true" className={`size-5 shrink-0 text-ink-4 transition-transform ${expanded ? 'rotate-180' : ''}`} />
+											</button>
+											{expanded && (
+												<div className="space-y-3 border-t border-edge bg-surface-1/40 px-4 py-3">
+													<div className="grid grid-cols-2 gap-3">
+														<div className="col-span-2">
+															<p className="text-[10px] font-semibold uppercase tracking-wide text-ink-4">Grado</p>
+															<div className="mt-1 flex items-center gap-2">
+																<BeltRankIndicator className="shrink-0" rank={{ beltColor: student.beltColor, beltSecondaryColor: student.beltSecondaryColor }} size="sm" />
+																<div>
+																	<p className="text-sm font-semibold text-ink">{student.currentRank ?? 'Sin grado'}</p>
+																	{student.nextRankName && <p className="text-[11px] text-ink-3">Próximo: {student.nextRankName}</p>}
+																</div>
+															</div>
+														</div>
+														<div className="col-span-2">
+															<p className="text-[10px] font-semibold uppercase tracking-wide text-ink-4">Plan</p>
+															<p className="mt-1 text-sm font-semibold text-ink">{student.planName ?? 'Sin plan'}</p>
+															{student.scholarshipType !== 'NONE' && <p className="text-[11px] text-accent">{SCHOLARSHIP_LABELS[student.scholarshipType]}</p>}
+															{(student.needsPlan || student.needsSchedule) && (
+																<div className="mt-1 flex flex-wrap gap-1">
+																	{student.needsPlan && <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-warn-text">Asignar plan</span>}
+																	{student.needsSchedule && <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-warn-text">Asignar horario</span>}
+																</div>
+															)}
+														</div>
+														<div className="col-span-2">
+															<p className="text-[10px] font-semibold uppercase tracking-wide text-ink-4">Katas revisadas</p>
+															<div className="mt-1 flex items-center gap-2">
+																<div className="h-1.5 w-24 overflow-hidden rounded-full bg-surface-3"><div className="h-full rounded-full bg-cyan-400" style={{ width: `${kataPercent}%` }} /></div>
+																<span className="text-sm font-semibold text-ink">{student.kataMasteredCount}<span className="text-ink-4"> / {student.kataTotalCount}</span></span>
+															</div>
+														</div>
+														<div>
+															<p className="text-[10px] font-semibold uppercase tracking-wide text-ink-4">Asistencia</p>
+															<span className={`mt-1 inline-block rounded-md border px-2 py-0.5 text-xs font-bold ${student.attendancePercent === null ? 'border-edge-strong text-ink-2' : attendanceBadgeClass(student.attendancePercent)}`}>{student.attendancePercent ?? 0}%</span>
+														</div>
+														<div>
+															<p className="text-[10px] font-semibold uppercase tracking-wide text-ink-4">Sucursal</p>
+															<p className="mt-1 text-sm text-ink-2">{student.branchName}</p>
+														</div>
+														<div>
+															<p className="text-[10px] font-semibold uppercase tracking-wide text-ink-4">Estado</p>
+															<span className={`mt-1 inline-block rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${statusBadgeClass(student.status)}`}>{student.status}</span>
+														</div>
+														<div className="col-span-2">
+															<p className="text-[10px] font-semibold uppercase tracking-wide text-ink-4">Cuenta</p>
+															<span className={`mt-1 inline-block rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${accountBadgeClass(student.accountStatus)}`}>{student.guardianManaged ? 'A cargo del tutor' : student.accountStatus}</span>
+															{student.guardianManaged && <p className="mt-1 text-[11px] text-ink-4">{student.guardianName ? `Tutor: ${student.guardianName}` : 'Gestionado desde la cuenta del tutor'}</p>}
+															{!student.guardianManaged && student.accountStatus === 'INVITADO' && student.email && <p className="mt-1 break-all font-mono text-[11px] text-ink-4">{student.email}</p>}
+														</div>
+													</div>
+													<div className="border-t border-edge pt-3">
+														<StudentRowActions student={student} onDelete={setDeletingStudent} onEdit={setEditingStudent} onInvite={setInvitingStudent} onToggleStatus={setTogglingStudent} />
+													</div>
+												</div>
+											)}
+										</li>
+									)
+								})}
+							</ul>
+							<div className="hidden overflow-x-auto sm:block">
 							<table className="w-full min-w-[1024px] text-left text-sm">
 								<thead className="border-b border-edge text-xs font-semibold uppercase tracking-wide text-ink-3">
 									<tr>
@@ -780,39 +908,15 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 													{!student.guardianManaged && student.accountStatus === 'INVITADO' && student.email && <p className="mt-1 max-w-[160px] truncate font-mono text-[11px] text-ink-4">{student.email}</p>}
 												</td>
 												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
-													<div className="flex items-center justify-end gap-1">
-														{(student.accountStatus !== 'ACTIVO' && student.email && !student.guardianManaged) && (
-															<button type="button" title={student.accountStatus === 'INVITADO' ? 'Reenviar invitación' : 'Enviar invitación al correo'} onClick={() => setInvitingStudent(student)} className="flex items-center gap-1 rounded px-2 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-cyan-950/40 hover:text-accent">
-																<Mail className="size-4" />{student.accountStatus === 'INVITADO' ? 'Reenviar' : 'Invitar'}
-															</button>
-														)}
-														{student.status !== 'ACTIVE' && (
-															<button type="button" title="Dar de alta" onClick={() => setTogglingStudent(student)} className="rounded p-1.5 text-ok-text transition-colors hover:bg-emerald-950/40">
-																<UserCheck className="size-4" />
-															</button>
-														)}
-														{student.status === 'ACTIVE' && (
-															<button type="button" title="Dar de baja" onClick={() => setTogglingStudent(student)} className="rounded p-1.5 text-warn-text transition-colors hover:bg-amber-950/40">
-																<UserMinus className="size-4" />
-															</button>
-														)}
-														<button type="button" title="Editar alumno" onClick={() => setEditingStudent(student)} className="rounded p-1.5 text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink">
-															<Pencil className="size-4" />
-														</button>
-														<Link href={`/dashboard/admin/alumnos/${student.id}`} title="Ver ficha y promover" className="flex items-center gap-1 rounded px-2 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-cyan-950/40 hover:text-accent">
-															<Award className="size-4" />Promover
-														</Link>
-														<button type="button" title="Eliminar alumno" onClick={() => setDeletingStudent(student)} className="rounded p-1.5 text-danger-text transition-colors hover:bg-red-950/40">
-															<Trash2 className="size-4" />
-														</button>
-													</div>
+													<StudentRowActions student={student} onDelete={setDeletingStudent} onEdit={setEditingStudent} onInvite={setInvitingStudent} onToggleStatus={setTogglingStudent} />
 												</td>
 											</tr>
 										)
 									})}
 								</tbody>
 							</table>
-						</div>
+							</div>
+						</>
 					)}
 				</section>
 			)}

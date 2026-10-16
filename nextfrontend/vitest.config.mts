@@ -1,19 +1,40 @@
 import { defineConfig } from 'vitest/config'
+import react from '@vitejs/plugin-react'
 import { fileURLToPath } from 'node:url'
 
-// `server-only` lanza un error al importarse fuera del runtime de React Server
-// Components. En las pruebas de Node lo sustituimos por un módulo vacío.
-const serverOnlyStub = fileURLToPath(new URL('./tests/unit/stubs/server-only.ts', import.meta.url))
+// Stubs para pruebas:
+// - `server-only` lanza al importarse fuera de un React Server Component.
+// - `next/navigation` y `next/link` necesitan el runtime de Next; en jsdom los
+//   sustituimos por implementaciones mínimas.
+const stub = (relative: string) => fileURLToPath(new URL(relative, import.meta.url))
 
 export default defineConfig({
-  test: {
-    environment: 'node',
-    include: ['tests/unit/**/*.test.ts'],
-  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('.', import.meta.url)),
-      'server-only': serverOnlyStub,
+      'server-only': stub('./tests/unit/stubs/server-only.ts'),
+      'next/navigation': stub('./tests/component/stubs/next-navigation.ts'),
+      'next/link': stub('./tests/component/stubs/next-link.tsx'),
     },
+  },
+  test: {
+    projects: [
+      {
+        test: {
+          name: 'unit',
+          environment: 'node',
+          include: ['tests/unit/**/*.test.ts'],
+        },
+      },
+      {
+        plugins: [react()],
+        test: {
+          name: 'component',
+          environment: 'jsdom',
+          include: ['tests/component/**/*.test.tsx'],
+          setupFiles: ['./tests/component/setup.ts'],
+        },
+      },
+    ],
   },
 })

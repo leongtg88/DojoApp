@@ -279,6 +279,17 @@ html {
   scroll-behavior: smooth;
   font-family: var(--font-sans);
   overscroll-behavior-y: none;
+  /* Evita el zoom por doble toque (el bloqueo por viewport cubre el pellizco). */
+  touch-action: manipulation;
+}
+
+/* iOS hace zoom automático al enfocar campos con font-size < 16px. */
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {

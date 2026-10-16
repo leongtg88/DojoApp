@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { AlertTriangle, ClipboardCheck, ClipboardList, ClipboardX } from 'lucide-react'
+import { AlertTriangle, ClipboardCheck, ClipboardList, ClipboardX, UserCog } from 'lucide-react'
 import type { AdminExpectedAttendanceRoster } from '@/types/dashboard'
 import { WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
 import { AdminPassListEditor } from './AdminPassListEditor'
@@ -19,8 +19,8 @@ const dateFormatter = new Intl.DateTimeFormat('es-DO', {
 })
 
 export function AdminPassListPanel({ roster }: AdminPassListPanelProps) {
-    const [isOpen, setIsOpen] = useState(false)
     const passPending = roster.dayMatches && !roster.passTaken
+    const [isOpen, setIsOpen] = useState(passPending)
 
     return (
         <section className="overflow-hidden rounded-lg border border-edge bg-surface-2 shadow-sm">
@@ -29,6 +29,17 @@ export function AdminPassListPanel({ roster }: AdminPassListPanelProps) {
                     <p className="text-xs font-semibold uppercase tracking-wide text-accent">Pase de lista</p>
                     <h3 className="mt-1 font-display text-lg font-bold text-ink">{roster.className}</h3>
                     <p className="mt-0.5 text-xs capitalize text-ink-3">{roster.branchName} · {dateFormatter.format(new Date(`${roster.date}T00:00:00.000Z`))}</p>
+                    {roster.instructor && (
+                        <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-info-text">
+                            <UserCog aria-hidden="true" className="size-3.5" />
+                            Instructor a cargo: {roster.instructor.name}
+                            {roster.instructor.isEnrolled
+                                ? roster.instructor.currentRank
+                                    ? ` (también inscrito como alumno · ${roster.instructor.currentRank})`
+                                    : ' (también inscrito como alumno)'
+                                : ''}
+                        </p>
+                    )}
                     <p className={`mt-2 inline-flex items-center gap-1.5 text-xs font-semibold ${roster.passTaken ? 'text-ok-text' : passPending ? 'text-warn-text' : 'text-ink-3'}`}>
                         {roster.passTaken ? <ClipboardCheck aria-hidden="true" className="size-3.5" /> : passPending ? <ClipboardX aria-hidden="true" className="size-3.5" /> : <AlertTriangle aria-hidden="true" className="size-3.5" />}
                         {roster.passTaken
@@ -44,9 +55,28 @@ export function AdminPassListPanel({ roster }: AdminPassListPanelProps) {
                     type="button"
                 >
                     <ClipboardList aria-hidden="true" className="size-4" />
-                    {isOpen ? 'Ocultar lista' : 'Corregir pase de lista'}
+                    {isOpen ? 'Ocultar lista' : 'Corregir'}
                 </button>
             </div>
+
+            {roster.staff.length > 0 && (
+                <div className="border-t border-edge bg-surface-1 px-5 py-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-3">Instructores inscritos</p>
+                    <ul className="mt-1.5 flex flex-wrap gap-2">
+                        {roster.staff.map((person) => (
+                            <li
+                                className="inline-flex items-center gap-1.5 rounded-md border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 text-xs font-semibold text-info-text"
+                                key={person.id}
+                            >
+                                <UserCog aria-hidden="true" className="size-3.5" />
+                                {person.name}
+                                {person.currentRank && <span className="font-normal text-ink-3">· {person.currentRank}</span>}
+                            </li>
+                        ))}
+                    </ul>
+                    <p className="mt-1.5 text-[11px] text-ink-4">Tienen rol de instructor, así que no cuentan como alumnos en el pase de lista.</p>
+                </div>
+            )}
 
             {!roster.dayMatches && (
                 <p className="flex items-center gap-1.5 border-t border-edge bg-amber-500/10 px-5 py-2.5 text-xs font-semibold text-warn-text">

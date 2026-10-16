@@ -98,6 +98,7 @@ export async function POST(request: Request) {
       {
         ok: true,
         registered: practiceResult.created,
+        logs: practiceResult.logs,
         ...(practiceResult.invalid > 0
           ? { practiceWarning: 'Algunas repeticiones no se registraron porque la técnica no pertenece al catálogo de la escuela.' }
           : {}),

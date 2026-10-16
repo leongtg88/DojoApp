@@ -30,6 +30,8 @@ export interface RegisterPracticeLogsResult {
   free: number
   /** Líneas descartadas por no pertenecer al catálogo disponible de la escuela. */
   invalid: number
+  /** Ids de los registros creados, por técnica (para permitir correcciones). */
+  logs: { logId: string; techniqueId: string; repetitions: number }[]
 }
 
 /**
@@ -39,10 +41,10 @@ export interface RegisterPracticeLogsResult {
  * expediente ni las métricas de grado. Ignora técnicas ajenas a la escuela.
  */
 export async function registerPracticeLogs(studentId: string, entries: PracticeLogInput[]): Promise<RegisterPracticeLogsResult> {
-  if (entries.length === 0) return { created: 0, free: 0, invalid: 0 }
+  if (entries.length === 0) return { created: 0, free: 0, invalid: 0, logs: [] }
 
   const student = await db.student.findUnique({ where: { id: studentId }, select: { schoolId: true } })
-  if (!student) return { created: 0, free: 0, invalid: entries.length }
+  if (!student) return { created: 0, free: 0, invalid: entries.length, logs: [] }
 
   const techniqueIds = [...new Set(entries.map((entry) => entry.techniqueId))]
   const [assignments, availableTechniques] = await Promise.all([
@@ -61,6 +63,7 @@ export async function registerPracticeLogs(studentId: string, entries: PracticeL
   let created = 0
   let free = 0
   let invalid = 0
+  const logs: RegisterPracticeLogsResult['logs'] = []
 
   await db.$transaction(async (transaction) => {
     for (const entry of entries) {
@@ -74,7 +77,7 @@ export async function registerPracticeLogs(studentId: string, entries: PracticeL
       const studentTechniqueId = byTechnique.get(entry.techniqueId)
 
       if (studentTechniqueId) {
-        await transaction.techniquePracticeLog.create({
+        const log = await transaction.techniquePracticeLog.create({
           data: {
             studentTechniqueId,
             repetitions: entry.repetitions,
@@ -83,7 +86,9 @@ export async function registerPracticeLogs(studentId: string, entries: PracticeL
             attendanceId: entry.attendanceId ?? null,
             date,
           },
+          select: { id: true },
         })
+        logs.push({ logId: log.id, techniqueId: entry.techniqueId, repetitions: entry.repetitions })
         await transaction.studentTechnique.update({
           where: { id: studentTechniqueId },
           data: {
@@ -92,7 +97,7 @@ export async function registerPracticeLogs(studentId: string, entries: PracticeL
           },
         })
       } else {
-        await transaction.techniquePracticeLog.create({
+        const log = await transaction.techniquePracticeLog.create({
           data: {
             studentId,
             techniqueId: entry.techniqueId,
@@ -102,7 +107,9 @@ export async function registerPracticeLogs(studentId: string, entries: PracticeL
             attendanceId: entry.attendanceId ?? null,
             date,
           },
+          select: { id: true },
         })
+        logs.push({ logId: log.id, techniqueId: entry.techniqueId, repetitions: entry.repetitions })
         free += 1
       }
 
@@ -110,7 +117,7 @@ export async function registerPracticeLogs(studentId: string, entries: PracticeL
     }
   })
 
-  return { created, free, invalid }
+  return { created, free, invalid, logs }
 }
 
 /**

@@ -77,13 +77,45 @@ export function santoDomingoDayKey(date: Date): string {
   return dayKeyFormatter.format(date)
 }
 
+const santoDomingoPartsFormatter = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'America/Santo_Domingo',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false,
+})
+
 /**
- * Fecha de la sesión más reciente (hoy o pasada) de un horario semanal.
- * Si hoy es el día de la clase devuelve hoy; si no, la ocurrencia pasada más cercana.
+ * Día de la semana (0=domingo) y minutos desde medianoche de un instante,
+ * expresados en la zona horaria del dojo (América/Santo_Domingo). El servidor
+ * (UTC en Vercel) no debe resolver el horario con su hora local.
+ */
+function santoDomingoWeekdayAndMinutes(date: Date): { weekday: number; minutes: number; dateKey: string } {
+  const parts = santoDomingoPartsFormatter.formatToParts(date)
+  const get = (type: Intl.DateTimeFormatPartTypes) => Number(parts.find((part) => part.type === type)?.value)
+  const year = get('year')
+  const month = get('month')
+  const day = get('day')
+  const hour = get('hour') % 24
+  const minute = get('minute')
+  const weekday = new Date(Date.UTC(year, month - 1, day)).getUTCDay()
+  const dateKey = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+  return { weekday, minutes: hour * 60 + minute, dateKey }
+}
+
+/**
+ * Fecha de la sesión más reciente (hoy o pasada) de un horario semanal, según el
+ * día local del dojo. Si hoy es el día de la clase devuelve hoy; si no, la
+ * ocurrencia pasada más cercana. Devuelve el mediodía UTC del día resultante,
+ * para que `santoDomingoDayKey` lo formatee de forma estable.
  */
 export function latestSessionDate(dayOfWeek: number, now = new Date()): Date {
-  const diff = (now.getDay() - dayOfWeek + 7) % 7
-  return new Date(now.getFullYear(), now.getMonth(), now.getDate() - diff)
+  const { weekday, dateKey } = santoDomingoWeekdayAndMinutes(now)
+  const diff = (weekday - dayOfWeek + 7) % 7
+  const [year, month, day] = dateKey.split('-').map(Number)
+  return new Date(Date.UTC(year, month - 1, day - diff, 12, 0, 0))
 }
 
 function timeToMinutes(value: string): number {
@@ -111,8 +143,8 @@ export function resolveDefaultSessionClass<T extends { dayOfWeek: number; startT
 ): T | null {
   if (classes.length === 0) return null
 
-  const nowMinutes = now.getHours() * 60 + now.getMinutes()
-  const todayClasses = classes.filter((scheduledClass) => scheduledClass.dayOfWeek === now.getDay())
+  const { weekday, minutes: nowMinutes } = santoDomingoWeekdayAndMinutes(now)
+  const todayClasses = classes.filter((scheduledClass) => scheduledClass.dayOfWeek === weekday)
   const byStartAsc = (a: T, b: T) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime)
 
   if (todayClasses.length > 0) {

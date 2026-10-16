@@ -621,6 +621,7 @@ export async function getInstructorKataAssignment(
     studentId: student.id,
     studentName: `${student.firstName} ${student.lastName}`,
     currentRank: student.currentRank,
+    assignedTechniqueIds: assigned.map((entry) => entry.techniqueId),
     grades: ranks.map((rank) => ({
       rankId: rank.id,
       rankName: rank.name,

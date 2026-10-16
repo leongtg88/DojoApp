@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { BellOff, CheckCheck } from 'lucide-react'
+import { BellOff, CheckCheck, Trash2 } from 'lucide-react'
 import type { NotificationView } from '@/lib/notifications/queries'
 import { NOTIFICATION_PRIORITY_LABELS, NOTIFICATION_PRIORITY_STYLES, formatNotificationRelative } from '@/lib/notifications/format'
 
@@ -31,6 +31,19 @@ export function NotificationsCenter({ initialItems, initialNextCursor, initialUn
             setUnreadCount(0)
         } catch (error) {
             console.error('[notifications] No fue posible marcar como leídas', error)
+        }
+    }
+
+    async function handleClear() {
+        if (!window.confirm('¿Limpiar todas tus notificaciones? Esta acción no se puede deshacer.')) return
+        try {
+            const response = await fetch('/api/dashboard/notifications', { method: 'DELETE' })
+            if (!response.ok) throw new Error('No fue posible limpiar las notificaciones')
+            setItems([])
+            setUnreadCount(0)
+            setNextCursor(null)
+        } catch (error) {
+            console.error('[notifications] No fue posible limpiar las notificaciones', error)
         }
     }
 
@@ -80,16 +93,28 @@ export function NotificationsCenter({ initialItems, initialNextCursor, initialUn
                         {unreadCount > 0 ? `${unreadCount} sin leer` : 'Estás al día'}
                     </p>
                 </div>
-                {unreadCount > 0 && (
-                    <button
-                        className="flex items-center gap-1.5 rounded-lg border border-edge-strong px-3 py-1.5 text-xs font-bold text-accent transition-colors hover:border-cyan-500 hover:text-accent"
-                        onClick={handleMarkAllRead}
-                        type="button"
-                    >
-                        <CheckCheck aria-hidden="true" className="size-4" />
-                        Marcar todas
-                    </button>
-                )}
+                <div className="flex items-center gap-2">
+                    {unreadCount > 0 && (
+                        <button
+                            className="flex items-center gap-1.5 rounded-lg border border-edge-strong px-3 py-1.5 text-xs font-bold text-accent transition-colors hover:border-cyan-500 hover:text-accent"
+                            onClick={handleMarkAllRead}
+                            type="button"
+                        >
+                            <CheckCheck aria-hidden="true" className="size-4" />
+                            Marcar todas
+                        </button>
+                    )}
+                    {items.length > 0 && (
+                        <button
+                            className="flex items-center gap-1.5 rounded-lg border border-edge-strong px-3 py-1.5 text-xs font-bold text-ink-2 transition-colors hover:border-rose-500/50 hover:text-danger-text"
+                            onClick={handleClear}
+                            type="button"
+                        >
+                            <Trash2 aria-hidden="true" className="size-4" />
+                            Limpiar
+                        </button>
+                    )}
+                </div>
             </div>
 
             {items.length === 0 ? (

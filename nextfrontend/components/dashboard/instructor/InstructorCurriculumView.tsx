@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { BookOpen, GraduationCap, Rows3, Send } from 'lucide-react'
+import { BookOpen, GraduationCap, Rows3, Send, UserPlus } from 'lucide-react'
 import { RankCatalog } from '../shared/RankCatalog'
+import { AssignGradeDialog } from '../shared/AssignGradeDialog'
 import { TechniqueCatalogFilter } from '../shared/TechniqueCatalogFilter'
 import { TechniqueAssignDialog } from '../admin/TechniqueAssignDialog'
 import { techniqueMetaLine } from '@/lib/dashboard/technique-format'
@@ -19,6 +20,8 @@ export function InstructorCurriculumView({ curriculum }: InstructorCurriculumVie
   const [selectedRankId, setSelectedRankId] = useState(ranks[0]?.id ?? '')
   const [assigningTechnique, setAssigningTechnique] = useState<AdminTechniqueSummary | null>(null)
   const [assignNotice, setAssignNotice] = useState<string | null>(null)
+  const [isAssignGradeOpen, setIsAssignGradeOpen] = useState(false)
+  const [gradeAssignNotice, setGradeAssignNotice] = useState<string | null>(null)
 
   const selectedRank = ranks.find(({ id }) => id === selectedRankId) ?? ranks[0]
   const totalTechniques = ranks.reduce((total, rank) => total + rank.techniqueCount, 0)
@@ -55,25 +58,39 @@ export function InstructorCurriculumView({ curriculum }: InstructorCurriculumVie
 
           {selectedRank && (
             <section className="mt-5 rounded-lg border border-edge bg-surface-2 p-5">
-              <div className="flex items-center gap-3">
-                <span aria-hidden="true" className="flex size-12 items-center justify-center rounded-md border border-white/10" style={{ backgroundColor: selectedRank.beltColor ?? '#3f3f46' }}>
-                  <GraduationCap className="size-6 text-[#10131a]" />
-                </span>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-accent">Grado seleccionado</p>
-                  <h2 className="mt-1 flex items-center gap-2 font-display text-xl font-bold text-ink">
-                    {selectedRank.name}
-                    <span className="inline-flex items-center rounded-full border border-edge-strong bg-surface-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ink-3">
-                      {selectedRank.program === 'YOUTH' ? 'Niños' : 'Adultos'}
-                    </span>
-                  </h2>
-                  <p className="mt-1 text-xs text-ink-3">
-                    {selectedRank.kyuDan ?? `Posición ${selectedRank.order}`}
-                    {selectedRank.isMaximumRank ? ' · Grado máximo' : ''}
-                    {' · '}{selectedRank.techniqueCount} katas requeridas
-                  </p>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span aria-hidden="true" className="flex size-12 items-center justify-center rounded-md border border-white/10" style={{ backgroundColor: selectedRank.beltColor ?? '#3f3f46' }}>
+                    <GraduationCap className="size-6 text-[#10131a]" />
+                  </span>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-accent">Grado seleccionado</p>
+                    <h2 className="mt-1 flex items-center gap-2 font-display text-xl font-bold text-ink">
+                      {selectedRank.name}
+                      <span className="inline-flex items-center rounded-full border border-edge-strong bg-surface-1 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ink-3">
+                        {selectedRank.program === 'YOUTH' ? 'Niños' : 'Adultos'}
+                      </span>
+                    </h2>
+                    <p className="mt-1 text-xs text-ink-3">
+                      {selectedRank.kyuDan ?? `Posición ${selectedRank.order}`}
+                      {selectedRank.isMaximumRank ? ' · Grado máximo' : ''}
+                      {' · '}{selectedRank.techniqueCount} katas requeridas
+                    </p>
+                  </div>
                 </div>
+                <button
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-3 py-2 text-xs font-semibold text-accent transition-colors hover:bg-cyan-900/50 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={selectedRank.techniques.length === 0}
+                  onClick={() => { setGradeAssignNotice(null); setIsAssignGradeOpen(true) }}
+                  title={selectedRank.techniques.length === 0 ? 'Este grado aún no tiene katas' : 'Asignar las katas de este grado a un alumno o grupo'}
+                  type="button"
+                >
+                  <UserPlus aria-hidden="true" className="size-3.5" />
+                  Asignar a alumno/grupo
+                </button>
               </div>
+
+              {gradeAssignNotice && <p className="mt-4 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-ok-text">{gradeAssignNotice}</p>}
 
               <div className="mt-5 border-t border-edge pt-5">
                 <p className="text-sm font-semibold text-ink-2">Katas del plan ({selectedRank.techniques.length})</p>
@@ -135,6 +152,23 @@ export function InstructorCurriculumView({ curriculum }: InstructorCurriculumVie
               ranks={ranks}
               studentsEndpoint="/api/dashboard/instructor/students"
               technique={assigningTechnique}
+            />
+          )}
+
+          {isAssignGradeOpen && selectedRank && (
+            <AssignGradeDialog
+              assignUrl="/api/dashboard/instructor/techniques/assign-bulk"
+              gradeId={selectedRank.id}
+              gradeName={selectedRank.name}
+              onAssigned={(summary) => {
+                setGradeAssignNotice(summary.studentsAssigned > 0
+                  ? `Katas del grado asignadas a ${summary.studentsAssigned} ${summary.studentsAssigned === 1 ? 'alumno' : 'alumnos'} (${summary.linksAdded} ${summary.linksAdded === 1 ? 'kata' : 'katas'}).`
+                  : 'Los alumnos seleccionados ya tenían todas las katas del grado.')
+                router.refresh()
+              }}
+              onClose={() => setIsAssignGradeOpen(false)}
+              studentsEndpoint="/api/dashboard/instructor/students"
+              techniqueIds={selectedRank.techniques.map(({ id }) => id)}
             />
           )}
         </>

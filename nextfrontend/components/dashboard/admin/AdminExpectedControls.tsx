@@ -9,6 +9,7 @@ interface AdminExpectedControlsProps {
     dayMatches: boolean
     classDayLabel: string | null
     hasRoster: boolean
+    inSessionClassId?: string | null
 }
 
 export function AdminExpectedControls({
@@ -20,6 +21,7 @@ export function AdminExpectedControls({
     dayMatches,
     classDayLabel,
     hasRoster,
+    inSessionClassId = null,
 }: AdminExpectedControlsProps) {
     return (
         <section className="rounded-lg border border-edge bg-surface-2 shadow-sm">
@@ -37,6 +39,7 @@ export function AdminExpectedControls({
                     dayMatches={dayMatches}
                     defaultDate={defaultDate}
                     groups={groups}
+                    inSessionClassId={inSessionClassId}
                     overrideDate={overrideDate}
                     selectedClassId={selectedClassId}
                 />

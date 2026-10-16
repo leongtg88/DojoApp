@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { ClassEnrollmentStatus, StudentStatus, EnrollmentStatus, StudentDocumentStatus } from '@/lib/generated/prisma'
 import { computeBirthdays } from '@/lib/dashboard/birthdays'
 import { ageFromDob, programForAge } from '@/lib/dashboard/program'
+import { pickStudentRank } from '@/lib/dashboard/rank-resolution'
 import { computeBalance, formatTime, monthRange } from '@/lib/dashboard/balance'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
 import { getCurriculumForSchool } from '@/lib/dashboard/curriculum-queries'
@@ -20,6 +21,8 @@ import type {
   AdminCurriculumData,
   AdminEnrollmentSummary,
   AdminExpectedAttendanceRoster,
+  AdminExpectedAttendanceInstructor,
+  AdminExpectedAttendanceStaff,
   AdminExpectedAttendanceStudent,
   AdminInstructor,
   AdminInstructorCandidate,
@@ -92,6 +95,7 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       memberNumber: true,
       currentRank: true,
       status: true,
+      schoolId: true,
       userId: true,
       email: true,
       registrationData: true,
@@ -164,10 +168,9 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
 
   const ranks = await db.beltRank.findMany({
     where: scope.isSuperAdmin ? {} : { OR: [{ schoolId: scope.schoolId! }, { schoolId: null }] },
-    orderBy: { order: 'asc' },
-    select: { name: true, order: true, kyuDan: true, beltColor: true, beltSecondaryColor: true },
+    orderBy: [{ program: 'asc' }, { order: 'asc' }],
+    select: { program: true, name: true, order: true, kyuDan: true, beltColor: true, beltSecondaryColor: true, schoolId: true },
   })
-  const rankByOrder = new Map(ranks.map((rank) => [rank.order, rank]))
 
   const studentIds = students.map((student) => student.id)
   const attendanceCounts = studentIds.length
@@ -182,8 +185,19 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
   const TARGET_ATTENDANCES = 30
 
   return students.map((student) => {
-    const currentBeltRank = ranks.find((rank) => rank.name === student.currentRank)
-    const nextBeltRank = currentBeltRank ? rankByOrder.get(currentBeltRank.order + 1) : null
+    const studentProgram = programForAge(ageFromDob(new Date(student.dateOfBirth)))
+    const rankCandidates = ranks.filter((rank) => rank.name === student.currentRank)
+    const currentBeltRank =
+      rankCandidates.find((rank) => rank.program === studentProgram && rank.schoolId === student.schoolId) ??
+      rankCandidates.find((rank) => rank.program === studentProgram) ??
+      rankCandidates.find((rank) => rank.schoolId === student.schoolId) ??
+      rankCandidates[0] ??
+      null
+    const nextBeltRank = currentBeltRank
+      ? ranks.find((rank) => rank.program === currentBeltRank.program && rank.order === currentBeltRank.order + 1 && rank.schoolId === currentBeltRank.schoolId) ??
+        ranks.find((rank) => rank.program === currentBeltRank.program && rank.order === currentBeltRank.order + 1 && rank.schoolId === null) ??
+        null
+      : null
     const confirmedCount = confirmedByStudent.get(student.id) ?? 0
     const guardianManaged = isManagedByGuardian(student.registrationData, student.email)
 
@@ -355,6 +369,7 @@ export async function getAdminStudentDetail(userId: string, studentId: string): 
       gender: true,
       memberNumber: true,
       currentRank: true,
+      currentRankId: true,
       status: true,
       schoolId: true,
       userId: true,
@@ -505,6 +520,7 @@ documents: {
       estimatedDurationMonths: true,
       description: true,
       examDay: true,
+      schoolId: true,
       katas: { orderBy: { order: 'asc' }, select: { kata: { select: { id: true, name: true, japaneseName: true, kanji: true, description: true, category: true, kihonCategory: true, kumiteCategory: true, order: true, difficulty: true, embusen: true, movementsCount: true, videoUrl: true, repetitionsCount: true, stance: true, level: true, kumiteType: true, distance: true, role: true, applicationType: true, originKataId: true, originKata: { select: { name: true } }, beltRankKatas: { select: { beltRankId: true }, orderBy: [{ beltRank: { program: 'asc' } }, { beltRank: { order: 'asc' } }, { order: 'asc' }] } } } } },
       _count: { select: { katas: true } },
     },
@@ -545,8 +561,17 @@ documents: {
   const studentProgram = student.dateOfBirth
     ? programForAge(ageFromDob(new Date(student.dateOfBirth)))
     : 'ADULT'
+  // Prefiere el grado del mismo programa del alumno: hay nombres repetidos entre
+  // programas (p. ej. "Amarillo" existe en ADULT y YOUTH). Sin este filtro el admin
+  // tomaba el de ADULT para un niño y calculaba un "siguiente cinturón" distinto al
+  // que ve el alumno en su dashboard y el instructor en su panel.
   const currentRankRow =
-    ranks.find(({ name }) => name === student.currentRank) ??
+    pickStudentRank(ranks, {
+      currentRank: student.currentRank,
+      currentRankId: student.currentRankId,
+      studentProgram,
+      schoolId: student.schoolId,
+    }) ??
     ranks.find(({ program, order }) => program === studentProgram && order === 1) ??
     null
   const currentRankOrder = currentRankRow?.order ?? null
@@ -596,7 +621,7 @@ documents: {
     guardianManaged,
     guardianName: guardianManaged ? readGuardianMetadata(student.registrationData).guardian?.name?.trim() || null : null,
     documents,
-    availableRanks: ranks.map((rank) => ({
+    availableRanks: ranks.filter((rank) => rank.program === program).map((rank) => ({
       id: rank.id,
       program: rank.program,
       name: rank.name,
@@ -766,12 +791,20 @@ export async function getAdminAttendanceRoster(
       name: true,
       dayOfWeek: true,
       branch: { select: { name: true } },
+      instructor: { select: { id: true, name: true, email: true } },
       enrollments: {
         where: { status: ClassEnrollmentStatus.ACTIVE, student: { status: StudentStatus.ACTIVE } },
         orderBy: { student: { lastName: 'asc' } },
         select: {
           student: {
-            select: { id: true, firstName: true, lastName: true, currentRank: true },
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              currentRank: true,
+              userId: true,
+              user: { select: { roles: true } },
+            },
           },
         },
       },
@@ -782,7 +815,44 @@ export async function getAdminAttendanceRoster(
     return null
   }
 
-  const enrolledStudentIds = scheduledClass.enrollments.map(({ student }) => student.id)
+  // El instructor a cargo puede tener además expediente de alumno e inscripción activa
+  // en la clase. Se muestra aparte y no entra en la lista de alumnos del pase de lista.
+  const instructorUserId = scheduledClass.instructor?.id ?? null
+  const instructorEnrollment = instructorUserId
+    ? scheduledClass.enrollments.find(({ student }) => student.userId === instructorUserId) ?? null
+    : null
+  const instructor: AdminExpectedAttendanceInstructor | null = scheduledClass.instructor
+    ? {
+        id: scheduledClass.instructor.id,
+        name: scheduledClass.instructor.name?.trim() || scheduledClass.instructor.email,
+        isEnrolled: Boolean(instructorEnrollment),
+        currentRank: instructorEnrollment?.student.currentRank ?? null,
+      }
+    : null
+
+  // Un inscrito cuya cuenta tiene rol INSTRUCTOR (p. ej. un sensei que también entrena)
+  // se muestra aparte y no cuenta como alumno. El instructor a cargo ya se muestra en el
+  // encabezado, así que no se duplica aquí.
+  const enrolledPersonIsInstructor = (enrollment: (typeof scheduledClass.enrollments)[number]) => {
+    const { student } = enrollment
+    if (student.userId === instructorUserId) return false
+    return student.user?.roles.includes('INSTRUCTOR') ?? false
+  }
+
+  const staff: AdminExpectedAttendanceStaff[] = scheduledClass.enrollments
+    .filter(enrolledPersonIsInstructor)
+    .map(({ student }) => ({
+      id: student.id,
+      name: `${student.firstName} ${student.lastName}`.trim(),
+      currentRank: student.currentRank,
+    }))
+
+  const studentEnrollments = scheduledClass.enrollments.filter((enrollment) => (
+    enrollment.student.userId !== instructorUserId && !enrolledPersonIsInstructor(enrollment)
+  ))
+
+  const enrolledStudentIds = studentEnrollments.map(({ student }) => student.id)
+  const enrolledStudentIdSet = new Set(enrolledStudentIds)
 
   const [classSession, punches, justifications] = await Promise.all([
     db.classSession.findUnique({
@@ -832,11 +902,17 @@ export async function getAdminAttendanceRoster(
     }
   }
 
-  const students: AdminExpectedAttendanceStudent[] = scheduledClass.enrollments.map(({ student }) => {
+  const students: AdminExpectedAttendanceStudent[] = studentEnrollments.map(({ student }) => {
+    const base = {
+      id: student.id,
+      firstName: student.firstName,
+      lastName: student.lastName,
+      currentRank: student.currentRank,
+    }
     const roster = rosterByStudent.get(student.id)
     if (roster) {
       return {
-        ...student,
+        ...base,
         state: roster.present ? 'PRESENT' : 'ABSENT',
         status: roster.status,
         hoursTrained: roster.hoursTrained,
@@ -849,7 +925,7 @@ export async function getAdminAttendanceRoster(
     const punch = punchByStudent.get(student.id)
     if (punch) {
       return {
-        ...student,
+        ...base,
         state: punch.present ? 'PUNCH' : 'ABSENT',
         status: punch.status,
         hoursTrained: punch.hoursTrained,
@@ -860,7 +936,7 @@ export async function getAdminAttendanceRoster(
     }
 
     return {
-      ...student,
+      ...base,
       state: 'NONE',
       status: null,
       hoursTrained: 0,
@@ -874,7 +950,8 @@ export async function getAdminAttendanceRoster(
   const present = students.filter((student) => student.state === 'PRESENT' || student.state === 'PUNCH').length
   const absent = students.filter((student) => student.state === 'ABSENT').length
   const unmergedPunches = punches.filter((punch) => !rosterByStudent.has(punch.studentId)).length
-  const audited = (classSession?.attendances.length ?? 0) + unmergedPunches
+  const auditedStudentRecords = (classSession?.attendances ?? []).filter((attendance) => enrolledStudentIdSet.has(attendance.studentId)).length
+  const audited = auditedStudentRecords + unmergedPunches
 
   return {
     classId: scheduledClass.id,
@@ -886,6 +963,8 @@ export async function getAdminAttendanceRoster(
     passTaken: Boolean(classSession?.takenAt),
     passTakenAt: classSession?.takenAt?.toISOString() ?? null,
     passTakenByName: classSession?.takenBy?.name ?? null,
+    instructor,
+    staff,
     students,
     summary: {
       audited,

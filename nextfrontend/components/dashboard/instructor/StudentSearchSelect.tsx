@@ -93,7 +93,7 @@ export function StudentSearchSelect({ students, studentId }: StudentSearchSelect
                     }}
                     onFocus={() => setIsOpen(true)}
                     onKeyDown={handleKeyDown}
-                    placeholder={selectedStudent ? `${selectedStudent.firstName} ${selectedStudent.lastName}` : 'Buscar alumno por nombre o grado…'}
+                    placeholder={selectedStudent ? 'Alumno' : 'Buscar alumno por nombre o grado…'}
                     type="search"
                     value={searchTerm}
                 />
