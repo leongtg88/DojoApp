@@ -2,6 +2,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['192.168.98.1'],
+  // Identificador único del despliegue. Next lo inyecta como `data-dpl-id` en
+  // <html> y, si un cliente con un build viejo navega contra el servidor nuevo,
+  // fuerza una navegación dura (protección de version skew). El mismo valor se
+  // expone en /api/app-version para que UpdatePrompt avise al usuario que puede
+  // actualizar. Mantener la cadena sincronizada con app/api/app-version/route.ts.
+  deploymentId:
+    process.env.NEXT_DEPLOYMENT_ID ??
+    process.env.VERCEL_DEPLOYMENT_ID ??
+    process.env.VERCEL_GIT_COMMIT_SHA,
   images: {
     unoptimized: true,
     remotePatterns: [

@@ -11,6 +11,7 @@ import { DashboardSidebar } from './DashboardSidebar'
 import { MobileDashboardSidebar } from './MobileDashboardSidebar'
 import { MobileDashboardNav } from './MobileDashboardNav'
 import { NotificationBell } from './NotificationBell'
+import { UpdatePrompt } from './UpdatePrompt'
 import { FamilyMemberSwitcher } from './FamilyMemberSwitcher'
 import { ThemeToggle } from '../theme/ThemeToggle'
 import { DashboardLogo } from '../shared/DashboardLogo'
@@ -106,6 +107,8 @@ export function DashboardShell({ children, roles, primaryRole, userName, pending
             <MobileDashboardNav activeRole={activeRole} pendingEnrollmentCount={pendingEnrollmentCount} newStudentCount={newStudentCount} />
 
             <MobileDashboardSidebar open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} onSignOut={handleSignOut} activeRole={activeRole} roles={roles} userName={userName} pendingEnrollmentCount={pendingEnrollmentCount} newStudentCount={newStudentCount} unreadNotificationCount={unreadNotificationCount} familyMembers={familyMembers} />
+
+            <UpdatePrompt />
         </div>
     )
 }

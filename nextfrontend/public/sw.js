@@ -1,4 +1,4 @@
-const CACHE = 'tosei-gusoku-v4';
+const CACHE = 'tosei-gusoku-v5';
 const PRECACHE_URLS = ['/', '/manifest.webmanifest', '/icons/icon-192.png'];
 
 self.addEventListener('install', (event) => {
