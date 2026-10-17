@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { requestAppInstall, useIsInstalledPwa } from '@/lib/pwa';
+import { ManageCookiesButton } from '@/components/consent/ManageCookiesButton';
 const logoRectangular = '/assets/LogoRectangularNegro.svg';
 
 export default function Footer() {
@@ -79,6 +80,8 @@ export default function Footer() {
             )}
             <Link href="/terminos" className="hover:text-brand-accent block">Términos Legales</Link>
             <Link href="/privacidad" className="hover:text-brand-accent block">Privacidad de Datos</Link>
+            <Link href="/cookies" className="hover:text-brand-accent block">Política de Cookies</Link>
+            <ManageCookiesButton className="hover:text-brand-accent block cursor-pointer text-left" />
             <p className="pt-2 text-[10px] text-gray-700/40">© {new Date().getFullYear()} Web Developed by León Gustavo Sensei.</p>
           </div>
         </div>

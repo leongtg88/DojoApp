@@ -71,9 +71,9 @@ const nextConfig: NextConfig = {
               // de directivas se mantiene estricto.
               `script-src ${scriptSources.join(' ')}`,
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co",
+              "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://www.facebook.com",
               "font-src 'self' data:",
-              "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://analytics.google.com https://*.vercel-analytics.com",
+              "connect-src 'self' https://*.supabase.co https://*.google-analytics.com https://analytics.google.com https://*.vercel-analytics.com https://connect.facebook.net https://www.facebook.com",
               "frame-src 'self' https://www.google.com https://maps.google.com",
               "object-src 'none'",
               "worker-src 'self'",

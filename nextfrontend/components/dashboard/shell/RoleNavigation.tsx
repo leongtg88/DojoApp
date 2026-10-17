@@ -57,7 +57,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/ajustes', label: 'Seguridad', icon: Fingerprint, hideInBottomNav: true },
     ],
     SCHOOL_ADMIN: [
-        // Barra inferior móvil: sólo Resumen, Asistencia, Grados y katas y Alumnos.
+        // Barra inferior móvil: Resumen, Alumnos, Asistencia, Grados y katas y Mensajes.
         // El resto (con `hideInBottomNav`) sigue disponible en el sidebar.
         { href: '/dashboard/admin', label: 'Resumen', icon: LayoutDashboard },
         { href: '/dashboard/admin/alumnos', label: 'Alumnos', icon: Users },
@@ -69,7 +69,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/admin/balance', label: 'Balance de horas', icon: Clock3, hideInBottomNav: true },
         { href: '/dashboard/admin/asistencia', label: 'Asistencia', icon: CalendarDays },
         { href: '/dashboard/admin/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
-        { href: '/dashboard/admin/mensajes', label: 'Mensajes', icon: MessageCircle, hideInBottomNav: true },
+        { href: '/dashboard/admin/mensajes', label: 'Mensajes', icon: MessageCircle },
         { href: '/dashboard/admin/reviews', label: 'Reseñas', icon: Star, hideInBottomNav: true },
         { href: '/dashboard/admin/blog', label: 'Blog', icon: Newspaper, hideInBottomNav: true },
         { href: '/dashboard/ajustes', label: 'Seguridad', icon: Fingerprint, hideInBottomNav: true },
@@ -85,7 +85,7 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/admin/balance', label: 'Balance de horas', icon: Clock3, hideInBottomNav: true },
         { href: '/dashboard/admin/asistencia', label: 'Asistencia', icon: CalendarDays },
         { href: '/dashboard/admin/grados-y-katas', label: 'Grados y katas', icon: GraduationCap },
-        { href: '/dashboard/admin/mensajes', label: 'Mensajes', icon: MessageCircle, hideInBottomNav: true },
+        { href: '/dashboard/admin/mensajes', label: 'Mensajes', icon: MessageCircle },
         { href: '/dashboard/admin/reviews', label: 'Reseñas', icon: Star, hideInBottomNav: true },
         { href: '/dashboard/admin/blog', label: 'Blog', icon: Newspaper, hideInBottomNav: true },
         { href: '/dashboard/ajustes', label: 'Seguridad', icon: Fingerprint, hideInBottomNav: true },

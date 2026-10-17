@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
-import { GoogleAnalytics } from '@next/third-parties/google';
 import { Montserrat, Open_Sans } from 'next/font/google';
 import './globals.css';
-import { MetaPixel } from '@adkit/meta-pixel-next';
 import { AppChrome } from '@/components/AppChrome';
 import { PwaRegister } from '@/components/PwaRegister';
 import { ThemeProvider } from '@/components/dashboard/theme/ThemeProvider';
+import { ConsentProvider } from '@/components/consent/ConsentProvider';
+import { CookieConsentBanner } from '@/components/consent/CookieConsentBanner';
+import { AnalyticsGate } from '@/components/consent/AnalyticsGate';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -114,13 +115,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script src="/theme-init.js" strategy="beforeInteractive" />
       </head>
       <body suppressHydrationWarning className={`${montserrat.variable} ${openSans.variable} min-h-dvh bg-white text-[#dee2f0] flex flex-col font-sans relative antialiased selection:bg-brand-accent selection:text-gray-700`}>
-        <ThemeProvider>
-          <PwaRegister />
-          <AppChrome>
-            <MetaPixel>{children}</MetaPixel>
-          </AppChrome>
-        </ThemeProvider>
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID ?? ''} />
+        <ConsentProvider>
+          <ThemeProvider>
+            <PwaRegister />
+            <AppChrome>
+              {children}
+            </AppChrome>
+          </ThemeProvider>
+          {/* Analítica y Meta Pixel solo se cargan tras el consentimiento del usuario. */}
+          <AnalyticsGate />
+          <CookieConsentBanner />
+        </ConsentProvider>
       </body>
     </html>
   );

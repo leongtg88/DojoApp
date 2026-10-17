@@ -159,12 +159,13 @@ export default function PoliticaPrivacidad({ embedded = false }: { embedded?: bo
             <div className="space-y-2 text-sm sm:text-base pl-2">
               <p><strong>7.1.</strong> Utilizamos cookies propias y de terceros para:</p>
               <ul className="list-disc list-inside ml-4 space-y-1">
-                <li>Mantener tu sesión iniciada (cookies funcionales).</li>
-                <li>Analizar el uso de la Plataforma y mejorar su rendimiento (cookies analíticas).</li>
-                <li>Recordar tus preferencias (idioma, configuración de privacidad).</li>
+                <li>Mantener tu sesión iniciada y garantizar tu seguridad (cookies necesarias).</li>
+                <li>Analizar el uso de la Plataforma y mejorar su rendimiento (cookies analíticas, p. ej. <strong>Google Analytics</strong>).</li>
+                <li>Medir la eficacia de nuestras campañas publicitarias (cookies de marketing, p. ej. <strong>Meta Pixel / Facebook</strong>).</li>
               </ul>
-              <p><strong>7.2.</strong> Puedes gestionar o deshabilitar las cookies desde la configuración de tu navegador, pero algunas funcionalidades podrían verse afectadas.</p>
-              <p><strong>7.3.</strong> No utilizamos cookies para fines publicitarios sin tu consentimiento expreso.</p>
+              <p><strong>7.2.</strong> Las cookies <strong>estrictamente necesarias</strong> (sesión, seguridad y acceso por huella) se activan siempre. Las cookies <strong>analíticas y de marketing solo se activan si otorgas tu consentimiento expreso</strong> a través del aviso que aparece al entrar; puedes aceptarlas todas, rechazarlas o configurarlas por categoría, y cambiar tu elección en cualquier momento.</p>
+              <p><strong>7.3.</strong> Puedes gestionar tus preferencias de cookies con el botón <strong>«Gestionar cookies»</strong> del pie de página, o deshabilitarlas desde la configuración de tu navegador (algunas funcionalidades podrían verse afectadas). El detalle completo de las cookies está en nuestra <a href="/cookies" className="text-blue-600 hover:underline">Política de Cookies</a>.</p>
+              <p><strong>7.4.</strong> No utilizamos cookies para fines publicitarios sin tu consentimiento expreso.</p>
             </div>
           </section>
 
