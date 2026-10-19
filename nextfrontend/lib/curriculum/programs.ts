@@ -163,8 +163,23 @@ export const ADULT_RANKS: CurriculumRank[] = [
   { id: 'belt-adult-11-marron-oscuro', order: 11, name: 'Marrón-Negra', kyuDan: '1ST KYU', japaneseName: 'Ik-kyu', kanji: '一級', beltColor: '#5D4037', beltSecondaryColor: '#212121', minMonths: 41, maxMonths: 42, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin'] },
 
   { 
-    id: 'belt-adult-12-negro', 
+    id: 'belt-adult-shodan-ho', 
     order: 12, 
+    name: 'Negra-Blanca', 
+    kyuDan: 'SHODAN HO', 
+    japaneseName: 'Ichi-kyu', 
+    kanji: '一級', 
+    beltColor: '#212121', 
+    beltSecondaryColor: '#FFFFFF', 
+    description: 'Grado pre-dan (cinturón negro-blanco). Requisito previo a 1er Dan (Shodan).', 
+    minMonths: 45, 
+    maxMonths: 46, 
+    isMaximumRank: false, 
+    katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin', 'Seipai', 'Kururunfa'] 
+  },
+  { 
+    id: 'belt-adult-12-negro', 
+    order: 13, 
     name: 'Shodan', 
     kyuDan: 'SHODAN (1ST DAN)', 
     japaneseName: '1st Dan', 
@@ -178,7 +193,7 @@ export const ADULT_RANKS: CurriculumRank[] = [
   },
   { 
     id: 'belt-adult-13-nidan', 
-    order: 13, 
+    order: 14, 
     name: 'Nidan', 
     kyuDan: 'NIDAN (2ND DAN)', 
     japaneseName: '2nd Dan', 
@@ -192,7 +207,7 @@ export const ADULT_RANKS: CurriculumRank[] = [
   },
   { 
     id: 'belt-adult-14-sandan', 
-    order: 14, 
+    order: 15, 
     name: 'Sandan', 
     kyuDan: 'SANDAN (3RD DAN)', 
     japaneseName: '3rd Dan', 
@@ -206,7 +221,7 @@ export const ADULT_RANKS: CurriculumRank[] = [
   },
   { 
     id: 'belt-adult-15-yondan', 
-    order: 15, 
+    order: 16, 
     name: 'Yondan', 
     kyuDan: 'YONDAN (4TH DAN)', 
     japaneseName: '4th Dan', 
@@ -220,7 +235,7 @@ export const ADULT_RANKS: CurriculumRank[] = [
   },
   { 
     id: 'belt-adult-16-godan', 
-    order: 16, 
+    order: 17, 
     name: 'Godan', 
     kyuDan: 'GODAN (5TH DAN)', 
     japaneseName: '5th Dan', 
@@ -234,7 +249,7 @@ export const ADULT_RANKS: CurriculumRank[] = [
   },
   { 
     id: 'belt-adult-17-rokkudan', 
-    order: 17, 
+    order: 18, 
     name: 'Rokkudan', 
     kyuDan: 'ROKKUDAN (6TH DAN)', 
     japaneseName: '6th Dan', 
@@ -248,7 +263,7 @@ export const ADULT_RANKS: CurriculumRank[] = [
   },
   { 
     id: 'belt-adult-18-nanadan', 
-    order: 18, 
+    order: 19, 
     name: 'Nanadan', 
     kyuDan: 'NANADAN (7TH DAN)', 
     japaneseName: '7th Dan', 
@@ -262,7 +277,7 @@ export const ADULT_RANKS: CurriculumRank[] = [
   },
   { 
     id: 'belt-adult-19-hachidan', 
-    order: 19, 
+    order: 20, 
     name: 'Hachidan', 
     kyuDan: 'HACHIDAN (8TH DAN)', 
     japaneseName: '8th Dan', 
@@ -276,7 +291,7 @@ export const ADULT_RANKS: CurriculumRank[] = [
   },
   { 
     id: 'belt-adult-20-kyudan', 
-    order: 20, 
+    order: 21, 
     name: 'Kyudan', 
     kyuDan: 'KYUDAN (9TH DAN)', 
     japaneseName: '9th Dan', 

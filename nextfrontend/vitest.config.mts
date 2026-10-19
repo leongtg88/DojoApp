@@ -18,6 +18,13 @@ export default defineConfig({
     },
   },
   test: {
+    coverage: {
+      provider: 'v8',
+      reporter: ['text-summary', 'json-summary'],
+      reportsDirectory: 'coverage/unit',
+      include: ['lib/**', 'app/api/**'],
+      exclude: ['node_modules/**', 'tests/**', '**/*.d.ts', 'lib/generated/**', '.next/**'],
+    },
     projects: [
       {
         test: {

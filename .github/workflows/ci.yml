@@ -40,3 +40,63 @@ jobs:
       - run: pnpm typecheck
 
       - run: pnpm test
+
+      # Requiere el Docker de la máquina runner (disponible en ubuntu-latest).
+      - run: pnpm test:integration
+
+  # E2E con Postgres efímero + seed determinista. Playwright levanta `pnpm dev`
+  # (webServer del config) porque no se define E2E_BASE_URL.
+  e2e:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: nextfrontend
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: dojo_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d dojo_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://test:test@localhost:5432/dojo_test
+      DIRECT_URL: postgresql://test:test@localhost:5432/dojo_test
+      AUTH_SECRET: ci-e2e-secret-0123456789abcdefghijklmnop
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      SEED_OWNER_PASSWORD: Owner1234!
+      SEED_ADMIN_PASSWORD: Admin1234!
+      SEED_INSTRUCTOR_PASSWORD: Instructor1234!
+      SEED_STUDENT_PASSWORD: Alumno1234!
+      E2E_USER_EMAIL: alumno@test.com
+      E2E_USER_PASSWORD: Alumno1234!
+      E2E_INSTRUCTOR_EMAIL: instructor@toseigusoku.com
+      E2E_INSTRUCTOR_PASSWORD: Instructor1234!
+      E2E_ADMIN_EMAIL: admin@toseigusoku.com
+      E2E_ADMIN_PASSWORD: Admin1234!
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: nextfrontend/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec prisma migrate deploy
+
+      - run: pnpm exec tsx prisma/seed.ts
+
+      - run: pnpm exec playwright install --with-deps chromium
+
+      - run: pnpm test:e2e

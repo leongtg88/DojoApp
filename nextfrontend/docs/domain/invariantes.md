@@ -39,7 +39,7 @@ se calcula con una única función.
 - **Fuente única:** `lib/dashboard/kata-curriculum.ts` (`resolveProgressionKataIds`) y `lib/dashboard/technique-assign.ts` (`assignTechniquesToTargets`, `assignTechniquesToStudentsByIds`, `assignTechniquesToStudentGroup`).
 - **Correcto:** asignar vía `assignTechniquesToTargets(...)`; progresión vía `resolveProgressionKataIds(...)`.
 - **Anti-patrón:** `db.studentTechnique.createMany(...)` / `DELETE`/`PUT` que reemplaza el set fuera de los módulos de dominio.
-- **Verificación:** integración con DB de prueba (persistencia + idempotencia).
+- **Verificación:** `tests/integration/technique-assign.test.ts` (persistencia + idempotencia).
 
 ---
 
@@ -74,7 +74,7 @@ Todo acceso a datos respeta la escuela/sucursal del usuario mediante los helpers
 - **Fuente única:** `lib/dashboard/scope.ts` (`getAdminScope`, `scopeSchoolFilter`) y `getInstructorSchoolId`.
 - **Correcto:** `where: { ...scopeSchoolFilter(scope), … }`
 - **Anti-patrón:** `where: { schoolId: session.user.schoolId }` armado a mano por ruta.
-- **Verificación:** unit.
+- **Verificación:** `tests/integration/technique-assign.test.ts` (aislamiento por escuela).
 
 ---
 
@@ -86,4 +86,4 @@ siguiente, mismo programa) en admin, instructor y alumno.
 - **Fuente única:** `resolveProgressionKataIds({ schoolId, program, order })`
 - **Correcto:** reutilizarla en creación, conversión, promoción y asignación.
 - **Anti-patrón:** recomputar el "siguiente grado" por pantalla con lógica propia.
-- **Verificación:** unit.
+- **Verificación:** `tests/integration/kata-progression.test.ts`.

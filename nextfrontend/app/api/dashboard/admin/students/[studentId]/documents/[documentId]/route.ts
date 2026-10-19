@@ -28,6 +28,15 @@ interface DocumentRouteContext {
   params: Promise<{ studentId: string; documentId: string }>
 }
 
+/** Exige rol de administrador; devuelve una respuesta 403 si no lo tiene. */
+async function requireAdmin() {
+  const session = await auth()
+  if (!session?.user?.id || !hasAnyRole(session.user, ['SCHOOL_ADMIN', 'SUPERADMIN'])) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+  }
+  return null
+}
+
 async function findScopedDocument(context: DocumentRouteContext) {
   const session = await auth()
   if (!session?.user?.id || !hasAnyRole(session.user, ['SCHOOL_ADMIN', 'SUPERADMIN'])) return null
@@ -44,6 +53,9 @@ async function findScopedDocument(context: DocumentRouteContext) {
 }
 
 export async function GET(_: Request, context: DocumentRouteContext) {
+  const denied = await requireAdmin()
+  if (denied) return denied
+
   const document = await findScopedDocument(context)
   if (!document) return NextResponse.json({ error: 'Documento no encontrado' }, { status: 404 })
 
@@ -56,6 +68,9 @@ export async function GET(_: Request, context: DocumentRouteContext) {
 }
 
 export async function PATCH(request: Request, context: DocumentRouteContext) {
+  const denied = await requireAdmin()
+  if (denied) return denied
+
   const document = await findScopedDocument(context)
   if (!document) return NextResponse.json({ error: 'Documento no encontrado' }, { status: 404 })
   const result = reviewSchema.safeParse(await request.json().catch(() => null))
@@ -94,6 +109,9 @@ export async function PATCH(request: Request, context: DocumentRouteContext) {
 }
 
 export async function DELETE(_: Request, context: DocumentRouteContext) {
+  const denied = await requireAdmin()
+  if (denied) return denied
+
   const document = await findScopedDocument(context)
   if (!document) return NextResponse.json({ error: 'Documento no encontrado' }, { status: 404 })
 

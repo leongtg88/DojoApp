@@ -42,6 +42,19 @@ const isEnvExample = (path) => {
 // escanearlo a sí mismo sería un falso positivo.
 const isGuardScript = (path) => baseName(path) === 'guard-env.mjs'
 
+// La URL de Postgres solo se bloquea si trae credenciales que parezcan reales.
+// Se eximen los contenedores de CI/test (`test:test`, `postgres:postgres`, …) y
+// los valores interpolados (`${...}`, que no son literales). Un usuario o una
+// contraseña real (fuera de esa lista) sigue disparando el aviso.
+const DB_URL_PATTERN_NAME = 'URL de Postgres con credenciales'
+const DB_URL_RE = /postgres(ql)?:\/\/([^\s:@/]+):([^\s:@/]+)@/i
+const DUMMY_DB_CREDENTIAL = /^(test|postgres|root|admin|ci|user|password|dojo|example)$/i
+const isDummyCredential = (value) => value.includes('${') || DUMMY_DB_CREDENTIAL.test(value)
+const isDummyDbUrl = (text) => {
+  const match = DB_URL_RE.exec(text)
+  return Boolean(match) && isDummyCredential(match[2]) && isDummyCredential(match[3])
+}
+
 const errors = []
 
 // 1) Archivos staged: bloquear cualquier .env real (excepto .env.example)
@@ -77,10 +90,10 @@ for (const line of diff.split('\n')) {
   if (isGuardScript(currentFile)) continue // el guard define los patrones que detecta
   const text = line.slice(1)
   for (const [name, re] of SECRET_PATTERNS) {
-    if (re.test(text)) {
-      errors.push(`${name} detectado en ${currentFile}: ${text.trim().slice(0, 80)}`)
-      break
-    }
+    if (!re.test(text)) continue
+    if (name === DB_URL_PATTERN_NAME && isDummyDbUrl(text)) continue
+    errors.push(`${name} detectado en ${currentFile}: ${text.trim().slice(0, 80)}`)
+    break
   }
 }
 

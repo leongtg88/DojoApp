@@ -48,6 +48,15 @@ async function main() {
     ['YOUTH', YOUTH_RANKS],
   ]
 
+  // Los grados globales tienen un índice único parcial (program, order) WHERE
+  // schoolId IS NULL. Para poder renumerar un grado dentro del programa sin
+  // chocar (p. ej. insertar Shodan Ho y subir los dan), primero "aparcamos"
+  // todos los grados canónicos en órdenes temporales distintos y luego se
+  // escriben sus órdenes finales uno a uno.
+  for (const [index, rank] of [...ADULT_RANKS, ...YOUTH_RANKS].entries()) {
+    await db.beltRank.updateMany({ where: { id: rank.id }, data: { order: -(index + 1) } })
+  }
+
   for (const [program, ranks] of programs) {
     for (const rank of ranks) {
       const data = {

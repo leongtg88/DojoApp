@@ -1,5 +1,6 @@
 import JSZip from 'jszip'
 import { auth } from '@/auth'
+import { hasAnyRole } from '@/lib/auth/roles'
 import { db } from '@/lib/db'
 import { getAdminStudentDetail } from '@/lib/dashboard/admin-queries'
 import { buildStudentDetailWorkbook, studentFileName } from '@/lib/dashboard/student-detail-export'
@@ -14,7 +15,7 @@ interface StudentZipRouteContext {
 export async function GET(_: Request, context: StudentZipRouteContext) {
   const session = await auth()
 
-  if (!session?.user?.id) {
+  if (!session?.user?.id || !hasAnyRole(session.user, ['SCHOOL_ADMIN', 'SUPERADMIN'])) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 

@@ -1,4 +1,5 @@
 import { auth } from '@/auth'
+import { hasAnyRole } from '@/lib/auth/roles'
 import { getAdminStudentDetail } from '@/lib/dashboard/admin-queries'
 import { buildStudentDetailWorkbook, studentFileName } from '@/lib/dashboard/student-detail-export'
 import { NextResponse } from 'next/server'
@@ -10,7 +11,7 @@ interface StudentExportRouteContext {
 export async function GET(_: Request, context: StudentExportRouteContext) {
   const session = await auth()
 
-  if (!session?.user?.id) {
+  if (!session?.user?.id || !hasAnyRole(session.user, ['SCHOOL_ADMIN', 'SUPERADMIN'])) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 

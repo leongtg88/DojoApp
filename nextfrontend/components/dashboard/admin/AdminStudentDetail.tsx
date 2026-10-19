@@ -149,20 +149,41 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 	}
 
 	async function handleApplyGradeKatas() {
+		const targetRank = student.nextRankName
+			? student.availableRanks.find((rank) => rank.name === student.nextRankName)
+			: undefined
+		const techniqueIds = (targetRank?.techniques ?? []).map((technique) => technique.id)
+		const targetLabel = targetRank?.name ?? student.nextRankName ?? 'el grado siguiente'
+
 		setIsApplyingGrade(true)
 		setActionError(null)
 		setGradeAppliedNotice(null)
+
+		if (techniqueIds.length === 0) {
+			setActionError(`El grado ${targetLabel} no tiene katas configuradas para asignar.`)
+			setIsApplyingGrade(false)
+			return
+		}
+
 		try {
-			const response = await fetch(`/api/dashboard/admin/students/${student.id}/techniques/apply-grade`, { method: 'POST' })
-			const payload = await response.json().catch(() => ({})) as { error?: string; added?: number; rankName?: string }
+			const response = await fetch('/api/dashboard/admin/students/assign-techniques-bulk', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					techniqueIds,
+					rankId: targetRank?.id,
+					targets: [{ kind: 'STUDENT', studentIds: [student.id] }],
+				}),
+			})
+			const payload = await response.json().catch(() => ({})) as { error?: string; linksAdded?: number }
 			if (!response.ok) {
 				throw new Error(payload.error ?? 'No fue posible aplicar las katas del grado.')
 			}
-			const rankLabel = payload.rankName ? ` del grado ${payload.rankName}` : ''
+			const added = payload.linksAdded ?? 0
 			setGradeAppliedNotice(
-				(payload.added ?? 0) > 0
-					? `Se agregaron ${payload.added} kata(s)${rankLabel}.`
-					: `El expediente ya tenía las katas${rankLabel}.`,
+				added > 0
+					? `Se agregaron ${added} kata(s) requeridas hacia ${targetLabel}.`
+					: `El expediente ya tenía las ${techniqueIds.length} kata(s) requeridas hacia ${targetLabel}.`,
 			)
 			router.refresh()
 		} catch (reason: unknown) {
@@ -398,7 +419,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 									className="inline-flex items-center gap-1.5 rounded-md border border-cyan-500/40 bg-cyan-950/30 px-3 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-cyan-900/50 disabled:cursor-not-allowed disabled:opacity-50"
 									disabled={isApplyingGrade}
 									onClick={handleApplyGradeKatas}
-									title="Agrega al expediente las katas del grado actual y el siguiente, sin quitar ninguna"
+									title={`Agrega al expediente las katas requeridas hacia ${student.nextRankName ?? 'el grado siguiente'}, sin quitar ninguna`}
 									type="button"
 								>
 									{isApplyingGrade ? <Loader2 aria-hidden="true" className="size-3.5 animate-spin" /> : <RefreshCw aria-hidden="true" className="size-3.5" />}

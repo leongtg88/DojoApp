@@ -112,6 +112,13 @@ async function main() {
   }
 
   // ============ GRADOS por programa (primero, para que las katas puedan referenciarlos) ============
+  // Los grados globales tienen un índice único parcial (program, order) WHERE
+  // schoolId IS NULL. Para renumerar sin choques, aparcamos primero los grados
+  // canónicos en órdenes temporales distintos (no-op si ya se borraron).
+  for (const [index, rank] of [...ADULT_RANKS, ...YOUTH_RANKS].entries()) {
+    await db.beltRank.updateMany({ where: { id: rank.id }, data: { order: -(index + 1) } })
+  }
+
   for (const [program, ranks] of [['ADULT', ADULT_RANKS], ['YOUTH', YOUTH_RANKS]] as const) {
     for (const rank of ranks) {
       await db.beltRank.upsert({

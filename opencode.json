@@ -18,13 +18,14 @@
     }
   },
   "mcp": {
-    "graphify": {
-      "type": "local",
-      "command": [
-        "graphify-mcp",
-        "nextfrontend/graphify-out/graph.json"
-      ],
-      "enabled": true
+    "servers": {
+      "graphify": {
+        "type": "local",
+        "command": [
+          "graphify-mcp",
+          "nextfrontend/graphify-out/graph.json"
+        ]
+      }
     }
   }
 }

@@ -59,6 +59,13 @@ export function normalizeKyuDanStrict(value: string): string {
     .replace(/[^A-Z0-9]/g, '')
 }
 
+// Elimina la anotación entre paréntesis de un kyuDan para compararlo por su
+// nombre base: "SHODAN (1ST DAN)" → "SHODAN". Así un declarado "SHODAN" casa
+// con el grado Dan y no con "SHODAN HO" (que normalizeKyuDan confundiría).
+export function kyuDanBase(value: string): string {
+  return value.replace(/\(.*?\)/g, ' ')
+}
+
 // Devuelve true si `declared` (valor del formulario, p. ej. "1ST DAN" o
 // "SHODAN") coincide con `catalog` (kyuDan de un BeltRank, p. ej.
 // "SHODAN (1ST DAN)").

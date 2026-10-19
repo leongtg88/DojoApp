@@ -14,8 +14,8 @@ Detalle de cada regla: [`invariantes.md`](./invariantes.md).
 | INV-03 | Las katas del expediente se crean/leen vía `StudentTechnique` | `technique-assign` + `kata-curriculum` | crear `studentTechnique` suelto | integración |
 | INV-04 | Los seeds/scripts no borran datos de alumnos | `prisma/seed.ts` (`SEED_RESET=1`) | `deleteMany` de datos de alumnos sin flag | script |
 | INV-05 | Las reglas globales de CSS van en `@layer` | `app/globals.css` | reglas sin `@layer` que pisan utilities | review |
-| INV-06 | El alcance se filtra por `scope`, no a mano | `lib/dashboard/scope` | `where: { schoolId }` manual | unit |
-| INV-07 | El "próximo grado"/progresión tiene una sola fuente | `resolveProgressionKataIds` | recomputarlo por pantalla | unit |
+| INV-06 | El alcance se filtra por `scope`, no a mano | `lib/dashboard/scope` | `where: { schoolId }` manual | integración |
+| INV-07 | El "próximo grado"/progresión tiene una sola fuente | `resolveProgressionKataIds` | recomputarlo por pantalla | integración |
 
 ## Cómo se hace cumplir
 1. **Módulo de dominio por invariante** (fuente única): el resto de la app lo importa; nadie reimplementa.
@@ -26,7 +26,7 @@ Detalle de cada regla: [`invariantes.md`](./invariantes.md).
 ## Capas de prueba
 - **Unit** (`tests/unit`, entorno Node): helpers puros. → `pnpm test:unit`
 - **Componente** (`tests/component`, jsdom + React Testing Library): componentes cliente, con stubs de `next/navigation` y `next/link`. → `pnpm test:component`
-- **Integración** (pendiente): queries/rutas contra una DB de prueba (persistencia, cascadas, unicidad).
+- **Integración** (`tests/integration`, Postgres real vía **testcontainers**): levanta un contenedor efímero, aplica migraciones y prueba persistencia/scope. → `pnpm test:integration`
 - **E2E** (`tests/e2e`, Playwright): flujos reales. → `pnpm test:e2e`
 
-Correr todo: `pnpm test`. Lint + tipos + tests: `pnpm check`.
+Correr unit + componente: `pnpm test`. Todo (incluye integración; requiere **Docker**): `pnpm test && pnpm test:integration`. Lint + tipos + unit/componente: `pnpm check`.

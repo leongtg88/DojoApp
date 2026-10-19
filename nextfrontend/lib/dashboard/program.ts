@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
 import type { Program } from '@/lib/curriculum/programs'
-import { kyuMatches, normalizeKyuDanStrict } from '@/lib/curriculum/kyu-options'
+import { kyuDanBase, kyuMatches, normalizeKyuDanStrict } from '@/lib/curriculum/kyu-options'
 
 export function ageFromDob(dob: Date): number {
   const today = new Date()
@@ -62,6 +62,9 @@ export async function resolveRankForKyu(schoolId: string, dateOfBirth: Date, kyu
 
   const match =
     ranks.find((rank) => rank.kyuDan && normalizeKyuDanStrict(kyu) === normalizeKyuDanStrict(rank.kyuDan)) ??
+    // Los Dan guardan su nombre base con anotación ("SHODAN (1ST DAN)"), así que
+    // un declarado "SHODAN" debe casar aquí (y no con "SHODAN HO" en el fuzzy).
+    ranks.find((rank) => rank.kyuDan && normalizeKyuDanStrict(kyu) === normalizeKyuDanStrict(kyuDanBase(rank.kyuDan))) ??
     ranks.find((rank) => rank.kyuDan && kyuMatches(kyu, rank.kyuDan))
   return match ?? null
 }
