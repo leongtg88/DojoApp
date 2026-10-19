@@ -6,7 +6,7 @@ import { CheckCheck, CircleDashed, ClipboardCheck, Clock, Info, Loader2, Plus, R
 import type { InstructorTechniqueReview as TechniqueReview, StudentTechnique, TechniqueStatus } from '@/types/dashboard'
 import { KataBeltChip } from '../shared/KataBeltChip'
 import { TechniqueCatalogFilter } from '../shared/TechniqueCatalogFilter'
-import { KATA_CRITERION_KEYS, KATA_RUBRIC, MAX_KATA_CRITERION_SCORE, MIN_KATA_CRITERION_SCORE, averageKataCriteria, blockAverage, isCompleteKataCriteria, parseKataCriteria } from '@/lib/dashboard/kata-rubric'
+import { KATA_CRITERION_KEYS, KATA_RUBRIC, MAX_KATA_CRITERION_SCORE, MIN_KATA_CRITERION_SCORE, averageKataCriteria, blockAverage, formatKataScore, isCompleteKataCriteria, parseKataCriteria } from '@/lib/dashboard/kata-rubric'
 
 interface InstructorTechniqueReviewProps {
     review: TechniqueReview
@@ -242,7 +242,7 @@ function TechniqueRow({
                         <label className="text-xs font-semibold text-ink-2" htmlFor={`technique-score-${technique.id}`}><span className="inline-flex items-center gap-1"><Star aria-hidden="true" className="size-3.5 text-accent" />Calificación / 10</span><input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id={`technique-score-${technique.id}`} max="10" min="0" onChange={(event) => setScore(event.target.value)} placeholder="Sin nota" step="0.1" type="number" value={score} /></label>
                         <label className="text-xs font-semibold text-ink-2" htmlFor={`technique-feedback-${technique.id}`}>Feedback de evaluación<textarea className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id={`technique-feedback-${technique.id}`} onChange={(event) => setFeedback(event.target.value)} placeholder="Correcciones técnicas y próximos objetivos" rows={2} value={feedback} /></label>
                     </div>
-                    {technique.evaluation && <p className="mt-2 text-xs text-ok-text/80">Última evaluación: {technique.evaluation.score}/10 · {new Date(technique.evaluation.evaluatedAt).toLocaleString('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}{technique.evaluation.evaluatorName ? ` · ${technique.evaluation.evaluatorName}` : ''}</p>}
+                    {technique.evaluation && <p className="mt-2 text-xs text-ok-text/80">Última evaluación: {formatKataScore(technique.evaluation.score)}/10 · {new Date(technique.evaluation.evaluatedAt).toLocaleString('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}{technique.evaluation.evaluatorName ? ` · ${technique.evaluation.evaluatorName}` : ''}</p>}
                     <div className="mt-3 flex flex-wrap items-center gap-3">
                         <button className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-3 py-2 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400 disabled:opacity-60" disabled={saving} onClick={saveEvaluation} type="button">{saving ? <Loader2 aria-label="Guardando" className="size-4 animate-spin" /> : <Save aria-hidden="true" className="size-4" />}Guardar evaluación</button>
                     </div>
@@ -271,7 +271,7 @@ function KataEvaluationBlock({
                     <ClipboardCheck aria-hidden="true" className="size-3.5 text-accent" />Evaluación por criterios
                 </span>
                 {evaluation ? (
-                    <span className="font-display text-lg font-extrabold text-ok-text">{evaluation.score}<span className="text-xs font-normal text-ink-3"> / 10</span></span>
+                    <span className="font-display text-lg font-extrabold text-ok-text">{formatKataScore(evaluation.score)}<span className="text-xs font-normal text-ink-3"> / 10</span></span>
                 ) : (
                     <span className="text-xs text-ink-3">Sin evaluar</span>
                 )}
@@ -389,7 +389,7 @@ function KataRubricForm({
                             <section className="rounded-lg border border-edge bg-surface-1 p-4" key={block.key}>
                                 <div className="flex items-center justify-between gap-2 border-b border-edge pb-2">
                                     <h4 className="text-sm font-bold text-ink">{block.label}</h4>
-                                    <span className="text-xs font-bold text-accent">{Math.round(block.weight * 100)}% · {subtotal ?? '—'}</span>
+                                    <span className="text-xs font-bold text-accent">{Math.round(block.weight * 100)}% · {formatKataScore(subtotal)}</span>
                                 </div>
                                 <ul className="mt-3 space-y-3">
                                     {block.criteria.map((criterion) => (
@@ -426,7 +426,7 @@ function KataRubricForm({
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-edge pt-4">
                     <div>
                         <p className="text-[10px] font-bold uppercase tracking-wide text-ink-3">Nota final</p>
-                        <p className="font-display text-2xl font-extrabold text-ink">{total ?? '—'}<span className="text-sm font-normal text-ink-3"> / 10</span></p>
+                        <p className="font-display text-2xl font-extrabold text-ink">{formatKataScore(total)}<span className="text-sm font-normal text-ink-3"> / 10</span></p>
                     </div>
                     <div className="flex items-center gap-2.5">
                         <button className="rounded-lg border border-edge-strong bg-surface-1 px-4 py-2 text-xs font-semibold text-ink-2 transition-colors hover:bg-surface-3" onClick={onClose} type="button">Cancelar</button>

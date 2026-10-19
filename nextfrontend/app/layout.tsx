@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
-import { Montserrat, Open_Sans } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import { AppChrome } from '@/components/AppChrome';
 import { PwaRegister } from '@/components/PwaRegister';
@@ -9,16 +9,25 @@ import { ConsentProvider } from '@/components/consent/ConsentProvider';
 import { CookieConsentBanner } from '@/components/consent/CookieConsentBanner';
 import { AnalyticsGate } from '@/components/consent/AnalyticsGate';
 
-const montserrat = Montserrat({
-  subsets: ['latin'],
+// Fuentes autoalojadas (subset latin, variable). Evita que el build dependa de
+// fonts.googleapis.com y el fallo intermitente de next/font/google con URLs sin
+// extensión: https://github.com/vercel/next.js/issues/99114
+const montserrat = localFont({
+  src: './fonts/montserrat-latin-var.woff2',
   variable: '--font-display',
-  weight: ['300', '400', '500', '600', '700', '800'],
+  weight: '100 900',
+  style: 'normal',
+  display: 'swap',
+  fallback: ['ui-sans-serif', 'system-ui', 'sans-serif'],
 });
 
-const openSans = Open_Sans({
-  subsets: ['latin'],
+const openSans = localFont({
+  src: './fonts/open-sans-latin-var.woff2',
   variable: '--font-sans',
-  weight: ['300', '400', '500', '600', '700'],
+  weight: '300 800',
+  style: 'normal',
+  display: 'swap',
+  fallback: ['ui-sans-serif', 'system-ui', 'sans-serif'],
 });
 
 export const metadata: Metadata = {

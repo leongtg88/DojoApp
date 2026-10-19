@@ -1,4 +1,5 @@
 import type { NotificationPriority, NotificationType } from '@/lib/generated/prisma'
+import { formatKataScore } from '@/lib/dashboard/kata-rubric'
 
 export interface NotificationContent {
   title: string
@@ -193,7 +194,7 @@ const builders: Record<NotificationType, NotificationBuilder> = {
       title: 'Nueva evaluación',
       body:
         score !== null
-          ? `${studentName}, evaluaron ${techniqueName} con ${score} puntos.`
+          ? `${studentName}, evaluaron ${techniqueName} con ${formatKataScore(score)} puntos.`
           : `${studentName}, evaluaron ${techniqueName}.`,
       link: PROGRESS_LINK,
       priority: 'INFO',

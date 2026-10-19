@@ -4,8 +4,10 @@ import {
   KATA_RUBRIC,
   averageKataCriteria,
   blockAverage,
+  formatKataScore,
   isCompleteKataCriteria,
   parseKataCriteria,
+  roundKataScore,
 } from '@/lib/dashboard/kata-rubric'
 
 // Fase 6 · F6-06 — Rúbrica de kata: 70% técnico + 30% atlético.
@@ -67,6 +69,26 @@ describe('averageKataCriteria', () => {
       for (const criterion of block.criteria) tecnicoOnly[criterion.key] = 8
     }
     expect(averageKataCriteria(tecnicoOnly)).toBe(5.6)
+  })
+})
+
+describe('formatKataScore', () => {
+  it('muestra siempre 1 decimal', () => {
+    expect(formatKataScore(8)).toBe('8.0')
+    expect(formatKataScore(7.4)).toBe('7.4')
+    expect(formatKataScore(10)).toBe('10.0')
+  })
+
+  it('devuelve — cuando no hay nota', () => {
+    expect(formatKataScore(null)).toBe('—')
+    expect(formatKataScore(undefined)).toBe('—')
+  })
+})
+
+describe('roundKataScore', () => {
+  it('redondea a 1 decimal', () => {
+    expect(roundKataScore(7.35)).toBe(7.4)
+    expect(roundKataScore(7.34)).toBe(7.3)
   })
 })
 

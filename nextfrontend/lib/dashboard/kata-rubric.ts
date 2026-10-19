@@ -82,6 +82,17 @@ export function isCompleteKataCriteria(
   return KATA_CRITERION_KEYS.every((key) => isValidScore(scores[key]))
 }
 
+/** Redondea una nota de kata a 1 decimal de forma estable (evita artefactos binarios). */
+export function roundKataScore(value: number): number {
+  return Math.round((value + Number.EPSILON) * 10) / 10
+}
+
+/** Formatea una nota de kata con 1 decimal fijo: `8` → `"8.0"`, `7.4` → `"7.4"`. */
+export function formatKataScore(value: number | null | undefined): string {
+  if (value == null || !Number.isFinite(value)) return '—'
+  return value.toFixed(1)
+}
+
 /** Media sin ponderar de un bloque (0–10) o `null` si falta algún criterio. */
 export function blockAverage(
   block: KataRubricBlock,
@@ -89,7 +100,7 @@ export function blockAverage(
 ): number | null {
   const values = block.criteria.map(({ key }) => scores[key])
   if (!values.every(isValidScore)) return null
-  return Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 10) / 10
+  return roundKataScore(values.reduce((sum, value) => sum + value, 0) / values.length)
 }
 
 /** Total ponderado de la kata (0–10), redondeado a 1 decimal. */
@@ -100,7 +111,7 @@ export function averageKataCriteria(scores: Partial<Record<string, number>>): nu
     const blockMean = values.length > 0 ? values.reduce((sum, value) => sum + value, 0) / values.length : 0
     total += block.weight * blockMean
   }
-  return Math.round(total * 10) / 10
+  return roundKataScore(total)
 }
 
 /** Normaliza el `criteria` (JSON de la BD) a un record de notas válidas. */

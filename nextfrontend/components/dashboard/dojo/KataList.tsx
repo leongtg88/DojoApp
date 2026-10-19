@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp, Clock, MessageSquare, Repeat, Search, Star, Timer } from 'lucide-react'
+import { formatKataScore } from '@/lib/dashboard/kata-rubric'
 import type { KataProgressItem, KataStatus, PracticePlace } from '@/types/dashboard'
 import { KataBadge } from './KataBadge'
 import { KataBeltChip } from '../shared/KataBeltChip'
@@ -170,7 +171,7 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                                     {kata.score !== null && (
                                         <span className="inline-flex items-center gap-1">
                                             <Star aria-hidden="true" className="size-3.5 text-ok-text" />
-                                            Nota del sensei: {kata.score} / 10
+                                            Nota del sensei: {formatKataScore(kata.score)} / 10
                                         </span>
                                     )}
                                     {kata.evaluatedBy && <span>Evaluado por {kata.evaluatedBy}</span>}

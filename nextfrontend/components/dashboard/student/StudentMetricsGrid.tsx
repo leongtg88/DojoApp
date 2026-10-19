@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { CalendarCheck2, ClipboardCheck, Star } from 'lucide-react'
+import { formatKataScore, roundKataScore } from '@/lib/dashboard/kata-rubric'
 import type { AttendanceSummary, GradoProgressData, KataProgressItem, StudentTechnique } from '@/types/dashboard'
 
 interface StudentMetricsGridProps {
@@ -15,7 +16,7 @@ export function StudentMetricsGrid({ attendance, techniques, katas = [], grado =
     const scoredKatas = katas.filter(({ requiredForGrade, score }) => requiredForGrade && score !== null)
     const averageScore = scoredKatas.length === 0
         ? null
-        : Math.round((scoredKatas.reduce((total, kata) => total + (kata.score ?? 0), 0) / scoredKatas.length) * 10) / 10
+        : roundKataScore(scoredKatas.reduce((total, kata) => total + (kata.score ?? 0), 0) / scoredKatas.length)
 
     const attendanceSummary = grado?.attendance ?? attendance
 
@@ -25,7 +26,7 @@ export function StudentMetricsGrid({ attendance, techniques, katas = [], grado =
     const cards = [
         { href: '/dashboard/estudiante/asistencia', icon: CalendarCheck2, label: 'Asistencia', value: attendanceValue, detail: attendanceDetail },
         { href: '/dashboard/estudiante/progreso', icon: ClipboardCheck, label: 'Técnicas listas', value: `${approvedTechniques} / ${techniques.length}`, detail: 'Progreso del programa' },
-        { href: '/dashboard/estudiante/progreso', icon: Star, label: 'Promedio de katas', value: averageScore === null ? '—' : `${averageScore} / 10`, detail: 'Katas requeridas evaluadas' },
+        { href: '/dashboard/estudiante/progreso', icon: Star, label: 'Promedio de katas', value: averageScore === null ? '—' : `${formatKataScore(averageScore)} / 10`, detail: 'Katas requeridas evaluadas' },
     ]
 
     return (

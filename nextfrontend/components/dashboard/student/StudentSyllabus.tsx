@@ -5,7 +5,7 @@ import { Award, CheckCheck, CircleDashed, Info, Repeat, Search, Star } from 'luc
 import { KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
 import { KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
 import { buildTechniqueSections } from '@/lib/dashboard/technique-sections'
-import { KATA_RUBRIC } from '@/lib/dashboard/kata-rubric'
+import { KATA_RUBRIC, formatKataScore } from '@/lib/dashboard/kata-rubric'
 import type { StudentTechnique, TechniqueCategory } from '@/types/dashboard'
 
 interface StudentSyllabusProps {
@@ -137,7 +137,7 @@ export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
                                                     <div className="flex items-start gap-2">
                                                         <Star aria-hidden="true" className="mt-0.5 size-3.5 shrink-0 text-ok-text" />
                                                         <div>
-                                                            <p className="font-bold">Evaluación: {technique.evaluation.score} / 10</p>
+                                                            <p className="font-bold">Evaluación: {formatKataScore(technique.evaluation.score)} / 10</p>
                                                             {technique.evaluation.feedback && <p className="mt-1">{technique.evaluation.feedback}</p>}
                                                             <p className="mt-1 text-ok-text/80">{new Date(technique.evaluation.evaluatedAt).toLocaleString('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}{technique.evaluation.evaluatorName ? ` · ${technique.evaluation.evaluatorName}` : ''}</p>
                                                         </div>
