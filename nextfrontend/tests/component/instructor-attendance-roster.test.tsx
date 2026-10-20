@@ -38,4 +38,20 @@ describe('F6-02 · pase de lista (roster)', () => {
     expect(screen.getByRole('button', { name: /Guardar asistencia/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Marcar todos' })).toBeInTheDocument()
   })
+
+  it('tras guardar el pase muestra a los presentes y a los ausentes', () => {
+    render(<InstructorAttendanceRoster roster={roster({
+      isPassTaken: true,
+      students: [
+        { id: 's1', firstName: 'Ana', lastName: 'Uno', currentRank: 'Blanco', present: true, notes: null, status: 'CONFIRMED', justified: false, justification: null },
+        { id: 's2', firstName: 'Luis', lastName: 'Dos', currentRank: 'Amarillo', present: false, notes: null, status: 'ABSENT', justified: false, justification: null },
+      ],
+    })} />)
+
+    expect(screen.getByText('Ana Uno')).toBeInTheDocument()
+    expect(screen.getByText('Luis Dos')).toBeInTheDocument()
+    expect(screen.getByText('Presente')).toBeInTheDocument()
+    expect(screen.getByText('Ausente')).toBeInTheDocument()
+    expect(screen.getByText(/Resumen del pase de lista \(2\)/i)).toBeInTheDocument()
+  })
 })

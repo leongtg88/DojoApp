@@ -31,7 +31,6 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
     const pendingJustifications = records.filter(({ justification }) => justification?.status === 'PENDING').length
     const readOnly = !roster.isOwnClass
     const showSummary = !readOnly && roster.isPassTaken && !isEditing
-    const presentRecords = records.filter(({ present }) => present)
 
     function updateRecord(studentId: string, update: Partial<(typeof records)[number]>) {
         setRecords((currentRecords) => currentRecords.map((record) => (
@@ -153,19 +152,23 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                         </button>
                     </div>
                     <div className="border-b border-edge px-5 py-3">
-                        <p className="text-xs font-bold uppercase tracking-wide text-ink-3">Alumnos confirmados ({presentRecords.length})</p>
+                        <p className="text-xs font-bold uppercase tracking-wide text-ink-3">Resumen del pase de lista ({records.length})</p>
                     </div>
-                    {presentRecords.length === 0 ? (
-                        <p className="px-5 py-8 text-xs text-ink-3">No se confirmó ningún alumno en este pase de lista.</p>
+                    {records.length === 0 ? (
+                        <p className="px-5 py-8 text-xs text-ink-3">No hay alumnos registrados en este pase de lista.</p>
                     ) : (
                         <ul className="divide-y divide-edge">
-                            {presentRecords.map((record) => (
+                            {records.map((record) => (
                                 <li className="flex items-center justify-between gap-3 px-5 py-3" key={record.id}>
                                     <div className="min-w-0">
                                         <p className="truncate text-sm font-semibold text-ink">{record.firstName} {record.lastName}</p>
                                         <p className="mt-0.5 text-xs text-ink-3">{record.currentRank ?? 'Sin grado asignado'}</p>
                                     </div>
-                                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-ok-text"><UserCheck aria-hidden="true" className="size-3.5" />Presente</span>
+                                    {record.present ? (
+                                        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-ok-text"><UserCheck aria-hidden="true" className="size-3.5" />Presente</span>
+                                    ) : (
+                                        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-rose-500/30 bg-rose-500/10 px-2.5 py-1 text-xs font-bold text-danger-text"><CircleX aria-hidden="true" className="size-3.5" />Ausente</span>
+                                    )}
                                 </li>
                             ))}
                         </ul>

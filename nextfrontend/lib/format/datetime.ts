@@ -26,9 +26,21 @@ const calendarDateOptions: Intl.DateTimeFormatOptions = {
     timeZone: 'UTC',
 }
 
+// Clave "YYYY-MM-DD" del día calendario en República Dominicana (en-CA produce
+// directamente ese formato). Es la referencia para saber "qué día es hoy".
+const calendarKeyOptions: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: SANTO_DOMINGO_TIME_ZONE,
+}
+
 const dateTimeFormatter = new Intl.DateTimeFormat('es-DO', dateTimeOptions)
 const dateFormatter = new Intl.DateTimeFormat('es-DO', dateOptions)
 const calendarDateFormatter = new Intl.DateTimeFormat('es-DO', calendarDateOptions)
+const calendarKeyFormatter = new Intl.DateTimeFormat('en-CA', calendarKeyOptions)
+
+const pad = (value: number): string => String(value).padStart(2, '0')
 
 // El motor ICU del servidor y el del navegador usan caracteres de espacio
 // distintos (U+00A0 vs U+202F) en "a. m."/"p. m.". Normalizarlos garantiza un
@@ -67,4 +79,52 @@ export function formatCalendarDate(value: string | null | undefined): string {
     const date = new Date(`${value.slice(0, 10)}T00:00:00.000Z`)
     if (Number.isNaN(date.getTime())) return ''
     return normalizeSpaces(calendarDateFormatter.format(date))
+}
+
+/**
+ * Clave "YYYY-MM-DD" del día actual en República Dominicana. Es la referencia
+ * para cálculos de calendario (edades, cumpleaños), independientemente de la
+ * zona horaria del servidor o del navegador.
+ */
+export function todayCalendarKey(now: Date = new Date()): string {
+    return calendarKeyFormatter.format(now)
+}
+
+/**
+ * Clave "YYYY-MM-DD" de una fecha de calendario (sin hora de reloj).
+ * Las fechas guardadas en la base de datos (p. ej. `dateOfBirth`) quedan a
+ * medianoche UTC, por lo que un `Date` se lee con sus componentes UTC para no
+ * restar un día al interpretarlo en zona de RD. Los strings usan su parte YYYY-MM-DD.
+ */
+export function toCalendarKey(value: string | Date | null | undefined): string | null {
+    if (value === null || value === undefined || value === '') return null
+
+    if (value instanceof Date) {
+        if (Number.isNaN(value.getTime())) return null
+        return `${value.getUTCFullYear()}-${pad(value.getUTCMonth() + 1)}-${pad(value.getUTCDate())}`
+    }
+
+    const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value)
+    return match ? `${match[1]}-${match[2]}-${match[3]}` : null
+}
+
+/**
+ * Edad cumplida a la fecha `today`, comparando días calendario: la fecha de
+ * nacimiento se interpreta como calendario (UTC) y "hoy" en zona de RD.
+ */
+export function ageFromCalendarDate(
+    birth: string | Date | null | undefined,
+    today: Date = new Date(),
+): number | null {
+    const birthKey = toCalendarKey(birth)
+    if (!birthKey) return null
+
+    const [birthYear, birthMonth, birthDay] = birthKey.split('-').map(Number)
+    const [todayYear, todayMonth, todayDay] = todayCalendarKey(today).split('-').map(Number)
+
+    let age = todayYear - birthYear
+    if (todayMonth < birthMonth || (todayMonth === birthMonth && todayDay < birthDay)) {
+        age -= 1
+    }
+    return Math.max(0, age)
 }

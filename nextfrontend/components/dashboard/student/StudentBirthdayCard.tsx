@@ -1,22 +1,15 @@
 import { CakeSlice } from 'lucide-react'
+import { birthdayCountdown } from '@/lib/dashboard/birthdays'
 
 interface StudentBirthdayCardProps {
     dateOfBirth: string
 }
 
 export function StudentBirthdayCard({ dateOfBirth }: StudentBirthdayCardProps) {
-    const birthDate = new Date(dateOfBirth)
-    const today = new Date()
-    const nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate())
+    const countdown = birthdayCountdown(dateOfBirth)
+    if (!countdown) return null
 
-    if (nextBirthday < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
-        nextBirthday.setFullYear(nextBirthday.getFullYear() + 1)
-    }
-
-    const millisecondsPerDay = 1000 * 60 * 60 * 24
-    const daysUntil = Math.round((nextBirthday.getTime() - new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) / millisecondsPerDay)
-    const isToday = daysUntil === 0
-    const dateLabel = new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'long' }).format(nextBirthday)
+    const { isToday, daysUntil, label } = countdown
 
     return (
         <aside className="mt-8 rounded-lg border border-cyan-900/50 bg-surface-2 p-5" aria-label="Próximo cumpleaños">
@@ -25,7 +18,7 @@ export function StudentBirthdayCard({ dateOfBirth }: StudentBirthdayCardProps) {
                 <div>
                     <p className="text-xs font-semibold uppercase tracking-wide text-accent">Cumpleaños</p>
                     <p className="mt-1 text-sm font-semibold text-ink">
-                        {isToday ? 'Hoy celebramos tu cumpleaños en el dojo.' : `Tu próximo cumpleaños es el ${dateLabel}.`}
+                        {isToday ? 'Hoy celebramos tu cumpleaños en el dojo.' : `Tu próximo cumpleaños es el ${label}.`}
                     </p>
                     {!isToday && <p className="mt-1 text-xs text-ink-3">Faltan {daysUntil} días.</p>}
                 </div>

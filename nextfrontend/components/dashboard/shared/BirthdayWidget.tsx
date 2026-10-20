@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { Cake, CakeSlice, Calendar, Check, ClipboardCopy, Heart, Sparkles } from 'lucide-react'
 import type { DashboardBirthday } from '@/types/dashboard'
+import { birthdayCountdown } from '@/lib/dashboard/birthdays'
+import { ageFromCalendarDate } from '@/lib/format/datetime'
 
 interface BirthdayWidgetProps {
     birthdays: DashboardBirthday[]
@@ -121,18 +123,9 @@ export function BirthdayWidget({
 }
 
 function computeAge(person: DashboardBirthday) {
-    const birth = new Date(person.dateOfBirth)
-    const today = new Date()
-    const hadBirthday = (today.getMonth() > birth.getMonth()) || (today.getMonth() === birth.getMonth() && today.getDate() >= birth.getDate())
-    return today.getFullYear() - birth.getFullYear() - (hadBirthday ? 0 : 1)
+    return ageFromCalendarDate(person.dateOfBirth) ?? 0
 }
 
 function formatBirthday(dateOfBirth: string) {
-    const birth = new Date(dateOfBirth)
-    const today = new Date()
-    const next = new Date(today.getFullYear(), birth.getMonth(), birth.getDate())
-    if (next < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
-        next.setFullYear(next.getFullYear() + 1)
-    }
-    return new Intl.DateTimeFormat('es-DO', { day: 'numeric', month: 'long' }).format(next)
+    return birthdayCountdown(dateOfBirth)?.label ?? ''
 }

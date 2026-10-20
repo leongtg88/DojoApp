@@ -1,15 +1,12 @@
 import { db } from '@/lib/db'
 import type { Program } from '@/lib/curriculum/programs'
 import { kyuDanBase, kyuMatches, normalizeKyuDanStrict } from '@/lib/curriculum/kyu-options'
+import { ageFromCalendarDate } from '@/lib/format/datetime'
 
 export function ageFromDob(dob: Date): number {
-  const today = new Date()
-  let age = today.getFullYear() - dob.getFullYear()
-  const monthDiff = today.getMonth() - dob.getMonth()
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-    age -= 1
-  }
-  return age
+  // La fecha de nacimiento se guarda a medianoche UTC y "hoy" se evalúa en RD,
+  // así que no se resta un día al comparar.
+  return ageFromCalendarDate(dob) ?? 0
 }
 
 export function programForAge(age: number): Program {

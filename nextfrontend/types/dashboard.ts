@@ -496,6 +496,7 @@ export interface AdminExpectedAttendanceRoster {
 export interface DashboardBirthday {
 	id: string
 	name: string
+	/** Clave "YYYY-MM-DD" del cumpleaños (fecha de calendario, sin hora). */
 	dateOfBirth: string
 	daysUntil: number
 	role: 'student' | 'instructor'

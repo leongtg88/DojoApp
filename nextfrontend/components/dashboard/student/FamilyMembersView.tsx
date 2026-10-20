@@ -2,19 +2,14 @@ import Link from 'next/link'
 import { CalendarDays, GraduationCap, UserRound, Users } from 'lucide-react'
 import type { FamilyView } from '@/lib/family/guardians'
 import { studentHref } from '@/lib/dashboard/student-links'
+import { ageFromCalendarDate } from '@/lib/format/datetime'
 
 interface FamilyMembersViewProps {
     members: FamilyView
 }
 
 function ageFrom(dateOfBirth: string): number {
-    const dob = new Date(dateOfBirth)
-    if (Number.isNaN(dob.getTime())) return 0
-    const today = new Date()
-    let age = today.getFullYear() - dob.getFullYear()
-    const monthDiff = today.getMonth() - dob.getMonth()
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) age -= 1
-    return age
+    return ageFromCalendarDate(dateOfBirth) ?? 0
 }
 
 /**

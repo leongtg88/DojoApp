@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx'
-import { formatCalendarDate, formatDate, formatDateTime } from '@/lib/format/datetime'
+import { ageFromCalendarDate, formatCalendarDate, formatDate, formatDateTime } from '@/lib/format/datetime'
 import type { AdminStudentDetail } from '@/types/dashboard'
 
 const GENDER_LABELS: Record<string, string> = { MALE: 'Masculino', FEMALE: 'Femenino' }
@@ -54,11 +54,7 @@ function toCalendarLabel(value: string | null): string | null {
 }
 
 function ageFrom(dob: string | null): number | null {
-  if (!dob) return null
-  const birth = new Date(dob)
-  if (Number.isNaN(birth.getTime())) return null
-  const diff = Date.now() - birth.getTime()
-  return Math.max(0, Math.floor(diff / (365.25 * 24 * 60 * 60 * 1000)))
+  return dob ? ageFromCalendarDate(dob) : null
 }
 
 function blockSheet(rows: (string | number | null)[][]) {
