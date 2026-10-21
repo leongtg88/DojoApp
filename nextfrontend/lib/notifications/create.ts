@@ -203,6 +203,37 @@ export async function notifySchoolStaff({
 }
 
 /**
+ * Crea una notificación in-app para un usuario concreto (p. ej. el instructor
+ * asignado a una reposición). Best-effort: nunca lanza.
+ */
+export async function notifyUser({
+  userId,
+  type,
+  studentId,
+  studentName,
+  data,
+}: {
+  userId: string
+  type: NotificationType
+  studentId: string
+  studentName: string
+  data?: Prisma.InputJsonValue
+}): Promise<void> {
+  try {
+    await createForRecipients({
+      userIds: [userId],
+      studentId,
+      studentName,
+      type,
+      count: 1,
+      data,
+    })
+  } catch (error) {
+    console.error('[notifications] No fue posible crear la notificación al usuario', type, userId, error)
+  }
+}
+
+/**
  * Crea notificaciones in-app para el staff cuando se recibe una reseña pública:
  * los administradores de la escuela dueña de la reseña y todos los superadmins.
  * Es "best-effort": nunca lanza error para no romper el flujo público.

@@ -1,8 +1,11 @@
 // Configuración compartida de la base de datos de pruebas de integración.
-// Se usa un puerto host fijo para que las URLs sean deterministas (ver vitest.config.mts).
+// El puerto se puede sobreescribir con TEST_DB_PORT cuando el puerto por
+// defecto cae en un rango reservado por el sistema (p. ej. Windows/Hyper-V).
+const port = Number(process.env.TEST_DB_PORT ?? 55432)
+
 export const TEST_DB = {
   host: 'localhost',
-  port: 55432,
+  port,
   database: 'dojo_test',
   user: 'test',
   password: 'test',

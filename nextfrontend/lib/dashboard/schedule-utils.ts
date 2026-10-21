@@ -65,6 +65,21 @@ export function santoDomingoNoon(dateKey: string): Date {
   return new Date(`${dateKey}T12:00:00${SANTO_DOMINGO_OFFSET}`)
 }
 
+/**
+ * Convierte un valor de input `datetime-local` ("YYYY-MM-DDTHH:mm") a un
+ * instante ISO interpretado en hora de Santo Domingo.
+ */
+export function santoDomingoDateTimeToIso(value: string): string {
+  const [dateKey, time = '00:00'] = value.split('T')
+  const date = new Date(`${dateKey}T${time.slice(0, 5)}:00${SANTO_DOMINGO_OFFSET}`)
+
+  if (Number.isNaN(date.getTime())) {
+    throw new Error('INVALID_DATE')
+  }
+
+  return date.toISOString()
+}
+
 const dayKeyFormatter = new Intl.DateTimeFormat('en-CA', {
   timeZone: 'America/Santo_Domingo',
   year: 'numeric',

@@ -3,12 +3,17 @@ import { createPrivateDocumentUrl } from '@/lib/document-storage'
 import { ClassEnrollmentStatus } from '@/lib/generated/prisma'
 import { ageFromDob, programForAge, resolveDefaultRank } from '@/lib/dashboard/program'
 import { computeBalance, formatTime, monthRange } from '@/lib/dashboard/balance'
+import { FREE_ABSENCES_PER_MONTH, evaluateExamRight, resolveAbsencePolicyAt, summarizeMonthlyAbsences } from '@/lib/dashboard/absence-policy'
+import { listAbsencePolicyPoints } from '@/lib/dashboard/absence-policy-settings'
+import { formatMonthKey, toCalendarKey } from '@/lib/format/datetime'
+import { santoDomingoDayKey, toDateKey } from '@/lib/dashboard/schedule-utils'
 import { introLevelFromBeltRankKatas } from '@/lib/dashboard/kata-level'
 import { parseKataCriteria } from '@/lib/dashboard/kata-rubric'
 import { buildHolidaySet } from '@/lib/dashboard/holidays'
 import { monthsForGrade } from '@/lib/dashboard/rank-months'
 import { targetRepetitionsFor } from '@/lib/dashboard/technique-reps'
 import { listStudentAbsenceJustifications } from '@/lib/dashboard/absence-justifications'
+import { listStudentOnlineRecoveries } from '@/lib/dashboard/online-recovery'
 import { cuatrimestreForDate, nextCuatrimestre, tentativeExamDate, type Cuatrimestre, type ExamDayValue } from '@/lib/dashboard/cuatrimestre'
 import { availableTrainingHours, type TrainingAudience, type TrainingScheduleClass } from '@/lib/dashboard/training-hours'
 import type {
@@ -34,8 +39,6 @@ import type {
   StudentPracticeKataLevel,
   StudentPracticeTechniqueOption,
 } from '@/types/dashboard'
-
-const MAX_ABSENCES_PER_MONTH = 2
 
 function techniqueStatus(approved: boolean, inPractice: boolean): TechniqueStatus {
   if (approved) return 'APPROVED'
@@ -412,7 +415,10 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
     instructorName: scheduledClass.instructor?.name ?? null,
   }))
 
-  const justifications = await listStudentAbsenceJustifications(student.id)
+  const [justifications, onlineRecoveries] = await Promise.all([
+    listStudentAbsenceJustifications(student.id),
+    listStudentOnlineRecoveries(student.id),
+  ])
 
   return {
     summary: {
@@ -424,6 +430,7 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
     },
     records,
     justifications,
+    onlineRecoveries,
     practiceTechniques,
     program: programForAge(ageFromDob(student.dateOfBirth)),
     schedule,
@@ -563,7 +570,20 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
         },
         orderBy: { createdAt: 'desc' },
       },
-      attendances: { select: { date: true, present: true, status: true, hoursTrained: true, recoveredById: true, sessionType: true, classId: true, isOutOfSchedule: true } },
+      attendances: {
+        select: {
+          date: true,
+          present: true,
+          status: true,
+          hoursTrained: true,
+          recoveredById: true,
+          recoveredBy: { select: { date: true } },
+          sessionType: true,
+          classId: true,
+          isOutOfSchedule: true,
+        },
+      },
+      absenceJustifications: { select: { classId: true, date: true, status: true } },
       rankHistory: { orderBy: { promotedAt: 'desc' }, select: { beltRankId: true, promotedAt: true } },
       classEnrollments: { where: { status: 'ACTIVE' }, select: { classId: true } },
     },
@@ -658,19 +678,41 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
   // Asistencia vs horas de entrenamiento. Cuentan TODAS las asistencias
   // presentadas (present=true), incluidas las PENDING de punch-in: el alumno ve
   // progreso de inmediato y, si luego se rechaza la marca, se descuenta sola
-  // (el rechazo pone present=false). Las faltas marcadas (ABSENT) o justificadas
-  // (JUSTIFIED) sin recuperar son inasistencias; un punch rechazado (REJECTED) no.
+  // (el rechazo pone present=false). Las faltas marcadas (ABSENT) y las
+  // justificadas (JUSTIFIED) participan del control mensual; una repuesta sigue
+  // en el total del mes pero deja de estar pendiente. Un punch rechazado no.
   const referenceClassIds = new Set(student.classEnrollments.map((entry) => entry.classId))
 
   const scopedAttendances = student.attendances.filter((attendance) => attendance.date.getTime() >= gradeStart.getTime())
   const attendedRecords = scopedAttendances.filter((attendance) => attendance.present)
   const pendingRecords = attendedRecords.filter((attendance) => attendance.status === 'PENDING')
-  // Las faltas JUSTIFIED (con justificación aprobada) no cuentan como inasistencia
-  // del mes; si el alumno no repone, simplemente no suma asistencia (el registro
-  // sigue present=false). Sin justificación (ABSENT) sí cuentan como falta.
-  const absenceRecords = scopedAttendances.filter(
-    (attendance) => !attendance.present && (attendance.status === 'ABSENT' || attendance.status === 'CONFIRMED') && !attendance.recoveredById,
+
+  // Toda falta participa del control mensual: justificada (notificada por la app)
+  // o no. Las dos primeras del mes están incluidas; desde la tercera se exige
+  // reposición. Una falta repuesta sigue contando en el total del mes, pero deja
+  // de estar pendiente (recoveredById es la marca de reposición).
+  // Un reporte aún PENDIENTE de revisión no penaliza: se excluye hasta que el
+  // instructor o administración lo apruebe o rechace.
+  const pendingJustificationKeys = new Set(
+    student.absenceJustifications
+      .filter((justification) => justification.status === 'PENDING')
+      .map((justification) => `${justification.classId}|${toCalendarKey(justification.date) ?? ''}`),
   )
+  const absenceRecords = scopedAttendances
+    .filter((attendance) => {
+      if (attendance.present) return false
+      if (attendance.status !== 'ABSENT' && attendance.status !== 'CONFIRMED' && attendance.status !== 'JUSTIFIED') return false
+      const key = `${attendance.classId ?? ''}|${santoDomingoDayKey(attendance.date)}`
+      // Solo se difiere una falta marcada como ABSENT: si el pase de lista ya la
+      // justificó, cuenta como falta justificada aunque el reporte siga pendiente.
+      return attendance.status !== 'ABSENT' || !pendingJustificationKeys.has(key)
+    })
+    .map((attendance) => ({
+      date: attendance.date,
+      status: attendance.status,
+      recoveredById: attendance.recoveredById,
+      recoveredAt: attendance.recoveredBy?.date ?? null,
+    }))
 
   // Horas de entrenamiento: TATAMI vs LIBRE, según el tipo de sesión que el
   // alumno eligió al punchar (o el instructor al confirmar). "Entrenamiento
@@ -719,7 +761,7 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     })
 
   // ============ Calendario: cuatrimestres, horas y convocatoria ============
-  const [activeClasses, holidayRows, convocations] = await Promise.all([
+  const [activeClasses, holidayRows, convocations, policyPoints] = await Promise.all([
     db.class.findMany({
       where: { branchId: student.branchId, active: true },
       select: { id: true, name: true, audience: true, dayOfWeek: true, startTime: true, endTime: true },
@@ -732,7 +774,9 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
       where: { schoolId: student.schoolId, confirmed: true },
       select: { date: true, examDay: true, label: true },
     }),
+    listAbsencePolicyPoints(student.schoolId),
   ])
+  const currentAbsencePolicy = resolveAbsencePolicyAt(policyPoints, today)
 
   // Capacidad basada en los horarios de referencia del alumno; si no tiene
   // ninguno asignado, se usa el catálogo de su audiencia como respaldo.
@@ -804,26 +848,28 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     const capacitySessions = available.sessions
     const hoursMet = requiredHours == null || classHours >= requiredHours
 
+    const blockClosed = block.end.getTime() <= today.getTime()
+    const blockPolicy = resolveAbsencePolicyAt(policyPoints, blockClosed ? block.end : today)
     const blockAbsences = absenceRecords.filter((attendance) => attendance.date >= effectiveStart && attendance.date < block.end)
-    const monthCounts = new Map<string, { count: number; label: string }>()
-    for (const absence of blockAbsences) {
-      const key = `${absence.date.getFullYear()}-${absence.date.getMonth()}`
-      const label = absence.date.toLocaleDateString('es-DO', { month: 'long', year: 'numeric' })
-      const current = monthCounts.get(key)
-      if (current) current.count += 1
-      else monthCounts.set(key, { count: 1, label })
-    }
-
-    let maxMonthAbsences = 0
-    let excessMonth: string | null = null
-    const monthAbsences: MonthAbsence[] = []
-    for (const { count, label } of monthCounts.values()) {
-      monthAbsences.push({ label, count, max: MAX_ABSENCES_PER_MONTH })
-      if (count > maxMonthAbsences) {
-        maxMonthAbsences = count
-        excessMonth = label
-      }
-    }
+    const monthlyAbsences = summarizeMonthlyAbsences(blockAbsences, {
+      closedAt: blockClosed ? block.end : null,
+      policy: blockPolicy,
+    })
+    const monthAbsences: MonthAbsence[] = monthlyAbsences.map((month) => ({
+      label: month.label,
+      count: month.count,
+      max: FREE_ABSENCES_PER_MONTH,
+      recovered: month.recovered,
+      excess: month.excess,
+      pendingRecovery: month.pendingRecovery,
+      lateRecovery: month.lateRecovery,
+    }))
+    const maxMonthAbsences = monthlyAbsences.reduce((max, month) => Math.max(max, month.count), 0)
+    const pendingRecoveries = monthlyAbsences.reduce((sum, month) => sum + month.pendingRecovery, 0)
+    const lateRecoveries = monthlyAbsences.reduce((sum, month) => sum + month.lateRecovery, 0)
+    const excessMonth = monthlyAbsences
+      .filter((month) => month.pendingRecovery > 0)
+      .sort((left, right) => right.pendingRecovery - left.pendingRecovery)[0]?.label ?? null
 
     const confirmed = confirmedExamFor(block)
     const examDate = confirmed ?? (examDay ? tentativeExamDate(block, examDay) : null)
@@ -851,7 +897,10 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
       monthAbsences,
       maxMonthAbsences,
       excessMonth,
-      exceededAbsenceLimit: maxMonthAbsences > MAX_ABSENCES_PER_MONTH,
+      exceededAbsenceLimit: pendingRecoveries > 0,
+      pendingRecoveries,
+      lateRecoveries,
+      absencePolicy: blockPolicy,
       isCurrent: today >= block.start && today < block.end,
       isFuture: block.start.getTime() > today.getTime(),
       examDate: examDate ? examDate.toISOString() : null,
@@ -859,7 +908,16 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     } satisfies CuatrimestreProgress
   })
 
-  const examRightLost = cuatrimestres.some((cuatrimestre) => !cuatrimestre.isFuture && cuatrimestre.exceededAbsenceLimit)
+  const examRight = evaluateExamRight(
+    blocks.map((block, index) => ({
+      end: block.end,
+      pendingRecovery: cuatrimestres[index]?.pendingRecoveries ?? 0,
+    })),
+    today,
+  )
+  const examRightLost = examRight.lost
+  const examAtRisk = examRight.atRisk
+  const totalPendingRecoveries = cuatrimestres.reduce((sum, cuatrimestre) => sum + cuatrimestre.pendingRecoveries, 0)
   const examBlock =
     cuatrimestres.find((cuatrimestre) => cuatrimestre.examDate && new Date(cuatrimestre.examDate).getTime() >= today.getTime()) ??
     cuatrimestres[cuatrimestres.length - 1]
@@ -929,11 +987,26 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
 
   // Asistencia mínima mensual: se exige el mínimo del grado en CADA mes del
   // cuatrimestre del examen (no en todo el historial del grado). Un mes sin
-  // clases programadas no cuenta.
+  // clases programadas no cuenta. Las 2 primeras faltas justificadas del mes se
+  // eximen y las faltas repuestas se acreditan en su mes original.
   const attendanceMonths: AttendanceMonthProgress[] = []
   const attendanceWindowStart = examBlock ? new Date(examBlock.start) : gradeStart
   const attendanceWindowEnd = examBlock ? new Date(examBlock.end) : today
   const attendanceEvalEnd = new Date(Math.min(attendanceWindowEnd.getTime(), today.getTime()))
+  const examBlockIndex = examBlock ? cuatrimestres.indexOf(examBlock) : -1
+  const examBlockRange = examBlockIndex >= 0 ? blocks[examBlockIndex] : null
+  const examWindowStart = examBlockRange?.start ?? attendanceWindowStart
+  const examWindowEnd = examBlockRange?.end ?? attendanceWindowEnd
+  const examBlockClosed = examBlockRange ? examBlockRange.end.getTime() <= today.getTime() : false
+  const examPolicy = examBlockRange
+    ? resolveAbsencePolicyAt(policyPoints, examBlockClosed ? examBlockRange.end : today)
+    : currentAbsencePolicy
+  const examMonthlySummary = new Map(
+    summarizeMonthlyAbsences(
+      absenceRecords.filter((absence) => absence.date >= examWindowStart && absence.date < examWindowEnd),
+      { closedAt: examBlockClosed ? examWindowEnd : null, policy: examPolicy },
+    ).map((month) => [month.key, month]),
+  )
   const MAX_ATTENDANCE_MONTHS = 24
   let cursorMonth = new Date(attendanceWindowStart.getFullYear(), attendanceWindowStart.getMonth(), 1)
   while (cursorMonth.getTime() <= attendanceEvalEnd.getTime() && attendanceMonths.length < MAX_ATTENDANCE_MONTHS) {
@@ -943,14 +1016,23 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     cursorMonth = monthEnd
     if (capacitySessions <= 0) continue
 
-    const attendedSessions = attendedRecords.filter(
+    const monthKey = toDateKey(monthStart).slice(0, 7)
+    const monthSummary = examMonthlySummary.get(monthKey)
+    const attendedSessionsRaw = attendedRecords.filter(
       (attendance) => attendance.date >= monthStart && attendance.date < monthEnd && !isLibreTraining(attendance),
     ).length
+    const forgivenSessions = monthSummary?.forgivenSessions ?? 0
+    const recoveredSessions = monthSummary?.recovered ?? 0
+    const creditedSessions = monthSummary?.creditedSessions ?? 0
+    const attendedSessions = attendedSessionsRaw + creditedSessions
     const percentAttendance = Math.min(100, Math.round((attendedSessions / capacitySessions) * 100))
     attendanceMonths.push({
-      label: monthStart.toLocaleDateString('es-DO', { month: 'long', year: 'numeric' }),
+      label: formatMonthKey(monthKey),
       attendedSessions,
       capacitySessions,
+      forgivenSessions,
+      recoveredSessions,
+      creditedSessions,
       percent: percentAttendance,
       required: minAttendancePercent,
       met: percentAttendance >= minAttendancePercent,
@@ -973,11 +1055,19 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     applicableMetrics.filter((metric) => metric.percent < 100).sort((a, b) => a.percent - b.percent)[0]?.key ?? null
 
   const allApplicableMet = applicableMetrics.every((metric) => metric.percent === 100)
-  const isEligible = allApplicableMet && !examRightLost && nextRank != null
+  // El derecho no se pierde hasta el cierre, pero mientras haya faltas 3.ª+
+  // pendientes de reponer no se puede solicitar la mesa de examen.
+  const isEligible = allApplicableMet && !examRightLost && !examAtRisk && nextRank != null
 
   const capacitySessionsGrade = cuatrimestres.reduce((sum, cuatrimestre) => sum + cuatrimestre.capacitySessions, 0)
   const currentBlock =
     cuatrimestres.find((cuatrimestre) => cuatrimestre.isCurrent) ?? [...cuatrimestres].reverse().find((cuatrimestre) => !cuatrimestre.isFuture) ?? null
+
+  const forgivenSessionsGrade = summarizeMonthlyAbsences(absenceRecords).reduce(
+    (sum, month) => sum + month.forgivenSessions,
+    0,
+  )
+  const effectiveAttendedGrade = attendedSessionsGrade + forgivenSessionsGrade
 
   const currentPeriod: CurrentPeriod | null = currentBlock
     ? {
@@ -991,7 +1081,7 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
         creditHours: hoursRequirement?.creditHours ?? 0,
         monthAbsences: currentBlock.monthAbsences,
         totalAbsences: currentBlock.absences,
-        maxAbsencesTotal: MAX_ABSENCES_PER_MONTH * 4,
+        maxAbsencesTotal: FREE_ABSENCES_PER_MONTH * 4,
         exempt: currentBlock.hoursExempt,
         met: currentBlock.hoursMet,
       }
@@ -1005,9 +1095,10 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     approvedKatas,
     requiredKatas: totalRequiredKatas,
     attendance: {
-      attendedSessions: attendedSessionsGrade,
+      attendedSessions: effectiveAttendedGrade,
       totalSessions: capacitySessionsGrade,
-      percentage: capacitySessionsGrade > 0 ? Math.round((attendedSessionsGrade / capacitySessionsGrade) * 100) : 0,
+      percentage: capacitySessionsGrade > 0 ? Math.min(100, Math.round((effectiveAttendedGrade / capacitySessionsGrade) * 100)) : 0,
+      forgivenSessions: forgivenSessionsGrade,
     },
     attendedSessions: attendedSessionsGrade,
     pendingSessions: pendingSessionsGrade,
@@ -1022,8 +1113,11 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
     cuatrimestres,
     hoursRequirement,
     currentPeriod,
-    maxAbsencesPerMonth: MAX_ABSENCES_PER_MONTH,
+    maxAbsencesPerMonth: FREE_ABSENCES_PER_MONTH,
+    absencePolicy: currentAbsencePolicy,
+    examAtRisk,
     examRightLost,
+    pendingRecoveries: totalPendingRecoveries,
     bottleneck,
     attendanceMonths,
     monthly,

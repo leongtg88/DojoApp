@@ -60,6 +60,10 @@ function CuatrimestreCard({ cuatrimestre, maxAbsencesPerMonth }: { cuatrimestre:
     const classTarget = cuatrimestre.capacitySessions > 0
         ? Math.min(100, Math.round((cuatrimestre.classSessions / cuatrimestre.capacitySessions) * 100))
         : 100
+    const pendingRecoveries = cuatrimestre.pendingRecoveries
+    const recoveredAbsences = cuatrimestre.monthAbsences.reduce((sum, month) => sum + month.recovered, 0)
+    const lateRecoveries = cuatrimestre.lateRecoveries
+    const maxPending = cuatrimestre.monthAbsences.reduce((max, month) => Math.max(max, month.pendingRecovery), 0)
 
     return (
         <li className={`rounded-md border p-3 ${cuatrimestre.isCurrent ? 'border-cyan-500/40 bg-cyan-500/5' : 'border-edge bg-surface-1'}`}>
@@ -104,14 +108,17 @@ function CuatrimestreCard({ cuatrimestre, maxAbsencesPerMonth }: { cuatrimestre:
                 </div>
                 <div>
                     <div className="flex justify-between text-ink-3">
-                        <span>Inasistencia (máx. mes)</span>
-                        <span className={`font-semibold ${cuatrimestre.exceededAbsenceLimit ? 'text-danger-text' : 'text-ink'}`}>
-                            {cuatrimestre.maxMonthAbsences}/{maxAbsencesPerMonth}
+                        <span>Faltas 3.ª+ sin reponer (máx. mes)</span>
+                        <span className={`font-semibold ${pendingRecoveries > 0 ? 'text-danger-text' : 'text-ink'}`}>
+                            {maxPending}/{maxAbsencesPerMonth}
                         </span>
                     </div>
                     <p className="mt-1 text-ink-4">
                         {cuatrimestre.absences} inasistencias en el cuatrimestre
-                        {cuatrimestre.excessMonth ? ` · excedió en ${cuatrimestre.excessMonth}` : ''}
+                        {recoveredAbsences > 0 ? ` · ${recoveredAbsences} ${recoveredAbsences === 1 ? 'repuesta' : 'repuestas'}` : ''}
+                        {lateRecoveries > 0 ? ` · ${lateRecoveries} fuera de plazo` : ''}
+                        {pendingRecoveries > 0 ? ` · ${pendingRecoveries} por reponer` : ''}
+                        {cuatrimestre.excessMonth && pendingRecoveries > 0 ? ` · pendiente en ${cuatrimestre.excessMonth}` : ''}
                     </p>
                 </div>
             </div>
@@ -130,10 +137,18 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
     const otherCuatrimestres = currentCuatrimestre
         ? grado.cuatrimestres.filter((cuatrimestre) => cuatrimestre !== currentCuatrimestre)
         : []
+    const lostBlock = grado.examRightLost
+        ? grado.cuatrimestres.find((cuatrimestre) => cuatrimestre.pendingRecoveries > 0 && !cuatrimestre.isFuture)
+        : null
+    const lostPolicy = lostBlock?.absencePolicy ?? grado.absencePolicy
+    const policyText = grado.absencePolicy === 'LOCK_AT_CLOSE'
+        ? 'Reponer después del cierre no restaura el derecho de este cuatrimestre.'
+        : 'Reponer después del cierre restaura el derecho.'
 
     const kataPercent = percent(grado.approvedKatas, grado.requiredKatas)
     const hoursReq = grado.hoursRequirement
     const attendance = grado.attendance
+    const forgivenSessions = attendance.forgivenSessions ?? 0
     const attendancePercent = attendance.totalSessions > 0
         ? Math.min(100, Math.round((attendance.attendedSessions / attendance.totalSessions) * 100))
         : 0
@@ -179,7 +194,7 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
         },
         {
             label: 'Asistencia',
-            detail: `${attendance.attendedSessions} de ${attendance.totalSessions} clases${grado.pendingSessions > 0 ? ` · ${grado.pendingSessions} por confirmar` : ''}${worstAttendanceMonth ? ` · mes más bajo ${worstAttendanceMonth.percent}% (mín. ${worstAttendanceMonth.required}%)` : ''}`,
+            detail: `${attendance.attendedSessions} de ${attendance.totalSessions} clases${forgivenSessions > 0 ? ` · ${forgivenSessions} justificadas eximidas` : ''}${grado.pendingSessions > 0 ? ` · ${grado.pendingSessions} por confirmar` : ''}${worstAttendanceMonth ? ` · mes más bajo ${worstAttendanceMonth.percent}% (mín. ${worstAttendanceMonth.required}%)` : ''}`,
             value: attendancePercent,
         },
         ...(hoursReq
@@ -275,7 +290,10 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
                         {visibleFailedMonths.map((month) => (
                             <li className="flex justify-between gap-3" key={month.label}>
                                 <span className="capitalize">{month.label}</span>
-                                <span className="font-mono">{month.attendedSessions}/{month.capacitySessions} · {month.percent}%</span>
+                                <span className="font-mono">
+                                    {month.attendedSessions}/{month.capacitySessions} · {month.percent}%
+                                    {month.creditedSessions ? ` · +${month.creditedSessions} acreditadas` : ''}
+                                </span>
                             </li>
                         ))}
                     </ul>
@@ -323,7 +341,7 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
                 <div className="mt-5 border-t border-edge pt-4">
                     <div className="flex items-center justify-between gap-3">
                         <p className="text-xs font-bold uppercase tracking-wider text-accent">Meta por cuatrimestre</p>
-                        <span className="text-[10px] text-ink-4">Máximo {grado.maxAbsencesPerMonth} inasistencias por mes</span>
+                        <span className="text-[10px] text-ink-4">2 faltas por mes incluidas · desde la 3.ª se repone</span>
                     </div>
                     <ul className="mt-3 space-y-2">
                         {currentCuatrimestre && (
@@ -357,11 +375,29 @@ export function GradoProgress({ grado, className = '' }: GradoProgressProps) {
             )}
 
             {grado.examRightLost ? (
-                <div className="mt-5 flex items-center gap-3 rounded-md border border-red-500/40 bg-red-500/10 p-3 text-danger-text">
-                    <AlertTriangle aria-hidden="true" className="size-5 shrink-0 text-danger-text" />
+                <div className="mt-5 flex items-start gap-3 rounded-md border border-red-500/40 bg-red-500/10 p-3 text-danger-text">
+                    <AlertTriangle aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-danger-text" />
                     <div>
                         <p className="text-sm font-bold">Derecho a examen suspendido</p>
-                        <p className="text-xs opacity-80">Superaste el máximo de {grado.maxAbsencesPerMonth} faltas en un mes. Regulariza tu asistencia o recupera clases.</p>
+                        <p className="text-xs opacity-80">
+                            El cuatrimestre cerró con faltas sin reponer. Te quedan {grado.pendingRecoveries} por
+                            regularizar con administración.{' '}
+                            {lostPolicy === 'LOCK_AT_CLOSE'
+                                ? 'La política al cierre bloqueó las reposiciones posteriores.'
+                                : 'La política al cierre permite restaurarlo al reponer.'}
+                        </p>
+                    </div>
+                </div>
+            ) : grado.examAtRisk ? (
+                <div className="mt-5 flex items-start gap-3 rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-warn-text">
+                    <AlertTriangle aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
+                    <div>
+                        <p className="text-sm font-bold">Faltas pendientes de reponer</p>
+                        <p className="text-xs opacity-80">
+                            Tienes {grado.pendingRecoveries} {grado.pendingRecoveries === 1 ? 'falta' : 'faltas'} desde
+                            la 3.ª del mes sin reponer. Repón en otro horario antes del cierre del cuatrimestre; si no puedes,
+                            coordina una clase online de 35 min (costo informado por administración). {policyText}
+                        </p>
                     </div>
                 </div>
             ) : (

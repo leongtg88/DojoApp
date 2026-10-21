@@ -3,8 +3,10 @@ import { auth } from '@/auth'
 import { InstructorAttendanceRoster } from '@/components/dashboard/instructor/InstructorAttendanceRoster'
 import { InstructorJustificationBoard } from '@/components/dashboard/instructor/InstructorJustificationBoard'
 import { AttendanceScheduleFilter, type AttendanceScheduleGroup } from '@/components/dashboard/shared/AttendanceScheduleFilter'
+import { OnlineRecoveryPanel } from '@/components/dashboard/shared/OnlineRecoveryPanel'
 import { getInstructorAttendanceRoster, getInstructorScheduleOptions } from '@/lib/dashboard/instructor-queries'
 import { getInstructorPendingJustifications } from '@/lib/dashboard/absence-justifications'
+import { getOnlineRecoveryActor, getOnlineRecoveryPanelData } from '@/lib/dashboard/online-recovery'
 import { latestSessionDate, resolveDefaultSessionClass, santoDomingoDayKey, WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
 import { redirect } from 'next/navigation'
 import { hasRole } from '@/lib/auth/roles'
@@ -24,6 +26,7 @@ export default async function InstructorAttendancePage({ searchParams }: Instruc
 
     const parameters = await searchParams
     const now = new Date()
+    const recoveryActor = await getOnlineRecoveryActor(session.user.id)
     const classes = await getInstructorScheduleOptions(session.user.id)
     const ownClasses = classes.filter((scheduledClass) => scheduledClass.isOwnClass)
     const defaultClass = resolveDefaultSessionClass(ownClasses.length > 0 ? ownClasses : classes, now)
@@ -37,9 +40,10 @@ export default async function InstructorAttendancePage({ searchParams }: Instruc
         ? new Date(`${date}T00:00:00`).getDay() === selectedClass.dayOfWeek
         : true
 
-    const [roster, pendingJustifications] = await Promise.all([
+    const [roster, pendingJustifications, recoveryData] = await Promise.all([
         selectedClassId ? getInstructorAttendanceRoster(session.user.id, selectedClassId, date) : null,
         getInstructorPendingJustifications(session.user.id),
+        recoveryActor ? getOnlineRecoveryPanelData(recoveryActor) : Promise.resolve(null),
     ])
 
     const groups: AttendanceScheduleGroup[] = []
@@ -88,6 +92,18 @@ export default async function InstructorAttendancePage({ searchParams }: Instruc
             <section className="mt-8">
                 <InstructorJustificationBoard justifications={pendingJustifications} />
             </section>
+
+            {recoveryData && (
+                <section className="mt-8">
+                    <OnlineRecoveryPanel
+                        candidates={recoveryData.candidates}
+                        currentUserId={session.user.id}
+                        instructors={[]}
+                        mode="instructor"
+                        recoveries={recoveryData.recoveries}
+                    />
+                </section>
+            )}
         </main>
     )
 }

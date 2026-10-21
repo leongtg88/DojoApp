@@ -35,10 +35,29 @@ const calendarKeyOptions: Intl.DateTimeFormatOptions = {
     timeZone: SANTO_DOMINGO_TIME_ZONE,
 }
 
+const monthYearOptions: Intl.DateTimeFormatOptions = {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+}
+
 const dateTimeFormatter = new Intl.DateTimeFormat('es-DO', dateTimeOptions)
 const dateFormatter = new Intl.DateTimeFormat('es-DO', dateOptions)
 const calendarDateFormatter = new Intl.DateTimeFormat('es-DO', calendarDateOptions)
 const calendarKeyFormatter = new Intl.DateTimeFormat('en-CA', calendarKeyOptions)
+const monthYearFormatter = new Intl.DateTimeFormat('es-DO', monthYearOptions)
+
+const dateTimeLocalOptions: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+    timeZone: SANTO_DOMINGO_TIME_ZONE,
+}
+
+const dateTimeLocalFormatter = new Intl.DateTimeFormat('en-CA', dateTimeLocalOptions)
 
 const pad = (value: number): string => String(value).padStart(2, '0')
 
@@ -79,6 +98,30 @@ export function formatCalendarDate(value: string | null | undefined): string {
     const date = new Date(`${value.slice(0, 10)}T00:00:00.000Z`)
     if (Number.isNaN(date.getTime())) return ''
     return normalizeSpaces(calendarDateFormatter.format(date))
+}
+
+/**
+ * Valor para un input `datetime-local` ("YYYY-MM-DDTHH:mm") en hora de Santo
+ * Domingo, independientemente de la zona del navegador.
+ */
+export function toSantoDomingoDateTimeLocal(value: string | Date | null | undefined): string {
+    const date = toDate(value)
+    if (!date) return ''
+
+    const parts = dateTimeLocalFormatter.formatToParts(date)
+    const get = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value ?? ''
+    return `${get('year')}-${get('month')}-${get('day')}T${get('hour')}:${get('minute')}`
+}
+
+/**
+ * Mes y año a partir de una clave "YYYY-MM" (p. ej. "octubre de 2026").
+ * Se formatea en UTC para no desplazar el mes por la zona horaria del servidor.
+ */
+export function formatMonthKey(value: string | null | undefined): string {
+    if (!value) return ''
+    const [year, month] = value.slice(0, 7).split('-').map(Number)
+    if (!year || !month || month < 1 || month > 12) return ''
+    return normalizeSpaces(monthYearFormatter.format(new Date(Date.UTC(year, month - 1, 15))))
 }
 
 /**

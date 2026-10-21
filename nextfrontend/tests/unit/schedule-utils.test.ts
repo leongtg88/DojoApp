@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { latestSessionDate, resolveDefaultSessionClass, santoDomingoDayKey } from '@/lib/dashboard/schedule-utils'
+import { latestSessionDate, resolveDefaultSessionClass, santoDomingoDateTimeToIso, santoDomingoDayKey } from '@/lib/dashboard/schedule-utils'
 
 // Instante fijo: 2026-06-16 00:30 UTC = 2026-06-15 20:30 en Santo Domingo (UTC-4).
 // En un servidor UTC el "hoy/hora" del sistema sería martes 00:30, distinto del día
@@ -30,5 +30,11 @@ describe('latestSessionDate', () => {
 
   it('devuelve la ocurrencia pasada más cercana cuando hoy no toca', () => {
     expect(santoDomingoDayKey(latestSessionDate(2, NOCHE_EN_RD))).toBe('2026-06-09')
+  })
+})
+
+describe('santoDomingoDateTimeToIso', () => {
+  it('interpreta un valor datetime-local como hora de Santo Domingo', () => {
+    expect(santoDomingoDateTimeToIso('2026-10-21T18:00')).toBe('2026-10-21T22:00:00.000Z')
   })
 })

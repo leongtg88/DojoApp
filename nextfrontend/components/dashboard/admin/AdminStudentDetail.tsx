@@ -53,6 +53,15 @@ const ATTENDANCE_STATUS_LABELS: Record<string, string> = {
 	ABSENT: 'Falta',
 }
 
+const SESSION_TYPE_LABELS: Record<string, string> = {
+	class: 'Clase',
+	private: 'Clase privada',
+	autonomous: 'Entrenamiento libre',
+	seminar: 'Seminario',
+	other: 'Otro',
+	online_recovery: 'Reposición online 35 min',
+}
+
 function attendanceStatusClass(status: string) {
 	if (status === 'CONFIRMED') return 'border-emerald-500/30 bg-emerald-500/10 text-ok-text'
 	if (status === 'JUSTIFIED') return 'border-cyan-500/30 bg-cyan-500/10 text-accent-text'
@@ -589,7 +598,8 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 											<div>
 												<p className="font-bold text-ink" suppressHydrationWarning>{formatDateTime(entry.date)}</p>
 												<p className="text-[11px] text-ink-3">
-													{entry.className ?? 'Sin clase'} · {entry.hoursTrained} h{entry.sessionType ? ` · ${entry.sessionType}` : ''}
+													{entry.className ?? 'Sin clase'} · {entry.hoursTrained} h
+													{entry.sessionType ? ` · ${SESSION_TYPE_LABELS[entry.sessionType] ?? entry.sessionType}` : ''}
 												</p>
 												{entry.confirmedByName && <p className="text-[11px] text-ink-4">Confirmada por {entry.confirmedByName}</p>}
 											</div>

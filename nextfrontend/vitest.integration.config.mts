@@ -3,7 +3,8 @@ import { fileURLToPath } from 'node:url'
 
 // Debe coincidir con `tests/integration/config.ts` (TEST_DATABASE_URL). Se inlina
 // para evitar el warning del config loader de Vite al importar un .ts.
-const TEST_DATABASE_URL = 'postgresql://test:test@localhost:55432/dojo_test'
+const TEST_DATABASE_PORT = process.env.TEST_DB_PORT ?? '55432'
+const TEST_DATABASE_URL = `postgresql://test:test@localhost:${TEST_DATABASE_PORT}/dojo_test`
 
 // Suite de integración: Postgres real (testcontainers) + migraciones. Se corre aparte
 // para no exigir Docker en el `pnpm test` normal (unit + componentes).

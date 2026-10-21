@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import type { AttendanceStatus } from '@/lib/generated/prisma'
 import { getLocalDayBounds } from '@/lib/dashboard/attendance-limits'
 import { santoDomingoNoon } from '@/lib/dashboard/schedule-utils'
+import { cancelOnlineRecoveryForAbsence } from '@/lib/dashboard/online-recovery'
 
 export interface AttendanceRosterRecord {
   studentId: string
@@ -128,14 +129,14 @@ export async function saveClassAttendance({
     }))
 
     // Reposición automática: una asistencia fuera de horario (presente) repone la
-    // falta justificada más antigua sin recuperar del alumno. Solo aplica si existe
-    // una justificación aprobada; sin justificación no hay nada que reponer.
+    // falta más antigua sin recuperar del alumno. Aplica a faltas justificadas y
+    // no justificadas: desde la 3.ª falta del mes también se debe reponer.
     const makeUps = savedAttendances.filter((attendance) => attendance.present && attendance.isOutOfSchedule)
     for (const makeUp of makeUps) {
       const pendingAbsence = await transaction.attendance.findFirst({
         where: {
           studentId: makeUp.studentId,
-          status: 'JUSTIFIED',
+          status: { in: ['JUSTIFIED', 'ABSENT'] },
           present: false,
           recoveredById: null,
           date: { lte: makeUp.date },
@@ -150,6 +151,8 @@ export async function saveClassAttendance({
           where: { id: pendingAbsence.id },
           data: { recoveredById: makeUp.id },
         })
+        // Si había una clase online programada para esa falta, ya no hace falta.
+        await cancelOnlineRecoveryForAbsence(transaction, pendingAbsence.id)
       }
     }
   })

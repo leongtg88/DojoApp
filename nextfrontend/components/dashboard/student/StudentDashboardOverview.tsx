@@ -36,7 +36,7 @@ export function StudentDashboardOverview({ summary, kataSummary }: StudentDashbo
                 <FocusTechniquesList techniques={techniques} studentId={profile.id} />
             </div>
             <div className="mt-5">
-                {kataSummary && <ExaminationCriteriaCard grado={kataSummary.grado} />}
+                {kataSummary && <ExaminationCriteriaCard grado={kataSummary.grado} studentId={profile.id} />}
             </div>
         </main>
     )

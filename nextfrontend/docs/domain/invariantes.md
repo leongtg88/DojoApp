@@ -87,3 +87,27 @@ siguiente, mismo programa) en admin, instructor y alumno.
 - **Correcto:** reutilizarla en creación, conversión, promoción y asignación.
 - **Anti-patrón:** recomputar el "siguiente grado" por pantalla con lógica propia.
 - **Verificación:** `tests/integration/kata-progression.test.ts`.
+
+---
+
+## INV-08 · El derecho a examen por inasistencias tiene una sola política
+
+Las faltas mensuales, la reposición y la política al cierre se calculan en un solo lugar. El
+historial de política es por escuela y no es retroactivo: cada cuatrimestre cerrado usa la
+última política vigente antes de su fecha de cierre.
+
+- **Fuente única:** `lib/dashboard/absence-policy.ts` (`summarizeMonthlyAbsences`, `evaluateExamRight`, `resolveAbsencePolicyAt`) y `lib/dashboard/absence-policy-settings.ts` (historial por escuela).
+- **Correcto:** pasar `closedAt` y `policy` al resumir un cuatrimestre cerrado; guardar cada cambio como una fila nueva con `effectiveFrom`.
+- **Anti-patrón:** recalcular pendientes o comparar fechas de reposición a mano en componentes; actualizar la política existente en vez de agregar historial.
+- **Verificación:** `tests/unit/absence-policy.test.ts`, `tests/component/student-exam-right.test.tsx` y `tests/component/admin-absence-policy.test.tsx`.
+
+---
+
+## INV-09 · La reposición online tiene una sola puerta
+
+Una reposición online de 35 min se agenda, completa y cobra solo por `lib/dashboard/online-recovery.ts`. Al completarla se crea una asistencia `online_recovery` de 0.58 h y se enlaza la falta original con `recoveredById` dentro de la misma transacción. Una falta no puede tener dos reposiciones online.
+
+- **Fuente única:** `lib/dashboard/online-recovery.ts` (`createOnlineRecovery`, `completeOnlineRecovery`, `informOnlineRecoveryCost`).
+- **Correcto:** completar con la transacción del módulo; scope por escuela/instructor y permisos centralizados.
+- **Anti-patrón:** crear la `Attendance` o setear `recoveredById` a mano en rutas/componentes; agendar dos reposiciones para la misma falta.
+- **Verificación:** `tests/integration/online-recovery.test.ts`.

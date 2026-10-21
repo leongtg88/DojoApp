@@ -19,6 +19,7 @@ const SESSION_TYPE_LABELS: Record<string, string> = {
     autonomous: 'Entrenamiento libre',
     seminar: 'Seminario',
     other: 'Otro',
+    online_recovery: 'Reposición online 35 min',
 }
 
 const formatter = new Intl.DateTimeFormat('es-DO', {

@@ -1,6 +1,9 @@
 import { db } from '@/lib/db'
 import { ClassEnrollmentStatus, StudentStatus, type AbsenceJustificationStatus, type AttendanceStatus } from '@/lib/generated/prisma'
 import { santoDomingoNoon } from '@/lib/dashboard/schedule-utils'
+import { makeCuatrimestre } from '@/lib/dashboard/cuatrimestre'
+import { resolveAbsencePolicyAt } from '@/lib/dashboard/absence-policy'
+import { listAbsencePolicyPoints } from '@/lib/dashboard/absence-policy-settings'
 
 /** Días hacia atrás que un alumno puede reportar una inasistencia. */
 const REPORT_WINDOW_DAYS = 30
@@ -17,6 +20,8 @@ export interface AbsenceJustificationView {
   createdAt: string
   recovered: boolean
   recoveryDate: string | null
+  /** La reposición se hizo después del cierre del cuatrimestre. */
+  lateRecovery: boolean
 }
 
 export interface CreateAbsenceJustificationParams {
@@ -95,6 +100,7 @@ export async function createAbsenceJustification({
     createdAt: justification.createdAt.toISOString(),
     recovered: false,
     recoveryDate: null,
+    lateRecovery: false,
   }
 }
 
@@ -108,7 +114,7 @@ export async function deleteAbsenceJustification(studentId: string, justificatio
 }
 
 export async function listStudentAbsenceJustifications(studentId: string): Promise<AbsenceJustificationView[]> {
-  const [rows, justifiedAttendances] = await Promise.all([
+  const [rows, justifiedAttendances, student] = await Promise.all([
     db.absenceJustification.findMany({
       where: { studentId },
       orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
@@ -119,9 +125,12 @@ export async function listStudentAbsenceJustifications(studentId: string): Promi
       },
     }),
     db.attendance.findMany({
-      where: { studentId, status: 'JUSTIFIED' },
+      // Una falta no justificada (ABSENT) también puede reponerse desde la 3.ª
+      // del mes; se incluye para reflejar su recuperación en el reporte.
+      where: { studentId, status: { in: ['JUSTIFIED', 'ABSENT'] } },
       select: { classId: true, date: true, recoveredBy: { select: { date: true } } },
     }),
+    db.student.findUnique({ where: { id: studentId }, select: { schoolId: true } }),
   ])
 
   // La reposición vive en la asistencia JUSTIFIED (recoveredById → asistencia de
@@ -135,9 +144,22 @@ export async function listStudentAbsenceJustifications(studentId: string): Promi
     )
   }
 
+  const policyPoints = student ? await listAbsencePolicyPoints(student.schoolId) : []
+  const now = new Date()
+
   return rows.map((row) => {
-    const key = `${row.classId}|${row.date.toISOString().slice(0, 10)}`
+    const dateKey = row.date.toISOString().slice(0, 10)
+    const key = `${row.classId}|${dateKey}`
     const recoveryDate = recoveryByKey.get(key) ?? null
+    const [year, month] = dateKey.split('-').map(Number)
+    const cuatrimestre = makeCuatrimestre(year, Math.min(2, Math.floor((month - 1) / 4)))
+    const closed = cuatrimestre.end.getTime() <= now.getTime()
+    const policy = resolveAbsencePolicyAt(policyPoints, closed ? cuatrimestre.end : now)
+    const lateRecovery = recoveryDate != null
+      && closed
+      && policy === 'LOCK_AT_CLOSE'
+      && recoveryDate.getTime() > cuatrimestre.end.getTime()
+
     return {
       id: row.id,
       classId: row.classId,
@@ -150,6 +172,7 @@ export async function listStudentAbsenceJustifications(studentId: string): Promi
       createdAt: row.createdAt.toISOString(),
       recovered: recoveryDate != null,
       recoveryDate: recoveryDate?.toISOString().slice(0, 10) ?? null,
+      lateRecovery,
     }
   })
 }

@@ -29,6 +29,7 @@ const SESSION_LABELS: Record<string, string> = {
     autonomous: 'Entrenamiento libre',
     seminar: 'Seminario / Especial',
     other: 'Otro',
+    online_recovery: 'Reposición online 35 min',
 }
 
 function sessionLabel(sessionType: string | null): string {

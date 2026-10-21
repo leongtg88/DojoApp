@@ -1,11 +1,15 @@
 import { auth } from '@/auth'
+import { AdminAbsencePolicyCard } from '@/components/dashboard/admin/AdminAbsencePolicyCard'
 import { AdminAttendanceView } from '@/components/dashboard/admin/AdminAttendanceView'
 import { AdminExpectedControls } from '@/components/dashboard/admin/AdminExpectedControls'
+import { OnlineRecoveryPanel } from '@/components/dashboard/shared/OnlineRecoveryPanel'
 import { AdminExpectedSummary } from '@/components/dashboard/admin/AdminExpectedSummary'
 import { AdminExpectedTable } from '@/components/dashboard/admin/AdminExpectedTable'
 import { AdminPassListPanel } from '@/components/dashboard/admin/AdminPassListPanel'
 import type { AttendanceScheduleGroup } from '@/components/dashboard/shared/AttendanceScheduleFilter'
-import { getAdminAttendanceRoster, getAdminSchedules } from '@/lib/dashboard/admin-queries'
+import { getAdminAttendanceRoster, getAdminInstructors, getAdminSchedules } from '@/lib/dashboard/admin-queries'
+import { getAbsencePolicyAdminData } from '@/lib/dashboard/absence-policy-settings'
+import { getOnlineRecoveryActor, getOnlineRecoveryPanelData } from '@/lib/dashboard/online-recovery'
 import { latestSessionDate, resolveDefaultSessionClass, santoDomingoDayKey, WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
 import { redirect } from 'next/navigation'
 import { hasAnyRole } from '@/lib/auth/roles'
@@ -26,7 +30,14 @@ export default async function AdminAttendancePage({ searchParams }: AdminAttenda
 
     const parameters = await searchParams
     const now = new Date()
-    const classes = (await getAdminSchedules(userId)) ?? []
+    const recoveryActor = await getOnlineRecoveryActor(userId)
+    const [classesResult, policyData, recoveryData, instructors] = await Promise.all([
+        getAdminSchedules(userId),
+        getAbsencePolicyAdminData(userId),
+        recoveryActor ? getOnlineRecoveryPanelData(recoveryActor) : Promise.resolve(null),
+        getAdminInstructors(userId),
+    ])
+    const classes = classesResult ?? []
     const activeClasses = classes.filter((scheduledClass) => scheduledClass.active)
     const defaultClass = resolveDefaultSessionClass(activeClasses, now)
     const selectedClassId = parameters.classId || defaultClass?.id || activeClasses[0]?.id || null
@@ -50,6 +61,22 @@ export default async function AdminAttendancePage({ searchParams }: AdminAttenda
             <p className="text-xs font-semibold uppercase tracking-wide text-accent">Administración</p>
             <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Asistencia</h1>
             <div className="mt-6 space-y-6">
+                {policyData && (
+                    <AdminAbsencePolicyCard
+                        initialPolicy={policyData.policy}
+                        initialSchoolId={policyData.selectedSchoolId}
+                        schools={policyData.schools}
+                    />
+                )}
+                {recoveryData && (
+                    <OnlineRecoveryPanel
+                        candidates={recoveryData.candidates}
+                        currentUserId={userId}
+                        instructors={instructors ?? []}
+                        mode="admin"
+                        recoveries={recoveryData.recoveries}
+                    />
+                )}
                 {roster && <AdminExpectedSummary roster={roster} />}
                 <AdminExpectedControls
                     classDayLabel={classDayLabel}

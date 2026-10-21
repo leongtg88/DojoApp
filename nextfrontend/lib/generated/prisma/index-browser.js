@@ -433,6 +433,14 @@ exports.Prisma.ClassSessionScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.SchoolAbsencePolicyScalarFieldEnum = {
+  id: 'id',
+  schoolId: 'schoolId',
+  policy: 'policy',
+  effectiveFrom: 'effectiveFrom',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.AbsenceJustificationScalarFieldEnum = {
   id: 'id',
   studentId: 'studentId',
@@ -462,6 +470,28 @@ exports.Prisma.AttendanceScalarFieldEnum = {
   confirmedAt: 'confirmedAt',
   confirmedById: 'confirmedById',
   notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.OnlineRecoveryScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  absenceId: 'absenceId',
+  status: 'status',
+  scheduledAt: 'scheduledAt',
+  durationMinutes: 'durationMinutes',
+  instructorId: 'instructorId',
+  meetingUrl: 'meetingUrl',
+  costAmount: 'costAmount',
+  costCurrency: 'costCurrency',
+  costNote: 'costNote',
+  costInformedAt: 'costInformedAt',
+  attendanceId: 'attendanceId',
+  notes: 'notes',
+  createdById: 'createdById',
+  completedAt: 'completedAt',
+  cancelledAt: 'cancelledAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -779,6 +809,11 @@ exports.ClassEnrollmentStatus = exports.$Enums.ClassEnrollmentStatus = {
   COMPLETED: 'COMPLETED'
 };
 
+exports.AbsencePostClosePolicy = exports.$Enums.AbsencePostClosePolicy = {
+  LOCK_AT_CLOSE: 'LOCK_AT_CLOSE',
+  RESTORE_ON_RECOVERY: 'RESTORE_ON_RECOVERY'
+};
+
 exports.AbsenceJustificationStatus = exports.$Enums.AbsenceJustificationStatus = {
   PENDING: 'PENDING',
   APPROVED: 'APPROVED',
@@ -791,6 +826,13 @@ exports.AttendanceStatus = exports.$Enums.AttendanceStatus = {
   REJECTED: 'REJECTED',
   JUSTIFIED: 'JUSTIFIED',
   ABSENT: 'ABSENT'
+};
+
+exports.OnlineRecoveryStatus = exports.$Enums.OnlineRecoveryStatus = {
+  SCHEDULED: 'SCHEDULED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  NO_SHOW: 'NO_SHOW'
 };
 
 exports.ApprovalStatus = exports.$Enums.ApprovalStatus = {
@@ -815,6 +857,13 @@ exports.NotificationType = exports.$Enums.NotificationType = {
   ATTENDANCE_PUNCHED: 'ATTENDANCE_PUNCHED',
   ATTENDANCE_ABSENCE_REPORTED: 'ATTENDANCE_ABSENCE_REPORTED',
   ATTENDANCE_JUSTIFICATION_REVIEWED: 'ATTENDANCE_JUSTIFICATION_REVIEWED',
+  ONLINE_RECOVERY_SCHEDULED: 'ONLINE_RECOVERY_SCHEDULED',
+  ONLINE_RECOVERY_RESCHEDULED: 'ONLINE_RECOVERY_RESCHEDULED',
+  ONLINE_RECOVERY_COMPLETED: 'ONLINE_RECOVERY_COMPLETED',
+  ONLINE_RECOVERY_CANCELLED: 'ONLINE_RECOVERY_CANCELLED',
+  ONLINE_RECOVERY_NO_SHOW: 'ONLINE_RECOVERY_NO_SHOW',
+  ONLINE_RECOVERY_COST_INFORMED: 'ONLINE_RECOVERY_COST_INFORMED',
+  ONLINE_RECOVERY_ASSIGNED: 'ONLINE_RECOVERY_ASSIGNED',
   TECHNIQUE_APPROVED: 'TECHNIQUE_APPROVED',
   TECHNIQUE_EVALUATED: 'TECHNIQUE_EVALUATED',
   REVIEW_SUBMITTED: 'REVIEW_SUBMITTED'
@@ -871,8 +920,10 @@ exports.Prisma.ModelName = {
   Class: 'Class',
   ClassEnrollment: 'ClassEnrollment',
   ClassSession: 'ClassSession',
+  SchoolAbsencePolicy: 'SchoolAbsencePolicy',
   AbsenceJustification: 'AbsenceJustification',
   Attendance: 'Attendance',
+  OnlineRecovery: 'OnlineRecovery',
   AchievementType: 'AchievementType',
   StudentAchievement: 'StudentAchievement',
   FitnessReport: 'FitnessReport',

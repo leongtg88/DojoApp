@@ -101,7 +101,7 @@ Las registra el **Sensei** en el pase de lista; tú las ves en tu historial. Tú
 Las **repeticiones** las marcas tú y son tu práctica (en el dojo o en casa). Las **horas** las registra el Sensei y cuentan para tu plan y para presentar el examen.
 
 **¿Qué pasa si falto a una clase?**
-La app lleva tu control de inasistencias (se permite un máximo de **2 por mes** para mantener el derecho a examen). Si la falta es justificada, te muestra la recuperación pendiente.
+La app lleva tu control de inasistencias: tienes **2 faltas por mes incluidas**, aunque las notifiques por la app. Desde la **3.ª** debes reponerla en otro horario; si no puedes, administración puede agendarte una clase online de 35 min con un instructor. El costo de esa clase se informa después en la app. La falta repuesta queda marcada y deja de afectar tu derecho. Si el cuatrimestre cierra con faltas 3.ª+ sin reponer, se suspende el derecho a examen. La escuela define si una reposición posterior al cierre lo restaura o no.
 
 **¿Cómo sé cuándo es mi examen de grado?**
 La app te lo avisa por notificación y te muestra los **criterios para presentarlo**: katas aprobadas, asistencia, horas de entrenamiento y tiempo en el grado.

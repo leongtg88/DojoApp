@@ -1,5 +1,6 @@
 import type { NotificationPriority, NotificationType } from '@/lib/generated/prisma'
 import { formatKataScore } from '@/lib/dashboard/kata-rubric'
+import { formatDateTime } from '@/lib/format/datetime'
 
 export interface NotificationContent {
   title: string
@@ -24,6 +25,7 @@ const PROFILE_LINK = '/dashboard/estudiante/perfil'
 const ADMIN_STUDENTS_LINK = '/dashboard/admin/alumnos'
 const ADMIN_ATTENDANCE_LINK = '/dashboard/admin/asistencia'
 const ADMIN_REVIEWS_LINK = '/dashboard/admin/reviews'
+const INSTRUCTOR_ATTENDANCE_LINK = '/dashboard/instructor/asistencia'
 
 function readString(data: Record<string, unknown>, key: string): string | null {
   const value = data[key]
@@ -37,6 +39,18 @@ function readNumber(data: Record<string, unknown>, key: string): number | null {
 
 function pluralize(count: number, singular: string, plural: string): string {
   return count === 1 ? singular : plural
+}
+
+function onlineRecoveryWhen(data: Record<string, unknown>): string {
+  const scheduledAt = readString(data, 'scheduledAt')
+  return scheduledAt ? formatDateTime(scheduledAt) : 'la fecha acordada'
+}
+
+function formatCost(data: Record<string, unknown>): string {
+  const amount = readNumber(data, 'costAmount')
+  const currency = readString(data, 'costCurrency') ?? 'DOP'
+  if (amount == null) return 'el monto informado por administración'
+  return `${currency} ${new Intl.NumberFormat('es-DO', { minimumFractionDigits: 2 }).format(amount)}`
 }
 
 const builders: Record<NotificationType, NotificationBuilder> = {
@@ -178,6 +192,48 @@ const builders: Record<NotificationType, NotificationBuilder> = {
       priority: 'INFO',
     }
   },
+  ONLINE_RECOVERY_SCHEDULED: ({ studentName, data }) => ({
+    title: 'Clase online agendada',
+    body: `${studentName}, tu reposición online de 35 min quedó agendada para ${onlineRecoveryWhen(data)}.`,
+    link: ATTENDANCE_LINK,
+    priority: 'ACTION',
+  }),
+  ONLINE_RECOVERY_RESCHEDULED: ({ studentName, data }) => ({
+    title: 'Clase online reprogramada',
+    body: `${studentName}, tu reposición online de 35 min fue reprogramada para ${onlineRecoveryWhen(data)}.`,
+    link: ATTENDANCE_LINK,
+    priority: 'ACTION',
+  }),
+  ONLINE_RECOVERY_COMPLETED: ({ studentName }) => ({
+    title: 'Reposición online completada',
+    body: `${studentName}, tu clase online de 35 min quedó registrada y la falta fue repuesta.`,
+    link: ATTENDANCE_LINK,
+    priority: 'INFO',
+  }),
+  ONLINE_RECOVERY_CANCELLED: ({ studentName }) => ({
+    title: 'Clase online cancelada',
+    body: `${studentName}, la reposición online de 35 min fue cancelada. La falta sigue pendiente.`,
+    link: ATTENDANCE_LINK,
+    priority: 'ACTION',
+  }),
+  ONLINE_RECOVERY_NO_SHOW: ({ studentName }) => ({
+    title: 'Clase online no asistida',
+    body: `${studentName}, no asististe a la reposición online de 35 min. La falta sigue pendiente.`,
+    link: ATTENDANCE_LINK,
+    priority: 'ACTION',
+  }),
+  ONLINE_RECOVERY_COST_INFORMED: ({ studentName, data }) => ({
+    title: 'Costo de reposición informado',
+    body: `${studentName}, el costo de tu clase online de 35 min es ${formatCost(data)}.`,
+    link: ATTENDANCE_LINK,
+    priority: 'INFO',
+  }),
+  ONLINE_RECOVERY_ASSIGNED: ({ studentName, data }) => ({
+    title: 'Clase online asignada',
+    body: `Se te asignó una reposición online de 35 min con ${studentName} para ${onlineRecoveryWhen(data)}.`,
+    link: INSTRUCTOR_ATTENDANCE_LINK,
+    priority: 'ACTION',
+  }),
   TECHNIQUE_APPROVED: ({ studentName, data }) => {
     const techniqueName = readString(data, 'techniqueName') ?? 'Una técnica'
     return {

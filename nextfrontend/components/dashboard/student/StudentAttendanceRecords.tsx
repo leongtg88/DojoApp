@@ -29,6 +29,7 @@ const SESSION_LABELS: Record<string, string> = {
     autonomous: 'Entrenamiento libre',
     seminar: 'Seminario',
     other: 'Otro',
+    online_recovery: 'Reposición online 35 min',
 }
 
 export function StudentAttendanceRecords({ records }: StudentAttendanceRecordsProps) {
@@ -52,7 +53,9 @@ export function StudentAttendanceRecords({ records }: StudentAttendanceRecordsPr
                         const meta = STATUS_CLASSES[record.status]
                         // Las asistencias de sesión (pase de lista) se muestran como fecha
                         // sin hora; los punch libres conservan su hora local.
-                        const dateLabel = record.sessionId ? formatDate(record.date) : formatDateTime(record.date)
+                        const dateLabel = record.sessionId || record.sessionType === 'online_recovery'
+                            ? formatDate(record.date)
+                            : formatDateTime(record.date)
                         return (
                             <li className="flex flex-col justify-between gap-3 p-4 transition-colors hover:bg-surface-3/30 sm:flex-row sm:items-center" key={record.id}>
                                 <div className="flex items-start gap-3 sm:items-center">

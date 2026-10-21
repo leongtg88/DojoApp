@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { CalendarX2, CheckCircle2, ChevronDown, Clock, Hourglass, Trash2, XCircle } from 'lucide-react'
+import { AlertCircle, CalendarX2, CheckCircle2, ChevronDown, Clock, Hourglass, Trash2, XCircle } from 'lucide-react'
 import type { ClassSchedule, StudentAbsenceJustification } from '@/types/dashboard'
 import { WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
 import { formatCalendarDate } from '@/lib/format/datetime'
@@ -40,6 +40,7 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [busyId, setBusyId] = useState<string | null>(null)
+  const [showRules, setShowRules] = useState(false)
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
@@ -103,6 +104,7 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
             <h3 className="flex min-w-0 items-center gap-2 text-base font-bold text-ink">
               <CalendarX2 className="size-5 shrink-0 text-danger-text" aria-hidden="true" />
               <span>Reportar una inasistencia</span>
+              <AlertCircle className="size-4 shrink-0 text-accent" aria-hidden="true" />
             </h3>
             <ChevronDown className="size-4 shrink-0 text-ink-3 transition-transform group-open:rotate-180" aria-hidden="true" />
           </div>
@@ -183,6 +185,34 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
         </div>
       </details>
 
+      <div className="mt-3">
+        <button
+          aria-controls="absence-rules-info"
+          aria-expanded={showRules}
+          className="inline-flex items-center gap-2 rounded-md border border-edge bg-surface-1 px-3 py-2 text-[11px] font-semibold text-ink-3 transition-colors hover:border-edge-strong hover:text-ink"
+          onClick={() => setShowRules((open) => !open)}
+          type="button"
+        >
+          <span>Reglas de inasistencias</span>
+          <ChevronDown
+            aria-hidden="true"
+            className={`size-3.5 shrink-0 transition-transform ${showRules ? 'rotate-180' : ''}`}
+          />
+        </button>
+        {showRules && (
+          <p
+            className="mt-2 rounded-md border border-edge bg-surface-1 px-3 py-2 text-[11px] leading-relaxed text-ink-3"
+            id="absence-rules-info"
+          >
+            Siempre reporta cuando no puedas asistir. Se flexibilizan 2 inasistencias por mes; a partir de la 3.ª
+            falta es importante reponer las horas de entrenamiento faltantes en otro horario y, en caso de no poder,
+            puedes tomar una clase privada online de 35 min con el Sensei, en la que se ofrecerá un entrenamiento
+            personalizado para tu preparación para el examen, previa coordinación. (Las clases online tendrán un costo
+            extra, el cual será informado previamente por la administración).
+          </p>
+        )}
+      </div>
+
       {justifications.length > 0 && (
         <div className="mt-5 border-t border-edge pt-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-ink-3">Mis reportes</p>
@@ -200,8 +230,10 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
                     <p className="mt-1 text-xs text-ink-2">{justification.reason}</p>
                     {justification.status === 'APPROVED' && (
                         justification.recovered ? (
-                            <p className="mt-1 flex items-center gap-1 text-[11px] text-ok-text">
-                                <CheckCircle2 className="size-3" aria-hidden="true" />Repuesta el {formatCalendarDate(justification.recoveryDate)}
+                            <p className={`mt-1 flex items-center gap-1 text-[11px] ${justification.lateRecovery ? 'text-warn-text' : 'text-ok-text'}`}>
+                                <CheckCircle2 className="size-3" aria-hidden="true" />
+                                Repuesta el {formatCalendarDate(justification.recoveryDate)}
+                                {justification.lateRecovery ? ' (fuera de plazo)' : ''}
                             </p>
                         ) : (
                             <p className="mt-1 flex items-center gap-1 text-[11px] text-info-text">
@@ -210,7 +242,15 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
                         )
                     )}
                     {justification.status === 'REJECTED' && (
-                        <p className="mt-1 flex items-center gap-1 text-[11px] text-danger-text"><XCircle className="size-3" aria-hidden="true" />Rechazada — cuenta como inasistencia.</p>
+                        justification.recovered ? (
+                            <p className={`mt-1 flex items-center gap-1 text-[11px] ${justification.lateRecovery ? 'text-warn-text' : 'text-ok-text'}`}>
+                                <CheckCircle2 className="size-3" aria-hidden="true" />
+                                Rechazada, pero repuesta el {formatCalendarDate(justification.recoveryDate)}
+                                {justification.lateRecovery ? ' (fuera de plazo)' : ''}.
+                            </p>
+                        ) : (
+                            <p className="mt-1 flex items-center gap-1 text-[11px] text-danger-text"><XCircle className="size-3" aria-hidden="true" />Rechazada — cuenta como inasistencia.</p>
+                        )
                     )}
                     {justification.status === 'PENDING' && (
                       <p className="mt-1 flex items-center gap-1 text-[11px] text-warn-text"><Hourglass className="size-3" aria-hidden="true" />Pendiente de revisión.</p>

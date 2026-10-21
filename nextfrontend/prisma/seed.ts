@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs'
 import crypto from 'node:crypto'
 import dotenv from 'dotenv'
 import { ADULT_RANKS, YOUTH_RANKS, KATAS, examDayForRank, type Program } from '@/lib/curriculum/programs'
+import { syncKihonCatalog } from '@/lib/curriculum/kihon-sync'
 import { dominicanHolidays } from '@/lib/dashboard/holidays'
 
 dotenv.config({ path: '.env.local' })
@@ -187,6 +188,12 @@ async function main() {
     })
     kataNameToId.set(created.name, created.id)
   }
+
+  // ============ KIHON (catálogo global de fundamentos) ============
+  // Se re-sincroniza aquí para que un SEED_RESET no deje el catálogo Kihon
+  // vacío: el reset borra todas las técnicas y solo se recrean las katas.
+  const kihonCount = await syncKihonCatalog(db)
+  console.log(`Kihon sincronizados: ${kihonCount}`)
 
   // ============ VINCULACIÓN grado ↔ katas requeridas (BeltRankKata) ============
   for (const ranks of [ADULT_RANKS, YOUTH_RANKS]) {

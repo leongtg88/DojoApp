@@ -77,7 +77,7 @@ export function profile(overrides: Partial<StudentProfile> = {}): StudentProfile
 }
 
 export function attendanceSummary(overrides: Partial<AttendanceSummary> = {}): AttendanceSummary {
-  return { attendedSessions: 8, totalSessions: 10, percentage: 80, ...overrides }
+  return { attendedSessions: 8, totalSessions: 10, percentage: 80, forgivenSessions: 0, ...overrides }
 }
 
 export function classSchedule(overrides: Partial<ClassSchedule> = {}): ClassSchedule {
@@ -149,7 +149,10 @@ export function grado(overrides: Partial<GradoProgressData> = {}): GradoProgress
     hoursRequirement: null,
     currentPeriod: null,
     maxAbsencesPerMonth: 2,
+    absencePolicy: 'LOCK_AT_CLOSE',
+    examAtRisk: false,
     examRightLost: false,
+    pendingRecoveries: 0,
     bottleneck: 'KATAS',
     attendanceMonths: [],
     monthly: null,

@@ -42,7 +42,7 @@ export function StudentProgressOverview({ kataSummary, summary, attendanceData }
 
             <div className="mt-7 space-y-5">
                 <GradoProgress grado={grado} />
-                <ExaminationCriteriaCard grado={grado} />
+                <ExaminationCriteriaCard grado={grado} studentId={summary.profile.id} />
                 <StudentSyllabus techniques={summary.techniques} />
             </div>
         </main>

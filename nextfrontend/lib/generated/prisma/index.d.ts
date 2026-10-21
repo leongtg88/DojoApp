@@ -129,6 +129,12 @@ export type ClassEnrollment = $Result.DefaultSelection<Prisma.$ClassEnrollmentPa
  */
 export type ClassSession = $Result.DefaultSelection<Prisma.$ClassSessionPayload>
 /**
+ * Model SchoolAbsencePolicy
+ * Historial de la política por escuela. La política vigente al cierre de un
+ * cuatrimestre es la última fila con effectiveFrom <= fecha de cierre.
+ */
+export type SchoolAbsencePolicy = $Result.DefaultSelection<Prisma.$SchoolAbsencePolicyPayload>
+/**
  * Model AbsenceJustification
  * Motivo de inasistencia reportado por el alumno. Queda pendiente de revisión
  * por el instructor o el administrador; al aprobarse la sesión queda JUSTIFIED.
@@ -139,6 +145,12 @@ export type AbsenceJustification = $Result.DefaultSelection<Prisma.$AbsenceJusti
  * 
  */
 export type Attendance = $Result.DefaultSelection<Prisma.$AttendancePayload>
+/**
+ * Model OnlineRecovery
+ * Reposición de una falta mediante una clase online de 35 min acordada.
+ * Al completarse genera una asistencia y enlaza la falta con recoveredById.
+ */
+export type OnlineRecovery = $Result.DefaultSelection<Prisma.$OnlineRecoveryPayload>
 /**
  * Model AchievementType
  * 
@@ -380,6 +392,14 @@ export const AbsenceJustificationStatus: {
 export type AbsenceJustificationStatus = (typeof AbsenceJustificationStatus)[keyof typeof AbsenceJustificationStatus]
 
 
+export const AbsencePostClosePolicy: {
+  LOCK_AT_CLOSE: 'LOCK_AT_CLOSE',
+  RESTORE_ON_RECOVERY: 'RESTORE_ON_RECOVERY'
+};
+
+export type AbsencePostClosePolicy = (typeof AbsencePostClosePolicy)[keyof typeof AbsencePostClosePolicy]
+
+
 export const AttendanceStatus: {
   PENDING: 'PENDING',
   CONFIRMED: 'CONFIRMED',
@@ -401,6 +421,16 @@ export const ScholarshipType: {
 export type ScholarshipType = (typeof ScholarshipType)[keyof typeof ScholarshipType]
 
 
+export const OnlineRecoveryStatus: {
+  SCHEDULED: 'SCHEDULED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  NO_SHOW: 'NO_SHOW'
+};
+
+export type OnlineRecoveryStatus = (typeof OnlineRecoveryStatus)[keyof typeof OnlineRecoveryStatus]
+
+
 export const NotificationType: {
   TECHNIQUES_ASSIGNED: 'TECHNIQUES_ASSIGNED',
   TECHNIQUES_REMOVED: 'TECHNIQUES_REMOVED',
@@ -417,6 +447,13 @@ export const NotificationType: {
   ATTENDANCE_PUNCHED: 'ATTENDANCE_PUNCHED',
   ATTENDANCE_ABSENCE_REPORTED: 'ATTENDANCE_ABSENCE_REPORTED',
   ATTENDANCE_JUSTIFICATION_REVIEWED: 'ATTENDANCE_JUSTIFICATION_REVIEWED',
+  ONLINE_RECOVERY_SCHEDULED: 'ONLINE_RECOVERY_SCHEDULED',
+  ONLINE_RECOVERY_RESCHEDULED: 'ONLINE_RECOVERY_RESCHEDULED',
+  ONLINE_RECOVERY_COMPLETED: 'ONLINE_RECOVERY_COMPLETED',
+  ONLINE_RECOVERY_CANCELLED: 'ONLINE_RECOVERY_CANCELLED',
+  ONLINE_RECOVERY_NO_SHOW: 'ONLINE_RECOVERY_NO_SHOW',
+  ONLINE_RECOVERY_COST_INFORMED: 'ONLINE_RECOVERY_COST_INFORMED',
+  ONLINE_RECOVERY_ASSIGNED: 'ONLINE_RECOVERY_ASSIGNED',
   TECHNIQUE_APPROVED: 'TECHNIQUE_APPROVED',
   TECHNIQUE_EVALUATED: 'TECHNIQUE_EVALUATED',
   REVIEW_SUBMITTED: 'REVIEW_SUBMITTED'
@@ -533,6 +570,10 @@ export type AbsenceJustificationStatus = $Enums.AbsenceJustificationStatus
 
 export const AbsenceJustificationStatus: typeof $Enums.AbsenceJustificationStatus
 
+export type AbsencePostClosePolicy = $Enums.AbsencePostClosePolicy
+
+export const AbsencePostClosePolicy: typeof $Enums.AbsencePostClosePolicy
+
 export type AttendanceStatus = $Enums.AttendanceStatus
 
 export const AttendanceStatus: typeof $Enums.AttendanceStatus
@@ -540,6 +581,10 @@ export const AttendanceStatus: typeof $Enums.AttendanceStatus
 export type ScholarshipType = $Enums.ScholarshipType
 
 export const ScholarshipType: typeof $Enums.ScholarshipType
+
+export type OnlineRecoveryStatus = $Enums.OnlineRecoveryStatus
+
+export const OnlineRecoveryStatus: typeof $Enums.OnlineRecoveryStatus
 
 export type NotificationType = $Enums.NotificationType
 
@@ -913,6 +958,16 @@ export class PrismaClient<
   get classSession(): Prisma.ClassSessionDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.schoolAbsencePolicy`: Exposes CRUD operations for the **SchoolAbsencePolicy** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SchoolAbsencePolicies
+    * const schoolAbsencePolicies = await prisma.schoolAbsencePolicy.findMany()
+    * ```
+    */
+  get schoolAbsencePolicy(): Prisma.SchoolAbsencePolicyDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.absenceJustification`: Exposes CRUD operations for the **AbsenceJustification** model.
     * Example usage:
     * ```ts
@@ -931,6 +986,16 @@ export class PrismaClient<
     * ```
     */
   get attendance(): Prisma.AttendanceDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.onlineRecovery`: Exposes CRUD operations for the **OnlineRecovery** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OnlineRecoveries
+    * const onlineRecoveries = await prisma.onlineRecovery.findMany()
+    * ```
+    */
+  get onlineRecovery(): Prisma.OnlineRecoveryDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.achievementType`: Exposes CRUD operations for the **AchievementType** model.
@@ -1541,8 +1606,10 @@ export namespace Prisma {
     Class: 'Class',
     ClassEnrollment: 'ClassEnrollment',
     ClassSession: 'ClassSession',
+    SchoolAbsencePolicy: 'SchoolAbsencePolicy',
     AbsenceJustification: 'AbsenceJustification',
     Attendance: 'Attendance',
+    OnlineRecovery: 'OnlineRecovery',
     AchievementType: 'AchievementType',
     StudentAchievement: 'StudentAchievement',
     FitnessReport: 'FitnessReport',
@@ -1572,7 +1639,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniquePracticeLog" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "absenceJustification" | "attendance" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "whatsAppContact" | "whatsAppMessage" | "pushSubscription" | "webAuthnCredential" | "holiday" | "examConvocation" | "review" | "apiUsage" | "auditLog" | "post"
+      modelProps: "school" | "branch" | "user" | "emailVerificationToken" | "passwordResetToken" | "studentInvitationToken" | "instructorProfile" | "student" | "guardianStudent" | "enrollment" | "enrollmentApplicant" | "studentDocument" | "beltRank" | "beltRankKata" | "studentRankHistory" | "technique" | "studentTechnique" | "techniquePracticeLog" | "techniqueEvaluation" | "plan" | "class" | "classEnrollment" | "classSession" | "schoolAbsencePolicy" | "absenceJustification" | "attendance" | "onlineRecovery" | "achievementType" | "studentAchievement" | "fitnessReport" | "notification" | "whatsAppContact" | "whatsAppMessage" | "pushSubscription" | "webAuthnCredential" | "holiday" | "examConvocation" | "review" | "apiUsage" | "auditLog" | "post"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3278,6 +3345,80 @@ export namespace Prisma {
           }
         }
       }
+      SchoolAbsencePolicy: {
+        payload: Prisma.$SchoolAbsencePolicyPayload<ExtArgs>
+        fields: Prisma.SchoolAbsencePolicyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SchoolAbsencePolicyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SchoolAbsencePolicyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SchoolAbsencePolicyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SchoolAbsencePolicyPayload>
+          }
+          findFirst: {
+            args: Prisma.SchoolAbsencePolicyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SchoolAbsencePolicyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SchoolAbsencePolicyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SchoolAbsencePolicyPayload>
+          }
+          findMany: {
+            args: Prisma.SchoolAbsencePolicyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SchoolAbsencePolicyPayload>[]
+          }
+          create: {
+            args: Prisma.SchoolAbsencePolicyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SchoolAbsencePolicyPayload>
+          }
+          createMany: {
+            args: Prisma.SchoolAbsencePolicyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SchoolAbsencePolicyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SchoolAbsencePolicyPayload>[]
+          }
+          delete: {
+            args: Prisma.SchoolAbsencePolicyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SchoolAbsencePolicyPayload>
+          }
+          update: {
+            args: Prisma.SchoolAbsencePolicyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SchoolAbsencePolicyPayload>
+          }
+          deleteMany: {
+            args: Prisma.SchoolAbsencePolicyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SchoolAbsencePolicyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SchoolAbsencePolicyUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SchoolAbsencePolicyPayload>[]
+          }
+          upsert: {
+            args: Prisma.SchoolAbsencePolicyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SchoolAbsencePolicyPayload>
+          }
+          aggregate: {
+            args: Prisma.SchoolAbsencePolicyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSchoolAbsencePolicy>
+          }
+          groupBy: {
+            args: Prisma.SchoolAbsencePolicyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SchoolAbsencePolicyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SchoolAbsencePolicyCountArgs<ExtArgs>
+            result: $Utils.Optional<SchoolAbsencePolicyCountAggregateOutputType> | number
+          }
+        }
+      }
       AbsenceJustification: {
         payload: Prisma.$AbsenceJustificationPayload<ExtArgs>
         fields: Prisma.AbsenceJustificationFieldRefs
@@ -3423,6 +3564,80 @@ export namespace Prisma {
           count: {
             args: Prisma.AttendanceCountArgs<ExtArgs>
             result: $Utils.Optional<AttendanceCountAggregateOutputType> | number
+          }
+        }
+      }
+      OnlineRecovery: {
+        payload: Prisma.$OnlineRecoveryPayload<ExtArgs>
+        fields: Prisma.OnlineRecoveryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OnlineRecoveryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OnlineRecoveryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OnlineRecoveryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OnlineRecoveryPayload>
+          }
+          findFirst: {
+            args: Prisma.OnlineRecoveryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OnlineRecoveryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OnlineRecoveryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OnlineRecoveryPayload>
+          }
+          findMany: {
+            args: Prisma.OnlineRecoveryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OnlineRecoveryPayload>[]
+          }
+          create: {
+            args: Prisma.OnlineRecoveryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OnlineRecoveryPayload>
+          }
+          createMany: {
+            args: Prisma.OnlineRecoveryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OnlineRecoveryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OnlineRecoveryPayload>[]
+          }
+          delete: {
+            args: Prisma.OnlineRecoveryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OnlineRecoveryPayload>
+          }
+          update: {
+            args: Prisma.OnlineRecoveryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OnlineRecoveryPayload>
+          }
+          deleteMany: {
+            args: Prisma.OnlineRecoveryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OnlineRecoveryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.OnlineRecoveryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OnlineRecoveryPayload>[]
+          }
+          upsert: {
+            args: Prisma.OnlineRecoveryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OnlineRecoveryPayload>
+          }
+          aggregate: {
+            args: Prisma.OnlineRecoveryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOnlineRecovery>
+          }
+          groupBy: {
+            args: Prisma.OnlineRecoveryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OnlineRecoveryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OnlineRecoveryCountArgs<ExtArgs>
+            result: $Utils.Optional<OnlineRecoveryCountAggregateOutputType> | number
           }
         }
       }
@@ -4608,8 +4823,10 @@ export namespace Prisma {
     class?: ClassOmit
     classEnrollment?: ClassEnrollmentOmit
     classSession?: ClassSessionOmit
+    schoolAbsencePolicy?: SchoolAbsencePolicyOmit
     absenceJustification?: AbsenceJustificationOmit
     attendance?: AttendanceOmit
+    onlineRecovery?: OnlineRecoveryOmit
     achievementType?: AchievementTypeOmit
     studentAchievement?: StudentAchievementOmit
     fitnessReport?: FitnessReportOmit
@@ -4716,6 +4933,7 @@ export namespace Prisma {
     examConvocations: number
     auditLogs: number
     reviews: number
+    absencePolicies: number
   }
 
   export type SchoolCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4731,6 +4949,7 @@ export namespace Prisma {
     examConvocations?: boolean | SchoolCountOutputTypeCountExamConvocationsArgs
     auditLogs?: boolean | SchoolCountOutputTypeCountAuditLogsArgs
     reviews?: boolean | SchoolCountOutputTypeCountReviewsArgs
+    absencePolicies?: boolean | SchoolCountOutputTypeCountAbsencePoliciesArgs
   }
 
   // Custom InputTypes
@@ -4828,6 +5047,13 @@ export namespace Prisma {
     where?: ReviewWhereInput
   }
 
+  /**
+   * SchoolCountOutputType without action
+   */
+  export type SchoolCountOutputTypeCountAbsencePoliciesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SchoolAbsencePolicyWhereInput
+  }
+
 
   /**
    * Count Type BranchCountOutputType
@@ -4912,6 +5138,8 @@ export namespace Prisma {
     auditLogs: number
     classes: number
     posts: number
+    onlineRecoveriesAsInstructor: number
+    onlineRecoveriesCreated: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4935,6 +5163,8 @@ export namespace Prisma {
     auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
     classes?: boolean | UserCountOutputTypeCountClassesArgs
     posts?: boolean | UserCountOutputTypeCountPostsArgs
+    onlineRecoveriesAsInstructor?: boolean | UserCountOutputTypeCountOnlineRecoveriesAsInstructorArgs
+    onlineRecoveriesCreated?: boolean | UserCountOutputTypeCountOnlineRecoveriesCreatedArgs
   }
 
   // Custom InputTypes
@@ -5088,6 +5318,20 @@ export namespace Prisma {
     where?: PostWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountOnlineRecoveriesAsInstructorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OnlineRecoveryWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountOnlineRecoveriesCreatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OnlineRecoveryWhereInput
+  }
+
 
   /**
    * Count Type StudentCountOutputType
@@ -5107,6 +5351,7 @@ export namespace Prisma {
     invitationTokens: number
     documents: number
     notifications: number
+    onlineRecoveries: number
   }
 
   export type StudentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5123,6 +5368,7 @@ export namespace Prisma {
     invitationTokens?: boolean | StudentCountOutputTypeCountInvitationTokensArgs
     documents?: boolean | StudentCountOutputTypeCountDocumentsArgs
     notifications?: boolean | StudentCountOutputTypeCountNotificationsArgs
+    onlineRecoveries?: boolean | StudentCountOutputTypeCountOnlineRecoveriesArgs
   }
 
   // Custom InputTypes
@@ -5225,6 +5471,13 @@ export namespace Prisma {
    */
   export type StudentCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: NotificationWhereInput
+  }
+
+  /**
+   * StudentCountOutputType without action
+   */
+  export type StudentCountOutputTypeCountOnlineRecoveriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OnlineRecoveryWhereInput
   }
 
 
@@ -5822,6 +6075,7 @@ export namespace Prisma {
     examConvocations?: boolean | School$examConvocationsArgs<ExtArgs>
     auditLogs?: boolean | School$auditLogsArgs<ExtArgs>
     reviews?: boolean | School$reviewsArgs<ExtArgs>
+    absencePolicies?: boolean | School$absencePoliciesArgs<ExtArgs>
     _count?: boolean | SchoolCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["school"]>
 
@@ -5860,6 +6114,7 @@ export namespace Prisma {
     examConvocations?: boolean | School$examConvocationsArgs<ExtArgs>
     auditLogs?: boolean | School$auditLogsArgs<ExtArgs>
     reviews?: boolean | School$reviewsArgs<ExtArgs>
+    absencePolicies?: boolean | School$absencePoliciesArgs<ExtArgs>
     _count?: boolean | SchoolCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SchoolIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -5880,6 +6135,7 @@ export namespace Prisma {
       examConvocations: Prisma.$ExamConvocationPayload<ExtArgs>[]
       auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
       reviews: Prisma.$ReviewPayload<ExtArgs>[]
+      absencePolicies: Prisma.$SchoolAbsencePolicyPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6292,6 +6548,7 @@ export namespace Prisma {
     examConvocations<T extends School$examConvocationsArgs<ExtArgs> = {}>(args?: Subset<T, School$examConvocationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExamConvocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     auditLogs<T extends School$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, School$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reviews<T extends School$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, School$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    absencePolicies<T extends School$absencePoliciesArgs<ExtArgs> = {}>(args?: Subset<T, School$absencePoliciesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchoolAbsencePolicyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7003,6 +7260,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * School.absencePolicies
+   */
+  export type School$absencePoliciesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SchoolAbsencePolicy
+     */
+    select?: SchoolAbsencePolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SchoolAbsencePolicy
+     */
+    omit?: SchoolAbsencePolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolAbsencePolicyInclude<ExtArgs> | null
+    where?: SchoolAbsencePolicyWhereInput
+    orderBy?: SchoolAbsencePolicyOrderByWithRelationInput | SchoolAbsencePolicyOrderByWithRelationInput[]
+    cursor?: SchoolAbsencePolicyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SchoolAbsencePolicyScalarFieldEnum | SchoolAbsencePolicyScalarFieldEnum[]
   }
 
   /**
@@ -8476,6 +8757,8 @@ export namespace Prisma {
     auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
     classes?: boolean | User$classesArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
+    onlineRecoveriesAsInstructor?: boolean | User$onlineRecoveriesAsInstructorArgs<ExtArgs>
+    onlineRecoveriesCreated?: boolean | User$onlineRecoveriesCreatedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8555,6 +8838,8 @@ export namespace Prisma {
     auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
     classes?: boolean | User$classesArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
+    onlineRecoveriesAsInstructor?: boolean | User$onlineRecoveriesAsInstructorArgs<ExtArgs>
+    onlineRecoveriesCreated?: boolean | User$onlineRecoveriesCreatedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8594,6 +8879,8 @@ export namespace Prisma {
       auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
       classes: Prisma.$ClassPayload<ExtArgs>[]
       posts: Prisma.$PostPayload<ExtArgs>[]
+      onlineRecoveriesAsInstructor: Prisma.$OnlineRecoveryPayload<ExtArgs>[]
+      onlineRecoveriesCreated: Prisma.$OnlineRecoveryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9027,6 +9314,8 @@ export namespace Prisma {
     auditLogs<T extends User$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     classes<T extends User$classesArgs<ExtArgs> = {}>(args?: Subset<T, User$classesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClassPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     posts<T extends User$postsArgs<ExtArgs> = {}>(args?: Subset<T, User$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    onlineRecoveriesAsInstructor<T extends User$onlineRecoveriesAsInstructorArgs<ExtArgs> = {}>(args?: Subset<T, User$onlineRecoveriesAsInstructorArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    onlineRecoveriesCreated<T extends User$onlineRecoveriesCreatedArgs<ExtArgs> = {}>(args?: Subset<T, User$onlineRecoveriesCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10041,6 +10330,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
+  }
+
+  /**
+   * User.onlineRecoveriesAsInstructor
+   */
+  export type User$onlineRecoveriesAsInstructorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
+    where?: OnlineRecoveryWhereInput
+    orderBy?: OnlineRecoveryOrderByWithRelationInput | OnlineRecoveryOrderByWithRelationInput[]
+    cursor?: OnlineRecoveryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OnlineRecoveryScalarFieldEnum | OnlineRecoveryScalarFieldEnum[]
+  }
+
+  /**
+   * User.onlineRecoveriesCreated
+   */
+  export type User$onlineRecoveriesCreatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
+    where?: OnlineRecoveryWhereInput
+    orderBy?: OnlineRecoveryOrderByWithRelationInput | OnlineRecoveryOrderByWithRelationInput[]
+    cursor?: OnlineRecoveryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OnlineRecoveryScalarFieldEnum | OnlineRecoveryScalarFieldEnum[]
   }
 
   /**
@@ -14787,6 +15124,7 @@ export namespace Prisma {
     invitationTokens?: boolean | Student$invitationTokensArgs<ExtArgs>
     documents?: boolean | Student$documentsArgs<ExtArgs>
     notifications?: boolean | Student$notificationsArgs<ExtArgs>
+    onlineRecoveries?: boolean | Student$onlineRecoveriesArgs<ExtArgs>
     _count?: boolean | StudentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["student"]>
 
@@ -14920,6 +15258,7 @@ export namespace Prisma {
     invitationTokens?: boolean | Student$invitationTokensArgs<ExtArgs>
     documents?: boolean | Student$documentsArgs<ExtArgs>
     notifications?: boolean | Student$notificationsArgs<ExtArgs>
+    onlineRecoveries?: boolean | Student$onlineRecoveriesArgs<ExtArgs>
     _count?: boolean | StudentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StudentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14962,6 +15301,7 @@ export namespace Prisma {
       invitationTokens: Prisma.$StudentInvitationTokenPayload<ExtArgs>[]
       documents: Prisma.$StudentDocumentPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
+      onlineRecoveries: Prisma.$OnlineRecoveryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -15407,6 +15747,7 @@ export namespace Prisma {
     invitationTokens<T extends Student$invitationTokensArgs<ExtArgs> = {}>(args?: Subset<T, Student$invitationTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentInvitationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     documents<T extends Student$documentsArgs<ExtArgs> = {}>(args?: Subset<T, Student$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StudentDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notifications<T extends Student$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Student$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    onlineRecoveries<T extends Student$onlineRecoveriesArgs<ExtArgs> = {}>(args?: Subset<T, Student$onlineRecoveriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -16270,6 +16611,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Student.onlineRecoveries
+   */
+  export type Student$onlineRecoveriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
+    where?: OnlineRecoveryWhereInput
+    orderBy?: OnlineRecoveryOrderByWithRelationInput | OnlineRecoveryOrderByWithRelationInput[]
+    cursor?: OnlineRecoveryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OnlineRecoveryScalarFieldEnum | OnlineRecoveryScalarFieldEnum[]
   }
 
   /**
@@ -34804,6 +35169,1069 @@ export namespace Prisma {
 
 
   /**
+   * Model SchoolAbsencePolicy
+   */
+
+  export type AggregateSchoolAbsencePolicy = {
+    _count: SchoolAbsencePolicyCountAggregateOutputType | null
+    _min: SchoolAbsencePolicyMinAggregateOutputType | null
+    _max: SchoolAbsencePolicyMaxAggregateOutputType | null
+  }
+
+  export type SchoolAbsencePolicyMinAggregateOutputType = {
+    id: string | null
+    schoolId: string | null
+    policy: $Enums.AbsencePostClosePolicy | null
+    effectiveFrom: Date | null
+    createdAt: Date | null
+  }
+
+  export type SchoolAbsencePolicyMaxAggregateOutputType = {
+    id: string | null
+    schoolId: string | null
+    policy: $Enums.AbsencePostClosePolicy | null
+    effectiveFrom: Date | null
+    createdAt: Date | null
+  }
+
+  export type SchoolAbsencePolicyCountAggregateOutputType = {
+    id: number
+    schoolId: number
+    policy: number
+    effectiveFrom: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SchoolAbsencePolicyMinAggregateInputType = {
+    id?: true
+    schoolId?: true
+    policy?: true
+    effectiveFrom?: true
+    createdAt?: true
+  }
+
+  export type SchoolAbsencePolicyMaxAggregateInputType = {
+    id?: true
+    schoolId?: true
+    policy?: true
+    effectiveFrom?: true
+    createdAt?: true
+  }
+
+  export type SchoolAbsencePolicyCountAggregateInputType = {
+    id?: true
+    schoolId?: true
+    policy?: true
+    effectiveFrom?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SchoolAbsencePolicyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SchoolAbsencePolicy to aggregate.
+     */
+    where?: SchoolAbsencePolicyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SchoolAbsencePolicies to fetch.
+     */
+    orderBy?: SchoolAbsencePolicyOrderByWithRelationInput | SchoolAbsencePolicyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SchoolAbsencePolicyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SchoolAbsencePolicies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SchoolAbsencePolicies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SchoolAbsencePolicies
+    **/
+    _count?: true | SchoolAbsencePolicyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SchoolAbsencePolicyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SchoolAbsencePolicyMaxAggregateInputType
+  }
+
+  export type GetSchoolAbsencePolicyAggregateType<T extends SchoolAbsencePolicyAggregateArgs> = {
+        [P in keyof T & keyof AggregateSchoolAbsencePolicy]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSchoolAbsencePolicy[P]>
+      : GetScalarType<T[P], AggregateSchoolAbsencePolicy[P]>
+  }
+
+
+
+
+  export type SchoolAbsencePolicyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SchoolAbsencePolicyWhereInput
+    orderBy?: SchoolAbsencePolicyOrderByWithAggregationInput | SchoolAbsencePolicyOrderByWithAggregationInput[]
+    by: SchoolAbsencePolicyScalarFieldEnum[] | SchoolAbsencePolicyScalarFieldEnum
+    having?: SchoolAbsencePolicyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SchoolAbsencePolicyCountAggregateInputType | true
+    _min?: SchoolAbsencePolicyMinAggregateInputType
+    _max?: SchoolAbsencePolicyMaxAggregateInputType
+  }
+
+  export type SchoolAbsencePolicyGroupByOutputType = {
+    id: string
+    schoolId: string
+    policy: $Enums.AbsencePostClosePolicy
+    effectiveFrom: Date
+    createdAt: Date
+    _count: SchoolAbsencePolicyCountAggregateOutputType | null
+    _min: SchoolAbsencePolicyMinAggregateOutputType | null
+    _max: SchoolAbsencePolicyMaxAggregateOutputType | null
+  }
+
+  type GetSchoolAbsencePolicyGroupByPayload<T extends SchoolAbsencePolicyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SchoolAbsencePolicyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SchoolAbsencePolicyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SchoolAbsencePolicyGroupByOutputType[P]>
+            : GetScalarType<T[P], SchoolAbsencePolicyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SchoolAbsencePolicySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    schoolId?: boolean
+    policy?: boolean
+    effectiveFrom?: boolean
+    createdAt?: boolean
+    school?: boolean | SchoolDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["schoolAbsencePolicy"]>
+
+  export type SchoolAbsencePolicySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    schoolId?: boolean
+    policy?: boolean
+    effectiveFrom?: boolean
+    createdAt?: boolean
+    school?: boolean | SchoolDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["schoolAbsencePolicy"]>
+
+  export type SchoolAbsencePolicySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    schoolId?: boolean
+    policy?: boolean
+    effectiveFrom?: boolean
+    createdAt?: boolean
+    school?: boolean | SchoolDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["schoolAbsencePolicy"]>
+
+  export type SchoolAbsencePolicySelectScalar = {
+    id?: boolean
+    schoolId?: boolean
+    policy?: boolean
+    effectiveFrom?: boolean
+    createdAt?: boolean
+  }
+
+  export type SchoolAbsencePolicyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "schoolId" | "policy" | "effectiveFrom" | "createdAt", ExtArgs["result"]["schoolAbsencePolicy"]>
+  export type SchoolAbsencePolicyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    school?: boolean | SchoolDefaultArgs<ExtArgs>
+  }
+  export type SchoolAbsencePolicyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    school?: boolean | SchoolDefaultArgs<ExtArgs>
+  }
+  export type SchoolAbsencePolicyIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    school?: boolean | SchoolDefaultArgs<ExtArgs>
+  }
+
+  export type $SchoolAbsencePolicyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SchoolAbsencePolicy"
+    objects: {
+      school: Prisma.$SchoolPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      schoolId: string
+      policy: $Enums.AbsencePostClosePolicy
+      effectiveFrom: Date
+      createdAt: Date
+    }, ExtArgs["result"]["schoolAbsencePolicy"]>
+    composites: {}
+  }
+
+  type SchoolAbsencePolicyGetPayload<S extends boolean | null | undefined | SchoolAbsencePolicyDefaultArgs> = $Result.GetResult<Prisma.$SchoolAbsencePolicyPayload, S>
+
+  type SchoolAbsencePolicyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SchoolAbsencePolicyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SchoolAbsencePolicyCountAggregateInputType | true
+    }
+
+  export interface SchoolAbsencePolicyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SchoolAbsencePolicy'], meta: { name: 'SchoolAbsencePolicy' } }
+    /**
+     * Find zero or one SchoolAbsencePolicy that matches the filter.
+     * @param {SchoolAbsencePolicyFindUniqueArgs} args - Arguments to find a SchoolAbsencePolicy
+     * @example
+     * // Get one SchoolAbsencePolicy
+     * const schoolAbsencePolicy = await prisma.schoolAbsencePolicy.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SchoolAbsencePolicyFindUniqueArgs>(args: SelectSubset<T, SchoolAbsencePolicyFindUniqueArgs<ExtArgs>>): Prisma__SchoolAbsencePolicyClient<$Result.GetResult<Prisma.$SchoolAbsencePolicyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SchoolAbsencePolicy that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SchoolAbsencePolicyFindUniqueOrThrowArgs} args - Arguments to find a SchoolAbsencePolicy
+     * @example
+     * // Get one SchoolAbsencePolicy
+     * const schoolAbsencePolicy = await prisma.schoolAbsencePolicy.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SchoolAbsencePolicyFindUniqueOrThrowArgs>(args: SelectSubset<T, SchoolAbsencePolicyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SchoolAbsencePolicyClient<$Result.GetResult<Prisma.$SchoolAbsencePolicyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SchoolAbsencePolicy that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SchoolAbsencePolicyFindFirstArgs} args - Arguments to find a SchoolAbsencePolicy
+     * @example
+     * // Get one SchoolAbsencePolicy
+     * const schoolAbsencePolicy = await prisma.schoolAbsencePolicy.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SchoolAbsencePolicyFindFirstArgs>(args?: SelectSubset<T, SchoolAbsencePolicyFindFirstArgs<ExtArgs>>): Prisma__SchoolAbsencePolicyClient<$Result.GetResult<Prisma.$SchoolAbsencePolicyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SchoolAbsencePolicy that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SchoolAbsencePolicyFindFirstOrThrowArgs} args - Arguments to find a SchoolAbsencePolicy
+     * @example
+     * // Get one SchoolAbsencePolicy
+     * const schoolAbsencePolicy = await prisma.schoolAbsencePolicy.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SchoolAbsencePolicyFindFirstOrThrowArgs>(args?: SelectSubset<T, SchoolAbsencePolicyFindFirstOrThrowArgs<ExtArgs>>): Prisma__SchoolAbsencePolicyClient<$Result.GetResult<Prisma.$SchoolAbsencePolicyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SchoolAbsencePolicies that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SchoolAbsencePolicyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SchoolAbsencePolicies
+     * const schoolAbsencePolicies = await prisma.schoolAbsencePolicy.findMany()
+     * 
+     * // Get first 10 SchoolAbsencePolicies
+     * const schoolAbsencePolicies = await prisma.schoolAbsencePolicy.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const schoolAbsencePolicyWithIdOnly = await prisma.schoolAbsencePolicy.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SchoolAbsencePolicyFindManyArgs>(args?: SelectSubset<T, SchoolAbsencePolicyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchoolAbsencePolicyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SchoolAbsencePolicy.
+     * @param {SchoolAbsencePolicyCreateArgs} args - Arguments to create a SchoolAbsencePolicy.
+     * @example
+     * // Create one SchoolAbsencePolicy
+     * const SchoolAbsencePolicy = await prisma.schoolAbsencePolicy.create({
+     *   data: {
+     *     // ... data to create a SchoolAbsencePolicy
+     *   }
+     * })
+     * 
+     */
+    create<T extends SchoolAbsencePolicyCreateArgs>(args: SelectSubset<T, SchoolAbsencePolicyCreateArgs<ExtArgs>>): Prisma__SchoolAbsencePolicyClient<$Result.GetResult<Prisma.$SchoolAbsencePolicyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SchoolAbsencePolicies.
+     * @param {SchoolAbsencePolicyCreateManyArgs} args - Arguments to create many SchoolAbsencePolicies.
+     * @example
+     * // Create many SchoolAbsencePolicies
+     * const schoolAbsencePolicy = await prisma.schoolAbsencePolicy.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SchoolAbsencePolicyCreateManyArgs>(args?: SelectSubset<T, SchoolAbsencePolicyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SchoolAbsencePolicies and returns the data saved in the database.
+     * @param {SchoolAbsencePolicyCreateManyAndReturnArgs} args - Arguments to create many SchoolAbsencePolicies.
+     * @example
+     * // Create many SchoolAbsencePolicies
+     * const schoolAbsencePolicy = await prisma.schoolAbsencePolicy.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SchoolAbsencePolicies and only return the `id`
+     * const schoolAbsencePolicyWithIdOnly = await prisma.schoolAbsencePolicy.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SchoolAbsencePolicyCreateManyAndReturnArgs>(args?: SelectSubset<T, SchoolAbsencePolicyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchoolAbsencePolicyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SchoolAbsencePolicy.
+     * @param {SchoolAbsencePolicyDeleteArgs} args - Arguments to delete one SchoolAbsencePolicy.
+     * @example
+     * // Delete one SchoolAbsencePolicy
+     * const SchoolAbsencePolicy = await prisma.schoolAbsencePolicy.delete({
+     *   where: {
+     *     // ... filter to delete one SchoolAbsencePolicy
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SchoolAbsencePolicyDeleteArgs>(args: SelectSubset<T, SchoolAbsencePolicyDeleteArgs<ExtArgs>>): Prisma__SchoolAbsencePolicyClient<$Result.GetResult<Prisma.$SchoolAbsencePolicyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SchoolAbsencePolicy.
+     * @param {SchoolAbsencePolicyUpdateArgs} args - Arguments to update one SchoolAbsencePolicy.
+     * @example
+     * // Update one SchoolAbsencePolicy
+     * const schoolAbsencePolicy = await prisma.schoolAbsencePolicy.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SchoolAbsencePolicyUpdateArgs>(args: SelectSubset<T, SchoolAbsencePolicyUpdateArgs<ExtArgs>>): Prisma__SchoolAbsencePolicyClient<$Result.GetResult<Prisma.$SchoolAbsencePolicyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SchoolAbsencePolicies.
+     * @param {SchoolAbsencePolicyDeleteManyArgs} args - Arguments to filter SchoolAbsencePolicies to delete.
+     * @example
+     * // Delete a few SchoolAbsencePolicies
+     * const { count } = await prisma.schoolAbsencePolicy.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SchoolAbsencePolicyDeleteManyArgs>(args?: SelectSubset<T, SchoolAbsencePolicyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SchoolAbsencePolicies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SchoolAbsencePolicyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SchoolAbsencePolicies
+     * const schoolAbsencePolicy = await prisma.schoolAbsencePolicy.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SchoolAbsencePolicyUpdateManyArgs>(args: SelectSubset<T, SchoolAbsencePolicyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SchoolAbsencePolicies and returns the data updated in the database.
+     * @param {SchoolAbsencePolicyUpdateManyAndReturnArgs} args - Arguments to update many SchoolAbsencePolicies.
+     * @example
+     * // Update many SchoolAbsencePolicies
+     * const schoolAbsencePolicy = await prisma.schoolAbsencePolicy.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SchoolAbsencePolicies and only return the `id`
+     * const schoolAbsencePolicyWithIdOnly = await prisma.schoolAbsencePolicy.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SchoolAbsencePolicyUpdateManyAndReturnArgs>(args: SelectSubset<T, SchoolAbsencePolicyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchoolAbsencePolicyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SchoolAbsencePolicy.
+     * @param {SchoolAbsencePolicyUpsertArgs} args - Arguments to update or create a SchoolAbsencePolicy.
+     * @example
+     * // Update or create a SchoolAbsencePolicy
+     * const schoolAbsencePolicy = await prisma.schoolAbsencePolicy.upsert({
+     *   create: {
+     *     // ... data to create a SchoolAbsencePolicy
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SchoolAbsencePolicy we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SchoolAbsencePolicyUpsertArgs>(args: SelectSubset<T, SchoolAbsencePolicyUpsertArgs<ExtArgs>>): Prisma__SchoolAbsencePolicyClient<$Result.GetResult<Prisma.$SchoolAbsencePolicyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SchoolAbsencePolicies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SchoolAbsencePolicyCountArgs} args - Arguments to filter SchoolAbsencePolicies to count.
+     * @example
+     * // Count the number of SchoolAbsencePolicies
+     * const count = await prisma.schoolAbsencePolicy.count({
+     *   where: {
+     *     // ... the filter for the SchoolAbsencePolicies we want to count
+     *   }
+     * })
+    **/
+    count<T extends SchoolAbsencePolicyCountArgs>(
+      args?: Subset<T, SchoolAbsencePolicyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SchoolAbsencePolicyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SchoolAbsencePolicy.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SchoolAbsencePolicyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SchoolAbsencePolicyAggregateArgs>(args: Subset<T, SchoolAbsencePolicyAggregateArgs>): Prisma.PrismaPromise<GetSchoolAbsencePolicyAggregateType<T>>
+
+    /**
+     * Group by SchoolAbsencePolicy.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SchoolAbsencePolicyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SchoolAbsencePolicyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SchoolAbsencePolicyGroupByArgs['orderBy'] }
+        : { orderBy?: SchoolAbsencePolicyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SchoolAbsencePolicyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSchoolAbsencePolicyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SchoolAbsencePolicy model
+   */
+  readonly fields: SchoolAbsencePolicyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SchoolAbsencePolicy.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SchoolAbsencePolicyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    school<T extends SchoolDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SchoolDefaultArgs<ExtArgs>>): Prisma__SchoolClient<$Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SchoolAbsencePolicy model
+   */
+  interface SchoolAbsencePolicyFieldRefs {
+    readonly id: FieldRef<"SchoolAbsencePolicy", 'String'>
+    readonly schoolId: FieldRef<"SchoolAbsencePolicy", 'String'>
+    readonly policy: FieldRef<"SchoolAbsencePolicy", 'AbsencePostClosePolicy'>
+    readonly effectiveFrom: FieldRef<"SchoolAbsencePolicy", 'DateTime'>
+    readonly createdAt: FieldRef<"SchoolAbsencePolicy", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SchoolAbsencePolicy findUnique
+   */
+  export type SchoolAbsencePolicyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SchoolAbsencePolicy
+     */
+    select?: SchoolAbsencePolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SchoolAbsencePolicy
+     */
+    omit?: SchoolAbsencePolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolAbsencePolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which SchoolAbsencePolicy to fetch.
+     */
+    where: SchoolAbsencePolicyWhereUniqueInput
+  }
+
+  /**
+   * SchoolAbsencePolicy findUniqueOrThrow
+   */
+  export type SchoolAbsencePolicyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SchoolAbsencePolicy
+     */
+    select?: SchoolAbsencePolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SchoolAbsencePolicy
+     */
+    omit?: SchoolAbsencePolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolAbsencePolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which SchoolAbsencePolicy to fetch.
+     */
+    where: SchoolAbsencePolicyWhereUniqueInput
+  }
+
+  /**
+   * SchoolAbsencePolicy findFirst
+   */
+  export type SchoolAbsencePolicyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SchoolAbsencePolicy
+     */
+    select?: SchoolAbsencePolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SchoolAbsencePolicy
+     */
+    omit?: SchoolAbsencePolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolAbsencePolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which SchoolAbsencePolicy to fetch.
+     */
+    where?: SchoolAbsencePolicyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SchoolAbsencePolicies to fetch.
+     */
+    orderBy?: SchoolAbsencePolicyOrderByWithRelationInput | SchoolAbsencePolicyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SchoolAbsencePolicies.
+     */
+    cursor?: SchoolAbsencePolicyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SchoolAbsencePolicies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SchoolAbsencePolicies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SchoolAbsencePolicies.
+     */
+    distinct?: SchoolAbsencePolicyScalarFieldEnum | SchoolAbsencePolicyScalarFieldEnum[]
+  }
+
+  /**
+   * SchoolAbsencePolicy findFirstOrThrow
+   */
+  export type SchoolAbsencePolicyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SchoolAbsencePolicy
+     */
+    select?: SchoolAbsencePolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SchoolAbsencePolicy
+     */
+    omit?: SchoolAbsencePolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolAbsencePolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which SchoolAbsencePolicy to fetch.
+     */
+    where?: SchoolAbsencePolicyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SchoolAbsencePolicies to fetch.
+     */
+    orderBy?: SchoolAbsencePolicyOrderByWithRelationInput | SchoolAbsencePolicyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SchoolAbsencePolicies.
+     */
+    cursor?: SchoolAbsencePolicyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SchoolAbsencePolicies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SchoolAbsencePolicies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SchoolAbsencePolicies.
+     */
+    distinct?: SchoolAbsencePolicyScalarFieldEnum | SchoolAbsencePolicyScalarFieldEnum[]
+  }
+
+  /**
+   * SchoolAbsencePolicy findMany
+   */
+  export type SchoolAbsencePolicyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SchoolAbsencePolicy
+     */
+    select?: SchoolAbsencePolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SchoolAbsencePolicy
+     */
+    omit?: SchoolAbsencePolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolAbsencePolicyInclude<ExtArgs> | null
+    /**
+     * Filter, which SchoolAbsencePolicies to fetch.
+     */
+    where?: SchoolAbsencePolicyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SchoolAbsencePolicies to fetch.
+     */
+    orderBy?: SchoolAbsencePolicyOrderByWithRelationInput | SchoolAbsencePolicyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SchoolAbsencePolicies.
+     */
+    cursor?: SchoolAbsencePolicyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SchoolAbsencePolicies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SchoolAbsencePolicies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SchoolAbsencePolicies.
+     */
+    distinct?: SchoolAbsencePolicyScalarFieldEnum | SchoolAbsencePolicyScalarFieldEnum[]
+  }
+
+  /**
+   * SchoolAbsencePolicy create
+   */
+  export type SchoolAbsencePolicyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SchoolAbsencePolicy
+     */
+    select?: SchoolAbsencePolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SchoolAbsencePolicy
+     */
+    omit?: SchoolAbsencePolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolAbsencePolicyInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SchoolAbsencePolicy.
+     */
+    data: XOR<SchoolAbsencePolicyCreateInput, SchoolAbsencePolicyUncheckedCreateInput>
+  }
+
+  /**
+   * SchoolAbsencePolicy createMany
+   */
+  export type SchoolAbsencePolicyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SchoolAbsencePolicies.
+     */
+    data: SchoolAbsencePolicyCreateManyInput | SchoolAbsencePolicyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SchoolAbsencePolicy createManyAndReturn
+   */
+  export type SchoolAbsencePolicyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SchoolAbsencePolicy
+     */
+    select?: SchoolAbsencePolicySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SchoolAbsencePolicy
+     */
+    omit?: SchoolAbsencePolicyOmit<ExtArgs> | null
+    /**
+     * The data used to create many SchoolAbsencePolicies.
+     */
+    data: SchoolAbsencePolicyCreateManyInput | SchoolAbsencePolicyCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolAbsencePolicyIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SchoolAbsencePolicy update
+   */
+  export type SchoolAbsencePolicyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SchoolAbsencePolicy
+     */
+    select?: SchoolAbsencePolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SchoolAbsencePolicy
+     */
+    omit?: SchoolAbsencePolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolAbsencePolicyInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SchoolAbsencePolicy.
+     */
+    data: XOR<SchoolAbsencePolicyUpdateInput, SchoolAbsencePolicyUncheckedUpdateInput>
+    /**
+     * Choose, which SchoolAbsencePolicy to update.
+     */
+    where: SchoolAbsencePolicyWhereUniqueInput
+  }
+
+  /**
+   * SchoolAbsencePolicy updateMany
+   */
+  export type SchoolAbsencePolicyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SchoolAbsencePolicies.
+     */
+    data: XOR<SchoolAbsencePolicyUpdateManyMutationInput, SchoolAbsencePolicyUncheckedUpdateManyInput>
+    /**
+     * Filter which SchoolAbsencePolicies to update
+     */
+    where?: SchoolAbsencePolicyWhereInput
+    /**
+     * Limit how many SchoolAbsencePolicies to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SchoolAbsencePolicy updateManyAndReturn
+   */
+  export type SchoolAbsencePolicyUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SchoolAbsencePolicy
+     */
+    select?: SchoolAbsencePolicySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SchoolAbsencePolicy
+     */
+    omit?: SchoolAbsencePolicyOmit<ExtArgs> | null
+    /**
+     * The data used to update SchoolAbsencePolicies.
+     */
+    data: XOR<SchoolAbsencePolicyUpdateManyMutationInput, SchoolAbsencePolicyUncheckedUpdateManyInput>
+    /**
+     * Filter which SchoolAbsencePolicies to update
+     */
+    where?: SchoolAbsencePolicyWhereInput
+    /**
+     * Limit how many SchoolAbsencePolicies to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolAbsencePolicyIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SchoolAbsencePolicy upsert
+   */
+  export type SchoolAbsencePolicyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SchoolAbsencePolicy
+     */
+    select?: SchoolAbsencePolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SchoolAbsencePolicy
+     */
+    omit?: SchoolAbsencePolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolAbsencePolicyInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SchoolAbsencePolicy to update in case it exists.
+     */
+    where: SchoolAbsencePolicyWhereUniqueInput
+    /**
+     * In case the SchoolAbsencePolicy found by the `where` argument doesn't exist, create a new SchoolAbsencePolicy with this data.
+     */
+    create: XOR<SchoolAbsencePolicyCreateInput, SchoolAbsencePolicyUncheckedCreateInput>
+    /**
+     * In case the SchoolAbsencePolicy was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SchoolAbsencePolicyUpdateInput, SchoolAbsencePolicyUncheckedUpdateInput>
+  }
+
+  /**
+   * SchoolAbsencePolicy delete
+   */
+  export type SchoolAbsencePolicyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SchoolAbsencePolicy
+     */
+    select?: SchoolAbsencePolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SchoolAbsencePolicy
+     */
+    omit?: SchoolAbsencePolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolAbsencePolicyInclude<ExtArgs> | null
+    /**
+     * Filter which SchoolAbsencePolicy to delete.
+     */
+    where: SchoolAbsencePolicyWhereUniqueInput
+  }
+
+  /**
+   * SchoolAbsencePolicy deleteMany
+   */
+  export type SchoolAbsencePolicyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SchoolAbsencePolicies to delete
+     */
+    where?: SchoolAbsencePolicyWhereInput
+    /**
+     * Limit how many SchoolAbsencePolicies to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SchoolAbsencePolicy without action
+   */
+  export type SchoolAbsencePolicyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SchoolAbsencePolicy
+     */
+    select?: SchoolAbsencePolicySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SchoolAbsencePolicy
+     */
+    omit?: SchoolAbsencePolicyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SchoolAbsencePolicyInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model AbsenceJustification
    */
 
@@ -36265,6 +37693,8 @@ export namespace Prisma {
     class?: boolean | Attendance$classArgs<ExtArgs>
     recoveredBy?: boolean | Attendance$recoveredByArgs<ExtArgs>
     recovery?: boolean | Attendance$recoveryArgs<ExtArgs>
+    onlineRecoveryAbsence?: boolean | Attendance$onlineRecoveryAbsenceArgs<ExtArgs>
+    onlineRecoveryAttendance?: boolean | Attendance$onlineRecoveryAttendanceArgs<ExtArgs>
     confirmedBy?: boolean | Attendance$confirmedByArgs<ExtArgs>
     practiceLogs?: boolean | Attendance$practiceLogsArgs<ExtArgs>
     _count?: boolean | AttendanceCountOutputTypeDefaultArgs<ExtArgs>
@@ -36347,6 +37777,8 @@ export namespace Prisma {
     class?: boolean | Attendance$classArgs<ExtArgs>
     recoveredBy?: boolean | Attendance$recoveredByArgs<ExtArgs>
     recovery?: boolean | Attendance$recoveryArgs<ExtArgs>
+    onlineRecoveryAbsence?: boolean | Attendance$onlineRecoveryAbsenceArgs<ExtArgs>
+    onlineRecoveryAttendance?: boolean | Attendance$onlineRecoveryAttendanceArgs<ExtArgs>
     confirmedBy?: boolean | Attendance$confirmedByArgs<ExtArgs>
     practiceLogs?: boolean | Attendance$practiceLogsArgs<ExtArgs>
     _count?: boolean | AttendanceCountOutputTypeDefaultArgs<ExtArgs>
@@ -36374,6 +37806,8 @@ export namespace Prisma {
       class: Prisma.$ClassPayload<ExtArgs> | null
       recoveredBy: Prisma.$AttendancePayload<ExtArgs> | null
       recovery: Prisma.$AttendancePayload<ExtArgs> | null
+      onlineRecoveryAbsence: Prisma.$OnlineRecoveryPayload<ExtArgs> | null
+      onlineRecoveryAttendance: Prisma.$OnlineRecoveryPayload<ExtArgs> | null
       confirmedBy: Prisma.$UserPayload<ExtArgs> | null
       practiceLogs: Prisma.$TechniquePracticeLogPayload<ExtArgs>[]
     }
@@ -36794,6 +38228,8 @@ export namespace Prisma {
     class<T extends Attendance$classArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$classArgs<ExtArgs>>): Prisma__ClassClient<$Result.GetResult<Prisma.$ClassPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     recoveredBy<T extends Attendance$recoveredByArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$recoveredByArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     recovery<T extends Attendance$recoveryArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$recoveryArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    onlineRecoveryAbsence<T extends Attendance$onlineRecoveryAbsenceArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$onlineRecoveryAbsenceArgs<ExtArgs>>): Prisma__OnlineRecoveryClient<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    onlineRecoveryAttendance<T extends Attendance$onlineRecoveryAttendanceArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$onlineRecoveryAttendanceArgs<ExtArgs>>): Prisma__OnlineRecoveryClient<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     confirmedBy<T extends Attendance$confirmedByArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$confirmedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     practiceLogs<T extends Attendance$practiceLogsArgs<ExtArgs> = {}>(args?: Subset<T, Attendance$practiceLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TechniquePracticeLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -37319,6 +38755,44 @@ export namespace Prisma {
   }
 
   /**
+   * Attendance.onlineRecoveryAbsence
+   */
+  export type Attendance$onlineRecoveryAbsenceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
+    where?: OnlineRecoveryWhereInput
+  }
+
+  /**
+   * Attendance.onlineRecoveryAttendance
+   */
+  export type Attendance$onlineRecoveryAttendanceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
+    where?: OnlineRecoveryWhereInput
+  }
+
+  /**
    * Attendance.confirmedBy
    */
   export type Attendance$confirmedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -37377,6 +38851,1378 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: AttendanceInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model OnlineRecovery
+   */
+
+  export type AggregateOnlineRecovery = {
+    _count: OnlineRecoveryCountAggregateOutputType | null
+    _avg: OnlineRecoveryAvgAggregateOutputType | null
+    _sum: OnlineRecoverySumAggregateOutputType | null
+    _min: OnlineRecoveryMinAggregateOutputType | null
+    _max: OnlineRecoveryMaxAggregateOutputType | null
+  }
+
+  export type OnlineRecoveryAvgAggregateOutputType = {
+    durationMinutes: number | null
+    costAmount: Decimal | null
+  }
+
+  export type OnlineRecoverySumAggregateOutputType = {
+    durationMinutes: number | null
+    costAmount: Decimal | null
+  }
+
+  export type OnlineRecoveryMinAggregateOutputType = {
+    id: string | null
+    studentId: string | null
+    absenceId: string | null
+    status: $Enums.OnlineRecoveryStatus | null
+    scheduledAt: Date | null
+    durationMinutes: number | null
+    instructorId: string | null
+    meetingUrl: string | null
+    costAmount: Decimal | null
+    costCurrency: string | null
+    costNote: string | null
+    costInformedAt: Date | null
+    attendanceId: string | null
+    notes: string | null
+    createdById: string | null
+    completedAt: Date | null
+    cancelledAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type OnlineRecoveryMaxAggregateOutputType = {
+    id: string | null
+    studentId: string | null
+    absenceId: string | null
+    status: $Enums.OnlineRecoveryStatus | null
+    scheduledAt: Date | null
+    durationMinutes: number | null
+    instructorId: string | null
+    meetingUrl: string | null
+    costAmount: Decimal | null
+    costCurrency: string | null
+    costNote: string | null
+    costInformedAt: Date | null
+    attendanceId: string | null
+    notes: string | null
+    createdById: string | null
+    completedAt: Date | null
+    cancelledAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type OnlineRecoveryCountAggregateOutputType = {
+    id: number
+    studentId: number
+    absenceId: number
+    status: number
+    scheduledAt: number
+    durationMinutes: number
+    instructorId: number
+    meetingUrl: number
+    costAmount: number
+    costCurrency: number
+    costNote: number
+    costInformedAt: number
+    attendanceId: number
+    notes: number
+    createdById: number
+    completedAt: number
+    cancelledAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type OnlineRecoveryAvgAggregateInputType = {
+    durationMinutes?: true
+    costAmount?: true
+  }
+
+  export type OnlineRecoverySumAggregateInputType = {
+    durationMinutes?: true
+    costAmount?: true
+  }
+
+  export type OnlineRecoveryMinAggregateInputType = {
+    id?: true
+    studentId?: true
+    absenceId?: true
+    status?: true
+    scheduledAt?: true
+    durationMinutes?: true
+    instructorId?: true
+    meetingUrl?: true
+    costAmount?: true
+    costCurrency?: true
+    costNote?: true
+    costInformedAt?: true
+    attendanceId?: true
+    notes?: true
+    createdById?: true
+    completedAt?: true
+    cancelledAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type OnlineRecoveryMaxAggregateInputType = {
+    id?: true
+    studentId?: true
+    absenceId?: true
+    status?: true
+    scheduledAt?: true
+    durationMinutes?: true
+    instructorId?: true
+    meetingUrl?: true
+    costAmount?: true
+    costCurrency?: true
+    costNote?: true
+    costInformedAt?: true
+    attendanceId?: true
+    notes?: true
+    createdById?: true
+    completedAt?: true
+    cancelledAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type OnlineRecoveryCountAggregateInputType = {
+    id?: true
+    studentId?: true
+    absenceId?: true
+    status?: true
+    scheduledAt?: true
+    durationMinutes?: true
+    instructorId?: true
+    meetingUrl?: true
+    costAmount?: true
+    costCurrency?: true
+    costNote?: true
+    costInformedAt?: true
+    attendanceId?: true
+    notes?: true
+    createdById?: true
+    completedAt?: true
+    cancelledAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type OnlineRecoveryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OnlineRecovery to aggregate.
+     */
+    where?: OnlineRecoveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OnlineRecoveries to fetch.
+     */
+    orderBy?: OnlineRecoveryOrderByWithRelationInput | OnlineRecoveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OnlineRecoveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OnlineRecoveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OnlineRecoveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned OnlineRecoveries
+    **/
+    _count?: true | OnlineRecoveryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: OnlineRecoveryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OnlineRecoverySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OnlineRecoveryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OnlineRecoveryMaxAggregateInputType
+  }
+
+  export type GetOnlineRecoveryAggregateType<T extends OnlineRecoveryAggregateArgs> = {
+        [P in keyof T & keyof AggregateOnlineRecovery]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOnlineRecovery[P]>
+      : GetScalarType<T[P], AggregateOnlineRecovery[P]>
+  }
+
+
+
+
+  export type OnlineRecoveryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OnlineRecoveryWhereInput
+    orderBy?: OnlineRecoveryOrderByWithAggregationInput | OnlineRecoveryOrderByWithAggregationInput[]
+    by: OnlineRecoveryScalarFieldEnum[] | OnlineRecoveryScalarFieldEnum
+    having?: OnlineRecoveryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OnlineRecoveryCountAggregateInputType | true
+    _avg?: OnlineRecoveryAvgAggregateInputType
+    _sum?: OnlineRecoverySumAggregateInputType
+    _min?: OnlineRecoveryMinAggregateInputType
+    _max?: OnlineRecoveryMaxAggregateInputType
+  }
+
+  export type OnlineRecoveryGroupByOutputType = {
+    id: string
+    studentId: string
+    absenceId: string
+    status: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date
+    durationMinutes: number
+    instructorId: string | null
+    meetingUrl: string | null
+    costAmount: Decimal | null
+    costCurrency: string
+    costNote: string | null
+    costInformedAt: Date | null
+    attendanceId: string | null
+    notes: string | null
+    createdById: string | null
+    completedAt: Date | null
+    cancelledAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: OnlineRecoveryCountAggregateOutputType | null
+    _avg: OnlineRecoveryAvgAggregateOutputType | null
+    _sum: OnlineRecoverySumAggregateOutputType | null
+    _min: OnlineRecoveryMinAggregateOutputType | null
+    _max: OnlineRecoveryMaxAggregateOutputType | null
+  }
+
+  type GetOnlineRecoveryGroupByPayload<T extends OnlineRecoveryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OnlineRecoveryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OnlineRecoveryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OnlineRecoveryGroupByOutputType[P]>
+            : GetScalarType<T[P], OnlineRecoveryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OnlineRecoverySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentId?: boolean
+    absenceId?: boolean
+    status?: boolean
+    scheduledAt?: boolean
+    durationMinutes?: boolean
+    instructorId?: boolean
+    meetingUrl?: boolean
+    costAmount?: boolean
+    costCurrency?: boolean
+    costNote?: boolean
+    costInformedAt?: boolean
+    attendanceId?: boolean
+    notes?: boolean
+    createdById?: boolean
+    completedAt?: boolean
+    cancelledAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    student?: boolean | StudentDefaultArgs<ExtArgs>
+    absence?: boolean | AttendanceDefaultArgs<ExtArgs>
+    instructor?: boolean | OnlineRecovery$instructorArgs<ExtArgs>
+    attendance?: boolean | OnlineRecovery$attendanceArgs<ExtArgs>
+    createdBy?: boolean | OnlineRecovery$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["onlineRecovery"]>
+
+  export type OnlineRecoverySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentId?: boolean
+    absenceId?: boolean
+    status?: boolean
+    scheduledAt?: boolean
+    durationMinutes?: boolean
+    instructorId?: boolean
+    meetingUrl?: boolean
+    costAmount?: boolean
+    costCurrency?: boolean
+    costNote?: boolean
+    costInformedAt?: boolean
+    attendanceId?: boolean
+    notes?: boolean
+    createdById?: boolean
+    completedAt?: boolean
+    cancelledAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    student?: boolean | StudentDefaultArgs<ExtArgs>
+    absence?: boolean | AttendanceDefaultArgs<ExtArgs>
+    instructor?: boolean | OnlineRecovery$instructorArgs<ExtArgs>
+    attendance?: boolean | OnlineRecovery$attendanceArgs<ExtArgs>
+    createdBy?: boolean | OnlineRecovery$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["onlineRecovery"]>
+
+  export type OnlineRecoverySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    studentId?: boolean
+    absenceId?: boolean
+    status?: boolean
+    scheduledAt?: boolean
+    durationMinutes?: boolean
+    instructorId?: boolean
+    meetingUrl?: boolean
+    costAmount?: boolean
+    costCurrency?: boolean
+    costNote?: boolean
+    costInformedAt?: boolean
+    attendanceId?: boolean
+    notes?: boolean
+    createdById?: boolean
+    completedAt?: boolean
+    cancelledAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    student?: boolean | StudentDefaultArgs<ExtArgs>
+    absence?: boolean | AttendanceDefaultArgs<ExtArgs>
+    instructor?: boolean | OnlineRecovery$instructorArgs<ExtArgs>
+    attendance?: boolean | OnlineRecovery$attendanceArgs<ExtArgs>
+    createdBy?: boolean | OnlineRecovery$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["onlineRecovery"]>
+
+  export type OnlineRecoverySelectScalar = {
+    id?: boolean
+    studentId?: boolean
+    absenceId?: boolean
+    status?: boolean
+    scheduledAt?: boolean
+    durationMinutes?: boolean
+    instructorId?: boolean
+    meetingUrl?: boolean
+    costAmount?: boolean
+    costCurrency?: boolean
+    costNote?: boolean
+    costInformedAt?: boolean
+    attendanceId?: boolean
+    notes?: boolean
+    createdById?: boolean
+    completedAt?: boolean
+    cancelledAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type OnlineRecoveryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "studentId" | "absenceId" | "status" | "scheduledAt" | "durationMinutes" | "instructorId" | "meetingUrl" | "costAmount" | "costCurrency" | "costNote" | "costInformedAt" | "attendanceId" | "notes" | "createdById" | "completedAt" | "cancelledAt" | "createdAt" | "updatedAt", ExtArgs["result"]["onlineRecovery"]>
+  export type OnlineRecoveryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    student?: boolean | StudentDefaultArgs<ExtArgs>
+    absence?: boolean | AttendanceDefaultArgs<ExtArgs>
+    instructor?: boolean | OnlineRecovery$instructorArgs<ExtArgs>
+    attendance?: boolean | OnlineRecovery$attendanceArgs<ExtArgs>
+    createdBy?: boolean | OnlineRecovery$createdByArgs<ExtArgs>
+  }
+  export type OnlineRecoveryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    student?: boolean | StudentDefaultArgs<ExtArgs>
+    absence?: boolean | AttendanceDefaultArgs<ExtArgs>
+    instructor?: boolean | OnlineRecovery$instructorArgs<ExtArgs>
+    attendance?: boolean | OnlineRecovery$attendanceArgs<ExtArgs>
+    createdBy?: boolean | OnlineRecovery$createdByArgs<ExtArgs>
+  }
+  export type OnlineRecoveryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    student?: boolean | StudentDefaultArgs<ExtArgs>
+    absence?: boolean | AttendanceDefaultArgs<ExtArgs>
+    instructor?: boolean | OnlineRecovery$instructorArgs<ExtArgs>
+    attendance?: boolean | OnlineRecovery$attendanceArgs<ExtArgs>
+    createdBy?: boolean | OnlineRecovery$createdByArgs<ExtArgs>
+  }
+
+  export type $OnlineRecoveryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "OnlineRecovery"
+    objects: {
+      student: Prisma.$StudentPayload<ExtArgs>
+      absence: Prisma.$AttendancePayload<ExtArgs>
+      instructor: Prisma.$UserPayload<ExtArgs> | null
+      attendance: Prisma.$AttendancePayload<ExtArgs> | null
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      studentId: string
+      absenceId: string
+      status: $Enums.OnlineRecoveryStatus
+      scheduledAt: Date
+      durationMinutes: number
+      instructorId: string | null
+      meetingUrl: string | null
+      costAmount: Prisma.Decimal | null
+      costCurrency: string
+      costNote: string | null
+      costInformedAt: Date | null
+      attendanceId: string | null
+      notes: string | null
+      createdById: string | null
+      completedAt: Date | null
+      cancelledAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["onlineRecovery"]>
+    composites: {}
+  }
+
+  type OnlineRecoveryGetPayload<S extends boolean | null | undefined | OnlineRecoveryDefaultArgs> = $Result.GetResult<Prisma.$OnlineRecoveryPayload, S>
+
+  type OnlineRecoveryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<OnlineRecoveryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: OnlineRecoveryCountAggregateInputType | true
+    }
+
+  export interface OnlineRecoveryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['OnlineRecovery'], meta: { name: 'OnlineRecovery' } }
+    /**
+     * Find zero or one OnlineRecovery that matches the filter.
+     * @param {OnlineRecoveryFindUniqueArgs} args - Arguments to find a OnlineRecovery
+     * @example
+     * // Get one OnlineRecovery
+     * const onlineRecovery = await prisma.onlineRecovery.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OnlineRecoveryFindUniqueArgs>(args: SelectSubset<T, OnlineRecoveryFindUniqueArgs<ExtArgs>>): Prisma__OnlineRecoveryClient<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one OnlineRecovery that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {OnlineRecoveryFindUniqueOrThrowArgs} args - Arguments to find a OnlineRecovery
+     * @example
+     * // Get one OnlineRecovery
+     * const onlineRecovery = await prisma.onlineRecovery.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OnlineRecoveryFindUniqueOrThrowArgs>(args: SelectSubset<T, OnlineRecoveryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OnlineRecoveryClient<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OnlineRecovery that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OnlineRecoveryFindFirstArgs} args - Arguments to find a OnlineRecovery
+     * @example
+     * // Get one OnlineRecovery
+     * const onlineRecovery = await prisma.onlineRecovery.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OnlineRecoveryFindFirstArgs>(args?: SelectSubset<T, OnlineRecoveryFindFirstArgs<ExtArgs>>): Prisma__OnlineRecoveryClient<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OnlineRecovery that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OnlineRecoveryFindFirstOrThrowArgs} args - Arguments to find a OnlineRecovery
+     * @example
+     * // Get one OnlineRecovery
+     * const onlineRecovery = await prisma.onlineRecovery.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OnlineRecoveryFindFirstOrThrowArgs>(args?: SelectSubset<T, OnlineRecoveryFindFirstOrThrowArgs<ExtArgs>>): Prisma__OnlineRecoveryClient<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more OnlineRecoveries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OnlineRecoveryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OnlineRecoveries
+     * const onlineRecoveries = await prisma.onlineRecovery.findMany()
+     * 
+     * // Get first 10 OnlineRecoveries
+     * const onlineRecoveries = await prisma.onlineRecovery.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const onlineRecoveryWithIdOnly = await prisma.onlineRecovery.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OnlineRecoveryFindManyArgs>(args?: SelectSubset<T, OnlineRecoveryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a OnlineRecovery.
+     * @param {OnlineRecoveryCreateArgs} args - Arguments to create a OnlineRecovery.
+     * @example
+     * // Create one OnlineRecovery
+     * const OnlineRecovery = await prisma.onlineRecovery.create({
+     *   data: {
+     *     // ... data to create a OnlineRecovery
+     *   }
+     * })
+     * 
+     */
+    create<T extends OnlineRecoveryCreateArgs>(args: SelectSubset<T, OnlineRecoveryCreateArgs<ExtArgs>>): Prisma__OnlineRecoveryClient<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many OnlineRecoveries.
+     * @param {OnlineRecoveryCreateManyArgs} args - Arguments to create many OnlineRecoveries.
+     * @example
+     * // Create many OnlineRecoveries
+     * const onlineRecovery = await prisma.onlineRecovery.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OnlineRecoveryCreateManyArgs>(args?: SelectSubset<T, OnlineRecoveryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many OnlineRecoveries and returns the data saved in the database.
+     * @param {OnlineRecoveryCreateManyAndReturnArgs} args - Arguments to create many OnlineRecoveries.
+     * @example
+     * // Create many OnlineRecoveries
+     * const onlineRecovery = await prisma.onlineRecovery.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many OnlineRecoveries and only return the `id`
+     * const onlineRecoveryWithIdOnly = await prisma.onlineRecovery.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OnlineRecoveryCreateManyAndReturnArgs>(args?: SelectSubset<T, OnlineRecoveryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a OnlineRecovery.
+     * @param {OnlineRecoveryDeleteArgs} args - Arguments to delete one OnlineRecovery.
+     * @example
+     * // Delete one OnlineRecovery
+     * const OnlineRecovery = await prisma.onlineRecovery.delete({
+     *   where: {
+     *     // ... filter to delete one OnlineRecovery
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OnlineRecoveryDeleteArgs>(args: SelectSubset<T, OnlineRecoveryDeleteArgs<ExtArgs>>): Prisma__OnlineRecoveryClient<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one OnlineRecovery.
+     * @param {OnlineRecoveryUpdateArgs} args - Arguments to update one OnlineRecovery.
+     * @example
+     * // Update one OnlineRecovery
+     * const onlineRecovery = await prisma.onlineRecovery.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OnlineRecoveryUpdateArgs>(args: SelectSubset<T, OnlineRecoveryUpdateArgs<ExtArgs>>): Prisma__OnlineRecoveryClient<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more OnlineRecoveries.
+     * @param {OnlineRecoveryDeleteManyArgs} args - Arguments to filter OnlineRecoveries to delete.
+     * @example
+     * // Delete a few OnlineRecoveries
+     * const { count } = await prisma.onlineRecovery.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OnlineRecoveryDeleteManyArgs>(args?: SelectSubset<T, OnlineRecoveryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OnlineRecoveries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OnlineRecoveryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OnlineRecoveries
+     * const onlineRecovery = await prisma.onlineRecovery.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OnlineRecoveryUpdateManyArgs>(args: SelectSubset<T, OnlineRecoveryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OnlineRecoveries and returns the data updated in the database.
+     * @param {OnlineRecoveryUpdateManyAndReturnArgs} args - Arguments to update many OnlineRecoveries.
+     * @example
+     * // Update many OnlineRecoveries
+     * const onlineRecovery = await prisma.onlineRecovery.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more OnlineRecoveries and only return the `id`
+     * const onlineRecoveryWithIdOnly = await prisma.onlineRecovery.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends OnlineRecoveryUpdateManyAndReturnArgs>(args: SelectSubset<T, OnlineRecoveryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one OnlineRecovery.
+     * @param {OnlineRecoveryUpsertArgs} args - Arguments to update or create a OnlineRecovery.
+     * @example
+     * // Update or create a OnlineRecovery
+     * const onlineRecovery = await prisma.onlineRecovery.upsert({
+     *   create: {
+     *     // ... data to create a OnlineRecovery
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OnlineRecovery we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OnlineRecoveryUpsertArgs>(args: SelectSubset<T, OnlineRecoveryUpsertArgs<ExtArgs>>): Prisma__OnlineRecoveryClient<$Result.GetResult<Prisma.$OnlineRecoveryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of OnlineRecoveries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OnlineRecoveryCountArgs} args - Arguments to filter OnlineRecoveries to count.
+     * @example
+     * // Count the number of OnlineRecoveries
+     * const count = await prisma.onlineRecovery.count({
+     *   where: {
+     *     // ... the filter for the OnlineRecoveries we want to count
+     *   }
+     * })
+    **/
+    count<T extends OnlineRecoveryCountArgs>(
+      args?: Subset<T, OnlineRecoveryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OnlineRecoveryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a OnlineRecovery.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OnlineRecoveryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OnlineRecoveryAggregateArgs>(args: Subset<T, OnlineRecoveryAggregateArgs>): Prisma.PrismaPromise<GetOnlineRecoveryAggregateType<T>>
+
+    /**
+     * Group by OnlineRecovery.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OnlineRecoveryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OnlineRecoveryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OnlineRecoveryGroupByArgs['orderBy'] }
+        : { orderBy?: OnlineRecoveryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OnlineRecoveryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOnlineRecoveryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the OnlineRecovery model
+   */
+  readonly fields: OnlineRecoveryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for OnlineRecovery.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OnlineRecoveryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    student<T extends StudentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StudentDefaultArgs<ExtArgs>>): Prisma__StudentClient<$Result.GetResult<Prisma.$StudentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    absence<T extends AttendanceDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AttendanceDefaultArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    instructor<T extends OnlineRecovery$instructorArgs<ExtArgs> = {}>(args?: Subset<T, OnlineRecovery$instructorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    attendance<T extends OnlineRecovery$attendanceArgs<ExtArgs> = {}>(args?: Subset<T, OnlineRecovery$attendanceArgs<ExtArgs>>): Prisma__AttendanceClient<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends OnlineRecovery$createdByArgs<ExtArgs> = {}>(args?: Subset<T, OnlineRecovery$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the OnlineRecovery model
+   */
+  interface OnlineRecoveryFieldRefs {
+    readonly id: FieldRef<"OnlineRecovery", 'String'>
+    readonly studentId: FieldRef<"OnlineRecovery", 'String'>
+    readonly absenceId: FieldRef<"OnlineRecovery", 'String'>
+    readonly status: FieldRef<"OnlineRecovery", 'OnlineRecoveryStatus'>
+    readonly scheduledAt: FieldRef<"OnlineRecovery", 'DateTime'>
+    readonly durationMinutes: FieldRef<"OnlineRecovery", 'Int'>
+    readonly instructorId: FieldRef<"OnlineRecovery", 'String'>
+    readonly meetingUrl: FieldRef<"OnlineRecovery", 'String'>
+    readonly costAmount: FieldRef<"OnlineRecovery", 'Decimal'>
+    readonly costCurrency: FieldRef<"OnlineRecovery", 'String'>
+    readonly costNote: FieldRef<"OnlineRecovery", 'String'>
+    readonly costInformedAt: FieldRef<"OnlineRecovery", 'DateTime'>
+    readonly attendanceId: FieldRef<"OnlineRecovery", 'String'>
+    readonly notes: FieldRef<"OnlineRecovery", 'String'>
+    readonly createdById: FieldRef<"OnlineRecovery", 'String'>
+    readonly completedAt: FieldRef<"OnlineRecovery", 'DateTime'>
+    readonly cancelledAt: FieldRef<"OnlineRecovery", 'DateTime'>
+    readonly createdAt: FieldRef<"OnlineRecovery", 'DateTime'>
+    readonly updatedAt: FieldRef<"OnlineRecovery", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * OnlineRecovery findUnique
+   */
+  export type OnlineRecoveryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
+    /**
+     * Filter, which OnlineRecovery to fetch.
+     */
+    where: OnlineRecoveryWhereUniqueInput
+  }
+
+  /**
+   * OnlineRecovery findUniqueOrThrow
+   */
+  export type OnlineRecoveryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
+    /**
+     * Filter, which OnlineRecovery to fetch.
+     */
+    where: OnlineRecoveryWhereUniqueInput
+  }
+
+  /**
+   * OnlineRecovery findFirst
+   */
+  export type OnlineRecoveryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
+    /**
+     * Filter, which OnlineRecovery to fetch.
+     */
+    where?: OnlineRecoveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OnlineRecoveries to fetch.
+     */
+    orderBy?: OnlineRecoveryOrderByWithRelationInput | OnlineRecoveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OnlineRecoveries.
+     */
+    cursor?: OnlineRecoveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OnlineRecoveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OnlineRecoveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OnlineRecoveries.
+     */
+    distinct?: OnlineRecoveryScalarFieldEnum | OnlineRecoveryScalarFieldEnum[]
+  }
+
+  /**
+   * OnlineRecovery findFirstOrThrow
+   */
+  export type OnlineRecoveryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
+    /**
+     * Filter, which OnlineRecovery to fetch.
+     */
+    where?: OnlineRecoveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OnlineRecoveries to fetch.
+     */
+    orderBy?: OnlineRecoveryOrderByWithRelationInput | OnlineRecoveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OnlineRecoveries.
+     */
+    cursor?: OnlineRecoveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OnlineRecoveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OnlineRecoveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OnlineRecoveries.
+     */
+    distinct?: OnlineRecoveryScalarFieldEnum | OnlineRecoveryScalarFieldEnum[]
+  }
+
+  /**
+   * OnlineRecovery findMany
+   */
+  export type OnlineRecoveryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
+    /**
+     * Filter, which OnlineRecoveries to fetch.
+     */
+    where?: OnlineRecoveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OnlineRecoveries to fetch.
+     */
+    orderBy?: OnlineRecoveryOrderByWithRelationInput | OnlineRecoveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing OnlineRecoveries.
+     */
+    cursor?: OnlineRecoveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OnlineRecoveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OnlineRecoveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OnlineRecoveries.
+     */
+    distinct?: OnlineRecoveryScalarFieldEnum | OnlineRecoveryScalarFieldEnum[]
+  }
+
+  /**
+   * OnlineRecovery create
+   */
+  export type OnlineRecoveryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a OnlineRecovery.
+     */
+    data: XOR<OnlineRecoveryCreateInput, OnlineRecoveryUncheckedCreateInput>
+  }
+
+  /**
+   * OnlineRecovery createMany
+   */
+  export type OnlineRecoveryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many OnlineRecoveries.
+     */
+    data: OnlineRecoveryCreateManyInput | OnlineRecoveryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * OnlineRecovery createManyAndReturn
+   */
+  export type OnlineRecoveryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * The data used to create many OnlineRecoveries.
+     */
+    data: OnlineRecoveryCreateManyInput | OnlineRecoveryCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OnlineRecovery update
+   */
+  export type OnlineRecoveryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a OnlineRecovery.
+     */
+    data: XOR<OnlineRecoveryUpdateInput, OnlineRecoveryUncheckedUpdateInput>
+    /**
+     * Choose, which OnlineRecovery to update.
+     */
+    where: OnlineRecoveryWhereUniqueInput
+  }
+
+  /**
+   * OnlineRecovery updateMany
+   */
+  export type OnlineRecoveryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OnlineRecoveries.
+     */
+    data: XOR<OnlineRecoveryUpdateManyMutationInput, OnlineRecoveryUncheckedUpdateManyInput>
+    /**
+     * Filter which OnlineRecoveries to update
+     */
+    where?: OnlineRecoveryWhereInput
+    /**
+     * Limit how many OnlineRecoveries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * OnlineRecovery updateManyAndReturn
+   */
+  export type OnlineRecoveryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * The data used to update OnlineRecoveries.
+     */
+    data: XOR<OnlineRecoveryUpdateManyMutationInput, OnlineRecoveryUncheckedUpdateManyInput>
+    /**
+     * Filter which OnlineRecoveries to update
+     */
+    where?: OnlineRecoveryWhereInput
+    /**
+     * Limit how many OnlineRecoveries to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OnlineRecovery upsert
+   */
+  export type OnlineRecoveryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the OnlineRecovery to update in case it exists.
+     */
+    where: OnlineRecoveryWhereUniqueInput
+    /**
+     * In case the OnlineRecovery found by the `where` argument doesn't exist, create a new OnlineRecovery with this data.
+     */
+    create: XOR<OnlineRecoveryCreateInput, OnlineRecoveryUncheckedCreateInput>
+    /**
+     * In case the OnlineRecovery was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OnlineRecoveryUpdateInput, OnlineRecoveryUncheckedUpdateInput>
+  }
+
+  /**
+   * OnlineRecovery delete
+   */
+  export type OnlineRecoveryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
+    /**
+     * Filter which OnlineRecovery to delete.
+     */
+    where: OnlineRecoveryWhereUniqueInput
+  }
+
+  /**
+   * OnlineRecovery deleteMany
+   */
+  export type OnlineRecoveryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OnlineRecoveries to delete
+     */
+    where?: OnlineRecoveryWhereInput
+    /**
+     * Limit how many OnlineRecoveries to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * OnlineRecovery.instructor
+   */
+  export type OnlineRecovery$instructorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * OnlineRecovery.attendance
+   */
+  export type OnlineRecovery$attendanceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attendance
+     */
+    select?: AttendanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attendance
+     */
+    omit?: AttendanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttendanceInclude<ExtArgs> | null
+    where?: AttendanceWhereInput
+  }
+
+  /**
+   * OnlineRecovery.createdBy
+   */
+  export type OnlineRecovery$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * OnlineRecovery without action
+   */
+  export type OnlineRecoveryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OnlineRecovery
+     */
+    select?: OnlineRecoverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OnlineRecovery
+     */
+    omit?: OnlineRecoveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OnlineRecoveryInclude<ExtArgs> | null
   }
 
 
@@ -53785,6 +56631,17 @@ export namespace Prisma {
   export type ClassSessionScalarFieldEnum = (typeof ClassSessionScalarFieldEnum)[keyof typeof ClassSessionScalarFieldEnum]
 
 
+  export const SchoolAbsencePolicyScalarFieldEnum: {
+    id: 'id',
+    schoolId: 'schoolId',
+    policy: 'policy',
+    effectiveFrom: 'effectiveFrom',
+    createdAt: 'createdAt'
+  };
+
+  export type SchoolAbsencePolicyScalarFieldEnum = (typeof SchoolAbsencePolicyScalarFieldEnum)[keyof typeof SchoolAbsencePolicyScalarFieldEnum]
+
+
   export const AbsenceJustificationScalarFieldEnum: {
     id: 'id',
     studentId: 'studentId',
@@ -53822,6 +56679,31 @@ export namespace Prisma {
   };
 
   export type AttendanceScalarFieldEnum = (typeof AttendanceScalarFieldEnum)[keyof typeof AttendanceScalarFieldEnum]
+
+
+  export const OnlineRecoveryScalarFieldEnum: {
+    id: 'id',
+    studentId: 'studentId',
+    absenceId: 'absenceId',
+    status: 'status',
+    scheduledAt: 'scheduledAt',
+    durationMinutes: 'durationMinutes',
+    instructorId: 'instructorId',
+    meetingUrl: 'meetingUrl',
+    costAmount: 'costAmount',
+    costCurrency: 'costCurrency',
+    costNote: 'costNote',
+    costInformedAt: 'costInformedAt',
+    attendanceId: 'attendanceId',
+    notes: 'notes',
+    createdById: 'createdById',
+    completedAt: 'completedAt',
+    cancelledAt: 'cancelledAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type OnlineRecoveryScalarFieldEnum = (typeof OnlineRecoveryScalarFieldEnum)[keyof typeof OnlineRecoveryScalarFieldEnum]
 
 
   export const AchievementTypeScalarFieldEnum: {
@@ -54409,6 +57291,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'AbsencePostClosePolicy'
+   */
+  export type EnumAbsencePostClosePolicyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AbsencePostClosePolicy'>
+    
+
+
+  /**
+   * Reference to a field of type 'AbsencePostClosePolicy[]'
+   */
+  export type ListEnumAbsencePostClosePolicyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AbsencePostClosePolicy[]'>
+    
+
+
+  /**
    * Reference to a field of type 'AbsenceJustificationStatus'
    */
   export type EnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AbsenceJustificationStatus'>
@@ -54433,6 +57329,20 @@ export namespace Prisma {
    * Reference to a field of type 'AttendanceStatus[]'
    */
   export type ListEnumAttendanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttendanceStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'OnlineRecoveryStatus'
+   */
+  export type EnumOnlineRecoveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnlineRecoveryStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'OnlineRecoveryStatus[]'
+   */
+  export type ListEnumOnlineRecoveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnlineRecoveryStatus[]'>
     
 
 
@@ -54543,6 +57453,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationListRelationFilter
     auditLogs?: AuditLogListRelationFilter
     reviews?: ReviewListRelationFilter
+    absencePolicies?: SchoolAbsencePolicyListRelationFilter
   }
 
   export type SchoolOrderByWithRelationInput = {
@@ -54562,6 +57473,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationOrderByRelationAggregateInput
     auditLogs?: AuditLogOrderByRelationAggregateInput
     reviews?: ReviewOrderByRelationAggregateInput
+    absencePolicies?: SchoolAbsencePolicyOrderByRelationAggregateInput
   }
 
   export type SchoolWhereUniqueInput = Prisma.AtLeast<{
@@ -54584,6 +57496,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationListRelationFilter
     auditLogs?: AuditLogListRelationFilter
     reviews?: ReviewListRelationFilter
+    absencePolicies?: SchoolAbsencePolicyListRelationFilter
   }, "id">
 
   export type SchoolOrderByWithAggregationInput = {
@@ -54714,6 +57627,8 @@ export namespace Prisma {
     auditLogs?: AuditLogListRelationFilter
     classes?: ClassListRelationFilter
     posts?: PostListRelationFilter
+    onlineRecoveriesAsInstructor?: OnlineRecoveryListRelationFilter
+    onlineRecoveriesCreated?: OnlineRecoveryListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -54754,6 +57669,8 @@ export namespace Prisma {
     auditLogs?: AuditLogOrderByRelationAggregateInput
     classes?: ClassOrderByRelationAggregateInput
     posts?: PostOrderByRelationAggregateInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryOrderByRelationAggregateInput
+    onlineRecoveriesCreated?: OnlineRecoveryOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -54797,6 +57714,8 @@ export namespace Prisma {
     auditLogs?: AuditLogListRelationFilter
     classes?: ClassListRelationFilter
     posts?: PostListRelationFilter
+    onlineRecoveriesAsInstructor?: OnlineRecoveryListRelationFilter
+    onlineRecoveriesCreated?: OnlineRecoveryListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -55143,6 +58062,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenListRelationFilter
     documents?: StudentDocumentListRelationFilter
     notifications?: NotificationListRelationFilter
+    onlineRecoveries?: OnlineRecoveryListRelationFilter
   }
 
   export type StudentOrderByWithRelationInput = {
@@ -55195,6 +58115,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenOrderByRelationAggregateInput
     documents?: StudentDocumentOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
+    onlineRecoveries?: OnlineRecoveryOrderByRelationAggregateInput
   }
 
   export type StudentWhereUniqueInput = Prisma.AtLeast<{
@@ -55250,6 +58171,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenListRelationFilter
     documents?: StudentDocumentListRelationFilter
     notifications?: NotificationListRelationFilter
+    onlineRecoveries?: OnlineRecoveryListRelationFilter
   }, "id" | "userId" | "memberNumber">
 
   export type StudentOrderByWithAggregationInput = {
@@ -56747,6 +59669,61 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"ClassSession"> | Date | string
   }
 
+  export type SchoolAbsencePolicyWhereInput = {
+    AND?: SchoolAbsencePolicyWhereInput | SchoolAbsencePolicyWhereInput[]
+    OR?: SchoolAbsencePolicyWhereInput[]
+    NOT?: SchoolAbsencePolicyWhereInput | SchoolAbsencePolicyWhereInput[]
+    id?: StringFilter<"SchoolAbsencePolicy"> | string
+    schoolId?: StringFilter<"SchoolAbsencePolicy"> | string
+    policy?: EnumAbsencePostClosePolicyFilter<"SchoolAbsencePolicy"> | $Enums.AbsencePostClosePolicy
+    effectiveFrom?: DateTimeFilter<"SchoolAbsencePolicy"> | Date | string
+    createdAt?: DateTimeFilter<"SchoolAbsencePolicy"> | Date | string
+    school?: XOR<SchoolScalarRelationFilter, SchoolWhereInput>
+  }
+
+  export type SchoolAbsencePolicyOrderByWithRelationInput = {
+    id?: SortOrder
+    schoolId?: SortOrder
+    policy?: SortOrder
+    effectiveFrom?: SortOrder
+    createdAt?: SortOrder
+    school?: SchoolOrderByWithRelationInput
+  }
+
+  export type SchoolAbsencePolicyWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SchoolAbsencePolicyWhereInput | SchoolAbsencePolicyWhereInput[]
+    OR?: SchoolAbsencePolicyWhereInput[]
+    NOT?: SchoolAbsencePolicyWhereInput | SchoolAbsencePolicyWhereInput[]
+    schoolId?: StringFilter<"SchoolAbsencePolicy"> | string
+    policy?: EnumAbsencePostClosePolicyFilter<"SchoolAbsencePolicy"> | $Enums.AbsencePostClosePolicy
+    effectiveFrom?: DateTimeFilter<"SchoolAbsencePolicy"> | Date | string
+    createdAt?: DateTimeFilter<"SchoolAbsencePolicy"> | Date | string
+    school?: XOR<SchoolScalarRelationFilter, SchoolWhereInput>
+  }, "id">
+
+  export type SchoolAbsencePolicyOrderByWithAggregationInput = {
+    id?: SortOrder
+    schoolId?: SortOrder
+    policy?: SortOrder
+    effectiveFrom?: SortOrder
+    createdAt?: SortOrder
+    _count?: SchoolAbsencePolicyCountOrderByAggregateInput
+    _max?: SchoolAbsencePolicyMaxOrderByAggregateInput
+    _min?: SchoolAbsencePolicyMinOrderByAggregateInput
+  }
+
+  export type SchoolAbsencePolicyScalarWhereWithAggregatesInput = {
+    AND?: SchoolAbsencePolicyScalarWhereWithAggregatesInput | SchoolAbsencePolicyScalarWhereWithAggregatesInput[]
+    OR?: SchoolAbsencePolicyScalarWhereWithAggregatesInput[]
+    NOT?: SchoolAbsencePolicyScalarWhereWithAggregatesInput | SchoolAbsencePolicyScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SchoolAbsencePolicy"> | string
+    schoolId?: StringWithAggregatesFilter<"SchoolAbsencePolicy"> | string
+    policy?: EnumAbsencePostClosePolicyWithAggregatesFilter<"SchoolAbsencePolicy"> | $Enums.AbsencePostClosePolicy
+    effectiveFrom?: DateTimeWithAggregatesFilter<"SchoolAbsencePolicy"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"SchoolAbsencePolicy"> | Date | string
+  }
+
   export type AbsenceJustificationWhereInput = {
     AND?: AbsenceJustificationWhereInput | AbsenceJustificationWhereInput[]
     OR?: AbsenceJustificationWhereInput[]
@@ -56860,6 +59837,8 @@ export namespace Prisma {
     class?: XOR<ClassNullableScalarRelationFilter, ClassWhereInput> | null
     recoveredBy?: XOR<AttendanceNullableScalarRelationFilter, AttendanceWhereInput> | null
     recovery?: XOR<AttendanceNullableScalarRelationFilter, AttendanceWhereInput> | null
+    onlineRecoveryAbsence?: XOR<OnlineRecoveryNullableScalarRelationFilter, OnlineRecoveryWhereInput> | null
+    onlineRecoveryAttendance?: XOR<OnlineRecoveryNullableScalarRelationFilter, OnlineRecoveryWhereInput> | null
     confirmedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     practiceLogs?: TechniquePracticeLogListRelationFilter
   }
@@ -56887,6 +59866,8 @@ export namespace Prisma {
     class?: ClassOrderByWithRelationInput
     recoveredBy?: AttendanceOrderByWithRelationInput
     recovery?: AttendanceOrderByWithRelationInput
+    onlineRecoveryAbsence?: OnlineRecoveryOrderByWithRelationInput
+    onlineRecoveryAttendance?: OnlineRecoveryOrderByWithRelationInput
     confirmedBy?: UserOrderByWithRelationInput
     practiceLogs?: TechniquePracticeLogOrderByRelationAggregateInput
   }
@@ -56918,6 +59899,8 @@ export namespace Prisma {
     class?: XOR<ClassNullableScalarRelationFilter, ClassWhereInput> | null
     recoveredBy?: XOR<AttendanceNullableScalarRelationFilter, AttendanceWhereInput> | null
     recovery?: XOR<AttendanceNullableScalarRelationFilter, AttendanceWhereInput> | null
+    onlineRecoveryAbsence?: XOR<OnlineRecoveryNullableScalarRelationFilter, OnlineRecoveryWhereInput> | null
+    onlineRecoveryAttendance?: XOR<OnlineRecoveryNullableScalarRelationFilter, OnlineRecoveryWhereInput> | null
     confirmedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     practiceLogs?: TechniquePracticeLogListRelationFilter
   }, "id" | "recoveredById" | "sessionId_studentId">
@@ -56968,6 +59951,145 @@ export namespace Prisma {
     notes?: StringNullableWithAggregatesFilter<"Attendance"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Attendance"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Attendance"> | Date | string
+  }
+
+  export type OnlineRecoveryWhereInput = {
+    AND?: OnlineRecoveryWhereInput | OnlineRecoveryWhereInput[]
+    OR?: OnlineRecoveryWhereInput[]
+    NOT?: OnlineRecoveryWhereInput | OnlineRecoveryWhereInput[]
+    id?: StringFilter<"OnlineRecovery"> | string
+    studentId?: StringFilter<"OnlineRecovery"> | string
+    absenceId?: StringFilter<"OnlineRecovery"> | string
+    status?: EnumOnlineRecoveryStatusFilter<"OnlineRecovery"> | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFilter<"OnlineRecovery"> | Date | string
+    durationMinutes?: IntFilter<"OnlineRecovery"> | number
+    instructorId?: StringNullableFilter<"OnlineRecovery"> | string | null
+    meetingUrl?: StringNullableFilter<"OnlineRecovery"> | string | null
+    costAmount?: DecimalNullableFilter<"OnlineRecovery"> | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFilter<"OnlineRecovery"> | string
+    costNote?: StringNullableFilter<"OnlineRecovery"> | string | null
+    costInformedAt?: DateTimeNullableFilter<"OnlineRecovery"> | Date | string | null
+    attendanceId?: StringNullableFilter<"OnlineRecovery"> | string | null
+    notes?: StringNullableFilter<"OnlineRecovery"> | string | null
+    createdById?: StringNullableFilter<"OnlineRecovery"> | string | null
+    completedAt?: DateTimeNullableFilter<"OnlineRecovery"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"OnlineRecovery"> | Date | string | null
+    createdAt?: DateTimeFilter<"OnlineRecovery"> | Date | string
+    updatedAt?: DateTimeFilter<"OnlineRecovery"> | Date | string
+    student?: XOR<StudentScalarRelationFilter, StudentWhereInput>
+    absence?: XOR<AttendanceScalarRelationFilter, AttendanceWhereInput>
+    instructor?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    attendance?: XOR<AttendanceNullableScalarRelationFilter, AttendanceWhereInput> | null
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type OnlineRecoveryOrderByWithRelationInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    absenceId?: SortOrder
+    status?: SortOrder
+    scheduledAt?: SortOrder
+    durationMinutes?: SortOrder
+    instructorId?: SortOrderInput | SortOrder
+    meetingUrl?: SortOrderInput | SortOrder
+    costAmount?: SortOrderInput | SortOrder
+    costCurrency?: SortOrder
+    costNote?: SortOrderInput | SortOrder
+    costInformedAt?: SortOrderInput | SortOrder
+    attendanceId?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    cancelledAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    student?: StudentOrderByWithRelationInput
+    absence?: AttendanceOrderByWithRelationInput
+    instructor?: UserOrderByWithRelationInput
+    attendance?: AttendanceOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
+  }
+
+  export type OnlineRecoveryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    absenceId?: string
+    attendanceId?: string
+    AND?: OnlineRecoveryWhereInput | OnlineRecoveryWhereInput[]
+    OR?: OnlineRecoveryWhereInput[]
+    NOT?: OnlineRecoveryWhereInput | OnlineRecoveryWhereInput[]
+    studentId?: StringFilter<"OnlineRecovery"> | string
+    status?: EnumOnlineRecoveryStatusFilter<"OnlineRecovery"> | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFilter<"OnlineRecovery"> | Date | string
+    durationMinutes?: IntFilter<"OnlineRecovery"> | number
+    instructorId?: StringNullableFilter<"OnlineRecovery"> | string | null
+    meetingUrl?: StringNullableFilter<"OnlineRecovery"> | string | null
+    costAmount?: DecimalNullableFilter<"OnlineRecovery"> | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFilter<"OnlineRecovery"> | string
+    costNote?: StringNullableFilter<"OnlineRecovery"> | string | null
+    costInformedAt?: DateTimeNullableFilter<"OnlineRecovery"> | Date | string | null
+    notes?: StringNullableFilter<"OnlineRecovery"> | string | null
+    createdById?: StringNullableFilter<"OnlineRecovery"> | string | null
+    completedAt?: DateTimeNullableFilter<"OnlineRecovery"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"OnlineRecovery"> | Date | string | null
+    createdAt?: DateTimeFilter<"OnlineRecovery"> | Date | string
+    updatedAt?: DateTimeFilter<"OnlineRecovery"> | Date | string
+    student?: XOR<StudentScalarRelationFilter, StudentWhereInput>
+    absence?: XOR<AttendanceScalarRelationFilter, AttendanceWhereInput>
+    instructor?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    attendance?: XOR<AttendanceNullableScalarRelationFilter, AttendanceWhereInput> | null
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id" | "absenceId" | "attendanceId">
+
+  export type OnlineRecoveryOrderByWithAggregationInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    absenceId?: SortOrder
+    status?: SortOrder
+    scheduledAt?: SortOrder
+    durationMinutes?: SortOrder
+    instructorId?: SortOrderInput | SortOrder
+    meetingUrl?: SortOrderInput | SortOrder
+    costAmount?: SortOrderInput | SortOrder
+    costCurrency?: SortOrder
+    costNote?: SortOrderInput | SortOrder
+    costInformedAt?: SortOrderInput | SortOrder
+    attendanceId?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    cancelledAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: OnlineRecoveryCountOrderByAggregateInput
+    _avg?: OnlineRecoveryAvgOrderByAggregateInput
+    _max?: OnlineRecoveryMaxOrderByAggregateInput
+    _min?: OnlineRecoveryMinOrderByAggregateInput
+    _sum?: OnlineRecoverySumOrderByAggregateInput
+  }
+
+  export type OnlineRecoveryScalarWhereWithAggregatesInput = {
+    AND?: OnlineRecoveryScalarWhereWithAggregatesInput | OnlineRecoveryScalarWhereWithAggregatesInput[]
+    OR?: OnlineRecoveryScalarWhereWithAggregatesInput[]
+    NOT?: OnlineRecoveryScalarWhereWithAggregatesInput | OnlineRecoveryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"OnlineRecovery"> | string
+    studentId?: StringWithAggregatesFilter<"OnlineRecovery"> | string
+    absenceId?: StringWithAggregatesFilter<"OnlineRecovery"> | string
+    status?: EnumOnlineRecoveryStatusWithAggregatesFilter<"OnlineRecovery"> | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeWithAggregatesFilter<"OnlineRecovery"> | Date | string
+    durationMinutes?: IntWithAggregatesFilter<"OnlineRecovery"> | number
+    instructorId?: StringNullableWithAggregatesFilter<"OnlineRecovery"> | string | null
+    meetingUrl?: StringNullableWithAggregatesFilter<"OnlineRecovery"> | string | null
+    costAmount?: DecimalNullableWithAggregatesFilter<"OnlineRecovery"> | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringWithAggregatesFilter<"OnlineRecovery"> | string
+    costNote?: StringNullableWithAggregatesFilter<"OnlineRecovery"> | string | null
+    costInformedAt?: DateTimeNullableWithAggregatesFilter<"OnlineRecovery"> | Date | string | null
+    attendanceId?: StringNullableWithAggregatesFilter<"OnlineRecovery"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"OnlineRecovery"> | string | null
+    createdById?: StringNullableWithAggregatesFilter<"OnlineRecovery"> | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"OnlineRecovery"> | Date | string | null
+    cancelledAt?: DateTimeNullableWithAggregatesFilter<"OnlineRecovery"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"OnlineRecovery"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"OnlineRecovery"> | Date | string
   }
 
   export type AchievementTypeWhereInput = {
@@ -58097,6 +61219,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
     reviews?: ReviewCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateInput = {
@@ -58116,6 +61239,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUpdateInput = {
@@ -58135,6 +61259,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateInput = {
@@ -58154,6 +61279,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolCreateManyInput = {
@@ -58284,6 +61410,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -58322,6 +61450,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUpdateInput = {
@@ -58360,6 +61490,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -58398,6 +61530,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -58748,6 +61882,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateInput = {
@@ -58794,6 +61929,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUpdateInput = {
@@ -58840,6 +61976,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateInput = {
@@ -58886,6 +62023,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentCreateManyInput = {
@@ -60507,6 +63645,61 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SchoolAbsencePolicyCreateInput = {
+    id?: string
+    policy?: $Enums.AbsencePostClosePolicy
+    effectiveFrom?: Date | string
+    createdAt?: Date | string
+    school: SchoolCreateNestedOneWithoutAbsencePoliciesInput
+  }
+
+  export type SchoolAbsencePolicyUncheckedCreateInput = {
+    id?: string
+    schoolId: string
+    policy?: $Enums.AbsencePostClosePolicy
+    effectiveFrom?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type SchoolAbsencePolicyUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policy?: EnumAbsencePostClosePolicyFieldUpdateOperationsInput | $Enums.AbsencePostClosePolicy
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneRequiredWithoutAbsencePoliciesNestedInput
+  }
+
+  export type SchoolAbsencePolicyUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    schoolId?: StringFieldUpdateOperationsInput | string
+    policy?: EnumAbsencePostClosePolicyFieldUpdateOperationsInput | $Enums.AbsencePostClosePolicy
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SchoolAbsencePolicyCreateManyInput = {
+    id?: string
+    schoolId: string
+    policy?: $Enums.AbsencePostClosePolicy
+    effectiveFrom?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type SchoolAbsencePolicyUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policy?: EnumAbsencePostClosePolicyFieldUpdateOperationsInput | $Enums.AbsencePostClosePolicy
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SchoolAbsencePolicyUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    schoolId?: StringFieldUpdateOperationsInput | string
+    policy?: EnumAbsencePostClosePolicyFieldUpdateOperationsInput | $Enums.AbsencePostClosePolicy
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AbsenceJustificationCreateInput = {
     id?: string
     date: Date | string
@@ -60613,6 +63806,8 @@ export namespace Prisma {
     class?: ClassCreateNestedOneWithoutAttendancesInput
     recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
     recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryCreateNestedOneWithoutAttendanceInput
     confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
     practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
   }
@@ -60636,6 +63831,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedCreateNestedOneWithoutAttendanceInput
     practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
@@ -60657,6 +63854,8 @@ export namespace Prisma {
     class?: ClassUpdateOneWithoutAttendancesNestedInput
     recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
     recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUpdateOneWithoutAttendanceNestedInput
     confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
     practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
   }
@@ -60680,6 +63879,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedUpdateOneWithoutAttendanceNestedInput
     practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 
@@ -60734,6 +63935,155 @@ export namespace Prisma {
     confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OnlineRecoveryCreateInput = {
+    id?: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    notes?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student: StudentCreateNestedOneWithoutOnlineRecoveriesInput
+    absence: AttendanceCreateNestedOneWithoutOnlineRecoveryAbsenceInput
+    instructor?: UserCreateNestedOneWithoutOnlineRecoveriesAsInstructorInput
+    attendance?: AttendanceCreateNestedOneWithoutOnlineRecoveryAttendanceInput
+    createdBy?: UserCreateNestedOneWithoutOnlineRecoveriesCreatedInput
+  }
+
+  export type OnlineRecoveryUncheckedCreateInput = {
+    id?: string
+    studentId: string
+    absenceId: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    instructorId?: string | null
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    attendanceId?: string | null
+    notes?: string | null
+    createdById?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OnlineRecoveryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentUpdateOneRequiredWithoutOnlineRecoveriesNestedInput
+    absence?: AttendanceUpdateOneRequiredWithoutOnlineRecoveryAbsenceNestedInput
+    instructor?: UserUpdateOneWithoutOnlineRecoveriesAsInstructorNestedInput
+    attendance?: AttendanceUpdateOneWithoutOnlineRecoveryAttendanceNestedInput
+    createdBy?: UserUpdateOneWithoutOnlineRecoveriesCreatedNestedInput
+  }
+
+  export type OnlineRecoveryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    absenceId?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    instructorId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OnlineRecoveryCreateManyInput = {
+    id?: string
+    studentId: string
+    absenceId: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    instructorId?: string | null
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    attendanceId?: string | null
+    notes?: string | null
+    createdById?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OnlineRecoveryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OnlineRecoveryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    absenceId?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    instructorId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -62043,6 +65393,12 @@ export namespace Prisma {
     none?: ReviewWhereInput
   }
 
+  export type SchoolAbsencePolicyListRelationFilter = {
+    every?: SchoolAbsencePolicyWhereInput
+    some?: SchoolAbsencePolicyWhereInput
+    none?: SchoolAbsencePolicyWhereInput
+  }
+
   export type BranchOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -62088,6 +65444,10 @@ export namespace Prisma {
   }
 
   export type ReviewOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SchoolAbsencePolicyOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -62355,6 +65715,12 @@ export namespace Prisma {
     none?: PostWhereInput
   }
 
+  export type OnlineRecoveryListRelationFilter = {
+    every?: OnlineRecoveryWhereInput
+    some?: OnlineRecoveryWhereInput
+    none?: OnlineRecoveryWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -62425,6 +65791,10 @@ export namespace Prisma {
   }
 
   export type PostOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OnlineRecoveryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -64076,6 +67446,47 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type EnumAbsencePostClosePolicyFilter<$PrismaModel = never> = {
+    equals?: $Enums.AbsencePostClosePolicy | EnumAbsencePostClosePolicyFieldRefInput<$PrismaModel>
+    in?: $Enums.AbsencePostClosePolicy[] | ListEnumAbsencePostClosePolicyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AbsencePostClosePolicy[] | ListEnumAbsencePostClosePolicyFieldRefInput<$PrismaModel>
+    not?: NestedEnumAbsencePostClosePolicyFilter<$PrismaModel> | $Enums.AbsencePostClosePolicy
+  }
+
+  export type SchoolAbsencePolicyCountOrderByAggregateInput = {
+    id?: SortOrder
+    schoolId?: SortOrder
+    policy?: SortOrder
+    effectiveFrom?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SchoolAbsencePolicyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    schoolId?: SortOrder
+    policy?: SortOrder
+    effectiveFrom?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SchoolAbsencePolicyMinOrderByAggregateInput = {
+    id?: SortOrder
+    schoolId?: SortOrder
+    policy?: SortOrder
+    effectiveFrom?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumAbsencePostClosePolicyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AbsencePostClosePolicy | EnumAbsencePostClosePolicyFieldRefInput<$PrismaModel>
+    in?: $Enums.AbsencePostClosePolicy[] | ListEnumAbsencePostClosePolicyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AbsencePostClosePolicy[] | ListEnumAbsencePostClosePolicyFieldRefInput<$PrismaModel>
+    not?: NestedEnumAbsencePostClosePolicyWithAggregatesFilter<$PrismaModel> | $Enums.AbsencePostClosePolicy
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAbsencePostClosePolicyFilter<$PrismaModel>
+    _max?: NestedEnumAbsencePostClosePolicyFilter<$PrismaModel>
+  }
+
   export type EnumAbsenceJustificationStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.AbsenceJustificationStatus | EnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
     in?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
@@ -64153,6 +67564,11 @@ export namespace Prisma {
   export type ClassNullableScalarRelationFilter = {
     is?: ClassWhereInput | null
     isNot?: ClassWhereInput | null
+  }
+
+  export type OnlineRecoveryNullableScalarRelationFilter = {
+    is?: OnlineRecoveryWhereInput | null
+    isNot?: OnlineRecoveryWhereInput | null
   }
 
   export type AttendanceSessionIdStudentIdCompoundUniqueInput = {
@@ -64236,6 +67652,104 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAttendanceStatusFilter<$PrismaModel>
     _max?: NestedEnumAttendanceStatusFilter<$PrismaModel>
+  }
+
+  export type EnumOnlineRecoveryStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OnlineRecoveryStatus | EnumOnlineRecoveryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OnlineRecoveryStatus[] | ListEnumOnlineRecoveryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OnlineRecoveryStatus[] | ListEnumOnlineRecoveryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOnlineRecoveryStatusFilter<$PrismaModel> | $Enums.OnlineRecoveryStatus
+  }
+
+  export type AttendanceScalarRelationFilter = {
+    is?: AttendanceWhereInput
+    isNot?: AttendanceWhereInput
+  }
+
+  export type OnlineRecoveryCountOrderByAggregateInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    absenceId?: SortOrder
+    status?: SortOrder
+    scheduledAt?: SortOrder
+    durationMinutes?: SortOrder
+    instructorId?: SortOrder
+    meetingUrl?: SortOrder
+    costAmount?: SortOrder
+    costCurrency?: SortOrder
+    costNote?: SortOrder
+    costInformedAt?: SortOrder
+    attendanceId?: SortOrder
+    notes?: SortOrder
+    createdById?: SortOrder
+    completedAt?: SortOrder
+    cancelledAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OnlineRecoveryAvgOrderByAggregateInput = {
+    durationMinutes?: SortOrder
+    costAmount?: SortOrder
+  }
+
+  export type OnlineRecoveryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    absenceId?: SortOrder
+    status?: SortOrder
+    scheduledAt?: SortOrder
+    durationMinutes?: SortOrder
+    instructorId?: SortOrder
+    meetingUrl?: SortOrder
+    costAmount?: SortOrder
+    costCurrency?: SortOrder
+    costNote?: SortOrder
+    costInformedAt?: SortOrder
+    attendanceId?: SortOrder
+    notes?: SortOrder
+    createdById?: SortOrder
+    completedAt?: SortOrder
+    cancelledAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OnlineRecoveryMinOrderByAggregateInput = {
+    id?: SortOrder
+    studentId?: SortOrder
+    absenceId?: SortOrder
+    status?: SortOrder
+    scheduledAt?: SortOrder
+    durationMinutes?: SortOrder
+    instructorId?: SortOrder
+    meetingUrl?: SortOrder
+    costAmount?: SortOrder
+    costCurrency?: SortOrder
+    costNote?: SortOrder
+    costInformedAt?: SortOrder
+    attendanceId?: SortOrder
+    notes?: SortOrder
+    createdById?: SortOrder
+    completedAt?: SortOrder
+    cancelledAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type OnlineRecoverySumOrderByAggregateInput = {
+    durationMinutes?: SortOrder
+    costAmount?: SortOrder
+  }
+
+  export type EnumOnlineRecoveryStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OnlineRecoveryStatus | EnumOnlineRecoveryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OnlineRecoveryStatus[] | ListEnumOnlineRecoveryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OnlineRecoveryStatus[] | ListEnumOnlineRecoveryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOnlineRecoveryStatusWithAggregatesFilter<$PrismaModel> | $Enums.OnlineRecoveryStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOnlineRecoveryStatusFilter<$PrismaModel>
+    _max?: NestedEnumOnlineRecoveryStatusFilter<$PrismaModel>
   }
 
   export type AchievementTypeCountOrderByAggregateInput = {
@@ -65017,6 +68531,13 @@ export namespace Prisma {
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
   }
 
+  export type SchoolAbsencePolicyCreateNestedManyWithoutSchoolInput = {
+    create?: XOR<SchoolAbsencePolicyCreateWithoutSchoolInput, SchoolAbsencePolicyUncheckedCreateWithoutSchoolInput> | SchoolAbsencePolicyCreateWithoutSchoolInput[] | SchoolAbsencePolicyUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: SchoolAbsencePolicyCreateOrConnectWithoutSchoolInput | SchoolAbsencePolicyCreateOrConnectWithoutSchoolInput[]
+    createMany?: SchoolAbsencePolicyCreateManySchoolInputEnvelope
+    connect?: SchoolAbsencePolicyWhereUniqueInput | SchoolAbsencePolicyWhereUniqueInput[]
+  }
+
   export type BranchUncheckedCreateNestedManyWithoutSchoolInput = {
     create?: XOR<BranchCreateWithoutSchoolInput, BranchUncheckedCreateWithoutSchoolInput> | BranchCreateWithoutSchoolInput[] | BranchUncheckedCreateWithoutSchoolInput[]
     connectOrCreate?: BranchCreateOrConnectWithoutSchoolInput | BranchCreateOrConnectWithoutSchoolInput[]
@@ -65099,6 +68620,13 @@ export namespace Prisma {
     connectOrCreate?: ReviewCreateOrConnectWithoutSchoolInput | ReviewCreateOrConnectWithoutSchoolInput[]
     createMany?: ReviewCreateManySchoolInputEnvelope
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+  }
+
+  export type SchoolAbsencePolicyUncheckedCreateNestedManyWithoutSchoolInput = {
+    create?: XOR<SchoolAbsencePolicyCreateWithoutSchoolInput, SchoolAbsencePolicyUncheckedCreateWithoutSchoolInput> | SchoolAbsencePolicyCreateWithoutSchoolInput[] | SchoolAbsencePolicyUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: SchoolAbsencePolicyCreateOrConnectWithoutSchoolInput | SchoolAbsencePolicyCreateOrConnectWithoutSchoolInput[]
+    createMany?: SchoolAbsencePolicyCreateManySchoolInputEnvelope
+    connect?: SchoolAbsencePolicyWhereUniqueInput | SchoolAbsencePolicyWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -65277,6 +68805,20 @@ export namespace Prisma {
     deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
   }
 
+  export type SchoolAbsencePolicyUpdateManyWithoutSchoolNestedInput = {
+    create?: XOR<SchoolAbsencePolicyCreateWithoutSchoolInput, SchoolAbsencePolicyUncheckedCreateWithoutSchoolInput> | SchoolAbsencePolicyCreateWithoutSchoolInput[] | SchoolAbsencePolicyUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: SchoolAbsencePolicyCreateOrConnectWithoutSchoolInput | SchoolAbsencePolicyCreateOrConnectWithoutSchoolInput[]
+    upsert?: SchoolAbsencePolicyUpsertWithWhereUniqueWithoutSchoolInput | SchoolAbsencePolicyUpsertWithWhereUniqueWithoutSchoolInput[]
+    createMany?: SchoolAbsencePolicyCreateManySchoolInputEnvelope
+    set?: SchoolAbsencePolicyWhereUniqueInput | SchoolAbsencePolicyWhereUniqueInput[]
+    disconnect?: SchoolAbsencePolicyWhereUniqueInput | SchoolAbsencePolicyWhereUniqueInput[]
+    delete?: SchoolAbsencePolicyWhereUniqueInput | SchoolAbsencePolicyWhereUniqueInput[]
+    connect?: SchoolAbsencePolicyWhereUniqueInput | SchoolAbsencePolicyWhereUniqueInput[]
+    update?: SchoolAbsencePolicyUpdateWithWhereUniqueWithoutSchoolInput | SchoolAbsencePolicyUpdateWithWhereUniqueWithoutSchoolInput[]
+    updateMany?: SchoolAbsencePolicyUpdateManyWithWhereWithoutSchoolInput | SchoolAbsencePolicyUpdateManyWithWhereWithoutSchoolInput[]
+    deleteMany?: SchoolAbsencePolicyScalarWhereInput | SchoolAbsencePolicyScalarWhereInput[]
+  }
+
   export type BranchUncheckedUpdateManyWithoutSchoolNestedInput = {
     create?: XOR<BranchCreateWithoutSchoolInput, BranchUncheckedCreateWithoutSchoolInput> | BranchCreateWithoutSchoolInput[] | BranchUncheckedCreateWithoutSchoolInput[]
     connectOrCreate?: BranchCreateOrConnectWithoutSchoolInput | BranchCreateOrConnectWithoutSchoolInput[]
@@ -65443,6 +68985,20 @@ export namespace Prisma {
     update?: ReviewUpdateWithWhereUniqueWithoutSchoolInput | ReviewUpdateWithWhereUniqueWithoutSchoolInput[]
     updateMany?: ReviewUpdateManyWithWhereWithoutSchoolInput | ReviewUpdateManyWithWhereWithoutSchoolInput[]
     deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
+  export type SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolNestedInput = {
+    create?: XOR<SchoolAbsencePolicyCreateWithoutSchoolInput, SchoolAbsencePolicyUncheckedCreateWithoutSchoolInput> | SchoolAbsencePolicyCreateWithoutSchoolInput[] | SchoolAbsencePolicyUncheckedCreateWithoutSchoolInput[]
+    connectOrCreate?: SchoolAbsencePolicyCreateOrConnectWithoutSchoolInput | SchoolAbsencePolicyCreateOrConnectWithoutSchoolInput[]
+    upsert?: SchoolAbsencePolicyUpsertWithWhereUniqueWithoutSchoolInput | SchoolAbsencePolicyUpsertWithWhereUniqueWithoutSchoolInput[]
+    createMany?: SchoolAbsencePolicyCreateManySchoolInputEnvelope
+    set?: SchoolAbsencePolicyWhereUniqueInput | SchoolAbsencePolicyWhereUniqueInput[]
+    disconnect?: SchoolAbsencePolicyWhereUniqueInput | SchoolAbsencePolicyWhereUniqueInput[]
+    delete?: SchoolAbsencePolicyWhereUniqueInput | SchoolAbsencePolicyWhereUniqueInput[]
+    connect?: SchoolAbsencePolicyWhereUniqueInput | SchoolAbsencePolicyWhereUniqueInput[]
+    update?: SchoolAbsencePolicyUpdateWithWhereUniqueWithoutSchoolInput | SchoolAbsencePolicyUpdateWithWhereUniqueWithoutSchoolInput[]
+    updateMany?: SchoolAbsencePolicyUpdateManyWithWhereWithoutSchoolInput | SchoolAbsencePolicyUpdateManyWithWhereWithoutSchoolInput[]
+    deleteMany?: SchoolAbsencePolicyScalarWhereInput | SchoolAbsencePolicyScalarWhereInput[]
   }
 
   export type SchoolCreateNestedOneWithoutBranchesInput = {
@@ -65801,6 +69357,20 @@ export namespace Prisma {
     connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
   }
 
+  export type OnlineRecoveryCreateNestedManyWithoutInstructorInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutInstructorInput, OnlineRecoveryUncheckedCreateWithoutInstructorInput> | OnlineRecoveryCreateWithoutInstructorInput[] | OnlineRecoveryUncheckedCreateWithoutInstructorInput[]
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutInstructorInput | OnlineRecoveryCreateOrConnectWithoutInstructorInput[]
+    createMany?: OnlineRecoveryCreateManyInstructorInputEnvelope
+    connect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+  }
+
+  export type OnlineRecoveryCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutCreatedByInput, OnlineRecoveryUncheckedCreateWithoutCreatedByInput> | OnlineRecoveryCreateWithoutCreatedByInput[] | OnlineRecoveryUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutCreatedByInput | OnlineRecoveryCreateOrConnectWithoutCreatedByInput[]
+    createMany?: OnlineRecoveryCreateManyCreatedByInputEnvelope
+    connect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+  }
+
   export type InstructorProfileUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<InstructorProfileCreateWithoutUserInput, InstructorProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: InstructorProfileCreateOrConnectWithoutUserInput
@@ -65957,6 +69527,20 @@ export namespace Prisma {
     connectOrCreate?: PostCreateOrConnectWithoutAuthorInput | PostCreateOrConnectWithoutAuthorInput[]
     createMany?: PostCreateManyAuthorInputEnvelope
     connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+  }
+
+  export type OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutInstructorInput, OnlineRecoveryUncheckedCreateWithoutInstructorInput> | OnlineRecoveryCreateWithoutInstructorInput[] | OnlineRecoveryUncheckedCreateWithoutInstructorInput[]
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutInstructorInput | OnlineRecoveryCreateOrConnectWithoutInstructorInput[]
+    createMany?: OnlineRecoveryCreateManyInstructorInputEnvelope
+    connect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+  }
+
+  export type OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutCreatedByInput, OnlineRecoveryUncheckedCreateWithoutCreatedByInput> | OnlineRecoveryCreateWithoutCreatedByInput[] | OnlineRecoveryUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutCreatedByInput | OnlineRecoveryCreateOrConnectWithoutCreatedByInput[]
+    createMany?: OnlineRecoveryCreateManyCreatedByInputEnvelope
+    connect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -66310,6 +69894,34 @@ export namespace Prisma {
     deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
   }
 
+  export type OnlineRecoveryUpdateManyWithoutInstructorNestedInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutInstructorInput, OnlineRecoveryUncheckedCreateWithoutInstructorInput> | OnlineRecoveryCreateWithoutInstructorInput[] | OnlineRecoveryUncheckedCreateWithoutInstructorInput[]
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutInstructorInput | OnlineRecoveryCreateOrConnectWithoutInstructorInput[]
+    upsert?: OnlineRecoveryUpsertWithWhereUniqueWithoutInstructorInput | OnlineRecoveryUpsertWithWhereUniqueWithoutInstructorInput[]
+    createMany?: OnlineRecoveryCreateManyInstructorInputEnvelope
+    set?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    disconnect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    delete?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    connect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    update?: OnlineRecoveryUpdateWithWhereUniqueWithoutInstructorInput | OnlineRecoveryUpdateWithWhereUniqueWithoutInstructorInput[]
+    updateMany?: OnlineRecoveryUpdateManyWithWhereWithoutInstructorInput | OnlineRecoveryUpdateManyWithWhereWithoutInstructorInput[]
+    deleteMany?: OnlineRecoveryScalarWhereInput | OnlineRecoveryScalarWhereInput[]
+  }
+
+  export type OnlineRecoveryUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutCreatedByInput, OnlineRecoveryUncheckedCreateWithoutCreatedByInput> | OnlineRecoveryCreateWithoutCreatedByInput[] | OnlineRecoveryUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutCreatedByInput | OnlineRecoveryCreateOrConnectWithoutCreatedByInput[]
+    upsert?: OnlineRecoveryUpsertWithWhereUniqueWithoutCreatedByInput | OnlineRecoveryUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: OnlineRecoveryCreateManyCreatedByInputEnvelope
+    set?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    disconnect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    delete?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    connect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    update?: OnlineRecoveryUpdateWithWhereUniqueWithoutCreatedByInput | OnlineRecoveryUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: OnlineRecoveryUpdateManyWithWhereWithoutCreatedByInput | OnlineRecoveryUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: OnlineRecoveryScalarWhereInput | OnlineRecoveryScalarWhereInput[]
+  }
+
   export type InstructorProfileUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<InstructorProfileCreateWithoutUserInput, InstructorProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: InstructorProfileCreateOrConnectWithoutUserInput
@@ -66620,6 +70232,34 @@ export namespace Prisma {
     deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
   }
 
+  export type OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutInstructorInput, OnlineRecoveryUncheckedCreateWithoutInstructorInput> | OnlineRecoveryCreateWithoutInstructorInput[] | OnlineRecoveryUncheckedCreateWithoutInstructorInput[]
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutInstructorInput | OnlineRecoveryCreateOrConnectWithoutInstructorInput[]
+    upsert?: OnlineRecoveryUpsertWithWhereUniqueWithoutInstructorInput | OnlineRecoveryUpsertWithWhereUniqueWithoutInstructorInput[]
+    createMany?: OnlineRecoveryCreateManyInstructorInputEnvelope
+    set?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    disconnect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    delete?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    connect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    update?: OnlineRecoveryUpdateWithWhereUniqueWithoutInstructorInput | OnlineRecoveryUpdateWithWhereUniqueWithoutInstructorInput[]
+    updateMany?: OnlineRecoveryUpdateManyWithWhereWithoutInstructorInput | OnlineRecoveryUpdateManyWithWhereWithoutInstructorInput[]
+    deleteMany?: OnlineRecoveryScalarWhereInput | OnlineRecoveryScalarWhereInput[]
+  }
+
+  export type OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutCreatedByInput, OnlineRecoveryUncheckedCreateWithoutCreatedByInput> | OnlineRecoveryCreateWithoutCreatedByInput[] | OnlineRecoveryUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutCreatedByInput | OnlineRecoveryCreateOrConnectWithoutCreatedByInput[]
+    upsert?: OnlineRecoveryUpsertWithWhereUniqueWithoutCreatedByInput | OnlineRecoveryUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: OnlineRecoveryCreateManyCreatedByInputEnvelope
+    set?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    disconnect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    delete?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    connect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    update?: OnlineRecoveryUpdateWithWhereUniqueWithoutCreatedByInput | OnlineRecoveryUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: OnlineRecoveryUpdateManyWithWhereWithoutCreatedByInput | OnlineRecoveryUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: OnlineRecoveryScalarWhereInput | OnlineRecoveryScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutEmailVerificationTokensInput = {
     create?: XOR<UserCreateWithoutEmailVerificationTokensInput, UserUncheckedCreateWithoutEmailVerificationTokensInput>
     connectOrCreate?: UserCreateOrConnectWithoutEmailVerificationTokensInput
@@ -66834,6 +70474,13 @@ export namespace Prisma {
     connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
+  export type OnlineRecoveryCreateNestedManyWithoutStudentInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutStudentInput, OnlineRecoveryUncheckedCreateWithoutStudentInput> | OnlineRecoveryCreateWithoutStudentInput[] | OnlineRecoveryUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutStudentInput | OnlineRecoveryCreateOrConnectWithoutStudentInput[]
+    createMany?: OnlineRecoveryCreateManyStudentInputEnvelope
+    connect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+  }
+
   export type GuardianStudentUncheckedCreateNestedManyWithoutStudentInput = {
     create?: XOR<GuardianStudentCreateWithoutStudentInput, GuardianStudentUncheckedCreateWithoutStudentInput> | GuardianStudentCreateWithoutStudentInput[] | GuardianStudentUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: GuardianStudentCreateOrConnectWithoutStudentInput | GuardianStudentCreateOrConnectWithoutStudentInput[]
@@ -66929,6 +70576,13 @@ export namespace Prisma {
     connectOrCreate?: NotificationCreateOrConnectWithoutStudentInput | NotificationCreateOrConnectWithoutStudentInput[]
     createMany?: NotificationCreateManyStudentInputEnvelope
     connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
+  export type OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutStudentInput, OnlineRecoveryUncheckedCreateWithoutStudentInput> | OnlineRecoveryCreateWithoutStudentInput[] | OnlineRecoveryUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutStudentInput | OnlineRecoveryCreateOrConnectWithoutStudentInput[]
+    createMany?: OnlineRecoveryCreateManyStudentInputEnvelope
+    connect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
   }
 
   export type NullableEnumGenderFieldUpdateOperationsInput = {
@@ -67195,6 +70849,20 @@ export namespace Prisma {
     deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
+  export type OnlineRecoveryUpdateManyWithoutStudentNestedInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutStudentInput, OnlineRecoveryUncheckedCreateWithoutStudentInput> | OnlineRecoveryCreateWithoutStudentInput[] | OnlineRecoveryUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutStudentInput | OnlineRecoveryCreateOrConnectWithoutStudentInput[]
+    upsert?: OnlineRecoveryUpsertWithWhereUniqueWithoutStudentInput | OnlineRecoveryUpsertWithWhereUniqueWithoutStudentInput[]
+    createMany?: OnlineRecoveryCreateManyStudentInputEnvelope
+    set?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    disconnect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    delete?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    connect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    update?: OnlineRecoveryUpdateWithWhereUniqueWithoutStudentInput | OnlineRecoveryUpdateWithWhereUniqueWithoutStudentInput[]
+    updateMany?: OnlineRecoveryUpdateManyWithWhereWithoutStudentInput | OnlineRecoveryUpdateManyWithWhereWithoutStudentInput[]
+    deleteMany?: OnlineRecoveryScalarWhereInput | OnlineRecoveryScalarWhereInput[]
+  }
+
   export type GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput = {
     create?: XOR<GuardianStudentCreateWithoutStudentInput, GuardianStudentUncheckedCreateWithoutStudentInput> | GuardianStudentCreateWithoutStudentInput[] | GuardianStudentUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: GuardianStudentCreateOrConnectWithoutStudentInput | GuardianStudentCreateOrConnectWithoutStudentInput[]
@@ -67385,6 +71053,20 @@ export namespace Prisma {
     update?: NotificationUpdateWithWhereUniqueWithoutStudentInput | NotificationUpdateWithWhereUniqueWithoutStudentInput[]
     updateMany?: NotificationUpdateManyWithWhereWithoutStudentInput | NotificationUpdateManyWithWhereWithoutStudentInput[]
     deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
+  export type OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutStudentInput, OnlineRecoveryUncheckedCreateWithoutStudentInput> | OnlineRecoveryCreateWithoutStudentInput[] | OnlineRecoveryUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutStudentInput | OnlineRecoveryCreateOrConnectWithoutStudentInput[]
+    upsert?: OnlineRecoveryUpsertWithWhereUniqueWithoutStudentInput | OnlineRecoveryUpsertWithWhereUniqueWithoutStudentInput[]
+    createMany?: OnlineRecoveryCreateManyStudentInputEnvelope
+    set?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    disconnect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    delete?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    connect?: OnlineRecoveryWhereUniqueInput | OnlineRecoveryWhereUniqueInput[]
+    update?: OnlineRecoveryUpdateWithWhereUniqueWithoutStudentInput | OnlineRecoveryUpdateWithWhereUniqueWithoutStudentInput[]
+    updateMany?: OnlineRecoveryUpdateManyWithWhereWithoutStudentInput | OnlineRecoveryUpdateManyWithWhereWithoutStudentInput[]
+    deleteMany?: OnlineRecoveryScalarWhereInput | OnlineRecoveryScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutGuardiansInput = {
@@ -68719,6 +72401,24 @@ export namespace Prisma {
     deleteMany?: AttendanceScalarWhereInput | AttendanceScalarWhereInput[]
   }
 
+  export type SchoolCreateNestedOneWithoutAbsencePoliciesInput = {
+    create?: XOR<SchoolCreateWithoutAbsencePoliciesInput, SchoolUncheckedCreateWithoutAbsencePoliciesInput>
+    connectOrCreate?: SchoolCreateOrConnectWithoutAbsencePoliciesInput
+    connect?: SchoolWhereUniqueInput
+  }
+
+  export type EnumAbsencePostClosePolicyFieldUpdateOperationsInput = {
+    set?: $Enums.AbsencePostClosePolicy
+  }
+
+  export type SchoolUpdateOneRequiredWithoutAbsencePoliciesNestedInput = {
+    create?: XOR<SchoolCreateWithoutAbsencePoliciesInput, SchoolUncheckedCreateWithoutAbsencePoliciesInput>
+    connectOrCreate?: SchoolCreateOrConnectWithoutAbsencePoliciesInput
+    upsert?: SchoolUpsertWithoutAbsencePoliciesInput
+    connect?: SchoolWhereUniqueInput
+    update?: XOR<XOR<SchoolUpdateToOneWithWhereWithoutAbsencePoliciesInput, SchoolUpdateWithoutAbsencePoliciesInput>, SchoolUncheckedUpdateWithoutAbsencePoliciesInput>
+  }
+
   export type StudentCreateNestedOneWithoutAbsenceJustificationsInput = {
     create?: XOR<StudentCreateWithoutAbsenceJustificationsInput, StudentUncheckedCreateWithoutAbsenceJustificationsInput>
     connectOrCreate?: StudentCreateOrConnectWithoutAbsenceJustificationsInput
@@ -68797,6 +72497,18 @@ export namespace Prisma {
     connect?: AttendanceWhereUniqueInput
   }
 
+  export type OnlineRecoveryCreateNestedOneWithoutAbsenceInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutAbsenceInput, OnlineRecoveryUncheckedCreateWithoutAbsenceInput>
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutAbsenceInput
+    connect?: OnlineRecoveryWhereUniqueInput
+  }
+
+  export type OnlineRecoveryCreateNestedOneWithoutAttendanceInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutAttendanceInput, OnlineRecoveryUncheckedCreateWithoutAttendanceInput>
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutAttendanceInput
+    connect?: OnlineRecoveryWhereUniqueInput
+  }
+
   export type UserCreateNestedOneWithoutAttendanceConfirmationsInput = {
     create?: XOR<UserCreateWithoutAttendanceConfirmationsInput, UserUncheckedCreateWithoutAttendanceConfirmationsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAttendanceConfirmationsInput
@@ -68814,6 +72526,18 @@ export namespace Prisma {
     create?: XOR<AttendanceCreateWithoutRecoveredByInput, AttendanceUncheckedCreateWithoutRecoveredByInput>
     connectOrCreate?: AttendanceCreateOrConnectWithoutRecoveredByInput
     connect?: AttendanceWhereUniqueInput
+  }
+
+  export type OnlineRecoveryUncheckedCreateNestedOneWithoutAbsenceInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutAbsenceInput, OnlineRecoveryUncheckedCreateWithoutAbsenceInput>
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutAbsenceInput
+    connect?: OnlineRecoveryWhereUniqueInput
+  }
+
+  export type OnlineRecoveryUncheckedCreateNestedOneWithoutAttendanceInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutAttendanceInput, OnlineRecoveryUncheckedCreateWithoutAttendanceInput>
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutAttendanceInput
+    connect?: OnlineRecoveryWhereUniqueInput
   }
 
   export type TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput = {
@@ -68875,6 +72599,26 @@ export namespace Prisma {
     update?: XOR<XOR<AttendanceUpdateToOneWithWhereWithoutRecoveredByInput, AttendanceUpdateWithoutRecoveredByInput>, AttendanceUncheckedUpdateWithoutRecoveredByInput>
   }
 
+  export type OnlineRecoveryUpdateOneWithoutAbsenceNestedInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutAbsenceInput, OnlineRecoveryUncheckedCreateWithoutAbsenceInput>
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutAbsenceInput
+    upsert?: OnlineRecoveryUpsertWithoutAbsenceInput
+    disconnect?: OnlineRecoveryWhereInput | boolean
+    delete?: OnlineRecoveryWhereInput | boolean
+    connect?: OnlineRecoveryWhereUniqueInput
+    update?: XOR<XOR<OnlineRecoveryUpdateToOneWithWhereWithoutAbsenceInput, OnlineRecoveryUpdateWithoutAbsenceInput>, OnlineRecoveryUncheckedUpdateWithoutAbsenceInput>
+  }
+
+  export type OnlineRecoveryUpdateOneWithoutAttendanceNestedInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutAttendanceInput, OnlineRecoveryUncheckedCreateWithoutAttendanceInput>
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutAttendanceInput
+    upsert?: OnlineRecoveryUpsertWithoutAttendanceInput
+    disconnect?: OnlineRecoveryWhereInput | boolean
+    delete?: OnlineRecoveryWhereInput | boolean
+    connect?: OnlineRecoveryWhereUniqueInput
+    update?: XOR<XOR<OnlineRecoveryUpdateToOneWithWhereWithoutAttendanceInput, OnlineRecoveryUpdateWithoutAttendanceInput>, OnlineRecoveryUncheckedUpdateWithoutAttendanceInput>
+  }
+
   export type UserUpdateOneWithoutAttendanceConfirmationsNestedInput = {
     create?: XOR<UserCreateWithoutAttendanceConfirmationsInput, UserUncheckedCreateWithoutAttendanceConfirmationsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAttendanceConfirmationsInput
@@ -68909,6 +72653,26 @@ export namespace Prisma {
     update?: XOR<XOR<AttendanceUpdateToOneWithWhereWithoutRecoveredByInput, AttendanceUpdateWithoutRecoveredByInput>, AttendanceUncheckedUpdateWithoutRecoveredByInput>
   }
 
+  export type OnlineRecoveryUncheckedUpdateOneWithoutAbsenceNestedInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutAbsenceInput, OnlineRecoveryUncheckedCreateWithoutAbsenceInput>
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutAbsenceInput
+    upsert?: OnlineRecoveryUpsertWithoutAbsenceInput
+    disconnect?: OnlineRecoveryWhereInput | boolean
+    delete?: OnlineRecoveryWhereInput | boolean
+    connect?: OnlineRecoveryWhereUniqueInput
+    update?: XOR<XOR<OnlineRecoveryUpdateToOneWithWhereWithoutAbsenceInput, OnlineRecoveryUpdateWithoutAbsenceInput>, OnlineRecoveryUncheckedUpdateWithoutAbsenceInput>
+  }
+
+  export type OnlineRecoveryUncheckedUpdateOneWithoutAttendanceNestedInput = {
+    create?: XOR<OnlineRecoveryCreateWithoutAttendanceInput, OnlineRecoveryUncheckedCreateWithoutAttendanceInput>
+    connectOrCreate?: OnlineRecoveryCreateOrConnectWithoutAttendanceInput
+    upsert?: OnlineRecoveryUpsertWithoutAttendanceInput
+    disconnect?: OnlineRecoveryWhereInput | boolean
+    delete?: OnlineRecoveryWhereInput | boolean
+    connect?: OnlineRecoveryWhereUniqueInput
+    update?: XOR<XOR<OnlineRecoveryUpdateToOneWithWhereWithoutAttendanceInput, OnlineRecoveryUpdateWithoutAttendanceInput>, OnlineRecoveryUncheckedUpdateWithoutAttendanceInput>
+  }
+
   export type TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput = {
     create?: XOR<TechniquePracticeLogCreateWithoutAttendanceInput, TechniquePracticeLogUncheckedCreateWithoutAttendanceInput> | TechniquePracticeLogCreateWithoutAttendanceInput[] | TechniquePracticeLogUncheckedCreateWithoutAttendanceInput[]
     connectOrCreate?: TechniquePracticeLogCreateOrConnectWithoutAttendanceInput | TechniquePracticeLogCreateOrConnectWithoutAttendanceInput[]
@@ -68921,6 +72685,86 @@ export namespace Prisma {
     update?: TechniquePracticeLogUpdateWithWhereUniqueWithoutAttendanceInput | TechniquePracticeLogUpdateWithWhereUniqueWithoutAttendanceInput[]
     updateMany?: TechniquePracticeLogUpdateManyWithWhereWithoutAttendanceInput | TechniquePracticeLogUpdateManyWithWhereWithoutAttendanceInput[]
     deleteMany?: TechniquePracticeLogScalarWhereInput | TechniquePracticeLogScalarWhereInput[]
+  }
+
+  export type StudentCreateNestedOneWithoutOnlineRecoveriesInput = {
+    create?: XOR<StudentCreateWithoutOnlineRecoveriesInput, StudentUncheckedCreateWithoutOnlineRecoveriesInput>
+    connectOrCreate?: StudentCreateOrConnectWithoutOnlineRecoveriesInput
+    connect?: StudentWhereUniqueInput
+  }
+
+  export type AttendanceCreateNestedOneWithoutOnlineRecoveryAbsenceInput = {
+    create?: XOR<AttendanceCreateWithoutOnlineRecoveryAbsenceInput, AttendanceUncheckedCreateWithoutOnlineRecoveryAbsenceInput>
+    connectOrCreate?: AttendanceCreateOrConnectWithoutOnlineRecoveryAbsenceInput
+    connect?: AttendanceWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutOnlineRecoveriesAsInstructorInput = {
+    create?: XOR<UserCreateWithoutOnlineRecoveriesAsInstructorInput, UserUncheckedCreateWithoutOnlineRecoveriesAsInstructorInput>
+    connectOrCreate?: UserCreateOrConnectWithoutOnlineRecoveriesAsInstructorInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type AttendanceCreateNestedOneWithoutOnlineRecoveryAttendanceInput = {
+    create?: XOR<AttendanceCreateWithoutOnlineRecoveryAttendanceInput, AttendanceUncheckedCreateWithoutOnlineRecoveryAttendanceInput>
+    connectOrCreate?: AttendanceCreateOrConnectWithoutOnlineRecoveryAttendanceInput
+    connect?: AttendanceWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutOnlineRecoveriesCreatedInput = {
+    create?: XOR<UserCreateWithoutOnlineRecoveriesCreatedInput, UserUncheckedCreateWithoutOnlineRecoveriesCreatedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutOnlineRecoveriesCreatedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumOnlineRecoveryStatusFieldUpdateOperationsInput = {
+    set?: $Enums.OnlineRecoveryStatus
+  }
+
+  export type StudentUpdateOneRequiredWithoutOnlineRecoveriesNestedInput = {
+    create?: XOR<StudentCreateWithoutOnlineRecoveriesInput, StudentUncheckedCreateWithoutOnlineRecoveriesInput>
+    connectOrCreate?: StudentCreateOrConnectWithoutOnlineRecoveriesInput
+    upsert?: StudentUpsertWithoutOnlineRecoveriesInput
+    connect?: StudentWhereUniqueInput
+    update?: XOR<XOR<StudentUpdateToOneWithWhereWithoutOnlineRecoveriesInput, StudentUpdateWithoutOnlineRecoveriesInput>, StudentUncheckedUpdateWithoutOnlineRecoveriesInput>
+  }
+
+  export type AttendanceUpdateOneRequiredWithoutOnlineRecoveryAbsenceNestedInput = {
+    create?: XOR<AttendanceCreateWithoutOnlineRecoveryAbsenceInput, AttendanceUncheckedCreateWithoutOnlineRecoveryAbsenceInput>
+    connectOrCreate?: AttendanceCreateOrConnectWithoutOnlineRecoveryAbsenceInput
+    upsert?: AttendanceUpsertWithoutOnlineRecoveryAbsenceInput
+    connect?: AttendanceWhereUniqueInput
+    update?: XOR<XOR<AttendanceUpdateToOneWithWhereWithoutOnlineRecoveryAbsenceInput, AttendanceUpdateWithoutOnlineRecoveryAbsenceInput>, AttendanceUncheckedUpdateWithoutOnlineRecoveryAbsenceInput>
+  }
+
+  export type UserUpdateOneWithoutOnlineRecoveriesAsInstructorNestedInput = {
+    create?: XOR<UserCreateWithoutOnlineRecoveriesAsInstructorInput, UserUncheckedCreateWithoutOnlineRecoveriesAsInstructorInput>
+    connectOrCreate?: UserCreateOrConnectWithoutOnlineRecoveriesAsInstructorInput
+    upsert?: UserUpsertWithoutOnlineRecoveriesAsInstructorInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutOnlineRecoveriesAsInstructorInput, UserUpdateWithoutOnlineRecoveriesAsInstructorInput>, UserUncheckedUpdateWithoutOnlineRecoveriesAsInstructorInput>
+  }
+
+  export type AttendanceUpdateOneWithoutOnlineRecoveryAttendanceNestedInput = {
+    create?: XOR<AttendanceCreateWithoutOnlineRecoveryAttendanceInput, AttendanceUncheckedCreateWithoutOnlineRecoveryAttendanceInput>
+    connectOrCreate?: AttendanceCreateOrConnectWithoutOnlineRecoveryAttendanceInput
+    upsert?: AttendanceUpsertWithoutOnlineRecoveryAttendanceInput
+    disconnect?: AttendanceWhereInput | boolean
+    delete?: AttendanceWhereInput | boolean
+    connect?: AttendanceWhereUniqueInput
+    update?: XOR<XOR<AttendanceUpdateToOneWithWhereWithoutOnlineRecoveryAttendanceInput, AttendanceUpdateWithoutOnlineRecoveryAttendanceInput>, AttendanceUncheckedUpdateWithoutOnlineRecoveryAttendanceInput>
+  }
+
+  export type UserUpdateOneWithoutOnlineRecoveriesCreatedNestedInput = {
+    create?: XOR<UserCreateWithoutOnlineRecoveriesCreatedInput, UserUncheckedCreateWithoutOnlineRecoveriesCreatedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutOnlineRecoveriesCreatedInput
+    upsert?: UserUpsertWithoutOnlineRecoveriesCreatedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutOnlineRecoveriesCreatedInput, UserUpdateWithoutOnlineRecoveriesCreatedInput>, UserUncheckedUpdateWithoutOnlineRecoveriesCreatedInput>
   }
 
   export type SchoolCreateNestedOneWithoutAchievementTypesInput = {
@@ -69879,6 +73723,23 @@ export namespace Prisma {
     _max?: NestedEnumClassEnrollmentStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumAbsencePostClosePolicyFilter<$PrismaModel = never> = {
+    equals?: $Enums.AbsencePostClosePolicy | EnumAbsencePostClosePolicyFieldRefInput<$PrismaModel>
+    in?: $Enums.AbsencePostClosePolicy[] | ListEnumAbsencePostClosePolicyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AbsencePostClosePolicy[] | ListEnumAbsencePostClosePolicyFieldRefInput<$PrismaModel>
+    not?: NestedEnumAbsencePostClosePolicyFilter<$PrismaModel> | $Enums.AbsencePostClosePolicy
+  }
+
+  export type NestedEnumAbsencePostClosePolicyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AbsencePostClosePolicy | EnumAbsencePostClosePolicyFieldRefInput<$PrismaModel>
+    in?: $Enums.AbsencePostClosePolicy[] | ListEnumAbsencePostClosePolicyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AbsencePostClosePolicy[] | ListEnumAbsencePostClosePolicyFieldRefInput<$PrismaModel>
+    not?: NestedEnumAbsencePostClosePolicyWithAggregatesFilter<$PrismaModel> | $Enums.AbsencePostClosePolicy
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAbsencePostClosePolicyFilter<$PrismaModel>
+    _max?: NestedEnumAbsencePostClosePolicyFilter<$PrismaModel>
+  }
+
   export type NestedEnumAbsenceJustificationStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.AbsenceJustificationStatus | EnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
     in?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel>
@@ -69911,6 +73772,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAttendanceStatusFilter<$PrismaModel>
     _max?: NestedEnumAttendanceStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumOnlineRecoveryStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OnlineRecoveryStatus | EnumOnlineRecoveryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OnlineRecoveryStatus[] | ListEnumOnlineRecoveryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OnlineRecoveryStatus[] | ListEnumOnlineRecoveryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOnlineRecoveryStatusFilter<$PrismaModel> | $Enums.OnlineRecoveryStatus
+  }
+
+  export type NestedEnumOnlineRecoveryStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OnlineRecoveryStatus | EnumOnlineRecoveryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OnlineRecoveryStatus[] | ListEnumOnlineRecoveryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OnlineRecoveryStatus[] | ListEnumOnlineRecoveryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOnlineRecoveryStatusWithAggregatesFilter<$PrismaModel> | $Enums.OnlineRecoveryStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOnlineRecoveryStatusFilter<$PrismaModel>
+    _max?: NestedEnumOnlineRecoveryStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumApprovalStatusFilter<$PrismaModel = never> = {
@@ -70116,6 +73994,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSchoolInput = {
@@ -70153,6 +74033,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSchoolInput = {
@@ -70208,6 +74090,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutSchoolInput = {
@@ -70253,6 +74136,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutSchoolInput = {
@@ -70632,6 +74516,30 @@ export namespace Prisma {
 
   export type ReviewCreateManySchoolInputEnvelope = {
     data: ReviewCreateManySchoolInput | ReviewCreateManySchoolInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SchoolAbsencePolicyCreateWithoutSchoolInput = {
+    id?: string
+    policy?: $Enums.AbsencePostClosePolicy
+    effectiveFrom?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type SchoolAbsencePolicyUncheckedCreateWithoutSchoolInput = {
+    id?: string
+    policy?: $Enums.AbsencePostClosePolicy
+    effectiveFrom?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type SchoolAbsencePolicyCreateOrConnectWithoutSchoolInput = {
+    where: SchoolAbsencePolicyWhereUniqueInput
+    create: XOR<SchoolAbsencePolicyCreateWithoutSchoolInput, SchoolAbsencePolicyUncheckedCreateWithoutSchoolInput>
+  }
+
+  export type SchoolAbsencePolicyCreateManySchoolInputEnvelope = {
+    data: SchoolAbsencePolicyCreateManySchoolInput | SchoolAbsencePolicyCreateManySchoolInput[]
     skipDuplicates?: boolean
   }
 
@@ -71056,6 +74964,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Review"> | Date | string
   }
 
+  export type SchoolAbsencePolicyUpsertWithWhereUniqueWithoutSchoolInput = {
+    where: SchoolAbsencePolicyWhereUniqueInput
+    update: XOR<SchoolAbsencePolicyUpdateWithoutSchoolInput, SchoolAbsencePolicyUncheckedUpdateWithoutSchoolInput>
+    create: XOR<SchoolAbsencePolicyCreateWithoutSchoolInput, SchoolAbsencePolicyUncheckedCreateWithoutSchoolInput>
+  }
+
+  export type SchoolAbsencePolicyUpdateWithWhereUniqueWithoutSchoolInput = {
+    where: SchoolAbsencePolicyWhereUniqueInput
+    data: XOR<SchoolAbsencePolicyUpdateWithoutSchoolInput, SchoolAbsencePolicyUncheckedUpdateWithoutSchoolInput>
+  }
+
+  export type SchoolAbsencePolicyUpdateManyWithWhereWithoutSchoolInput = {
+    where: SchoolAbsencePolicyScalarWhereInput
+    data: XOR<SchoolAbsencePolicyUpdateManyMutationInput, SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolInput>
+  }
+
+  export type SchoolAbsencePolicyScalarWhereInput = {
+    AND?: SchoolAbsencePolicyScalarWhereInput | SchoolAbsencePolicyScalarWhereInput[]
+    OR?: SchoolAbsencePolicyScalarWhereInput[]
+    NOT?: SchoolAbsencePolicyScalarWhereInput | SchoolAbsencePolicyScalarWhereInput[]
+    id?: StringFilter<"SchoolAbsencePolicy"> | string
+    schoolId?: StringFilter<"SchoolAbsencePolicy"> | string
+    policy?: EnumAbsencePostClosePolicyFilter<"SchoolAbsencePolicy"> | $Enums.AbsencePostClosePolicy
+    effectiveFrom?: DateTimeFilter<"SchoolAbsencePolicy"> | Date | string
+    createdAt?: DateTimeFilter<"SchoolAbsencePolicy"> | Date | string
+  }
+
   export type SchoolCreateWithoutBranchesInput = {
     id?: string
     name: string
@@ -71072,6 +75007,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
     reviews?: ReviewCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutBranchesInput = {
@@ -71090,6 +75026,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutBranchesInput = {
@@ -71132,6 +75069,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutBranchInput = {
@@ -71169,6 +75108,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutBranchInput = {
@@ -71224,6 +75165,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutBranchInput = {
@@ -71269,6 +75211,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutBranchInput = {
@@ -71404,6 +75347,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutBranchesInput = {
@@ -71422,6 +75366,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutBranchInput = {
@@ -71522,6 +75467,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
     reviews?: ReviewCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutUsersInput = {
@@ -71540,6 +75486,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutUsersInput = {
@@ -71638,6 +75585,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutUserInput = {
@@ -71683,6 +75631,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutUserInput = {
@@ -71755,6 +75704,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutGuardianInput = {
@@ -71800,6 +75750,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutGuardianInput = {
@@ -71996,6 +75947,8 @@ export namespace Prisma {
     class?: ClassCreateNestedOneWithoutAttendancesInput
     recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
     recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryCreateNestedOneWithoutAttendanceInput
     practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
   }
 
@@ -72017,6 +75970,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedCreateNestedOneWithoutAttendanceInput
     practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
@@ -72475,6 +76430,110 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type OnlineRecoveryCreateWithoutInstructorInput = {
+    id?: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    notes?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student: StudentCreateNestedOneWithoutOnlineRecoveriesInput
+    absence: AttendanceCreateNestedOneWithoutOnlineRecoveryAbsenceInput
+    attendance?: AttendanceCreateNestedOneWithoutOnlineRecoveryAttendanceInput
+    createdBy?: UserCreateNestedOneWithoutOnlineRecoveriesCreatedInput
+  }
+
+  export type OnlineRecoveryUncheckedCreateWithoutInstructorInput = {
+    id?: string
+    studentId: string
+    absenceId: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    attendanceId?: string | null
+    notes?: string | null
+    createdById?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OnlineRecoveryCreateOrConnectWithoutInstructorInput = {
+    where: OnlineRecoveryWhereUniqueInput
+    create: XOR<OnlineRecoveryCreateWithoutInstructorInput, OnlineRecoveryUncheckedCreateWithoutInstructorInput>
+  }
+
+  export type OnlineRecoveryCreateManyInstructorInputEnvelope = {
+    data: OnlineRecoveryCreateManyInstructorInput | OnlineRecoveryCreateManyInstructorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OnlineRecoveryCreateWithoutCreatedByInput = {
+    id?: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    notes?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student: StudentCreateNestedOneWithoutOnlineRecoveriesInput
+    absence: AttendanceCreateNestedOneWithoutOnlineRecoveryAbsenceInput
+    instructor?: UserCreateNestedOneWithoutOnlineRecoveriesAsInstructorInput
+    attendance?: AttendanceCreateNestedOneWithoutOnlineRecoveryAttendanceInput
+  }
+
+  export type OnlineRecoveryUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    studentId: string
+    absenceId: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    instructorId?: string | null
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    attendanceId?: string | null
+    notes?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OnlineRecoveryCreateOrConnectWithoutCreatedByInput = {
+    where: OnlineRecoveryWhereUniqueInput
+    create: XOR<OnlineRecoveryCreateWithoutCreatedByInput, OnlineRecoveryUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type OnlineRecoveryCreateManyCreatedByInputEnvelope = {
+    data: OnlineRecoveryCreateManyCreatedByInput | OnlineRecoveryCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type SchoolUpsertWithoutUsersInput = {
     update: XOR<SchoolUpdateWithoutUsersInput, SchoolUncheckedUpdateWithoutUsersInput>
     create: XOR<SchoolCreateWithoutUsersInput, SchoolUncheckedCreateWithoutUsersInput>
@@ -72502,6 +76561,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutUsersInput = {
@@ -72520,6 +76580,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BranchUpsertWithoutUsersInput = {
@@ -72636,6 +76697,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutUserInput = {
@@ -72681,6 +76743,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type GuardianStudentUpsertWithWhereUniqueWithoutGuardianInput = {
@@ -73307,6 +77370,63 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Post"> | Date | string
   }
 
+  export type OnlineRecoveryUpsertWithWhereUniqueWithoutInstructorInput = {
+    where: OnlineRecoveryWhereUniqueInput
+    update: XOR<OnlineRecoveryUpdateWithoutInstructorInput, OnlineRecoveryUncheckedUpdateWithoutInstructorInput>
+    create: XOR<OnlineRecoveryCreateWithoutInstructorInput, OnlineRecoveryUncheckedCreateWithoutInstructorInput>
+  }
+
+  export type OnlineRecoveryUpdateWithWhereUniqueWithoutInstructorInput = {
+    where: OnlineRecoveryWhereUniqueInput
+    data: XOR<OnlineRecoveryUpdateWithoutInstructorInput, OnlineRecoveryUncheckedUpdateWithoutInstructorInput>
+  }
+
+  export type OnlineRecoveryUpdateManyWithWhereWithoutInstructorInput = {
+    where: OnlineRecoveryScalarWhereInput
+    data: XOR<OnlineRecoveryUpdateManyMutationInput, OnlineRecoveryUncheckedUpdateManyWithoutInstructorInput>
+  }
+
+  export type OnlineRecoveryScalarWhereInput = {
+    AND?: OnlineRecoveryScalarWhereInput | OnlineRecoveryScalarWhereInput[]
+    OR?: OnlineRecoveryScalarWhereInput[]
+    NOT?: OnlineRecoveryScalarWhereInput | OnlineRecoveryScalarWhereInput[]
+    id?: StringFilter<"OnlineRecovery"> | string
+    studentId?: StringFilter<"OnlineRecovery"> | string
+    absenceId?: StringFilter<"OnlineRecovery"> | string
+    status?: EnumOnlineRecoveryStatusFilter<"OnlineRecovery"> | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFilter<"OnlineRecovery"> | Date | string
+    durationMinutes?: IntFilter<"OnlineRecovery"> | number
+    instructorId?: StringNullableFilter<"OnlineRecovery"> | string | null
+    meetingUrl?: StringNullableFilter<"OnlineRecovery"> | string | null
+    costAmount?: DecimalNullableFilter<"OnlineRecovery"> | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFilter<"OnlineRecovery"> | string
+    costNote?: StringNullableFilter<"OnlineRecovery"> | string | null
+    costInformedAt?: DateTimeNullableFilter<"OnlineRecovery"> | Date | string | null
+    attendanceId?: StringNullableFilter<"OnlineRecovery"> | string | null
+    notes?: StringNullableFilter<"OnlineRecovery"> | string | null
+    createdById?: StringNullableFilter<"OnlineRecovery"> | string | null
+    completedAt?: DateTimeNullableFilter<"OnlineRecovery"> | Date | string | null
+    cancelledAt?: DateTimeNullableFilter<"OnlineRecovery"> | Date | string | null
+    createdAt?: DateTimeFilter<"OnlineRecovery"> | Date | string
+    updatedAt?: DateTimeFilter<"OnlineRecovery"> | Date | string
+  }
+
+  export type OnlineRecoveryUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: OnlineRecoveryWhereUniqueInput
+    update: XOR<OnlineRecoveryUpdateWithoutCreatedByInput, OnlineRecoveryUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<OnlineRecoveryCreateWithoutCreatedByInput, OnlineRecoveryUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type OnlineRecoveryUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: OnlineRecoveryWhereUniqueInput
+    data: XOR<OnlineRecoveryUpdateWithoutCreatedByInput, OnlineRecoveryUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type OnlineRecoveryUpdateManyWithWhereWithoutCreatedByInput = {
+    where: OnlineRecoveryScalarWhereInput
+    data: XOR<OnlineRecoveryUpdateManyMutationInput, OnlineRecoveryUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
   export type UserCreateWithoutEmailVerificationTokensInput = {
     id?: string
     email: string
@@ -73342,6 +77462,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
@@ -73379,6 +77501,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutEmailVerificationTokensInput = {
@@ -73432,6 +77556,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
@@ -73469,6 +77595,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutPasswordResetTokensInput = {
@@ -73506,6 +77634,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
@@ -73543,6 +77673,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutPasswordResetTokensInput = {
@@ -73596,6 +77728,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
@@ -73633,6 +77767,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type StudentCreateWithoutInvitationTokensInput = {
@@ -73678,6 +77814,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutInvitationTokensInput = {
@@ -73723,6 +77860,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutInvitationTokensInput = {
@@ -73765,6 +77903,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAcceptedInvitationsInput = {
@@ -73802,6 +77942,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAcceptedInvitationsInput = {
@@ -73863,6 +78005,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutInvitationTokensInput = {
@@ -73908,6 +78051,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type UserUpsertWithoutAcceptedInvitationsInput = {
@@ -73956,6 +78100,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAcceptedInvitationsInput = {
@@ -73993,6 +78139,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutInstructorProfileInput = {
@@ -74030,6 +78178,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutInstructorProfileInput = {
@@ -74067,6 +78217,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutInstructorProfileInput = {
@@ -74120,6 +78272,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInstructorProfileInput = {
@@ -74157,6 +78311,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type BeltRankCreateWithoutCurrentRankStudentsInput = {
@@ -74263,6 +78419,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
     reviews?: ReviewCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutStudentsInput = {
@@ -74281,6 +78438,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutStudentsInput = {
@@ -74350,6 +78508,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutStudentProfileInput = {
@@ -74387,6 +78547,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutStudentProfileInput = {
@@ -74429,6 +78591,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutGuardianOfStudentsInput = {
@@ -74466,6 +78630,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutGuardianOfStudentsInput = {
@@ -74562,6 +78728,8 @@ export namespace Prisma {
     class?: ClassCreateNestedOneWithoutAttendancesInput
     recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
     recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryCreateNestedOneWithoutAttendanceInput
     confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
     practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
   }
@@ -74584,6 +78752,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedCreateNestedOneWithoutAttendanceInput
     practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
@@ -74966,6 +79136,58 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type OnlineRecoveryCreateWithoutStudentInput = {
+    id?: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    notes?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    absence: AttendanceCreateNestedOneWithoutOnlineRecoveryAbsenceInput
+    instructor?: UserCreateNestedOneWithoutOnlineRecoveriesAsInstructorInput
+    attendance?: AttendanceCreateNestedOneWithoutOnlineRecoveryAttendanceInput
+    createdBy?: UserCreateNestedOneWithoutOnlineRecoveriesCreatedInput
+  }
+
+  export type OnlineRecoveryUncheckedCreateWithoutStudentInput = {
+    id?: string
+    absenceId: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    instructorId?: string | null
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    attendanceId?: string | null
+    notes?: string | null
+    createdById?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OnlineRecoveryCreateOrConnectWithoutStudentInput = {
+    where: OnlineRecoveryWhereUniqueInput
+    create: XOR<OnlineRecoveryCreateWithoutStudentInput, OnlineRecoveryUncheckedCreateWithoutStudentInput>
+  }
+
+  export type OnlineRecoveryCreateManyStudentInputEnvelope = {
+    data: OnlineRecoveryCreateManyStudentInput | OnlineRecoveryCreateManyStudentInput[]
+    skipDuplicates?: boolean
+  }
+
   export type BeltRankUpsertWithoutCurrentRankStudentsInput = {
     update: XOR<BeltRankUpdateWithoutCurrentRankStudentsInput, BeltRankUncheckedUpdateWithoutCurrentRankStudentsInput>
     create: XOR<BeltRankCreateWithoutCurrentRankStudentsInput, BeltRankUncheckedCreateWithoutCurrentRankStudentsInput>
@@ -75093,6 +79315,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutStudentsInput = {
@@ -75111,6 +79334,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BranchUpsertWithoutStudentsInput = {
@@ -75192,6 +79416,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStudentProfileInput = {
@@ -75229,6 +79455,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithoutGuardianOfStudentsInput = {
@@ -75277,6 +79505,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGuardianOfStudentsInput = {
@@ -75314,6 +79544,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type GuardianStudentUpsertWithWhereUniqueWithoutStudentInput = {
@@ -75608,6 +79840,22 @@ export namespace Prisma {
     data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutStudentInput>
   }
 
+  export type OnlineRecoveryUpsertWithWhereUniqueWithoutStudentInput = {
+    where: OnlineRecoveryWhereUniqueInput
+    update: XOR<OnlineRecoveryUpdateWithoutStudentInput, OnlineRecoveryUncheckedUpdateWithoutStudentInput>
+    create: XOR<OnlineRecoveryCreateWithoutStudentInput, OnlineRecoveryUncheckedCreateWithoutStudentInput>
+  }
+
+  export type OnlineRecoveryUpdateWithWhereUniqueWithoutStudentInput = {
+    where: OnlineRecoveryWhereUniqueInput
+    data: XOR<OnlineRecoveryUpdateWithoutStudentInput, OnlineRecoveryUncheckedUpdateWithoutStudentInput>
+  }
+
+  export type OnlineRecoveryUpdateManyWithWhereWithoutStudentInput = {
+    where: OnlineRecoveryScalarWhereInput
+    data: XOR<OnlineRecoveryUpdateManyMutationInput, OnlineRecoveryUncheckedUpdateManyWithoutStudentInput>
+  }
+
   export type UserCreateWithoutGuardiansInput = {
     id?: string
     email: string
@@ -75643,6 +79891,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutGuardiansInput = {
@@ -75680,6 +79930,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutGuardiansInput = {
@@ -75730,6 +79982,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutGuardiansInput = {
@@ -75775,6 +80028,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutGuardiansInput = {
@@ -75828,6 +80082,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGuardiansInput = {
@@ -75865,6 +80121,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type StudentUpsertWithoutGuardiansInput = {
@@ -75921,6 +80179,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutGuardiansInput = {
@@ -75966,6 +80225,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type SchoolCreateWithoutEnrollmentsInput = {
@@ -75984,6 +80244,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
     reviews?: ReviewCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutEnrollmentsInput = {
@@ -76002,6 +80263,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutEnrollmentsInput = {
@@ -76079,6 +80341,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutEnrollmentsInput = {
@@ -76124,6 +80387,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutEnrollmentsInput = {
@@ -76232,6 +80496,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutEnrollmentsInput = {
@@ -76250,6 +80515,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BranchUpsertWithoutEnrollmentsInput = {
@@ -76339,6 +80605,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutEnrollmentsInput = {
@@ -76384,6 +80651,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type EnrollmentApplicantUpsertWithWhereUniqueWithoutEnrollmentInput = {
@@ -76520,6 +80788,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutEnrollmentApplicantInput = {
@@ -76565,6 +80834,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutEnrollmentApplicantInput = {
@@ -76719,6 +80989,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutEnrollmentApplicantInput = {
@@ -76764,6 +81035,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentDocumentUpsertWithWhereUniqueWithoutApplicantInput = {
@@ -76897,6 +81169,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutDocumentsInput = {
@@ -76942,6 +81215,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutDocumentsInput = {
@@ -77087,6 +81361,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutDocumentsInput = {
@@ -77132,6 +81407,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type SchoolCreateWithoutBeltRanksInput = {
@@ -77150,6 +81426,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
     reviews?: ReviewCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutBeltRanksInput = {
@@ -77168,6 +81445,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutBeltRanksInput = {
@@ -77270,6 +81548,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutCurrentRankRefInput = {
@@ -77315,6 +81594,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutCurrentRankRefInput = {
@@ -77354,6 +81634,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutBeltRanksInput = {
@@ -77372,6 +81653,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BeltRankKataUpsertWithWhereUniqueWithoutBeltRankInput = {
@@ -77723,6 +82005,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutRankHistoryInput = {
@@ -77768,6 +82051,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutRankHistoryInput = {
@@ -77863,6 +82147,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutRankPromotionsInput = {
@@ -77900,6 +82186,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutRankPromotionsInput = {
@@ -77961,6 +82249,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutRankHistoryInput = {
@@ -78006,6 +82295,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type BeltRankUpsertWithoutPromotionsInput = {
@@ -78113,6 +82403,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRankPromotionsInput = {
@@ -78150,6 +82442,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type TechniqueCreateWithoutBunkaiApplicationsInput = {
@@ -78303,6 +82597,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
     reviews?: ReviewCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutTechniquesInput = {
@@ -78321,6 +82616,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutTechniquesInput = {
@@ -78540,6 +82836,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutTechniquesInput = {
@@ -78558,6 +82855,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type BeltRankKataUpsertWithWhereUniqueWithoutKataInput = {
@@ -78651,6 +82949,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutTechniquesInput = {
@@ -78696,6 +82995,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutTechniquesInput = {
@@ -78803,6 +83103,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutTechniquesApprovedInput = {
@@ -78840,6 +83142,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutTechniquesApprovedInput = {
@@ -78962,6 +83266,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutTechniquesInput = {
@@ -79007,6 +83312,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type TechniqueUpsertWithoutStudentsInput = {
@@ -79126,6 +83432,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTechniquesApprovedInput = {
@@ -79163,6 +83471,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type TechniqueEvaluationUpsertWithoutStudentTechniqueInput = {
@@ -79294,6 +83604,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutTechniquePracticeLogsInput = {
@@ -79339,6 +83650,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutTechniquePracticeLogsInput = {
@@ -79429,6 +83741,8 @@ export namespace Prisma {
     class?: ClassCreateNestedOneWithoutAttendancesInput
     recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
     recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryCreateNestedOneWithoutAttendanceInput
     confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
   }
 
@@ -79451,6 +83765,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedCreateNestedOneWithoutAttendanceInput
   }
 
   export type AttendanceCreateOrConnectWithoutPracticeLogsInput = {
@@ -79555,6 +83871,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutTechniquePracticeLogsInput = {
@@ -79600,6 +83917,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type TechniqueUpsertWithoutPracticeLogsInput = {
@@ -79702,6 +84020,8 @@ export namespace Prisma {
     class?: ClassUpdateOneWithoutAttendancesNestedInput
     recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
     recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUpdateOneWithoutAttendanceNestedInput
     confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
   }
 
@@ -79724,6 +84044,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedUpdateOneWithoutAttendanceNestedInput
   }
 
   export type StudentTechniqueCreateWithoutEvaluationInput = {
@@ -79798,6 +84120,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutTechniqueEvaluationsInput = {
@@ -79835,6 +84159,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutTechniqueEvaluationsInput = {
@@ -79931,6 +84257,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTechniqueEvaluationsInput = {
@@ -79968,6 +84296,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type SchoolCreateWithoutPlansInput = {
@@ -79986,6 +84316,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
     reviews?: ReviewCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutPlansInput = {
@@ -80004,6 +84335,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutPlansInput = {
@@ -80054,6 +84386,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutPlanInput = {
@@ -80099,6 +84432,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutPlanInput = {
@@ -80138,6 +84472,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutPlansInput = {
@@ -80156,6 +84491,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type StudentUpsertWithWhereUniqueWithoutPlanInput = {
@@ -80236,6 +84572,8 @@ export namespace Prisma {
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutClassesInput = {
@@ -80273,6 +84611,8 @@ export namespace Prisma {
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutClassesInput = {
@@ -80359,6 +84699,8 @@ export namespace Prisma {
     student: StudentCreateNestedOneWithoutAttendancesInput
     recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
     recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryCreateNestedOneWithoutAttendanceInput
     confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
     practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
   }
@@ -80381,6 +84723,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedCreateNestedOneWithoutAttendanceInput
     practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
@@ -80507,6 +84851,8 @@ export namespace Prisma {
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClassesInput = {
@@ -80544,6 +84890,8 @@ export namespace Prisma {
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type ClassSessionUpsertWithWhereUniqueWithoutClassInput = {
@@ -80694,6 +85042,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutClassEnrollmentsInput = {
@@ -80739,6 +85088,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutClassEnrollmentsInput = {
@@ -80847,6 +85197,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutClassEnrollmentsInput = {
@@ -80892,6 +85243,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type ClassCreateWithoutSessionsInput = {
@@ -80970,6 +85322,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutClassSessionsTakenInput = {
@@ -81007,6 +85361,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutClassSessionsTakenInput = {
@@ -81031,6 +85387,8 @@ export namespace Prisma {
     class?: ClassCreateNestedOneWithoutAttendancesInput
     recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
     recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryCreateNestedOneWithoutAttendanceInput
     confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
     practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
   }
@@ -81053,6 +85411,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedCreateNestedOneWithoutAttendanceInput
     practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
@@ -81159,6 +85519,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClassSessionsTakenInput = {
@@ -81196,6 +85558,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type AttendanceUpsertWithWhereUniqueWithoutSessionInput = {
@@ -81212,6 +85576,98 @@ export namespace Prisma {
   export type AttendanceUpdateManyWithWhereWithoutSessionInput = {
     where: AttendanceScalarWhereInput
     data: XOR<AttendanceUpdateManyMutationInput, AttendanceUncheckedUpdateManyWithoutSessionInput>
+  }
+
+  export type SchoolCreateWithoutAbsencePoliciesInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branches?: BranchCreateNestedManyWithoutSchoolInput
+    users?: UserCreateNestedManyWithoutSchoolInput
+    students?: StudentCreateNestedManyWithoutSchoolInput
+    enrollments?: EnrollmentCreateNestedManyWithoutSchoolInput
+    beltRanks?: BeltRankCreateNestedManyWithoutSchoolInput
+    techniques?: TechniqueCreateNestedManyWithoutSchoolInput
+    achievementTypes?: AchievementTypeCreateNestedManyWithoutSchoolInput
+    plans?: PlanCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
+    reviews?: ReviewCreateNestedManyWithoutSchoolInput
+  }
+
+  export type SchoolUncheckedCreateWithoutAbsencePoliciesInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branches?: BranchUncheckedCreateNestedManyWithoutSchoolInput
+    users?: UserUncheckedCreateNestedManyWithoutSchoolInput
+    students?: StudentUncheckedCreateNestedManyWithoutSchoolInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutSchoolInput
+    beltRanks?: BeltRankUncheckedCreateNestedManyWithoutSchoolInput
+    techniques?: TechniqueUncheckedCreateNestedManyWithoutSchoolInput
+    achievementTypes?: AchievementTypeUncheckedCreateNestedManyWithoutSchoolInput
+    plans?: PlanUncheckedCreateNestedManyWithoutSchoolInput
+    holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
+    examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutSchoolInput
+  }
+
+  export type SchoolCreateOrConnectWithoutAbsencePoliciesInput = {
+    where: SchoolWhereUniqueInput
+    create: XOR<SchoolCreateWithoutAbsencePoliciesInput, SchoolUncheckedCreateWithoutAbsencePoliciesInput>
+  }
+
+  export type SchoolUpsertWithoutAbsencePoliciesInput = {
+    update: XOR<SchoolUpdateWithoutAbsencePoliciesInput, SchoolUncheckedUpdateWithoutAbsencePoliciesInput>
+    create: XOR<SchoolCreateWithoutAbsencePoliciesInput, SchoolUncheckedCreateWithoutAbsencePoliciesInput>
+    where?: SchoolWhereInput
+  }
+
+  export type SchoolUpdateToOneWithWhereWithoutAbsencePoliciesInput = {
+    where?: SchoolWhereInput
+    data: XOR<SchoolUpdateWithoutAbsencePoliciesInput, SchoolUncheckedUpdateWithoutAbsencePoliciesInput>
+  }
+
+  export type SchoolUpdateWithoutAbsencePoliciesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branches?: BranchUpdateManyWithoutSchoolNestedInput
+    users?: UserUpdateManyWithoutSchoolNestedInput
+    students?: StudentUpdateManyWithoutSchoolNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutSchoolNestedInput
+    beltRanks?: BeltRankUpdateManyWithoutSchoolNestedInput
+    techniques?: TechniqueUpdateManyWithoutSchoolNestedInput
+    achievementTypes?: AchievementTypeUpdateManyWithoutSchoolNestedInput
+    plans?: PlanUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
+    reviews?: ReviewUpdateManyWithoutSchoolNestedInput
+  }
+
+  export type SchoolUncheckedUpdateWithoutAbsencePoliciesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branches?: BranchUncheckedUpdateManyWithoutSchoolNestedInput
+    users?: UserUncheckedUpdateManyWithoutSchoolNestedInput
+    students?: StudentUncheckedUpdateManyWithoutSchoolNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutSchoolNestedInput
+    beltRanks?: BeltRankUncheckedUpdateManyWithoutSchoolNestedInput
+    techniques?: TechniqueUncheckedUpdateManyWithoutSchoolNestedInput
+    achievementTypes?: AchievementTypeUncheckedUpdateManyWithoutSchoolNestedInput
+    plans?: PlanUncheckedUpdateManyWithoutSchoolNestedInput
+    holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
+    examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type StudentCreateWithoutAbsenceJustificationsInput = {
@@ -81257,6 +85713,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutAbsenceJustificationsInput = {
@@ -81302,6 +85759,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutAbsenceJustificationsInput = {
@@ -81385,6 +85843,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAbsenceReviewsInput = {
@@ -81422,6 +85882,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAbsenceReviewsInput = {
@@ -81483,6 +85945,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutAbsenceJustificationsInput = {
@@ -81528,6 +85991,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type ClassUpsertWithoutAbsenceJustificationsInput = {
@@ -81623,6 +86087,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAbsenceReviewsInput = {
@@ -81660,6 +86126,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type ClassSessionCreateWithoutAttendancesInput = {
@@ -81730,6 +86198,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutAttendancesInput = {
@@ -81775,6 +86244,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutAttendancesInput = {
@@ -81840,6 +86310,8 @@ export namespace Prisma {
     student: StudentCreateNestedOneWithoutAttendancesInput
     class?: ClassCreateNestedOneWithoutAttendancesInput
     recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
+    onlineRecoveryAbsence?: OnlineRecoveryCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryCreateNestedOneWithoutAttendanceInput
     confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
     practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
   }
@@ -81862,6 +86334,8 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedCreateNestedOneWithoutAttendanceInput
     practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
@@ -81887,6 +86361,8 @@ export namespace Prisma {
     student: StudentCreateNestedOneWithoutAttendancesInput
     class?: ClassCreateNestedOneWithoutAttendancesInput
     recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryCreateNestedOneWithoutAttendanceInput
     confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
     practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
   }
@@ -81909,12 +86385,108 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedCreateNestedOneWithoutAbsenceInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedCreateNestedOneWithoutAttendanceInput
     practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
   }
 
   export type AttendanceCreateOrConnectWithoutRecoveredByInput = {
     where: AttendanceWhereUniqueInput
     create: XOR<AttendanceCreateWithoutRecoveredByInput, AttendanceUncheckedCreateWithoutRecoveredByInput>
+  }
+
+  export type OnlineRecoveryCreateWithoutAbsenceInput = {
+    id?: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    notes?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student: StudentCreateNestedOneWithoutOnlineRecoveriesInput
+    instructor?: UserCreateNestedOneWithoutOnlineRecoveriesAsInstructorInput
+    attendance?: AttendanceCreateNestedOneWithoutOnlineRecoveryAttendanceInput
+    createdBy?: UserCreateNestedOneWithoutOnlineRecoveriesCreatedInput
+  }
+
+  export type OnlineRecoveryUncheckedCreateWithoutAbsenceInput = {
+    id?: string
+    studentId: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    instructorId?: string | null
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    attendanceId?: string | null
+    notes?: string | null
+    createdById?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OnlineRecoveryCreateOrConnectWithoutAbsenceInput = {
+    where: OnlineRecoveryWhereUniqueInput
+    create: XOR<OnlineRecoveryCreateWithoutAbsenceInput, OnlineRecoveryUncheckedCreateWithoutAbsenceInput>
+  }
+
+  export type OnlineRecoveryCreateWithoutAttendanceInput = {
+    id?: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    notes?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    student: StudentCreateNestedOneWithoutOnlineRecoveriesInput
+    absence: AttendanceCreateNestedOneWithoutOnlineRecoveryAbsenceInput
+    instructor?: UserCreateNestedOneWithoutOnlineRecoveriesAsInstructorInput
+    createdBy?: UserCreateNestedOneWithoutOnlineRecoveriesCreatedInput
+  }
+
+  export type OnlineRecoveryUncheckedCreateWithoutAttendanceInput = {
+    id?: string
+    studentId: string
+    absenceId: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    instructorId?: string | null
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    notes?: string | null
+    createdById?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OnlineRecoveryCreateOrConnectWithoutAttendanceInput = {
+    where: OnlineRecoveryWhereUniqueInput
+    create: XOR<OnlineRecoveryCreateWithoutAttendanceInput, OnlineRecoveryUncheckedCreateWithoutAttendanceInput>
   }
 
   export type UserCreateWithoutAttendanceConfirmationsInput = {
@@ -81952,6 +86524,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAttendanceConfirmationsInput = {
@@ -81989,6 +86563,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAttendanceConfirmationsInput = {
@@ -82115,6 +86691,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutAttendancesInput = {
@@ -82160,6 +86737,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type ClassUpsertWithoutAttendancesInput = {
@@ -82237,6 +86815,8 @@ export namespace Prisma {
     student?: StudentUpdateOneRequiredWithoutAttendancesNestedInput
     class?: ClassUpdateOneWithoutAttendancesNestedInput
     recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUpdateOneWithoutAttendanceNestedInput
     confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
     practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
   }
@@ -82259,6 +86839,8 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedUpdateOneWithoutAttendanceNestedInput
     practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 
@@ -82290,6 +86872,8 @@ export namespace Prisma {
     student?: StudentUpdateOneRequiredWithoutAttendancesNestedInput
     class?: ClassUpdateOneWithoutAttendancesNestedInput
     recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUpdateOneWithoutAttendanceNestedInput
     confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
     practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
   }
@@ -82312,7 +86896,115 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedUpdateOneWithoutAttendanceNestedInput
     practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
+  }
+
+  export type OnlineRecoveryUpsertWithoutAbsenceInput = {
+    update: XOR<OnlineRecoveryUpdateWithoutAbsenceInput, OnlineRecoveryUncheckedUpdateWithoutAbsenceInput>
+    create: XOR<OnlineRecoveryCreateWithoutAbsenceInput, OnlineRecoveryUncheckedCreateWithoutAbsenceInput>
+    where?: OnlineRecoveryWhereInput
+  }
+
+  export type OnlineRecoveryUpdateToOneWithWhereWithoutAbsenceInput = {
+    where?: OnlineRecoveryWhereInput
+    data: XOR<OnlineRecoveryUpdateWithoutAbsenceInput, OnlineRecoveryUncheckedUpdateWithoutAbsenceInput>
+  }
+
+  export type OnlineRecoveryUpdateWithoutAbsenceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentUpdateOneRequiredWithoutOnlineRecoveriesNestedInput
+    instructor?: UserUpdateOneWithoutOnlineRecoveriesAsInstructorNestedInput
+    attendance?: AttendanceUpdateOneWithoutOnlineRecoveryAttendanceNestedInput
+    createdBy?: UserUpdateOneWithoutOnlineRecoveriesCreatedNestedInput
+  }
+
+  export type OnlineRecoveryUncheckedUpdateWithoutAbsenceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    instructorId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OnlineRecoveryUpsertWithoutAttendanceInput = {
+    update: XOR<OnlineRecoveryUpdateWithoutAttendanceInput, OnlineRecoveryUncheckedUpdateWithoutAttendanceInput>
+    create: XOR<OnlineRecoveryCreateWithoutAttendanceInput, OnlineRecoveryUncheckedCreateWithoutAttendanceInput>
+    where?: OnlineRecoveryWhereInput
+  }
+
+  export type OnlineRecoveryUpdateToOneWithWhereWithoutAttendanceInput = {
+    where?: OnlineRecoveryWhereInput
+    data: XOR<OnlineRecoveryUpdateWithoutAttendanceInput, OnlineRecoveryUncheckedUpdateWithoutAttendanceInput>
+  }
+
+  export type OnlineRecoveryUpdateWithoutAttendanceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentUpdateOneRequiredWithoutOnlineRecoveriesNestedInput
+    absence?: AttendanceUpdateOneRequiredWithoutOnlineRecoveryAbsenceNestedInput
+    instructor?: UserUpdateOneWithoutOnlineRecoveriesAsInstructorNestedInput
+    createdBy?: UserUpdateOneWithoutOnlineRecoveriesCreatedNestedInput
+  }
+
+  export type OnlineRecoveryUncheckedUpdateWithoutAttendanceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    absenceId?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    instructorId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUpsertWithoutAttendanceConfirmationsInput = {
@@ -82361,6 +87053,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAttendanceConfirmationsInput = {
@@ -82398,6 +87092,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type TechniquePracticeLogUpsertWithWhereUniqueWithoutAttendanceInput = {
@@ -82416,6 +87112,766 @@ export namespace Prisma {
     data: XOR<TechniquePracticeLogUpdateManyMutationInput, TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceInput>
   }
 
+  export type StudentCreateWithoutOnlineRecoveriesInput = {
+    id?: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    gender?: $Enums.Gender | null
+    email?: string | null
+    contactPhone?: string | null
+    medicalInfo?: string | null
+    emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
+    enrollmentDate?: Date | string
+    memberNumber?: string | null
+    status?: $Enums.StudentStatus
+    currentRank?: string | null
+    photoKey?: string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planStartDate?: Date | string | null
+    scholarshipType?: $Enums.ScholarshipType
+    scholarshipNote?: string | null
+    isCompetitor?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
+    plan?: PlanCreateNestedOneWithoutStudentsInput
+    school: SchoolCreateNestedOneWithoutStudentsInput
+    branch: BranchCreateNestedOneWithoutStudentsInput
+    user?: UserCreateNestedOneWithoutStudentProfileInput
+    guardian?: UserCreateNestedOneWithoutGuardianOfStudentsInput
+    guardians?: GuardianStudentCreateNestedManyWithoutStudentInput
+    enrollments?: EnrollmentCreateNestedManyWithoutStudentInput
+    attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationCreateNestedManyWithoutStudentInput
+    achievements?: StudentAchievementCreateNestedManyWithoutStudentInput
+    techniques?: StudentTechniqueCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogCreateNestedManyWithoutStudentInput
+    fitnessReports?: FitnessReportCreateNestedManyWithoutStudentInput
+    classEnrollments?: ClassEnrollmentCreateNestedManyWithoutStudentInput
+    rankHistory?: StudentRankHistoryCreateNestedManyWithoutStudentInput
+    enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
+    invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
+    documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    notifications?: NotificationCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentUncheckedCreateWithoutOnlineRecoveriesInput = {
+    id?: string
+    userId?: string | null
+    guardianId?: string | null
+    schoolId: string
+    branchId: string
+    firstName: string
+    lastName: string
+    dateOfBirth: Date | string
+    gender?: $Enums.Gender | null
+    email?: string | null
+    contactPhone?: string | null
+    medicalInfo?: string | null
+    emergencyContact?: string | null
+    giSize?: string | null
+    beltSize?: string | null
+    enrollmentDate?: Date | string
+    memberNumber?: string | null
+    status?: $Enums.StudentStatus
+    currentRank?: string | null
+    currentRankId?: string | null
+    photoKey?: string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planId?: string | null
+    planStartDate?: Date | string | null
+    scholarshipType?: $Enums.ScholarshipType
+    scholarshipNote?: string | null
+    isCompetitor?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    absenceJustifications?: AbsenceJustificationUncheckedCreateNestedManyWithoutStudentInput
+    achievements?: StudentAchievementUncheckedCreateNestedManyWithoutStudentInput
+    techniques?: StudentTechniqueUncheckedCreateNestedManyWithoutStudentInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutStudentInput
+    fitnessReports?: FitnessReportUncheckedCreateNestedManyWithoutStudentInput
+    classEnrollments?: ClassEnrollmentUncheckedCreateNestedManyWithoutStudentInput
+    rankHistory?: StudentRankHistoryUncheckedCreateNestedManyWithoutStudentInput
+    enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
+    invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
+    documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+  }
+
+  export type StudentCreateOrConnectWithoutOnlineRecoveriesInput = {
+    where: StudentWhereUniqueInput
+    create: XOR<StudentCreateWithoutOnlineRecoveriesInput, StudentUncheckedCreateWithoutOnlineRecoveriesInput>
+  }
+
+  export type AttendanceCreateWithoutOnlineRecoveryAbsenceInput = {
+    id?: string
+    date?: Date | string
+    present?: boolean
+    hoursTrained?: number
+    sessionType?: string | null
+    status?: $Enums.AttendanceStatus
+    isOutOfSchedule?: boolean
+    punchedAt?: Date | string
+    confirmedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session?: ClassSessionCreateNestedOneWithoutAttendancesInput
+    student: StudentCreateNestedOneWithoutAttendancesInput
+    class?: ClassCreateNestedOneWithoutAttendancesInput
+    recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
+    recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAttendance?: OnlineRecoveryCreateNestedOneWithoutAttendanceInput
+    confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
+  }
+
+  export type AttendanceUncheckedCreateWithoutOnlineRecoveryAbsenceInput = {
+    id?: string
+    sessionId?: string | null
+    studentId: string
+    date?: Date | string
+    present?: boolean
+    hoursTrained?: number
+    sessionType?: string | null
+    status?: $Enums.AttendanceStatus
+    classId?: string | null
+    isOutOfSchedule?: boolean
+    recoveredById?: string | null
+    punchedAt?: Date | string
+    confirmedAt?: Date | string | null
+    confirmedById?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedCreateNestedOneWithoutAttendanceInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
+  }
+
+  export type AttendanceCreateOrConnectWithoutOnlineRecoveryAbsenceInput = {
+    where: AttendanceWhereUniqueInput
+    create: XOR<AttendanceCreateWithoutOnlineRecoveryAbsenceInput, AttendanceUncheckedCreateWithoutOnlineRecoveryAbsenceInput>
+  }
+
+  export type UserCreateWithoutOnlineRecoveriesAsInstructorInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutUsersInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    instructorProfile?: InstructorProfileCreateNestedOneWithoutUserInput
+    studentProfile?: StudentCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
+    classes?: ClassCreateNestedManyWithoutInstructorInput
+    posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutOnlineRecoveriesAsInstructorInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    schoolId?: string | null
+    branchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    instructorProfile?: InstructorProfileUncheckedCreateNestedOneWithoutUserInput
+    studentProfile?: StudentUncheckedCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
+    classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutOnlineRecoveriesAsInstructorInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutOnlineRecoveriesAsInstructorInput, UserUncheckedCreateWithoutOnlineRecoveriesAsInstructorInput>
+  }
+
+  export type AttendanceCreateWithoutOnlineRecoveryAttendanceInput = {
+    id?: string
+    date?: Date | string
+    present?: boolean
+    hoursTrained?: number
+    sessionType?: string | null
+    status?: $Enums.AttendanceStatus
+    isOutOfSchedule?: boolean
+    punchedAt?: Date | string
+    confirmedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session?: ClassSessionCreateNestedOneWithoutAttendancesInput
+    student: StudentCreateNestedOneWithoutAttendancesInput
+    class?: ClassCreateNestedOneWithoutAttendancesInput
+    recoveredBy?: AttendanceCreateNestedOneWithoutRecoveryInput
+    recovery?: AttendanceCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryCreateNestedOneWithoutAbsenceInput
+    confirmedBy?: UserCreateNestedOneWithoutAttendanceConfirmationsInput
+    practiceLogs?: TechniquePracticeLogCreateNestedManyWithoutAttendanceInput
+  }
+
+  export type AttendanceUncheckedCreateWithoutOnlineRecoveryAttendanceInput = {
+    id?: string
+    sessionId?: string | null
+    studentId: string
+    date?: Date | string
+    present?: boolean
+    hoursTrained?: number
+    sessionType?: string | null
+    status?: $Enums.AttendanceStatus
+    classId?: string | null
+    isOutOfSchedule?: boolean
+    recoveredById?: string | null
+    punchedAt?: Date | string
+    confirmedAt?: Date | string | null
+    confirmedById?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    recovery?: AttendanceUncheckedCreateNestedOneWithoutRecoveredByInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedCreateNestedOneWithoutAbsenceInput
+    practiceLogs?: TechniquePracticeLogUncheckedCreateNestedManyWithoutAttendanceInput
+  }
+
+  export type AttendanceCreateOrConnectWithoutOnlineRecoveryAttendanceInput = {
+    where: AttendanceWhereUniqueInput
+    create: XOR<AttendanceCreateWithoutOnlineRecoveryAttendanceInput, AttendanceUncheckedCreateWithoutOnlineRecoveryAttendanceInput>
+  }
+
+  export type UserCreateWithoutOnlineRecoveriesCreatedInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    school?: SchoolCreateNestedOneWithoutUsersInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    instructorProfile?: InstructorProfileCreateNestedOneWithoutUserInput
+    studentProfile?: StudentCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionCreateNestedManyWithoutTakenByInput
+    emailVerificationTokens?: EmailVerificationTokenCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutActorInput
+    classes?: ClassCreateNestedManyWithoutInstructorInput
+    posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+  }
+
+  export type UserUncheckedCreateWithoutOnlineRecoveriesCreatedInput = {
+    id?: string
+    email: string
+    emailVerified?: Date | string | null
+    passwordHash?: string | null
+    sessionVersion?: number
+    name?: string | null
+    phone?: string | null
+    roles?: UserCreaterolesInput | $Enums.Role[]
+    schoolId?: string | null
+    branchId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    instructorProfile?: InstructorProfileUncheckedCreateNestedOneWithoutUserInput
+    studentProfile?: StudentUncheckedCreateNestedOneWithoutUserInput
+    guardians?: GuardianStudentUncheckedCreateNestedManyWithoutGuardianInput
+    guardianOfStudents?: StudentUncheckedCreateNestedManyWithoutGuardianInput
+    rankPromotions?: StudentRankHistoryUncheckedCreateNestedManyWithoutPromoterInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    techniquesApproved?: StudentTechniqueUncheckedCreateNestedManyWithoutApprovedByUserInput
+    achievementsApproved?: StudentAchievementUncheckedCreateNestedManyWithoutApprovedByUserInput
+    fitnessReportsApproved?: FitnessReportUncheckedCreateNestedManyWithoutApprovedByUserInput
+    attendanceConfirmations?: AttendanceUncheckedCreateNestedManyWithoutConfirmedByInput
+    absenceReviews?: AbsenceJustificationUncheckedCreateNestedManyWithoutReviewedByInput
+    classSessionsTaken?: ClassSessionUncheckedCreateNestedManyWithoutTakenByInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    passwordResetTokens?: PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedCreateNestedManyWithoutUsedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    pushSubscriptions?: PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedCreateNestedManyWithoutUserInput
+    whatsappContact?: WhatsAppContactUncheckedCreateNestedOneWithoutUserInput
+    whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
+    classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+  }
+
+  export type UserCreateOrConnectWithoutOnlineRecoveriesCreatedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutOnlineRecoveriesCreatedInput, UserUncheckedCreateWithoutOnlineRecoveriesCreatedInput>
+  }
+
+  export type StudentUpsertWithoutOnlineRecoveriesInput = {
+    update: XOR<StudentUpdateWithoutOnlineRecoveriesInput, StudentUncheckedUpdateWithoutOnlineRecoveriesInput>
+    create: XOR<StudentCreateWithoutOnlineRecoveriesInput, StudentUncheckedCreateWithoutOnlineRecoveriesInput>
+    where?: StudentWhereInput
+  }
+
+  export type StudentUpdateToOneWithWhereWithoutOnlineRecoveriesInput = {
+    where?: StudentWhereInput
+    data: XOR<StudentUpdateWithoutOnlineRecoveriesInput, StudentUncheckedUpdateWithoutOnlineRecoveriesInput>
+  }
+
+  export type StudentUpdateWithoutOnlineRecoveriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
+    currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    photoKey?: NullableStringFieldUpdateOperationsInput | string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
+    scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
+    isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
+    plan?: PlanUpdateOneWithoutStudentsNestedInput
+    school?: SchoolUpdateOneRequiredWithoutStudentsNestedInput
+    branch?: BranchUpdateOneRequiredWithoutStudentsNestedInput
+    user?: UserUpdateOneWithoutStudentProfileNestedInput
+    guardian?: UserUpdateOneWithoutGuardianOfStudentsNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutStudentNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutStudentNestedInput
+    attendances?: AttendanceUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUpdateManyWithoutStudentNestedInput
+    achievements?: StudentAchievementUpdateManyWithoutStudentNestedInput
+    techniques?: StudentTechniqueUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUpdateManyWithoutStudentNestedInput
+    fitnessReports?: FitnessReportUpdateManyWithoutStudentNestedInput
+    classEnrollments?: ClassEnrollmentUpdateManyWithoutStudentNestedInput
+    rankHistory?: StudentRankHistoryUpdateManyWithoutStudentNestedInput
+    enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
+    invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
+    documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUpdateManyWithoutStudentNestedInput
+  }
+
+  export type StudentUncheckedUpdateWithoutOnlineRecoveriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    guardianId?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolId?: StringFieldUpdateOperationsInput | string
+    branchId?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    dateOfBirth?: DateTimeFieldUpdateOperationsInput | Date | string
+    gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    medicalInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    emergencyContact?: NullableStringFieldUpdateOperationsInput | string | null
+    giSize?: NullableStringFieldUpdateOperationsInput | string | null
+    beltSize?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    memberNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus
+    currentRank?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRankId?: NullableStringFieldUpdateOperationsInput | string | null
+    photoKey?: NullableStringFieldUpdateOperationsInput | string | null
+    registrationData?: NullableJsonNullValueInput | InputJsonValue
+    planId?: NullableStringFieldUpdateOperationsInput | string | null
+    planStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
+    scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
+    isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+    attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+    absenceJustifications?: AbsenceJustificationUncheckedUpdateManyWithoutStudentNestedInput
+    achievements?: StudentAchievementUncheckedUpdateManyWithoutStudentNestedInput
+    techniques?: StudentTechniqueUncheckedUpdateManyWithoutStudentNestedInput
+    techniquePracticeLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutStudentNestedInput
+    fitnessReports?: FitnessReportUncheckedUpdateManyWithoutStudentNestedInput
+    classEnrollments?: ClassEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
+    rankHistory?: StudentRankHistoryUncheckedUpdateManyWithoutStudentNestedInput
+    enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
+    invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
+    documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+  }
+
+  export type AttendanceUpsertWithoutOnlineRecoveryAbsenceInput = {
+    update: XOR<AttendanceUpdateWithoutOnlineRecoveryAbsenceInput, AttendanceUncheckedUpdateWithoutOnlineRecoveryAbsenceInput>
+    create: XOR<AttendanceCreateWithoutOnlineRecoveryAbsenceInput, AttendanceUncheckedCreateWithoutOnlineRecoveryAbsenceInput>
+    where?: AttendanceWhereInput
+  }
+
+  export type AttendanceUpdateToOneWithWhereWithoutOnlineRecoveryAbsenceInput = {
+    where?: AttendanceWhereInput
+    data: XOR<AttendanceUpdateWithoutOnlineRecoveryAbsenceInput, AttendanceUncheckedUpdateWithoutOnlineRecoveryAbsenceInput>
+  }
+
+  export type AttendanceUpdateWithoutOnlineRecoveryAbsenceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    present?: BoolFieldUpdateOperationsInput | boolean
+    hoursTrained?: FloatFieldUpdateOperationsInput | number
+    sessionType?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    isOutOfSchedule?: BoolFieldUpdateOperationsInput | boolean
+    punchedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: ClassSessionUpdateOneWithoutAttendancesNestedInput
+    student?: StudentUpdateOneRequiredWithoutAttendancesNestedInput
+    class?: ClassUpdateOneWithoutAttendancesNestedInput
+    recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
+    recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUpdateOneWithoutAttendanceNestedInput
+    confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
+  }
+
+  export type AttendanceUncheckedUpdateWithoutOnlineRecoveryAbsenceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    studentId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    present?: BoolFieldUpdateOperationsInput | boolean
+    hoursTrained?: FloatFieldUpdateOperationsInput | number
+    sessionType?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    classId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOutOfSchedule?: BoolFieldUpdateOperationsInput | boolean
+    recoveredById?: NullableStringFieldUpdateOperationsInput | string | null
+    punchedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedUpdateOneWithoutAttendanceNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
+  }
+
+  export type UserUpsertWithoutOnlineRecoveriesAsInstructorInput = {
+    update: XOR<UserUpdateWithoutOnlineRecoveriesAsInstructorInput, UserUncheckedUpdateWithoutOnlineRecoveriesAsInstructorInput>
+    create: XOR<UserCreateWithoutOnlineRecoveriesAsInstructorInput, UserUncheckedCreateWithoutOnlineRecoveriesAsInstructorInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutOnlineRecoveriesAsInstructorInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutOnlineRecoveriesAsInstructorInput, UserUncheckedUpdateWithoutOnlineRecoveriesAsInstructorInput>
+  }
+
+  export type UserUpdateWithoutOnlineRecoveriesAsInstructorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutUsersNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    instructorProfile?: InstructorProfileUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
+    classes?: ClassUpdateManyWithoutInstructorNestedInput
+    posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutOnlineRecoveriesAsInstructorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    instructorProfile?: InstructorProfileUncheckedUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUncheckedUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type AttendanceUpsertWithoutOnlineRecoveryAttendanceInput = {
+    update: XOR<AttendanceUpdateWithoutOnlineRecoveryAttendanceInput, AttendanceUncheckedUpdateWithoutOnlineRecoveryAttendanceInput>
+    create: XOR<AttendanceCreateWithoutOnlineRecoveryAttendanceInput, AttendanceUncheckedCreateWithoutOnlineRecoveryAttendanceInput>
+    where?: AttendanceWhereInput
+  }
+
+  export type AttendanceUpdateToOneWithWhereWithoutOnlineRecoveryAttendanceInput = {
+    where?: AttendanceWhereInput
+    data: XOR<AttendanceUpdateWithoutOnlineRecoveryAttendanceInput, AttendanceUncheckedUpdateWithoutOnlineRecoveryAttendanceInput>
+  }
+
+  export type AttendanceUpdateWithoutOnlineRecoveryAttendanceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    present?: BoolFieldUpdateOperationsInput | boolean
+    hoursTrained?: FloatFieldUpdateOperationsInput | number
+    sessionType?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    isOutOfSchedule?: BoolFieldUpdateOperationsInput | boolean
+    punchedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: ClassSessionUpdateOneWithoutAttendancesNestedInput
+    student?: StudentUpdateOneRequiredWithoutAttendancesNestedInput
+    class?: ClassUpdateOneWithoutAttendancesNestedInput
+    recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
+    recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUpdateOneWithoutAbsenceNestedInput
+    confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
+    practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
+  }
+
+  export type AttendanceUncheckedUpdateWithoutOnlineRecoveryAttendanceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    studentId?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    present?: BoolFieldUpdateOperationsInput | boolean
+    hoursTrained?: FloatFieldUpdateOperationsInput | number
+    sessionType?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    classId?: NullableStringFieldUpdateOperationsInput | string | null
+    isOutOfSchedule?: BoolFieldUpdateOperationsInput | boolean
+    recoveredById?: NullableStringFieldUpdateOperationsInput | string | null
+    punchedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    confirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confirmedById?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedUpdateOneWithoutAbsenceNestedInput
+    practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
+  }
+
+  export type UserUpsertWithoutOnlineRecoveriesCreatedInput = {
+    update: XOR<UserUpdateWithoutOnlineRecoveriesCreatedInput, UserUncheckedUpdateWithoutOnlineRecoveriesCreatedInput>
+    create: XOR<UserCreateWithoutOnlineRecoveriesCreatedInput, UserUncheckedCreateWithoutOnlineRecoveriesCreatedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutOnlineRecoveriesCreatedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutOnlineRecoveriesCreatedInput, UserUncheckedUpdateWithoutOnlineRecoveriesCreatedInput>
+  }
+
+  export type UserUpdateWithoutOnlineRecoveriesCreatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    school?: SchoolUpdateOneWithoutUsersNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    instructorProfile?: InstructorProfileUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUpdateManyWithoutTakenByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
+    classes?: ClassUpdateManyWithoutInstructorNestedInput
+    posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutOnlineRecoveriesCreatedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionVersion?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: UserUpdaterolesInput | $Enums.Role[]
+    schoolId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    instructorProfile?: InstructorProfileUncheckedUpdateOneWithoutUserNestedInput
+    studentProfile?: StudentUncheckedUpdateOneWithoutUserNestedInput
+    guardians?: GuardianStudentUncheckedUpdateManyWithoutGuardianNestedInput
+    guardianOfStudents?: StudentUncheckedUpdateManyWithoutGuardianNestedInput
+    rankPromotions?: StudentRankHistoryUncheckedUpdateManyWithoutPromoterNestedInput
+    techniqueEvaluations?: TechniqueEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    techniquesApproved?: StudentTechniqueUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    achievementsApproved?: StudentAchievementUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    fitnessReportsApproved?: FitnessReportUncheckedUpdateManyWithoutApprovedByUserNestedInput
+    attendanceConfirmations?: AttendanceUncheckedUpdateManyWithoutConfirmedByNestedInput
+    absenceReviews?: AbsenceJustificationUncheckedUpdateManyWithoutReviewedByNestedInput
+    classSessionsTaken?: ClassSessionUncheckedUpdateManyWithoutTakenByNestedInput
+    emailVerificationTokens?: EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    passwordResetTokens?: PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+    acceptedInvitations?: StudentInvitationTokenUncheckedUpdateManyWithoutUsedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    pushSubscriptions?: PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+    webauthnCredentials?: WebAuthnCredentialUncheckedUpdateManyWithoutUserNestedInput
+    whatsappContact?: WhatsAppContactUncheckedUpdateOneWithoutUserNestedInput
+    whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
+    classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+  }
+
   export type SchoolCreateWithoutAchievementTypesInput = {
     id?: string
     name: string
@@ -82432,6 +87888,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
     reviews?: ReviewCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutAchievementTypesInput = {
@@ -82450,6 +87907,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutAchievementTypesInput = {
@@ -82516,6 +87974,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutAchievementTypesInput = {
@@ -82534,6 +87993,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type StudentAchievementUpsertWithWhereUniqueWithoutTypeInput = {
@@ -82595,6 +88055,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutAchievementsInput = {
@@ -82640,6 +88101,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutAchievementsInput = {
@@ -82703,6 +88165,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAchievementsApprovedInput = {
@@ -82740,6 +88204,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAchievementsApprovedInput = {
@@ -82801,6 +88267,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutAchievementsInput = {
@@ -82846,6 +88313,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type AchievementTypeUpsertWithoutAchievementsInput = {
@@ -82921,6 +88389,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAchievementsApprovedInput = {
@@ -82958,6 +88428,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type StudentCreateWithoutFitnessReportsInput = {
@@ -83003,6 +88475,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
     notifications?: NotificationCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutFitnessReportsInput = {
@@ -83048,6 +88521,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutFitnessReportsInput = {
@@ -83090,6 +88564,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutFitnessReportsApprovedInput = {
@@ -83127,6 +88603,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutFitnessReportsApprovedInput = {
@@ -83188,6 +88666,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutFitnessReportsInput = {
@@ -83233,6 +88712,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type UserUpsertWithoutFitnessReportsApprovedInput = {
@@ -83281,6 +88761,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFitnessReportsApprovedInput = {
@@ -83318,6 +88800,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutNotificationsInput = {
@@ -83355,6 +88839,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -83392,6 +88878,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -83442,6 +88930,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryCreateNestedManyWithoutStudentInput
   }
 
   export type StudentUncheckedCreateWithoutNotificationsInput = {
@@ -83487,6 +88976,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedCreateNestedOneWithoutStudentInput
     invitationTokens?: StudentInvitationTokenUncheckedCreateNestedManyWithoutStudentInput
     documents?: StudentDocumentUncheckedCreateNestedManyWithoutStudentInput
+    onlineRecoveries?: OnlineRecoveryUncheckedCreateNestedManyWithoutStudentInput
   }
 
   export type StudentCreateOrConnectWithoutNotificationsInput = {
@@ -83540,6 +89030,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -83577,6 +89069,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type StudentUpsertWithoutNotificationsInput = {
@@ -83633,6 +89127,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutNotificationsInput = {
@@ -83678,6 +89173,7 @@ export namespace Prisma {
     enrollmentApplicant?: EnrollmentApplicantUncheckedUpdateOneWithoutStudentNestedInput
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type UserCreateWithoutWhatsappContactInput = {
@@ -83715,6 +89211,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutWhatsappContactInput = {
@@ -83752,6 +89250,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutWhatsappContactInput = {
@@ -83853,6 +89353,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWhatsappContactInput = {
@@ -83890,6 +89392,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type WhatsAppMessageUpsertWithWhereUniqueWithoutContactInput = {
@@ -83976,6 +89480,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutWhatsappMessagesInput = {
@@ -84013,6 +89519,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutWhatsappMessagesInput = {
@@ -84105,6 +89613,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWhatsappMessagesInput = {
@@ -84142,6 +89652,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutPushSubscriptionsInput = {
@@ -84179,6 +89691,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
@@ -84216,6 +89730,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutPushSubscriptionsInput = {
@@ -84269,6 +89785,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
@@ -84306,6 +89824,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutWebauthnCredentialsInput = {
@@ -84343,6 +89863,8 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutWebauthnCredentialsInput = {
@@ -84380,6 +89902,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutWebauthnCredentialsInput = {
@@ -84433,6 +89957,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWebauthnCredentialsInput = {
@@ -84470,6 +89996,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type SchoolCreateWithoutHolidaysInput = {
@@ -84488,6 +90016,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
     reviews?: ReviewCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutHolidaysInput = {
@@ -84506,6 +90035,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutHolidaysInput = {
@@ -84540,6 +90070,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutHolidaysInput = {
@@ -84558,6 +90089,7 @@ export namespace Prisma {
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolCreateWithoutExamConvocationsInput = {
@@ -84576,6 +90108,7 @@ export namespace Prisma {
     holidays?: HolidayCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
     reviews?: ReviewCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutExamConvocationsInput = {
@@ -84594,6 +90127,7 @@ export namespace Prisma {
     holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutExamConvocationsInput = {
@@ -84628,6 +90162,7 @@ export namespace Prisma {
     holidays?: HolidayUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutExamConvocationsInput = {
@@ -84646,6 +90181,7 @@ export namespace Prisma {
     holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolCreateWithoutReviewsInput = {
@@ -84664,6 +90200,7 @@ export namespace Prisma {
     holidays?: HolidayCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutReviewsInput = {
@@ -84682,6 +90219,7 @@ export namespace Prisma {
     holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutReviewsInput = {
@@ -84716,6 +90254,7 @@ export namespace Prisma {
     holidays?: HolidayUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutReviewsInput = {
@@ -84734,6 +90273,7 @@ export namespace Prisma {
     holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolCreateWithoutAuditLogsInput = {
@@ -84752,6 +90292,7 @@ export namespace Prisma {
     holidays?: HolidayCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationCreateNestedManyWithoutSchoolInput
     reviews?: ReviewCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolUncheckedCreateWithoutAuditLogsInput = {
@@ -84770,6 +90311,7 @@ export namespace Prisma {
     holidays?: HolidayUncheckedCreateNestedManyWithoutSchoolInput
     examConvocations?: ExamConvocationUncheckedCreateNestedManyWithoutSchoolInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutSchoolInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedCreateNestedManyWithoutSchoolInput
   }
 
   export type SchoolCreateOrConnectWithoutAuditLogsInput = {
@@ -84812,6 +90354,8 @@ export namespace Prisma {
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
     posts?: PostCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -84849,6 +90393,8 @@ export namespace Prisma {
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -84883,6 +90429,7 @@ export namespace Prisma {
     holidays?: HolidayUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUpdateManyWithoutSchoolNestedInput
   }
 
   export type SchoolUncheckedUpdateWithoutAuditLogsInput = {
@@ -84901,6 +90448,7 @@ export namespace Prisma {
     holidays?: HolidayUncheckedUpdateManyWithoutSchoolNestedInput
     examConvocations?: ExamConvocationUncheckedUpdateManyWithoutSchoolNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutSchoolNestedInput
+    absencePolicies?: SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolNestedInput
   }
 
   export type UserUpsertWithoutAuditLogsInput = {
@@ -84949,6 +90497,8 @@ export namespace Prisma {
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -84986,6 +90536,8 @@ export namespace Prisma {
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutPostsInput = {
@@ -85023,6 +90575,8 @@ export namespace Prisma {
     whatsappMessages?: WhatsAppMessageCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutActorInput
     classes?: ClassCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
@@ -85060,6 +90614,8 @@ export namespace Prisma {
     whatsappMessages?: WhatsAppMessageUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutActorInput
     classes?: ClassUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedCreateNestedManyWithoutInstructorInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -85113,6 +90669,8 @@ export namespace Prisma {
     whatsappMessages?: WhatsAppMessageUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
@@ -85150,6 +90708,8 @@ export namespace Prisma {
     whatsappMessages?: WhatsAppMessageUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type BranchCreateManySchoolInput = {
@@ -85333,6 +90893,13 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type SchoolAbsencePolicyCreateManySchoolInput = {
+    id?: string
+    policy?: $Enums.AbsencePostClosePolicy
+    effectiveFrom?: Date | string
+    createdAt?: Date | string
+  }
+
   export type BranchUpdateWithoutSchoolInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -85397,6 +90964,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSchoolInput = {
@@ -85434,6 +91003,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutSchoolInput = {
@@ -85493,6 +91064,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutSchoolInput = {
@@ -85538,6 +91110,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateManyWithoutSchoolInput = {
@@ -85980,6 +91553,27 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SchoolAbsencePolicyUpdateWithoutSchoolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policy?: EnumAbsencePostClosePolicyFieldUpdateOperationsInput | $Enums.AbsencePostClosePolicy
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SchoolAbsencePolicyUncheckedUpdateWithoutSchoolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policy?: EnumAbsencePostClosePolicyFieldUpdateOperationsInput | $Enums.AbsencePostClosePolicy
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SchoolAbsencePolicyUncheckedUpdateManyWithoutSchoolInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    policy?: EnumAbsencePostClosePolicyFieldUpdateOperationsInput | $Enums.AbsencePostClosePolicy
+    effectiveFrom?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateManyBranchInput = {
     id?: string
     email: string
@@ -86092,6 +91686,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutActorNestedInput
     classes?: ClassUpdateManyWithoutInstructorNestedInput
     posts?: PostUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBranchInput = {
@@ -86129,6 +91725,8 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutActorNestedInput
     classes?: ClassUncheckedUpdateManyWithoutInstructorNestedInput
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    onlineRecoveriesAsInstructor?: OnlineRecoveryUncheckedUpdateManyWithoutInstructorNestedInput
+    onlineRecoveriesCreated?: OnlineRecoveryUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutBranchInput = {
@@ -86188,6 +91786,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutBranchInput = {
@@ -86233,6 +91832,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateManyWithoutBranchInput = {
@@ -86627,6 +92227,48 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type OnlineRecoveryCreateManyInstructorInput = {
+    id?: string
+    studentId: string
+    absenceId: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    attendanceId?: string | null
+    notes?: string | null
+    createdById?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type OnlineRecoveryCreateManyCreatedByInput = {
+    id?: string
+    studentId: string
+    absenceId: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    instructorId?: string | null
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    attendanceId?: string | null
+    notes?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type GuardianStudentUpdateWithoutGuardianInput = {
     relationship?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -86688,6 +92330,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutGuardianInput = {
@@ -86733,6 +92376,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateManyWithoutGuardianInput = {
@@ -86956,6 +92600,8 @@ export namespace Prisma {
     class?: ClassUpdateOneWithoutAttendancesNestedInput
     recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
     recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUpdateOneWithoutAttendanceNestedInput
     practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
   }
 
@@ -86977,6 +92623,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedUpdateOneWithoutAttendanceNestedInput
     practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 
@@ -87432,6 +93080,132 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type OnlineRecoveryUpdateWithoutInstructorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentUpdateOneRequiredWithoutOnlineRecoveriesNestedInput
+    absence?: AttendanceUpdateOneRequiredWithoutOnlineRecoveryAbsenceNestedInput
+    attendance?: AttendanceUpdateOneWithoutOnlineRecoveryAttendanceNestedInput
+    createdBy?: UserUpdateOneWithoutOnlineRecoveriesCreatedNestedInput
+  }
+
+  export type OnlineRecoveryUncheckedUpdateWithoutInstructorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    absenceId?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OnlineRecoveryUncheckedUpdateManyWithoutInstructorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    absenceId?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OnlineRecoveryUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    student?: StudentUpdateOneRequiredWithoutOnlineRecoveriesNestedInput
+    absence?: AttendanceUpdateOneRequiredWithoutOnlineRecoveryAbsenceNestedInput
+    instructor?: UserUpdateOneWithoutOnlineRecoveriesAsInstructorNestedInput
+    attendance?: AttendanceUpdateOneWithoutOnlineRecoveryAttendanceNestedInput
+  }
+
+  export type OnlineRecoveryUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    absenceId?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    instructorId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OnlineRecoveryUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    studentId?: StringFieldUpdateOperationsInput | string
+    absenceId?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    instructorId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type GuardianStudentCreateManyStudentInput = {
     guardianId: string
     relationship?: string | null
@@ -87594,6 +93368,27 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type OnlineRecoveryCreateManyStudentInput = {
+    id?: string
+    absenceId: string
+    status?: $Enums.OnlineRecoveryStatus
+    scheduledAt: Date | string
+    durationMinutes?: number
+    instructorId?: string | null
+    meetingUrl?: string | null
+    costAmount?: Decimal | DecimalJsLike | number | string | null
+    costCurrency?: string
+    costNote?: string | null
+    costInformedAt?: Date | string | null
+    attendanceId?: string | null
+    notes?: string | null
+    createdById?: string | null
+    completedAt?: Date | string | null
+    cancelledAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type GuardianStudentUpdateWithoutStudentInput = {
     relationship?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -87687,6 +93482,8 @@ export namespace Prisma {
     class?: ClassUpdateOneWithoutAttendancesNestedInput
     recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
     recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUpdateOneWithoutAttendanceNestedInput
     confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
     practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
   }
@@ -87709,6 +93506,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedUpdateOneWithoutAttendanceNestedInput
     practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 
@@ -88092,6 +93891,69 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type OnlineRecoveryUpdateWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    absence?: AttendanceUpdateOneRequiredWithoutOnlineRecoveryAbsenceNestedInput
+    instructor?: UserUpdateOneWithoutOnlineRecoveriesAsInstructorNestedInput
+    attendance?: AttendanceUpdateOneWithoutOnlineRecoveryAttendanceNestedInput
+    createdBy?: UserUpdateOneWithoutOnlineRecoveriesCreatedNestedInput
+  }
+
+  export type OnlineRecoveryUncheckedUpdateWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    absenceId?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    instructorId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OnlineRecoveryUncheckedUpdateManyWithoutStudentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    absenceId?: StringFieldUpdateOperationsInput | string
+    status?: EnumOnlineRecoveryStatusFieldUpdateOperationsInput | $Enums.OnlineRecoveryStatus
+    scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durationMinutes?: IntFieldUpdateOperationsInput | number
+    instructorId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    costAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    costCurrency?: StringFieldUpdateOperationsInput | string
+    costNote?: NullableStringFieldUpdateOperationsInput | string | null
+    costInformedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    attendanceId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type EnrollmentApplicantCreateManyEnrollmentInput = {
     id?: string
     studentId?: string | null
@@ -88400,6 +94262,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutCurrentRankRefInput = {
@@ -88445,6 +94308,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateManyWithoutCurrentRankRefInput = {
@@ -88844,6 +94708,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateWithoutPlanInput = {
@@ -88889,6 +94754,7 @@ export namespace Prisma {
     invitationTokens?: StudentInvitationTokenUncheckedUpdateManyWithoutStudentNestedInput
     documents?: StudentDocumentUncheckedUpdateManyWithoutStudentNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutStudentNestedInput
+    onlineRecoveries?: OnlineRecoveryUncheckedUpdateManyWithoutStudentNestedInput
   }
 
   export type StudentUncheckedUpdateManyWithoutPlanInput = {
@@ -89052,6 +94918,8 @@ export namespace Prisma {
     student?: StudentUpdateOneRequiredWithoutAttendancesNestedInput
     recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
     recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUpdateOneWithoutAttendanceNestedInput
     confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
     practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
   }
@@ -89074,6 +94942,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedUpdateOneWithoutAttendanceNestedInput
     practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 
@@ -89168,6 +95038,8 @@ export namespace Prisma {
     class?: ClassUpdateOneWithoutAttendancesNestedInput
     recoveredBy?: AttendanceUpdateOneWithoutRecoveryNestedInput
     recovery?: AttendanceUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUpdateOneWithoutAttendanceNestedInput
     confirmedBy?: UserUpdateOneWithoutAttendanceConfirmationsNestedInput
     practiceLogs?: TechniquePracticeLogUpdateManyWithoutAttendanceNestedInput
   }
@@ -89190,6 +95062,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recovery?: AttendanceUncheckedUpdateOneWithoutRecoveredByNestedInput
+    onlineRecoveryAbsence?: OnlineRecoveryUncheckedUpdateOneWithoutAbsenceNestedInput
+    onlineRecoveryAttendance?: OnlineRecoveryUncheckedUpdateOneWithoutAttendanceNestedInput
     practiceLogs?: TechniquePracticeLogUncheckedUpdateManyWithoutAttendanceNestedInput
   }
 

@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { StudentAbsenceReport } from '@/components/dashboard/student/StudentAbsenceReport'
 import { StudentPracticeLog } from '@/components/dashboard/student/StudentPracticeLog'
 import { StudentAttendanceRecords } from '@/components/dashboard/student/StudentAttendanceRecords'
+import { StudentOnlineRecoveries } from '@/components/dashboard/student/StudentOnlineRecoveries'
 import { FamilyQuickSwitcher } from '@/components/dashboard/student/FamilyQuickSwitcher'
 import { getStudentAttendancePunchData } from '@/lib/dashboard/student-queries'
 import { getFamilyMembers, resolveStudentView } from '@/lib/family/guardians'
@@ -46,6 +47,7 @@ export default async function StudentAttendancePage({ searchParams }: StudentAtt
             )}
             <section className="mt-7 space-y-6">
                 <StudentAbsenceReport schedule={data.schedule} justifications={data.justifications} studentId={view.studentId} />
+                <StudentOnlineRecoveries recoveries={data.onlineRecoveries} />
                 <StudentPracticeLog techniques={data.practiceTechniques} program={data.program} studentId={view.studentId} />
                 <StudentAttendanceRecords records={data.records} />
             </section>

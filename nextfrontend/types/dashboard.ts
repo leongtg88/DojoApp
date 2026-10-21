@@ -504,10 +504,15 @@ export interface DashboardBirthday {
 	detail: string | null
 }
 
+/** Qué pasa con el derecho a examen si el alumno repone después del cierre. */
+export type AbsencePostClosePolicy = 'LOCK_AT_CLOSE' | 'RESTORE_ON_RECOVERY'
+
 export interface AttendanceSummary {
 	attendedSessions: number
 	totalSessions: number
 	percentage: number
+	/** Faltas justificadas eximidas del % mínimo (máx. 2 por mes). */
+	forgivenSessions?: number
 }
 
 export interface StudentAttendanceRecord {
@@ -553,10 +558,16 @@ export type GradoMetric = 'KATAS' | 'PERMANENCIA' | 'HORAS' | 'ASISTENCIA'
 
 export interface AttendanceMonthProgress {
 	label: string
-	/** Asistencias presentadas (tatami) en el mes. */
+	/** Asistencias presentadas (tatami) en el mes, incluidas las justificadas eximidas. */
 	attendedSessions: number
 	/** Sesiones máximas que el horario permite en el mes (sin feriados). */
 	capacitySessions: number
+	/** Faltas justificadas eximidas del % (máx. 2 por mes). */
+	forgivenSessions?: number
+	/** Faltas repuestas que se acreditan en su mes original. */
+	recoveredSessions?: number
+	/** Total acreditado: repuestas + justificadas eximidas. */
+	creditedSessions?: number
 	/** Asistencia del mes en porcentaje. */
 	percent: number
 	/** Mínimo exigido por el grado. */
@@ -593,6 +604,12 @@ export interface CuatrimestreProgress {
 	maxMonthAbsences: number
 	excessMonth: string | null
 	exceededAbsenceLimit: boolean
+	/** Faltas 3.ª+ del cuatrimestre que siguen sin reponerse. */
+	pendingRecoveries: number
+	/** Reposiciones hechas después del cierre (no restauran bajo LOCK). */
+	lateRecoveries: number
+	/** Política vigente al cierre del cuatrimestre (o la actual si sigue abierto). */
+	absencePolicy: AbsencePostClosePolicy
 	isCurrent: boolean
 	isFuture: boolean
 	examDate: string | null
@@ -619,8 +636,17 @@ export interface GradeHoursRequirement {
 
 export interface MonthAbsence {
 	label: string
+	/** Total de faltas del mes, incluidas las repuestas. */
 	count: number
 	max: number
+	/** Faltas del mes marcadas como repuestas. */
+	recovered: number
+	/** Faltas por encima del cupo mensual (informativo). */
+	excess: number
+	/** Faltas 3.ª+ sin reponer. */
+	pendingRecovery: number
+	/** Reposiciones hechas después del cierre del cuatrimestre. */
+	lateRecovery: number
 }
 
 export interface CurrentPeriod {
@@ -670,7 +696,13 @@ export interface GradoProgressData {
 	hoursRequirement: GradeHoursRequirement | null
 	currentPeriod: CurrentPeriod | null
 	maxAbsencesPerMonth: number
+	/** Política actual de la escuela para reposiciones posteriores al cierre. */
+	absencePolicy: AbsencePostClosePolicy
+	/** Hay faltas 3.ª+ sin reponer, pero el cuatrimestre aún no cierra. */
+	examAtRisk: boolean
 	examRightLost: boolean
+	/** Faltas 3.ª+ sin reponer en el tramo del grado. */
+	pendingRecoveries: number
 	bottleneck: GradoMetric | null
 	/** Asistencia por mes del tramo del examen (la elegibilidad exige el mínimo en cada uno). */
 	attendanceMonths: AttendanceMonthProgress[]
@@ -784,6 +816,44 @@ export interface StudentAbsenceJustification {
 	recovered: boolean
 	/** Fecha de la asistencia de reposición (fuera de horario). */
 	recoveryDate: string | null
+	/** La reposición se hizo después del cierre del cuatrimestre. */
+	lateRecovery: boolean
+}
+
+export type OnlineRecoveryStatus = 'SCHEDULED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW'
+
+export interface OnlineRecoverySummary {
+	id: string
+	studentId: string
+	studentName: string
+	absenceId: string
+	/** Fecha de la falta original (clave YYYY-MM-DD). */
+	absenceDate: string
+	/** La falta ya fue repuesta (por esta clase o por otra asistencia). */
+	absenceRecovered: boolean
+	className: string | null
+	status: OnlineRecoveryStatus
+	/** Fecha/hora acordada (instante ISO). */
+	scheduledAt: string
+	durationMinutes: number
+	instructorId: string | null
+	instructorName: string | null
+	meetingUrl: string | null
+	costAmount: number | null
+	costCurrency: string
+	costNote: string | null
+	costInformedAt: string | null
+	notes: string | null
+	completedAt: string | null
+}
+
+export interface OnlineRecoveryCandidate {
+	absenceId: string
+	studentId: string
+	studentName: string
+	/** Fecha de la falta (clave YYYY-MM-DD). */
+	date: string
+	className: string | null
 }
 
 export interface StudentAttendancePunchData {
@@ -796,6 +866,7 @@ export interface StudentAttendancePunchData {
 	}
 	records: AttendanceRecord[]
 	justifications: StudentAbsenceJustification[]
+	onlineRecoveries: OnlineRecoverySummary[]
 	practiceTechniques: StudentPracticeTechniqueOption[]
 	/** Programa del alumno según su edad; define el filtro por defecto. */
 	program: 'ADULT' | 'YOUTH'

@@ -1,12 +1,15 @@
-import { CheckCircle2, Clock, History } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, Clock, History } from 'lucide-react'
 import { formatHoursHM } from '@/lib/dashboard/balance'
+import { studentHref } from '@/lib/dashboard/student-links'
+import { formatDate } from '@/lib/format/datetime'
 import type { GradoProgressData } from '@/types/dashboard'
 
 interface ExaminationCriteriaCardProps {
     grado: GradoProgressData
+    studentId?: string | null
 }
 
-export function ExaminationCriteriaCard({ grado }: ExaminationCriteriaCardProps) {
+export function ExaminationCriteriaCard({ grado, studentId }: ExaminationCriteriaCardProps) {
     const missingMonths = Math.max(0, grado.minMonths - grado.monthsInRank)
     const monthsOk = grado.monthsInRank >= grado.minMonths
     const hoursReq = grado.hoursRequirement
@@ -16,9 +19,24 @@ export function ExaminationCriteriaCard({ grado }: ExaminationCriteriaCardProps)
         ? Math.max(0, hoursGoal - hoursReq.classHours)
         : 0
     const hasCredit = (hoursReq?.creditHours ?? 0) > 0
+    const forgivenSessions = grado.attendance.forgivenSessions ?? 0
     const monthBreakdown = currentPeriod && currentPeriod.monthAbsences.length > 0
-        ? currentPeriod.monthAbsences.map((month) => `${month.label}: ${month.count}/${month.max}`).join(' · ')
+        ? currentPeriod.monthAbsences.map((month) => {
+            const parts = [`${month.label}: ${month.count} ${month.count === 1 ? 'falta' : 'faltas'}`]
+            if (month.recovered > 0) parts.push(`${month.recovered} ${month.recovered === 1 ? 'repuesta' : 'repuestas'}`)
+            if (month.lateRecovery > 0) parts.push(`${month.lateRecovery} fuera de plazo`)
+            if (month.pendingRecovery > 0) parts.push(`${month.pendingRecovery} por reponer`)
+            return parts.join(' · ')
+        }).join(' | ')
         : 'Sin inasistencias'
+    const pendingRecoveries = grado.pendingRecoveries
+    const policyText = grado.absencePolicy === 'LOCK_AT_CLOSE'
+        ? 'Reponer después del cierre no restaura el derecho de este cuatrimestre.'
+        : 'Reponer después del cierre restaura el derecho.'
+    const lostBlock = grado.examRightLost
+        ? grado.cuatrimestres.find((cuatrimestre) => cuatrimestre.pendingRecoveries > 0 && !cuatrimestre.isFuture)
+        : null
+    const lostPolicy = lostBlock?.absencePolicy ?? grado.absencePolicy
 
     return (
         <section className="rounded-lg border border-edge bg-surface-2 p-5 shadow-sm">
@@ -43,6 +61,11 @@ export function ExaminationCriteriaCard({ grado }: ExaminationCriteriaCardProps)
                         <span className="text-xs font-normal text-ink-3"> / {grado.attendance.totalSessions} clases</span>
                     </p>
                     <p className="mt-1 text-xs text-ink-4">{monthBreakdown}</p>
+                    {forgivenSessions > 0 && (
+                        <p className="mt-1 text-[11px] text-ok-text">
+                            {forgivenSessions} {forgivenSessions === 1 ? 'justificada eximida' : 'justificadas eximidas'} del mínimo
+                        </p>
+                    )}
                 </div>
 
                 <div className="rounded-lg border border-edge bg-surface-1 p-4">
@@ -91,16 +114,43 @@ export function ExaminationCriteriaCard({ grado }: ExaminationCriteriaCardProps)
                 </div>
             </div>
 
-            <p className="mt-4 flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-3 py-2.5 text-xs text-ink-3">
-                <CheckCircle2 aria-hidden="true" className={`size-4 shrink-0 ${grado.isEligible ? 'text-ok-text' : grado.examRightLost ? 'text-danger-text' : 'text-accent'}`} />
-                {grado.examRightLost
-                    ? `Derecho a examen suspendido: superaste el máximo de ${grado.maxAbsencesPerMonth} inasistencias en un mes.`
-                    : grado.isEligible
-                        ? 'Registro activo: ya puedes solicitar tu mesa de examen con el instructor.'
-                        : grado.nextExam
-                            ? `En preparación regular. Próxima convocatoria: ${new Date(grado.nextExam.date).toLocaleDateString('es-DO', { day: 'numeric', month: 'long', year: 'numeric' })}.`
-                            : 'En preparación regular. Los requisitos específicos del examen se confirman con tu instructor.'}
-            </p>
+            <div className="mt-4 space-y-2">
+                {grado.examRightLost ? (
+                    <p className="flex items-start gap-2 rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2.5 text-xs text-danger-text">
+                        <AlertTriangle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+                        <span>
+                            Derecho a examen suspendido: el cuatrimestre cerró con faltas sin reponer. Te quedan{' '}
+                            {pendingRecoveries} por regularizar.{' '}
+                            {lostPolicy === 'LOCK_AT_CLOSE'
+                                ? 'La política al cierre bloqueó las reposiciones posteriores.'
+                                : 'La política al cierre permite restaurarlo al reponer.'}
+                        </span>
+                    </p>
+                ) : grado.examAtRisk ? (
+                    <p className="flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2.5 text-xs text-warn-text">
+                        <AlertTriangle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+                        <span>
+                            Tienes {pendingRecoveries} {pendingRecoveries === 1 ? 'falta' : 'faltas'} desde la 3.ª del mes sin reponer.
+                            Repón en otro horario antes del cierre del cuatrimestre; si no puedes, coordina una clase online de 35 min.
+                            El costo lo informa administración. {policyText}{' '}
+                            <a className="font-semibold underline" href={studentHref('/dashboard/estudiante/asistencia', studentId)}>Ver mis reposiciones</a>
+                        </span>
+                    </p>
+                ) : (
+                    <p className="flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-3 py-2.5 text-xs text-ink-3">
+                        <CheckCircle2 aria-hidden="true" className={`size-4 shrink-0 ${grado.isEligible ? 'text-ok-text' : 'text-accent'}`} />
+                        {grado.isEligible
+                            ? 'Registro activo: ya puedes solicitar tu mesa de examen con el instructor.'
+                            : grado.nextExam
+                                ? `En preparación regular. Próxima convocatoria: ${formatDate(grado.nextExam.date)}.`
+                                : 'En preparación regular. Los requisitos específicos del examen se confirman con tu instructor.'}
+                    </p>
+                )}
+                <p className="px-1 text-[11px] text-ink-4">
+                    Regla: 2 faltas por mes incluidas; desde la 3.ª se repone en otro horario o con una clase online de 35 min
+                    (costo informado por administración). {policyText} Las repuestas se acreditan en el mes de la falta.
+                </p>
+            </div>
         </section>
     )
 }

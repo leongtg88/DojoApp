@@ -10,7 +10,7 @@ datasource db {
 
 // ==================== Organización ====================
 model School {
-  id               String            @id @default(cuid())
+  id               String                @id @default(cuid())
   name             String
   branches         Branch[]
   users            User[]
@@ -24,8 +24,9 @@ model School {
   examConvocations ExamConvocation[]
   auditLogs        AuditLog[]
   reviews          Review[]
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  absencePolicies  SchoolAbsencePolicy[]
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
 }
 
 model Branch {
@@ -84,43 +85,45 @@ enum Gender {
 }
 
 model User {
-  id                      String                   @id @default(cuid())
-  email                   String                   @unique
-  emailVerified           DateTime?
-  passwordHash            String?
-  sessionVersion          Int                      @default(0) // invalida sesiones JWT al cambiar password
-  name                    String?
-  phone                   String?
-  roles                   Role[]                   @default([]) // todos los roles del usuario (multirol)
-  schoolId                String?
-  school                  School?                  @relation(fields: [schoolId], references: [id])
-  branchId                String?
-  branch                  Branch?                  @relation(fields: [branchId], references: [id])
-  instructorProfile       InstructorProfile?
-  studentProfile          Student?
-  guardians               GuardianStudent[]        @relation("guardian")
-  guardianOfStudents      Student[]                @relation("primaryGuardian")
-  rankPromotions          StudentRankHistory[]     @relation("rankPromoter")
-  techniqueEvaluations    TechniqueEvaluation[]    @relation("techniqueEvaluator")
-  techniquesApproved      StudentTechnique[]       @relation("techniqueApprovedBy")
-  achievementsApproved    StudentAchievement[]     @relation("achievementApprovedBy")
-  fitnessReportsApproved  FitnessReport[]          @relation("fitnessApprovedBy")
-  attendanceConfirmations Attendance[]             @relation("attendanceConfirmer")
-  absenceReviews          AbsenceJustification[]   @relation("absenceReviewer")
-  classSessionsTaken      ClassSession[]           @relation("sessionTaker")
-  emailVerificationTokens EmailVerificationToken[]
-  passwordResetTokens     PasswordResetToken[]
-  acceptedInvitations     StudentInvitationToken[]
-  notifications           Notification[]
-  pushSubscriptions       PushSubscription[]
-  webauthnCredentials     WebAuthnCredential[]
-  whatsappContact         WhatsAppContact?
-  whatsappMessages        WhatsAppMessage[]
-  auditLogs               AuditLog[]
-  classes                 Class[]                  @relation("instructor")
-  posts                   Post[]
-  createdAt               DateTime                 @default(now())
-  updatedAt               DateTime                 @updatedAt
+  id                           String                   @id @default(cuid())
+  email                        String                   @unique
+  emailVerified                DateTime?
+  passwordHash                 String?
+  sessionVersion               Int                      @default(0) // invalida sesiones JWT al cambiar password
+  name                         String?
+  phone                        String?
+  roles                        Role[]                   @default([]) // todos los roles del usuario (multirol)
+  schoolId                     String?
+  school                       School?                  @relation(fields: [schoolId], references: [id])
+  branchId                     String?
+  branch                       Branch?                  @relation(fields: [branchId], references: [id])
+  instructorProfile            InstructorProfile?
+  studentProfile               Student?
+  guardians                    GuardianStudent[]        @relation("guardian")
+  guardianOfStudents           Student[]                @relation("primaryGuardian")
+  rankPromotions               StudentRankHistory[]     @relation("rankPromoter")
+  techniqueEvaluations         TechniqueEvaluation[]    @relation("techniqueEvaluator")
+  techniquesApproved           StudentTechnique[]       @relation("techniqueApprovedBy")
+  achievementsApproved         StudentAchievement[]     @relation("achievementApprovedBy")
+  fitnessReportsApproved       FitnessReport[]          @relation("fitnessApprovedBy")
+  attendanceConfirmations      Attendance[]             @relation("attendanceConfirmer")
+  absenceReviews               AbsenceJustification[]   @relation("absenceReviewer")
+  classSessionsTaken           ClassSession[]           @relation("sessionTaker")
+  emailVerificationTokens      EmailVerificationToken[]
+  passwordResetTokens          PasswordResetToken[]
+  acceptedInvitations          StudentInvitationToken[]
+  notifications                Notification[]
+  pushSubscriptions            PushSubscription[]
+  webauthnCredentials          WebAuthnCredential[]
+  whatsappContact              WhatsAppContact?
+  whatsappMessages             WhatsAppMessage[]
+  auditLogs                    AuditLog[]
+  classes                      Class[]                  @relation("instructor")
+  posts                        Post[]
+  onlineRecoveriesAsInstructor OnlineRecovery[]         @relation("onlineRecoveryInstructor")
+  onlineRecoveriesCreated      OnlineRecovery[]         @relation("onlineRecoveryCreator")
+  createdAt                    DateTime                 @default(now())
+  updatedAt                    DateTime                 @updatedAt
 
   @@index([schoolId])
   @@index([branchId])
@@ -224,6 +227,7 @@ model Student {
   invitationTokens      StudentInvitationToken[]
   documents             StudentDocument[]
   notifications         Notification[]
+  onlineRecoveries      OnlineRecovery[]
   createdAt             DateTime                 @default(now())
   updatedAt             DateTime                 @updatedAt
 
@@ -627,6 +631,26 @@ enum AbsenceJustificationStatus {
   REJECTED
 }
 
+/// Qué pasa con el derecho a examen cuando el cuatrimestre cierra con faltas
+/// 3.ª+ sin reponer y el alumno repone después del cierre.
+enum AbsencePostClosePolicy {
+  LOCK_AT_CLOSE
+  RESTORE_ON_RECOVERY
+}
+
+/// Historial de la política por escuela. La política vigente al cierre de un
+/// cuatrimestre es la última fila con effectiveFrom <= fecha de cierre.
+model SchoolAbsencePolicy {
+  id            String                 @id @default(cuid())
+  schoolId      String
+  school        School                 @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  policy        AbsencePostClosePolicy @default(LOCK_AT_CLOSE)
+  effectiveFrom DateTime               @default(now())
+  createdAt     DateTime               @default(now())
+
+  @@index([schoolId, effectiveFrom])
+}
+
 /// Motivo de inasistencia reportado por el alumno. Queda pendiente de revisión
 /// por el instructor o el administrador; al aprobarse la sesión queda JUSTIFIED.
 model AbsenceJustification {
@@ -666,36 +690,78 @@ enum ScholarshipType {
 }
 
 model Attendance {
-  id              String                 @id @default(cuid())
-  sessionId       String?
-  session         ClassSession?          @relation(fields: [sessionId], references: [id])
-  studentId       String
-  student         Student                @relation(fields: [studentId], references: [id])
-  date            DateTime               @default(now()) // fecha del registro (punch-in o pase de lista)
-  present         Boolean                @default(true)
-  hoursTrained    Float                  @default(1)
-  sessionType     String?
-  status          AttendanceStatus       @default(PENDING)
-  classId         String? // horario en el que asistió efectivamente
-  class           Class?                 @relation(fields: [classId], references: [id])
-  isOutOfSchedule Boolean                @default(false) // asistió a un horario distinto al de su referencia
-  recoveredById   String?                @unique // asistencia (fuera de horario) que recuperó una falta justificada
-  recoveredBy     Attendance?            @relation("recovery", fields: [recoveredById], references: [id])
-  recovery        Attendance?            @relation("recovery")
-  punchedAt       DateTime               @default(now())
-  confirmedAt     DateTime?
-  confirmedById   String?
-  confirmedBy     User?                  @relation("attendanceConfirmer", fields: [confirmedById], references: [id])
-  notes           String?
-  practiceLogs    TechniquePracticeLog[]
-  createdAt       DateTime               @default(now())
-  updatedAt       DateTime               @updatedAt
+  id                       String                 @id @default(cuid())
+  sessionId                String?
+  session                  ClassSession?          @relation(fields: [sessionId], references: [id])
+  studentId                String
+  student                  Student                @relation(fields: [studentId], references: [id])
+  date                     DateTime               @default(now()) // fecha del registro (punch-in o pase de lista)
+  present                  Boolean                @default(true)
+  hoursTrained             Float                  @default(1)
+  sessionType              String?
+  status                   AttendanceStatus       @default(PENDING)
+  classId                  String? // horario en el que asistió efectivamente
+  class                    Class?                 @relation(fields: [classId], references: [id])
+  isOutOfSchedule          Boolean                @default(false) // asistió a un horario distinto al de su referencia
+  recoveredById            String?                @unique // asistencia (fuera de horario) que recuperó una falta justificada
+  recoveredBy              Attendance?            @relation("recovery", fields: [recoveredById], references: [id])
+  recovery                 Attendance?            @relation("recovery")
+  onlineRecoveryAbsence    OnlineRecovery?        @relation("onlineRecoveryAbsence")
+  onlineRecoveryAttendance OnlineRecovery?        @relation("onlineRecoveryAttendance")
+  punchedAt                DateTime               @default(now())
+  confirmedAt              DateTime?
+  confirmedById            String?
+  confirmedBy              User?                  @relation("attendanceConfirmer", fields: [confirmedById], references: [id])
+  notes                    String?
+  practiceLogs             TechniquePracticeLog[]
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
 
   @@unique([sessionId, studentId])
   @@index([studentId, date])
   @@index([status, date])
   @@index([classId])
   @@index([isOutOfSchedule])
+}
+
+enum OnlineRecoveryStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+/// Reposición de una falta mediante una clase online de 35 min acordada.
+/// Al completarse genera una asistencia y enlaza la falta con recoveredById.
+model OnlineRecovery {
+  id              String               @id @default(cuid())
+  studentId       String
+  student         Student              @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  absenceId       String               @unique
+  absence         Attendance           @relation("onlineRecoveryAbsence", fields: [absenceId], references: [id], onDelete: Cascade)
+  status          OnlineRecoveryStatus @default(SCHEDULED)
+  scheduledAt     DateTime
+  durationMinutes Int                  @default(35)
+  instructorId    String?
+  instructor      User?                @relation("onlineRecoveryInstructor", fields: [instructorId], references: [id], onDelete: SetNull)
+  meetingUrl      String?
+  costAmount      Decimal?             @db.Decimal(10, 2)
+  costCurrency    String               @default("DOP")
+  costNote        String?
+  costInformedAt  DateTime?
+  attendanceId    String?              @unique
+  attendance      Attendance?          @relation("onlineRecoveryAttendance", fields: [attendanceId], references: [id], onDelete: SetNull)
+  notes           String?
+  createdById     String?
+  createdBy       User?                @relation("onlineRecoveryCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  completedAt     DateTime?
+  cancelledAt     DateTime?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  @@index([studentId, status])
+  @@index([scheduledAt])
+  @@index([instructorId])
 }
 
 // ==================== Logros y reportes ====================
@@ -760,6 +826,13 @@ enum NotificationType {
   ATTENDANCE_PUNCHED
   ATTENDANCE_ABSENCE_REPORTED
   ATTENDANCE_JUSTIFICATION_REVIEWED
+  ONLINE_RECOVERY_SCHEDULED
+  ONLINE_RECOVERY_RESCHEDULED
+  ONLINE_RECOVERY_COMPLETED
+  ONLINE_RECOVERY_CANCELLED
+  ONLINE_RECOVERY_NO_SHOW
+  ONLINE_RECOVERY_COST_INFORMED
+  ONLINE_RECOVERY_ASSIGNED
   TECHNIQUE_APPROVED
   TECHNIQUE_EVALUATED
   REVIEW_SUBMITTED

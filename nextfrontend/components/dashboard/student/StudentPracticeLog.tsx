@@ -173,7 +173,7 @@ export function StudentPracticeLog({ techniques, program, studentId }: StudentPr
   const [categoryFilter, setCategoryFilter] = useState<'ALL' | TechniqueCategory>('ALL')
   const [kihonFilter, setKihonFilter] = useState<'ALL' | KihonCategory>('ALL')
   const [kumiteFilter, setKumiteFilter] = useState<'ALL' | KumiteCategory>('ALL')
-  const [scopeFilter, setScopeFilter] = useState<'ALL' | 'ASSIGNED'>('ASSIGNED')
+  const [scopeFilter, setScopeFilter] = useState<'ALL' | 'ASSIGNED'>('ALL')
   const [programFilter, setProgramFilter] = useState<'ALL' | 'YOUTH' | 'ADULT'>(program)
   const [openKataLevels, setOpenKataLevels] = useState<Record<string, boolean>>({})
 
@@ -203,8 +203,9 @@ export function StudentPracticeLog({ techniques, program, studentId }: StudentPr
   const filteredTechniques = techniques
     .filter((technique) => scopeFilter === 'ALL' || technique.assigned)
     .filter((technique) => {
-      if (programFilter === 'ALL') return true
-      if (technique.category !== 'KATA') return false
+      // El filtro de programa solo aplica a katas: kihon, kumite y bunkai no
+      // pertenecen a un programa concreto y deben verse siempre.
+      if (technique.category !== 'KATA' || programFilter === 'ALL') return true
       return technique.kataLevels.length === 0 || technique.kataLevels.some((level) => level.program === programFilter)
     })
     .filter(matchesFilter)
@@ -361,7 +362,7 @@ export function StudentPracticeLog({ techniques, program, studentId }: StudentPr
                     </div>
                   </div>
                   <div className="flex w-full flex-wrap items-center gap-2">
-                    <span className="w-full text-[11px] font-bold uppercase tracking-wider text-ink-3 sm:w-20">Programa</span>
+                    <span className="w-full text-[11px] font-bold uppercase tracking-wider text-ink-3 sm:w-20">Programa (katas)</span>
                     <div className="flex w-full flex-1 items-center gap-1 rounded-md border border-edge-strong bg-surface-1 p-1">
                       {([['ALL', 'Todos'], ['YOUTH', 'Niños'], ['ADULT', 'Adultos']] as const).map(([value, label]) => (
                         <button aria-pressed={programFilter === value} className={`flex-1 rounded px-2.5 py-1.5 text-center text-xs font-bold transition-colors ${programFilter === value ? 'bg-cyan-500 text-[#0d1117]' : 'text-ink-3 hover:text-ink'}`} key={value} onClick={() => setProgramFilter(value)} type="button">{label}</button>
