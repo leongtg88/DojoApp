@@ -37,3 +37,12 @@ La fuente única vive en `lib/`; no la reimplementes por pantalla.
 
 Detalle y verificación de cada regla: `docs/domain/` (invariante → módulo → test).
 
+## Guía de reorganización UX/UI
+
+Reglas, principios y tareas de la remodelación del portal: `docs/ux-reorganizacion.md`.
+
+- Leer las secciones 1–6 completas antes de tocar código de UX/UI.
+- Trabajar **una tarea por sesión** (`UX-…`), con diff pequeño y plan previo.
+- Registrar resultados en `docs/ux-reorganizacion-log.md` (no en la guía).
+- Respetar el glosario, los invariantes de dominio y las tareas con revisión humana obligatoria.
+
