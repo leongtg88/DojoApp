@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { FamilyMembersView } from '@/components/dashboard/student/FamilyMembersView'
-import { FamilyQuickSwitcher } from '@/components/dashboard/student/FamilyQuickSwitcher'
+import { FamilyMemberSwitcher } from '@/components/dashboard/shell/FamilyMemberSwitcher'
 import type { FamilyView } from '@/lib/family/guardians'
 
 // Fase 4 · F4-06 — Vista de tutor: expedientes de la familia y contexto `?estudiante=`.
@@ -55,11 +55,15 @@ describe('F4-06 · vista de familia (tutor)', () => {
     expect(hrefs()).toContain('/dashboard/estudiante/perfil')
   })
 
-  it('el selector rápido marca el hijo activo y conserva el contexto', () => {
-    render(<FamilyQuickSwitcher baseHref="/dashboard/estudiante/asistencia" currentStudentId="child-1" members={members} />)
+  it('el selector del encabezado dice de quién es el expediente', () => {
+    render(<FamilyMemberSwitcher members={members} />)
 
-    expect(screen.getByText(/¿Quién marca su asistencia\?/i)).toBeInTheDocument()
-    expect(hrefs()).toContain('/dashboard/estudiante/asistencia?estudiante=child-1')
-    expect(hrefs()).toContain('/dashboard/estudiante/asistencia')
+    expect(screen.getByRole('button', { name: /Viendo el expediente de: Ana Uno/i })).toBeInTheDocument()
+  })
+
+  it('el selector no se muestra si la cuenta no tiene hijos asociados', () => {
+    render(<FamilyMemberSwitcher members={{ ...members, children: [] }} />)
+
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
   })
 })

@@ -34,6 +34,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-A7a · Eventos de producto | 2026-10-26 | — | ⏳ Aplazada (decisión) | — |
 | UX-A2 · Eliminar la confirmación nativa | 2026-10-26 | `ux(A2): ConfirmModal accesible en las 14 confirmaciones` | ✅ Hecha | — |
 | UX-A3 · EmptyState y aplicación | 2026-10-26 | `ux(A3): EmptyState único en 17 estados vacíos` | ✅ Hecha | — |
+| UX-A4 · Selector familiar único | 2026-10-26 | `ux(A4): un solo selector familiar en el encabezado` | ✅ Hecha | — |
 
 **Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
 
@@ -338,5 +339,60 @@ Comprobaciones hechas al leer el código (no se modifica nada):
 **Desviaciones respecto a la guía:** "logros" no se pudo aplicar porque la funcionalidad no existe; se hará en UX-C2.
 
 **Pendientes o dudas:** las listas vacías de calendario, blog, mensajes y catálogo de técnicas siguen con su texto propio. Se unifican al reorganizar esas pantallas (B0/B5).
+
+**Revisión humana:** no aplica.
+
+---
+
+## UX-A4 · Selector familiar único
+
+- **Fecha:** 2026-10-26
+- **Commit:** `ux(A4): un solo selector familiar en el encabezado`
+
+**Archivos:**
+
+| Tipo | Archivo |
+|---|---|
+| Modificado | `components/dashboard/shell/FamilyMemberSwitcher.tsx` |
+| Modificado | `components/dashboard/shell/DashboardShell.tsx` |
+| Modificado | `components/dashboard/shell/DashboardSidebar.tsx` |
+| Modificado | `components/dashboard/shell/MobileDashboardSidebar.tsx` |
+| Modificado | `app/(dashboard)/estudiante/page.tsx` |
+| Modificado | `app/(dashboard)/estudiante/asistencia/page.tsx` |
+| Modificado | `tests/component/family-members.test.tsx` |
+| **Eliminado** | `components/dashboard/student/FamilyQuickSwitcher.tsx` |
+
+**Decisiones tomadas y por qué:**
+
+1. **Un solo selector, en el encabezado del shell.** Se quitó de `DashboardSidebar`, de `MobileDashboardSidebar` y de las páginas de Inicio y Asistencia. El del encabezado ya funcionaba en móvil (icono) y escritorio (etiqueta), así que no hacía falta crear otro.
+2. **Se eliminó `FamilyQuickSwitcher`**, no solo su uso: dejarlo sería código muerto (regla 3.3) y duplicaba el patrón que la guía prohíbe (principio 7).
+3. **Copy nuevo:** el botón muestra "Viendo el expediente de" sobre el nombre del miembro activo, y lleva `aria-label="Viendo el expediente de: {nombre}"`. Se fue el "¿Quién marca su asistencia?".
+4. **Sigue oculto sin hijos:** la regla no cambió (`totalMembers <= 1` → no se renderiza). Un alumno sin hijos no ve el selector; un tutor con hijos sí.
+5. **Seguridad intacta.** No se tocó `resolveStudentView` ni la validación de `?estudiante=` contra los hijos del tutor, ni la cabecera `X-Student-Id`, ni `isChildView`. El selector solo cambia la URL y el servidor valida.
+6. **Limpieza de props:** al quitar el selector de los sidebars, la prop `familyMembers` ya no se usaba ahí y se eliminó; `DashboardShell` sigue pasándola solo al encabezado.
+
+**Pruebas:**
+
+| Test | Cambio |
+|---|---|
+| `family-members.test.tsx` | Se quitó el test del selector rápido (componente eliminado). Se añadieron 2: el botón dice "Viendo el expediente de: Ana Uno" y no se muestra con `children: []`. |
+| `edit-profile-modal.test.tsx` | Sin cambios, ✅ en verde (criterio de aceptación). |
+
+**Resultado:**
+
+| Comando | Resultado |
+|---|---|
+| `pnpm lint` | ✅ 0 errores, 34 warnings preexistentes |
+| `pnpm typecheck` | ✅ Sin salida |
+| `pnpm test` | ✅ 56 archivos / **261 tests** / 7,86 s |
+| `pnpm test:integration` | No aplica: no se tocaron API ni BD |
+| `pnpm test:e2e` | Pendiente: el cambio es de navegación entre expedientes y conviene un pase visual |
+
+**Desviaciones respecto a la guía:** ninguna.
+
+**Pendientes o dudas:**
+
+- Verificación responsive a 375/768/1440 px del encabezado con el selector (jsdom no calcula layout). Se hará en el pase de Playwright o a mano antes del Gate 1.
+- El enlace de navegación entre expedientes sigue conservando el `?estudiante=` al cambiar de sección, como antes.
 
 **Revisión humana:** no aplica.

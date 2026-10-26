@@ -6,10 +6,8 @@ import { usePathname, useSearchParams } from 'next/navigation'
 import { AnimatePresence, motion } from 'motion/react'
 import { LogOut, X } from 'lucide-react'
 import type { DashboardRole } from '@/types/dashboard'
-import type { FamilyView } from '@/lib/family/guardians'
 import { getRoleNavigation } from './RoleNavigation'
 import { getPanelHref, getRolePanelOptions } from './RolePanels'
-import { FamilyMemberSwitcher } from './FamilyMemberSwitcher'
 import { NotificationBell } from './NotificationBell'
 import { ThemeToggle } from '../theme/ThemeToggle'
 
@@ -23,10 +21,9 @@ interface MobileDashboardSidebarProps {
     pendingEnrollmentCount?: number
     newStudentCount?: number
     unreadNotificationCount?: number
-    familyMembers?: FamilyView
 }
 
-export function MobileDashboardSidebar({ open, onClose, onSignOut, activeRole, roles, userName, pendingEnrollmentCount = 0, newStudentCount = 0, unreadNotificationCount = 0, familyMembers }: MobileDashboardSidebarProps) {
+export function MobileDashboardSidebar({ open, onClose, onSignOut, activeRole, roles, userName, pendingEnrollmentCount = 0, newStudentCount = 0, unreadNotificationCount = 0 }: MobileDashboardSidebarProps) {
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const activeStudentId = searchParams.get('estudiante')
@@ -115,15 +112,6 @@ export function MobileDashboardSidebar({ open, onClose, onSignOut, activeRole, r
                                 )
                             })}
                         </nav>
-
-                        {familyMembers && activeRole === 'STUDENT' && (
-                            <div className="mt-5 border-t border-edge pt-4">
-                                <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-ink-4">Cuenta familiar</p>
-                                <div className="px-2">
-                                    <FamilyMemberSwitcher members={familyMembers} />
-                                </div>
-                            </div>
-                        )}
 
                         {switchOptions.length > 0 && (
                             <div className="mt-5 border-t border-edge pt-4">

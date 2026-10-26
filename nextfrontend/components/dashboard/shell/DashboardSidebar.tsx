@@ -4,10 +4,8 @@ import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { LogOut } from 'lucide-react'
 import type { DashboardRole } from '@/types/dashboard'
-import type { FamilyView } from '@/lib/family/guardians'
 import { getRoleNavigation } from './RoleNavigation'
 import { getPanelHref, getRolePanelOptions } from './RolePanels'
-import { FamilyMemberSwitcher } from './FamilyMemberSwitcher'
 
 interface DashboardSidebarProps {
     onSignOut: () => void
@@ -16,10 +14,9 @@ interface DashboardSidebarProps {
     userName: string | null | undefined
     pendingEnrollmentCount?: number
     newStudentCount?: number
-    familyMembers?: FamilyView
 }
 
-export function DashboardSidebar({ onSignOut, activeRole, roles, userName, pendingEnrollmentCount = 0, newStudentCount = 0, familyMembers }: DashboardSidebarProps) {
+export function DashboardSidebar({ onSignOut, activeRole, roles, userName, pendingEnrollmentCount = 0, newStudentCount = 0 }: DashboardSidebarProps) {
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const activeStudentId = searchParams.get('estudiante')
@@ -62,15 +59,6 @@ export function DashboardSidebar({ onSignOut, activeRole, roles, userName, pendi
                         )
                     })}
                 </nav>
-
-                {familyMembers && activeRole === 'STUDENT' && (
-                    <div className="mb-4">
-                        <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-ink-4">Cuenta familiar</p>
-                        <div className="px-2">
-                            <FamilyMemberSwitcher members={familyMembers} />
-                        </div>
-                    </div>
-                )}
             </div>
 
             {switchOptions.length > 0 && (

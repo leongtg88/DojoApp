@@ -100,13 +100,13 @@ export function DashboardShell({ children, roles, primaryRole, userName, pending
             </header>
 
             <div className="flex w-full flex-1">
-                <DashboardSidebar onSignOut={handleSignOut} activeRole={activeRole} roles={roles} userName={userName} pendingEnrollmentCount={pendingEnrollmentCount} newStudentCount={newStudentCount} familyMembers={familyMembers} />
+                <DashboardSidebar onSignOut={handleSignOut} activeRole={activeRole} roles={roles} userName={userName} pendingEnrollmentCount={pendingEnrollmentCount} newStudentCount={newStudentCount} />
                 <div className="min-w-0 flex-1 overflow-x-clip">{children}</div>
             </div>
 
             <MobileDashboardNav activeRole={activeRole} pendingEnrollmentCount={pendingEnrollmentCount} newStudentCount={newStudentCount} />
 
-            <MobileDashboardSidebar open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} onSignOut={handleSignOut} activeRole={activeRole} roles={roles} userName={userName} pendingEnrollmentCount={pendingEnrollmentCount} newStudentCount={newStudentCount} unreadNotificationCount={unreadNotificationCount} familyMembers={familyMembers} />
+            <MobileDashboardSidebar open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} onSignOut={handleSignOut} activeRole={activeRole} roles={roles} userName={userName} pendingEnrollmentCount={pendingEnrollmentCount} newStudentCount={newStudentCount} unreadNotificationCount={unreadNotificationCount} />
 
             <UpdatePrompt />
         </div>

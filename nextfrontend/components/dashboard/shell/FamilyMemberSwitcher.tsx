@@ -61,15 +61,19 @@ export function FamilyMemberSwitcher({ members, iconOnly = false }: FamilyMember
             <button
                 aria-expanded={open}
                 aria-haspopup="menu"
-                className={`flex items-center rounded-lg border border-edge-strong bg-surface-1 font-bold text-ink transition-colors hover:bg-surface-3 ${iconOnly ? 'size-9 shrink-0 justify-center' : 'max-w-48 items-center gap-1.5 px-2.5 py-1.5 text-xs'}`}
+                aria-label={`Viendo el expediente de: ${currentLabel}`}
+                className={`flex items-center rounded-lg border border-edge-strong bg-surface-1 font-bold text-ink transition-colors hover:bg-surface-3 ${iconOnly ? 'size-9 shrink-0 justify-center' : 'max-w-60 items-center gap-1.5 px-2.5 py-1.5 text-xs'}`}
                 onClick={() => setOpen((value) => !value)}
-                title={iconOnly ? currentLabel : 'Cambiar de cuenta familiar'}
+                title={iconOnly ? `Viendo el expediente de: ${currentLabel}` : 'Cambiar de cuenta familiar'}
                 type="button"
             >
                 <Users aria-hidden="true" className="size-4 shrink-0 text-accent" />
                 {!iconOnly && (
                     <>
-                        <span className="truncate">{currentLabel}</span>
+                        <span className="min-w-0 text-left leading-tight">
+                            <span className="block text-[9px] font-semibold uppercase tracking-wide text-ink-4">Viendo el expediente de</span>
+                            <span className="block truncate">{currentLabel}</span>
+                        </span>
                         <ChevronDown aria-hidden="true" className={`size-3.5 shrink-0 text-ink-3 transition-transform ${open ? 'rotate-180' : ''}`} />
                     </>
                 )}
