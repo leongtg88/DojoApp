@@ -2,6 +2,7 @@ import { AlertCircle, Calendar, CheckCircle2, Hourglass, Repeat, ShieldCheck } f
 import type { AttendanceRecord, AttendanceStatus } from '@/types/dashboard'
 import { formatDate, formatDateTime } from '@/lib/format/datetime'
 import { formatHoursHM } from '@/lib/dashboard/balance'
+import { EmptyState } from '@/components/common/EmptyState'
 
 interface StudentAttendanceRecordsProps {
     records: AttendanceRecord[]
@@ -44,9 +45,14 @@ export function StudentAttendanceRecords({ records }: StudentAttendanceRecordsPr
             </div>
 
             {records.length === 0 ? (
-                <div className="p-8 text-center text-sm text-ink-3">
-                    Aún no tienes asistencias registradas. Tu instructor las registrará en el pase de lista.
-                </div>
+                <EmptyState
+                    action={{ label: 'Ver mi horario', href: '/dashboard/estudiante/horario' }}
+                    className="border-t border-edge"
+                    description="Tu instructor las registrará en el pase de lista de cada clase."
+                    icon={Calendar}
+                    title="Aún no tienes asistencias registradas"
+                    variant="inline"
+                />
             ) : (
                 <ul className="divide-y divide-edge/80">
                     {records.map((record) => {

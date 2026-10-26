@@ -7,6 +7,7 @@ import { KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
 import { buildTechniqueSections } from '@/lib/dashboard/technique-sections'
 import { KATA_RUBRIC, formatKataScore } from '@/lib/dashboard/kata-rubric'
 import type { StudentTechnique, TechniqueCategory } from '@/types/dashboard'
+import { EmptyState } from '@/components/common/EmptyState'
 
 interface StudentSyllabusProps {
     techniques: StudentTechnique[]
@@ -88,11 +89,20 @@ export function StudentSyllabus({ techniques }: StudentSyllabusProps) {
             </div>
 
             {filteredTechniques.length === 0 ? (
-                <div className="mt-4 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center">
-                    <Award aria-hidden="true" className="mx-auto size-8 text-ink-4" />
-                    <p className="mt-3 text-sm font-semibold text-ink">No hay técnicas en esta categoría</p>
-                    <p className="mt-1 text-xs text-ink-3">Prueba con otra categoría, estado o término de búsqueda.</p>
-                </div>
+                <EmptyState
+                    action={{
+                        label: 'Limpiar filtros',
+                        onClick: () => {
+                            setActiveCategory('ALL')
+                            setStatusFilter('ALL')
+                            setSearchTerm('')
+                        },
+                    }}
+                    className="mt-4"
+                    description="Prueba con otra categoría, estado o término de búsqueda."
+                    icon={Award}
+                    title="No hay técnicas con estos filtros"
+                />
             ) : (
                 <div className="mt-4 space-y-6">
                     {sections.map((section) => (

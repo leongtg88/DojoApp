@@ -10,6 +10,7 @@ import { KUMITE_CATEGORIES, KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard
 import { buildTechniqueSections } from '@/lib/dashboard/technique-sections'
 import { KATA_BANDS, bandForOrder } from '@/lib/dashboard/kata-bands'
 import { DatePicker } from '@/components/ui/date-picker'
+import { EmptyState } from '@/components/common/EmptyState'
 
 interface StudentPracticeLogProps {
   techniques: StudentPracticeTechniqueOption[]
@@ -399,9 +400,23 @@ export function StudentPracticeLog({ techniques, program, studentId }: StudentPr
                 </div>
 
                 {sections.length === 0 && kataGroups.length === 0 ? (
-                  <p className="mt-3 rounded-md border border-dashed border-edge-strong px-3 py-4 text-center text-xs text-ink-4">
-                    {scopeFilter === 'ASSIGNED' ? 'No tienes técnicas asignadas que coincidan con los filtros.' : 'No hay técnicas que coincidan con los filtros.'}
-                  </p>
+                  <EmptyState
+                    action={{
+                      label: 'Limpiar filtros',
+                      onClick: () => {
+                        setSearchTerm('')
+                        setCategoryFilter('ALL')
+                        setKihonFilter('ALL')
+                        setKumiteFilter('ALL')
+                        setScopeFilter('ALL')
+                        setProgramFilter(program)
+                      },
+                    }}
+                    className="mt-3"
+                    description={scopeFilter === 'ASSIGNED' ? 'Prueba con otro filtro o registra repeticiones de las técnicas que ya tienes.' : 'Prueba con otra categoría o término de búsqueda.'}
+                    title={scopeFilter === 'ASSIGNED' ? 'No tienes técnicas asignadas con estos filtros' : 'No hay técnicas con estos filtros'}
+                    variant="inline"
+                  />
                 ) : (
                   <div className="mt-3 space-y-4">
                     {kataGroups.map((group) => {

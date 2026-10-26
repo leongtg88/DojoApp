@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { CheckCircle2, Inbox, Loader2, XCircle } from 'lucide-react'
 import type { InstructorPendingJustification } from '@/types/dashboard'
 import { formatCalendarDate } from '@/lib/format/datetime'
+import { EmptyState } from '@/components/common/EmptyState'
 
 interface InstructorJustificationBoardProps {
     justifications: InstructorPendingJustification[]
@@ -49,10 +50,13 @@ export function InstructorJustificationBoard({ justifications }: InstructorJusti
             {error && <p className="border-b border-edge px-5 py-3 text-sm text-danger-text">{error}</p>}
 
             {justifications.length === 0 ? (
-                <p className="flex flex-col items-center gap-2 px-5 py-12 text-center text-ink-4">
-                    <Inbox aria-hidden="true" className="size-6" />
-                    <span className="text-sm">No hay justificaciones pendientes en tus clases.</span>
-                </p>
+                <EmptyState
+                    className="py-10"
+                    description="Cuando un alumno reporte una inasistencia en tus clases, aparecerá aquí para que la revises."
+                    icon={Inbox}
+                    title="No hay justificaciones pendientes"
+                    variant="inline"
+                />
             ) : (
                 <ul className="divide-y divide-edge">
                     {justifications.map((justification) => (

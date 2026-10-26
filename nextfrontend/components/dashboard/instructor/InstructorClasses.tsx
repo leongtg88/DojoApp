@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { CalendarDays, Clock, Users } from 'lucide-react'
 import type { InstructorClassSummary } from '@/types/dashboard'
+import { EmptyState } from '@/components/common/EmptyState'
 
 interface InstructorClassesProps {
     classes: InstructorClassSummary[]
@@ -16,10 +17,12 @@ export function InstructorClasses({ classes }: InstructorClassesProps) {
             <p className="mt-2 text-xs text-ink-3">Grupos que tienes asignados y alumnos activos por clase.</p>
 
             {classes.length === 0 ? (
-                <section className="mt-7 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center">
-                    <CalendarDays aria-hidden="true" className="mx-auto size-7 text-accent" />
-                    <p className="mt-3 text-sm font-semibold text-ink">No tienes clases asignadas.</p>
-                </section>
+                <EmptyState
+                    className="mt-7"
+                    description="La administración asigna los horarios y sus instructores. Cuando te asignen una clase, aparecerá aquí."
+                    icon={CalendarDays}
+                    title="Aún no tienes clases asignadas"
+                />
             ) : (
                 <ul className="mt-7 grid gap-3 md:grid-cols-2">
                     {classes.map((scheduledClass) => (

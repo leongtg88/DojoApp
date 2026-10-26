@@ -9,6 +9,7 @@ import { ConfirmModal } from '../shared/ConfirmModal'
 import { InvitationLinkModal } from './InvitationLinkModal'
 import { AdminBulkKataAssignment } from './AdminBulkKataAssignment'
 import { DatePicker } from '@/components/ui/date-picker'
+import { EmptyState } from '@/components/common/EmptyState'
 import { DAY_LABELS } from '@/lib/dashboard/balance'
 import type { AdminBeltRankSummary, AdminStudentSummary, PlanSummary, ScholarshipType, ScheduleOption } from '@/types/dashboard'
 
@@ -680,10 +681,13 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 			{katasNotice && <p className="mt-4 rounded-md border border-emerald-900/40 bg-emerald-950/20 px-3 py-2 text-sm font-medium text-ok-text">{katasNotice}</p>}
 
 			{students.length === 0 ? (
-				<section className="mt-7 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center">
-					<Users aria-hidden="true" className="mx-auto size-7 text-accent" />
-					<p className="mt-3 text-sm font-semibold text-ink">No hay alumnos registrados para este alcance.</p>
-				</section>
+				<EmptyState
+					action={{ label: 'Crear alumno', onClick: () => setIsCreateOpen(true) }}
+					className="mt-7"
+					description="Cuando inscribas o crees un alumno, su expediente aparecerá aquí."
+					icon={Users}
+					title="Aún no hay alumnos en este alcance"
+				/>
 			) : (
 				<section className="mt-7 rounded-lg border border-edge bg-surface-2 shadow-sm">
 					<div className="space-y-3 border-b border-edge p-4 sm:grid sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:gap-3 sm:space-y-0 sm:p-5">
@@ -741,11 +745,23 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 					</div>
 
 					{filteredStudents.length === 0 ? (
-						<div className="px-5 py-10 text-center">
-							<Users aria-hidden="true" className="mx-auto size-6 text-ink-4" />
-							<p className="mt-3 text-sm font-semibold text-ink">No se encontraron alumnos.</p>
-							<p className="mt-1 text-xs text-ink-3">Ajusta los filtros para ver otros expedientes.</p>
-						</div>
+						<EmptyState
+							action={{
+								label: 'Limpiar filtros',
+								onClick: () => {
+									setSearchTerm('')
+									setDocsOnly(false)
+									setStatusFilter('ALL')
+									setBranchFilter('ALL')
+									setBeltFilter('ALL')
+								},
+							}}
+							className="py-10"
+							description="Ajusta la búsqueda o los filtros para ver otros expedientes."
+							icon={Users}
+							title="No encontramos alumnos con esos filtros"
+							variant="inline"
+						/>
 					) : (
 						<>
 							<ul className="divide-y divide-edge sm:hidden">

@@ -8,7 +8,7 @@ import { classSchedule } from './fixtures'
 describe('F4-03 · horario del alumno', () => {
   it('sin clases muestra el estado informativo', () => {
     render(<StudentSchedule classes={[]} />)
-    expect(screen.getByText(/No tienes clases activas asignadas/i)).toBeInTheDocument()
+    expect(screen.getByText(/Aún no tienes clases asignadas/i)).toBeInTheDocument()
   })
 
   it('cuenta las clases por día y muestra el vacío del día sin sesiones', async () => {

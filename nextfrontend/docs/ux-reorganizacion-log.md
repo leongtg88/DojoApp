@@ -33,6 +33,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-A1 · Unificar glosario | 2026-10-26 | `ux(A1): glosario de reposición en textos visibles y guía` | ✅ Hecha | — |
 | UX-A7a · Eventos de producto | 2026-10-26 | — | ⏳ Aplazada (decisión) | — |
 | UX-A2 · Eliminar la confirmación nativa | 2026-10-26 | `ux(A2): ConfirmModal accesible en las 14 confirmaciones` | ✅ Hecha | — |
+| UX-A3 · EmptyState y aplicación | 2026-10-26 | `ux(A3): EmptyState único en 17 estados vacíos` | ✅ Hecha | — |
 
 **Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
 
@@ -259,3 +260,83 @@ Comprobaciones hechas al leer el código (no se modifica nada):
 - B0 debe reutilizar este `ConfirmModal` y limitarse a verificar foco/teclado.
 
 **Revisión humana:** no aplica (A2 no está en la lista de la sección 0.7).
+
+---
+
+## UX-A3 · Componente `EmptyState` y aplicación
+
+- **Fecha:** 2026-10-26
+- **Commit:** `ux(A3): EmptyState único en 17 estados vacíos`
+
+**Archivos:**
+
+| Tipo | Archivo |
+|---|---|
+| Nuevo | `components/common/EmptyState.tsx` |
+| Nuevo | `tests/component/empty-state.test.tsx` |
+| Modificados | 13 componentes del dashboard |
+| Modificados | 3 tests existentes (cambio de copy) |
+
+**Estados vacíos unificados (17 en 13 componentes):**
+
+| Pantalla | Archivo | Acción del estado vacío |
+|---|---|---|
+| Horario: sin clases | `StudentSchedule` | — (la asigna administración) |
+| Horario: día sin clases | `StudentSchedule` | Ver toda la semana |
+| Historial de asistencias | `StudentAttendanceHistory` | Ver mi horario |
+| Asistencias (resumen) | `StudentAttendanceRecords` | Ver mi horario |
+| Técnicas en enfoque | `FocusTechniquesList` | — (muestra el enlace del encabezado) |
+| Syllabus filtrado | `StudentSyllabus` | Limpiar filtros |
+| Registro de práctica filtrado | `StudentPracticeLog` | Limpiar filtros |
+| Clases del instructor | `InstructorClasses` | — |
+| Justificaciones pendientes | `InstructorJustificationBoard` | — |
+| Alumnos del instructor | `InstructorStudents` | — |
+| Búsqueda de alumnos | `InstructorStudents` | Limpiar búsqueda |
+| Inscripciones pendientes | `AdminEnrollments` | Ver alumnos |
+| Reseñas | `AdminReviews` | Ver todas (si hay filtro) |
+| Alumnos por alcance | `AdminStudents` | Crear alumno |
+| Filtros de alumnos | `AdminStudents` | Limpiar filtros |
+| Faltas por agendar | `OnlineRecoveryPanel` | Limpiar búsqueda (si hay búsqueda) |
+| Reposiciones online | `OnlineRecoveryPanel` | Ver todas (si hay filtro) |
+
+**Decisiones tomadas y por qué:**
+
+1. **`components/common/EmptyState.tsx`**, la ruta que nombra la guía (A3 y B0). Es un primitivo sin estado ni `'use client'`, así que sirve en componentes de servidor y de cliente.
+2. **Dos variantes:** `panel` (bloque con borde discontinuo, para páginas) e `inline` (sin borde, para dentro de tarjetas que ya lo tienen). Evita cajas dentro de cajas.
+3. **`action` admite enlace o botón**, con altura mínima de 44 px. 12 de los 17 estados tienen acción real; los 5 restantes no tienen una acción disponible en la app y lo explican en el texto en vez de inventar un botón roto.
+4. **Los filtros sin resultados tienen acción "Limpiar filtros"**, que restablece el estado real del componente. No se inventó ningún endpoint.
+5. **`FocusTechniquesList`:** se eliminó el pie "Todas tus técnicas asignadas están revisadas" porque ahora el mismo mensaje es la descripción del estado vacío; mantener ambos duplicaba el texto y rompía el test.
+6. **Logros:** no existen todavía (Fase C, UX-C2). No se inventó la pantalla; se aplicará cuando se cree.
+7. **Reposiciones del alumno:** `StudentOnlineRecoveries` se oculta por diseño cuando no hay reposiciones y hay un test que lo exige (`to​BeEmptyDOMElement`). Se respeta; el hub propio del alumno llega en UX-B3.
+8. **Alcance:** se cubrieron las superficies que nombra la tarea (horario, asistencia, reposiciones, katas, bandejas de instructor y admin). Quedan listas fuera de ese alcance (calendario, blog, mensajes, catálogo de técnicas) que se unificarán en B0/B5 cuando se reorganicen esas pantallas.
+
+**Pruebas añadidas (4, prefijo `UX-A3 ·`):**
+
+- Título y descripción visibles, sin acción si no se pasa.
+- Acción de enlace con `href` correcto y nombre accesible.
+- Acción de botón que ejecuta la llamada.
+- Icono marcado como decorativo (`aria-hidden`).
+
+**Tests existentes actualizados (cambio legítimo de copy):**
+
+| Test | Antes | Ahora |
+|---|---|---|
+| `student-schedule.test.tsx` | /No tienes clases activas asignadas/ | /Aún no tienes clases asignadas/ |
+| `admin-students.test.tsx` | /No se encontraron alumnos/ | /No encontramos alumnos con esos filtros/ |
+| `student-dashboard-overview.test.tsx` | — | Sin cambios: sigue pasando tras quitar el pie duplicado |
+
+**Resultado:**
+
+| Comando | Resultado |
+|---|---|
+| `pnpm lint` | ✅ 0 errores, 34 warnings preexistentes |
+| `pnpm typecheck` | ✅ Sin salida |
+| `pnpm test` | ✅ 56 archivos / **260 tests** (antes 55 / 256) / 8,49 s |
+| `pnpm test:integration` | No aplica: sin cambios en API ni BD |
+| `pnpm test:e2e` | No aplica: sin cambios de rutas |
+
+**Desviaciones respecto a la guía:** "logros" no se pudo aplicar porque la funcionalidad no existe; se hará en UX-C2.
+
+**Pendientes o dudas:** las listas vacías de calendario, blog, mensajes y catálogo de técnicas siguen con su texto propio. Se unifican al reorganizar esas pantallas (B0/B5).
+
+**Revisión humana:** no aplica.

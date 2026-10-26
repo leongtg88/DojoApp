@@ -79,6 +79,6 @@ describe('F3-09 · padrón de alumnos (filtro de búsqueda)', () => {
 
     await user.type(screen.getByRole('searchbox'), 'zzzz')
 
-    expect(screen.getByText(/No se encontraron alumnos/i)).toBeInTheDocument()
+    expect(screen.getByText(/No encontramos alumnos con esos filtros/i)).toBeInTheDocument()
   })
 })

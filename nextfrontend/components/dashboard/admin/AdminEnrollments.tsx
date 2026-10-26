@@ -6,6 +6,7 @@ import { FilePlus2, Trash2 } from 'lucide-react'
 import { DatePicker } from '@/components/ui/date-picker'
 import { useConfirm } from '@/components/dashboard/shared/useConfirm'
 import type { AdminEnrollmentSummary } from '@/types/dashboard'
+import { EmptyState } from '@/components/common/EmptyState'
 import { kyuLabel } from '@/lib/curriculum/kyu-options'
 
 interface AdminEnrollmentsProps {
@@ -148,11 +149,13 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                 <p className="mt-2 text-xs text-ink-3">Solicitudes recibidas desde el asistente de inscripción.</p>
             </header>
             {enrollments.length === 0 ? (
-                <section className="mt-7 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center">
-                    <FilePlus2 aria-hidden="true" className="mx-auto size-7 text-accent" />
-                    <p className="mt-3 text-sm font-semibold text-ink">No hay inscripciones pendientes.</p>
-                    <p className="mt-1 text-xs text-ink-3">Las nuevas solicitudes aparecerán aquí para completar su expediente.</p>
-                </section>
+                <EmptyState
+                    action={{ label: 'Ver alumnos', href: '/dashboard/admin/alumnos' }}
+                    className="mt-7"
+                    description="Las nuevas solicitudes del asistente de inscripción aparecerán aquí para completar el expediente."
+                    icon={FilePlus2}
+                    title="No hay inscripciones pendientes"
+                />
             ) : (
                 <ul className="mt-7 divide-y divide-edge rounded-lg border border-edge bg-surface-2">
                     {enrollments.map((enrollment) => (

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Check, Clock, Star, Trash2, X } from 'lucide-react'
 import { useConfirm } from '@/components/dashboard/shared/useConfirm'
+import { EmptyState } from '@/components/common/EmptyState'
 import type { ReviewStatus, ReviewSummary } from '@/types/dashboard'
 
 interface AdminReviewsProps {
@@ -120,9 +121,13 @@ export function AdminReviews({ reviews }: AdminReviewsProps) {
       </div>
 
       {visible.length === 0 ? (
-        <p className="mt-6 rounded-lg border border-edge bg-surface-2 px-4 py-6 text-xs text-ink-3">
-          No hay reseñas en este filtro.
-        </p>
+        <EmptyState
+          action={filter === 'ALL' ? undefined : { label: 'Ver todas', onClick: () => setFilter('ALL') }}
+          className="mt-6"
+          description={filter === 'ALL' ? 'Cuando un alumno deje una reseña, aparecerá aquí para moderarla.' : 'Prueba con otro estado o mira todas las reseñas.'}
+          icon={Star}
+          title={filter === 'ALL' ? 'Aún no hay reseñas' : 'No hay reseñas con este filtro'}
+        />
       ) : (
         <section className="mt-6 grid gap-4">
           {visible.map((review) => (

@@ -17,6 +17,7 @@ import { formatCalendarDate, formatDateTime, toSantoDomingoDateTimeLocal } from 
 import { santoDomingoDateTimeToIso } from '@/lib/dashboard/schedule-utils'
 import { isHttpUrl } from '@/lib/validation/url'
 import { useConfirm } from '@/components/dashboard/shared/useConfirm'
+import { EmptyState } from '@/components/common/EmptyState'
 import type {
   OnlineRecoveryCandidate,
   OnlineRecoveryStatus,
@@ -458,9 +459,13 @@ export function OnlineRecoveryPanel({
         </div>
 
         {filteredCandidates.length === 0 ? (
-          <p className="mt-3 rounded-md border border-dashed border-edge-strong px-3 py-4 text-center text-xs text-ink-4">
-            No hay faltas pendientes para agendar.
-          </p>
+          <EmptyState
+            action={search.trim() ? { label: 'Limpiar búsqueda', onClick: () => setSearch('') } : undefined}
+            className="mt-3"
+            description={search.trim() ? 'No hay faltas que coincidan con esa búsqueda.' : 'Cuando un alumno tenga una falta por reponer, aparecerá aquí para agendar su reposición.'}
+            title={search.trim() ? 'No encontramos faltas con esa búsqueda' : 'No hay faltas pendientes para agendar'}
+            variant="inline"
+          />
         ) : (
           <ul className="mt-3 max-h-72 space-y-2 overflow-y-auto pr-1">
             {filteredCandidates.map((candidate) => (
@@ -505,9 +510,13 @@ export function OnlineRecoveryPanel({
         </div>
 
         {filteredRecoveries.length === 0 ? (
-          <p className="mt-3 rounded-md border border-dashed border-edge-strong px-3 py-4 text-center text-xs text-ink-4">
-            No hay clases online en este filtro.
-          </p>
+          <EmptyState
+            action={statusFilter === 'ALL' ? undefined : { label: 'Ver todas', onClick: () => setStatusFilter('ALL') }}
+            className="mt-3"
+            description={statusFilter === 'ALL' ? 'Cuando administración agende una clase online, aparecerá aquí con su fecha y enlace.' : 'Prueba con otro estado o mira todas las clases online.'}
+            title={statusFilter === 'ALL' ? 'Aún no hay reposiciones online' : 'No hay clases online con este filtro'}
+            variant="inline"
+          />
         ) : (
           <ul className="mt-3 space-y-2">
             {filteredRecoveries.map((recovery) => {

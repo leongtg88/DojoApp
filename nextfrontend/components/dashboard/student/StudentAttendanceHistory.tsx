@@ -1,6 +1,7 @@
 import { CalendarCheck2, CircleX } from 'lucide-react'
 import type { StudentAttendanceRecord } from '@/types/dashboard'
 import { formatDateTime } from '@/lib/format/datetime'
+import { EmptyState } from '@/components/common/EmptyState'
 
 interface StudentAttendanceHistoryProps {
     records: StudentAttendanceRecord[]
@@ -14,10 +15,13 @@ export function StudentAttendanceHistory({ records }: StudentAttendanceHistoryPr
             <p className="mt-2 text-xs text-ink-3">Registro de sesiones marcadas por tu instructor.</p>
 
             {records.length === 0 ? (
-                <section className="mt-7 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center">
-                    <CalendarCheck2 aria-hidden="true" className="mx-auto size-7 text-accent" />
-                    <p className="mt-3 text-sm font-semibold text-ink">Aún no hay asistencias registradas.</p>
-                </section>
+                <EmptyState
+                    action={{ label: 'Ver mi horario', href: '/dashboard/estudiante/horario' }}
+                    className="mt-7"
+                    description="Tu instructor las registrará en el pase de lista de cada clase."
+                    icon={CalendarCheck2}
+                    title="Aún no tienes asistencias registradas"
+                />
             ) : (
                 <section className="mt-7 overflow-hidden rounded-lg border border-edge bg-surface-2">
                     <ul className="divide-y divide-edge">

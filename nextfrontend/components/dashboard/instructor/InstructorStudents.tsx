@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { ArrowRight, BookOpenCheck, Search, Users } from 'lucide-react'
 import type { InstructorStudentSummary } from '@/types/dashboard'
+import { EmptyState } from '@/components/common/EmptyState'
 import { InstructorKatasModal } from './InstructorKatasModal'
 
 interface InstructorStudentsProps {
@@ -53,10 +54,12 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
             )}
 
             {students.length === 0 ? (
-                <section className="mt-7 rounded-lg border border-dashed border-edge-strong bg-surface-2 px-5 py-10 text-center">
-                    <Users aria-hidden="true" className="mx-auto size-7 text-accent" />
-                    <p className="mt-3 text-sm font-semibold text-ink">No hay alumnos activos en tu escuela.</p>
-                </section>
+                <EmptyState
+                    className="mt-7"
+                    description="Cuando la administración inscriba alumnos en tus clases, aparecerán aquí."
+                    icon={Users}
+                    title="Aún no hay alumnos activos en tu escuela"
+                />
             ) : (
                 <section className="mt-7 rounded-lg border border-edge bg-surface-2 shadow-sm">
                     <div className="border-b border-edge p-4 sm:p-5">
@@ -73,11 +76,14 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
                         </label>
                     </div>
                     {filteredStudents.length === 0 ? (
-                        <div className="px-5 py-10 text-center">
-                            <Users aria-hidden="true" className="mx-auto size-6 text-accent" />
-                            <p className="mt-3 text-sm font-semibold text-ink">No se encontraron alumnos.</p>
-                            <p className="mt-1 text-xs text-ink-3">Prueba con otro nombre, grado o clase.</p>
-                        </div>
+                        <EmptyState
+                            action={{ label: 'Limpiar búsqueda', onClick: () => setSearchTerm('') }}
+                            className="py-10"
+                            description="Prueba con otro nombre, grado o clase."
+                            icon={Users}
+                            title="No encontramos alumnos con esa búsqueda"
+                            variant="inline"
+                        />
                     ) : (
                         <ul className="divide-y divide-edge">
                             {filteredStudents.map((student) => {

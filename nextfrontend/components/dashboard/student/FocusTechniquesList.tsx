@@ -1,7 +1,8 @@
 import Link from 'next/link'
-import { Award, CheckCheck, ChevronRight, Clock3, Info } from 'lucide-react'
+import { Award, ChevronRight, Clock3, Info } from 'lucide-react'
 import type { StudentTechnique } from '@/types/dashboard'
 import { studentHref } from '@/lib/dashboard/student-links'
+import { EmptyState } from '@/components/common/EmptyState'
 
 interface FocusTechniquesListProps {
     techniques: StudentTechnique[]
@@ -18,7 +19,13 @@ export function FocusTechniquesList({ techniques, studentId }: FocusTechniquesLi
                 <Link className="inline-flex items-center gap-0.5 text-xs font-bold text-accent hover:underline" href={studentHref('/dashboard/estudiante/progreso', studentId)}>Ver syllabus <ChevronRight aria-hidden="true" className="size-3.5" /></Link>
             </div>
             {displayTechniques.length === 0 ? (
-                <p className="px-5 py-8 text-xs text-ink-3">No tienes técnicas pendientes de práctica.</p>
+                <EmptyState
+                    className="py-8"
+                    description={techniques.length > 0 ? 'Todas tus técnicas asignadas están revisadas.' : 'Tu instructor te asignará técnicas nuevas cuando corresponda.'}
+                    icon={Award}
+                    title="No tienes técnicas pendientes de práctica"
+                    variant="inline"
+                />
             ) : (
                 <ul className="max-h-72 divide-y divide-edge overflow-y-auto">
                     {displayTechniques.map((technique) => (
@@ -33,7 +40,6 @@ export function FocusTechniquesList({ techniques, studentId }: FocusTechniquesLi
                     ))}
                 </ul>
             )}
-            {techniques.length > 0 && displayTechniques.length === 0 && <div className="flex items-center gap-2 border-t border-edge px-5 py-3 text-xs font-semibold text-ok-text"><CheckCheck aria-hidden="true" className="size-4" />Todas tus técnicas asignadas están revisadas.</div>}
         </section>
     )
 }
