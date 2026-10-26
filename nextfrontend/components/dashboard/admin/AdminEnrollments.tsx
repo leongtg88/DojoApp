@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { FilePlus2, Trash2 } from 'lucide-react'
 import { DatePicker } from '@/components/ui/date-picker'
+import { useConfirm } from '@/components/dashboard/shared/useConfirm'
 import type { AdminEnrollmentSummary } from '@/types/dashboard'
 import { kyuLabel } from '@/lib/curriculum/kyu-options'
 
@@ -16,6 +17,7 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
     const [selectedEnrollment, setSelectedEnrollment] = useState<AdminEnrollmentSummary | null>(null)
     const [error, setError] = useState<string | null>(null)
     const [isSaving, setIsSaving] = useState(false)
+    const { confirm, dialog } = useConfirm()
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
@@ -50,10 +52,15 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
     async function deleteEnrollment(enrollment: AdminEnrollmentSummary) {
         const applicantCount = enrollment.applicants.length
         const label = enrollment.applicantName ?? 'esta inscripción'
-        const message = applicantCount > 0
-            ? `¿Eliminar la inscripción de ${label}? Se borrarán ${applicantCount} aspirante${applicantCount === 1 ? '' : 's'} y sus documentos. Esta acción no se puede deshacer.`
-            : `¿Eliminar la inscripción de ${label}? Esta acción no se puede deshacer.`
-        if (!window.confirm(message)) return
+        const confirmed = await confirm({
+            title: `¿Eliminar la inscripción de ${label}?`,
+            message: applicantCount > 0
+                ? `Se borrarán ${applicantCount} aspirante${applicantCount === 1 ? '' : 's'} y sus documentos. Esta acción no se puede deshacer.`
+                : 'Esta acción no se puede deshacer.',
+            confirmLabel: 'Eliminar inscripción',
+            isDestructive: true,
+        })
+        if (!confirmed) return
 
         setError(null)
         setIsSaving(true)
@@ -206,6 +213,7 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
                     </form>
                 </div>
             )}
+            {dialog}
         </main>
     )
 }

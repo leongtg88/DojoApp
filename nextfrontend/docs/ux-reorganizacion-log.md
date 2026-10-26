@@ -31,6 +31,10 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-00 · Línea base | 2026-10-26 | `fd0187a` | ✅ Hecha | — |
 | UX-01 · Constantes de nav y copy | 2026-10-26 | `ux(01): constantes de navegación, estados de reposición y copy` | ✅ Hecha | — |
 | UX-A1 · Unificar glosario | 2026-10-26 | `ux(A1): glosario de reposición en textos visibles y guía` | ✅ Hecha | — |
+| UX-A7a · Eventos de producto | 2026-10-26 | — | ⏳ Aplazada (decisión) | — |
+| UX-A2 · Eliminar la confirmación nativa | 2026-10-26 | `ux(A2): ConfirmModal accesible en las 14 confirmaciones` | ✅ Hecha | — |
+
+**Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
 
 ---
 
@@ -183,3 +187,75 @@ Comprobaciones hechas al leer el código (no se modifica nada):
 **Pendientes o dudas:** en UX-A6 hay que ampliar la sección "Reposición de clases que faltaste" con el botón *Solicitar reposición* y los estados de solicitud.
 
 **Revisión humana:** no aplica.
+
+---
+
+## UX-A2 · Eliminar la confirmación nativa
+
+- **Fecha:** 2026-10-26
+- **Commit:** `ux(A2): ConfirmModal accesible en las 14 confirmaciones`
+
+**Archivos:**
+
+| Tipo | Archivo |
+|---|---|
+| Nuevo | `components/dashboard/shared/useConfirm.tsx` |
+| Nuevo | `tests/component/confirm-modal.test.tsx` |
+| Modificado | `components/dashboard/shared/ConfirmModal.tsx` |
+| Modificados | 12 componentes con confirmaciones (admin, instructor, alumno y notificaciones) |
+
+**Las 14 confirmaciones sustituidas:**
+
+| Archivo | Acción |
+|---|---|
+| `AdminBlogPosts` | Eliminar artículo |
+| `AdminCurriculumCatalog` | Eliminar grado · Aplicar currículo oficial |
+| `AdminEnrollments` | Eliminar inscripción (con aspirantes) |
+| `AdminPlans` | Eliminar plan |
+| `AdminReviews` | Eliminar reseña |
+| `AdminSchedules` | Eliminar horario |
+| `AdminTechniqueManager` | Eliminar técnica |
+| `NotificationsCenter` | Limpiar notificaciones |
+| `NotificationBell` | Limpiar notificaciones |
+| `OnlineRecoveryPanel` | Cancelar clase online · Marcar "no asistió" |
+| `StudentAbsenceReport` | Retirar reporte de inasistencia |
+| `StudentDocuments` | Eliminar documento |
+
+**Decisiones tomadas y por qué:**
+
+1. **Hook `useConfirm()` en vez de repetir estado en 12 componentes.** Devuelve `{ confirm, dialog }` con una promesa `Promise<boolean>`. Cada sitio pasa de `if (!window.confirm(texto)) return` a `if (!(await confirm({ title, message, confirmLabel, isDestructive }))) return`. Un solo diálogo para todo el proyecto (principio 7).
+2. **Se adelantó la accesibilidad de `ConfirmModal` a A2.** La guía la ubicaba en UX-B0, pero A2 exige foco atrapado, `Esc` y retorno de foco como criterio de aceptación. Hacerlo en B0 habría dejado A2 incompleta. Resultado: B0 no debe reimplementar `ConfirmModal`, solo verificarlo.
+3. **Foco inicial en "Cancelar".** La acción destructiva nunca queda preseleccionada; `Esc` cancela; al cerrar el foco vuelve al disparador.
+4. **Textos honestos y específicos.** Cada diálogo dice qué se borra y qué consecuencia tiene. En `AdminSchedules` se avisa de que el horario con alumnos se desactiva en lugar de borrarse (comportamiento real del endpoint). En `OnlineRecoveryPanel` se avisa de que la falta sigue pendiente.
+5. **Densidad de diff.** A2 tocó 14 sitios: ~395 líneas entre código, hook y tests, dentro del margen de la tarea. No se dividió porque el patrón es idéntico y partirlo dejaría la app con dos formas de confirmar.
+
+**Pruebas añadidas (5, prefijo `UX-A2 ·`):**
+
+- Abre con el foco en "Cancelar" y el diálogo tiene nombre accesible.
+- `Shift+Tab` desde "Cancelar" va al último botón y `Tab` vuelve al primero (foco atrapado).
+- `Esc` cancela, cierra y **devuelve el foco al botón que abrió**.
+- Confirmar resuelve `true` y cierra.
+- Clic fuera del diálogo resuelve `false`.
+
+**Resultado:**
+
+| Comando | Resultado |
+|---|---|
+| `grep -rn "window.confirm" app components` | ✅ 0 resultados |
+| `pnpm lint` | ✅ 0 errores, 34 warnings preexistentes (sin nuevos) |
+| `pnpm typecheck` | ✅ Sin salida |
+| `pnpm test` | ✅ 55 archivos / **256 tests** (antes 54 / 251) / 7,80 s |
+| `pnpm test:integration` | No aplica: sin cambios en API ni BD |
+| `pnpm test:e2e` | No aplica: sin cambios de rutas |
+
+**Desviaciones respecto a la guía:**
+
+- A7a se pospuso (ver nota de orden). No cambia el alcance de A2.
+- La accesibilidad de `ConfirmModal`, prevista para B0, se resolvió aquí.
+
+**Pendientes o dudas:**
+
+- Quedan `window.alert` en varios componentes (fuera del alcance de A2: la guía solo pide confirmaciones). Se revisarán cuando se implemente el `Toast` de UX-B0.
+- B0 debe reutilizar este `ConfirmModal` y limitarse a verificar foco/teclado.
+
+**Revisión humana:** no aplica (A2 no está en la lista de la sección 0.7).

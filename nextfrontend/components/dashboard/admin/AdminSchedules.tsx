@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { CalendarPlus, Check, Loader2, Pencil, Plus, Power, Save, Search, Users, X } from 'lucide-react'
 import { DAY_LABELS } from '@/lib/dashboard/balance'
+import { useConfirm } from '@/components/dashboard/shared/useConfirm'
 import type { AdminInstructor, AdminScheduleSummary, AdminStudentSummary, ScheduleAudience } from '@/types/dashboard'
 
 interface AdminSchedulesProps {
@@ -45,6 +46,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
     const [form, setForm] = useState<ScheduleFormState>(emptyForm)
     const [isSaving, setIsSaving] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const { confirm, dialog } = useConfirm()
 
     // Modal de inscripción
     const [enrollingIn, setEnrollingIn] = useState<AdminScheduleSummary | null>(null)
@@ -132,7 +134,13 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
     }
 
     async function deleteSchedule(schedule: AdminScheduleSummary) {
-        if (!window.confirm(`¿Eliminar el horario "${schedule.name}"?`)) return
+        const confirmed = await confirm({
+            title: `¿Eliminar el horario "${schedule.name}"?`,
+            message: 'Si el horario tiene alumnos, se desactivará en lugar de eliminarse.',
+            confirmLabel: 'Eliminar horario',
+            isDestructive: true,
+        })
+        if (!confirmed) return
         const response = await fetch(`/api/dashboard/admin/classes/${schedule.id}`, { method: 'DELETE' })
         const data = await response.json().catch(() => null)
         if (!response.ok || data?.deactivated === false) {
@@ -495,6 +503,7 @@ export function AdminSchedules({ schedules, students, instructors }: AdminSchedu
                     </div>
                 </div>
             )}
+            {dialog}
         </main>
     )
 }

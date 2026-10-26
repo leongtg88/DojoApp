@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { BookOpen, CheckSquare, Clock, GraduationCap, ListChecks, Loader2, MoveDown, MoveUp, Pencil, Plus, Rows3, ShieldCheck, Square, Trash2, UserPlus, Users, X } from 'lucide-react'
 import { RankCatalog } from '../shared/RankCatalog'
 import { AssignGradeDialog } from '../shared/AssignGradeDialog'
+import { useConfirm } from '../shared/useConfirm'
 import { ADULT_RANKS, BELT_COLORS, YOUTH_RANKS } from '@/lib/curriculum/programs'
 import { techniqueMetaLine } from '@/lib/dashboard/technique-format'
 import { KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
@@ -82,6 +83,7 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
     const [error, setError] = useState<string | null>(null)
     const [notice, setNotice] = useState<string | null>(null)
     const [isAssignGradeOpen, setIsAssignGradeOpen] = useState(false)
+    const { confirm, dialog } = useConfirm()
 
     const selectedRank = ranks.find(({ id }) => id === selectedRankId) ?? ranks[0]
     const totalTechniques = ranks.reduce((total, rank) => total + rank.techniqueCount, 0)
@@ -156,7 +158,13 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
     }
 
     async function deleteRank(rank: AdminBeltRankSummary) {
-        if (!window.confirm(`¿Eliminar el grado "${rank.name}"? Esta acción no se puede deshacer.`)) return
+        const confirmed = await confirm({
+            title: `¿Eliminar el grado "${rank.name}"?`,
+            message: 'Esta acción no se puede deshacer.',
+            confirmLabel: 'Eliminar grado',
+            isDestructive: true,
+        })
+        if (!confirmed) return
         setSaving(true)
         setError(null)
         const response = await fetch(`/api/dashboard/admin/belt-ranks/${rank.id}`, { method: 'DELETE' })
@@ -234,7 +242,12 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
     }
 
     async function applyOfficialCurriculum() {
-        if (!window.confirm('¿Aplicar el currículo oficial a los grados que aún no tienen katas? No se modificarán los grados ya configurados.')) return
+        const confirmed = await confirm({
+            title: '¿Aplicar el currículo oficial?',
+            message: 'Se aplicará a los grados que aún no tienen katas. No se modificarán los grados ya configurados.',
+            confirmLabel: 'Aplicar currículo',
+        })
+        if (!confirmed) return
         setSaving(true)
         setError(null)
         setNotice(null)
@@ -406,6 +419,7 @@ export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalo
                     techniqueIds={selectedRank.techniques.map(({ id }) => id)}
                 />
             )}
+            {dialog}
         </main>
     )
 }

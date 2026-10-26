@@ -8,6 +8,7 @@ import { deletePost, setPostPublished } from '@/lib/blog/actions'
 import { POST_CATEGORY_LABELS } from '@/lib/blog/categories'
 import { formatDate } from '@/lib/format/datetime'
 import type { AdminPostItem } from '@/types/blog'
+import { useConfirm } from '@/components/dashboard/shared/useConfirm'
 
 interface AdminBlogPostsProps {
     posts: AdminPostItem[]
@@ -26,6 +27,7 @@ export function AdminBlogPosts({ posts }: AdminBlogPostsProps) {
     const [filter, setFilter] = useState<Filter>('ALL')
     const [busyId, setBusyId] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
+    const { confirm, dialog } = useConfirm()
     const [, startTransition] = useTransition()
 
     const visible = useMemo(() => {
@@ -54,8 +56,14 @@ export function AdminBlogPosts({ posts }: AdminBlogPostsProps) {
         run(post.id, () => setPostPublished({ id: post.id, published: !post.published }))
     }
 
-    function remove(post: AdminPostItem) {
-        if (!window.confirm(`¿Eliminar "${post.title}" permanentemente? Esta acción no se puede deshacer.`)) return
+    async function remove(post: AdminPostItem) {
+        const confirmed = await confirm({
+            title: `¿Eliminar "${post.title}"?`,
+            message: 'El artículo se borra para siempre. Esta acción no se puede deshacer.',
+            confirmLabel: 'Eliminar artículo',
+            isDestructive: true,
+        })
+        if (!confirmed) return
         run(post.id, () => deletePost({ id: post.id }))
     }
 
@@ -149,6 +157,7 @@ export function AdminBlogPosts({ posts }: AdminBlogPostsProps) {
                     ))}
                 </ul>
             )}
+            {dialog}
         </div>
     )
 }

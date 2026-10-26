@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { BellOff, CheckCheck, Trash2 } from 'lucide-react'
 import type { NotificationView } from '@/lib/notifications/queries'
 import { NOTIFICATION_PRIORITY_LABELS, NOTIFICATION_PRIORITY_STYLES, formatNotificationRelative } from '@/lib/notifications/format'
+import { useConfirm } from '@/components/dashboard/shared/useConfirm'
 
 interface NotificationsCenterProps {
     initialItems: NotificationView[]
@@ -23,6 +24,7 @@ export function NotificationsCenter({ initialItems, initialNextCursor, initialUn
     const [nextCursor, setNextCursor] = useState(initialNextCursor)
     const [unreadCount, setUnreadCount] = useState(initialUnreadCount)
     const [loadingMore, setLoadingMore] = useState(false)
+    const { confirm, dialog } = useConfirm()
 
     async function handleMarkAllRead() {
         try {
@@ -35,7 +37,13 @@ export function NotificationsCenter({ initialItems, initialNextCursor, initialUn
     }
 
     async function handleClear() {
-        if (!window.confirm('¿Limpiar todas tus notificaciones? Esta acción no se puede deshacer.')) return
+        const confirmed = await confirm({
+            title: '¿Limpiar todas tus notificaciones?',
+            message: 'Se eliminarán todos tus avisos. Esta acción no se puede deshacer.',
+            confirmLabel: 'Limpiar todo',
+            isDestructive: true,
+        })
+        if (!confirmed) return
         try {
             const response = await fetch('/api/dashboard/notifications', { method: 'DELETE' })
             if (!response.ok) throw new Error('No fue posible limpiar las notificaciones')
@@ -166,6 +174,7 @@ export function NotificationsCenter({ initialItems, initialNextCursor, initialUn
                     </button>
                 </div>
             )}
+            {dialog}
         </div>
     )
 }

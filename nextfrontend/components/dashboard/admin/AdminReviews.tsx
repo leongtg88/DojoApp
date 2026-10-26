@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Check, Clock, Star, Trash2, X } from 'lucide-react'
+import { useConfirm } from '@/components/dashboard/shared/useConfirm'
 import type { ReviewStatus, ReviewSummary } from '@/types/dashboard'
 
 interface AdminReviewsProps {
@@ -36,6 +37,7 @@ export function AdminReviews({ reviews }: AdminReviewsProps) {
   const router = useRouter()
   const [filter, setFilter] = useState<ReviewStatus | 'ALL'>('PENDING')
   const [busyId, setBusyId] = useState<string | null>(null)
+  const { confirm, dialog } = useConfirm()
 
   const pendingCount = reviews.filter((review) => review.status === 'PENDING').length
   const visible = filter === 'ALL' ? reviews : reviews.filter((review) => review.status === filter)
@@ -60,7 +62,13 @@ export function AdminReviews({ reviews }: AdminReviewsProps) {
   }
 
   async function removeReview(id: string) {
-    if (!window.confirm('¿Eliminar esta reseña permanentemente?')) return
+    const confirmed = await confirm({
+      title: '¿Eliminar esta reseña?',
+      message: 'La reseña se borra para siempre. Esta acción no se puede deshacer.',
+      confirmLabel: 'Eliminar reseña',
+      isDestructive: true,
+    })
+    if (!confirmed) return
     setBusyId(id)
     try {
       const response = await fetch(`/api/dashboard/admin/reviews/${id}`, { method: 'DELETE' })
@@ -185,6 +193,7 @@ export function AdminReviews({ reviews }: AdminReviewsProps) {
           ))}
         </section>
       )}
+      {dialog}
     </main>
   )
 }

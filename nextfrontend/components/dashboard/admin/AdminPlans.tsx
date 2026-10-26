@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Check, Loader2, Pencil, Plus, Power, Save, Trash2, X } from 'lucide-react'
+import { useConfirm } from '@/components/dashboard/shared/useConfirm'
 import type { PlanSummary } from '@/types/dashboard'
 
 interface AdminPlansProps {
@@ -36,6 +37,7 @@ export function AdminPlans({ plans }: AdminPlansProps) {
     const [form, setForm] = useState<PlanFormState>(emptyForm)
     const [isSaving, setIsSaving] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const { confirm, dialog } = useConfirm()
 
     function openCreate() {
         setCreating(true)
@@ -106,7 +108,13 @@ export function AdminPlans({ plans }: AdminPlansProps) {
     }
 
     async function deletePlan(plan: PlanSummary) {
-        if (!window.confirm(`¿Eliminar el plan "${plan.name}"?`)) return
+        const confirmed = await confirm({
+            title: `¿Eliminar el plan "${plan.name}"?`,
+            message: 'Esta acción no se puede deshacer.',
+            confirmLabel: 'Eliminar plan',
+            isDestructive: true,
+        })
+        if (!confirmed) return
         const response = await fetch(`/api/dashboard/admin/plans/${plan.id}`, { method: 'DELETE' })
         const data = await response.json().catch(() => null)
         if (!response.ok) {
@@ -273,6 +281,7 @@ export function AdminPlans({ plans }: AdminPlansProps) {
                     </article>
                 ))}
             </section>
+            {dialog}
         </main>
     )
 }

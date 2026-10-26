@@ -16,6 +16,7 @@ import {
 import { formatCalendarDate, formatDateTime, toSantoDomingoDateTimeLocal } from '@/lib/format/datetime'
 import { santoDomingoDateTimeToIso } from '@/lib/dashboard/schedule-utils'
 import { isHttpUrl } from '@/lib/validation/url'
+import { useConfirm } from '@/components/dashboard/shared/useConfirm'
 import type {
   OnlineRecoveryCandidate,
   OnlineRecoveryStatus,
@@ -85,6 +86,7 @@ export function OnlineRecoveryPanel({
   const [busy, setBusy] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const { confirm, dialog } = useConfirm()
 
   const filteredCandidates = candidates.filter((candidate) =>
     candidate.studentName.toLowerCase().includes(search.trim().toLowerCase()),
@@ -182,8 +184,24 @@ export function OnlineRecoveryPanel({
   }
 
   async function handleAction(recovery: OnlineRecoverySummary, action: 'complete' | 'cancel' | 'no-show') {
-    if (action === 'cancel' && !window.confirm('¿Cancelar esta clase online? La falta seguirá pendiente.')) return
-    if (action === 'no-show' && !window.confirm('¿Marcar que el alumno no asistió? La falta seguirá pendiente.')) return
+    if (action === 'cancel') {
+      const confirmed = await confirm({
+        title: '¿Cancelar esta clase online?',
+        message: 'La falta seguirá pendiente de reponer.',
+        confirmLabel: 'Cancelar clase',
+        isDestructive: true,
+      })
+      if (!confirmed) return
+    }
+    if (action === 'no-show') {
+      const confirmed = await confirm({
+        title: '¿Marcar que el alumno no asistió?',
+        message: 'La falta seguirá pendiente de reponer.',
+        confirmLabel: 'Marcar no asistió',
+        isDestructive: true,
+      })
+      if (!confirmed) return
+    }
 
     setBusy(`${recovery.id}:${action}`)
     setError(null)
@@ -604,6 +622,7 @@ export function OnlineRecoveryPanel({
           </ul>
         )}
       </div>
+      {dialog}
     </section>
   )
 }

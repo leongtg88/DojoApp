@@ -7,6 +7,7 @@ import type { NotificationView } from '@/lib/notifications/queries'
 import { NOTIFICATION_PRIORITY_STYLES, formatNotificationRelative } from '@/lib/notifications/format'
 import { setUnreadBadge } from '@/lib/badge'
 import { isStandalone } from '@/lib/pwa'
+import { useConfirm } from '@/components/dashboard/shared/useConfirm'
 
 interface NotificationBellProps {
     initialUnreadCount?: number
@@ -47,6 +48,7 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
     const [pushState, setPushState] = useState<PushState>(resolvePushState)
     const [pushBusy, setPushBusy] = useState(false)
     const [pushHint, setPushHint] = useState<string | null>(null)
+    const { confirm, dialog } = useConfirm()
     const containerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -125,7 +127,13 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
     }
 
     async function handleClear() {
-        if (!window.confirm('¿Limpiar todas tus notificaciones? Esta acción no se puede deshacer.')) return
+        const confirmed = await confirm({
+            title: '¿Limpiar todas tus notificaciones?',
+            message: 'Se eliminarán todos tus avisos. Esta acción no se puede deshacer.',
+            confirmLabel: 'Limpiar todo',
+            isDestructive: true,
+        })
+        if (!confirmed) return
         try {
             const response = await fetch('/api/dashboard/notifications', { method: 'DELETE' })
             if (!response.ok) throw new Error('No fue posible limpiar las notificaciones')
@@ -334,6 +342,7 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
                     </Link>
                 </div>
             )}
+            {dialog}
         </div>
     )
 }

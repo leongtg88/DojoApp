@@ -9,6 +9,7 @@ import { KUMITE_CATEGORIES, KUMITE_CATEGORY_LABELS, KUMITE_CATEGORY_SHORT_LABELS
 import { buildProgramKataLevels, type KataLevelInfo } from '@/lib/dashboard/kata-level'
 import { TechniqueCatalogExplorer } from '../shared/TechniqueCatalogExplorer'
 import { TechniqueAssignDialog } from './TechniqueAssignDialog'
+import { useConfirm } from '../shared/useConfirm'
 import type { Program } from '@/lib/curriculum/programs'
 import type { AdminBeltRankSummary, AdminTechniqueSummary, KihonCategory, KumiteCategory, TechniqueCategory } from '@/types/dashboard'
 
@@ -92,6 +93,7 @@ export function AdminTechniqueManager({ ranks, techniques, selectedRank = null }
     const [error, setError] = useState<string | null>(null)
     const [notice, setNotice] = useState<string | null>(null)
     const [assigningTechnique, setAssigningTechnique] = useState<AdminTechniqueSummary | null>(null)
+    const { confirm, dialog } = useConfirm()
 
     const kataOptions = techniques.filter(({ category }) => category === 'KATA')
     const levelsByProgram: Record<Program, Map<string, KataLevelInfo>> = {
@@ -222,7 +224,13 @@ export function AdminTechniqueManager({ ranks, techniques, selectedRank = null }
     }
 
     async function deleteTechnique(technique: AdminTechniqueSummary) {
-        if (!window.confirm(`¿Eliminar la técnica "${technique.name}"?`)) return
+        const confirmed = await confirm({
+            title: `¿Eliminar la técnica "${technique.name}"?`,
+            message: 'Esta acción no se puede deshacer.',
+            confirmLabel: 'Eliminar técnica',
+            isDestructive: true,
+        })
+        if (!confirmed) return
         setSaving(true)
         setError(null)
         const response = await fetch(`/api/dashboard/admin/techniques/${technique.id}`, { method: 'DELETE' })
@@ -350,6 +358,7 @@ export function AdminTechniqueManager({ ranks, techniques, selectedRank = null }
                     technique={assigningTechnique}
                 />
             )}
+            {dialog}
         </main>
     )
 }

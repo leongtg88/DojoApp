@@ -5,6 +5,7 @@ import { ExternalLink, FileUp, FileWarning, LoaderCircle, Trash2 } from 'lucide-
 import { comprimirImagen } from '@/lib/image-compression'
 import { MAX_FILE_SIZE_MB } from '@/lib/file-validation'
 import type { StudentDocumentSummary } from '@/types/dashboard'
+import { useConfirm } from '@/components/dashboard/shared/useConfirm'
 
 interface StudentDocumentsProps {
     documents: StudentDocumentSummary[]
@@ -25,6 +26,7 @@ export function StudentDocuments({ documents, studentId }: StudentDocumentsProps
     const [isPreparing, setIsPreparing] = useState(false)
     const [openingId, setOpeningId] = useState<string | null>(null)
     const [deletingId, setDeletingId] = useState<string | null>(null)
+    const { confirm, dialog } = useConfirm()
     const studentHeader: Record<string, string> = studentId ? { 'X-Student-Id': studentId } : {}
 
     // Comprime/redimensiona la imagen en el navegador para no superar el límite
@@ -76,7 +78,13 @@ export function StudentDocuments({ documents, studentId }: StudentDocumentsProps
 
     async function deleteDocument(documentId: string) {
         const label = documentLabels[items.find((document) => document.id === documentId)?.type ?? 'OTHER']
-        if (!window.confirm(`¿Eliminar ${label}? Esta acción no se puede deshacer.`)) return
+        const confirmed = await confirm({
+            title: `¿Eliminar ${label}?`,
+            message: 'Esta acción no se puede deshacer.',
+            confirmLabel: 'Eliminar documento',
+            isDestructive: true,
+        })
+        if (!confirmed) return
         setError(null); setDeletingId(documentId)
         const query = studentId ? `?documentId=${documentId}&estudiante=${encodeURIComponent(studentId)}` : `?documentId=${documentId}`
         const response = await fetch(`/api/dashboard/student/documents${query}`, { method: 'DELETE', headers: studentHeader })
@@ -93,5 +101,6 @@ export function StudentDocuments({ documents, studentId }: StudentDocumentsProps
         <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-semibold uppercase tracking-wide text-accent">Expediente seguro</p><h2 className="mt-1 font-display text-lg font-bold text-ink">Documentos de identidad</h2></div><span className="text-xs font-semibold text-ink-3">{items.length} archivo{items.length === 1 ? '' : 's'}</span></div>
         {items.length === 0 ? <p className="mt-5 rounded-md border border-dashed border-edge-strong bg-surface-1 p-4 text-xs text-ink-3">Aún no hay documentos asociados a tu expediente.</p> : <ul className="mt-5 divide-y divide-edge rounded-lg border border-edge">{items.map((document) => <li className="flex flex-wrap items-center justify-between gap-3 p-3.5" key={document.id}><div className="min-w-0"><p className="truncate text-sm font-semibold text-ink">{documentLabels[document.type]}</p><p className="mt-1 truncate text-xs text-ink-3">{document.fileName}</p>{document.reviewNotes && <p className="mt-2 text-xs text-danger-text">{document.reviewNotes}</p>}</div><div className="flex items-center gap-2"><span className={`rounded-md border px-2 py-1 text-[10px] font-bold uppercase ${document.status === 'APPROVED' ? 'border-emerald-500/40 bg-emerald-500/15 text-ok-text' : document.status === 'REJECTED' ? 'border-red-500/40 bg-red-500/15 text-danger-text' : 'border-edge-strong bg-surface-1 text-ink-2'}`}>{document.status}</span><button aria-label={`Abrir ${documentLabels[document.type]}`} className="p-2 text-accent hover:text-accent-text disabled:opacity-50" disabled={openingId === document.id || deletingId === document.id} onClick={() => openDocument(document.id)} type="button">{openingId === document.id ? <LoaderCircle className="size-4 animate-spin" /> : <ExternalLink className="size-4" />}</button><button aria-label={`Eliminar ${documentLabels[document.type]}`} className="p-2 text-ink-3 transition-colors hover:text-danger-text disabled:opacity-50" disabled={deletingId === document.id || openingId === document.id} onClick={() => deleteDocument(document.id)} title="Eliminar documento" type="button">{deletingId === document.id ? <LoaderCircle className="size-4 animate-spin" /> : <Trash2 className="size-4" />}</button></div></li>)}</ul>}
         <form className="mt-5 border-t border-edge pt-5" onSubmit={uploadDocument}><h3 className="text-sm font-bold text-ink">Cargar o renovar documento</h3><div className="mt-3 grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"><select className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none focus:border-cyan-500" onChange={(event) => setSelectedType(event.target.value as keyof typeof documentLabels)} value={selectedType}>{Object.entries(documentLabels).map(([type, label]) => <option key={type} value={type}>{label}</option>)}</select><input accept="image/jpeg,image/png,image/webp,application/pdf" className="rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink file:mr-3 file:rounded-md file:border-0 file:bg-cyan-500 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-[#0d1117] outline-none" onChange={handleFileChange} type="file" /><button className="inline-flex items-center justify-center gap-2 rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400 disabled:opacity-60" disabled={isUploading || isPreparing} type="submit">{isUploading ? <LoaderCircle className="size-4 animate-spin" /> : <FileUp className="size-4" />}{isUploading ? 'Cargando...' : 'Cargar'}</button></div><p className="mt-2 inline-flex items-center gap-1.5 text-xs text-ink-4"><FileWarning aria-hidden="true" className="size-3.5 text-accent" />JPG, PNG, WEBP o PDF. Tamaño máximo {MAX_FILE_SIZE_MB} MB.</p>{error && <p className="mt-3 text-sm font-medium text-danger-text">{error}</p>}</form>
+        {dialog}
     </section>
 }

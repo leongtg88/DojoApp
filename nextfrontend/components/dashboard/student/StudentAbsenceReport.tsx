@@ -7,6 +7,7 @@ import type { ClassSchedule, StudentAbsenceJustification } from '@/types/dashboa
 import { WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
 import { formatCalendarDate } from '@/lib/format/datetime'
 import { DatePicker } from '@/components/ui/date-picker'
+import { useConfirm } from '@/components/dashboard/shared/useConfirm'
 
 interface StudentAbsenceReportProps {
   schedule: ClassSchedule[]
@@ -37,6 +38,7 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
   const [date, setDate] = useState(todayValue)
   const [reason, setReason] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { confirm, dialog } = useConfirm()
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [busyId, setBusyId] = useState<string | null>(null)
@@ -78,7 +80,13 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
   }
 
   async function handleDelete(justificationId: string) {
-    if (!window.confirm('¿Quieres retirar este reporte?')) return
+    const confirmed = await confirm({
+      title: '¿Retirar este reporte?',
+      message: 'La falta volverá a contar como inasistencia.',
+      confirmLabel: 'Retirar reporte',
+      isDestructive: true,
+    })
+    if (!confirmed) return
 
     setBusyId(justificationId)
     const response = await fetch(`/api/dashboard/student/absence?id=${justificationId}`, {
@@ -273,6 +281,7 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
           </ul>
         </div>
       )}
+      {dialog}
     </section>
   )
 }
