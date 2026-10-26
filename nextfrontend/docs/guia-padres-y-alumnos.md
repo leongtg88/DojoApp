@@ -20,7 +20,15 @@ Nuestro objetivo es que entrenar sea más fácil y más motivador. Tú entrenas 
 ### 💪 Tus entrenamientos
 - **Asistencia y horas.** Después de cada clase, el **Sensei registra tu asistencia y las horas** en el pase de lista. Tú las ves en tu historial (clase, fecha y horas).
 - **Repeticiones.** Tú marcas **cuántas repeticiones** practicas (en el dojo o en casa) y quedan guardadas al instante.
-- Si faltaste con justificación, ves las **recuperaciones** que tienes pendientes.
+- Si faltaste, puedes **reportar la inasistencia** y ver si está pendiente, justificada o **por reponer**.
+
+### 🔄 Reposición de clases que faltaste
+- **Dos faltas incluidas.** Cada mes tienes **2 faltas incluidas** (justificadas o no). Desde la **3.ª falta del mes**, esa clase se repone.
+- **Cómo se repone.** Asistiendo a **otra clase distinta a la tuya**, en otro horario, o en una **reposición online de 35 minutos** que agenda la administración.
+- **Qué ves en tu historial.** Cada reporte aparece como **Pendiente de revisión**, **Aprobada** o **Rechazada**. Si la falta ya se repuso, ves **Repuesta** con la fecha (y si fue fuera de plazo, se indica).
+- **Costo.** La reposición online puede tener un costo extra: la administración te lo informa **antes** de agendarla.
+- **Cierre del cuatrimestre.** Lo que quede sin reponer al cierre se rige por la política del dojo y puede afectar tu porcentaje de asistencia y tu derecho al examen de grado.
+- **Avisos.** La app te avisa cuando se agenda, se reprograma o se cancela una reposición.
 
 ### 📅 Horario
 - Te recuerda **cuál es tu próxima clase**, qué día y a qué hora.
@@ -61,7 +69,7 @@ Nuestro objetivo es que entrenar sea más fácil y más motivador. Tú entrenas 
 El karate también es cosa de familia. Ustedes pueden tener **su propia cuenta de tutor**: con ella ven el expediente de cada hijo y alternan entre ellos con el selector familiar. Además, pueden **acompañar, seguir y motivar**:
 
 - **Vean el progreso juntos.** Después de entrenar, abran la app y miren cómo va con sus katas y técnicas. Celebren cada avance.
-- **Estén al tanto de la asistencia.** Sepan cuántas clases ha tomado su hijo y si le faltan recuperaciones.
+- **Estén al tanto de la asistencia.** Sepan cuántas clases ha tomado su hijo y si le faltan **reposiciones**.
 - **Prepárense para los exámenes.** La app muestra qué se necesita (asistencia, horas, tiempo en el grado) para presentar el examen. Ayuden a que lo logre.
 - **Apoyen la práctica en casa.** El dojo pide practicar 10 a 15 minutos diarios. En la app pueden ver qué técnicas practicar.
 

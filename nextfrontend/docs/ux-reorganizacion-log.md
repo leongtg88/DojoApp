@@ -30,6 +30,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 |---|---|---|---|---|
 | UX-00 · Línea base | 2026-10-26 | `fd0187a` | ✅ Hecha | — |
 | UX-01 · Constantes de nav y copy | 2026-10-26 | `ux(01): constantes de navegación, estados de reposición y copy` | ✅ Hecha | — |
+| UX-A1 · Unificar glosario | 2026-10-26 | `ux(A1): glosario de reposición en textos visibles y guía` | ✅ Hecha | — |
 
 ---
 
@@ -133,3 +134,52 @@ Comprobaciones hechas al leer el código (no se modifica nada):
 - La guía no fija nombres para la navegación del instructor (modo tatami, UX-B4); se mantienen los actuales en `NAV_LABELS`.
 
 **Revisión humana:** no aplica (UX-01 no está en la lista de la sección 0.7).
+
+---
+
+## UX-A1 · Unificar glosario
+
+- **Fecha:** 2026-10-26
+- **Commit:** `ux(A1): glosario de reposición en textos visibles y guía`
+
+**Archivos:**
+
+| Tipo | Archivo |
+|---|---|
+| Modificado | `components/dashboard/student/StudentAbsenceReport.tsx` |
+| Modificado | `docs/guia-padres-y-alumnos.md` |
+| Modificado | `docs/ux-reorganizacion-log.md` |
+
+**Cambios de texto:**
+
+1. `StudentAbsenceReport`: "Aprobada — pendiente de reponer (asiste a otra clase para **recuperarla**)" → "Aprobada — pendiente de reponer (**repónela en otra clase**)".
+2. Guía, sección "Tus entrenamientos": "Si faltaste con justificación, ves las **recuperaciones** que tienes pendientes" → "Si faltaste, puedes **reportar la inasistencia** y ver si está pendiente, justificada o **por reponer**".
+3. Guía, sección "Para papá y mamá": "si le faltan **recuperaciones**" → "si le faltan **reposiciones**".
+4. Guía: nueva sección "🔄 Reposición de clases que faltaste" (2 faltas incluidas por mes, presencial u online de 35 min, estados reales, costo, cierre de cuatrimestre y avisos).
+
+**Decisiones tomadas y por qué:**
+
+1. **Solo textos visibles.** No se tocó el esquema Prisma ni identificadores (`recoveredById`, `recoveredAt`, `recovered`): el glosario aplica a la interfaz, no al modelo de datos.
+2. **"Recuperación de contraseña/cuenta" se deja como está.** Es otro concepto (acceso a la cuenta) y cambiarlo confundiría. Quedan 6 archivos de auth y un comentario técnico (`purge-enrollments`) que el grep reporta y que se excluyen a propósito.
+3. **La guía no documenta "En revisión" ni "Programada", ni el botón "Solicitar reposición".** Ese flujo es UX-A6 y todavía no existe: documentarlo incumpliría el principio 5 ("nada que prometa lo que el sistema no cumple"). Esta es una desviación consciente del texto literal de la guía y se completa en A6.
+4. **Estados documentados = estados implementados hoy**, verificados en `StudentAbsenceReport`: Pendiente de revisión, Aprobada, Rechazada, Repuesta (con fecha) y "fuera de plazo".
+5. **Datos verificados contra el dominio, no inventados:** `FREE_ABSENCES_PER_MONTH = 2` (`lib/dashboard/absence-policy.ts`), `ONLINE_RECOVERY_MINUTES = 35` (`lib/dashboard/online-recovery.ts`) y notificaciones `ONLINE_RECOVERY_*` (`lib/notifications/types.ts`).
+
+**Pruebas:** no se añadieron tests nuevos porque ningún test afirmaba estos textos (verificado con `grep`). No se creó un guardarraíl de texto fuente porque exigiría una lista de excepciones frágil para auth; la comprobación se hace con el `grep` de la tarea.
+
+**Resultado:**
+
+| Comando | Resultado |
+|---|---|
+| `grep -rni "recuper" app components` (excluyendo auth y prototipos) | ✅ 0 coincidencias |
+| `pnpm lint` | ✅ 0 errores, 34 warnings preexistentes |
+| `pnpm typecheck` | ✅ Sin salida |
+| `pnpm test` | ✅ 54 archivos / 251 tests |
+| `pnpm test:integration` | No aplica: sin cambios en API ni BD |
+| `pnpm test:e2e` | No aplica: solo texto |
+
+**Desviaciones respecto a la guía:** la sección nueva de la guía de padres omite los estados de solicitud (`En revisión`, `Programada`) hasta que exista UX-A6.
+
+**Pendientes o dudas:** en UX-A6 hay que ampliar la sección "Reposición de clases que faltaste" con el botón *Solicitar reposición* y los estados de solicitud.
+
+**Revisión humana:** no aplica.

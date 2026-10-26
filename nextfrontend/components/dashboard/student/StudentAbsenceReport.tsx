@@ -237,7 +237,7 @@ export function StudentAbsenceReport({ schedule, justifications, studentId }: St
                             </p>
                         ) : (
                             <p className="mt-1 flex items-center gap-1 text-[11px] text-info-text">
-                                <Clock className="size-3" aria-hidden="true" />Aprobada — pendiente de reponer (asiste a otra clase para recuperarla)
+                                <Clock className="size-3" aria-hidden="true" />Aprobada — pendiente de reponer (repónela en otra clase)
                             </p>
                         )
                     )}
