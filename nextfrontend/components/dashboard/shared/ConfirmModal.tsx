@@ -1,6 +1,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
+import { COPY } from '@/lib/ui/copy'
 
 export interface ConfirmModalProps {
     open: boolean
@@ -31,7 +32,7 @@ export function ConfirmModal({ open, title, message, confirmLabel, isDestructive
                 {children && <div className="border-t border-edge px-5 py-4">{children}</div>}
                 <div className="flex items-center justify-end gap-2.5 border-t border-edge px-5 py-3.5">
                     <button type="button" onClick={onCancel} className="rounded-md border border-edge-strong bg-surface-1 px-4 py-2 text-xs font-semibold text-ink-2 hover:bg-surface-3 hover:text-ink">
-                        Cancelar
+                        {COPY.actions.cancel}
                     </button>
                     <button type="button" onClick={onConfirm} className={`rounded-md px-4 py-2 text-xs font-semibold text-white ${isDestructive ? 'bg-red-600 hover:bg-red-500' : 'bg-cyan-500 hover:bg-cyan-400 text-[#0d1117]'}`}>
                         {confirmLabel}
