@@ -83,7 +83,7 @@ export default function Navbar() {
           )}
           <NavLink
             aria-label="Iniciar sesión"
-            className={`flex size-11 items-center justify-center  ${pathname === '/login' ? ' text-black' : 'text-gray-600  hover:text-brand-accent'}`}
+            className={`flex size-8 items-center justify-center  ${pathname === '/login' ? ' text-black' : 'text-gray-600  hover:text-brand-accent'}`}
             href="/login"
             title="Iniciar sesión"
           >
@@ -91,13 +91,13 @@ export default function Navbar() {
           </NavLink>
           <button
             onClick={() => handleOpenEnrollment('adult')}
-            className="hidden min-[1200px]:flex items-center gap-2 rounded-lg border border-brand-accent/40 px-3 py-2 text-[10px] font-bold uppercase tracking-wide text-brand-accent transition-colors hover:bg-brand-accent hover:text-black active:scale-95 whitespace-nowrap"
+            className="hidden min-[1200px]:flex bg-brand-accent/10 border border-brand-accent/20 hover:bg-brand-accent hover:text-black text-brand-accent font-bold px-2.5 sm:px-4 py-2 rounded-xl text-[10px] sm:text-xs transition-all cursor-pointer active:scale-95 uppercase tracking-wide whitespace-nowrap"
           >
-            Clase de prueba
+            CLASE DEMO GRATIS
           </button>
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="flex size-11 items-center justify-center rounded-lg text-gray-700 hover:text-brand-accent cursor-pointer focus:outline-none min-[1200px]:hidden"
+            className="text-gray-700 hover:text-brand-accent p-2 rounded-lg cursor-pointer focus:outline-none min-[1200px]:hidden"
             aria-label="Menú principal"
             title="Menú principal"
           >
@@ -186,7 +186,7 @@ export default function Navbar() {
                 <button
                   onClick={() => handleOpenEnrollment('adult')}
                   className="block w-full text-center text-gray-700 text-sm font-semibold 2xl:text-base cursor-pointer">
-                  RESERVAR CLASE DE PRUEBA
+                  RESERVAR CLASE DEMO
                 </button>
               </div>
               <p className="text-[10px] pt-4 text-gray-700/40 text-center">Primer entrenamiento gratuito sin compromiso de pago.</p>

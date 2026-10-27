@@ -48,7 +48,7 @@ function AssistantChatInner() {
             <h2 className="font-semibold text-sm text-white">Asistente Tosei Gusoku</h2>
             <p className="flex items-center gap-1.5 text-xs text-gray-400">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-500" />
-              Online · Consulta información o habla con el Sensei
+              Online - Consulta información,<br></br> sino habla con Sensei
             </p>
           </div>
           <button

@@ -247,14 +247,6 @@
   color: #1a1a1a;
 }
 
-/*
- * UX-A8 · CTA secundario del sitio público. Deliberadamente más discreto que
- * `.hero-button`: una sola acción dominante por pantalla.
- */
-.cta-secondary {
-  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-gray-700/40 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-gray-700 transition-colors duration-300 cursor-pointer hover:border-gray-700 hover:bg-gray-700 hover:text-white;
-}
-
 /* Custom scrollbar (colores por tema) */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--dash-scrollbar-track); }

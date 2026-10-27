@@ -35,7 +35,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-A2 · Eliminar la confirmación nativa | 2026-10-26 | `ux(A2): ConfirmModal accesible en las 14 confirmaciones` | ✅ Hecha | — |
 | UX-A3 · EmptyState y aplicación | 2026-10-26 | `ux(A3): EmptyState único en 17 estados vacíos` | ✅ Hecha | — |
 | UX-A4 · Selector familiar único | 2026-10-26 | `ux(A4): un solo selector familiar en el encabezado` | ✅ Hecha | — |
-| UX-A8 · Embudo público con un CTA | 2026-10-26 | `ux(A8): un CTA principal en las páginas públicas` | ✅ Hecha (sin eventos) | — |
+| UX-A8 · Embudo público con un CTA | 2026-10-26 | `ux(A8): un CTA principal en las páginas públicas` | ↩️ Revertida (2026-10-27) | — |
 | 🚦 GATE 1 · Prueba base | — | — | ⏳ Pendiente (León) | — |
 | UX-A5a · `getPrimaryAction` | 2026-10-26 | `ux(A5a): función getPrimaryAction` | ✅ Hecha | — |
 | UX-A5b · Nuevo Inicio del alumno | 2026-10-26 | `ux(A5b): nuevo Inicio del alumno` | ✅ Hecha (sin eventos) | — |
@@ -45,6 +45,8 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-B6 · Asistencia del admin en pestañas | 2026-10-27 | `ux(B6): asistencia del admin en pestañas` | ✅ Hecha | — |
 
 **Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
+
+**Nota de alcance (UX-A8).** El 2026-10-27 León decidió que ningún cambio de la reorganización toque la página web pública: todo el trabajo va a los dashboards. Se restauraron a producción `Hero5`, `HomeView`, `Navbar`, `AboutView`, `AssistantChat`, `AuthSidePanel` y `app/globals.css`, y se eliminó `tests/component/public-cta.test.tsx`. Detalle en la entrada "Reversión de la web pública" al final del documento.
 
 ---
 
@@ -879,3 +881,14 @@ El filtro de clase/fecha (`AdminExpectedControls`) queda encima de las pestañas
 
 - Persistir la pestaña activa en la URL (`?tab=`), si el dry-run de León lo pide.
 - Revisar el copy de la pestaña “Auditoría” con datos reales (hoy muestra el listado esperado + registros globales).
+
+---
+
+## Reversión de la web pública (2026-10-27)
+
+- **Decisión:** la reorganización UX/UI se limita a los dashboards. La página web pública debe quedar igual que en producción.
+- **Origen:** cambios públicos introducidos por `802348b` (UX-A8) y `1b38696` (iconos de 44 px del Navbar, fondo del login).
+- **Restaurados desde `origin/main`:** `components/Hero5.tsx`, `components/HomeView.tsx`, `components/Navbar.tsx`, `components/AboutView.tsx`, `components/assistant/AssistantChat.tsx`, `components/auth/AuthSidePanel.tsx`, `app/globals.css`.
+- **Eliminado:** `tests/component/public-cta.test.tsx` (probaba el CTA nuevo del hero).
+- **Se conserva:** `app/layout.tsx` con `data-scroll-behavior="smooth"` (no visual; evita un aviso de Next). Todo el código de dashboards queda intacto.
+- **Verificación:** `git diff origin/main -- <archivos públicos>` vacío. `pnpm lint` ✅ 0 errores / 35 warnings preexistentes; `pnpm typecheck` ✅ sin salida; `pnpm test` ✅ 60 archivos / **286 tests** (bajan 2 al eliminar el test del CTA).
