@@ -43,6 +43,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-B4 · Instructor: modo tatami | 2026-10-27 | `ux(B4): modo tatami del instructor` | ✅ Hecha | — |
 | UX-B5 · Admin en 5 secciones y bandeja Hoy | 2026-10-27 | `ux(B5): admin en 5 secciones y bandeja Hoy` | ✅ Hecha | ⏳ Pendiente (León) |
 | UX-B6 · Asistencia del admin en pestañas | 2026-10-27 | `ux(B6): asistencia del admin en pestañas` | ✅ Hecha | — |
+| UX-B8 · Alumnos: una ruta, dos modos | 2026-10-27 | `ux(B8): workspace de alumnos con detalle inline` | ✅ Hecha | — |
 
 **Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
 
@@ -892,3 +893,59 @@ El filtro de clase/fecha (`AdminExpectedControls`) queda encima de las pestañas
 - **Eliminado:** `tests/component/public-cta.test.tsx` (probaba el CTA nuevo del hero).
 - **Se conserva:** `app/layout.tsx` con `data-scroll-behavior="smooth"` (no visual; evita un aviso de Next). Todo el código de dashboards queda intacto.
 - **Verificación:** `git diff origin/main -- <archivos públicos>` vacío. `pnpm lint` ✅ 0 errores / 35 warnings preexistentes; `pnpm typecheck` ✅ sin salida; `pnpm test` ✅ 60 archivos / **286 tests** (bajan 2 al eliminar el test del CTA).
+
+---
+
+## UX-B8 · Alumnos: una ruta canónica, dos modos
+
+- **Fecha:** 2026-10-27
+- **Commit:** `ux(B8): workspace de alumnos con detalle inline`
+
+**Archivos:**
+
+| Tipo | Archivo |
+|---|---|
+| Nuevo | `components/dashboard/admin/AdminStudentsWorkspace.tsx` |
+| Nuevo | `components/common/SlideOver.tsx` |
+| Nuevo | `tests/component/slide-over.test.tsx` |
+| Modificado | `app/(dashboard)/admin/alumnos/page.tsx` |
+| Modificado | `components/dashboard/admin/AdminStudents.tsx` |
+| Modificado | `tests/component/admin-students.test.tsx` |
+
+**Cómo queda:**
+
+| Ruta | Modo |
+|---|---|
+| `/admin/alumnos` | Padrón + **expediente inline** a la derecha en escritorio; **SlideOver** en móvil. Selección en `?selected=ID` |
+| `/admin/alumnos/[studentId]` | Página completa del expediente (sin cambios) |
+| `/admin/alumnos/detalle` | **Se queda exactamente como está** (ver decisión 5) |
+
+**Decisiones tomadas y por qué:**
+
+1. **`AdminStudents` gana `embedded`, `selectedId` y `onSelect`.** En escritorio la fila es clicable y resalta la selección; la celda de acciones detiene la propagación para que editar/borrar/invitar sigan funcionando. El nombre sigue enlazando a la página completa.
+2. **La navegación usa `?selected=` con `router.push(..., { scroll: false })`.** Next conserva el componente cliente, así que la búsqueda, los filtros y el scroll del padrón se mantienen. Verificado: tras seleccionar con “Juan” en el buscador, el valor sigue ahí.
+3. **Móvil conserva la expansión de la fila** (con sus acciones) y añade **“Ver expediente completo”**, que abre el `SlideOver`. Así no se pierden editar/borrar/invitar en pantallas pequeñas.
+4. **`SlideOver` se crea ahora** (dependencia de UX-B0): foco atrapado, `Esc`, retorno de foco y 44 px.
+5. **No se elimina `AdminStudentDetailExplorer` ni se toca `/admin/alumnos/detalle`.** Instrucción expresa de León: por ahora se queda como está. Si más adelante se retira, irá en un **commit aparte** y con revisión previa.
+6. **No se toca la web pública.** El 2026-10-27 León revirtió A8 y los ajustes públicos (`63f3c07`); esta tarea es solo dashboard.
+
+**Pruebas:**
+
+| Comando | Resultado |
+|---|---|
+| `pnpm lint` | ✅ 0 errores, 35 warnings preexistentes |
+| `pnpm typecheck` | ✅ Sin salida |
+| `pnpm test` | ✅ 61 archivos / **291 tests** |
+| `pnpm test:integration` | No aplica: sin cambios de API ni BD |
+| Smoke admin (Playwright, entorno aislado) | ✅ Escritorio: clic en fila → `?selected=`, detalle visible, búsqueda “Juan” preservada, segunda fila cambia el detalle. Móvil: expandir → “Ver expediente completo” → SlideOver; `Esc` cierra |
+
+**Desviaciones respecto a la guía:**
+
+- La ruta antigua `detalle` **no** redirige todavía (decisión 5). El quick browse sigue accesible y funcionando.
+- El console del smoke muestra el error de CSP de `picsum.photos` del **login público revertido**; no viene de B8 y no se toca.
+
+**Pendientes o dudas:**
+
+- Revisión visual del workspace en 1280–1440 px: el padrón tiene `min-w-[1024px]` y en la columna izquierda hace scroll horizontal. Si molesta, en B8b se compactan columnas.
+- Retirar `AdminStudentDetailExplorer` y redirigir `detalle` queda para un commit aparte, cuando León lo apruebe.
+- Enlace “Ver expediente completo” también podría añadirse en la tabla de escritorio (hoy el nombre ya lleva a la página completa).
