@@ -13,6 +13,11 @@ export function StudentGreeting({ profile }: StudentGreetingProps) {
                 <p className="text-[11px] font-bold uppercase tracking-widest text-accent">Portal del estudiante</p>
                 <h1 className="mt-2 font-display text-2xl font-extrabold text-ink sm:text-3xl">{saludo}, {profile.firstName}</h1>
                 <p className="mt-2 text-xs text-ink-3">Sigue tu avance marcial y mantente preparado para el próximo entrenamiento.</p>
+                {profile.currentRank?.name && (
+                    <span className="mt-3 inline-flex items-center rounded-full border border-edge-strong bg-surface-2 px-2.5 py-1 text-[11px] font-bold text-ink-2">
+                        Cinturón {profile.currentRank.name}
+                    </span>
+                )}
             </div>
         </section>
     )

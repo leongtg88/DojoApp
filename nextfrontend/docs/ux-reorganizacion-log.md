@@ -37,6 +37,8 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-A4 · Selector familiar único | 2026-10-26 | `ux(A4): un solo selector familiar en el encabezado` | ✅ Hecha | — |
 | UX-A8 · Embudo público con un CTA | 2026-10-26 | `ux(A8): un CTA principal en las páginas públicas` | ✅ Hecha (sin eventos) | — |
 | 🚦 GATE 1 · Prueba base | — | — | ⏳ Pendiente (León) | — |
+| UX-A5a · `getPrimaryAction` | 2026-10-26 | `ux(A5a): función getPrimaryAction` | ✅ Hecha | — |
+| UX-A5b · Nuevo Inicio del alumno | 2026-10-26 | `ux(A5b): nuevo Inicio del alumno` | ✅ Hecha (sin eventos) | — |
 
 **Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
 
@@ -554,3 +556,92 @@ Capturas y resultados: `C:\Users\ASUS\AppData\Local\Temp\opencode\dojo-review-sh
 - Citas textuales más útiles (máximo 5).
 
 **Nota:** este mismo guion se repite en el Gate 2 para comparar. No se modifica entre ambos.
+
+---
+
+## UX-A5a · Función `getPrimaryAction`
+
+- **Fecha:** 2026-10-26
+- **Commit:** `ux(A5a): función getPrimaryAction`
+
+**Archivos:**
+
+| Tipo | Archivo |
+|---|---|
+| Nuevo | `lib/dashboard/primary-action.ts` |
+| Nuevo | `tests/unit/primary-action.test.ts` |
+| Modificado | `lib/dashboard/schedule-utils.ts` (exporta `santoDomingoWeekdayAndMinutes` y `timeToMinutes`) |
+
+**Decisión:**
+
+Función pura, sin React ni Prisma. Recibe `now`, `classes`, `pendingRecoveries` y `focusTechniqueName`, y devuelve una unión discriminada: `class_today` → `recovery` → `practice` → `welcome`.
+
+- **Zona horaria:** "hoy" se resuelve con `santoDomingoWeekdayAndMinutes` (América/Santo_Domingo), no con la hora local del servidor. INV-01.
+- Una clase **en curso** sigue contando; una **terminada** no.
+- Si hay clase hoy y faltas pendientes, gana la clase (prioridad de la guía).
+- Los hrefs no viven aquí: los decide el componente, para mantener la función pura.
+
+**Pruebas (10):** los 4 casos, empate clase + reposición, clase en curso, clase terminada, varias clases hoy, clase de otro día, cambio de día a las 21:00 RD (01:00 UTC) y entradas inválidas.
+
+**Resultado:** lint ✅, typecheck ✅, tests ✅.
+
+---
+
+## UX-A5b · Nuevo Inicio del alumno
+
+- **Fecha:** 2026-10-26
+- **Commit:** `ux(A5b): nuevo Inicio del alumno`
+
+**Archivos:**
+
+| Tipo | Archivo |
+|---|---|
+| Nuevo | `components/dashboard/student/PrimaryActionCard.tsx` |
+| Nuevo | `tests/component/primary-action-card.test.tsx` |
+| Modificado | `components/dashboard/student/StudentDashboardOverview.tsx` |
+| Modificado | `components/dashboard/student/StudentGreeting.tsx` (badge de cinturón) |
+| Modificado | `components/dashboard/student/FocusTechniquesList.tsx` (`limit`) |
+| Modificado | `tests/component/student-dashboard-overview.test.tsx` |
+| **Eliminado** | `components/dashboard/student/NextClassCard.tsx` |
+
+**Orden nuevo del Inicio:**
+
+1. Saludo + cinturón actual.
+2. **Una sola tarjeta de acción principal** (`PrimaryActionCard`).
+3. Máximo **3 técnicas en foco**.
+4. Aviso de reposición pendiente **solo si la acción principal no es ya la reposición** (sin duplicar).
+5. Camino al próximo cinturón (`MartialGradeCard` + Budo Pass).
+6. **“Más detalles”** plegado: métricas, cumpleaños y criterios de examen.
+
+**Decisiones tomadas y por qué:**
+
+1. **Sin consultas nuevas.** `kataSummary.grado.pendingRecoveries` ya trae las faltas por reponer; no hizo falta añadir la consulta pesada que había previsto el plan.
+2. **`NextClassCard` se elimina**, no se deja al lado: su contenido pasa a la acción principal y dejarlo sería código muerto.
+3. **Hidratación resuelta en la tarjeta cliente.** `PrimaryActionCard` espera a `useNow()` y muestra un esqueleto con la misma altura; el servidor y el primer render del cliente coinciden.
+4. **La presentación se separa de la decisión** (`PrimaryActionView` exportada), para poder probar las 4 variantes con datos fijos sin depender del reloj.
+5. **Los enlaces conservan el contexto familiar** (`?estudiante=…`) con `studentHref`.
+
+**Pruebas (8 de componente + ajuste del overview):** las 4 variantes, singular/plural de reposición, aviso sin duplicar, contexto familiar, “Más detalles” cerrado por defecto.
+
+**Resultado:**
+
+| Comando | Resultado |
+|---|---|
+| `pnpm lint` | ✅ 0 errores, 35 warnings preexistentes |
+| `pnpm typecheck` | ✅ Sin salida |
+| `pnpm test` | ✅ 59 archivos / **281 tests** |
+| `pnpm test:integration` | No aplica: sin cambios de API ni BD |
+| `pnpm test:e2e` | Pendiente: conviene el pase visual del nuevo Inicio |
+
+**Desviaciones respecto a la guía:**
+
+- **Gate 1 no ejecutado todavía.** Decisión de León: priorizar la parte visual. El “antes” no se pierde: la app previa sigue en `main` y el Gate 1 puede correrse después sobre ese checkout con el entorno aislado.
+- Los eventos `view_inicio` y `click_primary_action` quedan para UX-A7a.
+
+**Pendientes o dudas:**
+
+- El enlace de “Registrar repeticiones” apunta a Asistencia porque el registro aún vive ahí; se moverá a Entrenar en UX-B2.
+- “Resolver” apunta a Asistencia hasta que exista el hub de UX-B3.
+- Verificación visual en 375 px del nuevo Inicio antes del Gate 1.
+
+**Revisión humana:** no aplica.

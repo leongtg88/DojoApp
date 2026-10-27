@@ -7,10 +7,13 @@ import { EmptyState } from '@/components/common/EmptyState'
 interface FocusTechniquesListProps {
     techniques: StudentTechnique[]
     studentId?: string
+    /** Máximo de técnicas a mostrar (el Inicio muestra 2–3). */
+    limit?: number
 }
 
-export function FocusTechniquesList({ techniques, studentId }: FocusTechniquesListProps) {
-    const displayTechniques = techniques.filter(({ status }) => status !== 'APPROVED')
+export function FocusTechniquesList({ techniques, studentId, limit }: FocusTechniquesListProps) {
+    const pendingTechniques = techniques.filter(({ status }) => status !== 'APPROVED')
+    const displayTechniques = limit ? pendingTechniques.slice(0, limit) : pendingTechniques
 
     return (
         <section className="rounded-lg border border-edge bg-surface-2 shadow-sm">

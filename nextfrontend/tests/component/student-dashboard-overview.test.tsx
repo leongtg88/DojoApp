@@ -16,8 +16,21 @@ describe('F4-01 · resumen del alumno', () => {
     expect(screen.getByRole('heading', { name: /Bienvenida, Ana/ })).toBeInTheDocument()
     expect(screen.getAllByText('Blanco').length).toBeGreaterThan(0)
     expect(screen.getByText(/Budo Pass/i)).toBeInTheDocument()
-    expect(screen.getByText(/Próxima clase/i)).toBeInTheDocument()
+    expect(screen.getByTestId('primary-action-card')).toBeInTheDocument()
     expect(screen.getAllByText(/Kata Ichi/).length).toBeGreaterThan(0)
+  })
+
+  it('deja los secundarios plegados en "Más detalles"', () => {
+    render(
+      <StudentDashboardOverview
+        summary={summary({ techniques: [technique({ id: 't1', name: 'Kata Ichi', status: 'PENDING' })] })}
+        kataSummary={kataSummary()}
+      />,
+    )
+
+    const details = screen.getByText('Más detalles').closest('details')
+    expect(details).not.toHaveAttribute('open')
+    expect(screen.getAllByText(/Cumpleaños/i).length).toBeGreaterThan(0)
   })
 
   it('sin técnicas en enfoque informa que no hay pendientes', () => {
