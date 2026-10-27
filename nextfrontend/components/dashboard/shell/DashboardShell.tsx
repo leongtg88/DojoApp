@@ -101,7 +101,7 @@ export function DashboardShell({ children, roles, primaryRole, userName, pending
 
             <div className="flex w-full flex-1">
                 <DashboardSidebar onSignOut={handleSignOut} activeRole={activeRole} roles={roles} userName={userName} pendingEnrollmentCount={pendingEnrollmentCount} newStudentCount={newStudentCount} />
-                <div className="min-w-0 flex-1 overflow-x-clip">{children}</div>
+                <div className="min-w-0 flex-1 overflow-x-clip pb-20 md:pb-0">{children}</div>
             </div>
 
             <MobileDashboardNav activeRole={activeRole} pendingEnrollmentCount={pendingEnrollmentCount} newStudentCount={newStudentCount} />

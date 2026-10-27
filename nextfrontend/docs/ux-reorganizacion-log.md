@@ -698,7 +698,9 @@ Función pura, sin React ni Prisma. Recibe `now`, `classes`, `pendingRecoveries`
 | `pnpm typecheck` | ✅ Sin salida |
 | `pnpm test` | ✅ 59 archivos / **281 tests** |
 | `pnpm test:integration` | No aplica: sin cambios de API ni BD |
-| `pnpm test:e2e` | Actualizado a las rutas nuevas; pendiente de ejecutar con servidor y BD |
+| `pnpm test:e2e` | Smoke con Playwright en entorno aislado: Inicio, Entrenar, Clases, Progreso y Perfil cargan; `/asistencia` y `/horario` redirigen a `/clases`; 0 errores de consola |
+
+**Ajuste posterior:** la barra inferior móvil es fija y podía tapar el final del contenido; el contenedor del shell ahora reserva `pb-20` en móvil (`fix(front): espacio para la barra inferior móvil`).
 
 **Desviaciones respecto a la guía:**
 
