@@ -36,6 +36,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-A3 · EmptyState y aplicación | 2026-10-26 | `ux(A3): EmptyState único en 17 estados vacíos` | ✅ Hecha | — |
 | UX-A4 · Selector familiar único | 2026-10-26 | `ux(A4): un solo selector familiar en el encabezado` | ✅ Hecha | — |
 | UX-A8 · Embudo público con un CTA | 2026-10-26 | `ux(A8): un CTA principal en las páginas públicas` | ✅ Hecha (sin eventos) | — |
+| 🚦 GATE 1 · Prueba base | — | — | ⏳ Pendiente (León) | — |
 
 **Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
 
@@ -511,3 +512,45 @@ pnpm dev --port 3100   # con las variables sobrescritas solo en ese proceso
 Capturas y resultados: `C:\Users\ASUS\AppData\Local\Temp\opencode\dojo-review-shots`.
 
 **Resultado:** lint ✅ (0 errores), typecheck ✅, **263 tests** ✅. Sin cambios de esquema, sin migraciones y sin tocar la base real.
+
+---
+
+## 🚦 Gate 1 — Prueba base (pendiente)
+
+> Guion completo y reglas del moderador: `docs/gate-1-guion.md`.
+> **UX-A5a y UX-A5b no empiezan hasta que esta sección tenga resultados.**
+
+**Estado:** ⏳ Pendiente de ejecutar por León (5 sesiones: 3 alumnos, 1 tutor, 1 instructor).
+**Se ejecuta sobre:** la app actual (esta rama), antes de tocar el Inicio.
+
+### Resultados por participante
+
+| Participante | Tarea | Éxito (sí / ayuda / no) | Tiempo (s) | Errores / dónde buscó | Frase textual |
+|---|---|---|---|---|---|
+| Alumno 1 | 1 · Próxima clase | | | | |
+| Alumno 1 | 2 · Reportar inasistencia | | | | |
+| Alumno 1 | 3 · Faltas por reponer | | | | |
+| Alumno 1 | 4 · Registrar práctica | | | | |
+| Alumno 1 | 5 · Próximo cinturón | | | | |
+| Alumno 2 | 1–5 | | | | |
+| Alumno 3 | 1–5 | | | | |
+| Tutor 1 | Cambiar de vista | | | | |
+| Tutor 1 | Reportar falta del hijo | | | | |
+| Instructor 1 | Pasar lista | | | | |
+| Instructor 1 | Evaluar técnica | | | | |
+
+### Los 3 problemas más graves
+
+| # | Problema | Decisión (A5b / B1 / aceptar) |
+|---|---|---|
+| 1 | | |
+| 2 | | |
+| 3 | | |
+
+### Comparación
+
+- Tareas completadas **sin ayuda / con ayuda / no** por tarea.
+- Tiempo mediano por tarea.
+- Citas textuales más útiles (máximo 5).
+
+**Nota:** este mismo guion se repite en el Gate 2 para comparar. No se modifica entre ambos.
