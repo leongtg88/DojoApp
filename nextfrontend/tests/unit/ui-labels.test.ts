@@ -43,7 +43,13 @@ describe('UX-01 · navegación', () => {
             NAV_LABELS.perfil,
             NAV_LABELS.seguridad,
         ])
-        expect(getRoleNavigation('SCHOOL_ADMIN').map((item) => item.label)).toContain(NAV_LABELS.alumnos)
+        expect(getRoleNavigation('SCHOOL_ADMIN').filter((item) => !item.hideInBottomNav).map((item) => item.label)).toEqual([
+            NAV_LABELS.hoy,
+            NAV_LABELS.alumnos,
+            NAV_LABELS.operacion,
+            NAV_LABELS.configuracion,
+            NAV_LABELS.comunicacion,
+        ])
     })
 })
 

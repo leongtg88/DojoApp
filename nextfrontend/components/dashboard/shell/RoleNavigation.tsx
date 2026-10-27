@@ -2,19 +2,14 @@
 
 import {
     BookOpenCheck,
-    CalendarClock,
     CalendarDays,
     ClipboardCheck,
-    Clock3,
-    FileSearch,
     Fingerprint,
     GraduationCap,
     LayoutDashboard,
     ListChecks,
     MessageCircle,
-    Newspaper,
     Repeat,
-    Star,
     Users,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -59,44 +54,28 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/ajustes', label: NAV_LABELS.seguridad, icon: Fingerprint, hideInBottomNav: true },
     ],
     SCHOOL_ADMIN: [
-        // Barra inferior móvil: Resumen, Alumnos, Asistencia, Grados y katas y Mensajes.
-        // El resto (con `hideInBottomNav`) sigue disponible en el sidebar.
-        { href: '/dashboard/admin', label: NAV_LABELS.resumen, icon: LayoutDashboard },
+        // UX-B5 · Cinco secciones. Las pantallas concretas viven en los hubs
+        // de Operación, Configuración y Comunicación.
+        { href: '/dashboard/admin', label: NAV_LABELS.hoy, icon: LayoutDashboard },
         { href: '/dashboard/admin/alumnos', label: NAV_LABELS.alumnos, icon: Users },
-        { href: '/dashboard/admin/alumnos/detalle', label: NAV_LABELS.detallesAlumno, icon: FileSearch, hideInBottomNav: true },
-        { href: '/dashboard/admin/inscripciones', label: NAV_LABELS.inscripciones, icon: ClipboardCheck, hideInBottomNav: true },
-        { href: '/dashboard/admin/planes', label: NAV_LABELS.planes, icon: ListChecks, hideInBottomNav: true },
-        { href: '/dashboard/admin/horarios', label: NAV_LABELS.horarios, icon: CalendarDays, hideInBottomNav: true },
-        { href: '/dashboard/admin/calendario', label: NAV_LABELS.calendario, icon: CalendarClock, hideInBottomNav: true },
-        { href: '/dashboard/admin/balance', label: NAV_LABELS.balanceDeHoras, icon: Clock3, hideInBottomNav: true },
-        { href: '/dashboard/admin/asistencia', label: NAV_LABELS.asistencia, icon: CalendarDays },
-        { href: '/dashboard/admin/grados-y-katas', label: NAV_LABELS.gradosYKatas, icon: GraduationCap },
-        { href: '/dashboard/admin/mensajes', label: NAV_LABELS.mensajes, icon: MessageCircle },
-        { href: '/dashboard/admin/reviews', label: NAV_LABELS.resenas, icon: Star, hideInBottomNav: true },
-        { href: '/dashboard/admin/blog', label: NAV_LABELS.blog, icon: Newspaper, hideInBottomNav: true },
+        { href: '/dashboard/admin/operacion', label: NAV_LABELS.operacion, icon: ClipboardCheck },
+        { href: '/dashboard/admin/configuracion', label: NAV_LABELS.configuracion, icon: ListChecks },
+        { href: '/dashboard/admin/comunicacion', label: NAV_LABELS.comunicacion, icon: MessageCircle },
         { href: '/dashboard/ajustes', label: NAV_LABELS.seguridad, icon: Fingerprint, hideInBottomNav: true },
     ],
     SUPERADMIN: [
-        { href: '/dashboard/admin', label: NAV_LABELS.resumen, icon: LayoutDashboard },
+        { href: '/dashboard/admin', label: NAV_LABELS.hoy, icon: LayoutDashboard },
         { href: '/dashboard/admin/alumnos', label: NAV_LABELS.alumnos, icon: Users },
-        { href: '/dashboard/admin/alumnos/detalle', label: NAV_LABELS.detallesAlumno, icon: FileSearch, hideInBottomNav: true },
-        { href: '/dashboard/admin/inscripciones', label: NAV_LABELS.inscripciones, icon: ClipboardCheck, hideInBottomNav: true },
-        { href: '/dashboard/admin/planes', label: NAV_LABELS.planes, icon: ListChecks, hideInBottomNav: true },
-        { href: '/dashboard/admin/horarios', label: NAV_LABELS.horarios, icon: CalendarDays, hideInBottomNav: true },
-        { href: '/dashboard/admin/calendario', label: NAV_LABELS.calendario, icon: CalendarClock, hideInBottomNav: true },
-        { href: '/dashboard/admin/balance', label: NAV_LABELS.balanceDeHoras, icon: Clock3, hideInBottomNav: true },
-        { href: '/dashboard/admin/asistencia', label: NAV_LABELS.asistencia, icon: CalendarDays },
-        { href: '/dashboard/admin/grados-y-katas', label: NAV_LABELS.gradosYKatas, icon: GraduationCap },
-        { href: '/dashboard/admin/mensajes', label: NAV_LABELS.mensajes, icon: MessageCircle },
-        { href: '/dashboard/admin/reviews', label: NAV_LABELS.resenas, icon: Star, hideInBottomNav: true },
-        { href: '/dashboard/admin/blog', label: NAV_LABELS.blog, icon: Newspaper, hideInBottomNav: true },
+        { href: '/dashboard/admin/operacion', label: NAV_LABELS.operacion, icon: ClipboardCheck },
+        { href: '/dashboard/admin/configuracion', label: NAV_LABELS.configuracion, icon: ListChecks },
+        { href: '/dashboard/admin/comunicacion', label: NAV_LABELS.comunicacion, icon: MessageCircle },
         { href: '/dashboard/ajustes', label: NAV_LABELS.seguridad, icon: Fingerprint, hideInBottomNav: true },
     ],
 }
 
 export function getRoleNavigation(role: DashboardRole, pendingEnrollmentCount = 0, newStudentCount = 0) {
     return navigationByRole[role].map((item) => {
-        if (item.href === '/dashboard/admin/inscripciones' && pendingEnrollmentCount > 0) {
+        if (item.href === '/dashboard/admin' && pendingEnrollmentCount > 0) {
             return { ...item, badge: pendingEnrollmentCount }
         }
         if (item.href === '/dashboard/admin/alumnos' && newStudentCount > 0) {

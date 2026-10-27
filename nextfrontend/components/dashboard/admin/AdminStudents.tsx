@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { Award, BookOpenCheck, CalendarDays, Check, ChevronDown, FileSpreadsheet, FileText, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
+import { Award, BookOpenCheck, CalendarDays, Check, ChevronDown, ClipboardCheck, FileSpreadsheet, FileText, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
 import { ConfirmModal } from '../shared/ConfirmModal'
 import { InvitationLinkModal } from './InvitationLinkModal'
@@ -663,6 +663,10 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 					<p className="mt-2 text-xs text-ink-3">Padrón, matrículas, progreso técnico y altas/bajas dentro de tu escuela.</p>
 				</div>
 				<div className="flex flex-wrap items-center gap-2 self-start">
+					<Link className="inline-flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-surface-3" href="/dashboard/admin/inscripciones">
+						<ClipboardCheck aria-hidden="true" className="size-4" />
+						Inscripciones
+					</Link>
 					<button type="button" aria-label="Exportar Excel" onClick={() => handleActionClick('export', handleExport)} disabled={isExporting || students.length === 0} className="inline-flex items-center gap-2 rounded-md border border-edge-strong bg-surface-1 px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-surface-3 hover:text-ink disabled:opacity-50">
 						{isExporting ? <Loader2 aria-hidden="true" className="size-4 animate-spin" /> : <FileSpreadsheet aria-hidden="true" className="size-4" />}
 						<span className={expandedAction === 'export' ? 'inline' : 'hidden sm:inline'}>{isExporting ? 'Exportando…' : 'Exportar Excel'}</span>

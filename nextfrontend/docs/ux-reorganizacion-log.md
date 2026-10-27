@@ -41,6 +41,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-A5b · Nuevo Inicio del alumno | 2026-10-26 | `ux(A5b): nuevo Inicio del alumno` | ✅ Hecha (sin eventos) | — |
 | UX-B1 · Navegación de 5 destinos | 2026-10-26 | `ux(B1): navegación de 5 destinos y rutas Clases/Entrenar` | ✅ Hecha | ⏳ Pendiente (León) |
 | UX-B4 · Instructor: modo tatami | 2026-10-27 | `ux(B4): modo tatami del instructor` | ✅ Hecha | — |
+| UX-B5 · Admin en 5 secciones y bandeja Hoy | 2026-10-27 | `ux(B5): admin en 5 secciones y bandeja Hoy` | ✅ Hecha | ⏳ Pendiente (León) |
 
 **Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
 
@@ -763,3 +764,64 @@ Función pura, sin React ni Prisma. Recibe `now`, `classes`, `pendingRecoveries`
 - La fila de acciones del roster se desbordaba en 375 px; ahora usa `flex-wrap` y no hay scroll horizontal (`fix(instructor): acciones del roster en móvil`). Captura: `375-instructor-tatami-fix.png`.
 - `permanentRedirect` se resuelve como redirección de cliente: la URL termina en `/asistencia` tras unos cientos de ms. El e2e espera la URL con reintento, así que pasa.
 - La confirmación de punchs sigue fuera del pase de lista; el contador enlaza al bloque pero no hay una bandeja dedicada. Se decide en B5/B6 al reorganizar admin.
+
+---
+
+## UX-B5 · Admin en 5 secciones y bandeja “Hoy”
+
+- **Fecha:** 2026-10-27
+- **Commit:** `ux(B5): admin en 5 secciones y bandeja Hoy`
+- **Revisión humana:** ⏳ pendiente (B5 está en la lista de la sección 0.7)
+
+**Secciones:**
+
+| Sección | Ruta | Contenido |
+|---|---|---|
+| **Hoy** | `/admin` | Bandeja única de pendientes + métricas del dojo |
+| **Alumnos** | `/admin/alumnos` | Padrón y expediente, con acceso directo a Inscripciones |
+| **Operación** | `/admin/operacion` | Hub: Asistencia/reposiciones y Balance de horas |
+| **Configuración** | `/admin/configuracion` | Hub: Horarios, Calendario, Planes, Grados y katas |
+| **Comunicación** | `/admin/comunicacion` | Hub: Mensajes, Reseñas, Blog |
+
+**Archivos:**
+
+| Tipo | Archivo |
+|---|---|
+| Nuevo | `components/dashboard/admin/AdminSectionHub.tsx` |
+| Nuevo | `app/(dashboard)/admin/operacion/page.tsx` |
+| Nuevo | `app/(dashboard)/admin/configuracion/page.tsx` |
+| Nuevo | `app/(dashboard)/admin/comunicacion/page.tsx` |
+| Modificado | `components/dashboard/admin/AdminDashboardOverview.tsx` (bandeja Hoy) |
+| Modificado | `components/dashboard/admin/AdminStudents.tsx` (enlace a Inscripciones) |
+| Modificado | `components/dashboard/shell/RoleNavigation.tsx` (5 secciones) |
+| Modificado | `lib/ui/nav-labels.ts` |
+| Modificado | `tests/unit/ui-labels.test.ts` |
+
+**Decisiones tomadas y por qué:**
+
+1. **Cinco destinos, con hubs en lugar de mover rutas.** Operación, Configuración y Comunicación agrupan las pantallas existentes en tarjetas. **No se movieron URLs**: todo lo antiguo sigue funcionando y no hizo falta redirección. El anidamiento profundo (`/admin/operacion/asistencia`, etc.) se hará en B6/B8, donde ya toca reorganizar esas pantallas.
+2. **“Hoy” es una bandeja, no un resumen.** Cuatro filas con contador y enlace directo: Inscripciones pendientes, Documentos por revisar, Alumnos sin plan y Alumnos sin horario. Las métricas (alumnos, clases, inscripciones activas) bajan a segundo plano.
+3. **Justificaciones y solicitudes de reposición no están en la bandeja todavía.** No existe consulta de justificaciones para admin y las solicitudes llegan con UX-A6. Se añaden cuando existan, sin inventar contadores.
+4. **Badges en la nav:** el contador de inscripciones pendientes pasa a “Hoy” (antes vivía en Inscripciones) y el de alumnos nuevos sigue en “Alumnos”.
+5. **Alumnos conserva Inscripciones a mano** con un enlace en la cabecera, para que no quede enterrada al quitar el ítem del menú.
+
+**Pruebas:**
+
+| Comando | Resultado |
+|---|---|
+| `pnpm lint` | ✅ 0 errores, 35 warnings preexistentes |
+| `pnpm typecheck` | ✅ Sin salida |
+| `pnpm test` | ✅ 60 archivos / **284 tests** |
+| `pnpm test:integration` | No aplica: sin cambios de API ni BD |
+| Smoke admin (Playwright, entorno aislado) | ✅ “Hoy” con las 4 filas, nav de 5 secciones, los 3 hubs cargan y las rutas antiguas (`/admin/asistencia`, `/admin/grados-y-katas`) siguen accesibles; 0 errores de consola |
+
+**Desviaciones respecto a la guía:**
+
+- Las rutas no se han anidado todavía bajo cada sección (B6/B8).
+- La bandeja no incluye justificaciones ni solicitudes de reposición (no implementadas).
+
+**Pendientes o dudas:**
+
+- Revisión humana del diff antes de mergear (obligatoria para B5).
+- En 375 px los nombres “Configuración” y “Comunicación” se truncan en la barra inferior. Se puede acortar a “Config.” / “Comunic.” o permitir dos líneas; se decide con León en el dry-run.
+- Dry-run de León recorriendo sus tareas diarias en la nueva estructura (lo pide la guía). Si algo quedó enterrado, se ajusta el agrupamiento.
