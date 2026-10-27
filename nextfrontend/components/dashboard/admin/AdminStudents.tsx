@@ -16,12 +16,6 @@ import type { AdminBeltRankSummary, AdminStudentSummary, PlanSummary, Scholarshi
 interface AdminStudentsProps {
 	students: AdminStudentSummary[]
 	initialDocsOnly?: boolean
-	/** Dentro del workspace de Alumnos: sin `<main>` ni padding de página. */
-	embedded?: boolean
-	/** Alumno seleccionado en el panel lateral. */
-	selectedId?: string | null
-	/** Selecciona un alumno sin recargar la lista. */
-	onSelect?: (studentId: string) => void
 }
 
 interface BranchOption {
@@ -515,7 +509,7 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 	)
 }
 
-export function AdminStudents({ students, initialDocsOnly = false, embedded = false, selectedId = null, onSelect }: AdminStudentsProps) {
+export function AdminStudents({ students, initialDocsOnly = false }: AdminStudentsProps) {
 	const router = useRouter()
 	const [searchTerm, setSearchTerm] = useState('')
 	const [docsOnly, setDocsOnly] = useState(initialDocsOnly)
@@ -660,10 +654,8 @@ export function AdminStudents({ students, initialDocsOnly = false, embedded = fa
 			.finally(() => setIsDeleting(false))
 	}
 
-	const Wrapper = embedded ? 'section' : 'main'
-
 	return (
-		<Wrapper className={embedded ? 'w-full' : 'w-full px-4 py-8 sm:px-6 lg:px-8'}>
+		<main className="w-full px-4 py-8 sm:px-6 lg:px-8">
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 				<div>
 					<p className="text-xs font-semibold uppercase tracking-wide text-accent">Administración</p>
@@ -851,12 +843,7 @@ export function AdminStudents({ students, initialDocsOnly = false, embedded = fa
 															{!student.guardianManaged && student.accountStatus === 'INVITADO' && student.email && <p className="mt-1 break-all font-mono text-[11px] text-ink-4">{student.email}</p>}
 														</div>
 													</div>
-													<div className="space-y-2 border-t border-edge pt-3">
-														{onSelect && (
-															<button type="button" onClick={() => onSelect(student.id)} className="inline-flex min-h-11 w-full items-center justify-center rounded-md border border-cyan-500/40 bg-cyan-500/10 px-3 py-2 text-xs font-bold text-accent-text transition-colors hover:bg-cyan-500/20">
-																Ver expediente completo
-															</button>
-														)}
+													<div className="border-t border-edge pt-3">
 														<StudentRowActions student={student} onDelete={setDeletingStudent} onEdit={setEditingStudent} onInvite={setInvitingStudent} onToggleStatus={setTogglingStudent} />
 													</div>
 												</div>
@@ -886,13 +873,13 @@ export function AdminStudents({ students, initialDocsOnly = false, embedded = fa
 										const kataPercent = student.kataTotalCount > 0 ? Math.round((student.kataMasteredCount / student.kataTotalCount) * 100) : 0
 
 										return (
-											<tr key={student.id} onClick={() => onSelect?.(student.id)} className={`transition-colors hover:bg-surface-3/50 ${onSelect ? 'cursor-pointer' : ''} ${selectedId === student.id ? 'bg-cyan-500/10' : ''}`}>
+											<tr key={student.id} className="transition-colors hover:bg-surface-3/50">
 												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
 													<div className="flex min-w-0 items-center gap-3">
 														<span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-full bg-cyan-500/15 font-display text-sm font-extrabold text-accent-text">{initials}</span>
 														<div className="min-w-0">
 															<div className="flex flex-wrap items-center gap-2">
-																<Link href={`/dashboard/admin/alumnos/${student.id}`} onClick={(event) => event.stopPropagation()} title={`Ver ficha de ${student.firstName} ${student.lastName}`} className="truncate rounded text-sm font-bold text-ink transition-colors hover:text-accent hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400">{student.firstName} {student.lastName}</Link>
+																<Link href={`/dashboard/admin/alumnos/${student.id}`} title={`Ver ficha de ${student.firstName} ${student.lastName}`} className="truncate rounded text-sm font-bold text-ink transition-colors hover:text-accent hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400">{student.firstName} {student.lastName}</Link>
 																{student.pendingDocumentCount > 0 && (
 																	<Link href={`/dashboard/admin/alumnos/${student.id}`} title={`${student.pendingDocumentCount} documento${student.pendingDocumentCount === 1 ? '' : 's'} por revisar`} className="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-warn-text">
 																		<FileText aria-hidden="true" className="size-3" />{student.pendingDocumentCount}
@@ -940,7 +927,7 @@ export function AdminStudents({ students, initialDocsOnly = false, embedded = fa
 													{student.guardianManaged && <p className="mt-1 max-w-[160px] truncate text-[11px] text-ink-4">{student.guardianName ? `Tutor: ${student.guardianName}` : 'Gestionado desde la cuenta del tutor'}</p>}
 													{!student.guardianManaged && student.accountStatus === 'INVITADO' && student.email && <p className="mt-1 max-w-[160px] truncate font-mono text-[11px] text-ink-4">{student.email}</p>}
 												</td>
-												<td className="px-4 py-2.5 sm:px-5 sm:py-4" onClick={(event) => event.stopPropagation()}>
+												<td className="px-4 py-2.5 sm:px-5 sm:py-4">
 													<StudentRowActions student={student} onDelete={setDeletingStudent} onEdit={setEditingStudent} onInvite={setInvitingStudent} onToggleStatus={setTogglingStudent} />
 												</td>
 											</tr>
@@ -1029,6 +1016,6 @@ export function AdminStudents({ students, initialDocsOnly = false, embedded = fa
 				}}
 				onCancel={() => setDeletingStudent(null)}
 			/>
-		</Wrapper>
+		</main>
 	)
 }

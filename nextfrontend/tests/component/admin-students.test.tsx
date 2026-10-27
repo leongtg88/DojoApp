@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { AdminStudents } from '@/components/dashboard/admin/AdminStudents'
 import type { AdminStudentSummary } from '@/types/dashboard'
@@ -71,16 +71,6 @@ describe('F3-09 · padrón de alumnos (filtro de búsqueda)', () => {
 
     expect(screen.queryAllByText('Ana Kurosawa').length).toBeGreaterThan(0)
     expect(screen.queryAllByText('Beto Tanaka')).toHaveLength(0)
-  })
-
-  it('selecciona un alumno al hacer clic en la fila del padrón', () => {
-    const onSelect = vi.fn()
-    render(<AdminStudents students={[student({ id: 'a', firstName: 'Ana', lastName: 'Kurosawa' })]} onSelect={onSelect} />)
-
-    const rows = screen.getAllByRole('row')
-    fireEvent.click(rows[1])
-
-    expect(onSelect).toHaveBeenCalledWith('a')
   })
 
   it('muestra el estado vacío cuando no hay coincidencias', async () => {
