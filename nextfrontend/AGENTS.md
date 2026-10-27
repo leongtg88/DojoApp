@@ -15,6 +15,13 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - No añadir secretos a componentes cliente ni variables `NEXT_PUBLIC_*`.
 - Hay un guard que bloquea commits con secretos: `pnpm guard:env` (activo vía hook `.githooks/pre-commit`).
 
+## Git y despliegue (regla del proyecto)
+
+- **Nadie mueve `main` salvo León.** El agente **no hace push, no abre PR, no mergea ni despliega a `main`** sin una instrucción explícita del usuario en esa sesión.
+- El trabajo vive en ramas (`ux/…`). Al cerrar una tarea, el agente deja la rama lista y **espera**: publicar es decisión del usuario.
+- **No ejecutar migraciones contra producción** (`prisma migrate deploy`, `prisma db push` ni SQL manual). Si una tarea necesita migración, se escribe en la rama y se aplica solo cuando el usuario lo autorice.
+- Sí está permitido integrar `main` **hacia** la rama de trabajo (`git merge origin/main`) para mantenerla al día: eso no modifica `main`.
+
 ## Dominio e invariantes (leer antes de tocar código)
 
 Reglas que SIEMPRE deben cumplirse, en todos los paneles (admin, instructor, alumno).
