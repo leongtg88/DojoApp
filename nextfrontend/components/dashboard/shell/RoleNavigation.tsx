@@ -50,12 +50,12 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/ajustes', label: NAV_LABELS.seguridad, icon: Fingerprint, hideInBottomNav: true },
     ],
     INSTRUCTOR: [
-        { href: '/dashboard/instructor', label: NAV_LABELS.resumen, icon: LayoutDashboard },
+        { href: '/dashboard/instructor/asistencia', label: NAV_LABELS.tatami, icon: ClipboardCheck },
         { href: '/dashboard/instructor/clases', label: NAV_LABELS.misClases, icon: CalendarDays },
         { href: '/dashboard/instructor/estudiantes', label: NAV_LABELS.estudiantes, icon: Users },
-        { href: '/dashboard/instructor/asistencia', label: NAV_LABELS.asistencia, icon: ClipboardCheck },
         { href: '/dashboard/instructor/evaluaciones', label: NAV_LABELS.evaluaciones, icon: BookOpenCheck },
         { href: '/dashboard/instructor/grados-y-katas', label: NAV_LABELS.gradosYKatas, icon: GraduationCap },
+        { href: '/dashboard/instructor/resumen', label: NAV_LABELS.resumen, icon: LayoutDashboard, hideInBottomNav: true },
         { href: '/dashboard/ajustes', label: NAV_LABELS.seguridad, icon: Fingerprint, hideInBottomNav: true },
     ],
     SCHOOL_ADMIN: [

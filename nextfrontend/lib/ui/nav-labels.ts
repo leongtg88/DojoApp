@@ -102,6 +102,7 @@ export const NAV_LABELS = {
   clases: 'Clases',
   progreso: 'Progreso',
   perfil: 'Perfil',
+  tatami: 'Tatami',
   resumen: 'Resumen',
   miPerfil: 'Mi perfil',
   miProgreso: 'Mi progreso',

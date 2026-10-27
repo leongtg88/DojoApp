@@ -144,7 +144,7 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                             {roster.passTakenByName ? `Pase guardado por ${roster.passTakenByName}.` : 'Pase de lista guardado.'}
                         </p>
                         <button
-                            className="inline-flex items-center gap-1.5 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-1.5 text-xs font-bold text-warn-text transition-colors hover:bg-amber-500/20"
+                            className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs font-bold text-warn-text transition-colors hover:bg-amber-500/20"
                             onClick={() => setIsEditing(true)}
                             type="button"
                         >
@@ -184,9 +184,9 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                             <p className="inline-flex items-center gap-2 text-xs font-semibold text-ink-3"><Users aria-hidden="true" className="size-4 text-accent" />{readOnly ? 'Consulta la asistencia de este horario.' : 'Marca a los presentes; desmarca a los ausentes.'}</p>
                             {!readOnly && (
                                 <div className="flex gap-2">
-                                    <button className="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/40 px-3 py-1.5 text-xs font-bold text-ok-text hover:bg-emerald-500/10" onClick={() => updateAllRecords(true)} type="button"><CheckCheck aria-hidden="true" className="size-3.5" />Marcar todos</button>
-                                    <button className="inline-flex items-center gap-1.5 rounded-md border border-edge-strong px-3 py-1.5 text-xs font-bold text-ink-2 hover:bg-surface-3" onClick={() => updateAllRecords(false)} type="button"><CircleX aria-hidden="true" className="size-3.5" />Desmarcar todos</button>
-                                    <button className="inline-flex items-center gap-1.5 rounded-md border border-sky-500/40 px-3 py-1.5 text-xs font-bold text-info-text hover:bg-sky-500/10" onClick={() => setIsAddOpen(true)} type="button"><UserPlus aria-hidden="true" className="size-3.5" />Agregar alumno</button>
+                                    <button className="inline-flex min-h-11 items-center gap-1.5 rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-500" onClick={() => updateAllRecords(true)} type="button"><CheckCheck aria-hidden="true" className="size-4" />Marcar todos presentes</button>
+                                    <button className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-edge-strong px-3 py-2 text-xs font-bold text-ink-2 hover:bg-surface-3" onClick={() => updateAllRecords(false)} type="button"><CircleX aria-hidden="true" className="size-3.5" />Desmarcar todos</button>
+                                    <button className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-sky-500/40 px-3 py-2 text-xs font-bold text-info-text hover:bg-sky-500/10" onClick={() => setIsAddOpen(true)} type="button"><UserPlus aria-hidden="true" className="size-3.5" />Agregar alumno</button>
                                 </div>
                             )}
                         </div>
@@ -196,7 +196,7 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                                 const canReview = !readOnly && justification?.status === 'PENDING' && !record.present
                                 return (
                                     <li className="flex flex-wrap items-start gap-3 px-5 py-4 sm:flex-nowrap" key={record.id}>
-                                        <label className="mt-0.5 flex cursor-pointer items-center gap-3">
+                                        <label className="mt-0.5 flex min-h-11 min-w-11 cursor-pointer items-center justify-center">
                                             <input
                                                 aria-label={`Asistencia de ${record.firstName} ${record.lastName}`}
                                                 checked={record.present}
@@ -226,7 +226,7 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                                                     {canReview && (
                                                         <div className="mt-2 flex gap-2">
                                                             <button
-                                                                className="inline-flex items-center gap-1 rounded-md border border-sky-500/40 px-2.5 py-1 text-xs font-bold text-info-text hover:bg-sky-500/10 disabled:opacity-50"
+                                                                className="inline-flex min-h-11 items-center gap-1 rounded-md border border-sky-500/40 px-3 py-2 text-xs font-bold text-info-text hover:bg-sky-500/10 disabled:opacity-50"
                                                                 disabled={busyJustification === justification.id}
                                                                 onClick={() => reviewJustification(justification.id, 'approve')}
                                                                 type="button"
@@ -234,7 +234,7 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                                                                 Aprobar justificación
                                                             </button>
                                                             <button
-                                                                className="inline-flex items-center gap-1 rounded-md border border-rose-500/40 px-2.5 py-1 text-xs font-bold text-danger-text hover:bg-rose-500/10 disabled:opacity-50"
+                                                                className="inline-flex min-h-11 items-center gap-1 rounded-md border border-rose-500/40 px-3 py-2 text-xs font-bold text-danger-text hover:bg-rose-500/10 disabled:opacity-50"
                                                                 disabled={busyJustification === justification.id}
                                                                 onClick={() => reviewJustification(justification.id, 'reject')}
                                                                 type="button"
@@ -266,7 +266,7 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                 {!readOnly && (
                     <div className="border-t border-edge px-5 py-4">
                         <button
-                            className="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] disabled:cursor-not-allowed disabled:opacity-60"
+                            className="inline-flex min-h-11 items-center gap-2 rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] disabled:cursor-not-allowed disabled:opacity-60"
                             disabled={isSaving}
                             type="submit"
                         >

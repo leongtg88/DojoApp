@@ -1,7 +1,14 @@
 import { auth } from '@/auth'
 import { InstructorTechniqueReview } from '@/components/dashboard/instructor/InstructorTechniqueReview'
 import { StudentSearchSelect } from '@/components/dashboard/instructor/StudentSearchSelect'
-import { getInstructorStudents, getInstructorTechniqueReview } from '@/lib/dashboard/instructor-queries'
+import { pickDefaultEvaluationStudentId } from '@/lib/dashboard/instructor-defaults'
+import {
+    getInstructorAttendanceRoster,
+    getInstructorScheduleOptions,
+    getInstructorStudents,
+    getInstructorTechniqueReview,
+} from '@/lib/dashboard/instructor-queries'
+import { latestSessionDate, resolveDefaultSessionClass, santoDomingoDayKey } from '@/lib/dashboard/schedule-utils'
 import { redirect } from 'next/navigation'
 import { hasRole } from '@/lib/auth/roles'
 
@@ -18,8 +25,28 @@ export default async function InstructorEvaluationsPage({ searchParams }: Instru
 
     const parameters = await searchParams
     const students = await getInstructorStudents(session.user.id)
-    // Sin selección por defecto: el alumno solo se carga cuando se elige en el buscador.
-    const studentId = parameters.studentId ?? null
+    let studentId = parameters.studentId ?? null
+
+    // UX-B4: sin selección previa, abre con el alumno de la clase en curso.
+    if (!studentId) {
+        const now = new Date()
+        const options = await getInstructorScheduleOptions(session.user.id)
+        const ownClasses = options.filter((option) => option.isOwnClass)
+        const defaultClass = resolveDefaultSessionClass(ownClasses.length > 0 ? ownClasses : options, now)
+        const roster = defaultClass
+            ? await getInstructorAttendanceRoster(
+                session.user.id,
+                defaultClass.id,
+                santoDomingoDayKey(latestSessionDate(defaultClass.dayOfWeek, now)),
+            )
+            : null
+
+        studentId = pickDefaultEvaluationStudentId(
+            roster?.students.map((student) => student.id) ?? [],
+            students.map((student) => student.id),
+        )
+    }
+
     const review = studentId ? await getInstructorTechniqueReview(session.user.id, studentId) : null
 
     return (

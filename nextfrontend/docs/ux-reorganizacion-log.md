@@ -40,6 +40,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-A5a · `getPrimaryAction` | 2026-10-26 | `ux(A5a): función getPrimaryAction` | ✅ Hecha | — |
 | UX-A5b · Nuevo Inicio del alumno | 2026-10-26 | `ux(A5b): nuevo Inicio del alumno` | ✅ Hecha (sin eventos) | — |
 | UX-B1 · Navegación de 5 destinos | 2026-10-26 | `ux(B1): navegación de 5 destinos y rutas Clases/Entrenar` | ✅ Hecha | ⏳ Pendiente (León) |
+| UX-B4 · Instructor: modo tatami | 2026-10-27 | `ux(B4): modo tatami del instructor` | ✅ Hecha (smoke pendiente) | — |
 
 **Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
 
@@ -713,3 +714,52 @@ Función pura, sin React ni Prisma. Recibe `now`, `classes`, `pendingRecoveries`
 - **B4–B8**: instructor y admin, sin tocar.
 - Revisión humana del diff antes de mergear (obligatoria para B1).
 - Verificación visual en 375 px de Clases y Entrenar.
+
+---
+
+## UX-B4 · Instructor: modo tatami
+
+- **Fecha:** 2026-10-27
+- **Commit:** `ux(B4): modo tatami del instructor`
+
+**Archivos:**
+
+| Tipo | Archivo |
+|---|---|
+| Nuevo | `app/(dashboard)/instructor/resumen/page.tsx` (el resumen anterior, preservado) |
+| Nuevo | `lib/dashboard/instructor-defaults.ts` |
+| Nuevo | `tests/unit/instructor-defaults.test.ts` |
+| Modificado | `app/(dashboard)/instructor/page.tsx` → redirección permanente al pase de lista |
+| Modificado | `app/(dashboard)/instructor/asistencia/page.tsx` (bandeja de pendientes + anclas) |
+| Modificado | `app/(dashboard)/instructor/evaluaciones/page.tsx` (alumno preseleccionado) |
+| Modificado | `components/dashboard/instructor/InstructorAttendanceRoster.tsx` |
+| Modificado | `components/dashboard/shell/RoleNavigation.tsx` (Tatami primero; Resumen oculto) |
+| Modificado | `lib/ui/nav-labels.ts` |
+| Modificados | Tests de roster y e2e de instructor |
+
+**Decisiones tomadas y por qué:**
+
+1. **`/instructor` redirige al pase de lista** (`/instructor/asistencia`). El instructor entra directo en la clase de hoy o la próxima; el resumen anterior sigue disponible en `/instructor/resumen` (oculto en la barra inferior).
+2. **Bandeja de pendientes al inicio** con tres contadores reales: prácticas/punch por confirmar (`getInstructorPendingCount`), justificaciones pendientes y reposiciones online programadas. Cada uno enlaza a su bloque (`#pase-de-lista`, `#justificaciones`, `#reposiciones`).
+3. **“Marcar todos presentes” es la acción dominante** (verde sólido, 44 px) y desmarcar excepciones sigue siendo un clic por alumno. Las acciones de justificar, corregir y guardar también llegan a 44 px; el checkbox tiene un área táctil de 44×44.
+4. **Evaluaciones preselecciona alumno**: primero el de la clase en curso (roster del horario por defecto) y, si no hay, el primero de su lista. La decisión vive en una función pura con 3 tests.
+5. **Sin cambios de API**: `POST instructor/attendance`, `PATCH attendance/justification/{id}` y las reglas de propiedad (403 en clase ajena) quedan intactas.
+6. **La medición `pase_de_lista_completado` queda para UX-A7a** (aplazada). No se instrumentó nada.
+
+**Resultado:**
+
+| Comando | Resultado |
+|---|---|
+| `pnpm lint` | ✅ 0 errores, 35 warnings preexistentes |
+| `pnpm typecheck` | ✅ Sin salida |
+| `pnpm test` | ✅ 60 archivos / **284 tests** |
+| `pnpm test:integration` | No aplica: sin cambios de API ni BD |
+| Smoke e2e instructor | ⏳ Pendiente: Docker Desktop estaba detenido. El spec se actualizó para comprobar la redirección y “Marcar todos presentes” |
+
+**Desviaciones respecto a la guía:** ninguna de alcance. La instrumentación se pospone con A7a.
+
+**Pendientes o dudas:**
+
+- Levantar Docker para el smoke del instructor (redirección, bandeja, preselección en Evaluaciones).
+- Revisar en 375 px la fila de acciones del roster: “Marcar todos presentes” + “Desmarcar todos” + “Agregar alumno” pueden ocupar dos líneas.
+- La confirmación de punchs sigue fuera del pase de lista; el contador enlaza al bloque pero no hay una bandeja dedicada. Se decide en B5/B6 al reorganizar admin.

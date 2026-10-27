@@ -36,7 +36,7 @@ describe('F6-02 · pase de lista (roster)', () => {
     expect(screen.queryByText(/Solo lectura: este horario no es tuyo/i)).toBeNull()
     expect(screen.getAllByRole('checkbox')[0]).not.toBeDisabled()
     expect(screen.getByRole('button', { name: /Guardar asistencia/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Marcar todos' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Marcar todos presentes' })).toBeInTheDocument()
   })
 
   it('tras guardar el pase muestra a los presentes y a los ausentes', () => {

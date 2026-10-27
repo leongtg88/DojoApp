@@ -11,9 +11,8 @@ test.describe('Flujo del instructor', () => {
     await login(page, email!, password!)
 
     await page.goto('/dashboard/instructor')
-    await expect(page.getByRole('heading', { name: /Resumen de tatami/i })).toBeVisible()
-
-    await page.goto('/dashboard/instructor/asistencia')
+    await expect(page).toHaveURL(/\/dashboard\/instructor\/asistencia/)
     await expect(page.getByRole('heading', { name: /Asistencia/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /Marcar todos presentes/i })).toBeVisible()
   })
 })
