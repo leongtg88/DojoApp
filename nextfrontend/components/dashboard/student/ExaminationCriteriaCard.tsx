@@ -133,7 +133,7 @@ export function ExaminationCriteriaCard({ grado, studentId }: ExaminationCriteri
                             Tienes {pendingRecoveries} {pendingRecoveries === 1 ? 'falta' : 'faltas'} desde la 3.ª del mes sin reponer.
                             Repón en otro horario antes del cierre del cuatrimestre; si no puedes, coordina una clase online de 35 min.
                             El costo lo informa administración. {policyText}{' '}
-                            <a className="font-semibold underline" href={studentHref('/dashboard/estudiante/asistencia', studentId)}>Ver mis reposiciones</a>
+                            <a className="font-semibold underline" href={studentHref('/dashboard/estudiante/clases', studentId)}>Ver mis reposiciones</a>
                         </span>
                     </p>
                 ) : (

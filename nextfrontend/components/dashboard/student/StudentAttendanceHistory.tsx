@@ -16,7 +16,7 @@ export function StudentAttendanceHistory({ records }: StudentAttendanceHistoryPr
 
             {records.length === 0 ? (
                 <EmptyState
-                    action={{ label: 'Ver mi horario', href: '/dashboard/estudiante/horario' }}
+                    action={{ label: 'Ver mi horario', href: '/dashboard/estudiante/clases' }}
                     className="mt-7"
                     description="Tu instructor las registrará en el pase de lista de cada clase."
                     icon={CalendarCheck2}

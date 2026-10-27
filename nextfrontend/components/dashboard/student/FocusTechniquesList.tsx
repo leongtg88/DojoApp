@@ -19,7 +19,7 @@ export function FocusTechniquesList({ techniques, studentId, limit }: FocusTechn
         <section className="rounded-lg border border-edge bg-surface-2 shadow-sm">
             <div className="flex items-center justify-between border-b border-edge px-5 py-4">
                 <div className="flex items-center gap-2"><Award aria-hidden="true" className="size-4 text-warn-text" /><h2 className="font-display text-sm font-extrabold uppercase tracking-wide text-ink">Técnicas en enfoque</h2></div>
-                <Link className="inline-flex items-center gap-0.5 text-xs font-bold text-accent hover:underline" href={studentHref('/dashboard/estudiante/progreso', studentId)}>Ver syllabus <ChevronRight aria-hidden="true" className="size-3.5" /></Link>
+                <Link className="inline-flex items-center gap-0.5 text-xs font-bold text-accent hover:underline" href={studentHref('/dashboard/estudiante/entrenar', studentId)}>Ver syllabus <ChevronRight aria-hidden="true" className="size-3.5" /></Link>
             </div>
             {displayTechniques.length === 0 ? (
                 <EmptyState

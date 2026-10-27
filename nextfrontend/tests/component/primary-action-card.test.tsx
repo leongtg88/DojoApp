@@ -13,8 +13,8 @@ describe('UX-A5b · tarjeta de acción principal', () => {
 
         expect(screen.getByText('Karate Niños')).toBeInTheDocument()
         expect(screen.getByText(/Hoy de 16:00 a 17:00/)).toBeInTheDocument()
-        expect(screen.getByRole('link', { name: 'Ver mi clase' })).toHaveAttribute('href', '/dashboard/estudiante/horario')
-        expect(screen.getByRole('link', { name: 'No podré ir' })).toHaveAttribute('href', '/dashboard/estudiante/asistencia')
+        expect(screen.getByRole('link', { name: 'Ver mi clase' })).toHaveAttribute('href', '/dashboard/estudiante/clases')
+        expect(screen.getByRole('link', { name: 'No podré ir' })).toHaveAttribute('href', '/dashboard/estudiante/clases')
     })
 
     it('reposición: singular y plural con la acción Resolver', () => {
@@ -23,20 +23,20 @@ describe('UX-A5b · tarjeta de acción principal', () => {
 
         rerender(<PrimaryActionView action={{ kind: 'recovery', pendingRecoveries: 2 }} pendingRecoveries={2} />)
         expect(screen.getByText('Te quedan 2 reposiciones')).toBeInTheDocument()
-        expect(screen.getByRole('link', { name: 'Resolver' })).toHaveAttribute('href', '/dashboard/estudiante/asistencia')
+        expect(screen.getByRole('link', { name: 'Resolver' })).toHaveAttribute('href', '/dashboard/estudiante/clases')
     })
 
     it('práctica: nombra la técnica en foco', () => {
         render(<PrimaryActionView action={{ kind: 'practice', techniqueName: 'Kihon Kata Ichi' }} pendingRecoveries={0} />)
 
         expect(screen.getByText('Practica Kihon Kata Ichi')).toBeInTheDocument()
-        expect(screen.getByRole('link', { name: 'Registrar repeticiones' })).toBeInTheDocument()
+        expect(screen.getByRole('link', { name: 'Registrar repeticiones' })).toHaveAttribute('href', '/dashboard/estudiante/entrenar')
     })
 
     it('bienvenida: invita a ver el horario', () => {
         render(<PrimaryActionView action={{ kind: 'welcome' }} pendingRecoveries={0} />)
 
-        expect(screen.getByRole('link', { name: 'Ver mi horario' })).toHaveAttribute('href', '/dashboard/estudiante/horario')
+        expect(screen.getByRole('link', { name: 'Ver mis clases' })).toHaveAttribute('href', '/dashboard/estudiante/clases')
     })
 
     it('conserva el contexto familiar en los enlaces', () => {
@@ -44,7 +44,7 @@ describe('UX-A5b · tarjeta de acción principal', () => {
 
         expect(screen.getByRole('link', { name: 'Registrar repeticiones' })).toHaveAttribute(
             'href',
-            '/dashboard/estudiante/asistencia?estudiante=child-1',
+            '/dashboard/estudiante/entrenar?estudiante=child-1',
         )
     })
 

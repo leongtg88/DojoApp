@@ -24,7 +24,7 @@ export function StudentMetricsGrid({ attendance, techniques, katas = [], grado =
     const attendanceDetail = `${attendanceSummary.percentage}% del grado${grado && grado.pendingSessions > 0 ? ` · ${grado.pendingSessions} por confirmar` : ''}`
 
     const cards = [
-        { href: '/dashboard/estudiante/asistencia', icon: CalendarCheck2, label: 'Asistencia', value: attendanceValue, detail: attendanceDetail },
+        { href: '/dashboard/estudiante/clases', icon: CalendarCheck2, label: 'Asistencia', value: attendanceValue, detail: attendanceDetail },
         { href: '/dashboard/estudiante/progreso', icon: ClipboardCheck, label: 'Técnicas listas', value: `${approvedTechniques} / ${techniques.length}`, detail: 'Progreso del programa' },
         { href: '/dashboard/estudiante/progreso', icon: Star, label: 'Promedio de katas', value: averageScore === null ? '—' : `${formatKataScore(averageScore)} / 10`, detail: 'Katas requeridas evaluadas' },
     ]

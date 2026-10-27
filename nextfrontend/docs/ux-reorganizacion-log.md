@@ -39,6 +39,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | 🚦 GATE 1 · Prueba base | — | — | ⏳ Pendiente (León) | — |
 | UX-A5a · `getPrimaryAction` | 2026-10-26 | `ux(A5a): función getPrimaryAction` | ✅ Hecha | — |
 | UX-A5b · Nuevo Inicio del alumno | 2026-10-26 | `ux(A5b): nuevo Inicio del alumno` | ✅ Hecha (sin eventos) | — |
+| UX-B1 · Navegación de 5 destinos | 2026-10-26 | `ux(B1): navegación de 5 destinos y rutas Clases/Entrenar` | ✅ Hecha | ⏳ Pendiente (León) |
 
 **Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
 
@@ -645,3 +646,68 @@ Función pura, sin React ni Prisma. Recibe `now`, `classes`, `pendingRecoveries`
 - Verificación visual en 375 px del nuevo Inicio antes del Gate 1.
 
 **Revisión humana:** no aplica.
+
+---
+
+## UX-B1 · Navegación de 5 destinos
+
+- **Fecha:** 2026-10-26
+- **Commit:** `ux(B1): navegación de 5 destinos y rutas Clases/Entrenar`
+- **Revisión humana:** ⏳ pendiente (B1 está en la lista de la sección 0.7)
+
+**Destinos del alumno:**
+
+| Destino | Ruta | Contenido |
+|---|---|---|
+| Inicio | `/estudiante` | Nuevo Inicio (A5b) |
+| Entrenar | `/estudiante/entrenar` | Registro de práctica + katas y syllabus |
+| Clases | `/estudiante/clases` | Horario + reportar inasistencia + reposiciones online + historial |
+| Progreso | `/estudiante/progreso` | Grado, requisitos y criterios de examen |
+| Perfil | `/estudiante/perfil` | Datos, documentos y seguridad (sin cambios) |
+
+**Archivos:**
+
+| Tipo | Archivo |
+|---|---|
+| Nuevo | `app/(dashboard)/estudiante/clases/page.tsx` |
+| Nuevo | `app/(dashboard)/estudiante/entrenar/page.tsx` |
+| Modificado | `app/(dashboard)/estudiante/horario/page.tsx` → `permanentRedirect` |
+| Modificado | `app/(dashboard)/estudiante/asistencia/page.tsx` → `permanentRedirect` |
+| Modificado | `components/dashboard/shell/RoleNavigation.tsx` (5 ítems + Seguridad oculta) |
+| Modificado | `lib/ui/nav-labels.ts` (Inicio/Entrenar/Clases/Progreso/Perfil) |
+| Modificado | `StudentSchedule.tsx` (`embedded` + `useNow`) |
+| Modificado | `StudentProgressOverview.tsx` (el syllabus pasa a Entrenar) |
+| Modificados | Enlaces: `PrimaryActionCard`, `FamilyMembersView`, `StudentMetricsGrid`, `ExaminationCriteriaCard`, `StudentAttendanceHistory/Records`, `FocusTechniquesList`, `lib/notifications/types.ts` |
+| Modificados | Tests: `ui-labels`, `primary-action-card`, `empty-state`, `family-members`, `e2e/student-flow` |
+
+**Decisiones tomadas y por qué:**
+
+1. **Se adelantó la parte de UX-B2 para el alumno.** Los 5 destinos necesitaban contenido real: Clases reúne horario + reporte + historial y Entrenar reúne práctica + syllabus. No se creó ninguna página vacía ni se duplicaron componentes.
+2. **Redirecciones permanentes en las páginas viejas**, con `permanentRedirect`, en lugar de `next.config`. Así funcionan tanto `/estudiante/horario` como `/dashboard/estudiante/horario` (alias con rewrite).
+3. **Las reposiciones online siguen dentro de Clases** hasta que exista el hub de UX-B3. “Resolver” de la acción principal apunta ahí.
+4. **Progreso deja de mostrar el syllabus**: ahora es grado, requisitos y examen. Las katas viven en Entrenar, como pide la guía.
+5. **Notificaciones actualizadas**: los enlaces de horario y asistencia apuntan a `/clases`, así los avisos ya enviados no se rompen.
+6. **Hidratación en el horario**: `StudentSchedule` calculaba `nextClassFrom()` con `new Date()` en render. Ahora espera a `useNow()` para no repetir el desajuste servidor/cliente.
+7. **Barra inferior**: el filtro `!hideInBottomNav` deja exactamente 5 destinos; Seguridad sigue en el sidebar.
+
+**Pruebas:**
+
+| Comando | Resultado |
+|---|---|
+| `pnpm lint` | ✅ 0 errores, 35 warnings preexistentes |
+| `pnpm typecheck` | ✅ Sin salida |
+| `pnpm test` | ✅ 59 archivos / **281 tests** |
+| `pnpm test:integration` | No aplica: sin cambios de API ni BD |
+| `pnpm test:e2e` | Actualizado a las rutas nuevas; pendiente de ejecutar con servidor y BD |
+
+**Desviaciones respecto a la guía:**
+
+- **Gate 2 no ejecutado** (validación de los 5 nombres con usuarios). Se hará después, ya con la app real.
+- **B1 incluye la separación de contenido de B2** para el alumno. Se documenta aquí para no repetirlo.
+
+**Pendientes o dudas:**
+
+- **B3**: hub “Mis reposiciones”; hoy las reposiciones online están en Clases.
+- **B4–B8**: instructor y admin, sin tocar.
+- Revisión humana del diff antes de mergear (obligatoria para B1).
+- Verificación visual en 375 px de Clases y Entrenar.

@@ -13,6 +13,7 @@ import {
     ListChecks,
     MessageCircle,
     Newspaper,
+    Repeat,
     Star,
     Users,
 } from 'lucide-react'
@@ -31,21 +32,21 @@ export interface DashboardNavigationItem {
 
 const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
     STUDENT: [
-        { href: '/dashboard/estudiante', label: NAV_LABELS.resumen, icon: LayoutDashboard },
-        { href: '/dashboard/estudiante/perfil', label: NAV_LABELS.miPerfil, icon: Users },
-        { href: '/dashboard/estudiante/progreso', label: NAV_LABELS.miProgreso, icon: GraduationCap },
-        { href: '/dashboard/estudiante/horario', label: NAV_LABELS.horario, icon: CalendarDays },
-        { href: '/dashboard/estudiante/asistencia', label: NAV_LABELS.asistencia, icon: ClipboardCheck },
+        { href: '/dashboard/estudiante', label: NAV_LABELS.inicio, icon: LayoutDashboard },
+        { href: '/dashboard/estudiante/entrenar', label: NAV_LABELS.entrenar, icon: Repeat },
+        { href: '/dashboard/estudiante/clases', label: NAV_LABELS.clases, icon: CalendarDays },
+        { href: '/dashboard/estudiante/progreso', label: NAV_LABELS.progreso, icon: GraduationCap },
+        { href: '/dashboard/estudiante/perfil', label: NAV_LABELS.perfil, icon: Users },
         { href: '/dashboard/ajustes', label: NAV_LABELS.seguridad, icon: Fingerprint, hideInBottomNav: true },
     ],
     // Un tutor accede al mismo portal del estudiante y usa el selector familiar
     // para alternar entre su cuenta y la de sus hijos.
     GUARDIAN: [
-        { href: '/dashboard/estudiante', label: NAV_LABELS.resumen, icon: LayoutDashboard },
-        { href: '/dashboard/estudiante/perfil', label: NAV_LABELS.miPerfil, icon: Users },
-        { href: '/dashboard/estudiante/progreso', label: NAV_LABELS.miProgreso, icon: GraduationCap },
-        { href: '/dashboard/estudiante/horario', label: NAV_LABELS.horario, icon: CalendarDays },
-        { href: '/dashboard/estudiante/asistencia', label: NAV_LABELS.asistencia, icon: ClipboardCheck },
+        { href: '/dashboard/estudiante', label: NAV_LABELS.inicio, icon: LayoutDashboard },
+        { href: '/dashboard/estudiante/entrenar', label: NAV_LABELS.entrenar, icon: Repeat },
+        { href: '/dashboard/estudiante/clases', label: NAV_LABELS.clases, icon: CalendarDays },
+        { href: '/dashboard/estudiante/progreso', label: NAV_LABELS.progreso, icon: GraduationCap },
+        { href: '/dashboard/estudiante/perfil', label: NAV_LABELS.perfil, icon: Users },
         { href: '/dashboard/ajustes', label: NAV_LABELS.seguridad, icon: Fingerprint, hideInBottomNav: true },
     ],
     INSTRUCTOR: [

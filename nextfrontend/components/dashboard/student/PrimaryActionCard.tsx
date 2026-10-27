@@ -31,8 +31,8 @@ function describeAction(action: PrimaryAction, studentId?: string): ActionConten
                 eyebrow: 'Tu clase de hoy',
                 title: action.className,
                 description: `Hoy de ${action.startTime} a ${action.endTime}.`,
-                primary: { label: 'Ver mi clase', href: studentHref('/dashboard/estudiante/horario', studentId) },
-                secondary: { label: 'No podré ir', href: studentHref('/dashboard/estudiante/asistencia', studentId) },
+                primary: { label: 'Ver mi clase', href: studentHref('/dashboard/estudiante/clases', studentId) },
+                secondary: { label: 'No podré ir', href: studentHref('/dashboard/estudiante/clases', studentId) },
                 icon: CalendarDays,
             }
         case 'recovery':
@@ -40,7 +40,7 @@ function describeAction(action: PrimaryAction, studentId?: string): ActionConten
                 eyebrow: 'Reposición pendiente',
                 title: action.pendingRecoveries === 1 ? 'Te queda 1 reposición' : `Te quedan ${action.pendingRecoveries} reposiciones`,
                 description: 'Puedes reponer la falta en otra clase. Coordina los detalles con administración.',
-                primary: { label: 'Resolver', href: studentHref('/dashboard/estudiante/asistencia', studentId) },
+                primary: { label: 'Resolver', href: studentHref('/dashboard/estudiante/clases', studentId) },
                 icon: RotateCcw,
             }
         case 'practice':
@@ -48,7 +48,7 @@ function describeAction(action: PrimaryAction, studentId?: string): ActionConten
                 eyebrow: 'Práctica de hoy',
                 title: `Practica ${action.techniqueName}`,
                 description: 'Registra tus repeticiones para avanzar hacia tu próximo grado.',
-                primary: { label: 'Registrar repeticiones', href: studentHref('/dashboard/estudiante/asistencia', studentId) },
+                primary: { label: 'Registrar repeticiones', href: studentHref('/dashboard/estudiante/entrenar', studentId) },
                 icon: Repeat,
             }
         case 'welcome':
@@ -56,7 +56,7 @@ function describeAction(action: PrimaryAction, studentId?: string): ActionConten
                 eyebrow: 'Bienvenido',
                 title: 'Aún no tenemos datos de tu próxima clase',
                 description: 'Consulta tu horario o contacta con la administración del dojo.',
-                primary: { label: 'Ver mi horario', href: studentHref('/dashboard/estudiante/horario', studentId) },
+                primary: { label: 'Ver mis clases', href: studentHref('/dashboard/estudiante/clases', studentId) },
                 icon: Sparkles,
             }
     }
@@ -131,7 +131,7 @@ export function PrimaryActionView({ action, pendingRecoveries, studentId }: Prim
             {pendingRecoveries > 0 && action.kind !== 'recovery' && (
                 <p className="mt-4 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-warn-text">
                     {pendingRecoveries === 1 ? 'Tienes 1 falta por reponer.' : `Tienes ${pendingRecoveries} faltas por reponer.`}{' '}
-                    <Link className="font-bold underline underline-offset-4" href={studentHref('/dashboard/estudiante/asistencia', studentId)}>
+                    <Link className="font-bold underline underline-offset-4" href={studentHref('/dashboard/estudiante/clases', studentId)}>
                         Resolver
                     </Link>
                 </p>

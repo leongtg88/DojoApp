@@ -46,7 +46,7 @@ export function StudentAttendanceRecords({ records }: StudentAttendanceRecordsPr
 
             {records.length === 0 ? (
                 <EmptyState
-                    action={{ label: 'Ver mi horario', href: '/dashboard/estudiante/horario' }}
+                    action={{ label: 'Ver mi horario', href: '/dashboard/estudiante/clases' }}
                     className="border-t border-edge"
                     description="Tu instructor las registrará en el pase de lista de cada clase."
                     icon={Calendar}

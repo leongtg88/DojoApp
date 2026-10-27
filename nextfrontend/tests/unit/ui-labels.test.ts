@@ -36,11 +36,11 @@ describe('UX-01 · navegación', () => {
 
     it('RoleNavigation toma las etiquetas de NAV_LABELS', () => {
         expect(getRoleNavigation('STUDENT').map((item) => item.label)).toEqual([
-            NAV_LABELS.resumen,
-            NAV_LABELS.miPerfil,
-            NAV_LABELS.miProgreso,
-            NAV_LABELS.horario,
-            NAV_LABELS.asistencia,
+            NAV_LABELS.inicio,
+            NAV_LABELS.entrenar,
+            NAV_LABELS.clases,
+            NAV_LABELS.progreso,
+            NAV_LABELS.perfil,
             NAV_LABELS.seguridad,
         ])
         expect(getRoleNavigation('SCHOOL_ADMIN').map((item) => item.label)).toContain(NAV_LABELS.alumnos)

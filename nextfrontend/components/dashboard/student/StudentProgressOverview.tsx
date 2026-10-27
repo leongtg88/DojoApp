@@ -1,7 +1,6 @@
 import { Hourglass } from 'lucide-react'
 import type { StudentAttendancePunchData, StudentDashboardSummary, StudentKataProgressSummary } from '@/types/dashboard'
 import { ExaminationCriteriaCard } from './ExaminationCriteriaCard'
-import { StudentSyllabus } from './StudentSyllabus'
 import { GradoProgress } from '@/components/dashboard/dojo/GradoProgress'
 
 interface StudentProgressOverviewProps {
@@ -19,7 +18,7 @@ export function StudentProgressOverview({ kataSummary, summary, attendanceData }
             <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                     <p className="text-xs font-semibold uppercase tracking-wide text-accent">Mi progreso</p>
-                    <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Katas y grado</h1>
+                    <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Grado y examen</h1>
                     <p className="mt-2 text-xs text-ink-3">
                         {grado.currentRankName ?? 'Grado actual'} · {grado.approvedKatas} de {grado.requiredKatas} katas revisadas
                     </p>
@@ -43,7 +42,6 @@ export function StudentProgressOverview({ kataSummary, summary, attendanceData }
             <div className="mt-7 space-y-5">
                 <GradoProgress grado={grado} />
                 <ExaminationCriteriaCard grado={grado} studentId={summary.profile.id} />
-                <StudentSyllabus techniques={summary.techniques} />
             </div>
         </main>
     )

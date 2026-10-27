@@ -77,7 +77,7 @@ export function FamilyMembersView({ members }: FamilyMembersViewProps) {
                                     <UserRound aria-hidden="true" className="size-3.5" />
                                     Ver perfil
                                 </Link>
-                                <Link className="inline-flex items-center gap-1.5 rounded-md border border-edge-strong bg-surface-2 px-3 py-1.5 text-xs font-bold text-ink-2 transition-colors hover:bg-surface-3 hover:text-ink" href={studentHref('/dashboard/estudiante/asistencia', entry.id)}>
+                                <Link className="inline-flex items-center gap-1.5 rounded-md border border-edge-strong bg-surface-2 px-3 py-1.5 text-xs font-bold text-ink-2 transition-colors hover:bg-surface-3 hover:text-ink" href={studentHref('/dashboard/estudiante/clases', entry.id)}>
                                     <CalendarDays aria-hidden="true" className="size-3.5" />
                                     Asistencia
                                 </Link>

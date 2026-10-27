@@ -97,6 +97,11 @@ export const ADMIN_SECTIONS = [
 
 /** Etiquetas de menú vigentes. Centralizadas para no repetirlas en componentes. */
 export const NAV_LABELS = {
+  inicio: 'Inicio',
+  entrenar: 'Entrenar',
+  clases: 'Clases',
+  progreso: 'Progreso',
+  perfil: 'Perfil',
   resumen: 'Resumen',
   miPerfil: 'Mi perfil',
   miProgreso: 'Mi progreso',

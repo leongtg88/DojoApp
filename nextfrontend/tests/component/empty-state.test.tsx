@@ -20,10 +20,10 @@ describe('UX-A3 · EmptyState', () => {
     })
 
     it('ofrece una acción de enlace accesible', () => {
-        render(<EmptyState title="No tienes faltas por reponer" action={{ label: 'Ver mi horario', href: '/dashboard/estudiante/horario' }} />)
+        render(<EmptyState title="No tienes faltas por reponer" action={{ label: 'Ver mi horario', href: '/dashboard/estudiante/clases' }} />)
 
         const link = screen.getByRole('link', { name: 'Ver mi horario' })
-        expect(link).toHaveAttribute('href', '/dashboard/estudiante/horario')
+        expect(link).toHaveAttribute('href', '/dashboard/estudiante/clases')
     })
 
     it('ofrece una acción de botón que ejecuta la llamada', () => {

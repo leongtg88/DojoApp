@@ -19,8 +19,8 @@ export interface NotificationContext {
 type NotificationBuilder = (context: NotificationContext) => NotificationContent
 
 const PROGRESS_LINK = '/dashboard/estudiante/progreso'
-const SCHEDULE_LINK = '/dashboard/estudiante/horario'
-const ATTENDANCE_LINK = '/dashboard/estudiante/asistencia'
+const SCHEDULE_LINK = '/dashboard/estudiante/clases'
+const ATTENDANCE_LINK = '/dashboard/estudiante/clases'
 const PROFILE_LINK = '/dashboard/estudiante/perfil'
 const ADMIN_STUDENTS_LINK = '/dashboard/admin/alumnos'
 const ADMIN_ATTENDANCE_LINK = '/dashboard/admin/asistencia'

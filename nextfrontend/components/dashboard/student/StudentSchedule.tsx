@@ -5,24 +5,32 @@ import { CalendarDays, ChevronRight, Clock, UserRound } from 'lucide-react'
 import type { ClassSchedule } from '@/types/dashboard'
 import { nextClassFrom, WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
 import { EmptyState } from '@/components/common/EmptyState'
+import { useNow } from '@/lib/ui/use-now'
 
 interface StudentScheduleProps {
     classes: ClassSchedule[]
+    /** Dentro de otra página (Clases): sin `<main>` ni cabecera propia. */
+    embedded?: boolean
 }
 
-export function StudentSchedule({ classes }: StudentScheduleProps) {
+export function StudentSchedule({ classes, embedded = false }: StudentScheduleProps) {
     const [selectedDay, setSelectedDay] = useState<number | 'ALL'>('ALL')
     const filteredClasses = selectedDay === 'ALL'
         ? classes
         : classes.filter(({ dayOfWeek }) => dayOfWeek === selectedDay)
-    const nextClass = nextClassFrom(classes)
+    const now = useNow()
+    const nextClass = now ? nextClassFrom(classes, now) : null
+    const Wrapper = embedded ? 'section' : 'main'
 
     return (
-        <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-            <p className="text-xs font-semibold uppercase tracking-wide text-accent">Mi horario</p>
-            <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Clases inscritas</h1>
-            <p className="mt-2 text-xs text-ink-3">Horario de las clases activas en tu expediente.</p>
-
+        <Wrapper className={embedded ? '' : 'mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8'}>
+            {!embedded && (
+                <>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-accent">Mi horario</p>
+                    <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Clases inscritas</h1>
+                    <p className="mt-2 text-xs text-ink-3">Horario de las clases activas en tu expediente.</p>
+                </>
+            )}
             {classes.length === 0 ? (
                 <EmptyState
                     className="mt-7"
@@ -50,6 +58,6 @@ export function StudentSchedule({ classes }: StudentScheduleProps) {
                     </ul>}
                 </>
             )}
-        </main>
+        </Wrapper>
     )
 }

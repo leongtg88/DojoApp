@@ -50,7 +50,7 @@ describe('F4-06 · vista de familia (tutor)', () => {
     expect(screen.getByText('María Pérez')).toBeInTheDocument()
 
     expect(hrefs()).toContain('/dashboard/estudiante/perfil?estudiante=child-1')
-    expect(hrefs()).toContain('/dashboard/estudiante/asistencia?estudiante=child-2')
+    expect(hrefs()).toContain('/dashboard/estudiante/clases?estudiante=child-2')
     // El expediente propio no lleva parámetro.
     expect(hrefs()).toContain('/dashboard/estudiante/perfil')
   })

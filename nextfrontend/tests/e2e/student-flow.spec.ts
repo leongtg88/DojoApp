@@ -14,15 +14,15 @@ test.describe('Flujo del alumno', () => {
     await expect(page.getByRole('heading', { name: /Bienvenid/i })).toBeVisible()
 
     await page.goto('/dashboard/estudiante/progreso')
-    await expect(page.getByRole('heading', { name: /Katas y grado/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /Grado y examen/i })).toBeVisible()
 
-    await page.goto('/dashboard/estudiante/asistencia')
-    await expect(page.getByRole('heading', { level: 1, name: /Asistencia/i })).toBeVisible()
+    await page.goto('/dashboard/estudiante/clases')
+    await expect(page.getByRole('heading', { level: 1, name: /Mis clases/i })).toBeVisible()
   })
 
   test('reporta una inasistencia y la ve confirmada', async ({ page }) => {
     await login(page, email!, password!)
-    await page.goto('/dashboard/estudiante/asistencia')
+    await page.goto('/dashboard/estudiante/clases')
 
     await page.locator('summary').filter({ hasText: 'Reportar una inasistencia' }).click()
     await page.selectOption('#absence-class', { index: 0 })
