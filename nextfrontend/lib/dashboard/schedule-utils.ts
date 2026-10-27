@@ -107,7 +107,7 @@ const santoDomingoPartsFormatter = new Intl.DateTimeFormat('en-CA', {
  * expresados en la zona horaria del dojo (América/Santo_Domingo). El servidor
  * (UTC en Vercel) no debe resolver el horario con su hora local.
  */
-function santoDomingoWeekdayAndMinutes(date: Date): { weekday: number; minutes: number; dateKey: string } {
+export function santoDomingoWeekdayAndMinutes(date: Date): { weekday: number; minutes: number; dateKey: string } {
   const parts = santoDomingoPartsFormatter.formatToParts(date)
   const get = (type: Intl.DateTimeFormatPartTypes) => Number(parts.find((part) => part.type === type)?.value)
   const year = get('year')
@@ -133,7 +133,7 @@ export function latestSessionDate(dayOfWeek: number, now = new Date()): Date {
   return new Date(Date.UTC(year, month - 1, day - diff, 12, 0, 0))
 }
 
-function timeToMinutes(value: string): number {
+export function timeToMinutes(value: string): number {
   const [hours, minutes] = value.split(':').map(Number)
   return (Number.isFinite(hours) ? hours : 0) * 60 + (Number.isFinite(minutes) ? minutes : 0)
 }
