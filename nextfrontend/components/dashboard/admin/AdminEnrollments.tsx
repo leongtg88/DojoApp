@@ -37,7 +37,6 @@ export function AdminEnrollments({ enrollments }: AdminEnrollmentsProps) {
     }
 
     function openConversion(enrollment: AdminEnrollmentSummary) {
-        console.log('[convertir-alumno] abrir formulario para:', enrollment.id, enrollment.applicantName)
         const applicant = enrollment.applicants[0]
         const parts = (applicant?.name ?? enrollment.applicantName ?? '').trim().split(/\s+/)
         setSelectedEnrollment(enrollment)
