@@ -6,6 +6,7 @@ import { signOut } from 'next-auth/react'
 import { LogOut, Menu } from 'lucide-react'
 import type { DashboardRole } from '@/types/dashboard'
 import type { FamilyView } from '@/lib/family/guardians'
+import { isPathWithinPanel } from '@/lib/navigation/panel-path'
 import { getPanelHref } from './RolePanels'
 import { DashboardSidebar } from './DashboardSidebar'
 import { MobileDashboardSidebar } from './MobileDashboardSidebar'
@@ -28,9 +29,9 @@ interface DashboardShellProps {
 }
 
 function resolveActiveRole(pathname: string, roles: DashboardRole[], primaryRole: DashboardRole): DashboardRole {
-    if (pathname.startsWith(getPanelHref('STUDENT'))) return 'STUDENT'
-    if (pathname.startsWith(getPanelHref('INSTRUCTOR'))) return 'INSTRUCTOR'
-    if (pathname.startsWith(getPanelHref('SCHOOL_ADMIN'))) {
+    if (isPathWithinPanel(pathname, getPanelHref('STUDENT'))) return 'STUDENT'
+    if (isPathWithinPanel(pathname, getPanelHref('INSTRUCTOR'))) return 'INSTRUCTOR'
+    if (isPathWithinPanel(pathname, getPanelHref('SCHOOL_ADMIN'))) {
         return roles.includes('SUPERADMIN') ? 'SUPERADMIN' : roles.includes('SCHOOL_ADMIN') ? 'SCHOOL_ADMIN' : primaryRole
     }
     return primaryRole

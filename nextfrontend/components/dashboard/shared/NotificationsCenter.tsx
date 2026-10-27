@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { BellOff, CheckCheck, Trash2 } from 'lucide-react'
 import type { NotificationView } from '@/lib/notifications/queries'
+import { buildNotificationHref } from '@/lib/notifications/links'
 import { NOTIFICATION_PRIORITY_LABELS, NOTIFICATION_PRIORITY_STYLES, formatNotificationRelative } from '@/lib/notifications/format'
 import { useConfirm } from '@/components/dashboard/shared/useConfirm'
 
@@ -139,7 +140,7 @@ export function NotificationsCenter({ initialItems, initialNextCursor, initialUn
                                     ? 'border-cyan-500/30 bg-cyan-500/5 hover:bg-cyan-500/10'
                                     : 'border-edge bg-surface-2 hover:bg-surface-3/40'
                                     }`}
-                                href={item.link ?? '/dashboard/notificaciones'}
+                                href={buildNotificationHref(item.link, item.studentId)}
                                 onClick={() => void handleOpen(item)}
                             >
                                 <div className="flex items-center gap-2">

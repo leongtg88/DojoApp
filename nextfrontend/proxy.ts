@@ -1,7 +1,15 @@
 import { auth } from '@/auth'
 import { NextResponse } from 'next/server'
+import { buildLegacyStudentRedirect } from '@/lib/navigation/legacy-redirects'
 
 export default auth((request) => {
+  // UX-B1: las rutas antiguas deben ser 308 reales, no un redirect de cliente
+  // después de que el layout del dashboard haya empezado a transmitir.
+  const legacyRedirect = buildLegacyStudentRedirect(request.nextUrl.pathname, request.nextUrl.search)
+  if (legacyRedirect) {
+    return NextResponse.redirect(new URL(legacyRedirect, request.url), 308)
+  }
+
   if (request.auth?.user) {
     return NextResponse.next()
   }

@@ -186,3 +186,23 @@ describe('matriz de autorización · rol incorrecto', () => {
     expect(response.status).toBe(403)
   })
 })
+
+// UX-B1: el tutor usa el mismo portal y debe poder abrir su bandeja.
+describe('matriz de autorización · notificaciones del tutor', () => {
+  const entry = (route: string, method: HttpMethod): Entry => {
+    const found = ROUTES.find((item) => item.route === route && item.method === method)
+    if (!found) throw new Error(`Ruta de prueba no encontrada: ${method} ${route}`)
+    return found
+  }
+
+  it('GUARDIAN puede listar, marcar todas y marcar una notificación', async () => {
+    const school = await createSchool()
+    await loginAs(['GUARDIAN'], school.id)
+
+    expect((await invoke(entry('notifications', 'GET'))).status).toBe(200)
+    expect((await invoke(entry('notifications', 'PATCH'))).status).toBe(200)
+
+    // El rol pasa el guard; la notificación 'x' no existe → 404, no 403.
+    expect((await invoke(entry('notifications/[id]', 'PATCH'))).status).toBe(404)
+  })
+})

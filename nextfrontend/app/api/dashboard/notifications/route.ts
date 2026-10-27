@@ -5,7 +5,7 @@ import { hasAnyRole } from '@/lib/auth/roles'
 import { clearNotifications, listNotifications, markAllNotificationsRead } from '@/lib/notifications/queries'
 import type { DashboardRole } from '@/types/dashboard'
 
-const ALL_ROLES: DashboardRole[] = ['STUDENT', 'INSTRUCTOR', 'SCHOOL_ADMIN', 'SUPERADMIN']
+const ALL_ROLES: DashboardRole[] = ['STUDENT', 'GUARDIAN', 'INSTRUCTOR', 'SCHOOL_ADMIN', 'SUPERADMIN']
 
 const listQuerySchema = z.object({
   cursor: z.string().trim().min(1).max(64).optional(),

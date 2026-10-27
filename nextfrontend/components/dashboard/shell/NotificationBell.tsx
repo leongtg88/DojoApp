@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Bell, BellOff, BellRing, CheckCheck, Trash2 } from 'lucide-react'
 import type { NotificationView } from '@/lib/notifications/queries'
+import { buildNotificationHref } from '@/lib/notifications/links'
 import { NOTIFICATION_PRIORITY_STYLES, formatNotificationRelative } from '@/lib/notifications/format'
 import { setUnreadBadge } from '@/lib/badge'
 import { isStandalone } from '@/lib/pwa'
@@ -290,7 +291,7 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
                             <Link
                                 className={`flex gap-2.5 border-b border-edge/60 px-3 py-2.5 transition-colors last:border-b-0 hover:bg-surface-3/50 ${item.readAt === null ? 'bg-cyan-500/5' : ''
                                     }`}
-                                href={item.link ?? '/dashboard/notificaciones'}
+                                href={buildNotificationHref(item.link, item.studentId)}
                                 key={item.id}
                                 onClick={() => void handleOpenNotification(item)}
                             >

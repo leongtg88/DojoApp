@@ -6,6 +6,7 @@ import { usePathname, useSearchParams } from 'next/navigation'
 import { AnimatePresence, motion } from 'motion/react'
 import { LogOut, X } from 'lucide-react'
 import type { DashboardRole } from '@/types/dashboard'
+import { isActiveNavHref } from '@/lib/navigation/panel-path'
 import { getRoleNavigation } from './RoleNavigation'
 import { getPanelHref, getRolePanelOptions } from './RolePanels'
 import { NotificationBell } from './NotificationBell'
@@ -30,7 +31,7 @@ export function MobileDashboardSidebar({ open, onClose, onSignOut, activeRole, r
     const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount, newStudentCount)
     const activeHref = getPanelHref(activeRole)
     const currentHref = navigation
-        .filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))
+        .filter((item) => isActiveNavHref(pathname, item.href))
         .sort((a, b) => b.href.length - a.href.length)[0]?.href
     const switchOptions = getRolePanelOptions(roles).filter((option) => option.href !== activeHref)
     const initials = (userName ?? 'Usuario').split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()

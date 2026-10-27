@@ -10,7 +10,7 @@ interface NotificationRouteContext {
 export async function PATCH(_: Request, { params }: NotificationRouteContext) {
   const session = await auth()
 
-  if (!session?.user?.id || !hasAnyRole(session.user, ['STUDENT', 'INSTRUCTOR', 'SCHOOL_ADMIN', 'SUPERADMIN'])) {
+  if (!session?.user?.id || !hasAnyRole(session.user, ['STUDENT', 'GUARDIAN', 'INSTRUCTOR', 'SCHOOL_ADMIN', 'SUPERADMIN'])) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 

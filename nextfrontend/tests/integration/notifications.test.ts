@@ -18,7 +18,7 @@ describe('F8-04 · notificaciones', () => {
 
     const page = await listNotifications(userId)
     expect(page.unreadCount).toBe(1)
-    expect(page.items[0]).toMatchObject({ type: 'TECHNIQUES_ASSIGNED', link: '/dashboard/estudiante/progreso' })
+    expect(page.items[0]).toMatchObject({ type: 'TECHNIQUES_ASSIGNED', link: '/dashboard/estudiante/entrenar', studentId })
   })
 
   it('deduplica los avisos de asistencia sin leer', async () => {

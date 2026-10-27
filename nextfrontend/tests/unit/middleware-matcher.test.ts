@@ -19,4 +19,9 @@ describe('middleware de protección del dashboard', () => {
     expect(proxySource).toMatch(/callbackUrl/)
     expect(proxySource).toMatch(/NextResponse\.redirect\(loginUrl\)/)
   })
+
+  it('resuelve las rutas antiguas con un 308 antes de autenticar', () => {
+    expect(proxySource).toContain('buildLegacyStudentRedirect')
+    expect(proxySource).toMatch(/NextResponse\.redirect\(new URL\(legacyRedirect, request\.url\), 308\)/)
+  })
 })

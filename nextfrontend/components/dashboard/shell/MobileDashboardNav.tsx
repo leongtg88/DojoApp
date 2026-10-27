@@ -5,6 +5,7 @@ import Link, { useLinkStatus } from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import type { LucideIcon } from 'lucide-react'
 import type { DashboardRole } from '@/types/dashboard'
+import { isActiveNavHref } from '@/lib/navigation/panel-path'
 import { getRoleNavigation } from './RoleNavigation'
 
 interface MobileDashboardNavProps {
@@ -68,7 +69,7 @@ export function MobileDashboardNav({ activeRole, pendingEnrollmentCount = 0, new
     const navigation = getRoleNavigation(activeRole, pendingEnrollmentCount, newStudentCount).filter((item) => !item.hideInBottomNav)
     const [pendingHref, setPendingHref] = useState<string | null>(null)
     const currentHref = navigation
-        .filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))
+        .filter((item) => isActiveNavHref(pathname, item.href))
         .sort((a, b) => b.href.length - a.href.length)[0]?.href
     const withStudentContext = (href: string) => {
         if (activeRole !== 'STUDENT' || !activeStudentId) return href

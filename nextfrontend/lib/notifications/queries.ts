@@ -7,6 +7,7 @@ export interface NotificationView {
   title: string
   body: string
   link: string | null
+  studentId: string | null
   priority: NotificationPriority
   readAt: string | null
   createdAt: string
@@ -24,6 +25,7 @@ function toView(notification: {
   title: string
   body: string
   link: string | null
+  studentId: string | null
   priority: NotificationPriority
   readAt: Date | null
   createdAt: Date
@@ -34,6 +36,7 @@ function toView(notification: {
     title: notification.title,
     body: notification.body,
     link: notification.link,
+    studentId: notification.studentId,
     priority: notification.priority,
     readAt: notification.readAt?.toISOString() ?? null,
     createdAt: notification.createdAt.toISOString(),

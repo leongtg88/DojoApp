@@ -19,6 +19,7 @@ export interface NotificationContext {
 type NotificationBuilder = (context: NotificationContext) => NotificationContent
 
 const PROGRESS_LINK = '/dashboard/estudiante/progreso'
+const TRAINING_LINK = '/dashboard/estudiante/entrenar'
 const SCHEDULE_LINK = '/dashboard/estudiante/clases'
 const ATTENDANCE_LINK = '/dashboard/estudiante/clases'
 const PROFILE_LINK = '/dashboard/estudiante/perfil'
@@ -57,13 +58,13 @@ const builders: Record<NotificationType, NotificationBuilder> = {
   TECHNIQUES_ASSIGNED: ({ studentName, count }) => ({
     title: 'Nuevas técnicas asignadas',
     body: `${studentName}, tu Sensei te asignó ${count} ${pluralize(count, 'técnica', 'técnicas')} para practicar.`,
-    link: PROGRESS_LINK,
+    link: TRAINING_LINK,
     priority: 'ACTION',
   }),
   TECHNIQUES_REMOVED: ({ studentName, count }) => ({
     title: 'Técnicas actualizadas',
     body: `${studentName}, se ${pluralize(count, 'retiró', 'retiraron')} ${count} ${pluralize(count, 'técnica', 'técnicas')} de tu plan de práctica.`,
-    link: PROGRESS_LINK,
+    link: TRAINING_LINK,
     priority: 'INFO',
   }),
   RANK_PROMOTED: ({ studentName, data }) => {
@@ -81,7 +82,7 @@ const builders: Record<NotificationType, NotificationBuilder> = {
     return {
       title: 'Técnicas desbloqueadas',
       body: `${studentName}, tienes ${count} ${pluralize(count, 'técnica nueva', 'técnicas nuevas')} que practicar${suffix}.`,
-      link: PROGRESS_LINK,
+      link: TRAINING_LINK,
       priority: 'ACTION',
     }
   },
