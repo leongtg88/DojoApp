@@ -42,6 +42,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-B1 · Navegación de 5 destinos | 2026-10-26 | `ux(B1): navegación de 5 destinos y rutas Clases/Entrenar` | ✅ Hecha | ⏳ Pendiente (León) |
 | UX-B4 · Instructor: modo tatami | 2026-10-27 | `ux(B4): modo tatami del instructor` | ✅ Hecha | — |
 | UX-B5 · Admin en 5 secciones y bandeja Hoy | 2026-10-27 | `ux(B5): admin en 5 secciones y bandeja Hoy` | ✅ Hecha | ⏳ Pendiente (León) |
+| UX-B6 · Asistencia del admin en pestañas | 2026-10-27 | `ux(B6): asistencia del admin en pestañas` | ✅ Hecha | — |
 
 **Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
 
@@ -825,3 +826,56 @@ Función pura, sin React ni Prisma. Recibe `now`, `classes`, `pendingRecoveries`
 - Revisión humana del diff antes de mergear (obligatoria para B5).
 - En 375 px los nombres “Configuración” y “Comunicación” se truncan en la barra inferior. Se puede acortar a “Config.” / “Comunic.” o permitir dos líneas; se decide con León en el dry-run.
 - Dry-run de León recorriendo sus tareas diarias en la nueva estructura (lo pide la guía). Si algo quedó enterrado, se ajusta el agrupamiento.
+
+---
+
+## UX-B6 · Asistencia del admin en pestañas
+
+- **Fecha:** 2026-10-27
+- **Commit:** `ux(B6): asistencia del admin en pestañas`
+
+**Archivos:**
+
+| Tipo | Archivo |
+|---|---|
+| Nuevo | `components/common/Tabs.tsx` |
+| Nuevo | `tests/component/tabs.test.tsx` |
+| Modificado | `app/(dashboard)/admin/asistencia/page.tsx` |
+
+**Pestañas:**
+
+| Pestaña | Contenido movido |
+|---|---|
+| **Pase de lista** | `AdminExpectedSummary` + `AdminPassListPanel` |
+| **Reposiciones** | `OnlineRecoveryPanel` (modo admin) |
+| **Auditoría** | `AdminExpectedTable` + `AdminAttendanceView` (registros globales) |
+| **Política** | `AdminAbsencePolicyCard` |
+
+El filtro de clase/fecha (`AdminExpectedControls`) queda encima de las pestañas porque alimenta el pase de lista y la auditoría.
+
+**Decisiones tomadas y por qué:**
+
+1. **Se creó el primitivo `Tabs` ahora** porque UX-B0 aún no existe y B6 lo necesita. Accesible: `role="tablist"`, `aria-selected`, panel asociado, flechas/Inicio/Fin y 44 px. B0 no debe duplicarlo.
+2. **No se cambió la lógica de ningún bloque**: solo se movieron a su pestaña. Las APIs y los permisos quedan igual.
+3. **Las pestañas se envuelven en móvil** (`flex-wrap`), no se desplazan horizontalmente: las 4 quedan visibles a 375 px.
+4. **El estado de la pestaña es local**. Si cambias el filtro de clase/fecha, la página recarga y vuelve a “Pase de lista”. Es aceptable porque el filtro vive arriba y el uso normal es pasar lista; se puede persistir en la URL más adelante.
+5. **Las solicitudes de UX-A6 aparecerán en “Reposiciones”** cuando existan; hoy esa pestaña muestra las clases online y las faltas por agendar que ya había.
+
+**Pruebas (4 nuevas, prefijo `UX-B0 ·`):** pestaña inicial y panel asociado, cambio con clic, navegación con flechas/Inicio/Fin, y solo la activa alcanzable con Tab.
+
+**Resultado:**
+
+| Comando | Resultado |
+|---|---|
+| `pnpm lint` | ✅ 0 errores, 35 warnings preexistentes |
+| `pnpm typecheck` | ✅ Sin salida |
+| `pnpm test` | ✅ 61 archivos / **288 tests** |
+| `pnpm test:integration` | No aplica: sin cambios de API ni BD |
+| Smoke admin (Playwright, entorno aislado) | ✅ 4 pestañas, cambio de panel correcto, contenido esperado en cada una, sin overflow horizontal a 375 px y 0 errores de consola |
+
+**Desviaciones respecto a la guía:** ninguna de alcance. El primitivo `Tabs` se adelanta desde UX-B0 por dependencia.
+
+**Pendientes o dudas:**
+
+- Persistir la pestaña activa en la URL (`?tab=`), si el dry-run de León lo pide.
+- Revisar el copy de la pestaña “Auditoría” con datos reales (hoy muestra el listado esperado + registros globales).

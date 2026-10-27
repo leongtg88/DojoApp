@@ -1,4 +1,6 @@
 import { auth } from '@/auth'
+import { EmptyState } from '@/components/common/EmptyState'
+import { Tabs } from '@/components/common/Tabs'
 import { AdminAbsencePolicyCard } from '@/components/dashboard/admin/AdminAbsencePolicyCard'
 import { AdminAttendanceView } from '@/components/dashboard/admin/AdminAttendanceView'
 import { AdminExpectedControls } from '@/components/dashboard/admin/AdminExpectedControls'
@@ -60,24 +62,9 @@ export default async function AdminAttendancePage({ searchParams }: AdminAttenda
         <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
             <p className="text-xs font-semibold uppercase tracking-wide text-accent">Administración</p>
             <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">Asistencia</h1>
-            <div className="mt-6 space-y-6">
-                {policyData && (
-                    <AdminAbsencePolicyCard
-                        initialPolicy={policyData.policy}
-                        initialSchoolId={policyData.selectedSchoolId}
-                        schools={policyData.schools}
-                    />
-                )}
-                {recoveryData && (
-                    <OnlineRecoveryPanel
-                        candidates={recoveryData.candidates}
-                        currentUserId={userId}
-                        instructors={instructors ?? []}
-                        mode="admin"
-                        recoveries={recoveryData.recoveries}
-                    />
-                )}
-                {roster && <AdminExpectedSummary roster={roster} />}
+            <p className="mt-2 text-xs text-ink-3">Pase de lista, reposiciones, auditoría y política en un solo lugar.</p>
+
+            <div className="mt-7">
                 <AdminExpectedControls
                     classDayLabel={classDayLabel}
                     dateLabel={dateFormatter.format(new Date(`${date}T00:00:00`))}
@@ -89,9 +76,64 @@ export default async function AdminAttendancePage({ searchParams }: AdminAttenda
                     overrideDate={parameters.date ?? null}
                     selectedClassId={selectedClassId}
                 />
-                {roster && <AdminPassListPanel roster={roster} />}
-                {roster && <AdminExpectedTable roster={roster} />}
-                <AdminAttendanceView />
+            </div>
+
+            <div className="mt-6">
+                <Tabs
+                    items={[
+                        {
+                            id: 'pase',
+                            label: 'Pase de lista',
+                            content: roster ? (
+                                <div className="space-y-6">
+                                    <AdminExpectedSummary roster={roster} />
+                                    <AdminPassListPanel roster={roster} />
+                                </div>
+                            ) : (
+                                <EmptyState description="Elige una clase con el filtro de arriba para pasar lista." title="No hay una clase seleccionada" />
+                            ),
+                        },
+                        {
+                            id: 'reposiciones',
+                            label: 'Reposiciones',
+                            content: recoveryData ? (
+                                <OnlineRecoveryPanel
+                                    candidates={recoveryData.candidates}
+                                    currentUserId={userId}
+                                    instructors={instructors ?? []}
+                                    mode="admin"
+                                    recoveries={recoveryData.recoveries}
+                                />
+                            ) : (
+                                <EmptyState description="Cuando haya faltas por reponer o clases online, aparecerán aquí." title="No hay reposiciones disponibles" />
+                            ),
+                        },
+                        {
+                            id: 'auditoria',
+                            label: 'Auditoría',
+                            content: (
+                                <div className="space-y-6">
+                                    {roster && <AdminExpectedTable roster={roster} />}
+                                    <AdminAttendanceView />
+                                </div>
+                            ),
+                        },
+                        {
+                            id: 'politica',
+                            label: 'Política',
+                            content: policyData ? (
+                                <AdminAbsencePolicyCard
+                                    initialPolicy={policyData.policy}
+                                    initialSchoolId={policyData.selectedSchoolId}
+                                    schools={policyData.schools}
+                                />
+                            ) : (
+                                <EmptyState description="Configura la política de faltas de la escuela." title="No hay política configurada" />
+                            ),
+                        },
+                    ]}
+                    label="Secciones de asistencia"
+                />
             </div>
         </main>
     )
