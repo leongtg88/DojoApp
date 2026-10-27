@@ -235,26 +235,28 @@ function RankCard({
 						<button
 							type="button"
 							title="Editar grado"
+							aria-label="Editar grado"
 							onClick={(event) => {
 								event.stopPropagation()
 								onEditRank(rank)
 							}}
-							className="rounded p-1 text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink"
+							className="flex size-11 items-center justify-center rounded text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink"
 						>
-							<Edit2 className="h-3 w-3" />
+							<Edit2 className="h-4 w-4" />
 						</button>
 					)}
 					{onDeleteRank && !rank.isMaximumRank && (
 						<button
 							type="button"
 							title="Eliminar grado"
+							aria-label="Eliminar grado"
 							onClick={(event) => {
 								event.stopPropagation()
 								onDeleteRank(rank.id)
 							}}
-							className="rounded p-1 text-ink-3 transition-colors hover:bg-red-950/50 hover:text-danger-text"
+							className="flex size-11 items-center justify-center rounded text-ink-3 transition-colors hover:bg-red-950/50 hover:text-danger-text"
 						>
-							<Trash2 className="h-3 w-3" />
+							<Trash2 className="h-4 w-4" />
 						</button>
 					)}
 				</div>

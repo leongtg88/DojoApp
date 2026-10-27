@@ -5,6 +5,7 @@ import { CalendarDays, ChevronRight, Flame, GraduationCap, UserRound } from 'luc
 import type { ClassSchedule } from '@/types/dashboard'
 import { formatNextClass, nextClassFrom, WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
 import { studentHref } from '@/lib/dashboard/student-links'
+import { useNow } from '@/lib/ui/use-now'
 
 interface NextClassCardProps {
     classes: ClassSchedule[]
@@ -16,9 +17,26 @@ function isToday(scheduledClass: ClassSchedule, now = new Date()): boolean {
 }
 
 export function NextClassCard({ classes, studentId }: NextClassCardProps) {
-    const now = new Date()
-    const next = nextClassFrom(classes, now)
-    const hasClassToday = classes.some((scheduledClass) => isToday(scheduledClass, now))
+    const now = useNow()
+    const next = now ? nextClassFrom(classes, now) : null
+    const hasClassToday = now ? classes.some((scheduledClass) => isToday(scheduledClass, now)) : false
+
+    if (!now) {
+        return (
+            <section className="rounded-lg border border-edge bg-surface-2 p-5 shadow-sm">
+                <div className="flex items-start gap-3">
+                    <span className="mt-0.5 flex size-11 shrink-0 items-center justify-center rounded-lg bg-cyan-500/15 text-accent">
+                        <CalendarDays aria-hidden="true" className="size-5" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-accent">Próxima clase</p>
+                        <div className="mt-2 h-5 w-40 animate-pulse rounded bg-surface-3" />
+                        <div className="mt-2 h-3 w-56 animate-pulse rounded bg-surface-3" />
+                    </div>
+                </div>
+            </section>
+        )
+    }
 
     return (
         <section className="rounded-lg border border-edge bg-surface-2 p-5 shadow-sm">

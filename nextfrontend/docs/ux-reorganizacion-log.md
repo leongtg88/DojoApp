@@ -467,3 +467,47 @@ Comprobaciones hechas al leer el código (no se modifica nada):
 - Confirmar con León que "Clase de prueba" es el nombre que quiere en la navbar (antes "Clase demo gratis").
 
 **Revisión humana:** no aplica.
+
+---
+
+## Revisión de front antes del despliegue (2026-10-26)
+
+**Entorno aislado, sin tocar producción:** Postgres 16 efímero en Docker (puerto 55433) con `prisma migrate deploy` + `prisma/seed.ts`; app en `localhost:3100` con `DATABASE_URL`/`DIRECT_URL` sobrescritas solo para ese proceso; Playwright headless. **42 páginas** auditadas en 375/768/1440 px (público) y 375/1440 (alumno, instructor, admin).
+
+### Hallazgos corregidos
+
+| # | Hallazgo | Corrección |
+|---|---|---|
+| 1 | **Hidratación rota** en el Inicio del alumno y del instructor: `new Date()` dentro del render de `NextClassCard` / `InstructorDashboardOverview` producía "Hoy/Mañana" distinto en servidor y cliente | Nuevo `lib/ui/use-now.ts` con `useSyncExternalStore` (servidor → `null`, cliente tras hidratar). Esqueleto estable mientras tanto |
+| 2 | **Imagen bloqueada por CSP** en `/login`: `picsum.photos` no está en `img-src` | Fondo local `/assets/20250830_110023.jpg`; cero errores de consola |
+| 3 | **CTA del hero con área táctil de 170×20 px** (A8) | `min-h-11` en el botón → **177×44 px**; el enlace del asistente también llega a 44 px |
+| 4 | Selector de tipo de documento y campo de archivo **sin nombre accesible** en el perfil | `aria-label` en ambos; el auditor deja de marcarlos |
+| 5 | Botones editar/eliminar grado de **20×20 px** en móvil | `size-11` (44×44); objetivos pequeños en esa pantalla: 107 → **33** |
+| 6 | Controles del encabezado de **36 px** (menú, campana, tema, cerrar sesión) y login público de 32 px | `size-11` (44×44) en los cinco |
+| 7 | Log con nombre del aspirante al convertir inscripción | Eliminado (commit `14798fc`) |
+| 8 | Aviso de Next por `scroll-behavior: smooth` | `data-scroll-behavior="smooth"` en `<html>` |
+
+### Hallazgos abiertos (no corregidos en esta pasada)
+
+| Hallazgo | Decisión |
+|---|---|
+| 4 `window.alert` en admin (`AdminPlans`, `AdminReviews` ×2, `AdminSchedules`) | Se sustituyen por el `Toast` de UX-B0 |
+| Enlaces sociales y de texto de 16–24 px de alto en el sitio público | Son terciarios; el requisito de 44 px aplica a acciones principales. Revisar en el pase de diseño final |
+| Botones de 30–42 px en admin (filtros, "Nuevo grado", exportar) | Revisar en UX-B5 al reorganizar el admin |
+| Mapa de Google: el `<iframe>` existe, mide 637×414 y CSP lo permite (`frame-src`), pero no cargó en headless | Verificar en navegador real antes de desplegar |
+| `WHATSAPP_DEBUG=1` registra teléfono y mensaje entrante | **No activar en producción** |
+| La página pública supera las 20 pantallas de scroll en móvil | Fuera del alcance; anotado para la revisión de contenido |
+
+### Reproducir la revisión
+
+```bash
+docker run --rm -d --name dojo-ux-review-db -e POSTGRES_USER=test \
+  -e POSTGRES_PASSWORD=test -e POSTGRES_DB=dojo_test -p 55433:5432 postgres:16-alpine
+# DATABASE_URL/DIRECT_URL -> postgresql://test:test@localhost:55433/dojo_test
+pnpm exec prisma migrate deploy && pnpm exec tsx prisma/seed.ts
+pnpm dev --port 3100   # con las variables sobrescritas solo en ese proceso
+```
+
+Capturas y resultados: `C:\Users\ASUS\AppData\Local\Temp\opencode\dojo-review-shots`.
+
+**Resultado:** lint ✅ (0 errores), typecheck ✅, **263 tests** ✅. Sin cambios de esquema, sin migraciones y sin tocar la base real.

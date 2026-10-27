@@ -27,7 +27,7 @@ export function AuthSidePanel({ mode }: AuthSidePanelProps) {
       <div
         className="absolute inset-0 z-0 bg-cover bg-center transition-all duration-700 transform scale-105 opacity-20"
         style={{
-          backgroundImage: `url('https://picsum.photos/seed/karate_dojo_master/1600/1200')`,
+          backgroundImage: `url('/assets/20250830_110023.jpg')`,
         }}
       />
 

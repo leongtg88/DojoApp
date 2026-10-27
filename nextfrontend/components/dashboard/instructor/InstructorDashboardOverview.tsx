@@ -5,6 +5,7 @@ import { CalendarDays, CalendarClock, ChevronRight, Hourglass, Users } from 'luc
 import { BirthdayWidget } from '@/components/dashboard/shared/BirthdayWidget'
 import type { DashboardBirthday, InstructorClassSummary, InstructorStudentSummary } from '@/types/dashboard'
 import { formatNextClass, nextClassFrom } from '@/lib/dashboard/schedule-utils'
+import { useNow } from '@/lib/ui/use-now'
 
 interface InstructorDashboardOverviewProps {
     birthdays: DashboardBirthday[]
@@ -14,7 +15,8 @@ interface InstructorDashboardOverviewProps {
 }
 
 export function InstructorDashboardOverview({ birthdays, classes, pendingCount, students }: InstructorDashboardOverviewProps) {
-    const nextClass = nextClassFrom(classes)
+    const now = useNow()
+    const nextClass = now ? nextClassFrom(classes, now) : null
 
     return (
         <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
@@ -30,11 +32,16 @@ export function InstructorDashboardOverview({ birthdays, classes, pendingCount, 
                         </span>
                         <div className="min-w-0">
                             <p className="text-[11px] font-bold uppercase tracking-widest text-accent">Próxima clase</p>
-                            {nextClass ? (
+                            {!now ? (
+                                <div className="mt-2 space-y-2">
+                                    <div className="h-5 w-40 animate-pulse rounded bg-surface-3" />
+                                    <div className="h-3 w-56 animate-pulse rounded bg-surface-3" />
+                                </div>
+                            ) : nextClass ? (
                                 <>
                                     <p className="mt-1 font-display text-lg font-extrabold text-ink">{nextClass.name}</p>
                                     <p className="mt-1 text-xs text-ink-3">
-                                        {formatNextClass(nextClass)} · {nextClass.startTime} - {nextClass.endTime} · {nextClass.branchName}
+                                        {formatNextClass(nextClass, now)} · {nextClass.startTime} - {nextClass.endTime} · {nextClass.branchName}
                                     </p>
                                 </>
                             ) : (

@@ -50,7 +50,7 @@ const Hero5 = ({ onOpenAssistant, onOpenEnrollment }: { onOpenAssistant: () => v
               <button
                 type="button"
                 onClick={onOpenEnrollment}
-                className="text-gray-700 text-sm font-semibold 2xl:text-base cursor-pointer"
+                className="inline-flex min-h-11 items-center justify-center px-1 text-sm font-semibold 2xl:text-base cursor-pointer"
               >
                 Reservar clase de prueba
               </button>
@@ -59,7 +59,7 @@ const Hero5 = ({ onOpenAssistant, onOpenEnrollment }: { onOpenAssistant: () => v
               <button
                 type="button"
                 onClick={onOpenAssistant}
-                className="text-xs font-semibold text-gray-700/70 underline underline-offset-4 transition-colors hover:text-brand-accent cursor-pointer"
+                className="inline-flex min-h-11 items-center text-xs font-semibold text-gray-700/70 underline underline-offset-4 transition-colors hover:text-brand-accent cursor-pointer"
               >
                 ¿Tienes dudas? Habla con el asistente
               </button>

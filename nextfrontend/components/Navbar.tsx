@@ -83,7 +83,7 @@ export default function Navbar() {
           )}
           <NavLink
             aria-label="Iniciar sesión"
-            className={`flex size-8 items-center justify-center  ${pathname === '/login' ? ' text-black' : 'text-gray-600  hover:text-brand-accent'}`}
+            className={`flex size-11 items-center justify-center  ${pathname === '/login' ? ' text-black' : 'text-gray-600  hover:text-brand-accent'}`}
             href="/login"
             title="Iniciar sesión"
           >
@@ -97,7 +97,7 @@ export default function Navbar() {
           </button>
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="text-gray-700 hover:text-brand-accent p-2 rounded-lg cursor-pointer focus:outline-none min-[1200px]:hidden"
+            className="flex size-11 items-center justify-center rounded-lg text-gray-700 hover:text-brand-accent cursor-pointer focus:outline-none min-[1200px]:hidden"
             aria-label="Menú principal"
             title="Menú principal"
           >

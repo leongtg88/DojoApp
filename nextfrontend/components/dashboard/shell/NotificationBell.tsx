@@ -240,7 +240,7 @@ export function NotificationBell({ initialUnreadCount = 0 }: NotificationBellPro
         <div className="relative" ref={containerRef}>
             <button
                 aria-label={unreadCount > 0 ? `${unreadCount} notificaciones sin leer` : 'Notificaciones'}
-                className="relative flex size-9 shrink-0 items-center justify-center rounded-lg text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink"
+                className="relative flex size-11 shrink-0 items-center justify-center rounded-lg text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink"
                 onClick={() => setOpen((current) => !current)}
                 title="Notificaciones"
                 type="button"
