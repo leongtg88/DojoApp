@@ -1,6 +1,6 @@
 'use client';
 
-const Hero5 = ({ onOpenAssistant }: { onOpenAssistant: () => void }) => {
+const Hero5 = ({ onOpenAssistant, onOpenEnrollment }: { onOpenAssistant: () => void; onOpenEnrollment: () => void }) => {
   return (
     <>
       <div
@@ -49,10 +49,19 @@ const Hero5 = ({ onOpenAssistant }: { onOpenAssistant: () => void }) => {
               style={{ animation: "color-change 10s infinite linear" }}>
               <button
                 type="button"
-                onClick={onOpenAssistant}
+                onClick={onOpenEnrollment}
                 className="text-gray-700 text-sm font-semibold 2xl:text-base cursor-pointer"
               >
-                Empieza Hoy
+                Reservar clase de prueba
+              </button>
+            </div>
+            <div className="mt-3 md:ml-4">
+              <button
+                type="button"
+                onClick={onOpenAssistant}
+                className="text-xs font-semibold text-gray-700/70 underline underline-offset-4 transition-colors hover:text-brand-accent cursor-pointer"
+              >
+                ¿Tienes dudas? Habla con el asistente
               </button>
             </div>
             <div className="mt-4 md:mb-4 w-full justify-between flex flex-row items-center lg:items-start">

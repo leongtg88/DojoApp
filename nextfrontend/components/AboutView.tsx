@@ -310,7 +310,7 @@ export default function AboutView({ onOpenEnrollment }: AboutViewProps) {
             Te invitamos a ver y participar en una clase presencial dirigida por el Sensei León.
           </p>
          <div className="pt-4">
-            <button onClick={() => onOpenEnrollment('adult')} className="hero-button glass-card-hover">RESERVAR CLASE DEMO GRATUITA</button>
+            <button onClick={() => onOpenEnrollment('adult')} className="hero-button glass-card-hover">RESERVAR CLASE DE PRUEBA</button>
           </div>
         </div>
       </section>

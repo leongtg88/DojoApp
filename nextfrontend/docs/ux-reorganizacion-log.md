@@ -35,6 +35,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-A2 · Eliminar la confirmación nativa | 2026-10-26 | `ux(A2): ConfirmModal accesible en las 14 confirmaciones` | ✅ Hecha | — |
 | UX-A3 · EmptyState y aplicación | 2026-10-26 | `ux(A3): EmptyState único en 17 estados vacíos` | ✅ Hecha | — |
 | UX-A4 · Selector familiar único | 2026-10-26 | `ux(A4): un solo selector familiar en el encabezado` | ✅ Hecha | — |
+| UX-A8 · Embudo público con un CTA | 2026-10-26 | `ux(A8): un CTA principal en las páginas públicas` | ✅ Hecha (sin eventos) | — |
 
 **Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
 
@@ -394,5 +395,75 @@ Comprobaciones hechas al leer el código (no se modifica nada):
 
 - Verificación responsive a 375/768/1440 px del encabezado con el selector (jsdom no calcula layout). Se hará en el pase de Playwright o a mano antes del Gate 1.
 - El enlace de navegación entre expedientes sigue conservando el `?estudiante=` al cambiar de sección, como antes.
+
+**Revisión humana:** no aplica.
+
+---
+
+## UX-A8 · Embudo público con un CTA principal
+
+- **Fecha:** 2026-10-26
+- **Commit:** `ux(A8): un CTA principal en las páginas públicas`
+- **Alcance:** solo frontend. No se tocó la lógica de inscripción, el rate-limit ni el honeypot.
+
+**Archivos:**
+
+| Tipo | Archivo |
+|---|---|
+| Nuevo | `tests/component/public-cta.test.tsx` |
+| Modificado | `app/globals.css` (clase `.cta-secondary`) |
+| Modificado | `components/Hero5.tsx` |
+| Modificado | `components/HomeView.tsx` |
+| Modificado | `components/Navbar.tsx` |
+| Modificado | `components/AboutView.tsx` |
+| Modificado | `components/assistant/AssistantChat.tsx` (copy) |
+
+**Jerarquía de acciones en `/`:**
+
+| Acción | Antes | Ahora |
+|---|---|---|
+| CTA del hero | "Empieza Hoy" → asistente | **"Reservar clase de prueba" → modal de clase de cortesía** |
+| Asistente | CTA principal del hero | Enlace secundario "¿Tienes dudas? Habla con el asistente" |
+| Tarjetas de clase (2) | `hero-button` dominante | `.cta-secondary` (misma acción, programa preseleccionado) |
+| Promociones familiares | `hero-button` → asistente | `.cta-secondary` → asistente (sigue siendo una duda, no una entrada) |
+| "Cómo llegar" (2 variantes responsive) | `hero-button` | Enlace de texto subrayado |
+| Biografías de maestros | `hero-button` | `.cta-secondary` (navegación, no conversión) |
+| CTA final | `hero-button` | Se mantiene: es la **misma** acción principal, repetida al cierre |
+| Navbar "CLASE DEMO GRATIS" | Botón relleno | Botón de contorno compacto "Clase de prueba" |
+| Drawer móvil | "RESERVAR CLASE DEMO" | "RESERVAR CLASE DE PRUEBA" |
+
+**Jerarquía en `/nosotros`:** un único CTA dominante ("Reservar clase de prueba"). No había más entradas que compitieran.
+
+**Decisiones tomadas y por qué:**
+
+1. **La acción primaria es reservar la clase de cortesía**, no abrir el asistente. El asistente resuelve dudas, no convierte; ahora es una salida secundaria explícita.
+2. **Los CTA de las tarjetas de clase se conservan** porque aportan el programa (`kid`/`adult`) al modal, pero bajan a secundarios: el mismo destino, distinto peso visual.
+3. **La clase `.cta-secondary` vive en `app/globals.css` dentro de `@layer utilities`** (INV-05), junto a `.hero-button`. Es un solo patrón para todos los CTA secundarios públicos.
+4. **El CTA final se mantiene dominante** porque repite la misma acción. La regla de la guía busca evitar entradas *competidoras*, no prohibir repetir la acción principal al cierre de la página.
+5. **No se tocó el formulario de inscripción** (`/inscripcion`, `ToseiGosuForm`, `public-enrollments`): sigue siendo el paso posterior, fuera del embudo de la clase muestra.
+6. **Corrección de copy en el asistente:** "Consulta información, sino habla con Sensei" → "Consulta información o habla con el Sensei" (error visible en una página pública).
+7. **Instrumentación pendiente:** `inscripcion_paso_1…4` e `inscripcion_abandono` dependen de UX-A7a, que sigue aplazada. Se instrumentarán cuando se resuelva la medición.
+
+**Pruebas añadidas (2, prefijo `UX-A8 ·`):**
+
+- La acción dominante del hero invoca `onOpenEnrollment` y no el asistente.
+- La acción secundaria invoca `onOpenAssistant`.
+
+**Resultado:**
+
+| Comando | Resultado |
+|---|---|
+| `pnpm lint` | ✅ 0 errores, 34 warnings preexistentes |
+| `pnpm typecheck` | ✅ Sin salida |
+| `pnpm test` | ✅ 57 archivos / **263 tests** / 8,41 s |
+| `pnpm test:integration` | No aplica: sin cambios de API (`public-enrollments` intacto) |
+| `pnpm test:e2e` | Pendiente: requiere servidor y BD; se hará en el pase visual |
+
+**Desviaciones respecto a la guía:** los eventos del embudo quedan para A7a. El resto del alcance de A8 está completo.
+
+**Pendientes o dudas:**
+
+- Verificación visual responsive (375/768/1440) de `/` y `/nosotros` con los nuevos pesos de botones.
+- Confirmar con León que "Clase de prueba" es el nombre que quiere en la navbar (antes "Clase demo gratis").
 
 **Revisión humana:** no aplica.

@@ -34,7 +34,7 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
   return (
     <div className="space-y-0 min-h-screen bg-brand-bg text-[#dee2f0]">
 
-      <Hero5 onOpenAssistant={onOpenAssistant} />
+      <Hero5 onOpenAssistant={onOpenAssistant} onOpenEnrollment={() => onOpenEnrollment('adult')} />
 
       {/* Karate en Santo Domingo */}
       <section className="py-5 max-w-7xl mx-auto px-8 sm:px-6 lg:px-8 space-y-12">
@@ -89,7 +89,7 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
               </div>
             </div>
             <div className="pt-2 hidden lg:block">
-              <a href="https://www.google.com/maps/place/Karate+Do+Tosei+Gusoku+Dojo+Shito+Ryu+Inoue+Ha" target="_blank" rel="noopener noreferrer" className="hero-button glass-card-hover w-full sm:w-auto">
+              <a href="https://www.google.com/maps/place/Karate+Do+Tosei+Gusoku+Dojo+Shito+Ryu+Inoue+Ha" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-700 underline underline-offset-4 transition-colors hover:text-brand-accent">
                 ¿CÓMO LLEGAR AL DOJO? <Navigation className="w-4 h-4 shrink-0" />
               </a>
             </div>
@@ -106,7 +106,7 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
           </div>
         </div>
         <div className="pt-4 lg:hidden">
-          <a href="https://www.google.com/maps/place/Karate+Do+Tosei+Gusoku+Dojo+Shito+Ryu+Inoue+Ha" target="_blank" rel="noopener noreferrer" className="hero-button glass-card-hover w-full">
+          <a href="https://www.google.com/maps/place/Karate+Do+Tosei+Gusoku+Dojo+Shito+Ryu+Inoue+Ha" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-700 underline underline-offset-4 transition-colors hover:text-brand-accent">
             ¿CÓMO LLEGAR AL DOJO? <Navigation className="w-4 h-4 shrink-0" />
           </a>
         </div>
@@ -148,8 +148,8 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
                   ))}
                 </div>
                 <div className="pt-2 mx-auto ">
-                  <button onClick={() => onOpenEnrollment(idx === 0 ? 'kid' : 'adult')} className="hero-button glass-card-hover cursor-pointer">
-                    AGENDAR CLASE GRATIS DE PRUEBA 
+                  <button onClick={() => onOpenEnrollment(idx === 0 ? 'kid' : 'adult')} className="cta-secondary">
+                    Reservar clase de prueba
                   </button>
                 </div>
               </div>
@@ -177,8 +177,8 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
                 </p>
               </div>
               <div className="flex justify-center sm:justify-start w-full">
-                <button onClick={() => onOpenAssistant('precio_nombre')} className="hero-button glass-card-hover">
-                  Promociones Familiares <ArrowRight className="w-4 h-4" />
+                <button onClick={() => onOpenAssistant('precio_nombre')} className="cta-secondary">
+                  Ver promociones familiares <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -251,8 +251,8 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
           ))}
         </div>
         <div className="text-center pt-4">
-          <Link href="/nosotros" className="hero-button glass-card-hover">
-            Biografías de maestros <ArrowRight className="w-4 h-4 text-black" />
+          <Link href="/nosotros" className="cta-secondary">
+            Biografías de maestros <ArrowRight className="w-4 h-4 text-current" />
           </Link>
         </div>
       </section>
@@ -333,7 +333,7 @@ export default function HomeView({ onOpenEnrollment, onOpenAssistant }: HomeView
           <h2 className="text-4xl sm:text-6xl font-extrabold font-display uppercase tracking-tight text-gray-700 leading-tight">El camino del cinturón negro comienza aquí</h2>
           <p className="text-sm sm:text-base text-gray-700/70 max-w-xl mx-auto font-sans leading-relaxed">Te regalamos tu primera sesión completa de cortesía. Sin compromisos.</p>
           <div className="pt-4">
-            <button onClick={() => onOpenEnrollment('adult')} className="hero-button glass-card-hover">RESERVAR CLASE GRATIS DE PRUEBA</button>
+            <button onClick={() => onOpenEnrollment('adult')} className="hero-button glass-card-hover">RESERVAR CLASE DE PRUEBA</button>
           </div>
         </div>
       </section>
