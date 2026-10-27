@@ -40,7 +40,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-A5a · `getPrimaryAction` | 2026-10-26 | `ux(A5a): función getPrimaryAction` | ✅ Hecha | — |
 | UX-A5b · Nuevo Inicio del alumno | 2026-10-26 | `ux(A5b): nuevo Inicio del alumno` | ✅ Hecha (sin eventos) | — |
 | UX-B1 · Navegación de 5 destinos | 2026-10-26 | `ux(B1): navegación de 5 destinos y rutas Clases/Entrenar` | ✅ Hecha | ⏳ Pendiente (León) |
-| UX-B4 · Instructor: modo tatami | 2026-10-27 | `ux(B4): modo tatami del instructor` | ✅ Hecha (smoke pendiente) | — |
+| UX-B4 · Instructor: modo tatami | 2026-10-27 | `ux(B4): modo tatami del instructor` | ✅ Hecha | — |
 
 **Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
 
@@ -754,12 +754,12 @@ Función pura, sin React ni Prisma. Recibe `now`, `classes`, `pendingRecoveries`
 | `pnpm typecheck` | ✅ Sin salida |
 | `pnpm test` | ✅ 60 archivos / **284 tests** |
 | `pnpm test:integration` | No aplica: sin cambios de API ni BD |
-| Smoke e2e instructor | ⏳ Pendiente: Docker Desktop estaba detenido. El spec se actualizó para comprobar la redirección y “Marcar todos presentes” |
+| Smoke instructor (Playwright, entorno aislado) | ✅ `/instructor` y `/dashboard/instructor` abren el pase de lista en `/asistencia`; bandeja con 3 contadores; “Marcar todos presentes”; Evaluaciones abre con Juan Pérez preseleccionado; 0 errores de consola |
 
 **Desviaciones respecto a la guía:** ninguna de alcance. La instrumentación se pospone con A7a.
 
 **Pendientes o dudas:**
 
-- Levantar Docker para el smoke del instructor (redirección, bandeja, preselección en Evaluaciones).
-- Revisar en 375 px la fila de acciones del roster: “Marcar todos presentes” + “Desmarcar todos” + “Agregar alumno” pueden ocupar dos líneas.
+- La fila de acciones del roster se desbordaba en 375 px; ahora usa `flex-wrap` y no hay scroll horizontal (`fix(instructor): acciones del roster en móvil`). Captura: `375-instructor-tatami-fix.png`.
+- `permanentRedirect` se resuelve como redirección de cliente: la URL termina en `/asistencia` tras unos cientos de ms. El e2e espera la URL con reintento, así que pasa.
 - La confirmación de punchs sigue fuera del pase de lista; el contador enlaza al bloque pero no hay una bandeja dedicada. Se decide en B5/B6 al reorganizar admin.

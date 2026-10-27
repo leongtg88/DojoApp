@@ -183,7 +183,7 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
                         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-edge bg-surface-1 px-5 py-3">
                             <p className="inline-flex items-center gap-2 text-xs font-semibold text-ink-3"><Users aria-hidden="true" className="size-4 text-accent" />{readOnly ? 'Consulta la asistencia de este horario.' : 'Marca a los presentes; desmarca a los ausentes.'}</p>
                             {!readOnly && (
-                                <div className="flex gap-2">
+                                <div className="flex flex-wrap gap-2">
                                     <button className="inline-flex min-h-11 items-center gap-1.5 rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-500" onClick={() => updateAllRecords(true)} type="button"><CheckCheck aria-hidden="true" className="size-4" />Marcar todos presentes</button>
                                     <button className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-edge-strong px-3 py-2 text-xs font-bold text-ink-2 hover:bg-surface-3" onClick={() => updateAllRecords(false)} type="button"><CircleX aria-hidden="true" className="size-3.5" />Desmarcar todos</button>
                                     <button className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-sky-500/40 px-3 py-2 text-xs font-bold text-info-text hover:bg-sky-500/10" onClick={() => setIsAddOpen(true)} type="button"><UserPlus aria-hidden="true" className="size-3.5" />Agregar alumno</button>
