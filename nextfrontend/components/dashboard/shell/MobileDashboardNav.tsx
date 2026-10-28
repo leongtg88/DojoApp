@@ -82,17 +82,18 @@ export function MobileDashboardNav({ activeRole, pendingEnrollmentCount = 0, new
             className="sticky bottom-0 z-40 border-t border-edge bg-surface-2/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-2px_10px_rgba(0,0,0,0.35)] backdrop-blur md:hidden print:hidden"
         >
             <div className="flex h-16 items-center gap-1 overflow-x-auto overflow-y-hidden overscroll-x-contain px-2 pb-2 touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                {navigation.map(({ href, icon: Icon, label, badge }) => {
+                {navigation.map(({ href, icon: Icon, label, shortLabel, badge }) => {
                     const active = href === currentHref
                     const linkHref = withStudentContext(href)
 
                     return (
                         <Link
+                            aria-label={label}
                             className="relative flex h-14 min-w-14 flex-1 origin-center flex-col items-center justify-center gap-1 px-1 text-center text-[10px] font-semibold transition-transform duration-150 hover:scale-105 active:scale-110 motion-reduce:transform-none"
                             href={linkHref}
                             key={href}
                         >
-                            <NavLinkContent active={active} label={label} icon={Icon} badge={badge} href={linkHref} pendingHref={pendingHref} onPendingChange={setPendingHref} />
+                            <NavLinkContent active={active} label={shortLabel ?? label} icon={Icon} badge={badge} href={linkHref} pendingHref={pendingHref} onPendingChange={setPendingHref} />
                         </Link>
                     )
                 })}

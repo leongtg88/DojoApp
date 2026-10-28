@@ -14789,6 +14789,7 @@ export namespace Prisma {
     scholarshipType: $Enums.ScholarshipType | null
     scholarshipNote: string | null
     isCompetitor: boolean | null
+    excludeFromPendingCounts: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -14820,6 +14821,7 @@ export namespace Prisma {
     scholarshipType: $Enums.ScholarshipType | null
     scholarshipNote: string | null
     isCompetitor: boolean | null
+    excludeFromPendingCounts: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -14852,6 +14854,7 @@ export namespace Prisma {
     scholarshipType: number
     scholarshipNote: number
     isCompetitor: number
+    excludeFromPendingCounts: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -14885,6 +14888,7 @@ export namespace Prisma {
     scholarshipType?: true
     scholarshipNote?: true
     isCompetitor?: true
+    excludeFromPendingCounts?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -14916,6 +14920,7 @@ export namespace Prisma {
     scholarshipType?: true
     scholarshipNote?: true
     isCompetitor?: true
+    excludeFromPendingCounts?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -14948,6 +14953,7 @@ export namespace Prisma {
     scholarshipType?: true
     scholarshipNote?: true
     isCompetitor?: true
+    excludeFromPendingCounts?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -15053,6 +15059,7 @@ export namespace Prisma {
     scholarshipType: $Enums.ScholarshipType
     scholarshipNote: string | null
     isCompetitor: boolean
+    excludeFromPendingCounts: boolean
     createdAt: Date
     updatedAt: Date
     _count: StudentCountAggregateOutputType | null
@@ -15102,6 +15109,7 @@ export namespace Prisma {
     scholarshipType?: boolean
     scholarshipNote?: boolean
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     currentRankRef?: boolean | Student$currentRankRefArgs<ExtArgs>
@@ -15156,6 +15164,7 @@ export namespace Prisma {
     scholarshipType?: boolean
     scholarshipNote?: boolean
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     currentRankRef?: boolean | Student$currentRankRefArgs<ExtArgs>
@@ -15194,6 +15203,7 @@ export namespace Prisma {
     scholarshipType?: boolean
     scholarshipNote?: boolean
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     currentRankRef?: boolean | Student$currentRankRefArgs<ExtArgs>
@@ -15232,11 +15242,12 @@ export namespace Prisma {
     scholarshipType?: boolean
     scholarshipNote?: boolean
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type StudentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "guardianId" | "schoolId" | "branchId" | "firstName" | "lastName" | "dateOfBirth" | "gender" | "email" | "contactPhone" | "medicalInfo" | "emergencyContact" | "giSize" | "beltSize" | "enrollmentDate" | "memberNumber" | "status" | "currentRank" | "currentRankId" | "photoKey" | "registrationData" | "planId" | "planStartDate" | "scholarshipType" | "scholarshipNote" | "isCompetitor" | "createdAt" | "updatedAt", ExtArgs["result"]["student"]>
+  export type StudentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "guardianId" | "schoolId" | "branchId" | "firstName" | "lastName" | "dateOfBirth" | "gender" | "email" | "contactPhone" | "medicalInfo" | "emergencyContact" | "giSize" | "beltSize" | "enrollmentDate" | "memberNumber" | "status" | "currentRank" | "currentRankId" | "photoKey" | "registrationData" | "planId" | "planStartDate" | "scholarshipType" | "scholarshipNote" | "isCompetitor" | "excludeFromPendingCounts" | "createdAt" | "updatedAt", ExtArgs["result"]["student"]>
   export type StudentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     currentRankRef?: boolean | Student$currentRankRefArgs<ExtArgs>
     plan?: boolean | Student$planArgs<ExtArgs>
@@ -15331,6 +15342,10 @@ export namespace Prisma {
       scholarshipType: $Enums.ScholarshipType
       scholarshipNote: string | null
       isCompetitor: boolean
+      /**
+       * * Si true, el expediente no cuenta en los pendientes "sin plan/sin horario".
+       */
+      excludeFromPendingCounts: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["student"]>
@@ -15804,6 +15819,7 @@ export namespace Prisma {
     readonly scholarshipType: FieldRef<"Student", 'ScholarshipType'>
     readonly scholarshipNote: FieldRef<"Student", 'String'>
     readonly isCompetitor: FieldRef<"Student", 'Boolean'>
+    readonly excludeFromPendingCounts: FieldRef<"Student", 'Boolean'>
     readonly createdAt: FieldRef<"Student", 'DateTime'>
     readonly updatedAt: FieldRef<"Student", 'DateTime'>
   }
@@ -56366,6 +56382,7 @@ export namespace Prisma {
     scholarshipType: 'scholarshipType',
     scholarshipNote: 'scholarshipNote',
     isCompetitor: 'isCompetitor',
+    excludeFromPendingCounts: 'excludeFromPendingCounts',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -58040,6 +58057,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFilter<"Student"> | $Enums.ScholarshipType
     scholarshipNote?: StringNullableFilter<"Student"> | string | null
     isCompetitor?: BoolFilter<"Student"> | boolean
+    excludeFromPendingCounts?: BoolFilter<"Student"> | boolean
     createdAt?: DateTimeFilter<"Student"> | Date | string
     updatedAt?: DateTimeFilter<"Student"> | Date | string
     currentRankRef?: XOR<BeltRankNullableScalarRelationFilter, BeltRankWhereInput> | null
@@ -58093,6 +58111,7 @@ export namespace Prisma {
     scholarshipType?: SortOrder
     scholarshipNote?: SortOrderInput | SortOrder
     isCompetitor?: SortOrder
+    excludeFromPendingCounts?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     currentRankRef?: BeltRankOrderByWithRelationInput
@@ -58149,6 +58168,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFilter<"Student"> | $Enums.ScholarshipType
     scholarshipNote?: StringNullableFilter<"Student"> | string | null
     isCompetitor?: BoolFilter<"Student"> | boolean
+    excludeFromPendingCounts?: BoolFilter<"Student"> | boolean
     createdAt?: DateTimeFilter<"Student"> | Date | string
     updatedAt?: DateTimeFilter<"Student"> | Date | string
     currentRankRef?: XOR<BeltRankNullableScalarRelationFilter, BeltRankWhereInput> | null
@@ -58202,6 +58222,7 @@ export namespace Prisma {
     scholarshipType?: SortOrder
     scholarshipNote?: SortOrderInput | SortOrder
     isCompetitor?: SortOrder
+    excludeFromPendingCounts?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: StudentCountOrderByAggregateInput
@@ -58240,6 +58261,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeWithAggregatesFilter<"Student"> | $Enums.ScholarshipType
     scholarshipNote?: StringNullableWithAggregatesFilter<"Student"> | string | null
     isCompetitor?: BoolWithAggregatesFilter<"Student"> | boolean
+    excludeFromPendingCounts?: BoolWithAggregatesFilter<"Student"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Student"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Student"> | Date | string
   }
@@ -61860,6 +61882,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -61913,6 +61936,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -61954,6 +61978,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -62007,6 +62032,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -62054,6 +62080,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -62080,6 +62107,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -62112,6 +62140,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -66159,6 +66188,7 @@ export namespace Prisma {
     scholarshipType?: SortOrder
     scholarshipNote?: SortOrder
     isCompetitor?: SortOrder
+    excludeFromPendingCounts?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -66190,6 +66220,7 @@ export namespace Prisma {
     scholarshipType?: SortOrder
     scholarshipNote?: SortOrder
     isCompetitor?: SortOrder
+    excludeFromPendingCounts?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -66221,6 +66252,7 @@ export namespace Prisma {
     scholarshipType?: SortOrder
     scholarshipNote?: SortOrder
     isCompetitor?: SortOrder
+    excludeFromPendingCounts?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -74069,6 +74101,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -74120,6 +74153,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -74651,6 +74685,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFilter<"Student"> | $Enums.ScholarshipType
     scholarshipNote?: StringNullableFilter<"Student"> | string | null
     isCompetitor?: BoolFilter<"Student"> | boolean
+    excludeFromPendingCounts?: BoolFilter<"Student"> | boolean
     createdAt?: DateTimeFilter<"Student"> | Date | string
     updatedAt?: DateTimeFilter<"Student"> | Date | string
   }
@@ -75144,6 +75179,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -75195,6 +75231,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -75564,6 +75601,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -75615,6 +75653,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -75683,6 +75722,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -75734,6 +75774,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -76676,6 +76717,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -76727,6 +76769,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -77793,6 +77836,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -77845,6 +77889,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -77984,6 +78029,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -78036,6 +78082,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -79961,6 +80008,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -80013,6 +80061,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     enrollments?: EnrollmentUncheckedCreateNestedManyWithoutStudentInput
@@ -80158,6 +80207,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -80210,6 +80260,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     enrollments?: EnrollmentUncheckedUpdateManyWithoutStudentNestedInput
@@ -80320,6 +80371,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -80372,6 +80424,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -80584,6 +80637,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -80636,6 +80690,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -80767,6 +80822,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -80819,6 +80875,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -80968,6 +81025,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -81020,6 +81078,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -81148,6 +81207,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -81200,6 +81260,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -81340,6 +81401,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -81392,6 +81454,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -81527,6 +81590,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     plan?: PlanCreateNestedOneWithoutStudentsInput
@@ -81578,6 +81642,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -81984,6 +82049,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -82036,6 +82102,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -82228,6 +82295,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -82280,6 +82348,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -82928,6 +82997,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -82980,6 +83050,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -83245,6 +83316,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -83297,6 +83369,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -83583,6 +83656,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -83635,6 +83709,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -83850,6 +83925,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -83902,6 +83978,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -84365,6 +84442,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -84416,6 +84494,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -85021,6 +85100,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -85073,6 +85153,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -85176,6 +85257,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -85228,6 +85310,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -85692,6 +85775,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -85744,6 +85828,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -85924,6 +86009,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -85976,6 +86062,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -86177,6 +86264,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -86229,6 +86317,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -86670,6 +86759,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -86722,6 +86812,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -87134,6 +87225,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -87186,6 +87278,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -87510,6 +87603,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -87562,6 +87656,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -88034,6 +88129,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -88086,6 +88182,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -88246,6 +88343,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -88298,6 +88396,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -88454,6 +88553,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -88506,6 +88606,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -88645,6 +88746,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -88697,6 +88799,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -88909,6 +89012,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     currentRankRef?: BeltRankCreateNestedOneWithoutCurrentRankStudentsInput
@@ -88961,6 +89065,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     guardians?: GuardianStudentUncheckedCreateNestedManyWithoutStudentInput
@@ -89106,6 +89211,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -89158,6 +89264,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -90760,6 +90867,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -91043,6 +91151,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -91094,6 +91203,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -91140,6 +91250,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -91615,6 +91726,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -91765,6 +91877,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -91816,6 +91929,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -91862,6 +91976,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -92007,6 +92122,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -92309,6 +92425,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -92360,6 +92477,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -92406,6 +92524,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -94167,6 +94286,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -94241,6 +94361,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     plan?: PlanUpdateOneWithoutStudentsNestedInput
@@ -94292,6 +94413,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -94338,6 +94460,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -94661,6 +94784,7 @@ export namespace Prisma {
     scholarshipType?: $Enums.ScholarshipType
     scholarshipNote?: string | null
     isCompetitor?: boolean
+    excludeFromPendingCounts?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -94687,6 +94811,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     currentRankRef?: BeltRankUpdateOneWithoutCurrentRankStudentsNestedInput
@@ -94738,6 +94863,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guardians?: GuardianStudentUncheckedUpdateManyWithoutStudentNestedInput
@@ -94784,6 +94910,7 @@ export namespace Prisma {
     scholarshipType?: EnumScholarshipTypeFieldUpdateOperationsInput | $Enums.ScholarshipType
     scholarshipNote?: NullableStringFieldUpdateOperationsInput | string | null
     isCompetitor?: BoolFieldUpdateOperationsInput | boolean
+    excludeFromPendingCounts?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

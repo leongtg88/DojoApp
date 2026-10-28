@@ -102,6 +102,7 @@ export function MobileDashboardSidebar({ open, onClose, onSignOut, activeRole, r
 
                                 return (
                                     <Link
+                                        aria-label={label}
                                         className={`flex origin-center items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-all duration-150 hover:scale-[1.03] active:scale-[1.06] motion-reduce:transform-none ${active ? 'bg-cyan-500/15 text-accent-text shadow-sm ring-1 ring-cyan-500/30' : 'text-ink-3 hover:bg-surface-3 hover:text-ink'}`}
                                         href={withStudentContext(href)}
                                         key={href}

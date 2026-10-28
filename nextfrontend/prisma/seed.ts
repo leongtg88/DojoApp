@@ -342,7 +342,9 @@ async function main() {
   await db.student.upsert({
     where: { userId: ownerUser.id },
     // No se fuerza el grado en re-seeds: respeta el grado real del expediente.
-    update: {},
+    // El expediente del owner no es un alumno que entrene: no cuenta en
+    // los pendientes de "sin plan/sin horario".
+    update: { excludeFromPendingCounts: true },
     create: {
       userId: ownerUser.id,
       schoolId: school.id,
@@ -355,6 +357,7 @@ async function main() {
       currentRank: 'Nidan',
       currentRankId: 'belt-adult-13-nidan',
       status: 'ACTIVE',
+      excludeFromPendingCounts: true,
     },
   })
 

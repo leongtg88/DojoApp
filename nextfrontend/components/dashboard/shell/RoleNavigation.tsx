@@ -19,6 +19,8 @@ import type { DashboardRole } from '@/types/dashboard'
 export interface DashboardNavigationItem {
     href: string
     label: string
+    /** Etiqueta abreviada para la barra inferior/drawer móvil. */
+    shortLabel?: string
     icon: LucideIcon
     badge?: number
     /** Oculta el enlace de la barra inferior móvil (sigue en el sidebar). */
@@ -59,16 +61,16 @@ const navigationByRole: Record<DashboardRole, DashboardNavigationItem[]> = {
         { href: '/dashboard/admin', label: NAV_LABELS.hoy, icon: LayoutDashboard },
         { href: '/dashboard/admin/alumnos', label: NAV_LABELS.alumnos, icon: Users },
         { href: '/dashboard/admin/operacion', label: NAV_LABELS.operacion, icon: ClipboardCheck },
-        { href: '/dashboard/admin/configuracion', label: NAV_LABELS.configuracion, icon: ListChecks },
-        { href: '/dashboard/admin/comunicacion', label: NAV_LABELS.comunicacion, icon: MessageCircle },
+        { href: '/dashboard/admin/configuracion', label: NAV_LABELS.configuracion, shortLabel: NAV_LABELS.configuracionCorta, icon: ListChecks },
+        { href: '/dashboard/admin/comunicacion', label: NAV_LABELS.comunicacion, shortLabel: NAV_LABELS.comunicacionCorta, icon: MessageCircle },
         { href: '/dashboard/ajustes', label: NAV_LABELS.seguridad, icon: Fingerprint, hideInBottomNav: true },
     ],
     SUPERADMIN: [
         { href: '/dashboard/admin', label: NAV_LABELS.hoy, icon: LayoutDashboard },
         { href: '/dashboard/admin/alumnos', label: NAV_LABELS.alumnos, icon: Users },
         { href: '/dashboard/admin/operacion', label: NAV_LABELS.operacion, icon: ClipboardCheck },
-        { href: '/dashboard/admin/configuracion', label: NAV_LABELS.configuracion, icon: ListChecks },
-        { href: '/dashboard/admin/comunicacion', label: NAV_LABELS.comunicacion, icon: MessageCircle },
+        { href: '/dashboard/admin/configuracion', label: NAV_LABELS.configuracion, shortLabel: NAV_LABELS.configuracionCorta, icon: ListChecks },
+        { href: '/dashboard/admin/comunicacion', label: NAV_LABELS.comunicacion, shortLabel: NAV_LABELS.comunicacionCorta, icon: MessageCircle },
         { href: '/dashboard/ajustes', label: NAV_LABELS.seguridad, icon: Fingerprint, hideInBottomNav: true },
     ],
 }

@@ -15,9 +15,10 @@ import { getOnlineRecoveryActor, getOnlineRecoveryPanelData } from '@/lib/dashbo
 import { latestSessionDate, resolveDefaultSessionClass, santoDomingoDayKey, WEEKDAY_LONG } from '@/lib/dashboard/schedule-utils'
 import { redirect } from 'next/navigation'
 import { hasAnyRole } from '@/lib/auth/roles'
+import { parseAttendanceTab, parseIsoDate } from '@/lib/ui/search-params'
 
 interface AdminAttendancePageProps {
-    searchParams: Promise<{ classId?: string; date?: string }>
+    searchParams: Promise<{ classId?: string; date?: string; tab?: string }>
 }
 
 const dateFormatter = new Intl.DateTimeFormat('es-DO', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
@@ -31,6 +32,8 @@ export default async function AdminAttendancePage({ searchParams }: AdminAttenda
     }
 
     const parameters = await searchParams
+    const defaultTab = parseAttendanceTab(parameters.tab)
+    const overrideDate = parseIsoDate(parameters.date)
     const now = new Date()
     const recoveryActor = await getOnlineRecoveryActor(userId)
     const [classesResult, policyData, recoveryData, instructors] = await Promise.all([
@@ -46,7 +49,7 @@ export default async function AdminAttendancePage({ searchParams }: AdminAttenda
     const selectedClass = activeClasses.find((scheduledClass) => scheduledClass.id === selectedClassId) ?? null
 
     const sessionDate = selectedClass ? santoDomingoDayKey(latestSessionDate(selectedClass.dayOfWeek, now)) : santoDomingoDayKey(now)
-    const date = parameters.date && /^\d{4}-\d{2}-\d{2}$/.test(parameters.date) ? parameters.date : sessionDate
+    const date = overrideDate ?? sessionDate
     const dayMatches = selectedClass
         ? new Date(`${date}T00:00:00`).getDay() === selectedClass.dayOfWeek
         : true
@@ -73,13 +76,14 @@ export default async function AdminAttendancePage({ searchParams }: AdminAttenda
                     groups={groups}
                     hasRoster={Boolean(roster)}
                     inSessionClassId={defaultClass?.id ?? null}
-                    overrideDate={parameters.date ?? null}
+                    overrideDate={overrideDate ?? null}
                     selectedClassId={selectedClassId}
                 />
             </div>
 
             <div className="mt-6">
                 <Tabs
+                    defaultTab={defaultTab}
                     items={[
                         {
                             id: 'pase',

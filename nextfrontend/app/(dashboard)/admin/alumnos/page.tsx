@@ -2,10 +2,11 @@ import { auth } from '@/auth'
 import { AdminStudents } from '@/components/dashboard/admin/AdminStudents'
 import { getAdminStudents } from '@/lib/dashboard/admin-queries'
 import { redirect } from 'next/navigation'
+import { parseStudentPendingFilter } from '@/lib/ui/search-params'
 import { hasAnyRole } from '@/lib/auth/roles'
 
 interface AdminStudentsPageProps {
-    searchParams: Promise<{ docs?: string }>
+    searchParams: Promise<{ docs?: string; plan?: string; horario?: string }>
 }
 
 export default async function AdminStudentsPage({ searchParams }: AdminStudentsPageProps) {
@@ -16,12 +17,19 @@ export default async function AdminStudentsPage({ searchParams }: AdminStudentsP
         redirect('/no-autorizado')
     }
 
-    const { docs } = await searchParams
+    const { docs, plan, horario } = await searchParams
     const students = await getAdminStudents(userId)
 
     if (!students) {
         redirect('/no-autorizado')
     }
 
-    return <AdminStudents initialDocsOnly={docs === 'pending'} students={students} />
+    return (
+        <AdminStudents
+            initialDocsOnly={docs === 'pending'}
+            initialPlanFilter={parseStudentPendingFilter(plan)}
+            initialScheduleFilter={parseStudentPendingFilter(horario)}
+            students={students}
+        />
+    )
 }
