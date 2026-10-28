@@ -38,13 +38,13 @@ describe('UX-B5.1 · filas de Hoy', () => {
     )
   })
 
-  it('sin justificaciones pendientes cae en la pestaña de pase', () => {
+  it('con contador pendiente pero sin justificación más antigua cae en la pestaña de pase', () => {
     render(
       <AdminDashboardOverview
         {...baseProps}
         summary={{
           ...summary,
-          pendingCases: { ...summary.pendingCases, justifications: 0, oldestJustification: null },
+          pendingCases: { ...summary.pendingCases, justifications: 3, oldestJustification: null },
         }}
       />,
     )

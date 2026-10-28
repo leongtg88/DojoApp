@@ -25,8 +25,13 @@ describe('UX-B5.1 · parámetros de URL', () => {
     expect(parseAttendanceTab(undefined)).toBeUndefined()
   })
 
-  it('solo acepta fechas YYYY-MM-DD', () => {
+  it('solo acepta fechas YYYY-MM-DD reales', () => {
     expect(parseIsoDate('2026-10-19')).toBe('2026-10-19')
+    expect(parseIsoDate('2024-02-29')).toBe('2024-02-29')
+    expect(parseIsoDate('2026-99-99')).toBeUndefined()
+    expect(parseIsoDate('2026-02-30')).toBeUndefined()
+    expect(parseIsoDate('2026-13-01')).toBeUndefined()
+    expect(parseIsoDate('2025-02-29')).toBeUndefined()
     expect(parseIsoDate('19-10-2026')).toBeUndefined()
     expect(parseIsoDate('2026-10-19T00:00:00Z')).toBeUndefined()
     expect(parseIsoDate(undefined)).toBeUndefined()

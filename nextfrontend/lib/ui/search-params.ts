@@ -21,7 +21,10 @@ export function parseAttendanceTab(value: string | undefined): AttendanceTab | u
   return ATTENDANCE_TABS.find((tab) => tab === value)
 }
 
-/** Valida una fecha `YYYY-MM-DD`; cualquier otro formato se ignora. */
+/** Valida una fecha `YYYY-MM-DD` real; formatos o días inexistentes se ignoran. */
 export function parseIsoDate(value: string | undefined): string | undefined {
-  return value && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : undefined
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return undefined
+  const date = new Date(`${value}T00:00:00.000Z`)
+  if (Number.isNaN(date.getTime())) return undefined
+  return date.toISOString().slice(0, 10) === value ? value : undefined
 }
