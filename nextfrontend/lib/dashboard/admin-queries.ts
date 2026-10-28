@@ -1,14 +1,41 @@
 import { db } from '@/lib/db'
-import { ClassEnrollmentStatus, StudentStatus, EnrollmentStatus, StudentDocumentStatus } from '@/lib/generated/prisma'
+import { AbsenceJustificationStatus, ClassEnrollmentStatus, StudentStatus, EnrollmentStatus, StudentDocumentStatus } from '@/lib/generated/prisma'
 import { computeBirthdays } from '@/lib/dashboard/birthdays'
 import { ageFromDob, programForAge } from '@/lib/dashboard/program'
 import { pickStudentRank } from '@/lib/dashboard/rank-resolution'
 import { computeBalance, formatTime, monthRange } from '@/lib/dashboard/balance'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
+import type { AdminScope } from '@/lib/dashboard/scope'
+import {
+  PENDING_STUDENT_EXCLUDED,
+  PENDING_STUDENT_STATUS,
+  isPendingStudent,
+} from '@/lib/dashboard/pending-students'
 import { getCurriculumForSchool } from '@/lib/dashboard/curriculum-queries'
 import { buildStudentRegistrationView } from '@/lib/dashboard/registration-data'
 import { isManagedByGuardian, readGuardianMetadata } from '@/lib/family/guardians'
 import { createPrivateDocumentUrl } from '@/lib/document-storage'
+
+/** Predicado único para los pendientes "sin plan/sin horario" y su filtro. */
+function pendingStudentWhere(scope: AdminScope) {
+  return {
+    ...scopeSchoolFilter(scope),
+    status: PENDING_STUDENT_STATUS,
+    excludeFromPendingCounts: PENDING_STUDENT_EXCLUDED,
+  }
+}
+
+/** Alcance compartido por el conteo de Hoy y el roster de Asistencia. */
+function justificationScopeWhere(
+  scope: AdminScope,
+  filters: { classId?: string; date?: Date } = {},
+) {
+  return {
+    ...(filters.classId ? { classId: filters.classId } : {}),
+    ...(filters.date ? { date: filters.date } : {}),
+    ...(scope.isSuperAdmin ? {} : { student: { schoolId: scope.schoolId! } }),
+  }
+}
 
 function techniqueWithRanks<T extends { beltRankKatas: { beltRankId: string }[]; originKata?: { name: string } | null }>(technique: T) {
   const { beltRankKatas, originKata, ...rest } = technique
@@ -46,6 +73,7 @@ export async function getAdminDashboardSummary(userId: string): Promise<AdminDas
 
   const studentWhere = scopeSchoolFilter(scope)
   const classWhere = scope.isSuperAdmin ? {} : { branch: { schoolId: scope.schoolId! } }
+  const pendingWhere = pendingStudentWhere(scope)
 
   const [studentCount, classCount, activeEnrollmentCount, pendingCases] = await Promise.all([
     db.student.count({ where: studentWhere }),
@@ -57,20 +85,31 @@ export async function getAdminDashboardSummary(userId: string): Promise<AdminDas
       },
     }),
     (async () => {
-      const withoutPlan = await db.student.count({ where: scope.isSuperAdmin ? { planId: null } : { planId: null, schoolId: scope.schoolId! } })
-      const withEnrollment = await db.student.findMany({
-        where: scope.isSuperAdmin ? {} : { schoolId: scope.schoolId! },
-        select: { id: true },
-      })
-      const enrolledStudentIds = (
-        await db.classEnrollment.findMany({
-          where: { status: ClassEnrollmentStatus.ACTIVE, ...(scope.isSuperAdmin ? {} : { student: { schoolId: scope.schoolId! } }) },
-          select: { studentId: true },
-        })
-      )
-      const enrolledSet = new Set(enrolledStudentIds.map(({ studentId }) => studentId))
-      const noSchedule = withEnrollment.filter((student) => !enrolledSet.has(student.id)).length
-      return { noPlan: withoutPlan, noSchedule }
+      const [noPlan, noSchedule, justifications, oldestJustification] = await Promise.all([
+        db.student.count({ where: { ...pendingWhere, planId: null } }),
+        db.student.count({
+          where: {
+            ...pendingWhere,
+            classEnrollments: { none: { status: ClassEnrollmentStatus.ACTIVE } },
+          },
+        }),
+        db.absenceJustification.count({
+          where: { ...justificationScopeWhere(scope), status: AbsenceJustificationStatus.PENDING },
+        }),
+        db.absenceJustification.findFirst({
+          where: { ...justificationScopeWhere(scope), status: AbsenceJustificationStatus.PENDING },
+          orderBy: [{ date: 'asc' }, { createdAt: 'asc' }],
+          select: { classId: true, date: true },
+        }),
+      ])
+      return {
+        noPlan,
+        noSchedule,
+        justifications,
+        oldestJustification: oldestJustification
+          ? { classId: oldestJustification.classId, date: oldestJustification.date.toISOString().slice(0, 10) }
+          : null,
+      }
     })(),
   ])
 
@@ -95,6 +134,7 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       memberNumber: true,
       currentRank: true,
       status: true,
+      excludeFromPendingCounts: true,
       schoolId: true,
       userId: true,
       email: true,
@@ -233,6 +273,10 @@ export async function getAdminStudents(userId: string): Promise<AdminStudentSumm
       isCompetitor: student.isCompetitor,
       needsPlan: !student.plan?.id,
       needsSchedule: student.classEnrollments.length === 0,
+      countsForPending: isPendingStudent({
+        status: student.status,
+        excludeFromPendingCounts: student.excludeFromPendingCounts,
+      }),
       techniques: student.techniques.map(({ technique }) => techniqueWithRanks(technique)),
       studentCount: student.techniques.length,
       kataMasteredCount: student.techniques.filter(({ approved }) => approved).length,
@@ -874,7 +918,7 @@ export async function getAdminAttendanceRoster(
       select: { studentId: true, present: true, status: true, hoursTrained: true, notes: true, isOutOfSchedule: true },
     }),
     db.absenceJustification.findMany({
-      where: { classId, date: sessionDate },
+      where: justificationScopeWhere(scope, { classId, date: sessionDate }),
       select: {
         id: true,
         studentId: true,

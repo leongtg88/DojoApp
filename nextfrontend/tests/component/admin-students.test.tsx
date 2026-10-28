@@ -38,6 +38,7 @@ function student(overrides: Partial<AdminStudentSummary>): AdminStudentSummary {
     isCompetitor: false,
     needsPlan: false,
     needsSchedule: false,
+    countsForPending: true,
     techniques: [],
     studentCount: 1,
     kataMasteredCount: 0,
@@ -80,5 +81,45 @@ describe('F3-09 · padrón de alumnos (filtro de búsqueda)', () => {
     await user.type(screen.getByRole('searchbox'), 'zzzz')
 
     expect(screen.getByText(/No encontramos alumnos con esos filtros/i)).toBeInTheDocument()
+  })
+})
+
+describe('UX-B5.1 · filtros de pendientes', () => {
+  it('aplica el filtro inicial ?plan=none solo a activos no excluidos', () => {
+    render(
+      <AdminStudents
+        initialPlanFilter
+        students={[
+          student({ id: 'ana', firstName: 'Ana', lastName: 'Sin Plan', needsPlan: true }),
+          student({ id: 'beto', firstName: 'Beto', lastName: 'Con Plan', needsPlan: false }),
+          student({ id: 'carla', firstName: 'Carla', lastName: 'Inactiva', status: 'INACTIVE', needsPlan: true, countsForPending: false }),
+          student({ id: 'dani', firstName: 'Dani', lastName: 'Excluida', needsPlan: true, countsForPending: false }),
+        ]}
+      />,
+    )
+
+    expect(screen.queryAllByText('Ana Sin Plan').length).toBeGreaterThan(0)
+    expect(screen.queryAllByText('Beto Con Plan')).toHaveLength(0)
+    expect(screen.queryAllByText('Carla Inactiva')).toHaveLength(0)
+    expect(screen.queryAllByText('Dani Excluida')).toHaveLength(0)
+  })
+
+  it('aplica el filtro inicial ?horario=none solo a activos no excluidos', () => {
+    render(
+      <AdminStudents
+        initialScheduleFilter
+        students={[
+          student({ id: 'ana', firstName: 'Ana', lastName: 'Sin Horario', needsSchedule: true }),
+          student({ id: 'beto', firstName: 'Beto', lastName: 'Con Horario', needsSchedule: false }),
+          student({ id: 'carla', firstName: 'Carla', lastName: 'Inactiva', status: 'INACTIVE', needsSchedule: true, countsForPending: false }),
+          student({ id: 'dani', firstName: 'Dani', lastName: 'Excluida', needsSchedule: true, countsForPending: false }),
+        ]}
+      />,
+    )
+
+    expect(screen.queryAllByText('Ana Sin Horario').length).toBeGreaterThan(0)
+    expect(screen.queryAllByText('Beto Con Horario')).toHaveLength(0)
+    expect(screen.queryAllByText('Carla Inactiva')).toHaveLength(0)
+    expect(screen.queryAllByText('Dani Excluida')).toHaveLength(0)
   })
 })

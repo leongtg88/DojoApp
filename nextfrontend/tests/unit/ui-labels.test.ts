@@ -51,6 +51,23 @@ describe('UX-01 · navegación', () => {
             NAV_LABELS.comunicacion,
         ])
     })
+
+    it('ofrece etiquetas cortas para Configuración y Comunicación en móvil', () => {
+        const admin = getRoleNavigation('SCHOOL_ADMIN')
+        const configuracion = admin.find((item) => item.href === '/dashboard/admin/configuracion')
+        const comunicacion = admin.find((item) => item.href === '/dashboard/admin/comunicacion')
+
+        expect(configuracion).toMatchObject({
+            label: NAV_LABELS.configuracion,
+            shortLabel: NAV_LABELS.configuracionCorta,
+        })
+        expect(comunicacion).toMatchObject({
+            label: NAV_LABELS.comunicacion,
+            shortLabel: NAV_LABELS.comunicacionCorta,
+        })
+        expect(NAV_LABELS.configuracionCorta).toBe('Config')
+        expect(NAV_LABELS.comunicacionCorta).toBe('Comunic')
+    })
 })
 
 describe('UX-01 · estados visibles de reposición', () => {

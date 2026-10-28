@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { Award, BookOpenCheck, CalendarDays, Check, ChevronDown, ClipboardCheck, FileSpreadsheet, FileText, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
+import { Award, BookOpenCheck, CalendarDays, Check, ChevronDown, ClipboardCheck, FileSpreadsheet, FileText, ListChecks, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
 import { ConfirmModal } from '../shared/ConfirmModal'
 import { InvitationLinkModal } from './InvitationLinkModal'
@@ -16,6 +16,8 @@ import type { AdminBeltRankSummary, AdminStudentSummary, PlanSummary, Scholarshi
 interface AdminStudentsProps {
 	students: AdminStudentSummary[]
 	initialDocsOnly?: boolean
+	initialPlanFilter?: boolean
+	initialScheduleFilter?: boolean
 }
 
 interface BranchOption {
@@ -509,10 +511,12 @@ function StudentFormModal({ open, mode, student, students, onClose, onSaved }: S
 	)
 }
 
-export function AdminStudents({ students, initialDocsOnly = false }: AdminStudentsProps) {
+export function AdminStudents({ students, initialDocsOnly = false, initialPlanFilter = false, initialScheduleFilter = false }: AdminStudentsProps) {
 	const router = useRouter()
 	const [searchTerm, setSearchTerm] = useState('')
 	const [docsOnly, setDocsOnly] = useState(initialDocsOnly)
+	const [planOnly, setPlanOnly] = useState(initialPlanFilter)
+	const [scheduleOnly, setScheduleOnly] = useState(initialScheduleFilter)
 	const [statusFilter, setStatusFilter] = useState('ALL')
 	const [branchFilter, setBranchFilter] = useState('ALL')
 	const [beltFilter, setBeltFilter] = useState('ALL')
@@ -553,16 +557,20 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 	const belts = [...new Set(students.map(({ currentRank }) => currentRank ?? 'SIN_GRADO'))].sort()
 
 	const pendingDocsTotal = students.filter((student) => student.pendingDocumentCount > 0).length
+	const pendingPlanTotal = students.filter((student) => student.countsForPending && student.needsPlan).length
+	const pendingScheduleTotal = students.filter((student) => student.countsForPending && student.needsSchedule).length
 
 	const filteredStudents = students.filter((student) => {
 		const matchesStatus = statusFilter === 'ALL' || student.status === statusFilter
 		const matchesBranch = branchFilter === 'ALL' || student.branchName === branchFilter
 		const matchesBelt = beltFilter === 'ALL' || (beltFilter === 'SIN_GRADO' ? !student.currentRank : student.currentRank === beltFilter)
 		const matchesDocs = !docsOnly || student.pendingDocumentCount > 0
+		const matchesPlan = !planOnly || (student.countsForPending && student.needsPlan)
+		const matchesSchedule = !scheduleOnly || (student.countsForPending && student.needsSchedule)
 		const searchable = [student.firstName, student.lastName, student.memberNumber ?? '', student.currentRank ?? '', student.branchName, ...student.activeClassNames]
 		const matchesSearch = !normalizedSearch || searchable.some((value) => value.toLocaleLowerCase('es').includes(normalizedSearch))
 
-		return matchesStatus && matchesBranch && matchesBelt && matchesDocs && matchesSearch
+		return matchesStatus && matchesBranch && matchesBelt && matchesDocs && matchesPlan && matchesSchedule && matchesSearch
 	})
 
 	function handleToggleStatus(student: AdminStudentSummary) {
@@ -703,7 +711,7 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 								<input className="w-full rounded-md border border-edge-strong bg-surface-1 py-2 pl-10 pr-3 text-xs! text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="admin-student-search" onChange={(event) => setSearchTerm(event.target.value)} placeholder="Buscar por alumno, matrícula, grado o clase" type="search" value={searchTerm} />
 							</div>
 						</label>
-							<button type="button" aria-controls="admin-student-filters" aria-expanded={filtersOpen} aria-label={filtersOpen ? 'Ocultar filtros' : 'Mostrar filtros'} onClick={() => setFiltersOpen((open) => !open)} className={`inline-flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-md border sm:hidden ${filtersOpen || statusFilter !== 'ALL' || beltFilter !== 'ALL' || branchFilter !== 'ALL' ? 'border-cyan-500/50 bg-cyan-500/10 text-accent' : 'border-edge-strong bg-surface-1 text-ink-3'}`}>
+							<button type="button" aria-controls="admin-student-filters" aria-expanded={filtersOpen} aria-label={filtersOpen ? 'Ocultar filtros' : 'Mostrar filtros'} onClick={() => setFiltersOpen((open) => !open)} className={`inline-flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-md border sm:hidden ${filtersOpen || statusFilter !== 'ALL' || beltFilter !== 'ALL' || branchFilter !== 'ALL' || planOnly || scheduleOnly ? 'border-cyan-500/50 bg-cyan-500/10 text-accent' : 'border-edge-strong bg-surface-1 text-ink-3'}`}>
 								<ChevronDown aria-hidden="true" className={`size-4 transition-transform ${filtersOpen ? 'rotate-180' : ''}`} />
 							</button>
 						</div>
@@ -746,6 +754,28 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 							Documentos pendientes
 							{pendingDocsTotal > 0 && <span className={`rounded-full px-2 py-0.5 text-[10px] font-extrabold ${docsOnly ? 'bg-amber-500/20 text-warn-text' : 'bg-surface-3 text-ink-3'}`}>{pendingDocsTotal}</span>}
 						</button>
+						<div className="flex flex-wrap gap-2 sm:col-span-4">
+							<button
+								type="button"
+								aria-pressed={planOnly}
+								onClick={() => setPlanOnly((value) => !value)}
+								className={`inline-flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-xs font-semibold transition-colors ${planOnly ? 'border-amber-500/50 bg-amber-500/10 text-warn-text' : 'border-edge-strong bg-surface-1 text-ink-2 hover:bg-surface-3'}`}
+							>
+								<ListChecks aria-hidden="true" className="size-4" />
+								Sin plan
+								{pendingPlanTotal > 0 && <span className={`rounded-full px-2 py-0.5 text-[10px] font-extrabold ${planOnly ? 'bg-amber-500/20 text-warn-text' : 'bg-surface-3 text-ink-3'}`}>{pendingPlanTotal}</span>}
+							</button>
+							<button
+								type="button"
+								aria-pressed={scheduleOnly}
+								onClick={() => setScheduleOnly((value) => !value)}
+								className={`inline-flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-xs font-semibold transition-colors ${scheduleOnly ? 'border-amber-500/50 bg-amber-500/10 text-warn-text' : 'border-edge-strong bg-surface-1 text-ink-2 hover:bg-surface-3'}`}
+							>
+								<CalendarDays aria-hidden="true" className="size-4" />
+								Sin horario
+								{pendingScheduleTotal > 0 && <span className={`rounded-full px-2 py-0.5 text-[10px] font-extrabold ${scheduleOnly ? 'bg-amber-500/20 text-warn-text' : 'bg-surface-3 text-ink-3'}`}>{pendingScheduleTotal}</span>}
+							</button>
+						</div>
 					</div>
 
 					{filteredStudents.length === 0 ? (
@@ -755,6 +785,8 @@ export function AdminStudents({ students, initialDocsOnly = false }: AdminStuden
 								onClick: () => {
 									setSearchTerm('')
 									setDocsOnly(false)
+									setPlanOnly(false)
+									setScheduleOnly(false)
 									setStatusFilter('ALL')
 									setBranchFilter('ALL')
 									setBeltFilter('ALL')

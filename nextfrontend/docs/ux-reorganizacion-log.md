@@ -42,6 +42,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-B1 · Navegación de 5 destinos | 2026-10-26 | `ux(B1): navegación de 5 destinos y rutas Clases/Entrenar` | ✅ Hecha | ⏳ Pendiente (León) |
 | UX-B4 · Instructor: modo tatami | 2026-10-27 | `ux(B4): modo tatami del instructor` | ✅ Hecha | — |
 | UX-B5 · Admin en 5 secciones y bandeja Hoy | 2026-10-27 | `ux(B5): admin en 5 secciones y bandeja Hoy` | ✅ Hecha | ⏳ Pendiente (León) |
+| UX-B5.1 · Correcciones post-auditoría | 2026-10-27 | `ux(B5.1): corregir pendientes, justificaciones y etiquetas móviles` | ✅ Hecha | ⏳ Pendiente (León) |
 | UX-B6 · Asistencia del admin en pestañas | 2026-10-27 | `ux(B6): asistencia del admin en pestañas` | ✅ Hecha | — |
 | UX-B8 · Alumnos: una ruta, dos modos | 2026-10-27 | `8893b6c` | ↩️ Revertida (2026-10-27) | — |
 
@@ -805,7 +806,7 @@ Función pura, sin React ni Prisma. Recibe `now`, `classes`, `pendingRecoveries`
 
 1. **Cinco destinos, con hubs en lugar de mover rutas.** Operación, Configuración y Comunicación agrupan las pantallas existentes en tarjetas. **No se movieron URLs**: todo lo antiguo sigue funcionando y no hizo falta redirección. El anidamiento profundo (`/admin/operacion/asistencia`, etc.) se hará en B6/B8, donde ya toca reorganizar esas pantallas.
 2. **“Hoy” es una bandeja, no un resumen.** Cuatro filas con contador y enlace directo: Inscripciones pendientes, Documentos por revisar, Alumnos sin plan y Alumnos sin horario. Las métricas (alumnos, clases, inscripciones activas) bajan a segundo plano.
-3. **Justificaciones y solicitudes de reposición no están en la bandeja todavía.** No existe consulta de justificaciones para admin y las solicitudes llegan con UX-A6. Se añaden cuando existan, sin inventar contadores.
+3. **Justificaciones y solicitudes de reposición no están en la bandeja todavía.** Las justificaciones sí tienen consulta en el roster de Asistencia (`justificationsPending`); falta el agregado para Hoy. Las solicitudes llegan con UX-A6. Se añaden cuando existan, sin inventar contadores.
 4. **Badges en la nav:** el contador de inscripciones pendientes pasa a “Hoy” (antes vivía en Inscripciones) y el de alumnos nuevos sigue en “Alumnos”.
 5. **Alumnos conserva Inscripciones a mano** con un enlace en la cabecera, para que no quede enterrada al quitar el ítem del menú.
 
@@ -904,3 +905,121 @@ El filtro de clase/fecha (`AdminExpectedControls`) queda encima de las pestañas
 - **Se retiraron:** `AdminStudentsWorkspace`, el primitivo `SlideOver` y sus tests, y las props de selección de `AdminStudents`.
 - **Se conservan intactos:** `/admin/alumnos` con el padrón original, `/admin/alumnos/[studentId]` y `/admin/alumnos/detalle` con `AdminStudentDetailExplorer`. **No se borró nada del explorador.**
 - **Sin cambios de BD, APIs ni datos.** `main` sigue sin tocar.
+
+---
+
+## UX-B5.1 · Correcciones post-auditoría B5
+
+- **Fecha:** 2026-10-27
+- **Rama:** `fix/b5.1` (desde `fix/b1-auditoria` / `f29fac9`).
+- **Commit:** `ux(B5.1): corregir pendientes, justificaciones y etiquetas móviles` (único commit de la tarea).
+- **Revisión humana:** esquema, migración y seed **aprobados** por León antes del commit.
+
+**Alcance corregido:**
+
+1. `getAdminDashboardSummary`: “sin plan” y “sin horario” cuentan solo `Student.status = ACTIVE`, con `scopeSchoolFilter` y `excludeFromPendingCounts = false`. Sin exclusión por rol.
+2. Las filas de Hoy enlazan a `/dashboard/admin/alumnos?plan=none` y `?horario=none`; `AdminStudents` aplica los mismos filtros.
+3. Hoy añade “Justificaciones pendientes” y enlaza a la **más antigua** con `tab=pase`, `classId` y `date`; Asistencia ya acepta esos parámetros. No se añade la fila de reposiciones (UX-A6).
+4. Etiquetas móviles cortas `Config` y `Comunic` (sin punto) en la barra inferior, con `aria-label` completo; el drawer y el sidebar de escritorio conservan “Configuración”/“Comunicación”. Decisión tomada con capturas reales a 375 y 360 px.
+5. Se corrige la afirmación de B5 sobre la consulta de justificaciones.
+
+**Archivos:**
+
+| Tipo | Archivo |
+|---|---|
+| Esquema + migración | `prisma/schema.prisma`, `prisma/migrations/20261027220000_add_student_exclude_from_pending_counts/migration.sql` |
+| Seed | `prisma/seed.ts` (owner con `excludeFromPendingCounts: true` en `create` y `update`) |
+| Lógica | `lib/dashboard/admin-queries.ts`, `lib/dashboard/pending-students.ts`, `lib/ui/search-params.ts` |
+| Tipos | `types/dashboard.ts` |
+| UI admin | `components/dashboard/admin/AdminDashboardOverview.tsx`, `components/dashboard/admin/AdminStudents.tsx`, `app/(dashboard)/admin/alumnos/page.tsx`, `app/(dashboard)/admin/asistencia/page.tsx` |
+| Navegación | `lib/ui/nav-labels.ts`, `components/dashboard/shell/RoleNavigation.tsx`, `MobileDashboardNav.tsx`, `MobileDashboardSidebar.tsx` |
+| Tests | `tests/integration/admin-hoy.test.ts`, `tests/integration/seed-owner-flag.test.ts`, `tests/component/admin-dashboard-overview.test.tsx`, `tests/component/admin-students.test.tsx`, `tests/unit/search-params.test.ts`, `tests/unit/ui-labels.test.ts` |
+| Docs | este log |
+
+**Decisiones:**
+
+- **Campo aditivo:** `Student.excludeFromPendingCounts Boolean @default(false)`. Solo afecta a los pendientes “sin plan/sin horario”; no oculta el expediente del padrón, balance ni pase de lista.
+- **Migración:** solo `ALTER TABLE ... ADD COLUMN ... DEFAULT false`; **sin backfill ni datos**.
+- **Seed:** el owner se marca `true` en `create` y `update`; ningún otro alumno. No borra datos (INV-04).
+- **Predicado único:** `lib/dashboard/pending-students.ts` define `status = ACTIVE` + `excludeFromPendingCounts = false`; `getAdminDashboardSummary` lo usa en Prisma y `getAdminStudents` expone `countsForPending` para que el filtro de Alumnos use la misma definición. Sin roles.
+- **Justificaciones:** se extrajo `justificationScopeWhere` y se reutiliza en el roster de Asistencia y en el conteo de Hoy. `getAdminDashboardSummary` devuelve además `oldestJustification` (`classId` + `date`) ordenando por `date asc, createdAt asc`; la fila de Hoy abre `/dashboard/admin/asistencia?tab=pase&classId=…&date=YYYY-MM-DD`. El test usa dos pendientes en clases y fechas distintas: Hoy = 2, el enlace apunta a la más antigua y el roster de esa clase/fecha muestra 1.
+- **Filtros:** `?plan=none` y `?horario=none` inicializan los filtros; los botones “Sin plan”/“Sin horario” se suman al panel existente y se limpian con “Limpiar filtros”.
+- **Parámetros de URL:** `lib/ui/search-params.ts` es la validación única que usan las páginas. `parseStudentPendingFilter` solo acepta `none`; `parseAttendanceTab` solo `pase`, `reposiciones`, `auditoria` y `politica`; `parseIsoDate` solo `YYYY-MM-DD` **reales** (ida y vuelta, rechaza `2026-02-30`, `2025-02-29`, etc.). Cualquier valor desconocido se ignora y cae en el comportamiento por defecto. Hay test unitario para valores válidos, vacíos, `undefined`, mayúsculas y valores inventados.
+- **Etiquetas:** `NAV_LABELS.configuracionCorta = 'Config'` y `comunicacionCorta = 'Comunic'` (sin punto). La barra inferior móvil usa `shortLabel` y expone el nombre completo en `aria-label`; el drawer móvil y el sidebar de escritorio muestran “Configuración”/“Comunicación”. Se midió primero con las etiquetas completas a 10 px y 1 px de padding: no caben (ver capturas); por eso se eligió el texto corto sin punto.
+
+**Verificación:**
+
+| Comando | Resultado |
+|---|---|
+| `pnpm lint` | ✅ 0 errores, 35 warnings preexistentes |
+| `pnpm typecheck` | ✅ Sin salida |
+| `pnpm test` | ✅ 66 archivos / **315 tests** |
+| `pnpm test:integration` | ✅ 45 archivos / **416 tests** |
+| Tests nuevos | owner no cuenta; instructor con `Student` sin plan **sí** cuenta; inactivo no cuenta; segunda escuela aislada; Hoy == lista filtrada; justificaciones Hoy = 2 y enlace a la más antigua; roster de la más antigua = 1; seed marca solo al owner; `plan`/`horario`/`tab` ignoran valores desconocidos; `date` rechaza días inexistentes (`2026-02-30`, `2025-02-29`); justificaciones con contador pero sin más antigua caen a `?tab=pase` |
+
+**Migración:**
+
+- Archivo: `prisma/migrations/20261027220000_add_student_exclude_from_pending_counts/migration.sql`.
+- Timestamp `20261027220000` **posterior** a la última existente `20261020170100_add_online_recovery_notifications`.
+- Solo `ALTER TABLE "Student" ADD COLUMN ... BOOLEAN NOT NULL DEFAULT false`; sin backfill ni datos.
+
+**Capturas de etiquetas (375 y 360 px):**
+
+Carpeta `audit/b5.1/screenshots/` (no versionada). Las capturas se tomaron contra una BD Postgres local y desechable en el puerto `55435`, con el seed de prueba y las integraciones externas vacías.
+
+| Archivo | Qué muestra |
+|---|---|
+| `bottom-nav-375-before-clip.png`, `bottom-nav-360-before-clip.png` | Versión anterior: `Config.` / `Comunic.` |
+| `bottom-nav-375-full-clip.png`, `bottom-nav-360-full-clip.png` | Prueba con nombres completos a 10 px y 1 px de padding: “Configuración” y “Comunicación” se solapan. |
+| `bottom-nav-375-after-clip.png`, `bottom-nav-360-after-clip.png` | Versión final: `Config` / `Comunic`, sin punto. |
+| `drawer-375-after.png`, `drawer-360-after.png` | Drawer móvil con los nombres completos. |
+| `label-measurements.json` | Medidas de ancho disponible y desbordamiento por etiqueta. |
+
+Medición de la prueba con nombres completos (10 px, padding 1 px):
+
+| Pantalla | Ancho por ítem | Disponible | “Configuración” | “Comunicación” | ¿Cabe? |
+|---|---|---|---|---|---|
+| 375 px | 68,6 px | 66,6 px | 67,4 px | 68,5 px | No (desborda 0,8 / 1,9 px) |
+| 360 px | 65,6 px | 63,6 px | 67,4 px | 68,5 px | No (desborda 3,8 / 4,9 px) |
+
+Decisión: `Config` / `Comunic` sin punto, con `aria-label` completo. En la versión final ninguna etiqueta se trunca ni desborda (31 px y 42,5 px sobre 57,6 px disponibles a 360 px).
+
+**SQL de producción (NO ejecutado):**
+
+Confirmar antes el correo/ID real del sensei. El esquema no usa `@@map` ni `@map` en `Student`/`User`, así que los nombres son los de Prisma.
+
+Ejecutar **paso a paso** por la conexión directa (`DIRECT_URL`, puerto 5432), no por el pooler. El `SELECT` inicial debe devolver **exactamente una fila**. El `UPDATE` debe responder **`UPDATE 1`**; si responde `UPDATE 0`, `UPDATE n` o falla cualquier paso, ejecutar `ROLLBACK;`.
+
+```sql
+BEGIN;
+
+SELECT s.id, s."userId", u.email, s."excludeFromPendingCounts"
+FROM "Student" AS s
+JOIN "User" AS u ON u.id = s."userId"
+WHERE u.email = '<CORREO_REAL_DEL_SENSEI>';
+
+-- Debe devolver exactamente 1 fila. Si devuelve 0 o más de 1: ROLLBACK.
+
+UPDATE "Student" AS s
+SET "excludeFromPendingCounts" = true
+FROM "User" AS u
+WHERE s."userId" = u.id
+  AND u.email = '<CORREO_REAL_DEL_SENSEI>';
+
+-- Debe responder "UPDATE 1". Si no: ROLLBACK.
+
+SELECT s.id, u.email, s."excludeFromPendingCounts"
+FROM "Student" AS s
+JOIN "User" AS u ON u.id = s."userId"
+WHERE u.email = '<CORREO_REAL_DEL_SENSEI>';
+
+COMMIT;
+```
+
+Si se prefiere por ID, sustituir la condición por `u.id = '<ID_REAL_DEL_SENSEI>'`. No se ejecutó en producción.
+
+**Pendientes:**
+
+- Marcar al owner en el flujo de alta de escuela (no depender solo del seed).
+- Interruptor de admin para `excludeFromPendingCounts` (editar el flag desde el expediente).
+- La fila de reposiciones sigue pendiente de UX-A6.

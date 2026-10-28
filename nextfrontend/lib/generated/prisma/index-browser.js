@@ -216,6 +216,7 @@ exports.Prisma.StudentScalarFieldEnum = {
   scholarshipType: 'scholarshipType',
   scholarshipNote: 'scholarshipNote',
   isCompetitor: 'isCompetitor',
+  excludeFromPendingCounts: 'excludeFromPendingCounts',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

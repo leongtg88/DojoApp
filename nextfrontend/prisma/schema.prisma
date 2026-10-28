@@ -209,6 +209,8 @@ model Student {
   scholarshipType     ScholarshipType          @default(NONE)
   scholarshipNote     String? // razón escrita de la beca
   isCompetitor        Boolean                  @default(false)
+  /** Si true, el expediente no cuenta en los pendientes "sin plan/sin horario". */
+  excludeFromPendingCounts Boolean              @default(false)
   school              School                   @relation(fields: [schoolId], references: [id])
   branch              Branch                   @relation(fields: [branchId], references: [id])
   user                User?                    @relation(fields: [userId], references: [id])

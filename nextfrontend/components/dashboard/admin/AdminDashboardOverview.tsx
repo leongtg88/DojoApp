@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { CalendarDays, ChevronRight, ClipboardCheck, FileText, GraduationCap, ListChecks, Users } from 'lucide-react'
+import { CalendarDays, ChevronRight, ClipboardCheck, ClipboardList, FileText, GraduationCap, ListChecks, Users } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { BirthdayWidget } from '@/components/dashboard/shared/BirthdayWidget'
 import { AdminInstructorRoles } from './AdminInstructorRoles'
@@ -27,6 +27,11 @@ interface InboxRow {
  * como información secundaria.
  */
 export function AdminDashboardOverview({ summary, birthdays, instructorCandidates, pendingEnrollmentCount, pendingDocumentCount }: AdminDashboardOverviewProps) {
+    const oldestJustification = summary.pendingCases.oldestJustification
+    const justificationsHref = oldestJustification
+        ? `/dashboard/admin/asistencia?tab=pase&classId=${encodeURIComponent(oldestJustification.classId)}&date=${oldestJustification.date}`
+        : '/dashboard/admin/asistencia?tab=pase'
+
     const inbox: InboxRow[] = [
         {
             href: '/dashboard/admin/inscripciones',
@@ -43,14 +48,21 @@ export function AdminDashboardOverview({ summary, birthdays, instructorCandidate
             detail: pendingDocumentCount === 0 ? 'Todo al día' : `${pendingDocumentCount} documento${pendingDocumentCount === 1 ? '' : 's'} en espera`,
         },
         {
-            href: '/dashboard/admin/alumnos',
+            href: justificationsHref,
+            icon: ClipboardList,
+            title: 'Justificaciones pendientes',
+            count: summary.pendingCases.justifications,
+            detail: summary.pendingCases.justifications === 0 ? 'Sin justificaciones por revisar' : `${summary.pendingCases.justifications} justificación${summary.pendingCases.justifications === 1 ? '' : 'es'} por revisar`,
+        },
+        {
+            href: '/dashboard/admin/alumnos?plan=none',
             icon: ListChecks,
             title: 'Alumnos sin plan',
             count: summary.pendingCases.noPlan,
             detail: summary.pendingCases.noPlan === 0 ? 'Todos tienen plan asignado' : `${summary.pendingCases.noPlan} alumno${summary.pendingCases.noPlan === 1 ? '' : 's'} sin mensualidad`,
         },
         {
-            href: '/dashboard/admin/horarios',
+            href: '/dashboard/admin/alumnos?horario=none',
             icon: CalendarDays,
             title: 'Alumnos sin horario',
             count: summary.pendingCases.noSchedule,

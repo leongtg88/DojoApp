@@ -246,6 +246,7 @@ export interface AdminStudentSummary {
 	isCompetitor: boolean,
 	needsPlan: boolean,
 	needsSchedule: boolean,
+	countsForPending: boolean,
 	techniques: AdminTechniqueSummary[],
 	studentCount: number
 	kataMasteredCount: number
@@ -265,6 +266,9 @@ export interface AdminDashboardSummary {
 	pendingCases: {
 		noPlan: number
 		noSchedule: number
+		justifications: number
+		/** Justificación pendiente más antigua: destino del enlace de Hoy. */
+		oldestJustification: { classId: string; date: string } | null
 	}
 }
 
