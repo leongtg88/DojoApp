@@ -944,7 +944,7 @@ El filtro de clase/fecha (`AdminExpectedControls`) queda encima de las pestañas
 - **Predicado único:** `lib/dashboard/pending-students.ts` define `status = ACTIVE` + `excludeFromPendingCounts = false`; `getAdminDashboardSummary` lo usa en Prisma y `getAdminStudents` expone `countsForPending` para que el filtro de Alumnos use la misma definición. Sin roles.
 - **Justificaciones:** se extrajo `justificationScopeWhere` y se reutiliza en el roster de Asistencia y en el conteo de Hoy. `getAdminDashboardSummary` devuelve además `oldestJustification` (`classId` + `date`) ordenando por `date asc, createdAt asc`; la fila de Hoy abre `/dashboard/admin/asistencia?tab=pase&classId=…&date=YYYY-MM-DD`. El test usa dos pendientes en clases y fechas distintas: Hoy = 2, el enlace apunta a la más antigua y el roster de esa clase/fecha muestra 1.
 - **Filtros:** `?plan=none` y `?horario=none` inicializan los filtros; los botones “Sin plan”/“Sin horario” se suman al panel existente y se limpian con “Limpiar filtros”.
-- **Parámetros de URL:** `lib/ui/search-params.ts` es la validación única que usan las páginas. `parseStudentPendingFilter` solo acepta `none`; `parseAttendanceTab` solo `pase`, `reposiciones`, `auditoria` y `politica`; `parseIsoDate` solo `YYYY-MM-DD`. Cualquier valor desconocido se ignora y cae en el comportamiento por defecto. Hay test unitario para valores válidos, vacíos, `undefined`, mayúsculas y valores inventados.
+- **Parámetros de URL:** `lib/ui/search-params.ts` es la validación única que usan las páginas. `parseStudentPendingFilter` solo acepta `none`; `parseAttendanceTab` solo `pase`, `reposiciones`, `auditoria` y `politica`; `parseIsoDate` solo `YYYY-MM-DD` **reales** (ida y vuelta, rechaza `2026-02-30`, `2025-02-29`, etc.). Cualquier valor desconocido se ignora y cae en el comportamiento por defecto. Hay test unitario para valores válidos, vacíos, `undefined`, mayúsculas y valores inventados.
 - **Etiquetas:** `NAV_LABELS.configuracionCorta = 'Config'` y `comunicacionCorta = 'Comunic'` (sin punto). La barra inferior móvil usa `shortLabel` y expone el nombre completo en `aria-label`; el drawer móvil y el sidebar de escritorio muestran “Configuración”/“Comunicación”. Se midió primero con las etiquetas completas a 10 px y 1 px de padding: no caben (ver capturas); por eso se eligió el texto corto sin punto.
 
 **Verificación:**
@@ -955,7 +955,7 @@ El filtro de clase/fecha (`AdminExpectedControls`) queda encima de las pestañas
 | `pnpm typecheck` | ✅ Sin salida |
 | `pnpm test` | ✅ 66 archivos / **315 tests** |
 | `pnpm test:integration` | ✅ 45 archivos / **416 tests** |
-| Tests nuevos | owner no cuenta; instructor con `Student` sin plan **sí** cuenta; inactivo no cuenta; segunda escuela aislada; Hoy == lista filtrada; justificaciones Hoy = 2 y enlace a la más antigua; roster de la más antigua = 1; seed marca solo al owner; `plan`/`horario`/`tab` ignoran valores desconocidos |
+| Tests nuevos | owner no cuenta; instructor con `Student` sin plan **sí** cuenta; inactivo no cuenta; segunda escuela aislada; Hoy == lista filtrada; justificaciones Hoy = 2 y enlace a la más antigua; roster de la más antigua = 1; seed marca solo al owner; `plan`/`horario`/`tab` ignoran valores desconocidos; `date` rechaza días inexistentes (`2026-02-30`, `2025-02-29`); justificaciones con contador pero sin más antigua caen a `?tab=pase` |
 
 **Migración:**
 
@@ -986,16 +986,34 @@ Decisión: `Config` / `Comunic` sin punto, con `aria-label` completo. En la vers
 
 **SQL de producción (NO ejecutado):**
 
-Confirmar antes el correo/ID real del sensei. El esquema no usa `@@map` ni `@map` en `Student`/`User`, así que los nombres son los de Prisma:
+Confirmar antes el correo/ID real del sensei. El esquema no usa `@@map` ni `@map` en `Student`/`User`, así que los nombres son los de Prisma.
+
+Ejecutar **paso a paso** por la conexión directa (`DIRECT_URL`, puerto 5432), no por el pooler. El `SELECT` inicial debe devolver **exactamente una fila**. El `UPDATE` debe responder **`UPDATE 1`**; si responde `UPDATE 0`, `UPDATE n` o falla cualquier paso, ejecutar `ROLLBACK;`.
 
 ```sql
--- Ejecutar UNA sola vez, después de aplicar la migración.
--- Antes: confirmar que <CORREO_REAL_DEL_SENSEI> es la cuenta owner real.
+BEGIN;
+
+SELECT s.id, s."userId", u.email, s."excludeFromPendingCounts"
+FROM "Student" AS s
+JOIN "User" AS u ON u.id = s."userId"
+WHERE u.email = '<CORREO_REAL_DEL_SENSEI>';
+
+-- Debe devolver exactamente 1 fila. Si devuelve 0 o más de 1: ROLLBACK.
+
 UPDATE "Student" AS s
 SET "excludeFromPendingCounts" = true
 FROM "User" AS u
 WHERE s."userId" = u.id
   AND u.email = '<CORREO_REAL_DEL_SENSEI>';
+
+-- Debe responder "UPDATE 1". Si no: ROLLBACK.
+
+SELECT s.id, u.email, s."excludeFromPendingCounts"
+FROM "Student" AS s
+JOIN "User" AS u ON u.id = s."userId"
+WHERE u.email = '<CORREO_REAL_DEL_SENSEI>';
+
+COMMIT;
 ```
 
 Si se prefiere por ID, sustituir la condición por `u.id = '<ID_REAL_DEL_SENSEI>'`. No se ejecutó en producción.
