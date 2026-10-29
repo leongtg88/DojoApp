@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "pnpm@10.0.0",
   "scripts": {
-  "dev": "prisma generate && next dev",
+    "dev": "prisma generate && next dev",
     "build": "prisma generate && next build",
     "vercel-build": "prisma migrate deploy && prisma generate && next build",
     "start": "next start",
@@ -81,6 +81,7 @@
     "pdfjs-dist": "^6.3.289",
     "prisma": "7.10.0",
     "sharp": "^0.35.4",
+    "supabase": "^2.122.0",
     "tailwindcss": "^4",
     "testcontainers": "^12.2.1",
     "tsx": "^4.23.13",
