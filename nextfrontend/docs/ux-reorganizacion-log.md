@@ -530,8 +530,16 @@ Capturas y resultados: `C:\Users\ASUS\AppData\Local\Temp\opencode\dojo-review-sh
 > Guion completo y reglas del moderador: `docs/gate-1-guion.md`.
 > **UX-A5a y UX-A5b no empiezan hasta que esta sección tenga resultados.**
 
-**Estado:** ⏳ Pendiente de ejecutar por León (5 sesiones: 3 alumnos, 1 tutor, 1 instructor).
+**Estado:** ⚠️ **Desviación registrada (2026-10-28).** UX-A5b se implementó sin completar esta prueba base; el resto del guion sigue pendiente de ejecutar.
 **Se ejecuta sobre:** la app actual (esta rama), antes de tocar el Inicio.
+
+### Desviación registrada · 2026-10-28
+
+UX-A5b (nuevo Inicio del alumno) se implementó **sin la prueba base con usuarios** que exigía esta sección. Se decidió no bloquear por ello el cierre de UX-B1/B5.1 ni el despliegue.
+
+> El dry-run del admin y la prueba en teléfono están pendientes; la comparación se sustituye por observación de uso real en la primera semana tras el despliegue.
+
+Esta nota deja constancia de que el Gate 1 **no está completado**: no hubo sesiones con alumnos, tutores ni instructor, y las tablas de resultados de abajo siguen vacías.
 
 ### Resultados por participante
 
