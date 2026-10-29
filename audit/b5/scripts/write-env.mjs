@@ -5,9 +5,6 @@ import crypto from 'node:crypto'
 const root = path.resolve(import.meta.dirname, '..')
 const dbUrl = 'postgresql://test:test@127.0.0.1:55434/dojo_audit_b5?schema=public'
 const authSecret = crypto.randomBytes(32).toString('base64')
-// Se compone en dos pasos para que el guard de secretos no confunda la
-// plantilla con un valor real; el .env generado no se versiona.
-const authKey = 'AUTH_SECRET'
 
 const passwords = {
   admin: 'Audit-Admin-2026!',
@@ -22,7 +19,7 @@ function appEnv(port) {
   const base = `http://127.0.0.1:${port}`
   return `DATABASE_URL="${dbUrl}"
 DIRECT_URL="${dbUrl}"
-${authKey}="${authSecret}"
+AUTH_SECRET="${authSecret}"
 AUTH_TRUST_HOST="true"
 AUTH_URL="${base}"
 NEXTAUTH_URL="${base}"

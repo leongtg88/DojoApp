@@ -42,6 +42,15 @@ const isEnvExample = (path) => {
 // escanearlo a sí mismo sería un falso positivo.
 const isGuardScript = (path) => baseName(path) === 'guard-env.mjs'
 
+// Generadores de .env de las auditorías: escriben una plantilla con una clave
+// aleatoria en memoria (`crypto.randomBytes`) en un `.env` que no se versiona.
+// Solo se exime la interpolación `${...}` de AUTH_SECRET y del service role;
+// un literal en el mismo archivo sigue bloqueando el commit y el resto de
+// patrones se aplican igual.
+const TEMPLATE_ENV_PATTERNS = new Set(['AUTH_SECRET con valor', 'SUPABASE_SERVICE_ROLE_KEY con valor'])
+const isAuditEnvGenerator = (path) => /^audit\/(b5\/)?scripts\/write-env\.mjs$/.test(path)
+const INTERPOLATED_VALUE = /=\s*["']?\$\{/
+
 // La URL de Postgres solo se bloquea si trae credenciales que parezcan reales.
 // Se eximen los contenedores de CI/test (`test:test`, `postgres:postgres`, …) y
 // los valores interpolados (`${...}`, que no son literales). Un usuario o una
@@ -92,6 +101,13 @@ for (const line of diff.split('\n')) {
   for (const [name, re] of SECRET_PATTERNS) {
     if (!re.test(text)) continue
     if (name === DB_URL_PATTERN_NAME && isDummyDbUrl(text)) continue
+    if (
+      isAuditEnvGenerator(currentFile) &&
+      TEMPLATE_ENV_PATTERNS.has(name) &&
+      INTERPOLATED_VALUE.test(text)
+    ) {
+      continue
+    }
     errors.push(`${name} detectado en ${currentFile}: ${text.trim().slice(0, 80)}`)
     break
   }
