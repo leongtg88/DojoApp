@@ -86,6 +86,8 @@ async function main() {
     { id: 'schedule-child-tue', name: 'Niños Tarde', audience: 'CHILDREN', dayOfWeek: 2, startTime: '16:00', endTime: '17:30', description: 'Martes - Clase de niños.' },
     { id: 'schedule-child-thu', name: 'Niños Tarde', audience: 'CHILDREN', dayOfWeek: 4, startTime: '16:00', endTime: '17:30', description: 'Jueves - Clase de niños.' },
     { id: 'schedule-mixed-sat', name: 'Mixta Sábado', audience: 'MIXED', dayOfWeek: 6, startTime: '09:00', endTime: '10:30', description: 'Sábado - Clase mixta (niños y adultos).' },
+    { id: 'schedule-adult-fri', name: 'Adultos Noche', audience: 'ADULTS', dayOfWeek: 5, startTime: '19:00', endTime: '20:30', description: 'Viernes - Clase de adultos/avanzados.' },
+    { id: 'schedule-mixed-sun', name: 'Mixta Domingo', audience: 'MIXED', dayOfWeek: 0, startTime: '09:00', endTime: '10:30', description: 'Domingo - Clase mixta (niños y adultos).' },
   ] as const
   for (const schedule of SCHEDULES) {
     await db.class.upsert({
@@ -382,17 +384,21 @@ async function main() {
     create: { classId: regularClass.id, studentId: student.id, status: 'ACTIVE' },
   })
 
-  // Horario de referencia del alumno demo: Niños Tarde (bloque Martes).
-  await db.classEnrollment.upsert({
-    where: { classId_studentId: { classId: 'schedule-child-tue', studentId: student.id } },
-    update: { status: 'ACTIVE', endedAt: null },
-    create: { classId: 'schedule-child-tue', studentId: student.id, status: 'ACTIVE' },
-  })
+  // Horario de referencia del alumno demo: un alumno activo en una clase de
+  // cada día de la semana (INV-04), para que el pase de lista del instructor
+  // tenga roster sin depender del día en que se ejecute la suite o se use la app.
+  for (const schedule of SCHEDULES) {
+    await db.classEnrollment.upsert({
+      where: { classId_studentId: { classId: schedule.id, studentId: student.id } },
+      update: { status: 'ACTIVE', endedAt: null },
+      create: { classId: schedule.id, studentId: student.id, status: 'ACTIVE' },
+    })
+  }
 
   // Asigna el instructor principal a los bloques de horario del dojo.
   await db.class.updateMany({
     where: {
-      id: { in: ['schedule-adult-mon', 'schedule-adult-wed', 'schedule-child-tue', 'schedule-child-thu', 'schedule-mixed-sat'] },
+      id: { in: SCHEDULES.map((schedule) => schedule.id) },
     },
     data: { instructorId: instructor.id },
   })
