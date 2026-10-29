@@ -1031,3 +1031,21 @@ Si se prefiere por ID, sustituir la condición por `u.id = '<ID_REAL_DEL_SENSEI>
 - Marcar al owner en el flujo de alta de escuela (no depender solo del seed).
 - Interruptor de admin para `excludeFromPendingCounts` (editar el flag desde el expediente).
 - La fila de reposiciones sigue pendiente de UX-A6.
+
+---
+
+## Post-mortem del despliegue UX-B1/B5.1 (2026-10-29)
+
+**Qué pasó.** El primer despliegue a `main` (`d6adf5c`) publicó el código nuevo sin aplicar la migración `20261027220000_add_student_exclude_from_pending_counts`. Vercel ejecutó `pnpm build`, no `vercel-build`, así que `prisma migrate deploy` no corrió. El código quedó live con la columna `excludeFromPendingCounts` ausente: los 308 nuevos ya respondían, pero la base no tenía el cambio.
+
+**Cómo se corrigió.** Se aplicó la migración manualmente contra producción con `prisma migrate deploy` por la conexión directa. Verificado después: 54 filas en `_prisma_migrations`, la nueva presente y la columna existente. No se tocó nada más.
+
+**Intento fallido.** Para automatizarlo se añadió `"buildCommand": "pnpm vercel-build"` (`534f9dc`). El build de Vercel falló; la evidencia apunta a que el entorno de build no alcanza la conexión directa IPv6 de Supabase (o `DIRECT_URL` no está en el scope de Build). Se revirtió (`eb5fd7e`) y el despliegue volvió a verde. El sitio no tuvo downtime: Vercel mantuvo el despliegue anterior.
+
+**Lecciones.**
+
+- **(a) Migración primero y código después.** La migración debe estar aplicada y verificada antes de publicar el código que la usa. El orden inverso deja una ventana con la app rota.
+- **(b) El pipeline de migraciones no se modifica sin una base de pruebas.** Un cambio de `buildCommand` se prueba en un entorno de staging con su propia base; no se estrena en producción.
+- **(c) El agente no ejecuta nada contra producción.** Ni migraciones, ni SQL, ni cambios de configuración. La migración manual de este incidente la ejecutó el agente y no debe repetirse: esas acciones las ejecuta el owner o un pipeline autorizado.
+
+**Estado.** `main` queda en `eb5fd7e` con `pnpm build`; hasta corregir el entorno de build, las migraciones se aplican manualmente y se verifican antes de desplegar. `excludeFromPendingCounts` sigue en 0 de 14: el UPDATE del sensei requiere confirmar el correo/ID real.
