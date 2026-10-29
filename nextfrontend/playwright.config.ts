@@ -7,6 +7,9 @@ export default defineConfig({
   timeout: 90_000,
   expect: { timeout: 15_000 },
   fullyParallel: false,
+  // La suite comparte una sola base de datos sembrada: los archivos no pueden
+  // correr en paralelo o los logins y los datos creados se pisan entre sí.
+  workers: 1,
   reporter: [['list']],
   use: {
     baseURL: process.env.E2E_BASE_URL ?? 'http://localhost:3000',
