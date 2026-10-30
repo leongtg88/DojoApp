@@ -82,6 +82,19 @@ describe('F3-09 · padrón de alumnos (filtro de búsqueda)', () => {
 
     expect(screen.getByText(/No encontramos alumnos con esos filtros/i)).toBeInTheDocument()
   })
+
+  it('ofrece un acceso "Detalles" al expediente al desplegar la fila móvil', async () => {
+    const user = userEvent.setup()
+    render(<AdminStudents students={[student({ id: 'alumno-1', firstName: 'Ana', lastName: 'Kurosawa' })]} />)
+
+    expect(screen.queryByRole('link', { name: /Abrir detalles de Ana Kurosawa/i })).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /Ana Kurosawa/i }))
+
+    const detailLink = screen.getByRole('link', { name: /Abrir detalles de Ana Kurosawa/i })
+    expect(detailLink).toHaveAttribute('href', '/dashboard/admin/alumnos/alumno-1')
+    expect(detailLink).toHaveTextContent('Detalles')
+  })
 })
 
 describe('UX-B5.1 · filtros de pendientes', () => {

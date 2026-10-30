@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { Award, BookOpenCheck, CalendarDays, Check, ChevronDown, ClipboardCheck, FileSpreadsheet, FileText, ListChecks, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
+import { ArrowRight, Award, BookOpenCheck, CalendarDays, Check, ChevronDown, ClipboardCheck, FileSpreadsheet, FileText, ListChecks, Loader2, Mail, Pencil, Plus, Search, Trash2, UserCheck, UserMinus, Users, X } from 'lucide-react'
 import { BeltRankIndicator } from '../shared/BeltRankIndicator'
 import { ConfirmModal } from '../shared/ConfirmModal'
 import { InvitationLinkModal } from './InvitationLinkModal'
@@ -827,6 +827,14 @@ export function AdminStudents({ students, initialDocsOnly = false, initialPlanFi
 											</button>
 											{expanded && (
 												<div className="space-y-3 border-t border-edge bg-surface-1/40 px-4 py-3">
+													<Link
+														href={`/dashboard/admin/alumnos/${student.id}`}
+														aria-label={`Abrir detalles de ${student.firstName} ${student.lastName}`}
+														className="flex w-full items-center justify-center gap-2 rounded-md bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-[#0d1117] transition-colors hover:bg-cyan-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-2"
+													>
+														<ArrowRight aria-hidden="true" className="size-4" />
+														Detalles
+													</Link>
 													<div className="grid grid-cols-2 gap-3">
 														<div className="col-span-2">
 															<p className="text-[10px] font-semibold uppercase tracking-wide text-ink-4">Grado</p>
