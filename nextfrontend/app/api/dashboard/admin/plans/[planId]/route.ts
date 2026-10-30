@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -19,6 +20,8 @@ interface PlanRouteContext {
 }
 
 export async function PATCH(request: Request, { params }: PlanRouteContext) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -65,7 +68,9 @@ export async function PATCH(request: Request, { params }: PlanRouteContext) {
   return NextResponse.json({ plan: { ...updated, price: updated.price?.toNumber() ?? null } })
 }
 
-export async function DELETE(_request: Request, { params }: PlanRouteContext) {
+export async function DELETE(request: Request, { params }: PlanRouteContext) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id) {

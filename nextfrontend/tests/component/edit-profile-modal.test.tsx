@@ -51,6 +51,8 @@ describe('F5-05 · modal de edición de perfil', () => {
     const body = lastRequestBody(fetchMock)
     expect(body.firstName).toBeUndefined()
     expect(body).toHaveProperty('contactPhone')
-    expect(body).toHaveProperty('whatsappOptIn')
+    // I-3: el opt-in de WhatsApp está atado a la cuenta propia; no se envía al
+    // editar el expediente de un hijo (evita contaminar el contacto del tutor).
+    expect(body).not.toHaveProperty('whatsappOptIn')
   })
 })

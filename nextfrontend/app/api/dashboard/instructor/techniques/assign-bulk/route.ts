@@ -5,6 +5,7 @@ import type { AdminScope } from '@/lib/dashboard/scope'
 import { getInstructorSchoolId } from '@/lib/dashboard/instructor-queries'
 import { assignTechniquesToTargets } from '@/lib/dashboard/technique-assign'
 import { recordAudit } from '@/lib/security/audit'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -31,6 +32,8 @@ const assignBulkSchema = z.object({
  * sucursal / por clase). Sólo agrega; nunca quita.
  */
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id || !hasRole(session.user, 'INSTRUCTOR')) {

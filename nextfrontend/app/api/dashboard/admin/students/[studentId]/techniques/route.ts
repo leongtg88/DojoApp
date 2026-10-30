@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
 import { notifyAssignment } from '@/lib/notifications/create'
 import { recordAudit } from '@/lib/security/audit'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -15,6 +16,8 @@ interface UpdateStudentTechniquesRouteContext {
 }
 
 export async function PUT(request: Request, { params }: UpdateStudentTechniquesRouteContext) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id) {

@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
 import { formatTime } from '@/lib/dashboard/balance'
 import { findInstructorScheduleConflict } from '@/lib/dashboard/class-schedule'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -30,6 +31,8 @@ interface ClassRouteContext {
 }
 
 export async function PATCH(request: Request, { params }: ClassRouteContext) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -116,7 +119,9 @@ export async function PATCH(request: Request, { params }: ClassRouteContext) {
   return NextResponse.json({ success: true, class: scheduledClass })
 }
 
-export async function DELETE(_request: Request, { params }: ClassRouteContext) {
+export async function DELETE(request: Request, { params }: ClassRouteContext) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id) {

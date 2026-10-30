@@ -4,6 +4,7 @@ import { hasRole } from '@/lib/auth/roles'
 import { getInstructorSchoolId } from '@/lib/dashboard/instructor-queries'
 import { averageKataCriteria, isCompleteKataCriteria, KATA_CRITERION_KEYS } from '@/lib/dashboard/kata-rubric'
 import { notifyAssignment } from '@/lib/notifications/create'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { Prisma } from '@/lib/generated/prisma'
 import { z } from 'zod'
@@ -50,6 +51,8 @@ async function findSchoolTechnique(techniqueId: string, schoolId: string) {
 }
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id || !hasRole(session?.user, 'INSTRUCTOR')) {
@@ -87,6 +90,8 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id || !hasRole(session?.user, 'INSTRUCTOR')) {

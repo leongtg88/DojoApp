@@ -213,18 +213,19 @@ export async function getFamilyMembers(userId: string): Promise<FamilyView> {
 export async function resolveStudentView(
   userId: string,
   requestedStudentId?: string | null,
-): Promise<{ studentId: string } | null> {
+): Promise<{ studentId: string; isSelf: boolean } | null> {
   const family = await getFamilyMembers(userId)
   const ownId = family.self?.id ?? null
 
   if (!requestedStudentId || requestedStudentId === ownId) {
-    if (ownId) return { studentId: ownId }
+    if (ownId) return { studentId: ownId, isSelf: true }
     // Cuenta de tutor sin expediente propio: por defecto la cuenta del primer hijo.
-    return family.children.length > 0 ? { studentId: family.children[0].id } : null
+    // No es el expediente propio del usuario (isSelf = false): rige el modo restringido.
+    return family.children.length > 0 ? { studentId: family.children[0].id, isSelf: false } : null
   }
 
   const isChild = family.children.some((child) => child.id === requestedStudentId)
-  return isChild ? { studentId: requestedStudentId } : null
+  return isChild ? { studentId: requestedStudentId, isSelf: false } : null
 }
 
 /**
@@ -235,7 +236,7 @@ export async function resolveStudentView(
 export async function resolveRequestStudent(
   request: Request,
   userId: string,
-): Promise<{ studentId: string } | null> {
+): Promise<{ studentId: string; isSelf: boolean } | null> {
   const requested = request.headers.get('x-student-id') || new URL(request.url).searchParams.get('estudiante')
   return resolveStudentView(userId, requested)
 }

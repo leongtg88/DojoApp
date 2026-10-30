@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasAnyRole } from '@/lib/auth/roles'
 import { resolveRequestStudent } from '@/lib/family/guardians'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -21,6 +22,8 @@ interface PracticeRouteContext {
 }
 
 export async function PATCH(request: Request, { params }: PracticeRouteContext) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id || !hasAnyRole(session?.user, ['STUDENT', 'GUARDIAN'])) {

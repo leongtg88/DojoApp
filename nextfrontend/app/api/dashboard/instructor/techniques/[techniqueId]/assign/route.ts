@@ -5,6 +5,7 @@ import type { AdminScope } from '@/lib/dashboard/scope'
 import { getInstructorSchoolId } from '@/lib/dashboard/instructor-queries'
 import { propagateTechniquesToRankStudents } from '@/lib/dashboard/technique-propagate'
 import { assignTechniqueToStudentGroup, assignTechniqueToStudentsByIds } from '@/lib/dashboard/technique-assign'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -34,6 +35,8 @@ interface AssignRouteContext {
  * requisitos de examen); la pestaña "Grado" sólo propaga a sus alumnos activos.
  */
 export async function POST(request: Request, { params }: AssignRouteContext) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id || !hasRole(session.user, 'INSTRUCTOR')) {

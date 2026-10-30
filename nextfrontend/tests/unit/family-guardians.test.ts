@@ -55,18 +55,18 @@ beforeEach(() => {
 describe('resolveStudentView', () => {
   it('sin solicitud devuelve el expediente propio', async () => {
     mockFamily({ own: row('own-1') })
-    await expect(resolveStudentView('user-1')).resolves.toEqual({ studentId: 'own-1' })
-    await expect(resolveStudentView('user-1', null)).resolves.toEqual({ studentId: 'own-1' })
+    await expect(resolveStudentView('user-1')).resolves.toEqual({ studentId: 'own-1', isSelf: true })
+    await expect(resolveStudentView('user-1', null)).resolves.toEqual({ studentId: 'own-1', isSelf: true })
   })
 
   it('permite solicitar el propio expediente explícitamente', async () => {
     mockFamily({ own: row('own-1') })
-    await expect(resolveStudentView('user-1', 'own-1')).resolves.toEqual({ studentId: 'own-1' })
+    await expect(resolveStudentView('user-1', 'own-1')).resolves.toEqual({ studentId: 'own-1', isSelf: true })
   })
 
   it('permite el expediente de un hijo', async () => {
     mockFamily({ own: row('own-1'), children: [row('child-1'), row('child-2')] })
-    await expect(resolveStudentView('user-1', 'child-2')).resolves.toEqual({ studentId: 'child-2' })
+    await expect(resolveStudentView('user-1', 'child-2')).resolves.toEqual({ studentId: 'child-2', isSelf: false })
   })
 
   it('bloquea un expediente ajeno', async () => {
@@ -76,7 +76,7 @@ describe('resolveStudentView', () => {
 
   it('tutor sin expediente propio: por defecto el primer hijo', async () => {
     mockFamily({ own: null, children: [row('child-1'), row('child-2')] })
-    await expect(resolveStudentView('user-1')).resolves.toEqual({ studentId: 'child-1' })
+    await expect(resolveStudentView('user-1')).resolves.toEqual({ studentId: 'child-1', isSelf: false })
   })
 
   it('sin expediente propio ni hijos → null', async () => {

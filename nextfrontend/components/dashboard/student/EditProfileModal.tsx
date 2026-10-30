@@ -38,12 +38,13 @@ export function EditProfileModal({ onClose, profile, studentId, restricted = fal
 
         const body: Record<string, unknown> = restricted
             ? {
+                // El opt-in de WhatsApp está atado a la cuenta propia: no se envía
+                // al editar el expediente de un hijo.
                 contactPhone: contactPhone.trim() || null,
                 emergencyContact: emergencyContact.trim() || null,
                 medicalInfo: medicalInfo.trim() || null,
                 giSize: giSize.trim() || null,
                 beltSize: beltSize.trim() || null,
-                whatsappOptIn,
             }
             : {
                 firstName: firstName.trim(),
@@ -166,6 +167,7 @@ export function EditProfileModal({ onClose, profile, studentId, restricted = fal
                         />
                     </label>
 
+                    {!restricted && (
                     <label className="flex items-start gap-3 rounded-lg border border-edge bg-surface-1 p-3" htmlFor="edit-whatsapp-optin">
                         <input
                             checked={whatsappOptIn}
@@ -180,6 +182,7 @@ export function EditProfileModal({ onClose, profile, studentId, restricted = fal
                             <span className="mt-0.5 block text-xs text-ink-3">Solo notificaciones del dojo (grados, horarios, asistencia). Puedes desactivarlo cuando quieras.</span>
                         </span>
                     </label>
+                    )}
 
                     <label className="block text-sm font-semibold text-ink" htmlFor="edit-emergency">
                         Contacto de emergencia

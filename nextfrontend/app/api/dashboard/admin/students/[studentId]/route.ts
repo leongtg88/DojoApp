@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
 import { purgeStudentRegistrationData } from '@/lib/dashboard/registration-purge'
 import { recordAudit } from '@/lib/security/audit'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -30,6 +31,8 @@ interface UpdateStudentRouteContext {
 }
 
 export async function PATCH(request: Request, { params }: UpdateStudentRouteContext) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -86,7 +89,9 @@ export async function PATCH(request: Request, { params }: UpdateStudentRouteCont
   return NextResponse.json({ ok: true, studentId: existing.id })
 }
 
-export async function DELETE(_request: Request, { params }: UpdateStudentRouteContext) {
+export async function DELETE(request: Request, { params }: UpdateStudentRouteContext) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id) {

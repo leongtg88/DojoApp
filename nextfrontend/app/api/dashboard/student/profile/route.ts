@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { hasAnyRole } from '@/lib/auth/roles'
 import { resolveRequestStudent } from '@/lib/family/guardians'
 import { setWhatsAppOptIn } from '@/lib/integrations/whatsapp'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -30,6 +31,8 @@ const profileUpdateSchema = z.object({
 })
 
 export async function PATCH(request: Request) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id || !hasAnyRole(session?.user, ['STUDENT', 'GUARDIAN'])) {
@@ -46,6 +49,21 @@ export async function PATCH(request: Request) {
 
   if (!result.success) {
     return NextResponse.json({ error: 'Datos de perfil no válidos' }, { status: 400 })
+  }
+
+  // Modo restringido: un tutor que edita el expediente de un hijo no puede
+  // cambiar los datos de identidad (los administra la secretaría). Se valida en
+  // el servidor, no solo en la UI.
+  const restricted = !view.isSelf
+  if (restricted) {
+    const identityFields = ['firstName', 'lastName', 'dateOfBirth', 'gender'] as const
+    const touchesIdentity = identityFields.some((field) => result.data[field] !== undefined)
+    if (touchesIdentity) {
+      return NextResponse.json(
+        { error: 'No puedes editar los datos de identidad de este expediente' },
+        { status: 403 },
+      )
+    }
   }
 
   const student = await db.student.findUnique({
@@ -81,7 +99,10 @@ export async function PATCH(request: Request) {
     },
   })
 
-  if (result.data.whatsappOptIn !== undefined) {
+  // El opt-in de WhatsApp está atado a la cuenta del propio usuario (su teléfono
+  // y su consentimiento). Solo se aplica al editar el expediente propio; nunca
+  // sobrescribe el contacto del tutor con el teléfono de un hijo.
+  if (view.isSelf && result.data.whatsappOptIn !== undefined) {
     await setWhatsAppOptIn({
       userId: session.user.id,
       phone: result.data.contactPhone,

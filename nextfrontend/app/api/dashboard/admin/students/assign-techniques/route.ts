@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
 import { notifyAssignment } from '@/lib/notifications/create'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { ClassEnrollmentStatus, StudentStatus } from '@/lib/generated/prisma'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -15,6 +16,8 @@ const assignTechniquesSchema = z.object({
 })
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id) {

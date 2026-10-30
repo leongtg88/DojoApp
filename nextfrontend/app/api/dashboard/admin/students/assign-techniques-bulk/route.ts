@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { getAdminScope } from '@/lib/dashboard/scope'
 import { assignTechniquesToTargets } from '@/lib/dashboard/technique-assign'
 import { recordAudit } from '@/lib/security/audit'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -29,6 +30,8 @@ const assignBulkSchema = z.object({
  * clase) dentro del alcance del administrador. Sólo agrega; nunca quita.
  */
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id) {

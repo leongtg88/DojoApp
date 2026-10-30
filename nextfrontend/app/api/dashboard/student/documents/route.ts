@@ -5,6 +5,7 @@ import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE, MAX_FILE_SIZE_MB } from '@/lib/file-
 import { resolveRequestStudent } from '@/lib/family/guardians'
 import { createPrivateDocumentUrl, uploadPrivateDocument, deletePrivateDocuments, sanitizeStorageName } from '@/lib/document-storage'
 import { notifySchoolStaff } from '@/lib/notifications/create'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 
 const documentTypes = ['PROFILE_PHOTO', 'IDENTITY', 'BIRTH_CERTIFICATE', 'PASSPORT', 'MEDICAL_CERTIFICATE', 'OTHER'] as const
@@ -49,6 +50,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const student = await getStudentId(request)
   if (!student) return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
 
@@ -94,6 +97,8 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const student = await getStudentId(request)
   if (!student) return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
 
