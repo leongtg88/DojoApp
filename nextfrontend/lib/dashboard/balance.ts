@@ -86,6 +86,25 @@ function zonedDayAndMinutes(date: Date): { weekday: number; minutes: number } {
   return { weekday, minutes: hour * 60 + minute }
 }
 
+// República Dominicana no observa horario de verano: offset fijo UTC-4.
+const SANTO_DOMINGO_UTC_OFFSET_HOURS = 4
+
+/**
+ * Rango del mes calendario natural en la zona del dojo (America/Santo_Domingo),
+ * devuelto como instantes UTC. A diferencia de `monthRange`, no depende de la
+ * zona del servidor (UTC en Vercel), que durante las últimas horas de la noche
+ * del último día del mes seleccionaría ya el mes siguiente.
+ */
+export function santoDomingoMonthRange(date: Date = new Date()): { start: Date; end: Date } {
+  const parts = zonedPartsFormatter.formatToParts(date)
+  const get = (type: Intl.DateTimeFormatPartTypes) => Number(parts.find((part) => part.type === type)?.value)
+  const year = get('year')
+  const month = get('month') // 1-12 en la zona del dojo
+  const start = new Date(Date.UTC(year, month - 1, 1, SANTO_DOMINGO_UTC_OFFSET_HOURS))
+  const end = new Date(Date.UTC(year, month, 1, SANTO_DOMINGO_UTC_OFFSET_HOURS))
+  return { start, end }
+}
+
 /**
  * Resuelve qué horario (Class) corresponde a una fecha/hora dada. Busca entre los
  * horarios activos el que coincide con el día de la semana y cuya ventana de tiempo

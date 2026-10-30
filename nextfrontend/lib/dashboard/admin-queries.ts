@@ -3,7 +3,7 @@ import { AbsenceJustificationStatus, ClassEnrollmentStatus, StudentStatus, Enrol
 import { computeBirthdays } from '@/lib/dashboard/birthdays'
 import { ageFromDob, programForAge } from '@/lib/dashboard/program'
 import { pickStudentRank } from '@/lib/dashboard/rank-resolution'
-import { computeBalance, formatTime, monthRange } from '@/lib/dashboard/balance'
+import { computeBalance, formatTime, santoDomingoMonthRange } from '@/lib/dashboard/balance'
 import { getAdminScope, scopeSchoolFilter } from '@/lib/dashboard/scope'
 import type { AdminScope } from '@/lib/dashboard/scope'
 import {
@@ -1214,7 +1214,7 @@ export async function getAdminBalanceReport(userId: string): Promise<AdminBalanc
     return null
   }
 
-  const { start, end } = monthRange(new Date())
+  const { start, end } = santoDomingoMonthRange()
 
   const students = await db.student.findMany({
     where: {

@@ -3,6 +3,8 @@ import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
 import { notifyAssignment } from '@/lib/notifications/create'
 import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
+import { getLocalDayBounds } from '@/lib/dashboard/attendance-limits'
+import { santoDomingoNoon } from '@/lib/dashboard/schedule-utils'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -37,16 +39,12 @@ export async function POST(request: Request) {
       ...(result.data.studentId ? { studentId: result.data.studentId } : {}),
       ...(result.data.attendanceIds ? { id: { in: result.data.attendanceIds } } : {}),
       ...(result.data.date
-        ? {
-            date: {
-              gte: new Date(`${result.data.date}T00:00:00.000Z`),
-              lt: (() => {
-                const next = new Date(`${result.data.date}T00:00:00.000Z`)
-                next.setUTCDate(next.getUTCDate() + 1)
-                return next
-              })(),
-            },
-          }
+        ? (() => {
+            // Día local del dojo (RD, UTC-4), no medianoche UTC: así los punch-in
+            // nocturnos caen en el día correcto, igual que saveClassAttendance.
+            const { start, end } = getLocalDayBounds(santoDomingoNoon(result.data.date))
+            return { date: { gte: start, lt: end } }
+          })()
         : {}),
       // Pertenencia al instructor: por matrícula activa, por la clase del registro
       // o por la clase de su sesión (mantiene punch-ins históricos).

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { AlertTriangle, Award, CalendarDays, CheckCircle2, ChevronDown, Clock, Shield } from 'lucide-react'
 import { formatHoursHM } from '@/lib/dashboard/balance'
+import { formatCalendarDate } from '@/lib/format/datetime'
 import type { BalanceLevel, CuatrimestreProgress, GradoProgressData, GradoMetric } from '@/types/dashboard'
 
 interface GradoProgressProps {
@@ -49,8 +50,9 @@ const BOTTLENECK_LABEL: Record<GradoMetric, string> = {
 }
 
 function formatDate(value: string | null): string {
-    if (!value) return 'Sin fecha'
-    return new Date(value).toLocaleDateString('es-DO', { day: 'numeric', month: 'short', year: 'numeric' })
+    // Las fechas de examen son fechas de calendario (sin hora): se formatean en
+    // UTC con formatCalendarDate para no correrlas un día por la zona horaria.
+    return formatCalendarDate(value) || 'Sin fecha'
 }
 
 function CuatrimestreCard({ cuatrimestre, maxAbsencesPerMonth }: { cuatrimestre: CuatrimestreProgress; maxAbsencesPerMonth: number }) {

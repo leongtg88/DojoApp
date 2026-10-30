@@ -1,7 +1,7 @@
 import { AlertTriangle, CheckCircle2, Clock, History } from 'lucide-react'
 import { formatHoursHM } from '@/lib/dashboard/balance'
 import { studentHref } from '@/lib/dashboard/student-links'
-import { formatDate } from '@/lib/format/datetime'
+import { formatCalendarDate } from '@/lib/format/datetime'
 import type { GradoProgressData } from '@/types/dashboard'
 
 interface ExaminationCriteriaCardProps {
@@ -142,7 +142,7 @@ export function ExaminationCriteriaCard({ grado, studentId }: ExaminationCriteri
                         {grado.isEligible
                             ? 'Registro activo: ya puedes solicitar tu mesa de examen con el instructor.'
                             : grado.nextExam
-                                ? `En preparación regular. Próxima convocatoria: ${formatDate(grado.nextExam.date)}.`
+                                ? `En preparación regular. Próxima convocatoria: ${formatCalendarDate(grado.nextExam.date)}.`
                                 : 'En preparación regular. Los requisitos específicos del examen se confirman con tu instructor.'}
                     </p>
                 )}
