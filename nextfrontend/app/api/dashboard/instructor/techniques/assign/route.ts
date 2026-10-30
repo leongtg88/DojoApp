@@ -1,8 +1,10 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/roles'
+import { getInstructorSchoolId } from '@/lib/dashboard/instructor-queries'
 import { notifyAssignment } from '@/lib/notifications/create'
 import { recordAudit } from '@/lib/security/audit'
+import { isSameOrigin, sameOriginResponse } from '@/lib/security/origin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -12,6 +14,8 @@ const assignTechniquesSchema = z.object({
 })
 
 export async function PUT(request: Request) {
+  if (!isSameOrigin(request)) return sameOriginResponse()
+
   const session = await auth()
 
   if (!session?.user?.id || !hasRole(session?.user, 'INSTRUCTOR')) {
@@ -24,19 +28,16 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: 'Datos de asignación no válidos' }, { status: 400 })
   }
 
-  const instructor = await db.user.findUnique({
-    where: { id: session.user.id },
-    select: { id: true, schoolId: true, branchId: true },
-  })
+  const schoolId = await getInstructorSchoolId(session.user.id)
 
-  if (!instructor) {
-    return NextResponse.json({ error: 'Perfil de instructor no encontrado' }, { status: 404 })
+  if (!schoolId) {
+    return NextResponse.json({ error: 'No perteneces a ninguna escuela' }, { status: 403 })
   }
 
   const student = await db.student.findFirst({
     where: {
       id: result.data.studentId,
-      ...(instructor.schoolId ? { schoolId: instructor.schoolId } : {}),
+      schoolId,
       status: 'ACTIVE',
     },
     select: { id: true },
@@ -52,7 +53,7 @@ export async function PUT(request: Request) {
     const available = await db.technique.count({
       where: {
         id: { in: requestedIds },
-        ...(instructor.schoolId ? { OR: [{ schoolId: instructor.schoolId }, { schoolId: null }] } : {}),
+        OR: [{ schoolId }, { schoolId: null }],
       },
     })
 
@@ -103,7 +104,7 @@ export async function PUT(request: Request) {
   if (added > 0 || removed > 0) {
     await recordAudit({
       actorId: session.user.id,
-      schoolId: instructor.schoolId,
+      schoolId,
       action: 'techniques.assign',
       targetType: 'Student',
       targetId: student.id,
