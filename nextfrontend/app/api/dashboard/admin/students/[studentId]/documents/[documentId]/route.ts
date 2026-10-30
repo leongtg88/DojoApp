@@ -1,7 +1,7 @@
 import { auth } from '@/auth'
 import { db } from '@/lib/db'
 import { hasAnyRole, hasRole } from '@/lib/auth/roles'
-import { createPrivateDocumentUrl, deletePrivateDocuments } from '@/lib/document-storage'
+import { createPrivateDocumentUrl, deletePrivateDocuments, isMissingDocumentError } from '@/lib/document-storage'
 import { notifyAssignment } from '@/lib/notifications/create'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -62,6 +62,13 @@ export async function GET(_: Request, context: DocumentRouteContext) {
   try {
     return NextResponse.json({ url: await createPrivateDocumentUrl(document.storageKey) })
   } catch (urlError) {
+    if (isMissingDocumentError(urlError)) {
+      return NextResponse.json(
+        { error: 'El documento ya no está disponible en el almacenamiento. Puedes eliminar el registro.' },
+        { status: 404 },
+      )
+    }
+
     console.error('Error abriendo documento:', urlError)
     return NextResponse.json({ error: 'No fue posible abrir el documento' }, { status: 503 })
   }
@@ -116,7 +123,12 @@ export async function DELETE(_: Request, context: DocumentRouteContext) {
   if (!document) return NextResponse.json({ error: 'Documento no encontrado' }, { status: 404 })
 
   try {
-    await deletePrivateDocuments([document.storageKey])
+    try {
+      await deletePrivateDocuments([document.storageKey])
+    } catch (storageError) {
+      // Si el archivo ya no existe, el registro igual debe poder eliminarse.
+      if (!isMissingDocumentError(storageError)) throw storageError
+    }
     await db.studentDocument.delete({ where: { id: document.id } })
   } catch (deleteError) {
     console.error('Error borrando documento:', deleteError)

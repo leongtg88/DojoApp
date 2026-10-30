@@ -3,6 +3,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 vi.mock('@/lib/document-storage', () => ({
   uploadPrivateDocument: async () => {},
   deletePrivateDocuments: async () => {},
+  movePrivateDocument: async () => {},
   sanitizeStorageName: (name: string) => name,
 }))
 vi.mock('@/lib/integrations/n8n', () => ({ postToN8n: async () => {} }))

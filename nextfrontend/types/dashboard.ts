@@ -97,6 +97,7 @@ export interface StudentDocumentSummary {
 	reviewNotes: string | null
 	uploadedAt: string
 	url?: string | null
+	available?: boolean
 }
 
 export interface StudentTechnique {

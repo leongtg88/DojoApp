@@ -14,7 +14,7 @@ import {
 import { getCurriculumForSchool } from '@/lib/dashboard/curriculum-queries'
 import { buildStudentRegistrationView } from '@/lib/dashboard/registration-data'
 import { isManagedByGuardian, readGuardianMetadata } from '@/lib/family/guardians'
-import { createPrivateDocumentUrl } from '@/lib/document-storage'
+import { createPrivateDocumentUrl, isMissingDocumentError } from '@/lib/document-storage'
 
 /** Predicado único para los pendientes "sin plan/sin horario" y su filtro. */
 function pendingStudentWhere(scope: AdminScope) {
@@ -630,14 +630,20 @@ documents: {
   const documents = await Promise.all(
     student.documents.map(async ({ storageKey, ...document }) => {
       let url: string | null = null
+      let available = true
+
       if (document.mimeType.startsWith('image/')) {
         try {
           url = await createPrivateDocumentUrl(storageKey, 600)
         } catch (error) {
-          console.error('Error generando URL firmada para documento:', document.id, error)
+          available = false
+          if (!isMissingDocumentError(error)) {
+            console.error('Error generando URL firmada para documento:', document.id, error)
+          }
         }
       }
-      return { ...document, uploadedAt: document.uploadedAt.toISOString(), url }
+
+      return { ...document, uploadedAt: document.uploadedAt.toISOString(), url, available }
     }),
   )
 

@@ -6,6 +6,7 @@ const { deletePrivateDocuments } = vi.hoisted(() => ({ deletePrivateDocuments: v
 vi.mock('@/lib/document-storage', () => ({
   uploadPrivateDocument: async () => {},
   deletePrivateDocuments,
+  movePrivateDocument: async () => {},
   sanitizeStorageName: (name: string) => name,
 }))
 vi.mock('@/lib/integrations/n8n', () => ({ postToN8n: async () => {} }))
@@ -121,6 +122,8 @@ describe('confirmación de inscripción familiar · happy path', () => {
 
     const docs = await db.studentDocument.findMany()
     expect(docs.map((doc) => doc.type).sort()).toEqual(['IDENTITY', 'PASSPORT', 'PROFILE_PHOTO'])
+    expect(docs.every((doc) => doc.storageKey.startsWith(`enrollments/${body.id}/`))).toBe(true)
+    expect(docs.every((doc) => !doc.storageKey.includes('/pending/'))).toBe(true)
     expect(deletePrivateDocuments).not.toHaveBeenCalled()
   })
 

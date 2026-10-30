@@ -1,6 +1,7 @@
 import { Prisma } from '@/lib/generated/prisma'
 import { db } from '@/lib/db'
 import { deletePrivateDocuments, listPrivateDocuments } from '@/lib/document-storage'
+import { persistEnrollmentDocument } from '@/lib/dashboard/enrollment-document-storage'
 
 // Prefijo (una sola "carpeta") donde viven los documentos subidos antes de
 // confirmar la inscripción.
@@ -90,6 +91,10 @@ export async function purgeStalePendingEnrollments(olderThanDays = 30, limit = 5
  * con más antigüedad que `olderThanHours`, para no tocar subidas en curso: los
  * tokens de subida caducan en 1 hora.
  *
+ * Los documentos ya asociados a una inscripción se migran a su ruta definitiva
+ * (fuera de `enrollments/pending`) y se conservan. Los que ya no tienen registro
+ * se eliminan.
+ *
  * Es best-effort: los errores se registran y no se propagan.
  */
 export async function purgeStalePendingUploads(olderThanHours = 24, limit = 100): Promise<number> {
@@ -102,8 +107,29 @@ export async function purgeStalePendingUploads(olderThanHours = 24, limit = 100)
 			.map((object) => `${PENDING_UPLOADS_PREFIX}/${object.name}`)
 
 		if (staleKeys.length === 0) return 0
-		await deletePrivateDocuments(staleKeys)
-		return staleKeys.length
+
+		const documents = await db.studentDocument.findMany({
+			where: { storageKey: { in: staleKeys } },
+			select: { id: true, storageKey: true, fileName: true, enrollmentId: true, applicantId: true },
+		})
+		const referencedKeys = new Set(documents.map(({ storageKey }) => storageKey))
+
+		// Migra los documentos válidos que todavía estén en la carpeta temporal.
+		for (const document of documents) {
+			if (!document.enrollmentId || !document.applicantId) continue
+			await persistEnrollmentDocument({
+				document,
+				enrollmentId: document.enrollmentId,
+				applicantId: document.applicantId,
+			})
+		}
+
+		const orphanKeys = staleKeys.filter((storageKey) => !referencedKeys.has(storageKey))
+
+		if (orphanKeys.length === 0) return 0
+
+		await deletePrivateDocuments(orphanKeys)
+		return orphanKeys.length
 	} catch (reason) {
 		console.error('[purge-inscripciones] no fue posible barrer subidas pendientes:', reason)
 		return 0

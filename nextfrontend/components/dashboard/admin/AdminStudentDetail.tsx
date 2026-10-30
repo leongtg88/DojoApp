@@ -708,7 +708,7 @@ export function AdminStudentDetail({ student, embedded = false }: AdminStudentDe
 				</section>
 			)}
 
-			<AdminStudentMedia documents={documents} />
+			<AdminStudentMedia documents={documents} studentId={student.id} />
 
 			<AdminStudentDocuments documents={documents} studentId={student.id} onChange={setDocuments} />
 

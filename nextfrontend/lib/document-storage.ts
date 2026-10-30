@@ -107,7 +107,10 @@ export async function createPrivateDocumentUrl(storageKey: string, expiresIn = 6
   const { data, error } = await getStorageClient().storage.from(bucketName).createSignedUrl(storageKey, expiresIn)
 
   if (error || !data) {
-    throw new Error(describeStorageError(error ?? { message: 'respuesta vacía' }))
+    const cause = error ?? { message: 'respuesta vacía' }
+    const err = new Error(describeStorageError(cause))
+    ;(err as { cause?: unknown }).cause = cause
+    throw err
   }
 
   return data.signedUrl
@@ -117,11 +120,56 @@ export async function downloadPrivateDocument(storageKey: string): Promise<{ buf
   const { data, error } = await getStorageClient().storage.from(bucketName).download(storageKey)
 
   if (error || !data) {
-    throw new Error(describeStorageError(error ?? { message: 'respuesta vacía' }))
+    const cause = error ?? { message: 'respuesta vacía' }
+    const err = new Error(describeStorageError(cause))
+    ;(err as { cause?: unknown }).cause = cause
+    throw err
   }
 
   const buffer = Buffer.from(await data.arrayBuffer())
   return { buffer, contentType: data.type || 'application/octet-stream' }
+}
+
+// Mueve un archivo dentro del mismo bucket. Se usa para sacar los documentos de
+// inscripción de la carpeta temporal `enrollments/pending` en cuanto la
+// inscripción se confirma correctamente.
+export async function movePrivateDocument(fromKey: string, toKey: string) {
+  if (fromKey === toKey) return
+
+  const { error } = await getStorageClient().storage.from(bucketName).move(fromKey, toKey)
+
+  if (error) {
+    const err = new Error(describeStorageError(error))
+    ;(err as { cause?: unknown }).cause = error
+    throw err
+  }
+}
+
+// Detecta el caso esperado de un registro del expediente cuyo archivo ya no
+// existe en el almacenamiento (por ejemplo, borrado manualmente desde Supabase).
+// No debe confundirse con un bucket mal configurado: eso sí es un error real.
+export function isMissingDocumentError(error: unknown): boolean {
+  const cause = typeof error === 'object' && error !== null && 'cause' in error
+    ? (error as { cause?: unknown }).cause
+    : error
+
+  const { name, code, message } = errorFields(cause)
+  const status = typeof cause === 'object' && cause !== null && 'status' in cause && typeof (cause as { status?: unknown }).status === 'number'
+    ? String((cause as { status: number }).status)
+    : ''
+  const statusCode = typeof cause === 'object' && cause !== null && 'statusCode' in cause && typeof (cause as { statusCode?: unknown }).statusCode === 'string'
+    ? (cause as { statusCode: string }).statusCode
+    : ''
+  const haystack = `${name} ${code} ${message} ${status} ${statusCode}`.toLowerCase()
+
+  if (haystack.includes('nosuchbucket') || haystack.includes('bucket not found')) return false
+
+  return (
+    haystack.includes('nosuchkey')
+    || haystack.includes('not_found')
+    || haystack.includes('object not found')
+    || statusCode === '404'
+  )
 }
 
 export interface PrivateDocumentEntry {

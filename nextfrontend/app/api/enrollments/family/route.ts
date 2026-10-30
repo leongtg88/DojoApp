@@ -1,6 +1,7 @@
 import { Prisma } from '@/lib/generated/prisma'
 import { db } from '@/lib/db'
 import { deletePrivateDocuments } from '@/lib/document-storage'
+import { persistEnrollmentDocument } from '@/lib/dashboard/enrollment-document-storage'
 import {
   esCedulaValida,
   esTelefonoValido,
@@ -621,27 +622,57 @@ export async function POST(request: Request) {
     // Asocia cada documento verificado al aspirante que le corresponde. Los
     // aspirantes ya convertidos en alumnos conservan sus documentos, por lo que
     // las subidas nuevas para ellos se descartan más abajo.
+    const pendingDocuments = refs.flatMap((ref) => {
+      const applicant = applicants[ref.applicantIndex]
+      return !applicant || applicant.reused ? [] : [{ ref, applicantId: applicant.id }]
+    })
     const usedKeys = new Set<string>()
+
+    let createdDocuments: Array<{ id: string; storageKey: string; fileName: string; applicantId: string }> = []
     try {
-      for (const ref of refs) {
-        const applicant = applicants[ref.applicantIndex]
-        if (!applicant || applicant.reused) continue
-        await db.studentDocument.create({
-          data: {
-            enrollmentId: enrollment.id,
-            applicantId: applicant.id,
-            type: ref.docType,
-            fileName: ref.fileName,
-            storageKey: ref.storageKey,
-            mimeType: ref.mimeType,
-            fileSize: ref.fileSize,
-          },
-        })
-        usedKeys.add(ref.storageKey)
-      }
+      // Todos los registros se guardan juntos: la inscripción no queda a medias
+      // si uno de los documentos falla.
+      createdDocuments = await db.$transaction(async (transaction) => {
+        const created: Array<{ id: string; storageKey: string; fileName: string; applicantId: string }> = []
+
+        for (const { ref, applicantId } of pendingDocuments) {
+          const document = await transaction.studentDocument.create({
+            data: {
+              enrollmentId: enrollment.id,
+              applicantId,
+              type: ref.docType,
+              fileName: ref.fileName,
+              storageKey: ref.storageKey,
+              mimeType: ref.mimeType,
+              fileSize: ref.fileSize,
+            },
+            select: { id: true, storageKey: true, fileName: true },
+          })
+          created.push({ ...document, applicantId })
+        }
+
+        return created
+      })
     } catch (documentError) {
       console.error('Error guardando documentos de inscripción:', documentError)
+      await deletePrivateDocuments(pendingDocuments.map(({ ref }) => ref.storageKey)).catch((cleanupError) => {
+        console.error('Error limpiando documentos tras fallar el guardado de la inscripción:', cleanupError)
+      })
       return errorResponse('DB', 'No fue posible guardar los documentos de la inscripción. Inténtalo nuevamente en unos momentos.', 503)
+    }
+
+    for (const { ref } of pendingDocuments) {
+      usedKeys.add(ref.storageKey)
+    }
+
+    // La inscripción ya está confirmada: cada archivo se mueve de inmediato a su
+    // ruta definitiva para que no lo alcance el barrido de subidas pendientes.
+    for (const document of createdDocuments) {
+      await persistEnrollmentDocument({
+        document,
+        enrollmentId: enrollment.id,
+        applicantId: document.applicantId,
+      })
     }
 
     // Subidas que no quedaron asociadas (aspirantes ya convertidos): se borran
