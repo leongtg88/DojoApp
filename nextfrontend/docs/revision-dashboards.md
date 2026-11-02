@@ -1,16 +1,16 @@
 # Revisión de dashboards · admin, estudiante e instructor
 
-- **Fecha:** 2026-10-30
+- **Fecha:** revisión 2026-10-30; verificación y merge 2026-11-02.
 - **Alcance:** revisión de UX y *correctness* del interior funcional de los tres paneles. No es una auditoría de navegación (eso ya lo cubrieron B1 y B5).
-- **Rama:** `fix/revision-dashboards`, partiendo de `main` = `4d3acff`.
-- **Commits:** `96e5f9f` (C-0), `0361529` (seguridad), `0890845` (fechas). **Sin push.** `main` no se movió.
-- **Estado:** lo crítico e importante está implementado pero **sin verificar con la suite** (ver sección 4). El backlog menor, las decisiones de negocio y los tests están pendientes.
+- **Dónde vive:** ya integrado en `main` (la rama `fix/revision-dashboards` quedó fusionada). Base anterior: `4d3acff`.
+- **Commits:** `96e5f9f` (C-0), `0361529` (seguridad), `0890845` (fechas), `618db03` (este documento), `57906d7` (arreglo de typecheck).
+- **Estado:** implementado y **verificado en verde** — lint, typecheck, 315/315 unit+component y 416/416 integración (ver sección 4). Quedan pendientes los tests por hallazgo (sección 5), el backlog menor (sección 6) y las decisiones de negocio (sección 8).
 
 ---
 
 ## 1. Qué es este documento
 
-Es el punto de entrada para retomar este trabajo en una sesión nueva, sin contexto previo. Resume qué se corrigió, qué quedó sin verificar, qué falta y en qué orden conviene atacarlo.
+Es el punto de entrada para retomar este trabajo en una sesión nueva, sin contexto previo. Resume qué se corrigió, cómo se verificó, qué falta y en qué orden conviene atacarlo.
 
 **Qué NO repite:** los hallazgos de `auditoria-B1.md` (navegación del alumno) y `auditoria-B5.md` (menú del admin) que **ya están corregidos en `main`**: redirecciones 308 reales, notificaciones del tutor, enlaces de técnicas a Entrenar, fila de justificaciones en "Hoy", conteo de "sin plan/horario" con `excludeFromPendingCounts` y etiquetas móviles. Lo que sigue abierto de esas auditorías está en la sección 9.
 
@@ -43,24 +43,24 @@ Los hallazgos nuevos salieron de revisar el código que las auditorías de naveg
 
 ---
 
-## 4. ⚠ Verificación pendiente — esto bloquea el cierre
+## 4. Verificación · ejecutada y en verde (2026-11-02)
 
-**`node_modules` no estaba instalado**, así que **no se ejecutó `pnpm check` ni `pnpm test:integration`**. Nada de lo implementado está confirmado por la suite ni por el compilador. **No asumir que está en verde.**
+| Suite | Comando | Resultado |
+|---|---|---|
+| Lint | `pnpm lint` | 0 errores, 35 warnings (los preexistentes; no se añadió ninguno) |
+| Typecheck | `pnpm typecheck` | Limpio |
+| Unit + component | `pnpm test` | **315 / 315** ✅ (66 archivos) |
+| Integración | `pnpm test:integration` | **416 / 416** ✅ (45 archivos, ~20 min) |
 
-Lo único que se validó, y fue de forma estática:
+Se ejecutó la suite **completa**, no un subconjunto. Los tres archivos de test que se habían editado a mano pasan: `tests/unit/family-guardians.test.ts` (contrato `isSelf`), `tests/component/edit-profile-modal.test.tsx` (no se envía `whatsappOptIn` en modo restringido) y `tests/integration/admin-curriculum.test.ts`.
 
-| Comprobación | Resultado |
-|---|---|
-| Paridad import/uso del guard CSRF en `app/api/dashboard/**` | 30 archivos lo usan, 30 lo importan, 0 desajustes |
-| ¿Los helpers de test mandan header `Origin`? | No. `tests/integration/http.ts` (`jsonRequest`) y los `new Request(...)` directos solo ponen `content-type`, y `isSameOrigin` permite las peticiones sin `Origin` → los guards **no** deberían romper `route-auth-matrix` |
-| Tests que afirmaban el comportamiento anterior | 2 actualizados: `tests/unit/family-guardians.test.ts` (espera `isSelf`) y `tests/component/edit-profile-modal.test.tsx` (en modo restringido ya no se envía `whatsappOptIn`) |
-| Diffs de las rutas editadas en lote | Revisados uno a uno; firmas válidas (incluye `POST()` → `POST(request: Request)` en `apply-curriculum` y renombres de `_request` → `request`) |
+**Un flake conocido, no una regresión.** En la primera corrida falló `webauthn-routes.test.ts > rechaza si el desafío no corresponde (400)` con `Hook timed out in 30000ms` en el `beforeEach` que llama a `resetDb()`. No es una aserción: la base tardó más de 30 s en resetearse porque había tres procesos de test solapados en la máquina. Al ejecutar ese archivo solo pasa 25/25 en 94 s (frente a 349 s bajo contención). WebAuthn no fue modificado por esta revisión. Si reaparece, correr ese archivo aislado antes de investigarlo.
 
-**Riesgos a vigilar al correr la suite por primera vez:**
+**Regresión que sí hubo y cómo se detectó.** El guard CSRF obligó a cambiar la firma de `apply-curriculum/route.ts` de `POST()` a `POST(request: Request)`, pero el test de integración seguía llamándolo sin argumentos. Eso rompió el typecheck y **tumbó el build de Vercel** (TS2554 en `admin-curriculum.test.ts:177,193`). Arreglado en `57906d7`. Lección: al añadir un parámetro a un handler hay que buscar sus llamadas en `tests/` (`grep -rE "\.(POST|PATCH|PUT|DELETE)\(\)" tests/`).
 
-- `route-auth-matrix.test.ts` y `route-scope.test.ts`: son los que más superficie tocan de lo modificado.
-- El rate-limit de I-5 comparte las claves `technique-practice:ip:*` y `technique-practice:student:*` con el endpoint masivo. En los tests, `getClientIp` sobre un `Request` sin cabeceras devuelve siempre la misma clave, así que un orden de ejecución desfavorable podría agotar el presupuesto por IP. Hoy ningún test llama al `POST` por técnica, pero conviene saberlo.
-- Línea base previa conocida: 315 tests unit/component y 416 de integración.
+**Lo que la suite NO puede verificar.** Todos los tests construyen peticiones **sin header `Origin`**, e `isSameOrigin` permite las peticiones sin ese header. Es decir: el guard CSRF nunca se ejercita de verdad. En un navegador real sí llega `Origin` y el guard compara su host contra el header `Host`; si en producción no coincidieran (dominio propio vs. `vercel.app`, un proxy delante), **toda mutación devolvería 403 `BAD_ORIGIN`**. Mitigante: ese mismo guard ya llevaba tiempo en producción en las cuatro rutas de `attendance/*`, así que el mecanismo está probado en ese entorno. Aun así, tras cada despliegue conviene abrir el dashboard y guardar algo (un perfil, un plan) para confirmarlo.
+
+**Nota de mantenimiento.** El rate-limit de I-5 comparte las claves `technique-practice:ip:*` y `technique-practice:student:*` con el endpoint masivo. En los tests, `getClientIp` sobre un `Request` sin cabeceras devuelve siempre la misma clave, así que si alguna vez se añaden tests que llamen al `POST` por técnica, un orden desfavorable podría agotar el presupuesto por IP.
 
 ---
 
@@ -142,11 +142,8 @@ No forma parte de esta revisión, pero sigue abierto y conviene tenerlo a la vis
 
 ## 10. Plan de arreglo para la próxima sesión
 
-### Fase A · Verificar lo ya hecho — primero, bloquea todo lo demás
-1. `pnpm install` (hoy no hay `node_modules`).
-2. `pnpm check` (lint + typecheck + unit + component) y `pnpm test:integration` (necesita Docker).
-3. Corregir lo que falle **antes** de tocar nada nuevo. Empezar por `route-auth-matrix` y `route-scope` si hay rojos.
-4. Escribir los ocho tests de la sección 5, con el ID del hallazgo en el `describe`.
+### Fase A · Verificar lo ya hecho — ✅ hecha el 2026-11-02
+`pnpm check` y `pnpm test:integration` ejecutados y en verde (sección 4). Queda solo su punto 4: **escribir los ocho tests de la sección 5**, con el ID del hallazgo en el `describe`. Es lo que cierra de verdad esta fase, porque hoy los arreglos pasan la suite pero ninguno tiene un test que falle si se revierten.
 
 ### Fase B · Decisiones
 Resolver las cinco preguntas de la sección 8. Solo después codificar lo que dependa de ellas (sobre todo la 1 y la 2).
@@ -181,11 +178,18 @@ Resumen de `AGENTS.md`, por si la sesión nueva no lo ha leído todavía (convie
 ## 12. Cómo retomar
 
 ```bash
-git checkout fix/revision-dashboards
-git log --oneline -3          # 0890845, 0361529, 96e5f9f
+git checkout main
+git log --oneline -5          # 57906d7, 618db03, 0890845, 0361529, 96e5f9f
 cd nextfrontend
-pnpm install
-pnpm check                    # Fase A: esto nunca se ha ejecutado sobre estos cambios
+pnpm install                  # node_modules no se versiona
+pnpm check                    # lint + typecheck + unit + component (~90 s)
+pnpm test:integration         # necesita Docker Desktop arrancado (~20 min, en serie)
 ```
 
-Qué leer primero, en este orden: la sección 4 de este documento (lo que no está verificado), `AGENTS.md` y `docs/domain/invariantes.md`.
+Detalles útiles al correr la suite:
+
+- Los tests de integración usan **testcontainers**: la primera vez descargan `postgres:16-alpine` (420 MB) y `testcontainers/ryuk`, lo que añade varios minutos. Si `docker ps` no muestra el Postgres, probablemente aún esté descargando.
+- `vitest.integration.config.mts` fija `fileParallelism: false`, así que los 45 archivos corren **en serie**. Es deliberado (aislamiento por archivo) y por eso tarda ~20 min.
+- Para filtrar archivos, invocar vitest directamente: `pnpm exec vitest run --config vitest.integration.config.mts tests/integration/<archivo>`. Usar `pnpm test:integration -- <archivo>` **no** filtra: el `--` llega como argumento literal y se acaba corriendo todo.
+
+Qué leer primero, en este orden: la sección 4 (qué está verificado y qué no), la 5 (tests que faltan), `AGENTS.md` y `docs/domain/invariantes.md`.
