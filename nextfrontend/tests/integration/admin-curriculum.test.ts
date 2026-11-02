@@ -174,7 +174,7 @@ describe('F2-04 · aplicar currículo oficial', () => {
     const propia = await createTechnique('Kata propia', school.id)
     await db.beltRankKata.create({ data: { beltRankId: rank.id, kataId: propia.id, order: 1 } })
 
-    const res = await applyCurriculumRoute.POST()
+    const res = await applyCurriculumRoute.POST(jsonRequest('http://t/api', 'POST'))
     expect(res.status).toBe(200)
 
     const links = await db.beltRankKata.findMany({ where: { beltRankId: rank.id } })
@@ -190,7 +190,7 @@ describe('F2-04 · aplicar currículo oficial', () => {
     const kata = await createTechnique(canonical!.katas[0], school.id)
     const rank = await makeRank(school.id, { order: 1 })
 
-    const res = await applyCurriculumRoute.POST()
+    const res = await applyCurriculumRoute.POST(jsonRequest('http://t/api', 'POST'))
     const body = await readJson<{ ranksUpdated: number; linksCreated: number }>(res)
     expect(body.ranksUpdated).toBe(1)
     expect(body.linksCreated).toBe(1)
