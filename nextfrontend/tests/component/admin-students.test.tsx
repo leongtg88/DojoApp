@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { AdminStudents } from '@/components/dashboard/admin/AdminStudents'
 import type { AdminStudentSummary } from '@/types/dashboard'
@@ -81,6 +81,28 @@ describe('F3-09 · padrón de alumnos (filtro de búsqueda)', () => {
     await user.type(screen.getByRole('searchbox'), 'zzzz')
 
     expect(screen.getByText(/No encontramos alumnos con esos filtros/i)).toBeInTheDocument()
+  })
+})
+
+describe('T1 · expediente desde el acordeón móvil', () => {
+  it('enlaza al expediente desde la acción Expediente del panel expandido', async () => {
+    const user = userEvent.setup()
+    render(<AdminStudents students={[student({ id: 'ana', firstName: 'Ana', lastName: 'Kurosawa' })]} />)
+
+    const row = screen.getAllByRole('listitem')[0]
+
+    // Antes de expandir, el panel móvil no ofrece la acción.
+    expect(within(row).queryByRole('link', { name: /^expediente$/i })).not.toBeInTheDocument()
+
+    await user.click(within(row).getByRole('button', { name: /Ana Kurosawa/i }))
+
+    expect(within(row).getByRole('link', { name: /^expediente$/i })).toHaveAttribute(
+      'href',
+      '/dashboard/admin/alumnos/ana',
+    )
+
+    // El CTA a ancho completo ya no existe.
+    expect(screen.queryByRole('link', { name: /ver expediente completo/i })).not.toBeInTheDocument()
   })
 })
 

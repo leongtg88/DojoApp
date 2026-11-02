@@ -111,8 +111,8 @@ function StudentRowActions({ student, onInvite, onToggleStatus, onEdit, onDelete
 			<button type="button" title="Editar alumno" onClick={() => onEdit(student)} className="rounded p-1.5 text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink">
 				<Pencil className="size-4" />
 			</button>
-			<Link href={`/dashboard/admin/alumnos/${student.id}`} title="Ver ficha y promover" className="flex items-center gap-1 rounded px-2 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-cyan-950/40 hover:text-accent">
-				<Award className="size-4" />Promover
+			<Link href={`/dashboard/admin/alumnos/${student.id}`} title="Ver expediente" className="flex items-center gap-1 rounded px-2 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-cyan-950/40 hover:text-accent">
+				<Award className="size-4" />Expediente
 			</Link>
 			<button type="button" title="Eliminar alumno" onClick={() => onDelete(student)} className="rounded p-1.5 text-danger-text transition-colors hover:bg-red-950/40">
 				<Trash2 className="size-4" />

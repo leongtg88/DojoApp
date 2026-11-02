@@ -45,6 +45,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-B5.1 · Correcciones post-auditoría | 2026-10-27 | `ux(B5.1): corregir pendientes, justificaciones y etiquetas móviles` | ✅ Hecha | ⏳ Pendiente (León) |
 | UX-B6 · Asistencia del admin en pestañas | 2026-10-27 | `ux(B6): asistencia del admin en pestañas` | ✅ Hecha | — |
 | UX-B8 · Alumnos: una ruta, dos modos | 2026-10-27 | `8893b6c` | ↩️ Revertida (2026-10-27) | — |
+| T1 · Expediente desde el acordeón móvil | 2026-11-02 | `ux(T1): expediente desde el acordeón móvil` | ✅ Hecha (revisada) | — |
 
 **Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
 
@@ -1049,3 +1050,23 @@ Si se prefiere por ID, sustituir la condición por `u.id = '<ID_REAL_DEL_SENSEI>
 - **(c) El agente no ejecuta nada contra producción.** Ni migraciones, ni SQL, ni cambios de configuración. La migración manual de este incidente la ejecutó el agente y no debe repetirse: esas acciones las ejecuta el owner o un pipeline autorizado.
 
 **Estado.** `main` queda en `eb5fd7e` con `pnpm build`; hasta corregir el entorno de build, las migraciones se aplican manualmente y se verifican antes de desplegar. `excludeFromPendingCounts` sigue en 0 de 14: el UPDATE del sensei requiere confirmar el correo/ID real.
+
+---
+
+## Mejoras de asistencia y alumnos (plan `docs/mejoras-asistencia-y-alumnos.md`)
+
+### T1 · Enlace al expediente desde el acordeón móvil
+
+- **Fecha / commit:** 2026-11-02 · `ux(T1): expediente desde el acordeón móvil` (rama `ux/t1-expediente-movil`).
+- **Archivos modificados:** `components/dashboard/admin/AdminStudents.tsx`; `components/dashboard/instructor/InstructorStudents.tsx`.
+- **Archivos creados:** `tests/component/instructor-students.test.tsx`.
+- **Pruebas modificadas:** `tests/component/admin-students.test.tsx`.
+- **Decisiones tomadas y por qué:**
+  - En el admin, la entrada al expediente desde el acordeón móvil es la acción **"Expediente"** de `StudentRowActions`, dentro del panel expandido. Se descartó el CTA a ancho completo ("Ver expediente completo", `min-h-11`) que se había añadido encima: duplicaba la misma acción en el mismo panel.
+  - La acción "Promover" de `StudentRowActions` pasa a llamarse **"Expediente"** (y su `title` a "Ver expediente"). El destino no cambia; deja de prometer una promoción que esa ruta no ejecuta por sí sola.
+  - En el listado del instructor, el `<li>` ya contenía un `<Link>` a `/dashboard/instructor/evaluaciones?studentId=…`. Convertir el `<li>` entero en `<button>` habría roto esa navegación y anidado interactivos. Se añadió un **botón chevron hermano** del `Link` (junto a "Katas"), con `aria-expanded`/`aria-controls`, que despliega un panel solo móvil con katas revisadas, asistencia y clases. **Sin enlace al panel de admin**, conforme a la decisión de que el expediente es solo del admin.
+- **Pruebas añadidas:** el acordeón del admin expone la acción "Expediente" con el `href` correcto al expandir y no renderiza ningún enlace "Ver expediente completo"; el del instructor despliega las métricas y no contiene ningún `href` que empiece por `/dashboard/admin`.
+- **Resultado:** `pnpm lint` → 0 errores (35 avisos preexistentes); `pnpm typecheck` → OK; `pnpm test` → 67 archivos, 317 pruebas en verde. `test:integration` no aplica (solo cliente).
+- **Desviaciones respecto al plan:** el plan pedía convertir el `<li>` del instructor en un acordeón con `<button>`. Se usó un chevron hermano para no perder el enlace a evaluaciones ni anidar interactivos. Además, el plan pedía un CTA primario a ancho completo ("Ver expediente completo") en el panel del admin; tras la revisión manual del 2026-11-02 se eliminó por duplicar la acción "Expediente" de `StudentRowActions`.
+- **Pendientes o dudas:** ninguno. Commit único de la rama.
+- **Revisión humana:** hecha (2026-11-02, León). Resultado: se retiró el CTA duplicado del panel móvil.

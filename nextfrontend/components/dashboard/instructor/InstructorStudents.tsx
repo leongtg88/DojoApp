@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { ArrowRight, BookOpenCheck, Search, Users } from 'lucide-react'
+import { ArrowRight, BookOpenCheck, ChevronDown, Search, Users } from 'lucide-react'
 import type { InstructorStudentSummary } from '@/types/dashboard'
 import { EmptyState } from '@/components/common/EmptyState'
 import { InstructorKatasModal } from './InstructorKatasModal'
@@ -14,6 +14,7 @@ interface InstructorStudentsProps {
 export function InstructorStudents({ students }: InstructorStudentsProps) {
     const [searchTerm, setSearchTerm] = useState('')
     const [katasFor, setKatasFor] = useState<InstructorStudentSummary | null>(null)
+    const [expandedStudentId, setExpandedStudentId] = useState<string | null>(null)
     const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
     const filteredStudents = normalizedSearch
         ? students.filter((student) => [
@@ -91,6 +92,8 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
                                 const masteredPct = student.requiredCount > 0
                                     ? Math.min(100, Math.round((student.masteredCount / student.requiredCount) * 100))
                                     : 0
+                                const expanded = expandedStudentId === student.id
+                                const panelId = `instructor-student-${student.id}`
 
                                 return (
                                     <li key={student.id} className="transition-colors hover:bg-surface-3">
@@ -138,7 +141,45 @@ export function InstructorStudents({ students }: InstructorStudentsProps) {
                                             >
                                                 <BookOpenCheck className="size-3.5" aria-hidden="true" />Katas
                                             </button>
+                                            <button
+                                                type="button"
+                                                aria-controls={panelId}
+                                                aria-expanded={expanded}
+                                                aria-label={expanded ? `Ocultar detalles de ${student.firstName} ${student.lastName}` : `Mostrar detalles de ${student.firstName} ${student.lastName}`}
+                                                onClick={() => setExpandedStudentId(expanded ? null : student.id)}
+                                                className="flex size-11 shrink-0 items-center justify-center rounded-md border border-edge-strong text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink sm:hidden"
+                                            >
+                                                <ChevronDown aria-hidden="true" className={`size-5 transition-transform ${expanded ? 'rotate-180' : ''}`} />
+                                            </button>
                                         </div>
+                                        {expanded && (
+                                            <div className="space-y-3 border-t border-edge bg-surface-1/40 px-4 py-4 sm:hidden" id={panelId}>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-4">Katas revisadas</p>
+                                                        <div className="mt-1 flex items-center gap-2">
+                                                            <div className="h-1.5 w-20 overflow-hidden rounded-full bg-surface-3">
+                                                                <div className="h-full rounded-full bg-cyan-500" style={{ width: `${masteredPct}%` }} />
+                                                            </div>
+                                                            <span className="font-mono text-xs font-bold text-ink">{student.masteredCount}/{student.requiredCount}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-4">Asistencia</p>
+                                                        <div className="mt-1 flex items-center gap-2">
+                                                            <div className="h-1.5 w-20 overflow-hidden rounded-full bg-surface-3">
+                                                                <div className="h-full rounded-full bg-emerald-500" style={{ width: `${student.attendancePercent}%` }} />
+                                                            </div>
+                                                            <span className="font-mono text-xs font-bold text-ok-text">{student.attendancePercent}%</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-span-2">
+                                                        <p className="text-[10px] font-semibold uppercase tracking-wide text-ink-4">Clases</p>
+                                                        <p className="mt-1 text-xs text-ink-2">{student.classNames.join(' · ') || 'Sin clases activas'}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </li>
                                 )
                             })}
