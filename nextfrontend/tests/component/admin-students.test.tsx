@@ -84,6 +84,22 @@ describe('F3-09 · padrón de alumnos (filtro de búsqueda)', () => {
   })
 })
 
+describe('T1 · expediente desde el acordeón móvil', () => {
+  it('expone el enlace al expediente al expandir un alumno', async () => {
+    const user = userEvent.setup()
+    render(<AdminStudents students={[student({ id: 'ana', firstName: 'Ana', lastName: 'Kurosawa' })]} />)
+
+    expect(screen.queryByRole('link', { name: /ver expediente completo/i })).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /Ana Kurosawa/i }))
+
+    expect(screen.getByRole('link', { name: /ver expediente completo/i })).toHaveAttribute(
+      'href',
+      '/dashboard/admin/alumnos/ana',
+    )
+  })
+})
+
 describe('UX-B5.1 · filtros de pendientes', () => {
   it('aplica el filtro inicial ?plan=none solo a activos no excluidos', () => {
     render(
