@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { CheckCheck, CircleDashed, ClipboardCheck, Clock, Info, Loader2, Plus, RefreshCw, Save, Search, Star, X } from 'lucide-react'
+import { CheckCheck, CircleDashed, ClipboardCheck, Clock, Info, Loader2, Plus, RefreshCw, Save, Search, Star, Target, X } from 'lucide-react'
 import type { InstructorTechniqueReview as TechniqueReview, StudentTechnique, TechniqueStatus } from '@/types/dashboard'
 import { KataBeltChip } from '../shared/KataBeltChip'
 import { TechniqueCatalogFilter } from '../shared/TechniqueCatalogFilter'
@@ -12,7 +12,7 @@ interface InstructorTechniqueReviewProps {
     review: TechniqueReview
 }
 
-type StatusFilter = 'ALL' | TechniqueStatus
+type StatusFilter = 'ALL' | TechniqueStatus | 'READY'
 
 export function InstructorTechniqueReview({ review }: InstructorTechniqueReviewProps) {
     const router = useRouter()
@@ -58,13 +58,19 @@ export function InstructorTechniqueReview({ review }: InstructorTechniqueReviewP
     const unassignedTechniques = review.availableTechniques.filter(({ id }) => !assignedTechniqueIds.has(id))
     const normalizedSearch = searchTerm.trim().toLocaleLowerCase('es')
     const visibleTechniques = review.techniques.filter((technique) => {
-        const matchesStatus = statusFilter === 'ALL' || technique.status === statusFilter
+        const matchesStatus =
+            statusFilter === 'ALL'
+                ? true
+                : statusFilter === 'READY'
+                    ? technique.readyForEvaluation
+                    : technique.status === statusFilter
         const matchesSearch = !normalizedSearch || [technique.name, technique.description ?? '', technique.category]
             .some((value) => value.toLocaleLowerCase('es').includes(normalizedSearch))
 
         return matchesStatus && matchesSearch
     })
     const approvedCount = review.techniques.filter(({ status }) => status === 'APPROVED').length
+    const readyCount = review.techniques.filter(({ readyForEvaluation }) => readyForEvaluation).length
 
     return (
         <section className="mt-6 space-y-6">
@@ -116,6 +122,7 @@ export function InstructorTechniqueReview({ review }: InstructorTechniqueReviewP
                             <div className="flex gap-2 overflow-x-auto pb-1">
                                 {([
                                     ['ALL', 'Todas', review.techniques.length],
+                                    ['READY', 'Listas', readyCount],
                                     ['PENDING', 'Por practicar', review.techniques.filter(({ status }) => status === 'PENDING').length],
                                     ['IN_PROGRESS', 'En práctica', review.techniques.filter(({ status }) => status === 'IN_PROGRESS').length],
                                     ['APPROVED', 'Revisadas', approvedCount],
@@ -209,6 +216,12 @@ function TechniqueRow({
                     {technique.description && <p className="mt-1 text-xs text-ink-3">{technique.description}</p>}
                     {technique.practiceHours > 0 && <p className="mt-1.5 text-xs font-semibold text-ink-2"><Clock aria-hidden="true" className="mr-1 inline size-3.5 text-accent" />{technique.practiceHours}h de práctica</p>}
                     {technique.practiceRepetitions > 0 && <p className="mt-1 text-xs font-semibold text-ink-2"><RefreshCw aria-hidden="true" className="mr-1 inline size-3.5 text-accent" />{technique.practiceRepetitions} rep.{technique.targetRepetitions ? ` / ${technique.targetRepetitions}` : ''}</p>}
+                    {technique.cycleThreshold > 0 && (
+                        <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                            <span className="inline-flex items-center text-xs font-semibold text-ink-2"><Target aria-hidden="true" className="mr-1 inline size-3.5 text-accent" />Ciclo {technique.cycleReps} / {technique.cycleThreshold}</span>
+                            <CycleStatusBadge technique={technique} />
+                        </div>
+                    )}
                 </div>
                 <div aria-label={`Estado de ${technique.name}`} className="inline-flex rounded-md border border-edge-strong bg-surface-1 p-1 text-xs font-bold">
                     {([
@@ -250,6 +263,27 @@ function TechniqueRow({
             )}
         </li>
     )
+}
+
+function CycleStatusBadge({ technique }: { technique: StudentTechnique }) {
+    if (technique.readyForEvaluation) {
+        return technique.evaluationRecommended ? (
+            <span className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-bold text-ok-text">Lista</span>
+        ) : (
+            <span className="rounded-md border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[11px] font-bold text-warn-text">Lista · sin evidencia en dojo</span>
+        )
+    }
+    if (technique.cycleBlockedReason === 'CADENCE') {
+        return (
+            <span className="rounded-md border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[11px] font-bold text-warn-text">
+                Cadencia: faltan {technique.cycleDaysRemaining} día{technique.cycleDaysRemaining === 1 ? '' : 's'}
+            </span>
+        )
+    }
+    if (technique.cycleBlockedReason === 'REPS') {
+        return <span className="rounded-md border border-edge-strong bg-surface-1 px-2 py-0.5 text-[11px] font-bold text-ink-3">Faltan {technique.remainingReps}</span>
+    }
+    return null
 }
 
 function KataEvaluationBlock({
