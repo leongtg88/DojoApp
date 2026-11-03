@@ -99,7 +99,27 @@ export interface StudentDocumentSummary {
 	url?: string | null
 }
 
-export interface StudentTechnique {
+/**
+ * Estado derivado del ciclo de dominio (Fase 1). No se guarda en BD: se
+ * calcula con `lib/dashboard/evaluation-cycle.ts` en cada consulta.
+ */
+export interface TechniqueCycleState {
+	/** Repeticiones acumuladas en el ciclo (logs posteriores a la última evaluación o asignación). */
+	cycleReps: number
+	/** Umbral de la categoría para estar lista. */
+	cycleThreshold: number
+	/** Cumple reps + cadencia y no está dominada: el sensei debería evaluarla. */
+	readyForEvaluation: boolean
+	/** Lista y con al menos un log en dojo dentro del ciclo. */
+	evaluationRecommended: boolean
+	cycleBlockedReason: 'REPS' | 'CADENCE' | 'APPROVED' | null
+	/** Repeticiones que faltan para el umbral (0 salvo cuando bloquea por reps). */
+	remainingReps: number
+	/** Días restantes de cadencia; 0 salvo cuando `cycleBlockedReason === 'CADENCE'`. */
+	cycleDaysRemaining: number
+}
+
+export interface StudentTechnique extends TechniqueCycleState {
 	id: string
 	name: string
 	description: string | null
@@ -536,7 +556,7 @@ export interface StudentDashboardSummary {
 
 export type KataStatus = 'PENDING' | 'IN_PROGRESS' | 'APPROVED'
 
-export interface KataProgressItem {
+export interface KataProgressItem extends TechniqueCycleState {
 	id: string
 	name: string
 	description: string | null

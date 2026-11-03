@@ -12,6 +12,7 @@ import { parseKataCriteria } from '@/lib/dashboard/kata-rubric'
 import { buildHolidaySet } from '@/lib/dashboard/holidays'
 import { monthsForGrade } from '@/lib/dashboard/rank-months'
 import { targetRepetitionsFor } from '@/lib/dashboard/technique-reps'
+import { evaluateCycleState } from '@/lib/dashboard/evaluation-cycle'
 import { listStudentAbsenceJustifications } from '@/lib/dashboard/absence-justifications'
 import { listStudentOnlineRecoveries } from '@/lib/dashboard/online-recovery'
 import { cuatrimestreForDate, nextCuatrimestre, tentativeExamDate, type Cuatrimestre, type ExamDayValue } from '@/lib/dashboard/cuatrimestre'
@@ -73,7 +74,11 @@ export async function getStudentDashboardSummary(
       user: { select: { email: true } },
       guardian: { select: { name: true, phone: true } },
       techniques: {
-        include: { technique: true, evaluation: { include: { evaluator: { select: { name: true } } } } },
+        include: {
+          technique: true,
+          evaluation: { include: { evaluator: { select: { name: true } } } },
+          practiceLogs: { select: { repetitions: true, place: true, date: true } },
+        },
         orderBy: { createdAt: 'desc' },
       },
       attendances: { select: { present: true, status: true } },
@@ -183,30 +188,49 @@ export async function getStudentDashboardSummary(
       totalSessions,
       percentage: totalSessions === 0 ? 0 : Math.round((attendedSessions / totalSessions) * 100),
     },
-    techniques: student.techniques.map(({ approved, approvedAt, inPractice, notes, practiceHours, practiceRepetitions, technique, evaluation }) => ({
-      id: technique.id,
-      name: technique.name,
-      description: technique.description,
-      category: technique.category,
-      kihonCategory: technique.kihonCategory,
-      kumiteCategory: technique.kumiteCategory,
-      level: null,
-      beltColor: null,
-      beltSecondaryColor: null,
-      status: techniqueStatus(approved, inPractice),
-      approvedAt: approvedAt?.toISOString() ?? null,
-      notes,
-      practiceHours,
-      practiceRepetitions,
-      targetRepetitions: targetRepetitionsFor(technique),
-      evaluation: evaluation ? {
-        score: evaluation.score,
-        criteria: parseKataCriteria(evaluation.criteria),
-        feedback: evaluation.feedback,
-        evaluatedAt: evaluation.evaluatedAt.toISOString(),
-        evaluatorName: evaluation.evaluator.name,
-      } : null,
-    })),
+    techniques: student.techniques.map(({ approved, approvedAt, inPractice, notes, practiceHours, practiceRepetitions, technique, evaluation, practiceLogs, createdAt }) => {
+      const cycleCategory = technique.category === 'KATA' || technique.category === 'KIHON' ? technique.category : null
+      const cycle = cycleCategory
+        ? evaluateCycleState({
+            category: cycleCategory,
+            approved,
+            assignedAt: createdAt,
+            lastEvaluatedAt: evaluation?.evaluatedAt ?? null,
+            logs: practiceLogs,
+          })
+        : null
+      return {
+        id: technique.id,
+        name: technique.name,
+        description: technique.description,
+        category: technique.category,
+        kihonCategory: technique.kihonCategory,
+        kumiteCategory: technique.kumiteCategory,
+        level: null,
+        beltColor: null,
+        beltSecondaryColor: null,
+        status: techniqueStatus(approved, inPractice),
+        approvedAt: approvedAt?.toISOString() ?? null,
+        notes,
+        practiceHours,
+        practiceRepetitions,
+        targetRepetitions: targetRepetitionsFor(technique),
+        cycleReps: cycle?.cycleReps ?? 0,
+        cycleThreshold: cycle?.threshold ?? 0,
+        readyForEvaluation: cycle?.ready ?? false,
+        evaluationRecommended: cycle?.recommended ?? false,
+        cycleBlockedReason: cycle?.reason ?? null,
+        remainingReps: cycle?.remainingReps ?? 0,
+        cycleDaysRemaining: cycle?.daysRemaining ?? 0,
+        evaluation: evaluation ? {
+          score: evaluation.score,
+          criteria: parseKataCriteria(evaluation.criteria),
+          feedback: evaluation.feedback,
+          evaluatedAt: evaluation.evaluatedAt.toISOString(),
+          evaluatorName: evaluation.evaluator.name,
+        } : null,
+      }
+    }),
     upcomingClasses: student.classEnrollments
       .map(({ class: scheduledClass }) => ({
         id: scheduledClass.id,
@@ -567,6 +591,7 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
             },
           },
           evaluation: { include: { evaluator: { select: { name: true } } } },
+          practiceLogs: { select: { repetitions: true, place: true, date: true } },
         },
         orderBy: { createdAt: 'desc' },
       },
@@ -736,9 +761,16 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
 
   const katas = student.techniques
     .filter(({ technique }) => technique.category === 'KATA')
-    .map(({ technique, approved, inPractice, practiceHours, practiceRepetitions, lastPracticeDate, notes, evaluation, approvedAt }) => {
+    .map(({ technique, approved, inPractice, practiceHours, practiceRepetitions, lastPracticeDate, notes, evaluation, approvedAt, practiceLogs, createdAt }) => {
       const requiredForGrade = gradeKataIdsSet.has(technique.id)
       const level = introLevelFromBeltRankKatas(technique.beltRankKatas, currentProgram)
+      const cycle = evaluateCycleState({
+        category: 'KATA',
+        approved,
+        assignedAt: createdAt,
+        lastEvaluatedAt: evaluation?.evaluatedAt ?? null,
+        logs: practiceLogs,
+      })
       return {
         id: technique.id,
         name: technique.name,
@@ -757,6 +789,13 @@ export async function getStudentKataProgress(studentId: string): Promise<Student
         beltColor: level?.beltColor ?? null,
         beltSecondaryColor: level?.beltSecondaryColor ?? null,
         requiredForGrade,
+        cycleReps: cycle.cycleReps,
+        cycleThreshold: cycle.threshold,
+        readyForEvaluation: cycle.ready,
+        evaluationRecommended: cycle.recommended,
+        cycleBlockedReason: cycle.reason,
+        remainingReps: cycle.remainingReps,
+        cycleDaysRemaining: cycle.daysRemaining,
       } satisfies KataProgressItem
     })
 

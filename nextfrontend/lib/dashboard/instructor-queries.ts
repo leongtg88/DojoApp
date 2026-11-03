@@ -6,6 +6,7 @@ import { ageFromDob, programForAge } from '@/lib/dashboard/program'
 import { introLevelFromBeltRankKatas } from '@/lib/dashboard/kata-level'
 import { parseKataCriteria } from '@/lib/dashboard/kata-rubric'
 import { targetRepetitionsFor } from '@/lib/dashboard/technique-reps'
+import { evaluateCycleState } from '@/lib/dashboard/evaluation-cycle'
 import { getCurriculumForSchool } from '@/lib/dashboard/curriculum-queries'
 import type {
   AdminCurriculumData,
@@ -487,6 +488,7 @@ export async function getInstructorTechniqueReview(
             },
           },
           evaluation: { include: { evaluator: { select: { name: true } } } },
+          practiceLogs: { select: { repetitions: true, place: true, date: true } },
         },
         orderBy: { createdAt: 'desc' },
       },
@@ -509,8 +511,18 @@ export async function getInstructorTechniqueReview(
       currentRank: student.currentRank,
       program,
     },
-    techniques: student.techniques.map(({ approved, approvedAt, inPractice, notes, practiceHours, practiceRepetitions, technique, evaluation }) => {
+    techniques: student.techniques.map(({ approved, approvedAt, inPractice, notes, practiceHours, practiceRepetitions, technique, evaluation, practiceLogs, createdAt }) => {
       const level = introLevelFromBeltRankKatas(technique.beltRankKatas, program)
+      const cycleCategory = technique.category === 'KATA' || technique.category === 'KIHON' ? technique.category : null
+      const cycle = cycleCategory
+        ? evaluateCycleState({
+            category: cycleCategory,
+            approved,
+            assignedAt: createdAt,
+            lastEvaluatedAt: evaluation?.evaluatedAt ?? null,
+            logs: practiceLogs,
+          })
+        : null
       return {
         id: technique.id,
         name: technique.name,
@@ -527,6 +539,13 @@ export async function getInstructorTechniqueReview(
         practiceHours,
         practiceRepetitions,
         targetRepetitions: targetRepetitionsFor(technique),
+        cycleReps: cycle?.cycleReps ?? 0,
+        cycleThreshold: cycle?.threshold ?? 0,
+        readyForEvaluation: cycle?.ready ?? false,
+        evaluationRecommended: cycle?.recommended ?? false,
+        cycleBlockedReason: cycle?.reason ?? null,
+        remainingReps: cycle?.remainingReps ?? 0,
+        cycleDaysRemaining: cycle?.daysRemaining ?? 0,
         evaluation: evaluation ? {
           score: evaluation.score,
           criteria: parseKataCriteria(evaluation.criteria),

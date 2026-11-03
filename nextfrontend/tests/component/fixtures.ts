@@ -47,6 +47,13 @@ export function technique(overrides: Partial<StudentTechnique> = {}): StudentTec
     practiceRepetitions: 0,
     targetRepetitions: null,
     evaluation: null,
+    cycleReps: 0,
+    cycleThreshold: 0,
+    readyForEvaluation: false,
+    evaluationRecommended: false,
+    cycleBlockedReason: null,
+    remainingReps: 0,
+    cycleDaysRemaining: 0,
     ...overrides,
   }
 }
@@ -122,6 +129,13 @@ export function kataProgress(overrides: Partial<KataProgressItem> = {}): KataPro
     beltColor: null,
     beltSecondaryColor: null,
     requiredForGrade: true,
+    cycleReps: 0,
+    cycleThreshold: 0,
+    readyForEvaluation: false,
+    evaluationRecommended: false,
+    cycleBlockedReason: null,
+    remainingReps: 0,
+    cycleDaysRemaining: 0,
     ...overrides,
   }
 }
