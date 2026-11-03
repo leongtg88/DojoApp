@@ -46,6 +46,7 @@ Cada cierre usa este formato (plantilla de la sección 10.2 de la guía):
 | UX-B6 · Asistencia del admin en pestañas | 2026-10-27 | `ux(B6): asistencia del admin en pestañas` | ✅ Hecha | — |
 | UX-B8 · Alumnos: una ruta, dos modos | 2026-10-27 | `8893b6c` | ↩️ Revertida (2026-10-27) | — |
 | T1 · Expediente desde el acordeón móvil | 2026-11-02 | `ux(T1): expediente desde el acordeón móvil` | ✅ Hecha (revisada) | — |
+| Ciclo de Dominio Técnico · Fase 1 (T1–T6) | 2026-11-03 | `0d406bf`…`dc102b9` | ✅ Hecha (integración sin Docker) | — |
 
 **Nota de orden (UX-A7a).** Se pospone la instrumentación para no crear todavía la tabla `ProductEvent`. Decisión tomada con León: A7a se retoma **antes de UX-A5b** (el cambio de Inicio), que es donde de verdad hace falta el antes/después. Mientras tanto se avanzó con A2, A3 y A4, que son solo frontend. Ver la entrada de A7a al final del documento cuando se cierre.
 
@@ -1070,3 +1071,22 @@ Si se prefiere por ID, sustituir la condición por `u.id = '<ID_REAL_DEL_SENSEI>
 - **Desviaciones respecto al plan:** el plan pedía convertir el `<li>` del instructor en un acordeón con `<button>`. Se usó un chevron hermano para no perder el enlace a evaluaciones ni anidar interactivos. Además, el plan pedía un CTA primario a ancho completo ("Ver expediente completo") en el panel del admin; tras la revisión manual del 2026-11-02 se eliminó por duplicar la acción "Expediente" de `StudentRowActions`.
 - **Pendientes o dudas:** ninguno. Commit único de la rama.
 - **Revisión humana:** hecha (2026-11-02, León). Resultado: se retiró el CTA duplicado del panel móvil.
+
+---
+
+## Ciclo de Dominio Técnico · Fase 1 (plan `docs/evaluaciones-ciclo-dominio.md`)
+
+- **Rama:** `ux/ciclo-evaluacion-fase-1` (cherry-picked a `main`). Commits `0d406bf`…`dc102b9` (doc + T1–T6).
+- **Decisiones confirmadas con León (2026-11-03):** umbral de kihon = **60** repeticiones (no 100); la cola cross-student queda para **Fase 1b** (Fase 1 solo filtra dentro del alumno).
+- **T1 · `evaluation-cycle.ts` + tests unitarios.** Módulo puro (`resolveCycleThreshold`, `cycleRepetitions`, `evaluateCycleState`, `suggestNextFocus`) con `EVALUATION_THRESHOLDS = { KATA: 20, KIHON: 60 }` y `MIN_DAYS_BETWEEN_EVALUATIONS = 7`. `tests/unit/evaluation-cycle.test.ts` (18 pruebas).
+- **T2 · Tipos y queries.** `TechniqueCycleState` en `types/dashboard.ts` (lo extienden `StudentTechnique` y `KataProgressItem`); cálculo del ciclo en `getInstructorTechniqueReview`, `getStudentKataProgress` y `getStudentDashboardSummary` (este último porque comparte el tipo `StudentTechnique`). Incluye `practiceLogs` en las tres consultas.
+- **T3 · UI del sensei.** Filtro "Listas (n)" y badge de ciclo (`Lista` / `Lista · sin evidencia en dojo` / `Faltan N` / `Cadencia: faltan N días`) en `InstructorTechniqueReview.tsx`.
+- **T4 · UI del alumno.** Barra "Ciclo X / umbral", badge "Lista para evaluación" y copy de foco/cadencia en `KataList.tsx`. La parte opcional de `StudentPracticeLog.tsx` se dejó fuera (aplazada).
+- **T5 · Sugerencia de foco.** En el modal de rúbrica se resalta el criterio con menor nota y se muestra "Próxima meta" con `suggestNextFocus`.
+- **T6 · Integración.** `tests/integration/evaluation-cycle.test.ts` (6 casos: kata 20 reps → lista; 19 → falta 1; cadencia; logs libres no cuentan; reinicio al guardar evaluación; kihon 60 → lista).
+- **Resultado:** `pnpm check` → lint 0 errores (35 avisos preexistentes), typecheck OK, `pnpm test` 68 archivos / 335 pruebas en verde. `test:integration` **no ejecutado**: Docker no disponible en este entorno (queda pendiente para CI o entorno con Docker). Sin cambios en `prisma/schema.prisma` ni migraciones.
+- **Desviaciones respecto al plan:**
+  - Añadido `daysRemaining`/`cycleDaysRemaining` al estado y a los tipos para el copy "Cadencia: faltan N días" sin reimplementar la lógica en la UI.
+  - El estado `EvaluationCycleState` se modeló como interfaz plana (no unión) para simplificar su consumo; conserva todos los campos del plan.
+  - T4 opcional (`StudentPracticeLog`) aplazado.
+- **Pendientes o dudas:** validación visual del badge/filtro (León); Fase 1b (cola cross-student) y Fase 1.5 (notificación `TECHNIQUE_READY_FOR_EVALUATION`) quedan para después.
