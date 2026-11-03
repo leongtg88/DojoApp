@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { ChevronDown, ChevronUp, Clock, MessageSquare, Repeat, Search, Star, Timer } from 'lucide-react'
+import { ChevronDown, ChevronUp, Clock, MessageSquare, Repeat, Search, Star, Target, Timer } from 'lucide-react'
 import { formatKataScore } from '@/lib/dashboard/kata-rubric'
 import type { KataProgressItem, KataStatus, PracticePlace } from '@/types/dashboard'
 import { KataBadge } from './KataBadge'
@@ -24,6 +24,23 @@ const filters: Array<{ value: StatusFilter; label: string }> = [
     { value: 'IN_PROGRESS', label: 'En práctica' },
     { value: 'PENDING', label: 'Por iniciar' },
 ]
+
+type CycleTone = 'ready' | 'cadence' | 'reps' | 'none'
+
+function cycleStatus(kata: KataProgressItem): { tone: CycleTone; text: string } {
+    if (kata.readyForEvaluation) {
+        return { tone: 'ready', text: 'Tu sensei la revisará en la próxima clase. No necesitas más volumen.' }
+    }
+    if (kata.cycleBlockedReason === 'CADENCE') {
+        const days = kata.cycleDaysRemaining
+        return { tone: 'cadence', text: `Cadencia: faltan ${days} día${days === 1 ? '' : 's'}` }
+    }
+    if (kata.cycleBlockedReason === 'REPS' && kata.cycleReps > 0) {
+        const missing = kata.remainingReps
+        return { tone: 'reps', text: `Te falta${missing === 1 ? '' : 'n'} ${missing} ejecución${missing === 1 ? '' : 'es'}` }
+    }
+    return { tone: 'none', text: '' }
+}
 
 export function KataList({ katas = [], requiredKataIds = [], onStartPractice, onSaveNote, onLogPractice, className = '' }: KataListProps) {
     const [search, setSearch] = useState('')
@@ -128,6 +145,7 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                     {visibleKatas.map((kata) => {
                         const isExpanded = expandedId === kata.id
                         const isApproved = kata.status === 'APPROVED'
+                        const cycle = cycleStatus(kata)
 
                         return (
                             <article className="rounded-lg border border-edge bg-surface-2 p-4 hover:border-edge-strong" key={kata.id}>
@@ -179,6 +197,21 @@ export function KataList({ katas = [], requiredKataIds = [], onStartPractice, on
                                         <span>{new Date(kata.lastPracticeDate).toLocaleString('es-DO', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}</span>
                                     )}
                                 </div>
+
+                                {kata.cycleThreshold > 0 && (
+                                    <div className="mt-2.5 rounded-md border border-edge bg-surface-1 px-3 py-2">
+                                        <div className="flex flex-wrap items-center justify-between gap-2">
+                                            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-2">
+                                                <Target aria-hidden="true" className="size-3.5 text-accent" />
+                                                Ciclo {kata.cycleReps} / {kata.cycleThreshold}
+                                            </span>
+                                            {cycle.tone === 'ready' && <span className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-bold text-ok-text">Lista para evaluación</span>}
+                                            {cycle.tone === 'cadence' && <span className="rounded-md border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[11px] font-bold text-warn-text">{cycle.text}</span>}
+                                        </div>
+                                        {cycle.tone === 'ready' && <p className="mt-1.5 text-xs leading-relaxed text-ink-2">{cycle.text}</p>}
+                                        {cycle.tone === 'reps' && <p className="mt-1 text-xs text-ink-3">{cycle.text}</p>}
+                                    </div>
+                                )}
 
                                 {isExpanded && (
                                     <div className="mt-4 space-y-3 border-t border-edge pt-4">
