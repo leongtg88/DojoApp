@@ -822,6 +822,10 @@ export interface StudentPracticeTechniqueOption {
 	practiceRepetitions: number
 	/** true si está en el expediente del alumno; sólo esas suman a su experiencia. */
 	assigned: boolean
+	/** Repeticiones del ciclo en curso (KATA/KIHON asignadas; 0 en el resto). */
+	cycleReps: number
+	/** Umbral del ciclo (KATA/KIHON asignadas; 0 en el resto). */
+	cycleThreshold: number
 	/** Grados de introducción de la kata (uno por programa). Vacío si no es kata. */
 	kataLevels: StudentPracticeKataLevel[]
 }

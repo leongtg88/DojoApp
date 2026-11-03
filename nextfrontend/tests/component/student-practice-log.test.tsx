@@ -14,6 +14,8 @@ const kihon: StudentPracticeTechniqueOption = {
   targetRepetitions: 20,
   practiceRepetitions: 0,
   assigned: false,
+  cycleReps: 0,
+  cycleThreshold: 0,
   kataLevels: [],
 }
 

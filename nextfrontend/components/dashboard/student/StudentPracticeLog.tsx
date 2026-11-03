@@ -141,6 +141,9 @@ function PracticeTechniqueRow({ technique, checked, reps, onToggle, onRepsChange
           </span>
           <span className={`text-[11px] font-semibold ${technique.assigned ? 'text-ok-text' : 'text-ink-4'}`}>
             {technique.assigned ? 'En tu expediente' : 'Práctica libre'}
+            {technique.assigned && technique.cycleThreshold > 0 && (
+              <span className="font-medium text-ink-3"> · Ciclo {technique.cycleReps} / {technique.cycleThreshold}</span>
+            )}
           </span>
         </span>
       </label>

@@ -307,6 +307,10 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
       techniques: {
         select: {
           practiceRepetitions: true,
+          createdAt: true,
+          approved: true,
+          evaluation: { select: { evaluatedAt: true } },
+          practiceLogs: { select: { repetitions: true, place: true, date: true } },
           technique: {
             select: { id: true, name: true, japaneseName: true, category: true, repetitionsCount: true, movementsCount: true, kihonCategory: true, kumiteCategory: true },
           },
@@ -393,41 +397,59 @@ export async function getStudentAttendancePunchData(studentId: string): Promise<
     },
   })
 
-  const assignedRepetitions = new Map(
-    student.techniques.map(({ practiceRepetitions, technique }) => [technique.id, practiceRepetitions]),
+  const assignedTechniques = new Map(
+    student.techniques.map(({ practiceRepetitions, technique, createdAt, approved, evaluation, practiceLogs }) => [
+      technique.id,
+      { practiceRepetitions, createdAt, approved, evaluatedAt: evaluation?.evaluatedAt ?? null, practiceLogs },
+    ]),
   )
 
   const programs: Array<'YOUTH' | 'ADULT'> = ['YOUTH', 'ADULT']
 
-  const practiceTechniques: StudentPracticeTechniqueOption[] = schoolTechniques.map((technique) => ({
-    id: technique.id,
-    name: technique.name,
-    japaneseName: technique.japaneseName,
-    category: technique.category,
-    order: technique.order,
-    kihonCategory: technique.kihonCategory,
-    kumiteCategory: technique.kumiteCategory,
-    targetRepetitions: targetRepetitionsFor(technique),
-    practiceRepetitions: assignedRepetitions.get(technique.id) ?? 0,
-    assigned: assignedRepetitions.has(technique.id),
-    kataLevels: technique.category === 'KATA'
-      ? programs
-        .map((program) => {
-          const info = introLevelFromBeltRankKatas(technique.beltRankKatas, program)
-          if (!info) return null
-          return {
-            program,
-            rankName: info.rankName,
-            kyuDan: info.kyuDan,
-            order: info.gradeOrder,
-            level: info.level,
-            beltColor: info.beltColor,
-            beltSecondaryColor: info.beltSecondaryColor,
-          } satisfies StudentPracticeKataLevel
+  const practiceTechniques: StudentPracticeTechniqueOption[] = schoolTechniques.map((technique) => {
+    const assigned = assignedTechniques.get(technique.id)
+    const cycleCategory = technique.category === 'KATA' || technique.category === 'KIHON' ? technique.category : null
+    const cycle = assigned && cycleCategory
+      ? evaluateCycleState({
+          category: cycleCategory,
+          approved: assigned.approved,
+          assignedAt: assigned.createdAt,
+          lastEvaluatedAt: assigned.evaluatedAt,
+          logs: assigned.practiceLogs,
         })
-        .filter((entry): entry is StudentPracticeKataLevel => entry !== null)
-      : [],
-  }))
+      : null
+    return {
+      id: technique.id,
+      name: technique.name,
+      japaneseName: technique.japaneseName,
+      category: technique.category,
+      order: technique.order,
+      kihonCategory: technique.kihonCategory,
+      kumiteCategory: technique.kumiteCategory,
+      targetRepetitions: targetRepetitionsFor(technique),
+      practiceRepetitions: assigned?.practiceRepetitions ?? 0,
+      assigned: assigned != null,
+      cycleReps: cycle?.cycleReps ?? 0,
+      cycleThreshold: cycle?.threshold ?? 0,
+      kataLevels: technique.category === 'KATA'
+        ? programs
+          .map((program) => {
+            const info = introLevelFromBeltRankKatas(technique.beltRankKatas, program)
+            if (!info) return null
+            return {
+              program,
+              rankName: info.rankName,
+              kyuDan: info.kyuDan,
+              order: info.gradeOrder,
+              level: info.level,
+              beltColor: info.beltColor,
+              beltSecondaryColor: info.beltSecondaryColor,
+            } satisfies StudentPracticeKataLevel
+          })
+          .filter((entry): entry is StudentPracticeKataLevel => entry !== null)
+        : [],
+    }
+  })
 
   const schedule: ClassSchedule[] = student.classEnrollments.map(({ class: scheduledClass }) => ({
     id: scheduledClass.id,
