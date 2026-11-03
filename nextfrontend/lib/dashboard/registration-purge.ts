@@ -1,10 +1,11 @@
 import { Prisma } from '@/lib/generated/prisma'
 import { db } from '@/lib/db'
-import { deletePrivateDocuments, listPrivateDocuments } from '@/lib/document-storage'
+import { deletePrivateDocuments, listPrivateDocuments, PENDING_UPLOADS_PREFIX } from '@/lib/document-storage'
 
 // Prefijo (una sola "carpeta") donde viven los documentos subidos antes de
-// confirmar la inscripción.
-export const PENDING_UPLOADS_PREFIX = 'enrollments/pending'
+// confirmar la inscripción. Se reexporta desde el módulo de storage para que la
+// ruta de conversión y el barrido compartan una única fuente.
+export { PENDING_UPLOADS_PREFIX }
 
 /**
  * Elimina la información capturada por el formulario de inscripción de un alumno:
@@ -90,6 +91,12 @@ export async function purgeStalePendingEnrollments(olderThanDays = 30, limit = 5
  * con más antigüedad que `olderThanHours`, para no tocar subidas en curso: los
  * tokens de subida caducan en 1 hora.
  *
+ * **Invariante de seguridad:** nunca borra un objeto referenciado por un
+ * `StudentDocument`. Las inscripciones confirmadas conservan su `storageKey` bajo
+ * este prefijo hasta que `finalizeStudentDocuments` los mueve a `students/…`; si
+ * se borraran por antigüedad, el expediente quedaría con el nombre del archivo y
+ * sin archivo.
+ *
  * Es best-effort: los errores se registran y no se propagan.
  */
 export async function purgeStalePendingUploads(olderThanHours = 24, limit = 100): Promise<number> {
@@ -102,8 +109,18 @@ export async function purgeStalePendingUploads(olderThanHours = 24, limit = 100)
 			.map((object) => `${PENDING_UPLOADS_PREFIX}/${object.name}`)
 
 		if (staleKeys.length === 0) return 0
-		await deletePrivateDocuments(staleKeys)
-		return staleKeys.length
+
+		const referenced = await db.studentDocument.findMany({
+			where: { storageKey: { in: staleKeys } },
+			select: { storageKey: true },
+		})
+		const referencedKeys = new Set(referenced.map(({ storageKey }) => storageKey))
+		const deletableKeys = staleKeys.filter((key) => !referencedKeys.has(key))
+
+		if (deletableKeys.length === 0) return 0
+
+		await deletePrivateDocuments(deletableKeys)
+		return deletableKeys.length
 	} catch (reason) {
 		console.error('[purge-inscripciones] no fue posible barrer subidas pendientes:', reason)
 		return 0

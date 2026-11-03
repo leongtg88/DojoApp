@@ -1,0 +1,217 @@
+import { createClient } from '@supabase/supabase-js'
+import { MAX_FILE_SIZE_MB } from '@/lib/file-validation'
+
+// Implementación del almacenamiento privado de documentos.
+//
+// Vive en un módulo sin `server-only` para que los scripts de diagnóstico
+// (`scripts/audit-documents.ts`) puedan reutilizarla con `tsx`. La app importa
+// siempre `@/lib/document-storage`, que sí marca el módulo como de servidor.
+
+const bucketName = process.env.SUPABASE_DOCUMENTS_BUCKET ?? 'dojo-documents'
+
+// Prefijo donde el formulario público deja los archivos antes de confirmar la
+// inscripción. Es efímero: el barrido de subidas abandonadas lo limpia.
+export const PENDING_UPLOADS_PREFIX = 'enrollments/pending'
+
+// Prefijo definitivo de los documentos del expediente. Nada lo purga.
+export const STUDENT_DOCUMENTS_PREFIX = 'students'
+
+export function sanitizeStorageName(name: string) {
+  return (
+    name
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^A-Za-z0-9._-]/g, '_')
+      .replace(/_+/g, '_')
+      .trim()
+      .replace(/[._-]$/, '') || 'archivo'
+  )
+}
+
+function normalizeStorageUrl(url: string) {
+  const trimmed = url.trim().replace(/\/+$/, '')
+  const match = trimmed.match(/^(https?:\/\/[^/]+)/)
+  return match ? match[1] : trimmed
+}
+
+function getStorageClient() {
+  const rawUrl = process.env.SUPABASE_URL
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!rawUrl || !serviceRoleKey) {
+    throw new Error('El almacenamiento privado de documentos no está configurado.')
+  }
+
+  const url = normalizeStorageUrl(rawUrl)
+
+  return createClient(url, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  })
+}
+
+function errorFields(error: unknown): { name: string; code: string; message: string } {
+  return {
+    name: typeof error === 'object' && error !== null && 'name' in error && typeof (error as { name?: unknown }).name === 'string'
+      ? (error as { name: string }).name
+      : '',
+    code: typeof error === 'object' && error !== null && 'code' in error && typeof (error as { code?: unknown }).code === 'string'
+      ? (error as { code: string }).code
+      : '',
+    message: typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message?: unknown }).message === 'string'
+      ? (error as { message: string }).message
+      : '',
+  }
+}
+
+export function describeStorageError(error: unknown): string {
+  const { name, code, message } = errorFields(error)
+  const haystack = `${name} ${code} ${message}`.toLowerCase()
+
+  if (haystack.includes('pgrst125') || haystack.includes('invalid path specified') || haystack.includes('invalid path in request url')) {
+    return 'El almacenamiento no está configurado correctamente en el servidor. Contacta al administrador.'
+  }
+
+  if (haystack.includes('entitytoolarge') || haystack.includes('maxsizeexceeded') || haystack.includes('too large') || haystack.includes('exceeds the maximum') || haystack.includes('supera el tama')) {
+    return `El archivo supera el tamaño máximo permitido de ${MAX_FILE_SIZE_MB} MB. Comprime la imagen o usa otro archivo.`
+  }
+
+  if (haystack.includes('invalidkey') || haystack.includes('invalid key')) {
+    return 'El nombre o formato del archivo no es válido. Usa JPG, PNG, WEBP o PDF con nombres simples (sin caracteres especiales).'
+  }
+
+  if (haystack.includes('nosuchbucket') || haystack.includes('bucket not found')) {
+    return 'El almacenamiento de documentos no está configurado correctamente. Contacta al administrador.'
+  }
+
+  if (haystack.includes('duplicate') || haystack.includes('already exists') || haystack.includes('keyalreadyexists')) {
+    return 'Ese archivo ya existe. Intenta con otro nombre o archivo.'
+  }
+
+  if (haystack.includes('nosuchkey') || haystack.includes('object not found') || haystack.includes('not found')) {
+    return 'El documento no se encontró en el sistema. Inténtalo nuevamente.'
+  }
+
+  if (haystack.includes('forbidden') || haystack.includes('unauthorized') || haystack.includes('permission')) {
+    return 'No hay permiso para guardar el documento. Contacta al administrador.'
+  }
+
+  if (haystack.includes('timeout') || haystack.includes('econnrefused') || haystack.includes('fetch failed') || haystack.includes('network')) {
+    return 'No se pudo conectar con el almacenamiento. Verifica tu conexión e inténtalo nuevamente.'
+  }
+
+  return 'No fue posible guardar el documento de forma segura. Inténtalo nuevamente.'
+}
+
+export async function uploadPrivateDocument(storageKey: string, file: File) {
+  const { error } = await getStorageClient().storage.from(bucketName).upload(storageKey, file, {
+    contentType: file.type,
+    upsert: false,
+  })
+
+  if (error) {
+    const err = new Error(describeStorageError(error))
+    ;(err as { cause?: unknown }).cause = error
+    throw err
+  }
+}
+
+export async function createPrivateDocumentUrl(storageKey: string, expiresIn = 60) {
+  const { data, error } = await getStorageClient().storage.from(bucketName).createSignedUrl(storageKey, expiresIn)
+
+  if (error || !data) {
+    throw new Error(describeStorageError(error ?? { message: 'respuesta vacía' }))
+  }
+
+  return data.signedUrl
+}
+
+/**
+ * Copia un objeto dentro del bucket. Se usa para finalizar los documentos de una
+ * inscripción: se copian del prefijo efímero a su ubicación definitiva y solo
+ * después se borra el original.
+ */
+export async function copyPrivateDocument(fromKey: string, toKey: string) {
+  const { error } = await getStorageClient().storage.from(bucketName).copy(fromKey, toKey)
+
+  if (error) {
+    const err = new Error(describeStorageError(error))
+    ;(err as { cause?: unknown }).cause = error
+    throw err
+  }
+}
+
+export async function downloadPrivateDocument(storageKey: string): Promise<{ buffer: Buffer; contentType: string }> {
+  const { data, error } = await getStorageClient().storage.from(bucketName).download(storageKey)
+
+  if (error || !data) {
+    throw new Error(describeStorageError(error ?? { message: 'respuesta vacía' }))
+  }
+
+  const buffer = Buffer.from(await data.arrayBuffer())
+  return { buffer, contentType: data.type || 'application/octet-stream' }
+}
+
+export interface PrivateDocumentEntry {
+  name: string
+  createdAt: string | null
+}
+
+// Lista los objetos bajo un prefijo del bucket (una sola "carpeta"). Se usa para
+// barrer subidas pendientes que quedaron huérfanas (formularios abandonados).
+export async function listPrivateDocuments(prefix: string, limit = 100, offset = 0): Promise<PrivateDocumentEntry[]> {
+  const { data, error } = await getStorageClient().storage.from(bucketName).list(prefix, { limit, offset })
+  if (error) throw new Error(describeStorageError(error))
+
+  return (data ?? [])
+    .filter((entry) => Boolean(entry?.name) && entry?.id != null)
+    .map((entry) => {
+      const created = (entry as { created_at?: string }).created_at ?? (entry as { updated_at?: string }).updated_at ?? null
+      return { name: entry.name as string, createdAt: created }
+    })
+}
+
+/**
+ * Lista todos los objetos de un prefijo, paginando. Pensado para diagnósticos de
+ * solo lectura (auditoría de documentos), no para el barrido diario.
+ */
+export async function listAllPrivateDocuments(prefix: string, pageSize = 100, maxPages = 200): Promise<PrivateDocumentEntry[]> {
+  const all: PrivateDocumentEntry[] = []
+
+  for (let page = 0; page < maxPages; page += 1) {
+    const batch = await listPrivateDocuments(prefix, pageSize, page * pageSize)
+    all.push(...batch)
+    if (batch.length < pageSize) break
+  }
+
+  return all
+}
+
+/**
+ * Comprueba si un objeto existe realmente en el bucket. Supabase firma rutas sin
+ * verificar existencia, así que una URL firmada puede apuntar a la nada.
+ */
+export async function privateDocumentExists(storageKey: string): Promise<boolean> {
+  const parts = storageKey.split('/')
+  const name = parts.pop()
+  const folder = parts.join('/')
+  if (!name) return false
+
+  const { data, error } = await getStorageClient().storage.from(bucketName).list(folder, { search: name, limit: 100 })
+  if (error) throw new Error(describeStorageError(error))
+
+  return (data ?? []).some((entry) => entry.name === name && entry.id != null)
+}
+
+export async function deletePrivateDocuments(storageKeys: string[]) {
+  if (storageKeys.length === 0) return
+
+  const { error } = await getStorageClient().storage.from(bucketName).remove(storageKeys)
+
+  if (error) {
+    const err = new Error(describeStorageError(error))
+    ;(err as { cause?: unknown }).cause = error
+    throw err
+  }
+}
+
+export { bucketName }

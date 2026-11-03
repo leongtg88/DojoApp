@@ -50,7 +50,8 @@ describe('cron', () => {
         origin: 'ASSISTANT',
         contactEmail: `stale-${randomUUID()}@test.dev`,
         status: 'PENDING',
-        createdAt: new Date(Date.now() - 40 * 24 * 60 * 60 * 1000),
+        // Supera el umbral por defecto (90 días) para ejercitar el default.
+        createdAt: new Date(Date.now() - 100 * 24 * 60 * 60 * 1000),
       },
     })
     await db.enrollment.create({

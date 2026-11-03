@@ -15,6 +15,18 @@ vi.mock('@/lib/notifications/create', () => ({
   notifyReviewSubmitted: async () => {},
 }))
 
+// Storage de documentos: se sustituyen las operaciones que tocan Supabase para
+// poder verificar que la conversión copia el documento a su ruta definitiva.
+const { copyPrivateDocumentMock, deletePrivateDocumentsMock } = vi.hoisted(() => ({
+  copyPrivateDocumentMock: vi.fn(async () => {}),
+  deletePrivateDocumentsMock: vi.fn(async () => {}),
+}))
+
+vi.mock('@/lib/document-storage', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/document-storage')>()
+  return { ...actual, copyPrivateDocument: copyPrivateDocumentMock, deletePrivateDocuments: deletePrivateDocumentsMock }
+})
+
 const { db, resetDb } = await import('./db')
 const { authMock } = await import('./route-auth')
 const { jsonRequest, routeParams, readJson } = await import('./http')
@@ -40,6 +52,8 @@ const baseBody = { contactPhone: null, medicalInfo: null, emergencyContact: null
 beforeEach(async () => {
   await resetDb()
   authMock.setUser(null)
+  copyPrivateDocumentMock.mockClear()
+  deletePrivateDocumentsMock.mockClear()
 })
 
 // Fase 3 · F3-07 — Conversión de inscripción a alumno.
@@ -105,6 +119,53 @@ describe('F3-07 · convertir inscripción en alumno', () => {
 
     const student = await db.student.findUniqueOrThrow({ where: { id: body.studentId } })
     expect(student.currentRank).toBe('Naranja')
+  })
+
+  it('mueve los documentos de la inscripción a la ruta definitiva del alumno', async () => {
+    const school = await createSchool()
+    const branch = await createBranch(school.id)
+    await loginAsAdmin(school.id)
+    await db.beltRank.create({ data: { program: 'ADULT', name: 'Blanco', order: 1, schoolId: school.id } })
+    const enrollment = await makeEnrollment(school.id, branch.id)
+    const applicant = await db.enrollmentApplicant.create({
+      data: { enrollmentId: enrollment.id, name: 'Hijo Uno', dateOfBirth: new Date('1990-05-01T00:00:00.000Z'), profileData: {} },
+      select: { id: true },
+    })
+    const pendingKey = 'enrollments/pending/sub-0-PASSPORT-uuid-pasaporte.pdf'
+    const document = await db.studentDocument.create({
+      data: {
+        enrollmentId: enrollment.id,
+        applicantId: applicant.id,
+        type: 'PASSPORT',
+        fileName: 'pasaporte.pdf',
+        storageKey: pendingKey,
+        mimeType: 'application/pdf',
+        fileSize: 1234,
+      },
+      select: { id: true },
+    })
+
+    const res = await convertRoute.POST(
+      jsonRequest('http://t/x', 'POST', {
+        applicantId: applicant.id,
+        firstName: 'Hijo',
+        lastName: 'Uno',
+        dateOfBirth: '1990-05-01',
+        ...baseBody,
+      }),
+      routeParams({ enrollmentId: enrollment.id }),
+    )
+
+    expect(res.status).toBe(200)
+    const body = await readJson<{ studentId: string }>(res)
+
+    const updated = await db.studentDocument.findUniqueOrThrow({ where: { id: document.id } })
+    expect(updated.storageKey).toMatch(new RegExp(`^students/${body.studentId}/`))
+    expect(updated.storageKey).toContain('-pasaporte.pdf')
+
+    // Orden seguro: copiar a la ruta definitiva y solo después borrar el original.
+    expect(copyPrivateDocumentMock).toHaveBeenCalledWith(pendingKey, updated.storageKey)
+    expect(deletePrivateDocumentsMock).toHaveBeenCalledWith([pendingKey])
   })
 
   it('no convierte inscripciones de otra escuela (400 por no encontrada)', async () => {

@@ -12,12 +12,15 @@ export async function GET(request: NextRequest) {
     return new NextResponse('Unauthorized', { status: 401 })
   }
 
-  const staleDays = Number(process.env.ENROLLMENT_STALE_DAYS ?? '') || 30
+  // Umbral conservador: una solicitud legítima puede tardar semanas en revisarse.
+  // Antes eran 30 días, que podía destruir documentos de familias reales.
+  const staleDays = Number(process.env.ENROLLMENT_STALE_DAYS ?? '') || 90
   const purged = await purgeStalePendingEnrollments(staleDays)
 
   // Además, barre los documentos subidos que nunca se asociaron a una
   // inscripción (formularios abandonados) y que ya superaron la hora de vigencia
-  // de su token de subida.
+  // de su token de subida. El barrido nunca toca documentos referenciados por un
+  // expediente (ver `purgeStalePendingUploads`).
   const pendingPurged = await purgeStalePendingUploads(24)
 
   return NextResponse.json({ ok: true, purged, pendingPurged })

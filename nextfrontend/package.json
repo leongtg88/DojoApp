@@ -13,6 +13,7 @@
     "sync:kihon": "tsx prisma/sync-kihon.ts",
     "sync:kumite": "tsx prisma/sync-kumite.ts",
     "fix:attendance": "tsx scripts/fix-attendance-dates.ts",
+    "audit:documents": "tsx scripts/audit-documents.ts",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

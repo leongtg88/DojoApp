@@ -5,6 +5,7 @@ import { hasAnyRole, hasRole } from '@/lib/auth/roles'
 import { ageFromDob, programForAge, resolveRankForKyu } from '@/lib/dashboard/program'
 import { resolveProgressionKataIds } from '@/lib/dashboard/kata-curriculum'
 import { linkGuardianToChildren } from '@/lib/family/guardians'
+import { finalizeStudentDocuments } from '@/lib/dashboard/document-finalize'
 import type { Program } from '@/lib/curriculum/programs'
 import { buildStudentExportRecord } from '@/lib/dashboard/student-export'
 import { postToN8n } from '@/lib/integrations/n8n'
@@ -265,6 +266,16 @@ export async function POST(request: Request, { params }: ConvertEnrollmentRouteC
   }
 
     return createdStudent
+  })
+
+  // Los documentos de la inscripción viven en el prefijo efímero
+  // `enrollments/pending/…` hasta este momento. Se mueven a su ruta definitiva
+  // para que el barrido de subidas abandonadas no pueda borrarlos. Va fuera de la
+  // transacción: el storage es un efecto externo que no debe revertirse con un
+  // rollback de BD. Si falla, el documento conserva su key original y el barrido
+  // lo respeta (ver `purgeStalePendingUploads`).
+  await finalizeStudentDocuments(student.id, enrollment.id).catch((reason) => {
+    console.error('[convertir-inscripcion] no se pudieron finalizar los documentos:', reason)
   })
 
   // Si este aspirante es un hijo y el tutor ya creó su cuenta (aceptó su
