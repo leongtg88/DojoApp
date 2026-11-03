@@ -7,6 +7,7 @@ import type { InstructorTechniqueReview as TechniqueReview, StudentTechnique, Te
 import { KataBeltChip } from '../shared/KataBeltChip'
 import { TechniqueCatalogFilter } from '../shared/TechniqueCatalogFilter'
 import { KATA_CRITERION_KEYS, KATA_RUBRIC, MAX_KATA_CRITERION_SCORE, MIN_KATA_CRITERION_SCORE, averageKataCriteria, blockAverage, formatKataScore, isCompleteKataCriteria, parseKataCriteria } from '@/lib/dashboard/kata-rubric'
+import { suggestNextFocus } from '@/lib/dashboard/evaluation-cycle'
 
 interface InstructorTechniqueReviewProps {
     review: TechniqueReview
@@ -377,6 +378,10 @@ function KataRubricForm({
     }
     const complete = isCompleteKataCriteria(entered)
     const total = complete ? averageKataCriteria(entered) : null
+    const lowestKey = complete
+        ? KATA_CRITERION_KEYS.reduce((lowest, key) => (lowest === null || entered[key] < entered[lowest] ? key : lowest), null as (typeof KATA_CRITERION_KEYS)[number] | null)
+        : null
+    const suggestion = complete && total !== null ? suggestNextFocus(total, entered) : null
 
     async function handleSave() {
         if (!complete || saving) return
@@ -429,12 +434,15 @@ function KataRubricForm({
                                     {block.criteria.map((criterion) => (
                                         <li className="grid grid-cols-[1fr_5rem] items-center gap-3" key={criterion.key}>
                                             <div className="min-w-0">
-                                                <p className="text-xs font-semibold text-ink-2">{criterion.label}</p>
+                                                <p className="text-xs font-semibold text-ink-2">
+                                                    {criterion.label}
+                                                    {complete && criterion.key === lowestKey && <span className="ml-1 text-[10px] font-bold text-warn-text">· menor nota</span>}
+                                                </p>
                                                 <p className="mt-0.5 text-[11px] leading-relaxed text-ink-3">{criterion.description}</p>
                                             </div>
                                             <input
                                                 aria-label={`${criterion.label} (0 a 10)`}
-                                                className="w-full rounded-md border border-edge-strong bg-surface-2 px-2 py-1.5 text-center text-sm font-semibold text-ink outline-none focus:border-cyan-500"
+                                                className={`w-full rounded-md border px-2 py-1.5 text-center text-sm font-semibold text-ink outline-none focus:border-cyan-500 ${complete && criterion.key === lowestKey ? 'border-amber-500 bg-amber-500/10' : 'border-edge-strong bg-surface-2'}`}
                                                 inputMode="numeric"
                                                 max={MAX_KATA_CRITERION_SCORE}
                                                 min={MIN_KATA_CRITERION_SCORE}
@@ -451,6 +459,13 @@ function KataRubricForm({
                         )
                     })}
                 </div>
+
+                {suggestion && (
+                    <div className="mt-4 flex items-start gap-2 rounded-lg border border-cyan-500/30 bg-cyan-500/10 p-3 text-xs leading-relaxed text-ink-2">
+                        <Target aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-accent" />
+                        <p><span className="font-bold text-accent-text">Próxima meta:</span> {suggestion}</p>
+                    </div>
+                )}
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     <label className="text-xs font-semibold text-ink-2" htmlFor={`kata-notes-${technique.id}`}><span className="inline-flex items-center gap-1"><Info aria-hidden="true" className="size-3.5 text-accent" />Observación del instructor</span><textarea className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs font-normal text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id={`kata-notes-${technique.id}`} onChange={(event) => setNotes(event.target.value)} placeholder="Añade una observación técnica" rows={3} value={notes} /></label>
