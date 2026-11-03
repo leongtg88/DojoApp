@@ -22,9 +22,8 @@ interface EditorRecord {
     justificationReason: string | null
 }
 
-export function AdminPassListEditor({ roster }: AdminPassListEditorProps) {
-    const router = useRouter()
-    const [records, setRecords] = useState<EditorRecord[]>(() => roster.students.map((student) => ({
+function buildRecords(roster: AdminExpectedAttendanceRoster): EditorRecord[] {
+    return roster.students.map((student) => ({
         id: student.id,
         firstName: student.firstName,
         lastName: student.lastName,
@@ -34,10 +33,26 @@ export function AdminPassListEditor({ roster }: AdminPassListEditorProps) {
         justificationId: student.justification?.id ?? null,
         justificationStatus: student.justification?.status ?? null,
         justificationReason: student.justification?.reason ?? null,
-    })))
+    }))
+}
+
+export function AdminPassListEditor({ roster }: AdminPassListEditorProps) {
+    const router = useRouter()
+    const [records, setRecords] = useState<EditorRecord[]>(() => buildRecords(roster))
     const [isSaving, setIsSaving] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [saved, setSaved] = useState(false)
+
+    // Al cambiar de horario (o de fecha), el `roster` llega con otros alumnos.
+    // React conserva esta instancia entre navegaciones, así que sin este reseteo
+    // el editor seguiría mostrando a los alumnos del horario anterior.
+    const rosterKey = `${roster.classId}:${roster.date}`
+    const [lastRosterKey, setLastRosterKey] = useState(rosterKey)
+    if (rosterKey !== lastRosterKey) {
+        setLastRosterKey(rosterKey)
+        setRecords(buildRecords(roster))
+        setSaved(false)
+    }
 
     const presentCount = records.filter(({ present }) => present).length
 

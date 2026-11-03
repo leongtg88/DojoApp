@@ -21,6 +21,15 @@ const dateFormatter = new Intl.DateTimeFormat('es-DO', {
 export function AdminPassListPanel({ roster }: AdminPassListPanelProps) {
     const passPending = roster.dayMatches && !roster.passTaken
     const [isOpen, setIsOpen] = useState(passPending)
+    // Al cambiar de horario/fecha se reinicia el estado de apertura según el
+    // nuevo pase de lista (pendiente o no). Sin esto, el panel conservaría el
+    // estado anterior al navegar entre clases.
+    const rosterKey = `${roster.classId}:${roster.date}`
+    const [lastRosterKey, setLastRosterKey] = useState(rosterKey)
+    if (rosterKey !== lastRosterKey) {
+        setLastRosterKey(rosterKey)
+        setIsOpen(passPending)
+    }
 
     return (
         <section className="overflow-hidden rounded-lg border border-edge bg-surface-2 shadow-sm">

@@ -39,6 +39,37 @@ describe('F6-02 · pase de lista (roster)', () => {
     expect(screen.getByRole('button', { name: 'Marcar todos presentes' })).toBeInTheDocument()
   })
 
+  it('al cambiar de horario actualiza la lista de alumnos (no arrastra los del turno anterior)', () => {
+    const { rerender } = render(
+      <InstructorAttendanceRoster
+        roster={roster({
+          classId: 'c4',
+          className: 'Niños 16:00',
+          students: [
+            { id: 's1', firstName: 'Ana', lastName: 'Uno', currentRank: 'Blanco', present: true, notes: null, status: 'CONFIRMED', justified: false, justification: null },
+          ],
+        })}
+      />,
+    )
+
+    expect(screen.getByText('Ana Uno')).toBeInTheDocument()
+
+    rerender(
+      <InstructorAttendanceRoster
+        roster={roster({
+          classId: 'c5',
+          className: 'Niños 17:00',
+          students: [
+            { id: 's2', firstName: 'Luis', lastName: 'Dos', currentRank: 'Amarillo', present: true, notes: null, status: 'CONFIRMED', justified: false, justification: null },
+          ],
+        })}
+      />,
+    )
+
+    expect(screen.getByText('Luis Dos')).toBeInTheDocument()
+    expect(screen.queryByText('Ana Uno')).toBeNull()
+  })
+
   it('tras guardar el pase muestra a los presentes y a los ausentes', () => {
     render(<InstructorAttendanceRoster roster={roster({
       isPassTaken: true,

@@ -26,6 +26,16 @@ export function InstructorAttendanceRoster({ roster }: InstructorAttendanceRoste
     // Si el pase de lista ya fue guardado, se muestra el resumen y el botón
     // "Corregir"; al pulsarlo se reabre el editor.
     const [isEditing, setIsEditing] = useState(!roster.isPassTaken)
+    // Al cambiar de horario (o de fecha), el `roster` llega con otros alumnos.
+    // React conserva esta instancia entre navegaciones, así que sin este reseteo
+    // el estado `records` seguiría mostrando a los alumnos del horario anterior.
+    const rosterKey = `${roster.classId}:${roster.date}`
+    const [lastRosterKey, setLastRosterKey] = useState(rosterKey)
+    if (rosterKey !== lastRosterKey) {
+        setLastRosterKey(rosterKey)
+        setRecords(roster.students)
+        setIsEditing(!roster.isPassTaken)
+    }
     const presentCount = records.filter(({ present }) => present).length
     const absentCount = records.length - presentCount
     const pendingJustifications = records.filter(({ justification }) => justification?.status === 'PENDING').length
