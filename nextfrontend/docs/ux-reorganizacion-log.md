@@ -1090,3 +1090,4 @@ Si se prefiere por ID, sustituir la condición por `u.id = '<ID_REAL_DEL_SENSEI>
   - El estado `EvaluationCycleState` se modeló como interfaz plana (no unión) para simplificar su consumo; conserva todos los campos del plan.
   - T4 opcional (`StudentPracticeLog`) aplazado.
 - **Pendientes o dudas:** validación visual del badge/filtro (León); Fase 1b (cola cross-student) y Fase 1.5 (notificación `TECHNIQUE_READY_FOR_EVALUATION`) quedan para después.
+- **Actualización (2026-11-03):** el T4 opcional (`StudentPracticeLog` con "Ciclo X / umbral") se implementó en la rama `ux/ciclo-practice-log`; `pnpm test:integration` se ejecutó con Docker → **46 archivos / 423 pruebas en verde** (incluye los 6 casos de T6).

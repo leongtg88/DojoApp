@@ -1,7 +1,7 @@
 # Ciclo de Dominio Técnico · Fase 1 (katas + kihon)
 
 - **Fecha:** plan redactado el 2026-11-03.
-- **Estado:** documentado, **sin implementar**. Fase 1 pendiente.
+- **Estado:** **implementado** (Fase 1 completa en `main`, 2026-11-03). Pendientes: Fase 1b, 1.5, 2, 3 y 4.
 - **Rama sugerida:** `ux/ciclo-evaluacion-fase-1`.
 - **Cómo usarlo:** una tarea por sesión (regla de `AGENTS.md`). Antes de empezar, leer `AGENTS.md`, `docs/domain/invariantes.md` y este documento completo.
 - **Documentos relacionados:** `docs/ux-reorganizacion.md` (glosario y reglas UX), `docs/ux-reorganizacion-log.md` (registro de resultados), `docs/domain/README.md` (invariantes).
