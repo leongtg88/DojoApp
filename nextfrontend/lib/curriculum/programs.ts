@@ -323,17 +323,17 @@ export const YOUTH_RANKS: CurriculumRank[] = [
 
   { id: 'belt-youth-09-morado', order: 9, name: 'Morado', kyuDan: '7TH KYU', japaneseName: 'Nana-kyu', kanji: '七級', beltColor: '#9C27B0', minMonths: 32, maxMonths: 33, isMaximumRank: false, katas: ['Pinan Yondan', 'Pinan Godan', 'Bassai Dai'] },
   
-  { id: 'belt-youth-10-verde', order: 10, name: 'Verde', kyuDan: '6TH KYU ', japaneseName: 'Rok-kyu-ho', kanji: '六級補', beltColor: '#4CAF50', beltSecondaryColor: '#FFFFFF', minMonths: 36, maxMonths: 37, isMaximumRank: false, katas: ['Pinan Godan', 'Bassai Dai', 'Jūtte', 'Niseishi'] },
+  { id: 'belt-youth-10-verde', order: 10, name: 'Verde', kyuDan: '6TH KYU ', japaneseName: 'Rok-kyu', kanji: '六級', beltColor: '#4CAF50', minMonths: 36, maxMonths: 37, isMaximumRank: false, katas: ['Pinan Godan', 'Bassai Dai', 'Jūtte', 'Niseishi'] },
 
-  { id: 'belt-youth-11-verde-blanco', order: 11, name: 'Verde-Blanca', kyuDan: '5TH KYU', japaneseName: 'Rok-kyu', kanji: '六級', beltColor: '#4CAF50', minMonths: 40, maxMonths: 41, isMaximumRank: false, katas: ['Bassai Dai', 'Jūtte', 'Seienchin', 'Niseishi'] },
+  { id: 'belt-youth-11-verde-blanco', order: 11, name: 'Verde-Blanca', kyuDan: '5TH KYU', japaneseName: 'Go-kyu', kanji: '五級', beltColor: '#4CAF50', beltSecondaryColor: '#FFFFFF', minMonths: 40, maxMonths: 41, isMaximumRank: false, katas: ['Bassai Dai', 'Jūtte', 'Seienchin', 'Niseishi'] },
 
-  { id: 'belt-youth-12-verde-negro', order: 12, name: 'Verde-Negra', kyuDan: '4TH KYU', japaneseName: 'Go-kyu-ho', kanji: '五級補', beltColor: '#795548', beltSecondaryColor: '#FFFFFF', minMonths: 44, maxMonths: 45, isMaximumRank: false, katas: ['Bassai Dai', 'Jūtte', 'Jion', 'Seienchin'] },
+  { id: 'belt-youth-12-verde-negro', order: 12, name: 'Verde-Negra', kyuDan: '4TH KYU', japaneseName: 'Yon-kyu', kanji: '四級', beltColor: '#4CAF50', beltSecondaryColor: '#212121', minMonths: 44, maxMonths: 45, isMaximumRank: false, katas: ['Bassai Dai', 'Jūtte', 'Jion', 'Seienchin'] },
 
-  { id: 'belt-youth-13-marron', order: 13, name: 'Marrón', kyuDan: '3RD KYU', japaneseName: 'Go-kyu', kanji: '五級', beltColor: '#795548', minMonths: 48, maxMonths: 49, isMaximumRank: false, katas: ['Bassai Dai', 'Jion', 'Jiin', 'Seienchin'] },
+  { id: 'belt-youth-13-marron', order: 13, name: 'Marrón', kyuDan: '3RD KYU', japaneseName: 'San-kyu', kanji: '三級', beltColor: '#795548', minMonths: 48, maxMonths: 49, isMaximumRank: false, katas: ['Bassai Dai', 'Jion', 'Jiin', 'Seienchin'] },
 
-  { id: 'belt-youth-14-marron-blanco', order: 14, name: 'Marrón-Blanca', kyuDan: '2ND KYU', japaneseName: 'San-kyu', kanji: '三級', beltColor: '#5D4037', minMonths: 54, maxMonths: 55, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin', 'Jiin'] },
+  { id: 'belt-youth-14-marron-blanco', order: 14, name: 'Marrón-Blanca', kyuDan: '2ND KYU', japaneseName: 'Ni-kyu', kanji: '二級', beltColor: '#5D4037', beltSecondaryColor: '#FFFFFF', minMonths: 54, maxMonths: 55, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin', 'Jiin'] },
 
-  { id: 'belt-youth-15-marron-negro', order: 15, name: 'Marrón-Negra', kyuDan: '1ST KYU', japaneseName: 'Ni-kyu', kanji: '二級', beltColor: '#5D4037', beltSecondaryColor: '#FFFFFF', minMonths: 60, maxMonths: 61, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin', 'Seipai'] },
+  { id: 'belt-youth-15-marron-negro', order: 15, name: 'Marrón-Negra', kyuDan: '1ST KYU', japaneseName: 'Ik-kyu', kanji: '一級', beltColor: '#5D4037', beltSecondaryColor: '#212121', minMonths: 60, maxMonths: 61, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin', 'Seipai'] },
 
   { id: 'belt-youth-16-negro-blanco', order: 16, name: 'Negra-Blanca', kyuDan: 'SHODAN HO', japaneseName: 'Ichi-kyu', kanji: '一級', beltColor: '#212121', beltSecondaryColor: '#FFFFFF', minMonths: 66, maxMonths: 67, isMaximumRank: false, katas: ['Kosokun Dai', 'Bassai Dai', 'Seienchin', 'Seipai', 'Kururunfa'] },
 ]
@@ -341,6 +341,24 @@ export const YOUTH_RANKS: CurriculumRank[] = [
 export const RANKS_BY_PROGRAM: Record<Program, CurriculumRank[]> = {
   ADULT: ADULT_RANKS,
   YOUTH: YOUTH_RANKS,
+}
+
+/**
+ * Devuelve el grado oficial del programa por su posición (order).
+ */
+export function rankForOrder(program: Program, order: number): CurriculumRank | null {
+  if (!Number.isInteger(order) || order < 1) return null
+  return RANKS_BY_PROGRAM[program].find((rank) => rank.order === order) ?? null
+}
+
+/**
+ * Devuelve el grado oficial del programa por su etiqueta Kyū/Dan.
+ * La comparación normaliza (trim + mayúsculas) para tolerar espacios sobrantes.
+ */
+export function rankForKyuDan(program: Program, kyuDan: string): CurriculumRank | null {
+  const normalized = kyuDan.trim().toUpperCase()
+  if (!normalized) return null
+  return RANKS_BY_PROGRAM[program].find((rank) => rank.kyuDan.trim().toUpperCase() === normalized) ?? null
 }
 
 export type ExamDayValue = 'SATURDAY' | 'SUNDAY'

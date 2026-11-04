@@ -2,11 +2,11 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { BookOpen, CheckSquare, Clock, GraduationCap, ListChecks, Loader2, MoveDown, MoveUp, Pencil, Plus, Rows3, ShieldCheck, Square, Trash2, UserPlus, Users, X } from 'lucide-react'
+import { BookOpen, CheckSquare, Clock, GraduationCap, ListChecks, Loader2, MoveDown, MoveUp, Pencil, Plus, Rows3, ShieldCheck, Square, Trash2, UserPlus, Users, Wand2, X } from 'lucide-react'
 import { RankCatalog } from '../shared/RankCatalog'
 import { AssignGradeDialog } from '../shared/AssignGradeDialog'
 import { useConfirm } from '../shared/useConfirm'
-import { ADULT_RANKS, BELT_COLORS, YOUTH_RANKS } from '@/lib/curriculum/programs'
+import { BELT_COLORS, RANKS_BY_PROGRAM, rankForKyuDan, rankForOrder } from '@/lib/curriculum/programs'
 import { techniqueMetaLine } from '@/lib/dashboard/technique-format'
 import { KIHON_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kihon-categories'
 import { KUMITE_CATEGORY_SHORT_LABELS } from '@/lib/dashboard/kumite-categories'
@@ -59,17 +59,6 @@ const EMPTY_RANK_FORM: RankForm = {
     examDay: '',
     isMaximumRank: false,
     description: '',
-}
-
-const RANK_META_BY_PROGRAM: Record<'ADULT' | 'YOUTH', Map<number, { kyuDan: string; japaneseName: string; kanji: string }>> = {
-    ADULT: new Map(ADULT_RANKS.map(({ order, kyuDan, japaneseName, kanji }) => [order, { kyuDan, japaneseName, kanji }])),
-    YOUTH: new Map(YOUTH_RANKS.map(({ order, kyuDan, japaneseName, kanji }) => [order, { kyuDan, japaneseName, kanji }])),
-}
-
-function rankMetaFor(form: RankForm) {
-    const orderNum = Number(form.order)
-    if (!Number.isInteger(orderNum) || orderNum < 1) return null
-    return RANK_META_BY_PROGRAM[form.program].get(orderNum) ?? null
 }
 
 export function AdminCurriculumCatalog({ ranks: initialRanks, techniques: catalog, canReorder = false, selectedRankId, onSelectRank }: AdminCurriculumCatalogProps) {
@@ -439,13 +428,21 @@ function RankDialog({
     onSubmit: (event: React.FormEvent<HTMLFormElement>) => Promise<void>
     saving: boolean
 }) {
+    const [unlocked, setUnlocked] = useState(false)
+
     function set<K extends keyof RankForm>(key: K, value: RankForm[K]) {
         let next = { ...form, [key]: value } as RankForm
-        if (key === 'program' || key === 'order') {
-            const meta = rankMetaFor(next)
-            if (meta) {
-                next = { ...next, kyuDan: meta.kyuDan, japaneseName: meta.japaneseName, kanji: meta.kanji }
-            }
+        const rank =
+            key === 'kyuDan'
+                ? rankForKyuDan(form.program, value as string)
+                : key === 'order'
+                    ? rankForOrder(form.program, Number(value))
+                    : key === 'program'
+                        ? (rankForKyuDan(value as 'ADULT' | 'YOUTH', form.kyuDan) ?? rankForOrder(value as 'ADULT' | 'YOUTH', Number(form.order)))
+                        : null
+        if (rank) {
+            next = { ...next, order: String(rank.order), kyuDan: rank.kyuDan, japaneseName: rank.japaneseName, kanji: rank.kanji }
+            setUnlocked(false)
         }
         onChange(next)
     }
@@ -460,6 +457,9 @@ function RankDialog({
         }
         onChange({ ...form, beltColor: option.value, beltSecondaryColor: option.secondary ?? '' })
     }
+
+    const kyuDanOptions = [...new Set(RANKS_BY_PROGRAM[form.program].map(({ kyuDan }) => kyuDan))]
+    const hasCustomKyuDan = form.kyuDan !== '' && !kyuDanOptions.includes(form.kyuDan)
 
     return (
         <div aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm" role="dialog">
@@ -484,9 +484,20 @@ function RankDialog({
                     <label className="text-xs font-semibold text-ink-2" htmlFor="rank-name">Nombre (ej. Cinturón Blanco)<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-name" onChange={(event) => set('name', event.target.value)} placeholder="Cinturón Blanco" required value={form.name} /></label>
                     <div className="grid gap-4 sm:grid-cols-2">
                         <label className="text-xs font-semibold text-ink-2" htmlFor="rank-order">Número de grado (autocompleta)<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-order" min="1" onChange={(event) => set('order', event.target.value)} placeholder="10" type="number" value={form.order} /></label>
-                        <label className="text-xs font-semibold text-ink-2" htmlFor="rank-kyu">Grado (Kyū/Dan)<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-kyu" onChange={(event) => set('kyuDan', event.target.value)} placeholder="10º Kyū" value={form.kyuDan} /></label>
-                        <label className="text-xs font-semibold text-ink-2" htmlFor="rank-japanese">Nombre japonés<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-japanese" onChange={(event) => set('japaneseName', event.target.value)} placeholder="Hachikyū" value={form.japaneseName} /></label>
-                        <label className="text-xs font-semibold text-ink-2" htmlFor="rank-kanji">Kanji<input className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-kanji" onChange={(event) => set('kanji', event.target.value)} placeholder="八級" value={form.kanji} /></label>
+                        <label className="text-xs font-semibold text-ink-2" htmlFor="rank-kyu">Grado (Kyū/Dan)<select className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-kyu" onChange={(event) => set('kyuDan', event.target.value)} value={form.kyuDan}><option value="">Selecciona un grado…</option>{kyuDanOptions.map((option) => <option key={option} value={option}>{option}</option>)}{hasCustomKyuDan && <option value={form.kyuDan}>{form.kyuDan}</option>}</select></label>
+                    </div>
+                    <div>
+                        <div className="flex items-center justify-between gap-3">
+                            <div>
+                                <span className="text-xs font-semibold text-ink-2">Nombre japonés y kanji</span>
+                                <p className="mt-0.5 text-[11px] text-ink-4">Se completan solos según el grado de Kyū/Dan.</p>
+                            </div>
+                            <button className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-edge-strong px-2.5 py-1.5 text-xs font-semibold text-ink-2 transition-colors hover:border-edge-strong hover:text-ink" onClick={() => setUnlocked((value) => !value)} type="button">{unlocked ? <Wand2 aria-hidden="true" className="size-3.5" /> : <Pencil aria-hidden="true" className="size-3.5" />}{unlocked ? 'Restablecer automático' : 'Editar manualmente'}</button>
+                        </div>
+                        <div className="mt-1.5 grid gap-4 sm:grid-cols-2">
+                            <label className="text-xs font-semibold text-ink-2" htmlFor="rank-japanese">Nombre japonés<input className={`mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500 ${unlocked ? '' : 'cursor-not-allowed text-ink-3'}`} id="rank-japanese" onChange={(event) => set('japaneseName', event.target.value)} placeholder="Jūkyū" readOnly={!unlocked} value={form.japaneseName} /></label>
+                            <label className="text-xs font-semibold text-ink-2" htmlFor="rank-kanji">Kanji<input className={`mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500 ${unlocked ? '' : 'cursor-not-allowed text-ink-3'}`} id="rank-kanji" onChange={(event) => set('kanji', event.target.value)} placeholder="十級" readOnly={!unlocked} value={form.kanji} /></label>
+                        </div>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
                         <label className="text-xs font-semibold text-ink-2" htmlFor="rank-color">Color de cinturón<select className="mt-1.5 w-full rounded-md border border-edge-strong bg-surface-1 px-3 py-2 text-xs text-ink outline-none placeholder:text-ink-4 focus:border-cyan-500" id="rank-color" onChange={(event) => setBeltColor(event.target.value)} value={selectedBeltColorLabel}><option value="">Selecciona un color…</option>{BELT_COLORS.map(({ label }) => <option key={label} value={label}>{label}</option>)}</select></label>
